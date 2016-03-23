@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
+#include <SofaTest/TestMessageHandler.h>
 
 using sofa::helper::system::FileSystem;
 
@@ -82,7 +83,11 @@ TEST(FileSystemTest, createDirectory)
 TEST(FileSystemTest, createDirectory_alreadyExists)
 {
     FileSystem::createDirectory("createDirectoryTestDir");
-    EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
+    {
+        // this test will raise an error on purpose
+        sofa::helper::logging::ScopedDeactivatedTestMessageHandler scopedDeactivatedTestMessageHandler;
+        EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
+    }
     // Cleanup
     FileSystem::removeDirectory("createDirectoryTestDir");
 }
@@ -96,7 +101,11 @@ TEST(FileSystemTest, removeDirectory)
 
 TEST(FileSystemTest, removeDirectory_doesNotExists)
 {
-    EXPECT_TRUE(FileSystem::removeDirectory("removeDirectoryTestDir"));
+    {
+        // this test will raise an error on purpose
+        sofa::helper::logging::ScopedDeactivatedTestMessageHandler scopedDeactivatedTestMessageHandler;
+        EXPECT_TRUE(FileSystem::removeDirectory("removeDirectoryTestDir"));
+    }
     EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
 }
 

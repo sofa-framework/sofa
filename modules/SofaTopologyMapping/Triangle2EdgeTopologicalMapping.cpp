@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,7 +95,7 @@ void Triangle2EdgeTopologicalMapping::init()
             EdgeSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
-            const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
+            const sofa::helper::vector<core::topology::BaseMeshTopology::Edge> &edgeArray=fromModel->getEdges();
 
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
@@ -197,7 +197,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                             ind_last = ind_last - 1;
 
                             unsigned int ind_k = Glob2LocMap[k];
-                            ind_real_last = ind_k;
+//                            ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())
@@ -266,11 +266,11 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     if (fromModel)
                     {
 
-                        const sofa::helper::vector<Triangle> &triangleArray=fromModel->getTriangles();
+                        const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> &triangleArray=fromModel->getTriangles();
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
-                        sofa::helper::vector< Edge > edges_to_create;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
                         sofa::helper::vector< unsigned int > edgesIndexList;
                         int nb_elems = toModel->getNbEdges();
 
@@ -312,9 +312,9 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                     if(!is_present)
                                     {
 
-                                        Edge t;
+                                        core::topology::BaseMeshTopology::Edge t;
 
-                                        const Triangle &te=triangleArray[ind_test];
+                                        const core::topology::BaseMeshTopology::Triangle &te=triangleArray[ind_test];
                                         int h = fromModel->getEdgeIndexInTriangle(fromModel->getEdgesInTriangle(ind_test),k);
 
                                         t[0]=(int)(te[(h+1)%3]); t[1]=(int)(te[(h+2)%3]);
@@ -459,7 +459,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                         const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
 
-                        sofa::helper::vector< Edge > edges_to_create;
+                        sofa::helper::vector< core::topology::BaseMeshTopology::Edge > edges_to_create;
                         sofa::helper::vector< unsigned int > edgesIndexList;
 
                         for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
@@ -501,7 +501,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         //sofa::helper::vector< Edge > edges_to_create;
                                         //sofa::helper::vector< unsigned int > edgesIndexList;
 
-                                        Edge t = fromModel->getEdge(k);
+                                        core::topology::BaseMeshTopology::Edge t = fromModel->getEdge(k);
                                         /*
                                         if ((t[0]>t[1])) {
                                         	int val=t[0]; t[0]=t[1]; t[1]=val;

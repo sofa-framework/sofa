@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,8 +36,6 @@ namespace component
 namespace shapefunction
 {
 
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
 /**
 Shepard shape function (=inverse distance weights) is defined as w_i(x)=1/d(x,x_i)^power followed by normalization
 http://en.wikipedia.org/wiki/Inverse_distance_weighting
@@ -50,11 +48,11 @@ struct ShepardShapeFunctionInternalData
 
 
 template <class ShapeFunctionTypes_>
-class ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class ShepardShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;

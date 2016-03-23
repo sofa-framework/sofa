@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,10 +27,8 @@
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
-//#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
@@ -187,7 +185,8 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     SReal aSC = arrowSizeCoef.getValue();
 
     Deriv singleForce;
@@ -233,8 +232,8 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
     }
     else
     {
-        glPushAttrib(GL_LIGHTING_BIT);
-        glEnable(GL_LIGHTING);
+
+        vparams->drawTool()->setLightingEnabled(true);
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
@@ -257,19 +256,16 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             if( aSC > 0)
             {
-                //helper::gl::drawArrow(p1,p2, norm/20.0);
                 vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, d_color.getValue());
             }
             else
             {
-                //helper::gl::drawArrow(p2,p1, norm/20.0);
                 vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, d_color.getValue());
             }
         }
-        glPopAttrib();
     }
 
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

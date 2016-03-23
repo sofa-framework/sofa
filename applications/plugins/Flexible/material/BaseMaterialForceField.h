@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Abstract interface to allow for resizing
 */
@@ -86,7 +85,7 @@ public:
     /** @name  material types    */
     //@{
     typedef MaterialBlockType BlockType;  ///< Material block object
-    typedef vector<BlockType >  SparseMatrix;
+    typedef helper::vector<BlockType >  SparseMatrix;
 
     typedef typename BlockType::MatBlock  MatBlock;  ///< Material block matrix
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes>    SparseMatrixEigen;
@@ -145,7 +144,7 @@ public:
 
     //Pierre-Luc : Implementation in HookeForceField
     using Inherit::addForce;
-    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const vector<SReal> /*_vol*/)
+    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const helper::vector<SReal> /*_vol*/)
     {
         std::cout << "Do nothing" << std::endl;
     }
@@ -190,9 +189,10 @@ public:
         }
         else
         {
+            const SReal& rayleighStiffness = this->rayleighStiffness.getValue();
             for(unsigned int i=0; i<material.size(); i++)
             {
-                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()),mparams->bFactor());
+                material[i].addDForce(df[i],dx[i],mparams->kFactorIncludingRayleighDamping(rayleighStiffness),mparams->bFactor());
             }
         }
 

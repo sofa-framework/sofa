@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,10 +43,6 @@ namespace component
 
 namespace forcefield
 {
-
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-using namespace sofa::core::topology;
 
 template<class DataTypes>
 class InvertibleFVMForceField;
@@ -91,15 +87,15 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron)
-    typedef VecNoInit<12, Real> Displacement;
+    typedef defaulttype::VecNoInit<12, Real> Displacement;
 
     /// Rigid transformation (rotation) matrix
-    typedef MatNoInit<3, 3, Real> Transformation;
+    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
 
     /// @}
 
-    vector<Transformation> _rotationsU;
-    vector<Transformation> _rotationsV;
+    helper::vector<Transformation> _rotationsU;
+    helper::vector<Transformation> _rotationsV;
 
 
 
@@ -114,12 +110,12 @@ protected:
     core::topology::BaseMeshTopology* _mesh;
     const VecTetra *_indexedTetra;
 
-    vector<Transformation> _initialTransformation;
-    vector<Transformation> _initialRotation;
+    helper::vector<Transformation> _initialTransformation;
+    helper::vector<Transformation> _initialRotation;
 
-    vector<Transformation> _U;
-    vector<Transformation> _V;
-    vector<Vec<3,Coord> > _b;
+    helper::vector<Transformation> _U;
+    helper::vector<Transformation> _V;
+    helper::vector<defaulttype::Vec<3,Coord> > _b;
 
     InvertibleFVMForceFieldInternalData<DataTypes> data;
     friend class InvertibleFVMForceFieldInternalData<DataTypes>;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,14 +49,13 @@ SOFA_LINK_CLASS(PointSplatModel)
 SOFA_LINK_CLASS(OglCylinderModel)
 SOFA_LINK_CLASS(OglRenderingSRGB)
 SOFA_LINK_CLASS(ClipPlane)
-SOFA_LINK_CLASS(ColorMap)
+SOFA_LINK_CLASS(OglColorMap)
 SOFA_LINK_CLASS(DataDisplay)
 SOFA_LINK_CLASS(OglLabel)
 #ifdef SOFA_HAVE_GLEW
 SOFA_LINK_CLASS(OglShader)
 SOFA_LINK_CLASS(OglShaderVisualModel)
 SOFA_LINK_CLASS(OglShadowShader)
-SOFA_LINK_CLASS(OglTetrahedralModel)
 SOFA_LINK_CLASS(OglTexture)
 SOFA_LINK_CLASS(OglViewport)
 #endif

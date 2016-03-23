@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -46,6 +46,7 @@
 
 
 #include <sofa/helper/gl/glText.inl>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <sofa/helper/io/ImageBMP.h>
@@ -705,28 +706,41 @@ void QtViewer::DisplayOBJs()
 
         if (_axis)
         {
+
             SReal* minBBox = vparams->sceneBBox().minBBoxPtr();
             SReal* maxBBox = vparams->sceneBBox().maxBBoxPtr();
+            SReal maxDistance = std::numeric_limits<SReal>::min();
 
-
-            SReal minDistance = std::numeric_limits<SReal>::max();
-
-            minDistance = maxBBox[0] - minBBox[0];
-
+            maxDistance = maxBBox[0] - minBBox[0];
             for (int i=1;i<3;i++)
             {
-                if(minDistance > (maxBBox[i] - minBBox[i]))
-                    minDistance = (maxBBox[i] - minBBox[i]);
+                if(maxDistance < (maxBBox[i] - minBBox[i]))
+                    maxDistance = (maxBBox[i] - minBBox[i]);
             }
 
-            if(minDistance == 0 )
-                minDistance = 1.0;
+            if(maxDistance == 0 )
+                maxDistance = 1.0;
 
-            // Arrows of axis are defined as 1/4 of the min BBOX
-            DrawAxis(0.0, 0.0, 0.0,(minDistance/4.0));
+            // World Axis: Arrows of axis are defined as 10% of maxBBox
+            DrawAxis(0.0, 0.0, 0.0,(maxDistance*0.1));
+
             if (vparams->sceneBBox().minBBox().x() < vparams->sceneBBox().maxBBox().x())
-                DrawBox(vparams->sceneBBox().minBBoxPtr(),
-                        vparams->sceneBBox().maxBBoxPtr());
+                DrawBox(vparams->sceneBBox().minBBoxPtr(), vparams->sceneBBox().maxBBoxPtr());
+
+            // 2D Axis: project current world orientation in the lower left part of the screen
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(0.0,vparams->viewport()[2],0,vparams->viewport()[3],-30,30);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+            helper::gl::Axis::draw(sofa::defaulttype::Vector3(30.0,30.0,0.0),currentCamera->getOrientation().inverse(), 25.0);
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+
         }
     }
 

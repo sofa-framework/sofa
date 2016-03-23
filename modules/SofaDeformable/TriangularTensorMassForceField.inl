@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
-        vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
+        helper::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
 
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
@@ -171,7 +171,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Real lambdastar, mustar;
         typename DataTypes::Coord point[3],dpk,dpl;
 
-        vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
+        helper::vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
         const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (i=0; i<triangleRemoved.size(); ++i)

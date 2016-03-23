@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,14 +98,14 @@ public:
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 
-    Data< vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
+    Data< helper::vector<unsigned> > indexPairs;                     ///< Two indices per child: the parent, and the index within the parent
 
 protected :
 
     SubsetMultiMapping();
     virtual ~SubsetMultiMapping();
 
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 };
 

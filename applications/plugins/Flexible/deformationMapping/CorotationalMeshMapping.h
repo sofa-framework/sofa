@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -224,7 +224,7 @@ public:
 
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
 
 
 protected:
@@ -247,8 +247,9 @@ protected:
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     SparseKMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
+public:
     Data< SeqTetrahedra > in_tetrahedra;
     Data< SeqHexahedra > in_hexahedra;
     Data< SeqTriangles > in_triangles;
@@ -260,6 +261,8 @@ protected:
     Data< SeqTriangles > out_triangles;
     Data< SeqQuads > out_quads;
     Data< SeqEdges > out_edges;
+
+protected:
     VecVecID clusters;  ///< groups of points for which we compute the transformation
     VecVecID clusters_child;
     VecID index_childToParent;
@@ -271,10 +274,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CorotationalMeshMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API CorotationalMeshMapping< Vec3dTypes, Vec3dTypes >;
+extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API CorotationalMeshMapping< Vec3fTypes, Vec3fTypes >;
+extern template class SOFA_Flexible_API CorotationalMeshMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
 #endif
 
 #endif

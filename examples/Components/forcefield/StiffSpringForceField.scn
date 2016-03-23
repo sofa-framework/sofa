@@ -6,7 +6,7 @@
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<Node 	 name="M1"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
+			<MechanicalObject template="Vec3d" showObject="1" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 			<UniformMass template="Vec3d" name="uniformMass1"  mass="0.1" />
 			<FixedConstraint template="Vec3d" name="fixedConstraint1"  indices="0 3 6 9 12 15 18 21 24" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings1"  spring="0 9 100 5 3.5
@@ -167,11 +167,11 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@"  object2="@" />
+"  />
 		</Node>
 		<Node 	 name="M5"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="mObject5"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 42" />
+			<MechanicalObject template="Vec3d" name="mObject5" showObject="1" position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 42" />
 			<UniformMass template="Vec3d" name="uniformMass5"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings5"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
@@ -331,11 +331,11 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@"  object2="@" />
+"   />
 		</Node>
 		<Node 	 name="M4"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="mObject4"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 31.5" />
+			<MechanicalObject template="Vec3d" name="mObject4" showObject="1" position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 31.5" />
 			<UniformMass template="Vec3d" name="uniformMass4"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings4"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
@@ -495,11 +495,11 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@"  object2="@" />
+"   />
 		</Node>
 		<Node 	 name="M3"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="mObject3"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 21" />
+			<MechanicalObject template="Vec3d" showObject="1" name="mObject3"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 21" />
 			<UniformMass template="Vec3d" name="uniformMass3"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings3"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
@@ -659,11 +659,11 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@"  object2="@" />
+"  />
 		</Node>
 		<Node 	 name="M2"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
-			<MechanicalObject template="Vec3d" name="mObject2"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 10.5" />
+			<MechanicalObject template="Vec3d" showObject="1" name="mObject2"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 10.5" />
 			<UniformMass template="Vec3d" name="uniformMass2"  mass="0.1" />
 			<StiffSpringForceField template="Vec3d" name="InternalSprings2"  spring="0 9 100 5 3.5
  1 10 500 5 3.5
@@ -823,7 +823,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@"  object2="@" />
+"  />
 		</Node>
 		<StiffSpringForceField template="Vec3d" name="ExternalSprings1"  spring="2 0 500 5 3.5
  5 3 500 5 3.5
@@ -874,7 +874,7 @@
  14 15 500 5 4.94975
  20 21 500 5 4.94975
  23 24 500 5 4.94975
-"  object1="@M1"  object2="@M2" />
+"  object1="@M1/mObject1"  object2="@M2/mObject2" />
 		<StiffSpringForceField template="Vec3d" name="ExternalSprings2"  spring="2 0 500 5 3.5
  5 3 500 5 3.5
  8 6 500 5 3.5
@@ -924,7 +924,7 @@
  14 15 500 5 4.94975
  20 21 500 5 4.94975
  23 24 500 5 4.94975
-"  object1="@M2"  object2="@M3" />
+"  object1="@M2/mObject2"  object2="@M3/mObject3" />
 		<StiffSpringForceField template="Vec3d" name="ExternalSprings3"  spring="2 0 500 5 3.5
  5 3 500 5 3.5
  8 6 500 5 3.5
@@ -974,7 +974,7 @@
  14 15 500 5 4.94975
  20 21 500 5 4.94975
  23 24 500 5 4.94975
-"  object1="@M3"  object2="@M4" />
+"  object1="@M3/mObject3"  object2="@M4/mObject4" />
 		<StiffSpringForceField template="Vec3d" name="ExternalSprings4"  spring="2 0 500 5 3.5
  5 3 500 5 3.5
  8 6 500 5 3.5
@@ -1024,6 +1024,6 @@
  14 15 500 5 4.94975
  20 21 500 5 4.94975
  23 24 500 5 4.94975
-"  object1="@M4"  object2="@M5" />
+"  object1="@M4/mObject4"  object2="@M5/mObject5" />
 	</Node>
 </Node>

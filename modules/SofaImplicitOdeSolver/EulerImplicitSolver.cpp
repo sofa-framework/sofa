@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -204,9 +204,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
 
     if (firstOrder)
-        matrix = MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
+        matrix = MechanicalMatrix(1,0,-h*tr); //MechanicalMatrix::K * (-h*tr) + MechanicalMatrix::M;
     else
-        matrix = MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
+        matrix = MechanicalMatrix(1+tr*h*f_rayleighMass.getValue(),-tr*h,-tr*h*(h+f_rayleighStiffness.getValue())); // MechanicalMatrix::K * (-tr*h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-tr*h) + MechanicalMatrix::M * (1+tr*h*f_rayleighMass.getValue());
 
     if( verbose )
     {

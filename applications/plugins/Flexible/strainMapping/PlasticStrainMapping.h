@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,6 +41,9 @@ namespace mapping
 
 
 /// Decompose the total strain to an elastic strain + a plastic strain
+///
+/// @author Matthieu Nesme
+///
 template <class TStrain>
 class PlasticStrainMapping : public BaseStrainMappingT<defaulttype::PlasticStrainJacobianBlock<TStrain> >
 {
@@ -61,10 +64,10 @@ public:
 
     /// @name  Plasticity parameters such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     //@{
-    Data<vector<Real> > _max;
-    Data<vector<Real> > _yield;
-    vector<Real> _squaredYield;
-    Data<vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
+    Data<helper::vector<Real> > _max;
+    Data<helper::vector<Real> > _yield;
+    helper::vector<Real> _squaredYield;
+    Data<helper::vector<Real> > _creep; ///< this parameter is different from the article, here it includes the multiplication by dt
     //@}
 
 
@@ -92,9 +95,9 @@ protected:
     PlasticStrainMapping( core::State<TStrain>* from = NULL, core::State<TStrain>* to = NULL )
         : Inherit ( from, to )
         , f_method ( initData ( &f_method,"method","" ) )
-        , _max(initData(&_max,vector<Real>((int)1,(Real)0.1f),"max","Plastic Max Threshold (2-norm of the strain)"))
-        , _yield(initData(&_yield,vector<Real>((int)1,(Real)0.0001f),"yield","Plastic Yield Threshold (2-norm of the strain)"))
-        , _creep(initData(&_creep,vector<Real>((int)1,(Real)1.f),"creep","Plastic Creep Factor * dt [0,1]. 1 <-> pure plastic ; <1 <-> visco-plastic (warning depending on dt)"))
+        , _max(initData(&_max,helper::vector<Real>((int)1,(Real)0.1f),"max","Plastic Max Threshold (2-norm of the strain)"))
+        , _yield(initData(&_yield,helper::vector<Real>((int)1,(Real)0.0001f),"yield","Plastic Yield Threshold (2-norm of the strain)"))
+        , _creep(initData(&_creep,helper::vector<Real>((int)1,(Real)1.f),"creep","Plastic Creep Factor * dt [0,1]. 1 <-> pure plastic ; <1 <-> visco-plastic (warning depending on dt)"))
     {
         helper::OptionsGroup Options;
         Options.setNbItems( NB_PlasticMethod );
@@ -120,7 +123,7 @@ protected:
         case MULTIPLICATION:
         {
 #ifdef _OPENMP
-			#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
             {
@@ -134,7 +137,7 @@ protected:
         case ADDITION:
         {
 #ifdef _OPENMP
-	#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
             {

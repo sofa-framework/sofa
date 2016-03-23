@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,11 +38,6 @@ namespace topology
 {
 class EdgeSetTopologyContainer;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgeID EdgeID;
-typedef BaseMeshTopology::Edge Edge;
-typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
  * A class that can apply basic transformations on a set of edges.
@@ -51,6 +46,11 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyModifier : public PointSetTopologyMo
 {
 public:
     SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
+
+    typedef core::topology::BaseMeshTopology::EdgeID EdgeID;
+    typedef core::topology::BaseMeshTopology::Edge Edge;
+    typedef core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef core::topology::BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 protected:
 
     EdgeSetTopologyModifier()

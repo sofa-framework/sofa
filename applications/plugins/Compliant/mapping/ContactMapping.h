@@ -10,7 +10,6 @@
 #include <Compliant/utils/map.h>
 #include <Compliant/utils/basis.h>
 #include <Compliant/utils/nan.h>
-#include <sofa/core/collision/DetectionOutput.h>
 
 #include <limits>
 
@@ -45,58 +44,31 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(ContactMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 
     typedef typename TIn::Real real;
-    typedef sofa::helper::vector<core::collision::DetectionOutput> DetectionOutputVector;
-	typedef vector< defaulttype::Vec<3, real> > NormalVector;
-    typedef defaulttype::Vec<2, unsigned> IndexPair;
-    typedef vector< IndexPair > PairVector;
 
-    vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
-    DetectionOutputVector* contacts;
-    PairVector* pairs;
+    typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
+    Data<normal_type> normal;
+
+    helper::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
+
 
     ContactMapping()
-        : contacts(NULL), pairs(NULL)
+        : normal(initData(&normal, "normal", "contact normals"))
     {}
-
-    void setDetectionOutput(DetectionOutputVector* o)
-    {
-        contacts = o;
-    }
-
-    void setContactPairs(PairVector* p)
-    {
-        pairs = p;
-    }
-
-
-    enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
-
-    virtual void init()
-    {
-        AssembledMapping<TIn, TOut>::init();
-    }
-
-    virtual void reinit()
-    {
-        AssembledMapping<TIn, TOut>::reinit();
-    }
-
 
 protected:
 
 	virtual void apply(typename self::out_pos_type& out,
                        const typename self::in_pos_type& in) {
 		
-        if(!contacts)
-            return;
-
 		// local frames have been computed in assemble
-        assert( (size_t)contacts->size() == out.size() || std::count( mask.begin(),mask.end(),true)==out.size() );
 
-        size_t n = out.size();
+        (void)in;
+        assert( in.size() == out.size() || (size_t)std::count( mask.begin(),mask.end(),true)==out.size() );
 
+        unsigned n = out.size();
 
 		for(unsigned i = 0; i < n; ++i) {
+
             if( self::Nout == 2 ) // hopefully this is optimized at compilation time (known template parameter)
             {
                 out[i][0] = 0;
@@ -104,40 +76,44 @@ protected:
             }
             else
             {
-                out[i][0] = (real)(*contacts)[i].value;
-                //out[i][0] = (TIn::getCPos( in[(*pairs)[i][1]] ) - TIn::getCPos( in[(*pairs)[i][0]] )) * (*contacts)[i].normal;
-                if( self::Nout == 3 ) 
-                {
+
+                // out[i][0] = penetrations are given during contact creation, they are directly used as the normal components.
+                // (the ones computed during the collision detection and so signed)
+
+                if( self::Nout == 3 ) {
                     out[i][1] = 0;
                     out[i][2] = 0;
                 }
             }
+			
 		}
+
 	}
 
 
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 
-
         Eigen::Matrix<real, 3, self::Nout> local_frame;
 
-		size_t n = this->toModel->getSize();
+		unsigned n = in_pos.size();
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
-        J.resize( (int) this->toModel->getSize() * self::Nout, (int) this->fromModel->getSize() * self::Nin );
-        J.setZero();
+        J.resize( this->toModel->getSize() * self::Nout, n * self::Nin );
+//		J.setZero(); // resize should set to 0
 
-        assert( !contacts->empty() );
-        assert(pairs->size() == (size_t)contacts->size());
+        assert( !normal.getValue().empty() && normal.getValue().size() == n );
 		
         for(unsigned i = 0, activatedIndex=0; i < n; ++i)
         {
+//          assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
+
+
             if( !mask.empty() && !mask[i] ) continue; // not activated
 
 
             if( self::Nout==2 )
             {
-                Eigen::Matrix<real, 3, 1> n = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                Eigen::Matrix<real, 3, 1> n = utils::map( normal.getValue()[i] );
                 try{
                     local_frame.template rightCols<2>() = ker( n );
                 }
@@ -150,7 +126,7 @@ protected:
             else
             {
                 // first vector is normal
-                local_frame.col(0) = utils::map( (defaulttype::Vec<3, real>)(*contacts)[i].normal );
+                local_frame.col(0) = utils::map( normal.getValue()[i] );
 
                 // possibly tangent directions
                 if( self::Nout == 3 ) {
@@ -165,59 +141,30 @@ protected:
                     }
                 }
             }
-            
+
             // make sure we're cool
             assert( !has_nan(local_frame) );
 
             // rows
-            for( unsigned k = 0; k < self::Nout; ++k) 
-            {
-                if((*pairs)[i][1] == (*pairs)[i][0]) continue;
-
+            for( unsigned k = 0; k < self::Nout; ++k) {
                 unsigned row = self::Nout * activatedIndex + k;
+
                 J.startVec( row );
+                // cols
+                for( unsigned j = 0; j < self::Nin; ++j) {
+                    unsigned col = self::Nin * i + j;
 
-                // needs to be inserted in the right order in the eigen matrix
-                real w;
-                if ((*pairs)[i][1] < (*pairs)[i][0])
-                {
-                    for( unsigned j = 0; j < self::Nin; ++j) 
-                    {
-                        w = local_frame(j, k);
-                        if(w)
-                            J.insertBack(row, (*pairs)[i][1] * Nin + j ) = w;
-                    }
-
-                    for( unsigned j = 0; j < self::Nin; ++j) 
-                    {
-                        w = local_frame(j, k);
-                        if(w)
-                            J.insertBack(row, (*pairs)[i][0] * Nin + j ) = -w;
-                    }
+                    // local_frame transpose
+                    real w = local_frame(j, k);
+                    if(w) J.insertBack(row, col) = w;
                 }
-                else
-                {
-                    for( unsigned j = 0; j < self::Nin; ++j) 
-                    {
-                        w = local_frame(j, k);
-                        if(w)
-                            J.insertBack(row, (*pairs)[i][0] * Nin + j ) = -w;
-                    }
-
-                    for( unsigned j = 0; j < self::Nin; ++j) 
-                    {
-                        w = local_frame(j, k);
-                        if(w)
-                            J.insertBack(row, (*pairs)[i][1] * Nin + j ) = w;
-                    }
-                }
-                
-
 
             }
             ++activatedIndex;
         }
+
 		J.finalize();
+
 	}
 
 };

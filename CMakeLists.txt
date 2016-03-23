@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(Sofa)
 
-INCLUDE(CPack)
-
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
@@ -153,20 +151,22 @@ if(MSVC)
 
 endif()
 
-
-## Install resource files
-install(DIRECTORY share/ DESTINATION share/sofa)
-install(DIRECTORY examples/ DESTINATION share/sofa/examples)
-# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-# build directory, it points to the source tree, whereas in the install
-# directory, it contains to relative paths to the installed resource directory.
-set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-set(SHARE_DIR "../share/sofa")
-set(EXAMPLES_DIR "../share/sofa/examples")
-configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+if(SOFA_INSTALL_RESOURCES_FILES)
+    ## Install resource files
+    install(DIRECTORY share/ DESTINATION share/sofa)
+    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
+    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+    # build directory, it points to the source tree, whereas in the install
+    # directory, it contains to relative paths to the installed resource directory.
+    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+    set(SHARE_DIR "../share/sofa")
+    set(EXAMPLES_DIR "../share/sofa/examples")
+    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+endif()
 
 # Temporary (todo: think about this typedef thing)
 install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
@@ -259,3 +259,24 @@ endif()
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
 install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
+
+#CPack install
+SET(CPACK_PACKAGE_VERSION "15.12.0")
+SET(CPACK_PACKAGE_VERSION_MAJOR "15")
+SET(CPACK_PACKAGE_VERSION_MINOR "12")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENCE.txt")
+SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/readme.txt")
+
+#dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
+#if not set, it will install everything as usual
+#TODO: Redesign of a better architecture about bundling (runSofa ? libraries ? modeler ? other application ?)
+get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL )
+if(TEMP_CPACK_COMPONENTS_ALL)
+    set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+    set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
+endif()
+
+INCLUDE(CPack)
+
+

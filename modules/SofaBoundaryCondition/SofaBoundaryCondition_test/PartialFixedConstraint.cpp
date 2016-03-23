@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -118,7 +118,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
             if( readV[0][i]>epsilon )
             {
-                ADD_FAILURE() << "Error: non null velocity in direction " << i << endl;
+                ADD_FAILURE() << "Error: non null velocity in direction " << i << std::endl;
                 return false;
             }
 

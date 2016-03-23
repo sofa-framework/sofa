@@ -17,6 +17,8 @@ namespace forcefield
     A compliance for viscous damping, i.e. generates a force along - \alpha.v
     This component must be a compliance, otherwise there is other way to generate damping (regular B matrix)
     @warning: must be coupled with a DampingValue
+
+    @author Matthieu Nesme
  */
 
 template<class TDataTypes>
@@ -84,6 +86,12 @@ public:
         return &matC;
 	}
 
+    /// unassembled API
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv & res, const DataVecDeriv &lambda, SReal cfactor)
+    {
+        if( m_lastDt != this->getContext()->getDt() ) reinit();
+        matC.addMult( res, lambda, cfactor );
+    }
 
     // stiffness implementation makes no sense
     virtual SReal getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
@@ -98,10 +106,10 @@ public:
 
 protected:
 
-	typedef linearsolver::EigenBaseSparseMatrix<real> matrix_type;
+    typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> matrix_type;
     matrix_type matC; ///< compliance matrix
 
-    real m_lastDt; /// is the dt changed, the compliance matrix must be updated
+    real m_lastDt; /// if the dt changed, the compliance matrix must be updated
 
 };
 

@@ -32,6 +32,8 @@ set(HEADER_FILES
     ProjectionToLineMapping.inl
     ProjectionToPlaneMapping.h
     ProjectionToPlaneMapping.inl
+    SquareDistanceMapping.h
+    SquareDistanceMapping.inl
     SubsetMultiMapping.h
     SubsetMultiMapping.inl
     TubularMapping.h
@@ -57,6 +59,7 @@ set(SOURCE_FILES
     IdentityMultiMapping.cpp
     ProjectionToLineMapping.cpp
     ProjectionToPlaneMapping.cpp
+    SquareDistanceMapping.cpp
     SubsetMultiMapping.cpp
     TubularMapping.cpp
     VoidMapping.cpp

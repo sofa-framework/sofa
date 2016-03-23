@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -684,7 +684,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             //toEdgeMod->addEdgesProcess(eAdd->edgeArray);
             //toEdgeMod->addEdgesWarning(eAdd->getNbAddedEdges(), eAdd->edgeArray, eAdd->edgeIndexArray, eAdd->ancestorsList, eAdd->coefs);
             //toEdgeMod->propagateTopologicalChanges();
-            helper::vector< Edge > edgeArray;
+            helper::vector< core::topology::BaseMeshTopology::Edge > edgeArray;
             helper::vector< Index > edgeIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
@@ -702,7 +702,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                 Index es = eAdd->edgeIndexArray[ei];
                 eS2D[es] = core::topology::Topology::InvalidID;
                 bool inDst = true;
-                Edge data = apply_map(eAdd->edgeArray[ei], pS2D);
+                core::topology::BaseMeshTopology::Edge data = apply_map(eAdd->edgeArray[ei], pS2D);
                 for (unsigned int i=0; i<data.size() && inDst; ++i)
                     if (data[i] == core::topology::Topology::InvalidID)
                         inDst = false;
@@ -833,7 +833,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             //toTriangleMod->addTrianglesProcess(tAdd->triangleArray);
             //toTriangleMod->addTrianglesWarning(tAdd->getNbAddedTriangles(), tAdd->triangleArray, tAdd->triangleIndexArray, tAdd->ancestorsList, tAdd->coefs);
             //toTriangleMod->propagateTopologicalChanges();
-            helper::vector< Triangle > triangleArray;
+            helper::vector< core::topology::BaseMeshTopology::Triangle > triangleArray;
             helper::vector< Index > triangleIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
@@ -851,7 +851,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                 Index ts = tAdd->triangleIndexArray[ti];
                 tS2D[ts] = core::topology::Topology::InvalidID;
                 bool inDst = true;
-                Triangle data = apply_map(tAdd->triangleArray[ti], pS2D);
+                core::topology::BaseMeshTopology::Triangle data = apply_map(tAdd->triangleArray[ti], pS2D);
                 for (unsigned int i=0; i<data.size() && inDst; ++i)
                     if (data[i] == core::topology::Topology::InvalidID)
                         inDst = false;

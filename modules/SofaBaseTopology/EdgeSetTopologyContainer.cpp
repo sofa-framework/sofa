@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -137,7 +137,7 @@ void EdgeSetTopologyContainer::createEdgeSetArray()
 #endif
 }
 
-const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
+const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
     if(!hasEdges() && getNbPoints()>0)
     {
@@ -176,7 +176,7 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
     return result;
 }
 
-const Edge EdgeSetTopologyContainer::getEdge (EdgeID i)
+const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i)
 {
     if(!hasEdges())
         createEdgeSetArray();
@@ -316,7 +316,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 }
 
 
-const VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
+const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -383,7 +383,7 @@ const VecEdgeID EdgeSetTopologyContainer::getConnectedElement(EdgeID elem)
 }
 
 
-const VecEdgeID EdgeSetTopologyContainer::getElementAroundElement(EdgeID elem)
+const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAroundElement(EdgeID elem)
 {
     VecEdgeID elems;
 
@@ -425,7 +425,7 @@ const VecEdgeID EdgeSetTopologyContainer::getElementAroundElement(EdgeID elem)
 }
 
 
-const VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID elems)
+const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID elems)
 {
     VecEdgeID elemAll;
     VecEdgeID elemTmp;
@@ -504,7 +504,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopolog
     return m_edgesAroundVertex;
 }
 
-const EdgesAroundVertex& EdgeSetTopologyContainer::getEdgesAroundVertex(PointID i)
+const EdgeSetTopologyContainer::EdgesAroundVertex& EdgeSetTopologyContainer::getEdgesAroundVertex(PointID i)
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {

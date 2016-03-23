@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -172,7 +172,7 @@ bool ImagePNG::load(std::string filename)
         png_read_update_info(PNG_reader, PNG_info);
         bit_depth = png_get_bit_depth(PNG_reader, PNG_info);
         channels = png_get_channels(PNG_reader, PNG_info);
-        color_type = png_get_color_type(PNG_reader, PNG_info);
+//        color_type = png_get_color_type(PNG_reader, PNG_info);
 
 #ifndef NDEBUG
         std::cout << "Converted PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels<<std::endl;

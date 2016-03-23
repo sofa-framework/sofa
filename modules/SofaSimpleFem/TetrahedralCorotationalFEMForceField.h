@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,7 +55,6 @@ namespace component
 namespace forcefield
 {
 
-using sofa::helper::vector;
 
 
 
@@ -141,8 +140,8 @@ protected:
     /// @{
 
     typedef std::pair<int,Real> Col_Value;
-    typedef vector< Col_Value > CompressedValue;
-    typedef vector< CompressedValue > CompressedMatrix;
+    typedef helper::vector< Col_Value > CompressedValue;
+    typedef helper::vector< CompressedValue > CompressedMatrix;
     typedef unsigned int Index;
 
     CompressedMatrix _stiffnesses;
@@ -152,19 +151,19 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class TetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class TetrahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
                            topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
             ,ff(ff)
         {
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const topology::Tetrahedron &,
+        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const core::topology::BaseMeshTopology::Tetrahedron &,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
 
@@ -222,7 +221,7 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, topology::Tetrahedron& te);
+    void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -261,21 +260,13 @@ protected:
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3dTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<Vec3fTypes>;
+extern template class SOFA_SIMPLE_FEM_API TetrahedralCorotationalFEMForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALCOROTATIONALFEMFORCEFIELD_CPP)

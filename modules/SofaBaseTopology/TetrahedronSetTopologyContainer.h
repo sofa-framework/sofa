@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,26 +38,7 @@ namespace topology
 {
 class TetrahedronSetTopologyModifier;
 
-using core::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID			         PointID;
-typedef BaseMeshTopology::EdgeID			            EdgeID;
-typedef BaseMeshTopology::TriangleID		         TriangleID;
-typedef BaseMeshTopology::TetraID			         TetraID;
-typedef BaseMeshTopology::Edge				         Edge;
-typedef BaseMeshTopology::Triangle			         Triangle;
-typedef BaseMeshTopology::Tetra				         Tetra;
-typedef BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
-typedef BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
-typedef BaseMeshTopology::TetrahedraAroundEdge		TetrahedraAroundEdge;
-typedef BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron		   EdgesInTetrahedron;
-typedef BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
-
-typedef Tetra			Tetrahedron;
-typedef EdgesInTetrahedron		EdgesInTetrahedron;
-typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
-typedef sofa::helper::vector<TetraID>         VecTetraID;
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
 class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
@@ -67,9 +48,25 @@ class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyContainer : public TriangleSe
 public:
     SOFA_CLASS(TetrahedronSetTopologyContainer,TriangleSetTopologyContainer);
 
+
+    typedef core::topology::BaseMeshTopology::PointID			         PointID;
+    typedef core::topology::BaseMeshTopology::EdgeID			            EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID		         TriangleID;
+    typedef core::topology::BaseMeshTopology::TetraID			         TetraID;
+    typedef core::topology::BaseMeshTopology::Edge				         Edge;
+    typedef core::topology::BaseMeshTopology::Triangle			         Triangle;
+    typedef core::topology::BaseMeshTopology::Tetra				         Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra			   SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge		TetrahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron		   EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
+
+
     typedef Tetra			Tetrahedron;
-    typedef EdgesInTetrahedron		EdgesInTetrahedron;
-    typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
+    typedef sofa::helper::vector<TetraID>         VecTetraID;
+
 protected:
     TetrahedronSetTopologyContainer();
 

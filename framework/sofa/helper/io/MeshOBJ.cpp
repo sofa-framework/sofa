@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,6 +26,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sstream>
 
 namespace sofa
@@ -297,6 +298,11 @@ void MeshOBJ::readMTL(const char* filename)
                     break;
                 }
                 case 's':
+                    if( !mat )
+                    {
+                       msg_error("MeshOBJ") << "readMTL 's' no material";
+                       break;
+                    }
                     if( fscanf(file, "%f", &mat->shininess) == EOF)
                         std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     // wavefront shininess is from [0, 1000], so scale for OpenGL
@@ -320,18 +326,33 @@ void MeshOBJ::readMTL(const char* filename)
                 switch (buf[1])
                 {
                 case 'd':
+                    if( !mat )
+                    {
+                       msg_error("MeshOBJ") << "readMTL 'd' no material";
+                       break;
+                    }
                     if( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
                         std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useDiffuse = true;
                     /*std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<'*/ /*'<<mat->diffuse[2]<<std::endl;*/
                     break;
                 case 's':
+                    if( !mat )
+                    {
+                       msg_error("MeshOBJ") << "readMTL 's' no material";
+                       break;
+                    }
                     if( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
                         std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useSpecular = true;
                     /*std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<'*/ /*'<<mat->specular[2]<<std::endl;*/
                     break;
                 case 'a':
+                    if( !mat )
+                    {
+                       msg_error("MeshOBJ") << "readMTL 'a' no material";
+                       break;
+                    }
                     if( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
                         std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useAmbient = true;
@@ -352,6 +373,11 @@ void MeshOBJ::readMTL(const char* filename)
                 break;
             case 'd':
             case 'T':
+                if( !mat )
+                {
+                   msg_error("MeshOBJ") << "readMTL 'T' no material";
+                   break;
+                }
                 // transparency value
                 if( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
                     std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
@@ -359,6 +385,11 @@ void MeshOBJ::readMTL(const char* filename)
 
             case 'm':
             {
+                if( !mat )
+                {
+                   msg_error("MeshOBJ") << "readMTL 'm' no material";
+                   break;
+                }
                 //texture map
                 char charFilename[128] = {0};
                 if (fgets(charFilename, sizeof(charFilename), file)==NULL)
@@ -381,6 +412,11 @@ void MeshOBJ::readMTL(const char* filename)
             break;
             case 'b':
             {
+                if( !mat )
+                {
+                   msg_error("MeshOBJ") << "readMTL 'b' no material";
+                   break;
+                }
                 //bump mapping texture map
                 char charFilename[128] = {0};
                 if (fgets(charFilename, sizeof(charFilename), file)==NULL)

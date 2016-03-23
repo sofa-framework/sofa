@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -102,7 +102,7 @@ public:
 
 private:
 
-    vector<Triplet> incoming;             ///< Scheduled additions
+    helper::vector<Triplet> incoming;             ///< Scheduled additions
 
 
 public:
@@ -297,7 +297,7 @@ public:
     {
         compress();
 #ifdef _OPENMP
-        result = linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix );
+        result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
 #else
         result = compressedMatrix * data;
 #endif

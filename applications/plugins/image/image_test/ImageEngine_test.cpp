@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -371,7 +371,8 @@ struct ImageDataEngine_test : public DataEngine_test<DataEngineType>
                 defaulttype::BaseImage* img = static_cast<defaulttype::BaseImage*>( data->beginEditVoidPtr() );
 //                std::cerr<<data->getName()<<" is a Data<Image>\n";
                 // allocate input
-                img->setDimensions( defaulttype::BaseImage::imCoord(1,1,1,1,1) );
+                img->setDimensions( defaulttype::BaseImage::imCoord(2,2,2,1,1) );
+                img->fill(1.0);
                 data->endEditVoidPtr();
             }
         }

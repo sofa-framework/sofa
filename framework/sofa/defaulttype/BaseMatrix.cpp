@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -275,7 +276,7 @@ public:
     template <class Real, class M, class V1, class V2>
     static inline void opDynamicRealDefault(const M* mat, V1& result, const V2& v, Index NL, Index NC, BaseMatrix::MatrixCategory /*category*/)
     {
-        std::cout << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." << std::endl;
+        msg_warning("BaseMatrix") << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized.";
         opFull(mat, result, v);
     }
 
@@ -463,7 +464,7 @@ void BaseMatrix::opPMulTV(double* result, const double* v) const
 /// Multiply the transposed matrix by matrix m and store the result in matrix result
 void BaseMatrix::opMulTM(BaseMatrix * /*result*/,BaseMatrix * /*m*/) const
 {
-    std::cerr <<"WARNING : BASEMATRIX::opMulTM not yet implemented"<<std::endl;
+    msg_warning("BaseMatrix") <<"opMulTM not yet implemented";
 }
 
 

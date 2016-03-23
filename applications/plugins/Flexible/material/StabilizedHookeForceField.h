@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/StabilizedHookeMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -38,12 +37,14 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply Hooke's Law for isotropic homogeneous incompressible materials from principal stretches.
   * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12
   *
   * The energy is : mu.sum_i((Ui-1)^2) + lambda/2(J-1)^2
+  *
+  @author Matthieu Nesme
+
 */
 
 template <class _DataTypes>
@@ -59,8 +60,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > _youngModulus;
-    Data<vector<Real> > _poissonRatio;
+    Data<helper::vector<Real> > _youngModulus;
+    Data<helper::vector<Real> > _poissonRatio;
     //@}
 
     virtual void reinit()
@@ -78,22 +79,14 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulus.isDirty() || _poissonRatio.isDirty()) reinit();
-        }
-    }
 
 protected:
     StabilizedHookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , _youngModulus(initData(&_youngModulus,vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
-        , _poissonRatio(initData(&_poissonRatio,vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
+        , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
+        , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~StabilizedHookeForceField()     {    }

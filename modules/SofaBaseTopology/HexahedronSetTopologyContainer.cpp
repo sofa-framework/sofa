@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -438,7 +438,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
     }
 }
 
-const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
+const sofa::helper::vector<HexahedronSetTopologyContainer::Hexahedron> &HexahedronSetTopologyContainer::getHexahedronArray()
 {
     if(!hasHexahedra() && getNbPoints()>0)
     {
@@ -518,7 +518,7 @@ int HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, P
         return -1;
 }
 
-const Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
+const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
 {
     if(!hasHexahedra())
         createHexahedronSetArray();
@@ -562,7 +562,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &HexahedronSetT
     return m_hexahedraAroundQuad;
 }
 
-const sofa::helper::vector< EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
+const sofa::helper::vector< HexahedronSetTopologyContainer::EdgesInHexahedron> &HexahedronSetTopologyContainer::getEdgesInHexahedronArray()
 {
     if(!hasEdgesInHexahedron())
         createEdgesInHexahedronArray();
@@ -570,14 +570,14 @@ const sofa::helper::vector< EdgesInHexahedron> &HexahedronSetTopologyContainer::
     return m_edgesInHexahedron;
 }
 
-Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const EdgeID i) const
+HexahedronSetTopologyContainer::Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const EdgeID i) const
 {
     assert(i<12);
     return Edge (edgesInHexahedronArray[i][0], edgesInHexahedronArray[i][1]);
 }
 
 
-Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) const
+HexahedronSetTopologyContainer::Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) const
 {
     assert(i<6);
     return Quad (quadsInHexahedronArray[i][0],
@@ -601,7 +601,7 @@ Quad HexahedronSetTopologyContainer::getLocalQuadsInHexahedron (const QuadID i) 
 	 bi[2]=(li&4)/4;
 	return bi;
  }
-QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID)
+QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID)
 {
     assert(_hexaID < d_hexahedron.getValue().size());
     assert(_quadID<6);
@@ -642,7 +642,7 @@ QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID,
 }
 
 
-const sofa::helper::vector< QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
+const sofa::helper::vector< QuadSetTopologyContainer::QuadsInHexahedron> &HexahedronSetTopologyContainer::getQuadsInHexahedronArray()
 {
     if(!hasQuadsInHexahedron())
         createQuadsInHexahedronArray();
@@ -680,7 +680,7 @@ const sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getH
     return m_hexahedraAroundQuad[i];
 }
 
-const EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(const QuadID i)
+const QuadSetTopologyContainer::EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(const QuadID i)
 {
     if(!hasEdgesInHexahedron())
         createEdgesInHexahedronArray();
@@ -690,7 +690,7 @@ const EdgesInHexahedron &HexahedronSetTopologyContainer::getEdgesInHexahedron(co
     return m_edgesInHexahedron[i];
 }
 
-const QuadsInHexahedron &HexahedronSetTopologyContainer::getQuadsInHexahedron(const QuadID i)
+const QuadSetTopologyContainer::QuadsInHexahedron &HexahedronSetTopologyContainer::getQuadsInHexahedron(const QuadID i)
 {
     if(!hasQuadsInHexahedron())
         createQuadsInHexahedronArray();
@@ -772,7 +772,7 @@ int HexahedronSetTopologyContainer::getQuadIndexInHexahedron(const QuadsInHexahe
         return -1;
 }
 
-HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForModification(const EdgeID i)
+HexahedronSetTopologyContainer::HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForModification(const EdgeID i)
 {
     if(!hasHexahedraAroundEdge())
         createHexahedraAroundEdgeArray();
@@ -782,7 +782,7 @@ HexahedraAroundEdge &HexahedronSetTopologyContainer::getHexahedraAroundEdgeForMo
     return m_hexahedraAroundEdge[i];
 }
 
-HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexForModification(const PointID i)
+HexahedronSetTopologyContainer::HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexForModification(const PointID i)
 {
     if(!hasHexahedraAroundVertex())
         createHexahedraAroundVertexArray();
@@ -792,7 +792,7 @@ HexahedraAroundVertex &HexahedronSetTopologyContainer::getHexahedraAroundVertexF
     return m_hexahedraAroundVertex[i];
 }
 
-HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuadForModification(const QuadID i)
+HexahedronSetTopologyContainer::HexahedraAroundQuad &HexahedronSetTopologyContainer::getHexahedraAroundQuadForModification(const QuadID i)
 {
     if(!hasHexahedraAroundQuad())
         createHexahedraAroundQuadArray();
@@ -957,7 +957,7 @@ unsigned int HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 }
 
 
-const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
+const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
 {
     if(!hasHexahedraAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -1024,7 +1024,7 @@ const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
 }
 
 
-const VecHexaID HexahedronSetTopologyContainer::getElementAroundElement(HexaID elem)
+const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getElementAroundElement(HexaID elem)
 {
     VecHexaID elems;
 
@@ -1066,7 +1066,7 @@ const VecHexaID HexahedronSetTopologyContainer::getElementAroundElement(HexaID e
 }
 
 
-const VecHexaID HexahedronSetTopologyContainer::getElementAroundElements(VecHexaID elems)
+const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::getElementAroundElements(VecHexaID elems)
 {
     VecHexaID elemAll;
     VecHexaID elemTmp;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -110,7 +110,7 @@ public:
     bool is_leaf;
     bool internal;
     TriangleOctreeRoot *tm;
-    vector < int >objects;
+    helper::vector < int >objects;
     TriangleOctree *childVec[8];
 
     ~TriangleOctree ();
@@ -131,7 +131,7 @@ public:
     int trace (defaulttype::Vector3 origin, defaulttype::Vector3 direction, traceResult &result);
 
     /// Find all triangles intersecting the given ray
-    void traceAll (defaulttype::Vector3 origin, defaulttype::Vector3 direction, vector<traceResult>& results);
+    void traceAll (defaulttype::Vector3 origin, defaulttype::Vector3 direction, helper::vector<traceResult>& results);
 
     /// Find all triangles intersecting the given ray
     void traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, std::set<int>& results);
@@ -161,7 +161,7 @@ protected:
             const defaulttype::Vector3 & direction,traceResult &result);
 
     void allTriangles (const defaulttype::Vector3 & origin,
-            const defaulttype::Vector3 & direction, vector<traceResult>& results);
+            const defaulttype::Vector3 & direction, helper::vector<traceResult>& results);
 
     void allTriangles (const defaulttype::Vector3 & origin,
             const defaulttype::Vector3 & direction, std::set<int>& results);

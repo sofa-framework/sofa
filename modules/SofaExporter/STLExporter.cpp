@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,7 +79,7 @@ void STLExporter::init()
     context->get(topology, sofa::core::objectmodel::BaseContext::Local);
     context->get(mstate, sofa::core::objectmodel::BaseContext::Local);
     context->get(vmodel, sofa::core::objectmodel::BaseContext::Local);
-    
+
     // Test if the position has not been modified
     if(!m_position.isSet())
     {
@@ -120,6 +120,7 @@ void STLExporter::init()
 void STLExporter::writeSTL()
 {
     std::string filename = stlFilename.getFullPath();
+
     if (maxStep)
     {
         std::ostringstream oss;
@@ -139,11 +140,11 @@ void STLExporter::writeSTL()
         return;
     }
     
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Triangle > > > triangleIndices = m_triangle;  
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Quad > > > quadIndices = m_quad;  
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
     
-    vector< sofa::component::topology::Triangle > vecTri;
+    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
         
     if(positionIndices.empty())
     {
@@ -159,7 +160,7 @@ void STLExporter::writeSTL()
     }
     else if(!quadIndices.empty())
     {
-        sofa::component::topology::Triangle tri;
+        core::topology::BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)
@@ -233,11 +234,11 @@ void STLExporter::writeSTLBinary()
         return;
     }
     
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Triangle > > > triangleIndices = m_triangle;  
-    helper::ReadAccessor< Data< vector< sofa::component::topology::Quad > > > quadIndices = m_quad;  
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
+    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
     
-    vector< sofa::component::topology::Triangle > vecTri;
+    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
     
     if(positionIndices.empty())
     {
@@ -253,7 +254,7 @@ void STLExporter::writeSTLBinary()
     }
     else if(!quadIndices.empty())
     {
-        sofa::component::topology::Triangle tri;
+        core::topology::BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)
@@ -352,6 +353,22 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         stepCounter++;
         if(stepCounter % maxStep == 0)
+        {
+            if(m_fileFormat.getValue())
+                writeSTLBinary();
+            else
+                writeSTL();
+        }
+    }
+
+
+    if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
+    {
+        maxStep = 0; // to keep the name of the file set as input
+
+        sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
+
+        if (guiEvent->getValueName().compare("STLExport") == 0)
         {
             if(m_fileFormat.getValue())
                 writeSTLBinary();

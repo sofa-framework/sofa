@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,7 +93,7 @@ public:
     typedef defaulttype::Vec<24, Real> Displacement;		///< the displacement vector
 
     typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
-    typedef vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
+    typedef helper::vector<MaterialStiffness> VecMaterialStiffness;  ///< a vector of material stiffness matrices
     typedef defaulttype::Mat<24, 24, Real> ElementMass;
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
@@ -203,18 +203,18 @@ public:
     /// container that stotes all requires information for each hexahedron
     topology::HexahedronData<sofa::helper::vector<HexahedronInformation> > hexahedronInfo;
 
-    class HFFHexahedronHandler : public topology::TopologyDataHandler<topology::Hexahedron,sofa::helper::vector<HexahedronInformation> >
+    class HFFHexahedronHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >
     {
     public:
         typedef typename HexahedralFEMForceField<DataTypes>::HexahedronInformation HexahedronInformation;
 
         HFFHexahedronHandler(HexahedralFEMForceField<DataTypes>* ff, topology::HexahedronData<sofa::helper::vector<HexahedronInformation> >* data )
-            :topology::TopologyDataHandler<topology::Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
+            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Hexahedron,sofa::helper::vector<HexahedronInformation> >(data)
             ,ff(ff)
         {
         }
 
-        void applyCreateFunction(unsigned int, HexahedronInformation &t, const topology::Hexahedron &,
+        void applyCreateFunction(unsigned int, HexahedronInformation &t, const core::topology::BaseMeshTopology::Hexahedron &,
                 const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
     protected:
         HexahedralFEMForceField<DataTypes>* ff;

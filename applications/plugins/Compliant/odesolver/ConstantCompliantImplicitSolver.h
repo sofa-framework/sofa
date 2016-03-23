@@ -12,8 +12,11 @@ namespace odesolver {
 			
 
 
-/** An CompliantImplicitSolver where the assembly is only perform at the first step
+/** An CompliantImplicitSolver where the assembly is only performed at the first step
   @warning: only external forces can interact with a pre-assembled system
+
+  @author Matthieu Nesme
+  @date 2014
 */
 
 

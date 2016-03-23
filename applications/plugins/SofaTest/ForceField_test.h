@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -174,10 +174,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         // check force
         typename DOF::ReadVecDeriv f= this->dof->readForces();
         if(debug){
-            cout << "run_test,          x = " << x << endl;
-            cout << "                   v = " << v << endl;
-            cout << "            expected f = " << ef << endl;
-            cout << "            actual f = " <<  f << endl;
+            std::cout << "run_test,          x = " << x << std::endl;
+            std::cout << "                   v = " << v << std::endl;
+            std::cout << "            expected f = " << ef << std::endl;
+            std::cout << "            actual f = " <<  f << std::endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
 
@@ -229,10 +229,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
             double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
             if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
-                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorMax*this->epsilon() << ")" << endl
-                            << "dPotentialEnergy is " << differencePotentialEnergy << endl
-                            << "-dX.F is " << expectedDifferencePotentialEnergy << endl
-                            << "Failed seed number = " << BaseSofa_test::seed << endl;
+                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorMax*this->epsilon() << ")" << std::endl
+                            << "dPotentialEnergy is " << differencePotentialEnergy << std::endl
+                            << "-dX.F is " << expectedDifferencePotentialEnergy << std::endl
+                            << "Failed seed number = " << BaseSofa_test::seed << std::endl;
             }
         }
 
@@ -248,7 +248,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         copyFromData( dF, dof->readForces() );
 
         if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dF differs from change of force" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
+            ADD_FAILURE()<<"dF differs from change of force" << std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;
         }
 
         // check stiffness matrix: compare its product with dx to actual force change
@@ -264,17 +264,17 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         modeling::Vector Kdx = K * dx;
         if( debug ){
-            cout << "                  dX = " << dX << endl;
-            cout << "                newF = " << newF << endl;
-            cout << "     change of force = " << changeOfForce << endl;
-            cout << "           addDforce = " << dF << endl;
-            cout << "                 Kdx = " << Kdx.transpose() << endl;
+            std::cout << "                  dX = " << dX << std::endl;
+            std::cout << "                newF = " << newF << std::endl;
+            std::cout << "     change of force = " << changeOfForce << std::endl;
+            std::cout << "           addDforce = " << dF << std::endl;
+            std::cout << "                 Kdx = " << Kdx.transpose() << std::endl;
         }
 
         modeling::Vector df;
         data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force"<< endl << "Failed seed number = " << BaseSofa_test::seed << endl;;
+            ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;;
 
 
 

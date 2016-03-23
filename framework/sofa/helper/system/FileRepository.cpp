@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,6 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -230,10 +232,17 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
         if (findFileIn(filename, *it)) return true;
     if (errlog)
     {
-        (*errlog) << "File "<<filename<<" NOT FOUND in "<<basedir;
+        // hack to use logging rather than directly writing in std::cerr/std::cout
+        // @todo do something cleaner
+
+        std::stringstream tmplog;
+        tmplog << "File "<<filename<<" NOT FOUND in "<<basedir;
         for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
-            (*errlog) << ':'<<*it;
-        (*errlog)<<std::endl;
+            tmplog << ':'<<*it;
+        if( errlog==&std::cerr || errlog==&std::cout)
+                msg_error("FileRepository") << tmplog.str();
+        else
+            (*errlog)<<tmplog.str()<<std::endl;
     }
     return false;
 }

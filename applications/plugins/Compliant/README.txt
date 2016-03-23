@@ -12,3 +12,15 @@ See also classes sofa::component::odesolver::ComplianceSolver and sofa::core::be
 
 A test suite is available, see page Compliant plugin test suite
 
+
+
+
+
+TODO: (what is missing)
+- complex projective constraints (only partial identity = fixed constaints are handled now)
+                    - solution1: the easiest: wait for Eigen to implement a sparse LDLT on semi-definite matrices
+                    - solution2: the cleanest: the projective constraint component gives the projection matrice to the non-null space (rectangular matrix that reduces the nb of dofs, based on a svd of the constraint Jacobian?)
+                    - solution3: the fast and dirty: add a numerical regularization in the constraint Jacobian
+- constraint solver as post-process of a free dynamics (new numerical solver)
+- handles sub-parts of the dynamics with different numerical solvers (=> having several Response components handling a sub-graph)
+- specialized constraints with reparametrization (around 0 in the free directions) : Hinge, Slider...

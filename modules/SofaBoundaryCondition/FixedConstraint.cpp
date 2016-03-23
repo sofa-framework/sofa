@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,24 +114,33 @@ void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpara
 template <>
 void FixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
+    vparams->drawTool()->setLightingEnabled(false);
+    sofa::defaulttype::Vec4f color (1,0.5,0.5,1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     if( f_fixAll.getValue()==true )
+    {
         for (unsigned i=0; i<x.size(); i++ )
-            gl::glVertexT(x[i].getCenter());
+            vertices.push_back(sofa::defaulttype::Vector3(x[i].getCenter()[0],
+                                                          x[i].getCenter()[1],
+                                                          0.0));
+    }
     else
+    {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[*it].getCenter());
-    glEnd();
-    glPointSize(1);
-#endif /* SOFA_NO_OPENGL */
+            vertices.push_back(sofa::defaulttype::Vector3(x[*it].getCenter()[0],
+                                                          x[*it].getCenter()[1],
+                                                          0.0));
+    }
+
+    vparams->drawTool()->drawPoints(vertices, 10, color);
+    vparams->drawTool()->restoreLastState();
 }
 #endif
 
@@ -160,27 +169,35 @@ void FixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vpara
 template <>
 void FixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
+    vparams->drawTool()->setLightingEnabled(false);
+    sofa::defaulttype::Vec4f color (1,0.5,0.5,1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     if( f_fixAll.getValue()==true )
+    {
         for (unsigned i=0; i<x.size(); i++ )
-            gl::glVertexT(x[i].getCenter());
+            vertices.push_back(sofa::defaulttype::Vector3(x[i].getCenter()[0],
+                                                          x[i].getCenter()[1],
+                                                          0.0));
+    }
     else
+    {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[*it].getCenter());
-    glEnd();
-    glPointSize(1);
-#endif /* SOFA_NO_OPENGL */
+            vertices.push_back(sofa::defaulttype::Vector3(x[*it].getCenter()[0],
+                                                          x[*it].getCenter()[1],
+                                                          0.0));
+    }
+
+    vparams->drawTool()->drawPoints(vertices, 10, color);
+    vparams->drawTool()->restoreLastState();
 }
 #endif
-
-
 
 } // namespace projectiveconstraintset
 

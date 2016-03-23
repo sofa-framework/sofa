@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -300,7 +300,7 @@ public:
         /// Write an OpenGL matrix encoding the transformation of the coordinate system of the child wrt the coordinate system of the parent.
         void writeOpenGlMatrix( GLdouble *m ) const;
         /// Draw the axes of the child coordinate system in the parent coordinate system
-        void glDraw() const;
+        // void glDraw() const;
         /// Print the origin of the child in the parent coordinate system and the quaternion defining the orientation of the child wrt the parent
         inline friend std::ostream& operator << (std::ostream& out, const Transform& t )
         {

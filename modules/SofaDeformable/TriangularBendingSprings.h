@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -128,20 +128,20 @@ protected:
 
     sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<topology::Edge, vector<EdgeInformation> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
     {
     public:
         typedef typename TriangularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
         TriangularBSEdgeHandler(TriangularBendingSprings<DataTypes>* _ff, topology::EdgeData<helper::vector<EdgeInformation> >* _data)
-            : topology::TopologyDataHandler<topology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
+            : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
                 EdgeInformation &ei,
-                const sofa::component::topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
         void applyTriangleCreation(const helper::vector<unsigned int> &triangleAdded,
-                const helper::vector<topology::Triangle> & ,
+                const helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
                 const helper::vector<helper::vector<unsigned int> > & ,
                 const helper::vector<helper::vector<double> > &);
 
@@ -151,7 +151,7 @@ protected:
 
         void applyPointRenumbering(const helper::vector<unsigned int> &pointToRenumber);
 
-        using topology::TopologyDataHandler<topology::Edge, vector<EdgeInformation> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

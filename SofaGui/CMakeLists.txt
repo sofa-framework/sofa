@@ -121,15 +121,6 @@ if(NOT SOFA_NO_OPENGL)
                 set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
                 add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.6.3/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
             endif()
-        
-            ## EdViewer
-            option(SOFAGUI_EDITORVIEWER "Compile the QGLViewer Specific to mesh edition for the Qt GUI" OFF)
-            if(SOFAGUI_EDITORVIEWER)
-                set(SOFA_GUI_EDITORVIEWER 1) # cmakedefine
-                if(NOT SOFAGUI_QGLVIEWER)
-                 add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.6.3/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
-                endif()
-            endif()
 
            ## QWT
            option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")

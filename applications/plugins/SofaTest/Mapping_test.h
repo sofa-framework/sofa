@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -44,13 +44,10 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/helper/Logger.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa {
-
-using std::cout;
-using std::endl;
-using helper::Logger;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -233,10 +230,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
-        if( !(flags & TEST_getJs) )          Logger::mainlog( Logger::Warning, "getJs is not tested", "MappingTest" );
-        if( !(flags & TEST_getK) )           Logger::mainlog( Logger::Warning, "getK is not tested", "MappingTest" );
-        if( !(flags & TEST_applyJT_matrix) ) Logger::mainlog( Logger::Warning, "applyJT on matrices is not tested", "MappingTest" );
-        if( !(flags & TEST_applyDJT) )       Logger::mainlog( Logger::Warning, "applyDJT is not tested", "MappingTest" );
+        if( !(flags & TEST_getJs) )          msg_warning("MappingTest") << "getJs is not tested";
+        if( !(flags & TEST_getK) )           msg_warning("MappingTest") << "getK is not tested";
+        if( !(flags & TEST_applyJT_matrix) ) msg_warning("MappingTest") << "applyJT on matrices is not tested";
+        if( !(flags & TEST_applyDJT) )       msg_warning("MappingTest") << "applyDJT is not tested";
 
 
         const Real errorThreshold = this->epsilon()*errorMax;
@@ -274,7 +271,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
-                              <<  " difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << endl;
+                              <<  " difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << std::endl;
                 succeed = false;
             }
         }
@@ -350,17 +347,17 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             J->addMultTranspose(jfc,fc);
             if( this->vectorMaxDiff(jfc,fp)>errorThreshold ){
                 succeed = false;
-                ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,fp) << ")" << endl
-                              << "jfc = " << jfc << endl<<" fp = " << fp << endl;
+                ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,fp) << ")" << std::endl
+                              << "jfc = " << jfc << std::endl<<" fp = " << fp << std::endl;
             }
             // ================ test getJs()
             // check that J.vp = vc
             if( this->vectorMaxDiff(Jv,vc)>errorThreshold ){
                 succeed = false;
-                cout<<"vp = " << vp << endl;
-                cout<<"Jvp = " << Jv << endl;
-                cout<<"vc  = " << vc << endl;
-                ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
+                std::cout<<"vp = " << vp << std::endl;
+                std::cout<<"Jvp = " << Jv << std::endl;
+                std::cout<<"vc  = " << vc << std::endl;
+                ADD_FAILURE() << "getJs() test failed"<<std::endl<<"vp = " << vp << std::endl<<"Jvp = " << Jv << std::endl <<"vc  = " << vc << std::endl;
             }
         }
 
@@ -412,9 +409,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         if( this->vectorMaxAbs(difference(dxc,vc))>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<<this->vectorMaxAbs(difference(dxc,vc))<<" should be less than  " << errorThreshold << endl
-                          << "position change = " << dxc << endl
-                          << "velocity        = " << vc << endl;
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) "<<this->vectorMaxAbs(difference(dxc,vc))<<" should be less than  " << errorThreshold << std::endl
+                          << "position change = " << dxc << std::endl
+                          << "velocity        = " << vc << std::endl;
         }
 
 
@@ -439,9 +436,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << endl
-                    << "dfp    = " << dfp << endl
-                    << "fp2-fp = " << fp12 << endl;
+                ADD_FAILURE() << "applyDJT test failed" << std::endl
+                    << "dfp    = " << dfp << std::endl
+                    << "fp2-fp = " << fp12 << std::endl;
             }
         }
 
@@ -472,9 +469,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // check that K.vp = dfp
             if( this->vectorMaxDiff(Kv,fp12)>errorThreshold*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << endl
-                              << "Kv    = " << Kv << endl
-                              << "dfp = " << fp12 << endl;
+                ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
+                              << "Kv    = " << Kv << std::endl
+                              << "dfp = " << fp12 << std::endl;
             }
         }
 
@@ -512,7 +509,7 @@ protected:
 
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
     template<class EigenSparseMatrixType>
-    static EigenSparseMatrixType* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    static EigenSparseMatrixType* getMatrix(const helper::vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
         if( !matrices ){
             ADD_FAILURE()<< "Matrix list is NULL (API for assembly is not implemented)";

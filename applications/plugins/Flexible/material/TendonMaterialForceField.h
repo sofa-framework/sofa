@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,8 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/TendonMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 namespace sofa
 {
 namespace component
@@ -38,7 +36,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply Blemker Material's Law for Tendon materials.
     from 2005 paper: "A 3D model of Muscle reveals the causes of nonuniform strains in the biceps brachii"
@@ -57,9 +54,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_L1;
-    Data<vector<Real> > f_L2;
-    Data<vector<Real> > f_lambdaL;
+    Data<helper::vector<Real> > f_L1;
+    Data<helper::vector<Real> > f_L2;
+    Data<helper::vector<Real> > f_lambdaL;
     //@}
 
     virtual void reinit()
@@ -75,23 +72,15 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_L1.isDirty() || f_L2.isDirty() || f_lambdaL.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
     TendonMaterialForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_L1(initData(&f_L1,vector<Real>((int)1,(Real)2.7E6),"L1",""))
-        , f_L2(initData(&f_L2,vector<Real>((int)1,(Real)46.4),"L2",""))
-        , f_lambdaL(initData(&f_lambdaL,vector<Real>((int)1,(Real)1.03),"lambdaL","stretch above which behavior becomes linear"))
+        , f_L1(initData(&f_L1,helper::vector<Real>((int)1,(Real)2.7E6),"L1",""))
+        , f_L2(initData(&f_L2,helper::vector<Real>((int)1,(Real)46.4),"L2",""))
+        , f_lambdaL(initData(&f_lambdaL,helper::vector<Real>((int)1,(Real)1.03),"lambdaL","stretch above which behavior becomes linear"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~TendonMaterialForceField()     {    }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -233,7 +233,7 @@ protected:
         }
 
         /// replace all the vertex indices with the given ones
-        void replaceIndices( const vector<unsigned> &newIndices )
+        void replaceIndices( const helper::vector<unsigned> &newIndices )
         {
             for(unsigned i=0; i<4; i++)
                 vid[i] = newIndices[vid[i]];
@@ -257,20 +257,20 @@ protected:
     /// The list of edge springs, one for each edge between two triangles
     sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > edgeSprings;
 
-    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<topology::Edge, vector<EdgeSpring> >
+    class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >
     {
     public:
         typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
         TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
-            : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
+            : sofa::component::topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
                 EdgeSpring &ei,
-                const sofa::component::topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const core::topology::BaseMeshTopology::Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
+                const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -280,7 +280,7 @@ protected:
 
         void applyPointRenumbering(const sofa::helper::vector<unsigned int> &pointToRenumber);
 
-        using topology::TopologyDataHandler<topology::Edge, vector<EdgeSpring> >::ApplyTopologyChange;
+        using topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeSpring> >::ApplyTopologyChange;
         /// Callback to add triangles elements.
         void ApplyTopologyChange(const core::topology::TrianglesAdded* /*event*/);
         /// Callback to remove triangles elements.

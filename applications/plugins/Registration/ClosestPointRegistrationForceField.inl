@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -380,17 +380,17 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
     unsigned int nb = this->closestPos.size();
     if (vparams->displayFlags().getShowForceFields())
     {
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                Vector3 point1 = DataTypes::getCPos(x[i]);
-                Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
+                defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
+                defaulttype::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
                 points.push_back(point1);
                 points.push_back(point2);
             }
 
-        const Vec<4,float> c(0,1,0.5,1);
+        const defaulttype::Vec<4,float> c(0,1,0.5,1);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
         else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
         else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
@@ -403,8 +403,8 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
         for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                Vector3 point1 = DataTypes::getCPos(x[i]);
-                Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
+                defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
+                defaulttype::Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
                 dists[i]=(point2-point1).norm();
             }
         Real max=0; for (unsigned int i=0; i<dists.size(); i++) if(max<dists[i]) max=dists[i];

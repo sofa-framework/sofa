@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,19 +38,6 @@ namespace topology
 {
 class TetrahedronSetTopologyContainer;
 
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TetraID TetraID;
-typedef BaseMeshTopology::Tetra Tetra;
-typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
-typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
-typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
-typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
-
-typedef Tetra Tetrahedron;
-typedef EdgesInTetrahedron EdgesInTetrahedron;
-typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 
 /**
 * A class that modifies the topology by adding and removing tetrahedra
@@ -59,6 +46,18 @@ class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyModifier : public TriangleSet
 {
 public:
     SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
+
+
+    typedef core::topology::BaseMeshTopology::TetraID TetraID;
+    typedef core::topology::BaseMeshTopology::Tetra Tetra;
+    typedef core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
+    typedef core::topology::BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
+    typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef core::topology::BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
+    typedef Tetra Tetrahedron;
+
 
     Data< bool > removeIsolated; ///< Controlled DOF index.
 protected:

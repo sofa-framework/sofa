@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -126,7 +126,7 @@ Real binomial(const size_t p, const size_t q) {
 	}
 }
 template <class Real>
-Real multinomial(const size_t n,vector<unsigned char> valArray)
+Real multinomial(const size_t n,helper::vector<unsigned char> valArray)
  {
 	
 	size_t i,ival,N;
@@ -157,7 +157,7 @@ Real multinomialVector(const sofa::helper::vector< sofa::defaulttype::Vec<N,unsi
 {
 	size_t i,j;
 	Real result=(Real)1;
-	vector<unsigned char> valArray;
+    helper::vector<unsigned char> valArray;
 	size_t totalDegree;
 	for (j=0;j<N;++j) {
 		valArray.clear();

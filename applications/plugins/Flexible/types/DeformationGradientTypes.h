@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,9 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using helper::vector;
-
 /** Local deformation state of a material object.
 Template parameters are used to define the spatial dimensions, the material dimensions, and the order.
 Order 1 corresponds to a traditional deformation gradient, while order 2 corresponds to an elaston.
@@ -70,7 +67,7 @@ struct DefGradientTypes
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
 
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Real> VecReal;
 
     /** Time derivative of a (generalized) deformation gradient, or other vector-like associated quantities, such as generalized forces.
     */
@@ -168,7 +165,7 @@ struct DefGradientTypes
 
     };
 
-    typedef vector<Deriv> VecDeriv;
+    typedef helper::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
@@ -183,7 +180,7 @@ struct DefGradientTypes
 
 //    void clear(){ v.clear(); b.clear(); for( unsigned int i = 0; i < material_dimensions; ++i) getF()[i][i] = (Real)1.0;}
 
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     static const char* Name();
 

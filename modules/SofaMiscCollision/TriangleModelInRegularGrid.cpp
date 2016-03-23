@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,8 +51,9 @@ namespace collision
 
 using namespace sofa::core::topology;
 using namespace sofa::defaulttype;
+using helper::vector;
 
-SOFA_DECL_CLASS ( TriangleInRegularGrid );
+SOFA_DECL_CLASS ( TriangleInRegularGrid )
 
 int TriangleModelInRegularGridClass = core::RegisterObject ( "collision model using a triangular mesh in a regular grid, as described in BaseMeshTopology" )
         .add< TriangleModelInRegularGrid >()

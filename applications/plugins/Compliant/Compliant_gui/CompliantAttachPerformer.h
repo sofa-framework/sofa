@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -41,7 +41,6 @@
 
 namespace sofa
 {
-using defaulttype::Vec;
 
 namespace gui
 {
@@ -86,7 +85,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
 
 
 
-    typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
+    typedef defaulttype::StdVectorTypes< defaulttype::Vec<1,Real>, defaulttype::Vec<1,Real>  >  DataTypes1;
 
 
     simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState

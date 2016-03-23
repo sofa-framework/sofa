@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,7 +44,9 @@ namespace linearsolver
 
 //#define DISPLAY_TIME
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver using the MINRES iterative algorithm
+/// @author Matthieu Nesme
+/// @date 2013
 template<class TMatrix, class TVector>
 class MinResLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix, TVector>
 {

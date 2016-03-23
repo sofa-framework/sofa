@@ -1,0 +1,34 @@
+<Node name="root" dt="0.0001" gravity="0 0 0" >
+    <VisualStyle displayFlags="showBehaviorModels"/>
+
+    <MeshObjLoader name="temperatureLoader" filename="mesh/beamTemperatures.obj" />
+    <RegularGrid name="grid" n="21 11 11"  p0="0 0 0" min="0 0 0" max="1 0.5 0.5" drawHexahedra="1" tags="geom"/>
+    <MechanicalObject template="Vec3d"  name="gridDOFs" tags="geom" />
+    <BoxROI name="box-dirac" box="-0.01 -0.01 -0.01 0.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
+    <BoxROI name="box-fixed" box="0.99 -0.01 -0.01 1.01 0.51 0.51" drawBoxes="1" position="@gridDOFs.position"/>
+
+    <Node name="Tetra" gravity="0 0 0" >
+        <TetrahedronSetTopologyContainer name="Container" tags="meca"/>
+        <TetrahedronSetTopologyModifier name="Modifier" tags="meca"/>
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" tags="meca"/>
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  tags="meca"/>
+        <Hexa2TetraTopologicalMapping name="default28" swapping="0" tags="meca"/>
+        <TriangleModel name="collisionmodel" />
+
+        <Node name="Temperature" gravity="0 0 0"  >
+            <EulerImplicitSolver name="Euler" firstOrder="1" tags="heat"/>
+            <CGLinearSolver name="CG" iterations="1000" tolerance="1.0e-10" threshold="1.0e-30" tags="heat" />
+            <MechanicalObject template="Vec1d" position="@../../temperatureLoader.position"  name="gridTemperature" bbox="0 0 0 0 0 0" tags="heat" />
+            <TetrahedronDiffusionFEMForceField template="Vec1d" name="DiffusionForceField" constantDiffusionCoefficient="1.0" tagMechanics="geom" tags="heat"/>
+            <DiagonalMass template="Vec1d" name="Mass" massDensity="1.0" tags="heat"/>
+            <LinearMovementConstraint template="Vec1d" keyTimes="0 998 999" movements="1 1 0" indices="@../../box-dirac.indices" />
+            <FixedConstraint indices="@../../box-fixed.indices" />
+
+            <!-- <Node name="Visu">
+                <TextureInterpolation template="Vec1d" name="EngineInterpolation"  input_states="@../gridTemperature.position"  input_coordinates="@../../raptorDOFs.position"  min_value="0.0"  max_value="1.0"  manual_scale="1"  drawPotentiels="0"  showIndicesScale="5e-05" />
+                <OglModel template="ExtVec3f" name="oglPotentiel"  texcoords="@EngineInterpolation.output_coordinates" texturename="textures/heatColor.bmp"  useVBO="0" scale3d="1000 1000 1000"  material="Default Diffuse 1 1 1 1 0.5 Ambient 1 1 1 1 0.3 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "/>
+                <IdentityMapping input="@../../../gridDOFs" output="@oglPotentiel" />
+            </Node> -->
+        </Node>
+    </Node>
+</Node>

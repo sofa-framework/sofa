@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ void DataFileName::updatePath()
     {
         fullpath = m_values[currentAspect()].getValue();
         if (!fullpath.empty())
-            helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+            helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
     }
 }
 
@@ -77,7 +77,7 @@ void DataFileNameVector::updatePath()
             }
             else
             {
-                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
+                helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr.ostringstream()) : &std::cerr));
             }
         }
 }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,12 +54,6 @@ namespace component
 namespace container
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Vector3;
-using defaulttype::Mat;
-using cimg_library::CImg;
-
 
 /// Default implementation does not compile
 template <int imageTypeLabel>
@@ -103,7 +97,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             if( !container->load() )
                 if( !container->loadCamera() )
                 {
-                    wimage->getCImgList().push_back(CImg<T>());
+                    wimage->getCImgList().push_back(cimg_library::CImg<T>());
                     container->serr << "no input image" << container->sendl;
                 }
     }
@@ -125,7 +119,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         {
             float voxsize[3];
             float translation[3]={0.,0.,0.}, rotation[3]={0.,0.,0.};
-            CImg<T> img = cimg_library::_load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
+            cimg_library::CImg<T> img = cimg_library::_load_gz_inr<T>(NULL, fname.c_str(), voxsize, translation, rotation);
             wimage->getCImgList().push_back(img);
 
             if (!container->transformIsSet)
@@ -134,7 +128,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
                 for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]= (Real)translation[i];
 
-                Mat<3,3,Real> R;
+                defaulttype::Mat<3,3,Real> R;
                 R = container->RotVec3DToRotMat3D(rotation);
                 helper::Quater< float > q; q.fromMatrix(R);
                 wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
@@ -159,7 +153,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 {
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
                     for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                    Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
+                    defaulttype::Mat<3,3,Real> R; for(unsigned int i=0;i<3;i++) for(unsigned int j=0;j<3;j++) R[i][j]=(Real)affine[3*i+j];
                     helper::Quater< Real > q; q.fromMatrix(R);
                     wtransform->getRotation()=q.toEulerVector() * (Real)180.0 / (Real)M_PI ;
                     wtransform->getOffsetT()=(Real)offsetT;
@@ -175,16 +169,16 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 if (!fileStream.is_open()) { container->serr << "Cannot open " << fname << container->sendl; return false; }
                 std::string str;
                 fileStream >> str;	char vtype[32]; fileStream.getline(vtype,32);
-                Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
+                defaulttype::Vec<3,unsigned int> dim;  fileStream >> str; fileStream >> dim;
                 if (!container->transformIsSet)
                 {
-                    Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
-                    Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
+                    defaulttype::Vec<3,double> translation; fileStream >> str; fileStream >> translation;        for(unsigned int i=0;i<3;i++) wtransform->getTranslation()[i]=(Real)translation[i];
+                    defaulttype::Vec<3,double> scale; fileStream >> str; fileStream >> scale;     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)scale[i];
                 }
                 fileStream.close();
 
                 std::string imgName (fname);  imgName.replace(imgName.find_last_of('.')+1,imgName.size(),"raw");
-                wimage->getCImgList().push_back(CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
+                wimage->getCImgList().push_back(cimg_library::CImg<T>().load_raw(imgName.c_str(),dim[0],dim[1],dim[2]));
             }
             else if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
                 wimage->getCImgList().load_cimg(fname.c_str());
@@ -195,7 +189,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
             {
                 float voxsize[3];
-                wimage->getCImgList().push_back(CImg<T>().load_analyze(fname.c_str(),voxsize));
+                wimage->getCImgList().push_back(cimg_library::CImg<T>().load_analyze(fname.c_str(),voxsize));
                 if (!container->transformIsSet)
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
                 readNiftiHeader(container, fname);
@@ -203,11 +197,11 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             else if (fname.find(".inr")!=std::string::npos)
             {
                 float voxsize[3];
-                wimage->getCImgList().push_back(CImg<T>().load_inr(fname.c_str(),voxsize));
+                wimage->getCImgList().push_back(cimg_library::CImg<T>().load_inr(fname.c_str(),voxsize));
                 if (!container->transformIsSet)
                     for(unsigned int i=0;i<3;i++) wtransform->getScale()[i]=(Real)voxsize[i];
             }
-            else wimage->getCImgList().push_back(CImg<T>().load(fname.c_str()));
+            else wimage->getCImgList().push_back(cimg_library::CImg<T>().load(fname.c_str()));
 
         if(!wimage->isEmpty()) container->sout << "Loaded image " << fname <<" ("<< wimage->getCImg().pixel_type() <<")"  << container->sendl;
         else return false;
@@ -446,9 +440,9 @@ public:
 protected:
 
 
-    Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
+    defaulttype::Mat<3,3,Real> RotVec3DToRotMat3D(float *rotVec)
     {
-        Mat<3,3,Real> rotMatrix;
+        defaulttype::Mat<3,3,Real> rotMatrix;
         float c, s, k1, k2;
         float TH_TINY = 0.00001f;
 
@@ -530,20 +524,20 @@ protected:
     }
 
 
-    void getCorners(Vec<8,Vector3> &c) // get image corners
+    void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
         const imCoord dim= rimage->getDimensions();
 
-        Vec<8,Vector3> p;
-        p[0]=Vector3(-0.5,-0.5,-0.5);
-        p[1]=Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        defaulttype::Vec<8,defaulttype::Vector3> p;
+        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
+        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
 
         raTransform rtransform(this->transform);
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
@@ -553,7 +547,7 @@ protected:
     {
         if( onlyVisible && !drawBB.getValue()) return;
 
-        Vec<8,Vector3> c;
+        defaulttype::Vec<8,defaulttype::Vector3> c;
         getCorners(c);
 
         Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
@@ -584,7 +578,7 @@ protected:
         glColor4fv(color);
         glLineWidth(2.0);
 
-        Vec<8,Vector3> c;
+        defaulttype::Vec<8,defaulttype::Vector3> c;
         getCorners(c);
 
         glBegin(GL_LINE_LOOP);	glVertex3d(c[0][0],c[0][1],c[0][2]); glVertex3d(c[1][0],c[1][1],c[1][2]); glVertex3d(c[3][0],c[3][1],c[3][2]); glVertex3d(c[2][0],c[2][1],c[2][2]);	glEnd ();

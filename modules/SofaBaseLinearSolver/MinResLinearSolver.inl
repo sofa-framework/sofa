@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,20 +86,14 @@ void MinResLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::M
 template<class TMatrix, class TVector>
 void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 {
-    const double& tol = f_tolerance.getValue();
+    const SReal& tol = f_tolerance.getValue();
     const unsigned& max_iter = f_maxIter.getValue();
 
 
-    std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<double>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
+    std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
+    sofa::helper::vector<SReal>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
     graph_error.clear();
     graph_error.push_back(1);
-
-    double eps(std::numeric_limits<double>::epsilon());
-    unsigned itn(0);
-    double Anorm(0.0);
-    double ynorm(0.0);
-    bool done(false);
 
     // Step 1
     /*
@@ -122,44 +116,33 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
     r1->eq( b, *r1, -1.0 );   //  r1 = b - r1;
 
 
-    double beta1(0.0);
-    beta1 = r1->dot( *r1 );
+    SReal beta1 = r1->dot( *r1 );
 
     // Test for an indefined preconditioner
     // If b = 0 exactly stop with x = x0.
-
-    if(beta1 < 0.0)
+    if( beta1 > 0 )
     {
-        done = true;
-    }
-    else
-    {
-        if(beta1 == 0.0)
-        {
-            done = true;
-        }
-        else
-        {
-            beta1 = sqrt(beta1); // Normalize y to get v1 later
+        beta1 = sqrt(beta1); // Normalize y to get v1 later
+        y = *r1;
 
-            y = *r1;
-        }
-    }
 
-    // TODO: port symmetry checks for A
+        // TODO: port symmetry checks for A
 
-    // STEP 2
-    /* Initialize other quantities */
-    double oldb(0.0), beta(beta1), dbar(0.0), epsln(0.0), oldeps;
-    double phi, phibar(beta1);
-    double tnorm2(0.0);
-    double cs(-1.0), sn(0.0);
-    double gmax(0.0), gmin(std::numeric_limits<double>::max());
-    double alpha, gamma;
-    double delta, gbar;
+        // STEP 2
+        /* Initialize other quantities */
+        SReal oldb(0.0), beta(beta1), dbar(0.0), epsln(0.0), oldeps;
+        SReal phi, phibar(beta1);
+        SReal tnorm2(0.0);
+        SReal cs(-1.0), sn(0.0);
+        SReal gmax(0.0), gmin(std::numeric_limits<SReal>::max());
+        SReal alpha, gamma;
+        SReal delta, gbar;
+        static const SReal eps(std::numeric_limits<SReal>::epsilon());
+        unsigned itn(0);
+        SReal Anorm(0.0);
+        SReal ynorm(0.0);
 
-    if( !done )
-    {
+
         /* Main Iteration */
         for(itn = 0; itn < max_iter; ++itn)
         {
@@ -182,7 +165,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
 
             *r2 = y;
 
-            double s(1./beta); //Normalize previous vector (in y)
+            SReal s(1./beta); //Normalize previous vector (in y)
             v.eq( y, s ); // v = vk if P = I
 //            v  = y;
 //            v *= s;         // v = vk if P = I
@@ -211,14 +194,14 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             gbar   = sn*dbar - cs*alpha;
             epsln  =           sn*beta;
             dbar   =         - cs*beta;
-            double root(sqrt(gbar*gbar + dbar*dbar));
+            SReal root(sqrt(gbar*gbar + dbar*dbar));
             //Arnorm = phibar * root; // ||Ar_{k-1}||
 
             // Compute next plane rotation Q_k
             gamma = sqrt(gbar*gbar + beta*beta); // gamma_k
             gamma = std::max(gamma, eps);
 
-            double denom(1./gamma);
+            SReal denom(1./gamma);
 
             cs = gbar*denom;                     // c_k
             sn = beta*denom;                     // s_k
@@ -245,7 +228,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
             Anorm = sqrt( tnorm2 );
             ynorm = sqrt( x.dot( x ) );
 
-            double test1 = phibar / (Anorm*ynorm); // ||r||/(||A|| ||x||)
+            SReal test1 = phibar / (Anorm*ynorm); // ||r||/(||A|| ||x||)
             graph_error.push_back(test1);
 
 
@@ -264,7 +247,7 @@ void MinResLinearSolver<TMatrix,TVector>::solve(Matrix& A, Vector& x, Vector& b)
              */
 //            Acond = gmax/gmin;
 
-            double test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
+            SReal test2 = root / Anorm;  // ||A r_{k-1}|| / (||A|| ||r_{k-1}||)
 
             //See if any of the stopping criteria is satisfied
             if( test1 <= 0. ||  //This test work if tol < eps

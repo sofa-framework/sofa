@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,8 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/MooneyRivlinMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 namespace sofa
 {
 namespace component
@@ -38,7 +36,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
 
 /** Apply MooneyRivlin's Law for isotropic homogeneous incompressible materials.
   * The energy is : C1 ( I1/ J^2/3  - 3)  + C2 ( I2/ J^4/3  - 3) + bulk/2 (J-1)^2
@@ -57,9 +54,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<vector<Real> > f_C1;
-    Data<vector<Real> > f_C2;
-    Data<vector<Real> > f_bulk;
+    Data<helper::vector<Real> > f_C1;
+    Data<helper::vector<Real> > f_C2;
+    Data<helper::vector<Real> > f_bulk;
     Data<bool > f_PSDStabilization;
     //@}
 
@@ -76,25 +73,17 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_C1.isDirty() || f_C2.isDirty() || f_bulk.isDirty() || f_PSDStabilization.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
     MooneyRivlinForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
         : Inherit(mm)
-        , f_C1(initData(&f_C1,vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
-        , f_C2(initData(&f_C2,vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
-        , f_bulk(initData(&f_bulk,vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
+        , f_C1(initData(&f_C1,helper::vector<Real>((int)1,(Real)1000),"C1","weight of (~I1-3) term in energy"))
+        , f_C2(initData(&f_C2,helper::vector<Real>((int)1,(Real)1000),"C2","weight of (~I2-3) term in energy"))
+        , f_bulk(initData(&f_bulk,helper::vector<Real>((int)1,(Real)0),"bulk","bulk modulus (working on I3=J=detF=volume variation)"))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~MooneyRivlinForceField()     {    }

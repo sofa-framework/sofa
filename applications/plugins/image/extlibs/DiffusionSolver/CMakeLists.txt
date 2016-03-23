@@ -31,19 +31,6 @@ endif()
 find_package(CImg REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-if(UNIX)
-    # Seems to be required by CImg
-    target_link_libraries(${PROJECT_NAME} pthread)
-endif()
-
-if(UNIX)
-    find_package(X11)
-    if(NOT X11_FOUND)
-        message(FATAL_ERROR "Failed to find X11 which is required to build DiffusionSolver")
-    endif(NOT X11_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB})
-    include_directories(${X11_X11_INCLUDE_PATH})
-endif()
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT DiffusionSolver_libraries

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -140,11 +140,11 @@ public:
     SetIndex f_indices;
     Data<SReal> showSizeAxis;
 
-    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, vector<unsigned int> >
+    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {
     public:
         FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<unsigned int> >* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+            : sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
 
 
 

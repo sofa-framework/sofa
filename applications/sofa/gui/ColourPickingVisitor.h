@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -48,7 +48,7 @@ void decodePosition( sofa::component::collision::BodyPicked& body, const sofa::d
 
 
 /* Launches the drawColourPicking() method of each CollisionModel */
-class SOFA_SOFAGUI_API ColourPickingVisitor : public Visitor
+class SOFA_SOFAGUI_API ColourPickingVisitor : public simulation::Visitor
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     /// the TriangleElement with the given index
 
     ColourPickingVisitor(const core::visual::VisualParams* params, ColourCode Method)
-        :Visitor(params),vparams(params),method(Method)
+        :simulation::Visitor(params),vparams(params),method(Method)
     {}
 
     void processCollisionModel(simulation::Node* node, core::CollisionModel* /*o*/);

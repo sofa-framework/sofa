@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Node name="" gravity="0 -1 0" dt=".01">
+    
+    <RequiredPlugin name="Compliant"/>
+    <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
+    
+  
+	<CompliantImplicitSolver/>
+        <CgSolver precision="1e-6" iterations="100" />
+
+        
+        <MechanicalObject name="DOF" template="Vec3d" position="0 1 0" showObject="true" drawMode="1"/>
+        <UniformMass name="themass" mass="1" />
+        
+        <Node name="diff">
+            <MechanicalObject name="DOF" template="Vec3d"/>
+            <DifferenceFromTargetMapping targets="0 0 0"/>
+            <Node name="diffY">
+                <MechanicalObject name="DOF" template="Vec1d"/>
+                <MaskMapping dofs="0 1 0"/>
+                <CompliantPenaltyForceField stiffness="10000" />
+        </Node>
+        </Node>
+            
+</Node>

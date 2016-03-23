@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -135,26 +135,6 @@ void TPointModel<DataTypes>::init()
             sout<<"PointActiver named"<<activer->getName()<<" found !! for PointModel "<< this->getName() <<sendl;
         }
     }
-}
-
-template<class DataTypes>
-void TPointModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
-{
-#ifndef SOFA_NO_OPENGL
-    TPoint<DataTypes> p(this,index);
-    if (!p.activated())
-        return;
-    glBegin(GL_POINTS);
-    helper::gl::glVertexT(p.p());
-    glEnd();
-    if ((unsigned)index < normals.size())
-    {
-        glBegin(GL_LINES);
-        helper::gl::glVertexT(p.p());
-        helper::gl::glVertexT(p.p()+normals[index]*0.1f);
-        glEnd();
-    }
-#endif /* SOFA_NO_OPENGL */
 }
 
 template<class DataTypes>

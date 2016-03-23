@@ -29,7 +29,6 @@ namespace mapping
     @author maxime.tournier@inria.fr
 
     TODO @rotation / @translation should be set per output dofs
-    TODO add a multimapping version 
     TODO specialize for vec3 output dofs in case (rotation ^ translation) is set ?
     
  */
@@ -40,12 +39,12 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE2(RigidJointMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
-	typedef vector< index_pair > pairs_type;
+    typedef helper::vector< index_pair > pairs_type;
     typedef typename TIn::Real Real;
 	
 	Data< pairs_type > pairs;
 	Data< bool > rotation, translation;
-	Data< bool > out_joint_angle;
+//	Data< bool > out_joint_angle;
 	
 	Data< bool > exact_dlog;
 
@@ -53,7 +52,7 @@ public:
 		: pairs(initData(&pairs, "pairs", "pairs of rigid frames defining joint in source dofs" )),
 		  rotation(initData(&rotation, true, "rotation", "compute relative rotation" )),
 		  translation(initData(&translation, true, "translation", "compute relative translation" )),
-		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)")),
+//		  out_joint_angle(initData(&out_joint_angle, false, "out_joint_angle", "output joint angle to std::cerr(unsigned rad)")),
 		  exact_dlog(initData(&exact_dlog, false, "exact_dlog",
 							  "compute exact rotation dlog. more precise if you know what you're doing, but gets unstable past half turn. for 1d and isotropic 3d springs, you don't need this"))
 		{
@@ -67,8 +66,7 @@ protected:
 
 
 	static coord_type delta(const coord_type& p, const coord_type& c) {
- 		coord_type res;
- 
+// 		coord_type res;
         //res.getOrientation() = p.getOrientation().inverse() * c.getOrientation();
         //res.getCenter() = c.getCenter() - p.getCenter();
         //return res;
@@ -81,12 +79,17 @@ protected:
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
-		J.resize(6 * pairs.getValue().size(),
+
+        const pairs_type& p = pairs.getValue();
+
+        J.resize(6 * p.size(),
 		         in_pos.size() * 6);
 
-		J.setZero();
-		
-        const pairs_type& p = pairs.getValue();
+//		J.setZero();
+
+        bool rotation = this->rotation.getValue();
+        bool translation = this->translation.getValue();
+        bool exact_dlog = this->exact_dlog.getValue();
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
@@ -109,72 +112,75 @@ protected:
 		
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 
-            const coord_type parent = in_pos[ p[i][0] ];
-            const coord_type child  = in_pos[ p[i][1] ];
+            const coord_type& parent = in_pos[ p[i][0] ];
+            const coord_type& child  = in_pos[ p[i][1] ];
 			const coord_type diff = delta(parent, child);
 
 
-            // each parent mstate
-            //for(unsigned j = 0, m = in.size(); j < m; ++j) {
+            mat33 Rp_T = (se3::rotation(parent).normalized().toRotationMatrix()).transpose();
 
-                mat33 Rp = se3::rotation(parent).normalized().toRotationMatrix();
-                mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
+            const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
 
-                const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
+            mat33 chunk;
 
-                mat33 chunk;
-
-                if( exact_dlog.getValue() ) {
+            if( rotation )
+            {
+                if( exact_dlog ) {
+                    mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
                     // note: dlog is in spatial coordinates !
                     chunk = se3::dlog( se3::rotation(diff).normalized() ) * Rc.transpose();
                 } else {
-                    chunk = Rp.transpose();
+                    chunk = Rp_T;
                 }
+            }
+            else
+            {
+                chunk = mat33::Zero();
+            }
 
-                if(!rotation.getValue())
-                    chunk = mat33::Zero();
-                if(!translation.getValue())
-                    Rp = mat33::Zero();
+            if(!translation)
+                Rp_T = mat33::Zero();
 
-                // parent
-                blocks[0] << 
-                    -Rp.transpose(), Rp.transpose() * se3::hat(s),
-                    mat33::Zero(), -chunk;
+            // parent
+            blocks[0] <<
+                -Rp_T, Rp_T * se3::hat(s),
+                mat33::Zero(), -chunk;
 
-                // child
-                blocks[1] << 
-                    Rp.transpose(), mat33::Zero(),
-                    mat33::Zero(), chunk;
+            // child
+            blocks[1] <<
+                Rp_T, mat33::Zero(),
+                mat33::Zero(), chunk;
 
-                bool reverse =  p[i][0] > p[i][1];
-                for( unsigned u = 0; u < 6; ++u) {
-                    unsigned row = 6 * i + u;
-                    J.startVec( row );
+            bool reverse =  p[i][0] > p[i][1];
+            for( unsigned u = 0; u < 6; ++u) {
+                unsigned row = 6 * i + u;
+                J.startVec( row );
 
-                    for( unsigned j = 0; j < 2; ++j) {
+                for( unsigned j = 0; j < 2; ++j) {
 
-                        unsigned ordered = reverse ? 1 - j : j;
-                        unsigned index = p[i][ ordered ];					
+                    unsigned ordered = reverse ? 1 - j : j;
+                    unsigned index = p[i][ ordered ];
 
-                        for( unsigned v = 0; v < 6; ++v) {
-                            unsigned col = 6 * index + v; 
-                            J.insertBack(row, col) = blocks[ ordered ](u, v);
-                        }
-                    } 
+                    for( unsigned v = 0; v < 6; ++v) {
+                        unsigned col = 6 * index + v;
+                        J.insertBack(row, col) = blocks[ ordered ](u, v);
+                    }
                 }
+            }
 		}
 		
 		J.finalize();
 
 #if _MSC_VER
 		::_aligned_free(blockPtr);
-#endif		
-		pairs.endEdit();
+#endif
 	} 
 	
 	virtual void apply(typename self::out_pos_type& out,
 	                   const typename self::in_pos_type& in ) {
         const pairs_type& p = pairs.getValue();
+        bool rotation = this->rotation.getValue();
+        bool translation = this->translation.getValue();
 		
 		assert( out.size() == p.size() );				        
 
@@ -185,33 +191,44 @@ protected:
 			
 			// out[i] = se3::product_log( se3::prod( se3::inv( in[ p[i][0] ] ), 
 			//                                       in[ p[i][1] ] ) ).getVAll();
-			
-			out[i] = se3::product_log( delta(in[ p[i][0] ],
-			                                 in[ p[i][1] ] ) ).getVAll();
-			
-			if( out_joint_angle.getValue() ) output( out[i] );
-			                                             
-			if( !rotation.getValue() ) {
-				out[i][3] = 0;
-				out[i][4] = 0;
-				out[i][5] = 0;
-			}
 
-			if( !translation.getValue() ) {
+            const coord_type diff = delta( in[ p[i][0] ], in[ p[i][1] ] );
+			                                             
+            if( !rotation ) {
+                out[i][0] = diff.getCenter()[0];
+                out[i][1] = diff.getCenter()[1];
+                out[i][2] = diff.getCenter()[2];
+                out[i][3] = 0;
+                out[i][4] = 0;
+                out[i][5] = 0;
+			}
+            else if( !translation ) {
 				out[i][0] = 0;
 				out[i][1] = 0;
 				out[i][2] = 0;
+
+                typename se3::vec3 l = se3::log( se3::rotation(diff) );
+                out[i][3] = l[0];
+                out[i][4] = l[1];
+                out[i][5] = l[2];
 			}
+            else
+            {
+                out[i] = se3::product_log( diff ).getVAll();
+            }
 			
+
+//            if( out_joint_angle.getValue() ) output( out[i] );
+
         }
     }
 
-	void output(typename TOut::Coord out) const {
-		out[0] = 0;
-		out[1] = 0;
-		out[2] = 0;
-		std::cerr << this->getContext()->getTime() << ", " << out.norm() << std::endl;
-	}
+//	void output(typename TOut::Coord out) const {
+//		out[0] = 0;
+//		out[1] = 0;
+//		out[2] = 0;
+//		std::cerr << this->getContext()->getTime() << ", " << out.norm() << std::endl;
+//	}
 
     virtual void updateForceMask()
     {

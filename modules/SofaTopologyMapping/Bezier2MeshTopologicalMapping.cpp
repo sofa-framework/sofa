@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,10 +122,10 @@ void Bezier2MeshTopologicalMapping::init()
 		 std::set<size_t> triangleVertexSet;
 		
 
-		 const SeqTriangles &ta=btstc->getTriangleArray();
+         const core::topology::BaseMeshTopology::SeqTriangles &ta=btstc->getTriangleArray();
 
 		  for (i=0;i<ta.size();++i)  {
-			  Triangle t=ta[i];
+              core::topology::BaseMeshTopology::Triangle t=ta[i];
 			  triangleVertexSet.insert(t[0]);triangleVertexSet.insert(t[1]);triangleVertexSet.insert(t[2]);
 		  }
 		  assert(btstc->getNumberOfTriangularPoints()==triangleVertexSet.size());
@@ -181,7 +181,7 @@ void Bezier2MeshTopologicalMapping::init()
 		size_t baseEdgeOffset=btstc->getNumberOfTriangularPoints();
 		size_t baseTriangleOffset=baseEdgeOffset+btstc->getNumberOfEdges()*(bezierTesselation-1);
 		size_t pointsPerTriangle=(bezierTesselation-1)*(bezierTesselation-2)/2;
-		sofa::component::topology::Triangle subtriangle;
+        core::topology::BaseMeshTopology::Triangle subtriangle;
 		sofa::component::topology::BezierTriangleSetTopologyContainer::VecPointID indexArray;
 		sofa::helper::vector<size_t>  bezierEdge;
 		sofa::component::topology::TriangleBezierIndex trbi;
@@ -190,7 +190,7 @@ void Bezier2MeshTopologicalMapping::init()
 		for (rank=0,i=0;i<btstc->getNumberOfTriangles();++i) {
 			// there are (bezierTesselation)*(bezierTesselation) subtriangles
 			// first store the indices of all the macro triangles into an array
-			sofa::component::topology::Triangle tr=btstc->getTriangle(i);
+            core::topology::BaseMeshTopology::Triangle tr=btstc->getTriangle(i);
 			sofa::helper::vector<size_t> macroTriangleIndexArray;
 			// store the 3 vertices
 
@@ -203,14 +203,14 @@ void Bezier2MeshTopologicalMapping::init()
 
 			// store the edge point
 			if (bezierTesselation>1) {
-				sofa::component::topology::EdgesInTriangle eit=btstc->getEdgesInTriangle(i);
+                core::topology::BaseMeshTopology::EdgesInTriangle eit=btstc->getEdgesInTriangle(i);
 				 btstc->getGlobalIndexArrayOfBezierPointsInTriangle(i, indexArray);
 				for (j=0;j<3;++j) {
 
 					// store the edge in an array only once 
-					const sofa::component::topology::TrianglesAroundEdge &tae=  btstc->getTrianglesAroundEdge(eit[j]);
+                    const core::topology::BaseMeshTopology::TrianglesAroundEdge &tae=  btstc->getTrianglesAroundEdge(eit[j]);
 					if (tae[0]==i) {
-						const sofa::component::topology::Edge &e= btstc->getEdge(eit[j]);
+                        const core::topology::BaseMeshTopology::Edge &e= btstc->getEdge(eit[j]);
 						edgeTriangleArray.push_back(e);
 						// find the edge index
 						for(k=0;tr[k]==e[0]||tr[k]==e[1];++k);
@@ -230,7 +230,7 @@ void Bezier2MeshTopologicalMapping::init()
 
 
 
-					sofa::component::topology::Edge e=btstc->getEdge(eit[j]);
+                    core::topology::BaseMeshTopology::Edge e=btstc->getEdge(eit[j]);
 					offset=baseEdgeOffset+eit[j]*(bezierTesselation-1);
 					if (e[0]==tr[(j+1)%3] ) {
 						for (k=0;k<(size_t)(bezierTesselation-1);++k) {

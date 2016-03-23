@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.02">
+    <RequiredPlugin name="VolumetricRendering" />
+
+    <Node name="HexaRaptor" >
+        <EulerImplicit />
+        <CGLinearSolver iterations="100" tolerance="1.0e-7" threshold="1.0e-7"/>
+
+		<SparseGrid name="grid" n="21 21 21" fileTopology="mesh/raptor_8kp.obj" />
+
+		<MechanicalObject name="dofs" template="Vec3d" />
+	 	<HexahedronSetTopologyContainer hexahedra="@grid.hexahedra" />
+	 	<HexahedronSetGeometryAlgorithms />
+
+	 	<HexahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.4" method="large" />
+
+		<Node>
+	 		<OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" 
+	 			vertFilename="share/shaders/tetra.vert" geoFilename="share/shaders/tetra_triangles.geo" fragFilename="share/shaders/tetra.frag" />
+	 		<OglFloatVariable id="volumeScale" value="0.9"/>
+	 		<OglFloatVariable id="u_enableLight" value="1"/>
+	 		<OglFloat4Attribute id="a_vertexColor" value="@../grid.position"/>
+			<OglVolumetricModel printLog="false" color="1 0 1 1" />
+
+			<IdentityMapping />
+		</Node>
+	</Node>
+
+</Node>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -291,8 +291,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentBoneMechanicalObject->resize(currentAiMesh->mNumBones);
 
                             {
-                                Data<vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
-                                vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
+                                Data<Rigid3Types::VecCoord>* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                Rigid3Types::VecCoord &x = *d_x->beginEdit();
                                 for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
                                 {
                                     aiMatrix4x4 offsetMatrix = currentAiMesh->mBones[k]->mOffsetMatrix;
@@ -370,8 +370,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentBoneMechanicalObject->resize(1);
 
 							{
-                                Data<vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
-                                vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
+                                Data<helper::vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                helper::vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
 								
 								Vec3d boneTranslation(0.0, 0.0, 0.0);
 								Quaternion boneQuat(0.0, 0.0, 1.0, 1.0);
@@ -448,8 +448,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentMechanicalObject->resize(vertexMap.size());
 
                             {
-                                Data<vector<Vec3Types::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
-                                vector<Vec3Types::Coord> &x = *d_x->beginEdit();
+                                Data<helper::vector<Vec3Types::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
+                                helper::vector<Vec3Types::Coord> &x = *d_x->beginEdit();
                                 for( std::map<Vec3d,unsigned>::iterator it=vertexMap.begin() , itend=vertexMap.end() ; it!=itend ; ++it )
                                     x[it->second] = it->first;
 
@@ -480,7 +480,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 ++numQuads;
 
 
-                        vector<topology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
+                        helper::vector<core::topology::BaseMeshTopology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
 #ifdef SOFA_HAVE_PLUGIN_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
@@ -500,7 +500,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
                                     Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
 
-                                    seqTriangles.push_back( topology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
+                                    seqTriangles.push_back( core::topology::BaseMeshTopology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
                                 }
                                 else if( currentAiMesh->mFaces[k].mNumIndices==4 )
                                 {
@@ -521,8 +521,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     unsigned int i2 = vertexMap[v2];
                                     unsigned int i3 = vertexMap[v3];
 
-                                    seqTriangles.push_back( topology::Triangle( i0, i1, i2 ) );
-                                    seqTriangles.push_back( topology::Triangle( i0, i2, i3 ) );
+                                    seqTriangles.push_back( core::topology::BaseMeshTopology::Triangle( i0, i1, i2 ) );
+                                    seqTriangles.push_back( core::topology::BaseMeshTopology::Triangle( i0, i2, i3 ) );
                                 }
                             }
                         }
@@ -530,7 +530,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 #endif
                         {
                             if( numTriangles ) seqTriangles.reserve(numTriangles);
-                            vector<topology::Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
+                            helper::vector<core::topology::BaseMeshTopology::Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
                             if( numQuads ) seqQuads.reserve(numQuads);
 
                             for( unsigned int k = 0 ; k < currentAiMesh->mNumFaces ; ++k )
@@ -547,7 +547,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
                                     Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
 
-                                    seqTriangles.push_back( topology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
+                                    seqTriangles.push_back( core::topology::BaseMeshTopology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
                                 }
                                 else if( currentAiMesh->mFaces[k].mNumIndices==4 )
                                 {
@@ -563,7 +563,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
                                     Vec3d v3(currentAiMesh->mVertices[faceIndex3][0], currentAiMesh->mVertices[faceIndex3][1], currentAiMesh->mVertices[faceIndex3][2]);
 
-                                    seqQuads.push_back( topology::Quad( vertexMap[v0], vertexMap[v1], vertexMap[v2], vertexMap[v3] ) );
+                                    seqQuads.push_back( core::topology::BaseMeshTopology::Quad( vertexMap[v0], vertexMap[v1], vertexMap[v2], vertexMap[v3] ) );
                                 }
                             }
 
@@ -627,7 +627,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             Node::SPtr labelNode = currentSubNode->createChild("label");
                             engine::MeshToImageEngine<defaulttype::ImageB>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageB> >();
                             M2I->setName( "rasterizer" );
-                            M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
+                            M2I->voxelSize.setValue( helper::vector<SReal>(1,vsize) );
                             M2I->padSize.setValue(2);
                             M2I->rotateImage.setValue(false);
                             M2I->f_nbMeshes.setValue(1);
@@ -662,7 +662,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                 engine::MeshToImageEngine<defaulttype::ImageD>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageD> >();
                                 M2I->setName( "rasterizer" );
-                                M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
+                                M2I->voxelSize.setValue( helper::vector<SReal>(1,vsize) );
                                 M2I->padSize.setValue(2);
                                 M2I->rotateImage.setValue(false);
                                 M2I->f_nbMeshes.setValue(1);
@@ -818,9 +818,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 								currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-                                vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
-								vector<helper::SVector<unsigned int> > indices;
-								vector<unsigned int> nbref;
+                                helper::vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
+                                helper::vector<helper::SVector<unsigned int> > indices;
+                                helper::vector<unsigned int> nbref;
 
                                 indices.resize(vertexMap.size());
                                 weights.resize(vertexMap.size());

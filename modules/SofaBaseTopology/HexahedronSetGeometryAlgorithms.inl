@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -835,17 +836,16 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
 template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Hexa indices
-    if (showHexaIndices.getValue())
+    if (d_showHexaIndices.getValue())
     {
         sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-		sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
+        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
+        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0);
 
         float scale = this->getIndicesScale();
 
@@ -876,45 +876,43 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
 
     //Draw hexahedra
-    if (_draw.getValue())
+    if (d_drawHexahedra.getValue())
     {
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, true);
+
         const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexahedra();
 
-        if (!hexaArray.empty())
+        const sofa::defaulttype::Vec3f& color = d_drawColorHexahedra.getValue();
+        sofa::defaulttype::Vec4f color4(color[0], color[1], color[2], 1.0f);
+
+        const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+
+        sofa::helper::vector <sofa::defaulttype::Vector3> hexaCoords;
+
+        for (unsigned int i = 0; i<hexaArray.size(); i++)
         {
-            glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-            glBegin(GL_LINES);
-            const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
+            const Hexahedron& H = hexaArray[i];
 
-            for (unsigned int i = 0; i<hexaArray.size(); i++)
+            for (unsigned int j = 0; j<8; j++)
             {
-                const Hexahedron& H = hexaArray[i];
-                sofa::helper::vector <sofa::defaulttype::Vec3f> hexaCoord;
+                sofa::defaulttype::Vector3 p; p = DataTypes::getCPos(coords[H[j]]);
 
-                for (unsigned int j = 0; j<8; j++)
-                {
-                    sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[H[j]]);
-                    hexaCoord.push_back(p);
-                }
-
-                for (unsigned int j = 0; j<4; j++)
-                {
-                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3f(hexaCoord[(j+1)%4][0], hexaCoord[(j+1)%4][1], hexaCoord[(j+1)%4][2]);
-
-                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
-                    glVertex3f(hexaCoord[(j+1)%4 +4][0], hexaCoord[(j+1)%4 +4][1], hexaCoord[(j+1)%4 +4][2]);
-
-                    glVertex3f(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
-                    glVertex3f(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
-                }
+                hexaCoords.push_back(p);
             }
-            glEnd();
         }
+
+        const float& scale = d_drawScaleHexahedra.getValue();
+
+        if(scale >= 1.0 && scale < 0.001)
+            vparams->drawTool()->drawHexahedra(hexaCoords, color4);
+        else
+            vparams->drawTool()->drawScaledHexahedra(hexaCoords, color4, scale);
+
+        if (vparams->displayFlags().getShowWireFrame())
+            vparams->drawTool()->setPolygonMode(0, false);
+           
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 

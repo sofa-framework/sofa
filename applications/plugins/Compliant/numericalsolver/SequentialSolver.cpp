@@ -188,6 +188,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	// compute anyways)
 	real estimate = 0;
 
+    SReal omega = this->omega.getValue();
 		
 	// inner loop
 	for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
@@ -218,7 +219,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
             error_chunk = lambda_chunk;
 
             // update lambdas
-            lambda_chunk = lambda_chunk + omega.getValue() * delta_chunk;
+            lambda_chunk = lambda_chunk + omega * delta_chunk;
 
             // project new lambdas if needed
             if( b.projector ) {
@@ -364,7 +365,7 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
 {
     // flag which constraint are bilateral
-    static vector<bool> bilateral;
+    static helper::vector<bool> bilateral;
     bilateral.resize( sys.n );
     unsigned nb_bilaterals = 0;
 
@@ -379,7 +380,7 @@ static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSy
         {
             bool bilat = !constraint.projector.get(); // flag bilateral or not
             if( bilat ) nb_bilaterals += dim;
-            const vector<bool>::iterator itoff = bilateral.begin() + off;
+            const helper::vector<bool>::iterator itoff = bilateral.begin() + off;
             std::fill( itoff, itoff+dim, bilat );
             off += dim;
         }

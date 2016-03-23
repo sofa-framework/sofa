@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -91,7 +91,7 @@ protected :
     IdentityMultiMapping();
     virtual ~IdentityMultiMapping();
 
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     typedef linearsolver::EigenSparseMatrix<TIn,TOut> EigenMatrix;
 //    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence

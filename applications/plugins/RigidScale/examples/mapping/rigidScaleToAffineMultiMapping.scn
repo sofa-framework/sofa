@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<Node name='root' gravity='0 -1 0' dt='0.01' >
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="RigidScale"/>
+  <VisualStyle displayFlags="showVisual showBehaviorModels" />
+  <EulerImplicitSolver name="Solver" rayleighStiffness='0.01' rayleighMass='0.01'/>
+  <CGLinearSolver template='GraphScattered' name='linearSolver' iterations='100' tolerance='1E-6' threshold='1E-6'/>
+  
+  <!---0.116834 0.743145 0 -0.658851--> 
+  <Node name='rigid'>
+    <MechanicalObject template='Rigid' name='DOFs' position='0 0 0 0.116834 0.743145 0 -0.658851   0 1 0 0 0 0 1   1 0.5 0 0 0 0 1   1 0.5 0.5 0 0 0 1' showObject='0'/>
+    <FixedConstraint indices='0 1'/>
+  </Node>  <!--/rigid--> 
+  
+  <Node name='scale'>
+    <MechanicalObject template='Vec3d' name='DOFs' position='1 1 1  2 2 2   0.5 0.5 0.5' showObject='0'/>
+    
+    <Node name='affine'>
+      <MeshTopology name='topo' position='0 0 0   0 1 0   1 0.5 0'/>
+      <MechanicalObject template="Affine" name="DOFs"  src="@topo"  showObject="1"/>
+      <RigidScaleToAffineMultiMapping template="Rigid,Vec3d,Affine" input1="@../../rigid" input2="@../" output="@." index="0 2 1  1 0 2   2 1 0" printLog="0"/>
+      <Node name="force">
+        <MeshTopology name='topo' position='1 0.5 0   0 0 0   0 1 0' edges='0 1 1 2 0 2'/>
+        <MechanicalObject template="Vec3d" name="DOFs"  showObject="1"/>
+        <IdentityMapping template='Affine,Vec3d'/>
+        <MeshSpringForceField template="Vec3d" stiffness="1E3"/>
+        <UniformMass template="Vec3d" name="mass" totalMass="1" />
+      </Node>
+    </Node>  <!--/affine--> 
+    
+  </Node>  <!--/scale--> 
+    
+</Node>

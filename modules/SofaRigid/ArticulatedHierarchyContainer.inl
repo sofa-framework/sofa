@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,8 +61,8 @@ ArticulationCenter::ArticulationCenter():
 
 ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
 {
-    vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-    vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+    helper::vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+    helper::vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
     for (; ac != acEnd; ac++)
     {
         if ((*ac)->childIndex.getValue() == index)
@@ -71,7 +71,7 @@ ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(
     return (*ac);
 }
 
-vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
+helper::vector<ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
 {
     unsigned int i=0;
     acendantList.clear();
@@ -237,8 +237,8 @@ void ArticulatedHierarchyContainer::init ()
     else
     {
         context->getTreeObjects<ArticulationCenter>(&articulationCenters);
-        vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-        vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+        helper::vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+        helper::vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
         for (; ac != acEnd; ac++)
         {
             context = dynamic_cast<simulation::Node *>((*ac)->getContext());

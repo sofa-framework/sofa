@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,21 +131,14 @@ protected:
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELDANDMASS_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<Vec3dTypes>;
+extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<Vec3fTypes>;
+extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedronFEMForceFieldAndMass<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif

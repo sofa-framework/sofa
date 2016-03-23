@@ -6,7 +6,12 @@ set(SOURCE_FILES
     PyScene.cpp
     dummy.cpp
     python_test_list.cpp
+    memory.cpp
 )
+
+if(SOFA_USE_C++11)
+    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
+endif()
 
 set(PYTHON_FILES
     python/dataVecResize.py
@@ -16,7 +21,12 @@ set(PYTHON_FILES
     python/test_Tools.py
     python/test_mass.py
     python/test_units.py
+    python/test_MeshLoader.py
 )
+
+if(SOFA_USE_C++11)
+    list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
+endif()
 
 find_package(SofaTest)
 find_package(SofaPython)

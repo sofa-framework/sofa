@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,6 +32,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 
 #include <fstream>
 
@@ -68,8 +69,8 @@ public:
     sofa::core::objectmodel::DataFileName stlFilename;
     Data<bool> m_fileFormat;      //0 for Ascii Formats, 1 for Binary File Format
     Data<defaulttype::Vec3Types::VecCoord> m_position;
-    Data< vector< sofa::component::topology::Triangle > > m_triangle;
-    Data< vector< sofa::component::topology::Quad > > m_quad;
+    Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
+    Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad;
     
     Data<unsigned int> exportEveryNbSteps;
     Data<bool> exportAtBegin;

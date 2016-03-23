@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,8 +27,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
 #include <set>
 #include <string.h>
 
@@ -41,6 +39,7 @@ namespace component
 namespace topology
 {
 
+using helper::vector;
 
 
 MeshTopology::EdgeUpdate::EdgeUpdate(MeshTopology* t)
@@ -107,10 +106,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInTetrahedron[i][j]=edgeIndex;
         }
     }
@@ -147,10 +146,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
                 seqEdges.push_back(e);
 
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInHexahedron[i][j]=edgeIndex;
         }
     }
@@ -192,10 +191,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInTriangle[i][j]=edgeIndex;
         }
     }
@@ -223,10 +222,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
+//            else
+//            {
+//                edgeIndex=(*ite).second;
+//            }
             //m_edgesInQuad[i][j]=edgeIndex;
         }
     }
@@ -288,10 +287,10 @@ void MeshTopology::TriangleUpdate::update()
                 triangleMap[tr]=triangleIndex;
                 seqTriangles.push_back(tr);
             }
-            else
-            {
-                triangleIndex=(*itt).second;
-            }
+//            else
+//            {
+//                triangleIndex=(*itt).second;
+//            }
             //m_trianglesInTetrahedron[i][j]=triangleIndex;
         }
     }
@@ -354,10 +353,10 @@ void MeshTopology::QuadUpdate::update()
 
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][0]=quadIndex;
 
         // Quad 1 :
@@ -383,10 +382,10 @@ void MeshTopology::QuadUpdate::update()
             seqQuads.push_back(qu);
 
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][1]=quadIndex;
 
         // Quad 2 :
@@ -411,10 +410,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][2]=quadIndex;
 
         // Quad 3 :
@@ -439,10 +438,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][3]=quadIndex;
 
         // Quad 4 :
@@ -467,10 +466,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][4]=quadIndex;
 
         // Quad 5 :
@@ -495,10 +494,10 @@ void MeshTopology::QuadUpdate::update()
             quadMap[qu]=quadIndex;
             seqQuads.push_back(qu);
         }
-        else
-        {
-            quadIndex=(*itt).second;
-        }
+//        else
+//        {
+//            quadIndex=(*itt).second;
+//        }
         //m_quadsInHexahedron[i][5]=quadIndex;
     }
 
@@ -508,7 +507,6 @@ void MeshTopology::QuadUpdate::update()
 using namespace sofa::defaulttype;
 using core::topology::BaseMeshTopology;
 
-using namespace sofa::component::topology::internal;
 
 SOFA_DECL_CLASS(MeshTopology)
 
@@ -2627,121 +2625,114 @@ SReal MeshTopology::getPosZ(int i) const
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }
 
-void MeshTopology::draw(const core::visual::VisualParams* )
+void MeshTopology::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     // Draw Edges
     if(_drawEdges.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.4f,1.0f,0.3f);
-        glColor3f(1,0,0);
+        std::vector<defaulttype::Vector3> pos;
+        pos.reserve(this->getNbEdges()*2u);
         for (int i=0; i<getNbEdges(); i++)
         {
             const Edge& c = getEdge(i);
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
-            glEnd();
+            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
         }
+        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
     }
-    
+
     //Draw Triangles
     if(_drawTriangles.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.4f,1.0f,0.3f);
-        glColor3f(1,0,0);
+        std::vector<defaulttype::Vector3> pos;
+        pos.reserve(this->getNbTriangles()*3u);
         for (int i=0; i<getNbTriangles(); i++)
         {
             const Triangle& c = getTriangle(i);
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
-            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glEnd();
+            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
         }
+        vparams->drawTool()->drawTriangles(pos, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Quads
     if(_drawQuads.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.4f,1.0f,0.3f);
-        glColor3f(1,0,0);
+        std::vector<defaulttype::Vector3> pos;
+        pos.reserve(this->getNbQuads()*4u);
         for (int i=0; i<getNbQuads(); i++)
         {
             const Quad& c = getQuad(i);
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
-            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
-            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glEnd();
+            pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
         }
+        vparams->drawTool()->drawQuads(pos, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
     }
- 
+
     //Draw Hexahedron
     if (_drawHexa.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(0.4f,1.0f,0.3f);
-        glColor3f(1,0,0);
+        std::vector<defaulttype::Vector3> pos1;
+        std::vector<defaulttype::Vector3> pos2;
+        pos1.reserve(this->getNbHexahedra()*8u);
+        pos2.reserve(this->getNbHexahedra()*8u);
         for (int i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
-            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
-            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glEnd();
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
-            glVertex3d(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5]));
-            glVertex3d(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6]));
-            glVertex3d(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7]));
-            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
-            glEnd();
-            glBegin(GL_LINES);
-            glVertex3d(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3]));
-            glVertex3d(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7]));
-            glVertex3d(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2]));
-            glVertex3d(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6]));
-            glVertex3d(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]));
-            glVertex3d(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4]));
-            glVertex3d(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]));
-            glVertex3d(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5]));
-            glEnd();
+            pos1.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
+            pos1.push_back(defaulttype::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
+
+            pos2.push_back(defaulttype::Vector3(getPosX(c[3]), getPosY(c[3]), getPosZ(c[3])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[7]), getPosY(c[7]), getPosZ(c[7])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[2]), getPosY(c[2]), getPosZ(c[2])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[6]), getPosY(c[6]), getPosZ(c[6])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[4]), getPosY(c[4]), getPosZ(c[4])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
+            pos2.push_back(defaulttype::Vector3(getPosX(c[5]), getPosY(c[5]), getPosZ(c[5])));
         }
+        vparams->drawTool()->drawQuads(pos1, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos2, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
     }
 
     // Draw Tetra
     if(_drawTetra.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(1,0,0);
-        
+        std::vector<defaulttype::Vector3> pos;
+        pos.reserve(this->getNbTetrahedra()*12u);
         for (int i=0; i<getNbTetras(); i++)
         {
             const Tetra& t = getTetra(i);
-            glBegin(GL_LINE_STRIP);
-            glVertex3d(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0]));
-            glVertex3d(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1]));
-            glVertex3d(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2]));
-            glVertex3d(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3]));
-            glVertex3d(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0]));
-            glVertex3d(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2]));
-            glVertex3d(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1]));
-            glVertex3d(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3]));
-            glEnd();
+            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+
+            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+
+            pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
+
+            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+
+            pos.push_back(defaulttype::Vector3(getPosX(t[1]), getPosY(t[1]), getPosZ(t[1])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
+
+            pos.push_back(defaulttype::Vector3(getPosX(t[2]), getPosY(t[2]), getPosZ(t[2])));
+            pos.push_back(defaulttype::Vector3(getPosX(t[3]), getPosY(t[3]), getPosZ(t[3])));
         }
+        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(1.0f,0.0f,0.0f,1.0f));
     }
 
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace topology

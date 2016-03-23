@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,12 +58,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Vector3;
-using defaulttype::Mat;
-using cimg_library::CImg;
-using cimg_library::CImgList;
 
 /**
  * This class merges images into one
@@ -177,7 +171,7 @@ protected:
 
     struct pttype  // to handle overlaps, we need to record some values and positions for each image
     {
-        vector<vector<double> > vals;
+        helper::vector<helper::vector<double> > vals;
         Coord u;
     };
 
@@ -188,13 +182,13 @@ protected:
         inputTransforms.resize(nb);
         if(!nb) return;
 
-        Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image
+        defaulttype::Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image
         Coord minScale;
         for (unsigned int j = 0 ; j < this->getScale(0).size(); j++)
             minScale[j] = fabs(this->getScale(0)[j]);
         for(unsigned int j=1; j<nb; j++)
         {
-            Vec<2,Coord> bb = this->getBB(j);
+            defaulttype::Vec<2,Coord> bb = this->getBB(j);
             for(unsigned int k=0; k<bb[0].size(); k++)
             {
                 //BB is axis-aligned
@@ -230,7 +224,7 @@ protected:
 
         unsigned int overlp = this->overlap.getValue().getSelectedId();
 
-        CImgList<T>& img = out->getCImgList();
+        cimg_library::CImgList<T>& img = out->getCImgList();
 
 
 #ifdef _OPENMP
@@ -241,11 +235,11 @@ protected:
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
-            vector<struct pttype> pts;
+            helper::vector<struct pttype> pts;
             for(unsigned int j=0; j<nb; j++) // store values at p from input images
             {
                 raImage in(this->inputImages[j]);
-                const CImgList<T>& inImg = in->getCImgList();
+                const cimg_library::CImgList<T>& inImg = in->getCImgList();
                 const imCoord indim=in->getDimensions();
 
                 raTransform inT(this->inputTransforms[j]);
@@ -256,21 +250,21 @@ protected:
                     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());                         
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());                        
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
                         }
                     else
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
+                            pt.vals.push_back(helper::vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
 
@@ -333,22 +327,22 @@ protected:
         cleanDirty();
     }
 
-    Vec<2,Coord> getBB(unsigned int i) // get image corners
+    defaulttype::Vec<2,Coord> getBB(unsigned int i) // get image corners
     {
-        Vec<2,Coord> BB;
+        defaulttype::Vec<2,Coord> BB;
         raImage rimage(this->inputImages[i]);
         raTransform rtransform(this->inputTransforms[i]);
 
         const imCoord dim= rimage->getDimensions();
-        Vec<8,Coord> p;
-        p[0]=Vector3(0,0,0);
-        p[1]=Vector3(dim[0]-1,0,0);
-        p[2]=Vector3(0,dim[1]-1,0);
-        p[3]=Vector3(dim[0]-1,dim[1]-1,0);
-        p[4]=Vector3(0,0,dim[2]-1);
-        p[5]=Vector3(dim[0]-1,0,dim[2]-1);
-        p[6]=Vector3(0,dim[1]-1,dim[2]-1);
-        p[7]=Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
+        defaulttype::Vec<8,Coord> p;
+        p[0]=defaulttype::Vector3(0,0,0);
+        p[1]=defaulttype::Vector3(dim[0]-1,0,0);
+        p[2]=defaulttype::Vector3(0,dim[1]-1,0);
+        p[3]=defaulttype::Vector3(dim[0]-1,dim[1]-1,0);
+        p[4]=defaulttype::Vector3(0,0,dim[2]-1);
+        p[5]=defaulttype::Vector3(dim[0]-1,0,dim[2]-1);
+        p[6]=defaulttype::Vector3(0,dim[1]-1,dim[2]-1);
+        p[7]=defaulttype::Vector3(dim[0]-1,dim[1]-1,dim[2]-1);
 
         Coord tp=rtransform->fromImage(p[0]);
         BB[0]=tp;

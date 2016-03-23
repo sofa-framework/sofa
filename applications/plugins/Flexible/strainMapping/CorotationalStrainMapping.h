@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,9 +38,11 @@ namespace component
 namespace mapping
 {
 
-using helper::vector;
 
 /** Deformation Gradient to Corotational Lagrangian Strain mapping
+ *
+ * @author Matthieu Nesme
+ *
 */
 
 template <class TIn, class TOut>
@@ -62,7 +64,7 @@ public:
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
-    virtual void initJacobianBlock( vector<BlockType>& jacobianBlock )
+    virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock )
     {
         if(this->f_printLog.getValue()==true)
             std::cout << SOFA_CLASS_METHOD << std::endl;
@@ -164,7 +166,7 @@ protected:
 
     virtual ~CorotationalStrainMapping() { }
 
-    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, vector<BlockType>& jacobianBlock)
+    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock)
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
@@ -176,7 +178,7 @@ protected:
         case SMALL:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -188,7 +190,7 @@ protected:
         case QR:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -200,7 +202,7 @@ protected:
         case POLAR:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -213,7 +215,7 @@ protected:
         case SVD:
         {
 #ifdef _OPENMP
-#pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
             {
@@ -243,7 +245,7 @@ protected:
         case SMALL:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -255,7 +257,7 @@ protected:
         case QR:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -267,7 +269,7 @@ protected:
         case POLAR:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -279,7 +281,7 @@ protected:
         case SVD:
         {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
             {
@@ -323,7 +325,7 @@ protected:
             case QR:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
@@ -334,7 +336,7 @@ protected:
             case POLAR:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {
@@ -345,7 +347,7 @@ protected:
             case SVD:
             {
 #ifdef _OPENMP
-        #pragma omp parallel for
+        #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
                 {

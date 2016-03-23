@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,6 +70,14 @@ public:
     New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(new T(a1,a2,a3,a4,a5)) {}
     template <class A1, class A2, class A3, class A4, class A5, class A6>
     New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(new T(a1,a2,a3,a4,a5,a6)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8,a9)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)) {}
 };
 
 /// dynamic_cast operator for SPtr

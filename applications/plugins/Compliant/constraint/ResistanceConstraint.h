@@ -12,9 +12,13 @@ namespace linearsolver {
 /// a cinematic dof is free to move only if the force creating the movement is > threshold
 /// the maximum amount of constraint force is threshold
 /// Must be used with a ConstraintValue that constrain the velocity to 0 and that is not stabilizable (e.g. VelocityConstraintValue with velocities="0")
+///
+/// @author Matthieu Nesme
+///
 struct SOFA_Compliant_API ResistanceConstraint : Constraint {
 	
     SOFA_CLASS(ResistanceConstraint, Constraint);
+    SOFA_COMPLIANT_CONSTRAINT_H( ResistanceConstraint )
 
 
     ResistanceConstraint();

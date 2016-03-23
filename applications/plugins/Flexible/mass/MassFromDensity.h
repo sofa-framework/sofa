@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,14 +48,70 @@ namespace engine
 
 /**
  * compute a mass matrix (for a mass component) from a density image, and generic mapping
- * must me in a separate node with a dummy MechnanicalObject<Vec3> and mapping<DofType,Vec3>
+ * must be in a separate node with a dummy MechnanicalObject<Vec3> and mapping<DofType,Vec3>
  * @author: Benjamin Gilles
  */
 
+/// Default implementation does not compile
+template <int imageTypeLabel>
+struct MassFromDensitySpecialization
+{
+};
+
+/// Specialization for regular Image
+template <>
+struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
+{
+
+    template<class MassFromDensity>
+    static void update(MassFromDensity* This)
+    {
+        typedef typename MassFromDensity::Real Real;
+        typedef typename MassFromDensity::VecCoord VecCoord;
+        typedef typename MassFromDensity::Coord Coord;
+
+        typename MassFromDensity::raImage in(This->image);
+        typename MassFromDensity::raTransform inT(This->transform);
+        if(in->isEmpty()) return;
+        const cimg_library::CImg<typename MassFromDensity::T>& img = in->getCImg(This->time);
+
+        // count non zero voxels
+        unsigned int nb=0;
+        cimg_forXYZ(img,x,y,z) if(img(x,y,z)) nb++;
+
+        // build mass and mapped dofs
+        This->Me=typename MassFromDensity::rmat(3*nb,3*nb);
+        This->Me.reserve(3*nb);
+        This->dofs->resize(nb);
+        helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( This->dofs->writeOnlyRestPositions() );
+        helper::WriteOnlyAccessor<Data<VecCoord> > pos ( This->dofs->writeOnlyPositions() );
+
+        Real voxelVol = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2];
+        nb=0;
+        Real totalMass=0;
+        cimg_forXYZ(img,x,y,z)
+                if(img(x,y,z))
+        {
+            rpos[nb]=pos[nb]=inT->fromImage(Coord(x,y,z));
+            for (int k=0; k<3; ++k)  This->Me.insert(3*nb+k,3*nb+k) = voxelVol*(Real)img(x,y,z);
+            totalMass+=voxelVol*(Real)img(x,y,z);
+            nb++;
+        }
+        This->Me.makeCompressed();
+
+        // output some information
+        This->sout<<"Total Volume = "<<voxelVol*nb<<" ("<<pow((double)voxelVol*nb,1.0/3.0)<<")"<<This->sendl;
+        This->sout<<"Total Mass = "<<totalMass<<This->sendl;
+    }
+};
 
 template <class _DataTypes, class _ImageTypes>
 class MassFromDensity : public core::DataEngine
 {
+    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>;
+    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    typedef MassFromDensitySpecialization<_ImageTypes::label> MassFromDensitySpec;
+
 public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE2(MassFromDensity,_DataTypes,_ImageTypes),Inherited);
@@ -124,48 +180,16 @@ protected:
         if(!deformationMapping) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no mapping found"<<sendl; return; }
         if(!dofs) { serr<<SOFA_CLASS_METHOD<<"can't compute the mass : no MechanicalObject<Vec3> found"<<sendl; return; }
 
-        // data access
-        raImage in(this->image);
-        raTransform inT(this->transform);
-        if(in->isEmpty()) return;
-        const cimg_library::CImg<T>& img = in->getCImg(this->time);
-
-        f_lumping.updateIfDirty();
+        updateAllInputsIfDirty(); // the easy way...
 
         cleanDirty();
 
-        // count non zero voxels
-        unsigned int nb=0;
-        cimg_forXYZ(img,x,y,z) if(img(x,y,z)) nb++;
-
-        // build mass and mapped dofs
-        rmat Me(3*nb,3*nb);
-        Me.reserve(3*nb);
-        dofs->resize(nb);
-        helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( dofs->writeOnlyRestPositions() );
-        helper::WriteOnlyAccessor<Data<VecCoord> > pos ( dofs->writeOnlyPositions() );
-
-        Real voxelVol = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2];
-        nb=0;
-        Real totalMass=0;
-        cimg_forXYZ(img,x,y,z)
-                if(img(x,y,z))
-        {
-            rpos[nb]=pos[nb]=inT->fromImage(Coord(x,y,z));
-            for (int k=0; k<3; ++k)  Me.insert(3*nb+k,3*nb+k) = voxelVol*(Real)img(x,y,z);
-            totalMass+=voxelVol*(Real)img(x,y,z);
-            nb++;
-        }
-        Me.makeCompressed();
-
-        // output some information
-        sout<<"Total Volume = "<<voxelVol*nb<<" ("<<pow((double)voxelVol*nb,1.0/3.0)<<")"<<sendl;
-        sout<<"Total Mass = "<<totalMass<<sendl;
+        MassFromDensitySpec::update(this);
 
         // compute J
         deformationMapping->init();
 
-        const vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
+        const helper::vector<defaulttype::BaseMatrix*>* js = deformationMapping->getJs();
         if(!js) { serr<<SOFA_CLASS_METHOD<<"can't compute J : problem with mapping ?"<<sendl; return; }
 
         // compute mass
@@ -194,7 +218,7 @@ protected:
                     for (unsigned int r=0; r<nbBlocks; ++r)
                         for (int n=0; n<M.Nout; ++n)
                             for (int m=0; m<M.Nin; ++m)
-                                    nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,r*M.Nin+m);
+                                nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,r*M.Nin+m);
                     nM.compress();
                     M.compressedMatrix=nM.compressedMatrix;
                 }
@@ -214,6 +238,7 @@ protected:
         }
 
         // clean
+        Me.resize(0,0);
         dofs->resize(0);
         deformationMapping->init();
     }
@@ -241,6 +266,7 @@ protected:
 
     core::BaseMapping* deformationMapping;
     core::State<VecT>* dofs;
+    rmat Me;
     unsigned int time;
 };
 

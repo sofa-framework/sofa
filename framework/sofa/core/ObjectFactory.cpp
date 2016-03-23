@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,10 +24,8 @@
 ******************************************************************************/
 #include "ObjectFactory.h"
 
-#include <sofa/helper/Logger.h>
 #include <sofa/defaulttype/TemplatesAliases.h>
-
-using sofa::helper::Logger;
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -83,7 +81,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     ClassEntryMap::iterator it = registry.find(result);
     if (it == registry.end())
     {
-        Logger::getMainLogger().log(Logger::Error, "Target class for alias '" + result + "'not found: " + name, "ObjectFactory::addAlias()");
+        msg_error("ObjectFactory::addAlias()") << "Target class for alias '" << result << "' not found: " << name;
         return false;
     }
 
@@ -93,7 +91,7 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
     // Check that the alias does not already exist, unless 'force' is true
     if (aliasEntry.get()!=NULL && !force)
     {
-        Logger::getMainLogger().log(Logger::Error, "Name already exists: " + name, "ObjectFactory::addAlias()");
+        msg_error("ObjectFactory::addAlias()") << "Name already exists: " << name;
         return false;
     }
 
@@ -379,11 +377,11 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 
     if (!entry.className.empty() && entry.className != classname)
     {
-        Logger::getMainLogger().log(Logger::Error, "Template already instanciated with a different classname: " + entry.className + " != " + classname, "ObjectFactory");
+        msg_error("ObjectFactory") << "Template already instanciated with a different classname: " << entry.className << " != " << classname;
     }
     else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
     {
-        Logger::getMainLogger().log(Logger::Error, "Component already registered: " + classname + "<" + templatename + ">", "ObjectFactory");
+        msg_error("ObjectFactory") << "Component already registered: " << classname << "<" << templatename << ">";
     }
     else
     {
@@ -409,7 +407,7 @@ RegisterObject::operator int()
         {
             if (!reg.defaultTemplate.empty())
             {
-                Logger::getMainLogger().log(Logger::Warning, "Default template for class " + entry.className + " already registered (" + reg.defaultTemplate + "), do not register " + entry.defaultTemplate + " as the default", "ObjectFactory");
+                msg_warning("ObjectFactory") << "Default template for class " << entry.className << " already registered (" << reg.defaultTemplate << "), do not register " << entry.defaultTemplate << " as the default";
             }
             else
             {
@@ -420,7 +418,7 @@ RegisterObject::operator int()
         {
             if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
-                Logger::getMainLogger().log(Logger::Warning, "Class already registered: entry.className " + itc->first, "ObjectFactory");
+                msg_warning("ObjectFactory") << "Class already registered: " << itc->first;
             }
             else
             {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,7 @@ namespace component
 
 namespace container
 {
-using core::objectmodel::Data;
+//using core::objectmodel::Data;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>

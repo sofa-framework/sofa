@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,14 +62,10 @@ public:
 
     void setColor(float r, float g, float b, float a)
     {
-        float f[4] = { r, g, b, a };
-        for (int i=0; i<4; i++)
-        {
-            ambient = defaulttype::Vec4f(f[0]*0.2f,f[1]*0.2f,f[2]*0.2f,f[3]);
-            diffuse = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
-            specular = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
-            emissive = defaulttype::Vec4f(f[0],f[1],f[2],f[3]);
-        }
+        ambient = defaulttype::Vec4f(r*0.2f,g*0.2f,b*0.2f,a);
+        diffuse = defaulttype::Vec4f(r,g,b,a);
+        specular = defaulttype::Vec4f(r,g,b,a);
+        emissive = defaulttype::Vec4f(r,g,b,a);
     }
 
     inline friend std::ostream& operator << (std::ostream& out, const Material& m )

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,8 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using sofa::helper::vector;
 
 /** DOF types associated with 2nd order deformable frames. Each deformable frame generates an quadratic displacement field, with 30 independent degrees of freedom.
 */
@@ -61,7 +59,7 @@ public:
     enum { coord_total_size = VSize };
     enum { deriv_total_size = VSize };
     typedef _Real Real;
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Real> VecReal;
 
     // ------------    Types and methods defined for easier data access
     typedef Vec<spatial_dimensions, Real> SpatialCoord;                   ///< Position or velocity of a point
@@ -215,7 +213,7 @@ public:
     };
 
 
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     static const char* Name();
 
@@ -429,7 +427,7 @@ public:
         void operator=( const Vec<N,Real2>& p ) { for(int i=0;i<N;++i) this->elems[i] = (Real)p[i]; }
     };
 
-    typedef vector<Deriv> VecDeriv;
+    typedef helper::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )

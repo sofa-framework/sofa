@@ -1,6 +1,3 @@
-#  TetrahedronFEMForceField is not compiled yet 
-ignore "forcefield/FlexibleTetrahedronFEMForceField.scn"
-
 # This runs very slowly, so compute only a few iterations
 iterations "beam/generateRefBeam_flex.scn" "5"
 timeout "beam/generateRefBeam_flex.scn" "60"
@@ -33,5 +30,8 @@ timeout "demos/steak_diffusion.scn" "180"
 iterations "visualization/strainDiscretizer.scn" "10"
 timeout "visualization/strainDiscretizer.scn" "50"
 
+# This scene needs time to load and runs quite slowly
+iterations "deformation/linearHexaFEM-comparison.scn" "3"
+timeout "deformation/linearHexaFEM-comparison.scn" "200"
 
 

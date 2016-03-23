@@ -27,6 +27,7 @@ An assemblage of all the previous steps altogether
             <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
             <MeshVTKLoader name="volTongue" filename="data/mesh/volumetricTongue.vtu" />
             <TetrahedronSetTopologyContainer name="volume" src="@volTongue" />
+            <TetrahedronSetGeometryAlgorithms />
             <MechanicalObject name="mecaTongue" />
             <DiagonalMass massDensity="1" name="computed using mass density" />
             <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.45" method="large" />

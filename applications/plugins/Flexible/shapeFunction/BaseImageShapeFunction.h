@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,10 +45,6 @@ namespace component
 {
 namespace shapefunction
 {
-
-using core::behavior::BaseShapeFunction;
-using defaulttype::Mat;
-using defaulttype::Vec;
 
 
 
@@ -125,8 +121,8 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             IndT ind=indices(P[0],P[1],P[2],r);
             if(ind>0)
             {
-                vector<DistT> val; val.reserve(27);
-                vector<Coord> pos; pos.reserve(27);
+                helper::vector<DistT> val; val.reserve(27);
+                helper::vector<Coord> pos; pos.reserve(27);
                 // add neighbors with same index
                 count=0;
                 for (int k=-1; k<=1; k++) for (int j=-1; j<=1; j++) for (int i=-1; i<=1; i++)
@@ -140,7 +136,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                     count++;
                 }
                 // fit weights
-                vector<Real> coeff;
+                helper::vector<Real> coeff;
                 defaulttype::PolynomialFit(coeff,val,pos, order);
                 //std::cout<<ind<<":"<<coeff[0]<<", err= "<<getPolynomialFit_Error(coeff,val,pos)<< std::endl;
                 if(!dw) defaulttype::getPolynomialFit_differential(coeff,w[index]);
@@ -172,14 +168,14 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 abstract class for shape functions computed from a set of images (typically rasterized objects)
   */
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class BaseImageShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class BaseImageShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
 
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));
-    typedef BaseShapeFunction<ShapeFunctionTypes_> Inherit;
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes_> Inherit;
 
     /** @name  Shape function types */
     //@{
@@ -221,7 +217,7 @@ public:
     Data< IndTypes > f_index;
 
     // only used for branching image
-     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
+     Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,7 +39,6 @@
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <string>
 #include <map>
@@ -116,11 +115,6 @@ virtual       CLASSNAME* to##CLASSNAME()       { return this; }
 
 namespace sofa
 {
-
-namespace helper
-{
-class Logger;
-}
 
 namespace core
 {
@@ -345,9 +339,23 @@ public:
     ///   Messages and warnings logging
     /// @{
 
-    mutable sofa::helper::system::SofaOStream<Base> sendl;
-    mutable std::ostringstream                      serr;
-    mutable std::ostringstream                      sout;
+private:
+
+    /// effective ostringstream for logging
+    mutable std::ostringstream _serr, _sout;
+
+public:
+
+    /// write into component buffer + Message processedby message handlers
+    /// default message type = Warning
+    mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
+    /// write into component buffer.
+    /// Message is processed by message handlers only if printLog==true
+    /// /// default message type = Info
+    mutable helper::system::SofaOStream<helper::logging::Message::Info> sout;
+    /// runs the stream processing
+    mutable helper::system::SofaEndl<Base> sendl;
+
 
     const std::string& getWarnings() const;
     const std::string& getOutputs() const;
@@ -356,13 +364,6 @@ public:
     void clearOutputs();
 
     void processStream(std::ostream& out);
-
-    /// @brief Get the logger used to process the messages sent to the sout and serr streams of components.
-    static helper::Logger& getComponentLogger();
-    /// @brief Change the logger used to process the messages sent to the sout and serr streams of components.
-    static void setComponentLogger(boost::shared_ptr<helper::Logger> logger);
-private:
-    static boost::shared_ptr<helper::Logger> s_componentLogger;
 
     /// @}
 

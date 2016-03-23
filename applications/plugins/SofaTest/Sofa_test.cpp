@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,6 +29,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include "TestMessageHandler.h"
 
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::DataRepository;
@@ -36,6 +38,19 @@ using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 namespace sofa {
+
+
+// some basic RAII stuff to automatically add a TestMessageHandler to every tests
+namespace {
+
+    static struct raii {
+      raii() {
+            helper::logging::MessageDispatcher::addHandler( &helper::logging::TestMessageHandler::getInstance() ) ;
+      }
+
+    } singleton;
+}
+
 
 int BaseSofa_test::seed = (unsigned int)time(NULL);
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,6 @@
 #include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
@@ -874,7 +873,6 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
     if (masses.empty()) return;
@@ -896,24 +894,20 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         totalMass += masses[i];
     }
 
-//    vparams->drawTool()->drawPoints(points, 2, sofa::defaulttype::Vec<4,float>(1,1,1,1));
-
-    if(showCenterOfGravity.getValue())
+    if ( showCenterOfGravity.getValue() )
     {
-        glBegin (GL_LINES);
-        glColor4f (1,1,0,1);
-        glPointSize(5);
         gravityCenter /= totalMass;
-        for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
-        {
-            Coord v;
-            v[i] = showAxisSize.getValue();
-            helper::gl::glVertexT(gravityCenter-v);
-            helper::gl::glVertexT(gravityCenter+v);
-        }
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+        Real axisSize = showAxisSize.getValue();
+        sofa::defaulttype::Vector3 temp;
+
+        for ( unsigned int i=0 ; i<3 ; i++ )
+            if(i < Coord::spatial_dimensions )
+                temp[i] = gravityCenter[i];
+
+        vparams->drawTool()->drawCross(temp, axisSize, color);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 template <class DataTypes, class MassType>

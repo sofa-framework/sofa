@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,7 +37,6 @@
 
 namespace sofa
 {
-using helper::vector;
 
 namespace component
 {
@@ -88,9 +87,9 @@ public:
     typedef core::behavior::ShapeFunctionTypes<3,Real> ShapeFunctionType;             // 2d shape function
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> ShapeFunction;
     typedef defaulttype::Vec<2,Real> MCoord;                                     ///< material coordinates
-    typedef vector<MCoord> VMCoord;                                   ///< vector of material coordinates
+    typedef helper::vector<MCoord> VMCoord;                                   ///< vector of material coordinates
     typedef defaulttype::Mat<2,2,Real> MMat;                                      ///< matrix in material coordinates
-    typedef vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
+    typedef helper::vector<MMat> VMMat;                                              ///< vector of material matrices, used to compute the deformation gradients
 
 
     Data< VMMat > f_inverseRestEdges;  ///< For each triangle, inverse matrix of edge12, edge13, normal. This is used to compute the deformation gradient based on the current edges.
@@ -109,7 +108,7 @@ public:
 //    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -119,7 +118,7 @@ protected:
 
     topology::TriangleSetTopologyContainer* triangleContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
     Block makeBlock( Real middle, Real bottom );  ///< helper for the creation of the jacobian
 };

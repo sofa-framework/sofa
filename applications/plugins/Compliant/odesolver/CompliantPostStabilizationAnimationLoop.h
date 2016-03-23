@@ -28,6 +28,9 @@ namespace animationloop
 /** Implementation of "Post-Stabilization for Rigid Body Simulation with Contact and Constraints", Cline & Pai, ICRA 2003
  * with a full contact update before the correction pass.
  * Note a cheaper but less accurate post-stab without a full collision detection before the correction pass can be obtained with the Data 'stabilization' of CompliantImplicitSolver
+ *
+ * @author Matthieu Nesme
+ * @date 2014
 */
 class SOFA_Compliant_API CompliantPostStabilizationAnimationLoop : public sofa::simulation::CollisionAnimationLoop
 {

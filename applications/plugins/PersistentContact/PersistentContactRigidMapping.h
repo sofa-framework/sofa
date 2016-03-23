@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,38 +122,27 @@ protected:
     void setDefaultValues();
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec2dTypes;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Rigid2fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
+
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid2dTypes, defaulttype::Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< defaulttype::Rigid2fTypes, defaulttype::Vec2fTypes >;
 #endif
 
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
-extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
-#endif
-#endif
+//#ifndef SOFA_FLOAT
+//#ifndef SOFA_DOUBLE
+//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3dTypes, Vec3fTypes >;
+//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid3fTypes, Vec3dTypes >;
+//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2dTypes, Vec2fTypes >;
+//extern template class SOFA_PERSISTENTCONTACT_API PersistentContactRigidMapping< Rigid2fTypes, Vec2dTypes >;
+//#endif
+//#endif
 #endif
 
 } // namespace mapping

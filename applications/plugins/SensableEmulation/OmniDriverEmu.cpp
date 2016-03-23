@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,6 +78,7 @@ namespace controller
 using namespace sofa::defaulttype;
 using namespace core::behavior;
 using namespace sofa::defaulttype;
+using helper::vector;
 
 OmniDriverEmu::OmniDriverEmu()
     : forceScale(initData(&forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,7 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , similarity(initData(&similarity,similarityTypes(),"similarity","similarity image"))
     , maskOutside(initData(&maskOutside,false,"maskOutside","discard profiles outside images"))
     , useAnisotropicStiffness(initData(&useAnisotropicStiffness,false,"useAnisotropicStiffness", "use more accurate but non constant stiffness matrix."))
-    , Sizes(initData(&Sizes,Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
+    , Sizes(initData(&Sizes,defaulttype::Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
     , Step(initData(&Step,(Real)1E-2,"step","Spacing of the profile discretization."))
     , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
     , SimilarityMeasure( initData ( &SimilarityMeasure,"measure","Similarity measure." ) )
@@ -167,8 +167,8 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     // allocate
     unsigned int nbpoints=pos.size();
-    Vec<2,unsigned int> sizes(this->Sizes.getValue()[0]+ (ref?0:searchRange.getValue()) ,this->Sizes.getValue()[1]+ (ref?0:searchRange.getValue()));
-    Vec<4,unsigned int> dims(sizes[0]+sizes[1]+1,nbpoints,1,img.spectrum());
+    defaulttype::Vec<2,unsigned int> sizes(this->Sizes.getValue()[0]+ (ref?0:searchRange.getValue()) ,this->Sizes.getValue()[1]+ (ref?0:searchRange.getValue()));
+    defaulttype::Vec<4,unsigned int> dims(sizes[0]+sizes[1]+1,nbpoints,1,img.spectrum());
 
     waImage out(ref?this->refProfiles:this->profiles);
     if( out->isEmpty() )  out->getCImgList().push_back(CImg<T>());
@@ -258,7 +258,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     // allocate
     unsigned int nbpoints=pos.size();
-    Vec<4,unsigned int> dims(2*searchRange.getValue()+1,nbpoints,1,1);
+    defaulttype::Vec<4,unsigned int> dims(2*searchRange.getValue()+1,nbpoints,1,1);
 
     waSimilarity out(this->similarity);
     if( out->isEmpty() )  out->getCImgList().push_back(CImg<Ts>());
@@ -479,16 +479,16 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
     unsigned int nb = this->targetPos.size();
     if (vparams->displayFlags().getShowForceFields())
     {
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
         {
-            Vector3 point1 = DataTypes::getCPos(x[i]);
-            Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
+            defaulttype::Vector3 point1 = DataTypes::getCPos(x[i]);
+            defaulttype::Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
             points.push_back(point1);
             points.push_back(point2);
         }
 
-        const Vec<4,float> c(0,1,0.5,1);
+        const defaulttype::Vec<4,float> c(0,1,0.5,1);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
         else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
         else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);

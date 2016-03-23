@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -1068,14 +1068,14 @@ public:
 
 
 public:
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
 protected:
     typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
 
     // eigen matrix for use with Compliant plugin
     eigen_type eigen;
-    vector< defaulttype::BaseMatrix* > js;
+    helper::vector< defaulttype::BaseMatrix* > js;
 
     virtual void updateForceMask();
 

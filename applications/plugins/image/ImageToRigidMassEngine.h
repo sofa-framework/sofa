@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,11 +40,6 @@ namespace component
 {
 namespace engine
 {
-
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using cimg_library::CImg;
 
 /**
  * Compute rigid mass from a density image
@@ -133,10 +128,11 @@ protected:
         raTransform inT(this->transform);
         raImage in(this->image);
         if(in->isEmpty()) return;
-        const CImg<T>& img = in->getCImg(this->time);
+        const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
-        d_density.updateIfDirty();
-        d_mult.updateIfDirty();
+        Real d = d_density.getValue();
+        bool mult = d_mult.getValue();
+
 
         cleanDirty();
 
@@ -155,7 +151,7 @@ protected:
         cimg_forXYZ(img,x,y,z)
                 if(img(x,y,z)!=(T)0)
         {
-            Real density = (d_mult.getValue()==true) ? (Real)img(x,y,z)*d_density.getValue() : d_density.getValue();
+            Real density = mult ? (Real)img(x,y,z)*d : d;
             Real m = density*voxelVol;
             rigidMass->volume+=voxelVol;
             rigidMass->mass+=m;

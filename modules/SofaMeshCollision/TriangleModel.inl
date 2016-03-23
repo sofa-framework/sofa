@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -160,7 +160,7 @@ void TTriangleModel<DataTypes>::updateFromTopology()
         int index = 0;
         for (unsigned i=0; i<ntris; i++)
         {
-            topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
+            core::topology::BaseMeshTopology::Triangle idx = _topology->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
             {
                 serr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")"<<sendl;
@@ -173,7 +173,8 @@ void TTriangleModel<DataTypes>::updateFromTopology()
         }
         if(triangulateQuads.getValue())
         {
-            for (unsigned i=0; i<nquads; i++)
+            core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
+            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
             {
                 topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
                 if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)

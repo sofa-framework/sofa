@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -521,10 +521,9 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                     }
                     else
                     {
-                        printf("Lists not yet supported...\n");
+                        msg_warning("SetDataValuePython") << "Lists not yet supported...";
                         PyErr_BadArgument();
                         return false;
-
                     }
                 }
 
@@ -620,7 +619,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
                 }
                 else
                 {
-                    printf("Lists not yet supported...\n");
+                    msg_warning("SetDataValuePython") << "Lists not yet supported...";
                     PyErr_BadArgument();
                     return false;
 
@@ -739,6 +738,8 @@ extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
     return PyString_FromString(data->getValueString().c_str());
 }
 
+
+// TODO a description of what this function is supposed to do?
 extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
@@ -747,9 +748,9 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
     int rowWidth = typeinfo->size();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-    printf("Data_getSize rowWidth=%d nbRows=%d\n",rowWidth,nbRows);
+    SP_MESSAGE_WARNING( "Data_getSize (this fonction always returns 0) rowWidth="<<rowWidth<<" nbRows="<<nbRows );
 
-    return PyInt_FromLong(0); //temp
+    return PyInt_FromLong(0); //temp ==> WTF ?????
 }
 
 extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)

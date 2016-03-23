@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,8 +33,6 @@
 
 #include <algorithm>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -43,7 +41,6 @@ namespace component
 namespace shapefunction
 {
 
-using defaulttype::Mat;
 /**
 Bezier shape functions are the Bezier coordinates of points inside cells (can be edges, triangles, quads, tetrahedra, hexahedra)
 there are computed from barycentric coordinates

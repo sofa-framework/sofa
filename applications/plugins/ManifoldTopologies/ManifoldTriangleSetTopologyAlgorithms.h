@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,7 +82,7 @@ public:
             sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-            sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+            sofa::helper::vector<core::topology::BaseMeshTopology::EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
 
 
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
@@ -94,19 +94,19 @@ public:
     /** \brief: Swap a list of edges.
      *
      */
-    void edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges);
+    void edgeSwapProcess (const sofa::helper::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
 
 
     /** \brief: Swap the edge adjacent to the two input triangles (To be used by the ray pick interactor).
      *
      */
-    void edgeSwapProcess (const TriangleID& indexTri1, const TriangleID& indexTri2);
+    void edgeSwapProcess (const core::topology::BaseMeshTopology::TriangleID& indexTri1, const core::topology::BaseMeshTopology::TriangleID& indexTri2);
 
 
     /** \brief: Reorder the mesh by swaping a list of edges.
      * For each edge, check if topology will be better before swaping it.
      */
-    void swapRemeshing (sofa::helper::vector <EdgeID>& listEdges);
+    void swapRemeshing (sofa::helper::vector <core::topology::BaseMeshTopology::EdgeID>& listEdges);
 
     /** \brief: Reorder the whole mesh by swaping a all edges.
      * For each edge, check if topology will be better before swaping it.
@@ -127,7 +127,7 @@ protected:
     * @param index of first triangle.
     * @param index of second triangle adjacent to the first one.
     */
-    bool edgeSwap (const EdgeID& indexEdge);
+    bool edgeSwap (const core::topology::BaseMeshTopology::EdgeID& indexEdge);
 
 
 private:

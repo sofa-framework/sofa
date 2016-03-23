@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -1445,7 +1446,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
     // In case the ind_t is not the good one.
-    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != BaseMeshTopology::InvalidID))
+    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != core::topology::BaseMeshTopology::InvalidID))
     {
 
         const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTrianglesAroundVertex (last_point);
@@ -1708,7 +1709,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         }
     }
 
-    if (ind_tb == BaseMeshTopology::InvalidID)
+    if (ind_tb == core::topology::BaseMeshTopology::InvalidID)
         ind_tb = ind_triangle;
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
@@ -1782,7 +1783,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         sofa::defaulttype::Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
-        if (last_point != BaseMeshTopology::InvalidID)
+        if (last_point != core::topology::BaseMeshTopology::InvalidID)
         {
             topoPath_list.push_back (core::topology::POINT);
             indices_list.push_back (last_point);
@@ -2170,16 +2171,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
     // Draw Triangles indices
     if (showTriangleIndices.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
-        const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-        defaulttype::Vec4f color4(color[0] - 0.2f, color[1] - 0.2f, color[2] - 0.2f, 1.0);
+        const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
         float scale = this->getIndicesScale();
 
         //for triangles:
@@ -2195,16 +2193,16 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             Coord vertex1 = coords[ the_tri[0] ];
             Coord vertex2 = coords[ the_tri[1] ];
             Coord vertex3 = coords[ the_tri[2] ];
-            defaulttype::Vector3 center; center = (DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3;
+            defaulttype::Vector3 center = defaulttype::Vector3((DataTypes::getCPos(vertex1)+DataTypes::getCPos(vertex2)+DataTypes::getCPos(vertex3))/3);
 
             positions.push_back(center);
 
         }
-        vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
+        vparams->drawTool()->draw3DText_Indices(positions, scale, color);
     }
 
 
-    // Draw Triangles
+
     if (_draw.getValue())
     {
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
@@ -2213,58 +2211,49 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         {
             const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-            glDisable(GL_LIGHTING);
-            const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
-            glColor3f(color[0], color[1], color[2]);
-            glBegin(GL_TRIANGLES);
-            for (unsigned int i = 0; i<triangleArray.size(); i++)
-            {
-                const Triangle& t = triangleArray[i];
+            const sofa::defaulttype::Vec4f& color = _drawColor.getValue();
 
-                for (unsigned int j = 0; j<3; j++)
-                {
-                    sofa::defaulttype::Vec3f coordP; coordP = DataTypes::getCPos(coords[t[j]]);
-                    glVertex3f(coordP[0], coordP[1], coordP[2]);
-                }
-            }
-            glEnd();
-
-            glColor3f(color[0]-0.2f, color[1]-0.2f, color[2]-0.2f);
-            glBegin(GL_LINES);
-            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
-
-            if (!edgeArray.empty()) // Draw triangle edges for better display
-            {
-                for (unsigned int i = 0; i<edgeArray.size(); i++)
-                {
-                    const Edge& e = edgeArray[i];
-                    sofa::defaulttype::Vec3f coordP1; coordP1 = DataTypes::getCPos(coords[e[0]]);
-                    sofa::defaulttype::Vec3f coordP2; coordP2 = DataTypes::getCPos(coords[e[1]]);
-                    glVertex3f(coordP1[0], coordP1[1], coordP1[2]);
-                    glVertex3f(coordP2[0], coordP2[1], coordP2[2]);
-                }
-            }
-            else
-            {
+            {//   Draw Triangles
+                std::vector<defaulttype::Vector3> pos;
                 for (unsigned int i = 0; i<triangleArray.size(); i++)
                 {
                     const Triangle& t = triangleArray[i];
-                    sofa::helper::vector <sofa::defaulttype::Vec3f> triCoord;
 
                     for (unsigned int j = 0; j<3; j++)
                     {
-                        sofa::defaulttype::Vec3f p; p = DataTypes::getCPos(coords[t[j]]);
-                        triCoord.push_back(p);
-                    }
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
 
-                    for (unsigned int j = 0; j<3; j++)
-                    {
-                        glVertex3f(triCoord[j][0], triCoord[j][1], triCoord[j][2]);
-                        glVertex3f(triCoord[(j+1)%3][0], triCoord[(j+1)%3][1], triCoord[(j+1)%3][2]);
                     }
                 }
+                vparams->drawTool()->drawTriangles(pos,color);
             }
-            glEnd();
+
+
+            {//   Draw triangle edges for better display
+                const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+                std::vector<defaulttype::Vector3> pos;
+                if (!edgeArray.empty())
+                {
+                    for (unsigned int i = 0; i<edgeArray.size(); i++)
+                    {
+                        const Edge& e = edgeArray[i];
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[0]])));
+                        pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[e[1]])));
+                    }
+                } else {
+                    for (unsigned int i = 0; i<triangleArray.size(); i++)
+                    {
+                        const Triangle& t = triangleArray[i];
+
+                        for (unsigned int j = 0; j<3; j++)
+                        {
+                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[j]])));
+                            pos.push_back(defaulttype::Vector3(DataTypes::getCPos(coords[t[(j+1u)%3u]])));
+                        }
+                    }
+                }
+                vparams->drawTool()->drawLines(pos,1.0f,color);
+            }
         }
     }
 
@@ -2276,11 +2265,13 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         size_t nbrTtri = triangleArray.size();
 
         Coord point2;
-        sofa::defaulttype::Vec<3,double> colors;
+        sofa::defaulttype::Vec<4,float> color;
         SReal normalLength = _drawNormalLength.getValue();
 
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
+        vparams->drawTool()->setLightingEnabled(false);
+
+        sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
+        sofa::helper::vector<sofa::defaulttype::Vec4f> colors;
 
         for (unsigned int i =0; i<nbrTtri; i++)
         {
@@ -2296,17 +2287,16 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
-                colors[j] = fabs (normal[j]);
+                color[j] = fabs (normal[j]);
 
-            glColor3f ((float)colors[0], (float)colors[1], (float)colors[2]);
-
-            glVertex3d(center[0], center[1], center[2]);
-            glVertex3d(point2[0], point2[1], point2[2]);
+            vertices.push_back(center);
+            colors.push_back(color);
+            vertices.push_back(point2);
+            colors.push_back(color);
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1.0f,colors);
     }
 
-#endif /* SOFA_NO_OPENGL */
 }
 
 

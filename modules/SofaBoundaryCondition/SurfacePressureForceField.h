@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -93,7 +93,7 @@ protected:
     Data< Deriv >	m_mainDirection;			///< Main axis for pressure application.
 
     Data< Real > m_drawForceScale;  ///< scale used to render force vectors
-    vector< Deriv> m_f;             ///< store forces for visualization
+    helper::vector< Deriv> m_f;             ///< store forces for visualization
 
     State state;								///< In pulse mode, says wether pressure is increasing or decreasing.
     Real m_pulseModePressure;					///< Current pressure computed in pulse mode.

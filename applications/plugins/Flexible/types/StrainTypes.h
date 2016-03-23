@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,10 +45,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using std::endl;
-using helper::vector;
-
-
 /**
     Generic class to implement a mechanical state representing strain
     strain is decomposed in a basis of an certain order.
@@ -77,7 +73,7 @@ public:
     enum { deriv_total_size = VSize };
     enum { order = _order };
 
-    typedef vector<Real> VecReal;
+    typedef helper::vector<Real> VecReal;
 
     class Deriv
     {
@@ -177,7 +173,7 @@ public:
         /// @}
     };
 
-    typedef vector<Deriv> VecDeriv;
+    typedef helper::vector<Deriv> VecDeriv;
     typedef MapMapSparseMatrix<Deriv> MatrixDeriv;
 
     static Deriv interpolate ( const helper::vector< Deriv > & ancestors, const helper::vector< Real > & coefs )
@@ -190,7 +186,7 @@ public:
 
     typedef Deriv Coord;
 
-    typedef vector<Coord> VecCoord;
+    typedef helper::vector<Coord> VecCoord;
 
     static const char* Name();
 
@@ -255,7 +251,7 @@ public:
 
     static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef Vec<material_dimensions, Real> MaterialCoord;
-    typedef vector<MaterialCoord> VecMaterialCoord;
+    typedef helper::vector<MaterialCoord> VecMaterialCoord;
     typedef Mat<material_dimensions,material_dimensions,Real> StrainMat;    ///< Strain in matrix form
 };
 
@@ -504,7 +500,7 @@ public:
 
     static const unsigned int material_dimensions = _material_dimensions; ///< Number of dimensions of the material space (=number of axes of the deformable gradient): 3 for a volume object, 2 for a surface, 1 for a line.
     typedef Vec<material_dimensions, _Real> MaterialCoord;
-    typedef vector<MaterialCoord> VecMaterialCoord;
+    typedef helper::vector<MaterialCoord> VecMaterialCoord;
     typedef Mat<material_dimensions,material_dimensions,_Real> StrainMat;    ///< Strain in matrix form
 };
 

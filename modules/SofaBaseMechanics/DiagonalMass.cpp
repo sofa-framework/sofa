@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,7 +25,6 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
 #include <SofaBaseMechanics/DiagonalMass.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -78,7 +77,6 @@ SReal DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::M
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -113,18 +111,11 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPar
 
     if(showCenterOfGravity.getValue())
     {
-        glColor3f (1,1,0);
-        glBegin (GL_LINES);
         gravityCenter /= totalMass;
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 template <>
@@ -289,7 +280,6 @@ SReal DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::M
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -324,18 +314,12 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const core::visual::VisualPar
 
     if(showCenterOfGravity.getValue())
     {
-        glColor3f (1,1,0);
-        glBegin (GL_LINES);
         gravityCenter /= totalMass;
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
-        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
-        glEnd();
+        const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
+
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
-#endif /* SOFA_NO_OPENGL */
+
 }
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()

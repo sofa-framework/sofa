@@ -13,6 +13,7 @@ namespace linearsolver {
 
 /// Solving the dynamics equation
 /// @warning with "constant" set to true, mass and stiffness cannot be added dynamically (like a mouse-spring or penalities)
+/// @author Matthieu Nesme
 template<class LinearSolver, bool symmetric=false>
 class SOFA_Compliant_API EigenSparseResponse : public Response {
 public:
@@ -33,6 +34,10 @@ public:
 	/// reuse first factorization
     Data<bool> d_constant;
 
+    /// if the sparsity pattern remains similar from one step to the other,
+    /// the factorization can be faster
+    Data<bool> d_trackSparsityPattern;
+
 protected:
 
 	typedef system_type::real real;
@@ -41,8 +46,13 @@ protected:
 	response_type response;
 
     bool m_factorized;
+    cmat::Index m_previousSize; ///< @internal for d_trackSparsityPattern
+    cmat::Index m_previousNonZeros; ///< @internal for d_trackSparsityPattern
 
     cmat tmp;
+
+    /// @internal perform the factorization
+    void compute( const cmat& M );
 	
 };
 

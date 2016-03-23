@@ -39,7 +39,7 @@ public:
     Data< block_matrix_type > matC; ///< input compliance matrix (PSD)
     Data< block_matrix_type > matK; ///< input stiffness matrix (PSD)
 
-    Data< vector<SReal> > damping; ///< Full damping
+    Data< helper::vector<SReal> > damping; ///< Full damping
 
     virtual void init();
 
@@ -61,6 +61,8 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
+    /// unassembled API
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal);
 
 protected:
     FullCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);

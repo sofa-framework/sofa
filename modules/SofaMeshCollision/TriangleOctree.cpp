@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -504,7 +504,7 @@ void TriangleOctree::allTriangles (const defaulttype::Vector3 & /*origin*/,
 
 void TriangleOctree::allTriangles (const defaulttype::Vector3 & origin,
         const defaulttype::Vector3 & direction,
-        vector<traceResult>& results)
+        helper::vector<traceResult>& results)
 {
     static RayTriangleIntersection intersectionSolver;
     defaulttype::Vector3 P;
@@ -722,7 +722,7 @@ void TriangleOctree::traceAll (const defaulttype::Vector3 & origin,
     }
 }
 
-void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 direction, vector<traceResult>& results)
+void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 direction, helper::vector<traceResult>& results)
 {
     traceAllStart(origin, direction, results);
 }

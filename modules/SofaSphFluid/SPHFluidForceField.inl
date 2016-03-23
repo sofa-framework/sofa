@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -197,13 +197,13 @@ void SPHFluidForceField<DataTypes>::init()
     this->Inherit::init();
 
     SPHKernel<SPH_KERNEL_CUBIC,Deriv> Kcubic(4);
-    if (!Kcubic.CheckAll(2, sout, serr)) serr << sendl;
+    if (!Kcubic.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     SPHKernel<SPH_KERNEL_DEFAULT_DENSITY,Deriv> Kd(4);
-    if (!Kd.CheckAll(2, sout, serr)) serr << sendl;
+    if (!Kd.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     SPHKernel<SPH_KERNEL_DEFAULT_PRESSURE,Deriv> Kp(4);
-    if (!Kp.CheckAll(1, sout, serr)) serr << sendl;
+    if (!Kp.CheckAll(1, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     SPHKernel<SPH_KERNEL_DEFAULT_VISCOSITY,Deriv> Kv(4);
-    if (!Kv.CheckAll(2, sout, serr)) serr << sendl;
+    if (!Kv.CheckAll(2, sout.ostringstream(), serr.ostringstream())) serr << sendl;
     sout << sendl;
 
     this->getContext()->get(grid); //new Grid(particleRadius.getValue());

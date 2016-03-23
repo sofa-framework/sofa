@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -244,7 +244,6 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
     sofa::simulation::tree::init();
     sofa::helper::BackTrace::autodump();
     sofa::core::ExecParams::defaultInstance()->setAspectID(0);

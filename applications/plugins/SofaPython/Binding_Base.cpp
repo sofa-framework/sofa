@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,6 +28,7 @@
 #include "Binding_OptionsGroupData.h"
 #include "Binding_Link.h"
 
+#include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
 using namespace sofa::core::objectmodel;
@@ -35,6 +36,7 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::core::visual;
 #include <sofa/helper/OptionsGroup.h>
 using namespace sofa::helper;
+#include <sofa/helper/logging/Messaging.h>
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 {
@@ -42,18 +44,20 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
     char *dataName;
     if (!PyArg_ParseTuple(args, "s",&dataName))
     {
-        std::cerr<<"Base_findData_impl not a string\n";
+        msg_error("Base_findData") <<"Base_findData_impl not a string\n";
         Py_RETURN_NONE;
     }
     BaseData * data = obj->findData(dataName);
     if (!data)
     {
         if( obj->hasField(dataName) )
-            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"<<std::endl;
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
         else
         {
-            std::cerr<<"Base_findData: object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'"<<std::endl;
-            obj->writeDatas(std::cerr,";");
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
+            std::stringstream s;
+            obj->writeDatas(s,";");
+            msg_error("Base_findData")<<s.str();
         }
 
         PyErr_BadArgument();
@@ -81,11 +85,13 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
     if (!link)
     {
         if( obj->hasField(linkName) )
-            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link"<<std::endl;
+            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
         else
         {
-            std::cerr<<"Base_findLink: object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'"<<std::endl;
-            obj->writeDatas(std::cerr,";");
+            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'";
+            std::stringstream s;
+            obj->writeDatas(s,";");
+            msg_error("Base_findLink")<<s.str();
         }
 
         PyErr_BadArgument();
@@ -163,14 +169,33 @@ extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(node->getName().c_str());
 }
 
+extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
+{
+    Base * component = ((PySPtr<Base>*)self)->object.get();
+
+    if(!component)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    const vector<BaseData*> dataFields = component->getDataFields();
+
+    PyObject * pyDict = PyDict_New();
+    for (size_t i=0; i<dataFields.size(); i++)
+        PyDict_SetItem(pyDict, PyString_FromString(dataFields[i]->getName().c_str()), GetDataValuePython(dataFields[i]));
+
+    return pyDict;
+}
+
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD(Base,findData)
 SP_CLASS_METHOD(Base,findLink)
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
+SP_CLASS_METHOD(Base,getDataFields)
 SP_CLASS_METHODS_END
-
 
 //SP_CLASS_DATA_ATTRIBUTE(Base,name)
 

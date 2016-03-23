@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -143,12 +143,12 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            if (mass < 0)
-            {
-                // fixed point initialization
-                mass = -mass;
-                //fixed = true;
-            }
+//            if (mass < 0)
+//            {
+//                // fixed point initialization
+//                mass = -mass;
+//                //fixed = true;
+//            }
             my_positions.push_back(Vector3(px, py, pz));
         }
         else if (cmd=="lspg")	// linear springs connector

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,7 +36,6 @@ namespace component
 namespace fem
 {
 
-using namespace sofa::defaulttype;
 
 /**
  * Generic material class
@@ -60,8 +59,8 @@ public:
     // The same principe for computing the strain given the displacement
 
 
-    virtual void computeStress (Vector3 & ,Vector3 &,unsigned int &) {}
-    virtual void computeDStress (Vector3 & ,Vector3 &) {}
+    virtual void computeStress (defaulttype::Vector3 & ,defaulttype::Vector3 &,unsigned int &) {}
+    virtual void computeDStress (defaulttype::Vector3 & ,defaulttype::Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
     virtual void handleTopologyChange()

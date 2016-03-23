@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,7 +84,7 @@ public:
     typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
     /// connexion between several coarsened levels
-    typedef std::vector<fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
+    typedef std::vector<helper::fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
     HierarchicalCubeMap _hierarchicalCubeMap;
     typedef helper::vector<int> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
@@ -173,8 +173,8 @@ public:
     void updateMesh();
 
     RegularGridTopology::SPtr _regularGrid; ///< based on a corresponding RegularGrid
-    vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-    vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
+    helper::vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    helper::vector< int > _indicesOfCubeinRegularGrid; ///< to redirect an indice of a cube in the sparse grid to its indice in the regular grid
 
     Vector3 getPointPos( int i ) { return Vector3( seqPoints.getValue()[i][0],seqPoints.getValue()[i][1],seqPoints.getValue()[i][2] ); }
 
@@ -191,9 +191,9 @@ public:
     bool getVoxel(unsigned int index) const
     {
         return dataVoxels.getValue()[index]==1;
-    };
+    }
 
-    Data< vector< unsigned char > >     dataVoxels;
+    Data< helper::vector< unsigned char > >     dataVoxels;
     Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
     Data<bool> d_bOnlyInsideCells;
@@ -214,8 +214,8 @@ public:
     Data< unsigned int >    marchingCubeStep;
     Data< unsigned int >    convolutionSize;
 
-    Data< vector< Vector3 > >    vertices;
-    Data< vector < vector <int> > >facets;
+    Data< helper::vector< Vector3 > >    vertices;
+    Data< helper::vector < helper::vector <int> > >facets;
     Data< SeqTriangles > input_triangles;
     Data< SeqQuads > input_quads;
 
@@ -224,7 +224,7 @@ public:
           \param box  Volume occupied by the grid
           \param filling Voxel filling: true if the cell is defined, false if the cell is empty. Voxel order is: for(each z){ for(each y){ for(each x) }}}
           */
-    void buildFromData( Vec3i numPoints, BoundingBox box, const vector<bool>& filling );
+    void buildFromData( Vec3i numPoints, BoundingBox box, const helper::vector<bool>& filling );
 
 protected:
     virtual void updateEdges();
@@ -234,7 +234,7 @@ protected:
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
 
-    sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
+    helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
 
     helper::vector< float > _stiffnessCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
     helper::vector< float > _massCoefs; ///< a stiffness coefficient per hexa (BOUNDARY=.5, FULL=1)
@@ -242,14 +242,14 @@ protected:
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void launchPropagationFromSeed(const Vec3i& point,
             RegularGridTopology::SPtr regularGrid,
-            vector<Type>& regularGrdidTypes,
-            vector<bool>& alreadyTested,
+            helper::vector<Type>& regularGrdidTypes,
+            helper::vector<bool>& alreadyTested,
             std::stack<Vec3i>& seed) const;
 
     void propagateFrom(  const Vec3i& point,
             RegularGridTopology::SPtr regularGrid,
-            vector<Type>& regularGridTypes,
-            vector<bool>& alreadyTested,
+            helper::vector<Type>& regularGridTypes,
+            helper::vector<bool>& alreadyTested,
             std::stack< sofa::defaulttype::Vec<3,int> > &seed) const;
 
     void computeBoundingBox(const helper::vector<Vector3>& vertices,
@@ -259,11 +259,11 @@ protected:
 
     void voxelizeTriangleMesh(helper::io::Mesh* mesh,
             RegularGridTopology::SPtr regularGrid,
-            vector<Type>& regularGridTypes) const;
+            helper::vector<Type>& regularGridTypes) const;
 
     void buildFromTriangleMesh(const std::string& filename);
 
-    void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const vector<Type>& regularGridTypes);
+    void buildFromRegularGridTypes(RegularGridTopology::SPtr regularGrid, const helper::vector<Type>& regularGridTypes);
 
 
 

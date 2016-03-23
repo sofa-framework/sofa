@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,12 +63,6 @@ namespace component
 namespace forcefield
 {
 
-using helper::vector;
-
-using namespace sofa::defaulttype;
-
-
-
 
 template<class _DataTypes,class _ImageTypes>
 class IntensityProfileRegistrationForceFieldInternalData
@@ -109,7 +103,7 @@ public:
     Data< ImageTypes > refImage;
     Data< ImageTypes > image;
 
-    typedef ImageLPTransform<Real> TransformType;
+    typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > refTransform;
     Data< TransformType > transform;
@@ -179,7 +173,7 @@ protected :
     /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
 
-    Data< Vec<2,unsigned int> > Sizes;
+    Data< defaulttype::Vec<2,unsigned int> > Sizes;
     Data< Real > Step;
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubi
     Data< helper::OptionsGroup > SimilarityMeasure;  ///< ssd,ncc

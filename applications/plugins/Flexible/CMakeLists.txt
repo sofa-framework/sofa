@@ -36,11 +36,13 @@ set(HEADER_FILES
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
-    # forceField/FlexibleTetrahedronFEMForceField.h
+    forceField/FlexibleCorotationalFEMForceField.h
+    forceField/FlexibleCorotationalMeshFEMForceField.h
     helper.h
     mass/AffineMass.h
     material/BaseMaterial.h
     material/BaseMaterialForceField.h
+    material/HEMLStVKForceField.h
     material/HookeForceField.h
     material/HookeMaterialBlock.h
     material/HookeMaterialBlock.inl
@@ -103,9 +105,6 @@ set(HEADER_FILES
     types/QuadraticTypes.h
     types/RigidConstraint.h
     types/StrainTypes.h
-    miscMapping/rigidScaleMappingJacobian.h
-    miscMapping/RigidScaleToAffineMultiMapping.h
-    miscMapping/RigidScaleToAffineMultiMapping.inl
 )
 
 set(SOURCE_FILES
@@ -127,10 +126,12 @@ set(SOURCE_FILES
     deformationMapping/VolumeMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
-    # forceField/FlexibleTetrahedronFEMForceField.cpp
+    forceField/FlexibleCorotationalFEMForceField.cpp
+    forceField/FlexibleCorotationalMeshFEMForceField.cpp
     initFlexible.cpp
     mass/AffineMass.cpp
     material/BaseMaterialForceField.cpp
+    material/HEMLStVKForceField.cpp
     material/HookeForceField.cpp
     material/MooneyRivlinForceField.cpp
     material/MuscleMaterialForceField.cpp
@@ -163,7 +164,6 @@ set(SOURCE_FILES
     types/QuadraticComponents.cpp
     types/RigidConstraint.cpp
     types/StrainTypes.cpp
-    miscMapping/RigidScaleToAffineMultiMapping.cpp
 )
 
 set(PYTHON_FILES

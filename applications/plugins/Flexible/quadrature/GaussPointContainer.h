@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,8 +36,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-
 /**
  * This class is empty. It is just used to contain custom Gauss points and provide interface with mappings
  */
@@ -56,7 +54,7 @@ public:
     //@}
 
     Data< unsigned int > f_volumeDim;
-    Data< vector<Real> > f_inputVolume;
+    Data< helper::vector<Real> > f_inputVolume;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const GaussPointContainer* = NULL) { return std::string();    }
@@ -84,7 +82,7 @@ protected:
 
     virtual void update()
     {
-        helper::ReadAccessor< Data< vector<Real> > > invol(f_inputVolume);
+        helper::ReadAccessor< Data< helper::vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
         unsigned int dim = this->f_volumeDim.getValue();

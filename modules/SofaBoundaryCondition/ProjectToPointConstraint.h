@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -124,16 +124,16 @@ public:
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 
-    class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >
+    class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {
     public:
         typedef typename ProjectToPointConstraint<DataTypes>::SetIndexArray SetIndexArray;
         typedef sofa::core::topology::Point Point;
         FCPointHandler(ProjectToPointConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
-            : component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, SetIndexArray >(_data), fc(_fc) {}
+            : component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
-        using component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >::applyDestroyFunction;
+        using component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >::applyDestroyFunction;
         void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 

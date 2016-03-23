@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -272,7 +272,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
 
 
 
-void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
+void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned int /*edgeIndex*/, LineInfo &lInfo, const core::topology::BaseMeshTopology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
     const LineLocalMinDistanceFilter *lLMDFilter = this->f;
     lInfo.setLMDFilters(lLMDFilter);

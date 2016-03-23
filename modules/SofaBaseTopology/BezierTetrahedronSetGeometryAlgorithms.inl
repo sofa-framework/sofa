@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,7 +84,7 @@ template< class DataTypes>
 		/// precompute the factorial of the degree.
 		for (size_t i=0;i<tbiArray.size();++i) {
 			tbi=tbiArray[i];
-			bernsteinCoefficientArray[i]=multinomial(degree,tbi); 
+            bernsteinCoefficientArray[i]=(Real)multinomial(degree,tbi);
 			bernsteinCoeffMap.insert(std::pair<TetrahedronBezierIndex,Real>(tbi,(Real)bernsteinCoefficientArray[i]));
 		}
 		/// insert coefficient for the inferior degree
@@ -434,8 +434,8 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
             if (container->getNbTriangles()>0) {
                 // estimate the  mean radius of the spheres from the first Bezier triangle
-                VecPointID indexArray;
-                float radius=	d_referenceRadius.getValue();
+//                VecPointID indexArray;
+                float radius = (float)d_referenceRadius.getValue();
                 std::vector<sofa::defaulttype::Vector3> pointsVertices,pointsEdges,pointsTriangles,pointsTetrahedra;
                 std::vector<float> radiusVertices,radiusEdges,radiusTriangles,radiusTetrahedra;
                 sofa::defaulttype::Vector3 p;
@@ -447,25 +447,25 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
                         p=pos[i];
                         pointsVertices.push_back(p);
 
-                        radiusVertices.push_back(radius*container->getWeight(i));
+                        radiusVertices.push_back(radius*(float)container->getWeight(i));
 
                     } else if (location==BezierTetrahedronSetTopologyContainer::EDGE) {
                         p=pos[i];
                         pointsEdges.push_back(p);
 
-                        radiusEdges.push_back(radius*container->getWeight(i));
+                        radiusEdges.push_back(radius*(float)container->getWeight(i));
 
                     } else if (location==BezierTetrahedronSetTopologyContainer::TRIANGLE) {
                         p=pos[i];
                         pointsTriangles.push_back(p);
 
-                        radiusTriangles.push_back(radius*container->getWeight(i));
+                        radiusTriangles.push_back(radius*(float)container->getWeight(i));
 
                     } else {
                         p=pos[i];
                         pointsTetrahedra.push_back(p);
 
-                        radiusTetrahedra.push_back(radius*container->getWeight(i));
+                        radiusTetrahedra.push_back(radius*(float)container->getWeight(i));
                     }
                 }
                 vparams->drawTool()->setLightingEnabled(true); //Enable lightning
@@ -484,7 +484,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 
             if (!tetraArray.empty())
             {
-                float radius=	d_referenceRadius.getValue();
+                float radius = (float)d_referenceRadius.getValue();
                 const typename DataTypes::VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
                 std::vector<sofa::defaulttype::Vector3> pointsVertices;
                 std::vector<float> radiusVertices;
@@ -499,7 +499,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
                         p1=coords[i];
                         pointsVertices.push_back(p1);
 
-                        radiusVertices.push_back(radius*container->getWeight(i));
+                        radiusVertices.push_back(radius*(float)container->getWeight(i));
 
                     }
                 }
@@ -554,7 +554,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
             if (!tetraArray.empty())
             {
                 glDisable(GL_LIGHTING);
-                const sofa::defaulttype::Vec3f& color =  this->_drawColor.getValue();
+                const sofa::defaulttype::Vec4f& color =  this->_drawColor.getValue();
                 glColor3f(color[0], color[1], color[2]);
                 glBegin(GL_LINES);
                 const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());

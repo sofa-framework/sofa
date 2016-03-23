@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,8 +31,6 @@
 #include <sofa/helper/TagFactory.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -49,12 +47,9 @@ BaseObject::BaseObject()
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
-    //, context_(NULL)
 #ifdef SOFA_SMP
     ,partition_(NULL)
 #endif
-/*        , m_isListening(false)
-, m_printLog(false)*/
 {
     l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
@@ -211,15 +206,11 @@ Iterative::IterativePartition*  BaseObject::getPartition()
 #endif
 const BaseContext* BaseObject::getContext() const
 {
-    //return (context_==NULL)?BaseContext::getDefault():context_;
-    //return context_;
     return l_context.get();
 }
 
 BaseContext* BaseObject::getContext()
 {
-    //return (context_==NULL)?BaseContext::getDefault():context_;
-    //return context_;
     return l_context.get();
 }
 
@@ -349,27 +340,6 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
         handleTopologyChange();
     }
 }
-
-// void BaseObject::setListening( bool b )
-// {
-//     m_isListening = b;
-// }
-//
-// bool BaseObject::isListening() const
-// {
-//     return m_isListening;
-// }
-//
-// BaseObject* BaseObject::setPrintLog( bool b )
-// {
-//     m_printLog = b;
-//     return this;
-// }
-//
-// bool BaseObject::printLog() const
-// {
-//     return m_printLog;
-// }
 
 SReal BaseObject::getTime() const
 {

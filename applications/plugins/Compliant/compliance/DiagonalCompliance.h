@@ -36,10 +36,9 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
 
-	// TODO why bother with VecDeriv instead of just SReal vec ?
     Data< VecDeriv > diagonal; ///< diagonal values
 
-    Data< vector<SReal> > damping; ///< diagonal damping
+    Data< helper::vector<SReal> > damping; ///< diagonal damping
 
     virtual void init();
 
@@ -61,14 +60,14 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
+    /// unassembled API
+    virtual void addClambda(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &, SReal);
 
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-    typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
-    matrix_type matC; ///< compliance matrix
-
     typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> block_matrix_type;
+    block_matrix_type matC; ///< compliance matrix
     block_matrix_type matK; ///< stiffness matrix (Negative S.D.)
     block_matrix_type matB; /// damping matrix (Negative S.D.)
 

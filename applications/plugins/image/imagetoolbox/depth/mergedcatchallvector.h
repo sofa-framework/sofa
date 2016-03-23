@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,9 +68,9 @@ public:
 
     void reinit()
     {
-        vector<Type> data;
-        const vector<Type> &data1 = _data1.getValue();
-        const vector<Type> &data2 = _data2.getValue();
+        helper::vector<Type> data;
+        const helper::vector<Type> &data1 = _data1.getValue();
+        const helper::vector<Type> &data2 = _data2.getValue();
 
 
         for(size_t i=0;i<data1.size();i++)
@@ -87,9 +87,9 @@ public:
 
     }
 
-    Data< vector<Type> > _data;
-    Data< vector<Type> > _data1;
-    Data< vector<Type> > _data2;
+    Data< helper::vector<Type> > _data;
+    Data< helper::vector<Type> > _data1;
+    Data< helper::vector<Type> > _data2;
 
 protected:
 

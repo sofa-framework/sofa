@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,9 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
 #include <sstream>
+using std::ostringstream ;
 #include <fstream>
+
+#include <string>
+using std::string;
+
+#include <vector>
+using std::vector;
+
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/common.h>
@@ -40,7 +47,7 @@
 #endif
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-
+using sofa::simulation::Node;
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -57,11 +64,29 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
+using sofa::gui::GUIManager;
+
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
-#include <sofa/helper/Logger.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
+
+using sofa::core::ExecParams ;
+
+#include <sofa/helper/system/console.h>
+using sofa::helper::Utils;
+using sofa::helper::Console;
+
+using sofa::component::misc::CompareStateCreator;
+using sofa::component::misc::ReadStateActivator;
+using sofa::simulation::tree::TreeSimulation;
+using sofa::simulation::graph::DAGSimulation;
+using sofa::helper::system::SetDirectory;
+using sofa::core::objectmodel::BaseNode ;
+using sofa::gui::BatchGUI;
+using sofa::gui::BaseGUI;
+
+#include <sofa/helper/logging/Messaging.h>
 
 #ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
@@ -74,30 +99,39 @@
 #include <windows.h>
 #endif
 
-using std::cerr;
-using std::endl;
-using sofa::helper::Utils;
-using sofa::helper::Console;
+using sofa::helper::system::DataRepository;
+using sofa::helper::system::PluginRepository;
+using sofa::helper::system::PluginManager;
 
-void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
+#include <sofa/helper/logging/MessageDispatcher.h>
+using sofa::helper::logging::MessageDispatcher ;
+
+#include <sofa/helper/logging/ClangMessageHandler.h>
+using sofa::helper::logging::ClangMessageHandler ;
+
+#include <sofa/helper/logging/ExceptionMessageHandler.h>
+using sofa::helper::logging::ExceptionMessageHandler;
+
+
+
+void loadVerificationData(string& directory, string& filename, Node* node)
 {
-    std::cout << "loadVerificationData from " << directory << " and file " << filename << std::endl;
+    msg_info("") << "loadVerificationData from " << directory << " and file " << filename ;
 
-    std::string refFile;
+    string refFile;
 
     refFile += directory;
     refFile += '/';
-    refFile += sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
+    refFile += SetDirectory::GetFileName(filename.c_str());
 
-    std::cout << "loadVerificationData " << refFile << std::endl;
+    msg_info("") << "loadVerificationData " << refFile ;
 
-
-    sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
+    CompareStateCreator compareVisitor(ExecParams::defaultInstance());
     compareVisitor.setCreateInMapping(true);
     compareVisitor.setSceneName(refFile);
     compareVisitor.execute(node);
 
-    sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance(), true);
+    ReadStateActivator v_read(ExecParams::defaultInstance(), true);
     v_read.execute(node);
 }
 
@@ -108,7 +142,7 @@ int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
 
-    sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+    ExecParams::defaultInstance()->setAspectID(0);
 
 #ifdef WIN32
     {
@@ -133,36 +167,36 @@ int main(int argc, char** argv)
 
     sofa::gui::initMain();
 
-    std::string fileName ;
+    string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
     bool        testMode = false;
-    int         nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+    int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
-    std::string gui = "";
-    std::string verif = "";
+    string gui = "";
+    string verif = "";
 #ifdef SOFA_SMP
-    std::string simulationType = "smp";
+    string simulationType = "smp";
 #elif defined(SOFA_HAVE_DAG)
-    std::string simulationType = "dag";
+    string simulationType = "dag";
 #else
-    std::string simulationType = "tree";
+    string simulationType = "tree";
 #endif
-    std::vector<std::string> plugins;
-    std::vector<std::string> files;
+    vector<string> plugins;
+    vector<string> files;
 #ifdef SOFA_SMP
-    std::string nProcs="";
+    string nProcs="";
     bool        disableStealing = false;
     bool        affinity = false;
 #endif
-    std::string colorsStatus = "auto";
+    string colorsStatus = "auto";
 
-    std::string gui_help = "choose the UI (";
-    gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
+    string gui_help = "choose the UI (";
+    gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
@@ -179,13 +213,15 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
+    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto, clang, test)")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
     .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
+
+    // TODO: create additionnal message handlers depending on command-line parameters
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
@@ -198,8 +234,6 @@ int main(int argc, char** argv)
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
-    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
-
 
 #ifdef SOFA_SMP
     int ac = 0;
@@ -233,18 +267,13 @@ int main(int argc, char** argv)
 #endif
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")
-        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+        sofa::simulation::setSimulation(new TreeSimulation());
     else
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+        sofa::simulation::setSimulation(new DAGSimulation());
 #else //SOFA_HAVE_DAG
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::simulation::setSimulation(new TreeSimulation());
 #endif
 
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-    sofa::component::initComponentGeneral();
-    sofa::component::initComponentAdvanced();
-    sofa::component::initComponentMisc();
 
     if (colorsStatus == "auto")
         Console::setColorsStatus(Console::ColorsAuto);
@@ -252,56 +281,62 @@ int main(int argc, char** argv)
         Console::setColorsStatus(Console::ColorsEnabled);
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
-    else
-    {
+    else if (colorsStatus == "clang"){
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
+    }
+    else if (colorsStatus == "test"){
+        MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
+    }
+    else{
         Console::setColorsStatus(Console::ColorsAuto);
-        sofa::helper::Logger::getMainLogger().log( sofa::helper::Logger::Warning, std::string( "Invalid argument ‘") + colorsStatus + std::string("‘ for ‘--colors‘" ) );
+        msg_warning("") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
     }
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32
-    const std::string pluginDir = Utils::getExecutableDirectory();
+    const string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
+    const string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
+    PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
+    BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
+    BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
 
     if (!files.empty())
         fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
-        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+        PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    sofa::helper::system::PluginManager::getInstance().init();
+    PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
     {
-        std::ostringstream oss ;
+        ostringstream oss ;
         oss << "nbIterations=";
         oss << nbIterations;
-        sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
+        GUIManager::AddGUIOption(oss.str().c_str());
     }
 
     if(nbMSSASamples > 1)
     {
-        std::ostringstream oss ;
+        ostringstream oss ;
         oss << "msaa=";
         oss << nbMSSASamples;
-        sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
+        GUIManager::AddGUIOption(oss.str().c_str());
     }
 
-    if (int err = sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
+    if (int err = GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
     if (fileName.empty())
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
+            string scenes = BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();
@@ -309,22 +344,22 @@ int main(int argc, char** argv)
         else
             fileName = "Demos/caduceus.scn";
 
-        fileName = sofa::helper::system::DataRepository.getFile(fileName);
+        fileName = DataRepository.getFile(fileName);
     }
 
 
-    if (int err=sofa::gui::GUIManager::createGUI(NULL))
+    if (int err=GUIManager::createGUI(NULL))
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    sofa::gui::GUIManager::SetDimension(800,600);
+    GUIManager::SetDimension(800,600);
 
-    sofa::simulation::Node::SPtr groot;
-    sofa::core::objectmodel::BaseNode* baseroot = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
+    Node::SPtr groot;
+    BaseNode* baseroot = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
     if( !baseroot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
     else
-        groot = down_cast<sofa::simulation::Node>( baseroot );
+        groot = down_cast<Node>( baseroot );
 
     if (!verif.empty())
     {
@@ -332,7 +367,7 @@ int main(int argc, char** argv)
     }
 
     sofa::simulation::getSimulation()->init(groot.get());
-    sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
+    GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 
     //=======================================
@@ -342,9 +377,9 @@ int main(int argc, char** argv)
         groot->setAnimate(true);
     if (printFactory)
     {
-        std::cout << "////////// FACTORY //////////" << std::endl;
+        msg_info("") << "////////// FACTORY //////////" ;
         sofa::helper::printFactoryLog();
-        std::cout << "//////// END FACTORY ////////" << std::endl;
+        msg_info("") << "//////// END FACTORY ////////" ;
     }
 
     if( computationTimeSampling>0 )
@@ -355,14 +390,14 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
+    if (int err = GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-    groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
+    groot = dynamic_cast<Node*>( GUIManager::CurrentSimulation() );
 
     if (testMode)
     {
-        std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
-        std::cout << "Exporting to XML " << xmlname << std::endl;
+        string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
+        msg_info("") << "Exporting to XML " << xmlname ;
         sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
     }
 
@@ -370,7 +405,7 @@ int main(int argc, char** argv)
         sofa::simulation::getSimulation()->unload(groot);
 
 
-    sofa::gui::GUIManager::closeGUI();
+    GUIManager::closeGUI();
 
     sofa::simulation::tree::cleanup();
 #ifdef SOFA_HAVE_DAG

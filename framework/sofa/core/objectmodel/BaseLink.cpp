@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/helper/BackTrace.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <sstream>
 
@@ -115,13 +116,13 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     if (text.empty())
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": empty path." << owner->sendl;
-        else std::cerr << "ERROR parsing Link \""<<text<<"\": empty path." << std::endl;
+        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": empty path.";
         return false;
     }
     if (text[0] != '@')
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": first character should be '@'." << owner->sendl;
-        else std::cerr << "ERROR parsing Link \""<<text<<"\": first character should be '@'." << std::endl;
+        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": first character should be '@'.";
         return false;
     }
     std::size_t posPath = text.rfind('/');
@@ -133,14 +134,14 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
     if (!data && posDot != std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << owner->sendl;
-        else std::cerr << "ERROR parsing Link \""<<text<<"\": a Data field name is specified while an object was expected." << std::endl;
+        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": a Data field name is specified while an object was expected.";
         return false;
     }
 
     if (data && data->empty() && posDot == std::string::npos)
     {
         if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": a Data field name is required." << owner->sendl;
-        else std::cerr << "ERROR parsing Link \""<<text<<"\": a Data field name is required." << std::endl;
+        else msg_error("BaseLink") << "ParseString: \""<<text<<"\": a Data field name is required.";
         return false;
     }
 
@@ -160,13 +161,13 @@ bool BaseLink::ParseString(const std::string& text, std::string* path, std::stri
         if ((*path)[0] == '[' && (*path)[path->size()-1] != ']')
         {
             if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": missing closing bracket ']'." << owner->sendl;
-            else std::cerr << "ERROR parsing Link \""<<text<<"\": missing closing bracket ']'." << std::endl;
+            else msg_error("BaseLink") << "ParseString: \""<<text<<"\": missing closing bracket ']'.";
             return false;
         }
         if ((*path)[0] == '[' && (*path)[1] != '-' && (*path)[1] != ']')
         {
             if (owner) owner->serr << "ERROR parsing Link \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index." << owner->sendl;
-            else std::cerr << "ERROR parsing Link \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index." << std::endl;
+            else msg_error("BaseLink") << "ParseString: \""<<text<<"\": bracket syntax can only be used for self-reference or preceding objects with a negative index.";
             return false;
         }
     }

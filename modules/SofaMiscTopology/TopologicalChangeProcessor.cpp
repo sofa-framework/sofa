@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -440,7 +440,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 {
                     helper::vector<unsigned int>& ancestor = p_ancestors[i];
                     ancestor.resize(3);
-                    const topology::Triangle& t = m_topology->getTriangle( triangles[i] );
+                    const core::topology::BaseMeshTopology::Triangle& t = m_topology->getTriangle( triangles[i] );
                     ancestor[0] = t[0];
                     ancestor[1] = t[1];
                     ancestor[2] = t[2];

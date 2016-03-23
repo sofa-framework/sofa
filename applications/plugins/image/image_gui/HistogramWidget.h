@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,9 +50,6 @@ namespace gui
 namespace qt
 {
 
-using cimg_library::CImg;
-using defaulttype::Vec;
-
 //-----------------------------------------------------------------------------------------------//
 //  data widget -> generate qimage from Data<histogram> and show info (min,max,mouse position)
 //-----------------------------------------------------------------------------------------------//
@@ -85,7 +82,7 @@ public:
     typedef DataType Histotype;
     typedef typename Histotype::T T;
 
-    THistogramSetting(QWidget * parent )	:histo(NULL),channel(0),channelmax(0),currentpos(0),clamp(Vec<2,T>(0,0))
+    THistogramSetting(QWidget * parent )	:histo(NULL),channel(0),channelmax(0),currentpos(0),clamp(defaulttype::Vec<2,T>(0,0))
     {
         label1=new QLabel(parent);
         label2=new QLabel(parent);
@@ -108,7 +105,7 @@ public:
     {
         this->histo=&d0;
         if(!this->histo) return;
-        this->cimg=CImg<unsigned char>(3,this->histo->getImage().width(),this->histo->getImage().height());
+        this->cimg=cimg_library::CImg<unsigned char>(3,this->histo->getImage().width(),this->histo->getImage().height());
         this->img=QImage(cimg.data(),cimg.height(),cimg.depth(),QImage::Format_RGB888);
         this->channelmax=this->histo->getImage().spectrum()-1;
         this->clamp=this->histo->getClamp();
@@ -170,12 +167,12 @@ public:
 
 protected:
     const Histotype* histo;
-    CImg<unsigned char> cimg; // Internal cimage memory shared with Qimage
+    cimg_library::CImg<unsigned char> cimg; // Internal cimage memory shared with Qimage
 
     unsigned int channel;
     unsigned int channelmax;
     T currentpos;
-    Vec<2,T> clamp;
+    defaulttype::Vec<2,T> clamp;
 
     QLabel *label1;
     QLabel *label2;

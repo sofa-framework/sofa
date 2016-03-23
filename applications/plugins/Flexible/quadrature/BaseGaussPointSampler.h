@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,10 +45,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using defaulttype::Vec;
-using defaulttype::Mat;
-
 ///Abstract class for sampling integration points according to a specific quadrature method.
 /**
  * Samplers provide:
@@ -79,8 +75,8 @@ public:
     /** @name position data */
     //@{
     static const unsigned int spatial_dimensions = 3;
-    typedef Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
-    typedef vector<Coord> SeqPositions;
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
+    typedef helper::vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position; ///< Samples position
@@ -88,8 +84,8 @@ public:
 
     /** @name orientation data */
     //@{
-    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
-    typedef vector<Transform> VTransform;
+    typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
+    typedef helper::vector<Transform> VTransform;
     Data< VTransform > f_transforms;        ///< linear transformation in world space to orient samples
     //@}
 
@@ -97,9 +93,9 @@ public:
     /** @name volume integral data */
     //@{
     Data< unsigned int > f_order; ///< Order of quadrature method
-    typedef vector<Real> volumeIntegralType;
-    Data< vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
-    typedef helper::WriteOnlyAccessor< Data< vector<volumeIntegralType> > > waVolume;
+    typedef helper::vector<Real> volumeIntegralType;
+    Data< helper::vector<volumeIntegralType> > f_volume; ///< Weighted volumes associated to samples
+    typedef helper::WriteOnlyAccessor< Data< helper::vector<volumeIntegralType> > > waVolume;
     //@}
 
     /** @name visu data */
@@ -116,7 +112,7 @@ public:
       , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
       , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
       , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
-      , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
+      , f_volume(initData(&f_volume,helper::vector<volumeIntegralType>(),"volume","output weighted volume"))
       , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
       , drawMode(initData(&drawMode,0,"drawMode",""))
     {
@@ -158,10 +154,10 @@ protected:
         case 1:
             glPushAttrib(GL_LIGHTING_BIT);
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
             glPopAttrib();
         default:
-            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
         }
 
 #endif /* SOFA_NO_OPENGL */
