@@ -57,6 +57,7 @@ TTriangleModel<DataTypes>::TTriangleModel()
     , mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , triangulateQuads(initData(&triangulateQuads, true, "triangulateQuads", "split quads into triangles for collision detection"))
+    , useCurvature(initData(&useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)
 {
@@ -778,7 +779,10 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
                     t.n() = cross(pt2-pt1,pt3-pt1);
                     t.n().normalize();
                 }
-                cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+                if(useCurvature.getValue())
+                    cubeModel->setParentOf(i, minElem, maxElem, t.n()); // define the bounding box of the current triangle
+                else
+                    cubeModel->setParentOf(i, minElem, maxElem);
             }
             cubeModel->computeBoundingTree(maxDepth);
         }
@@ -839,7 +843,10 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
 
-            cubeModel->setParentOf(i, minElem, maxElem);
+            if(useCurvature.getValue())
+                cubeModel->setParentOf(i, minElem, maxElem, t.n(), acos(cross(pt2v-pt1v,pt3v-pt1v).normalized() * t.n()));
+            else
+                cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
