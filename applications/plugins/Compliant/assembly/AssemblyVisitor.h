@@ -4,7 +4,6 @@
 #include <Compliant/config.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaEigen2Solver/EigenVector.h>
 #include <map>
 
 #include "AssembledSystem.h"

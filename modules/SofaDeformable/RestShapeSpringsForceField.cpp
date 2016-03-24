@@ -56,7 +56,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
-    //std::cout<<"addForce with p_0 ="<<p_0<<" read(core::ConstVecCoordId::restPosition())->getValue()"<<(this->mstate->read(core::ConstVecCoordId::restPosition())->getValue())<<std::endl;
+    //std::cout<<"addForce with p_0 ="<<p0<<std::endl;
 
     f1.resize(p1.size());
     //std::cout<<" size p1:"<<p1.size()<<std::endl;
@@ -73,7 +73,9 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
     {
         //std::cout<<"i="<<i<<std::endl;
         const unsigned int index = m_indices[i];
-        const unsigned int ext_index = m_ext_indices[i];
+        unsigned int ext_index = m_indices[i];
+        if(useRestMState)
+            ext_index= m_ext_indices[i];
 
         // translation
         if (i >= m_pivots.size())
