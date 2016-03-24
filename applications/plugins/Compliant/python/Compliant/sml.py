@@ -100,11 +100,12 @@ def insertRigid(parentNode, rigidModel, density, param=None):
 def insertJoint(jointModel, rigids, param=None):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
 
-    if printLog:
-        Sofa.msg_info("Compliant.sml","insertJoint "+jointModel.name)
-
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
+        if not jointModel.solids[i].id in rigids:
+            if printLog:
+                Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
+            return None
         rigid = rigids[jointModel.solids[i].id] # shortcut
         if not offset is None:
             if offset.isAbsolute():
@@ -116,6 +117,10 @@ def insertJoint(jointModel, rigids, param=None):
                 frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
         else:
             frames.append(rigid)
+
+    if printLog:
+        Sofa.msg_info("Compliant.sml","insertJoint "+jointModel.name)
+
     mask = [1]*6
     limits=[] # mask for limited dofs
     isLimited = True # does the joint have valid limits?

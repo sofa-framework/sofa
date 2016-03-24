@@ -1,7 +1,6 @@
 #include "AssemblyVisitor.h"
 
 
-#include <SofaEigen2Solver/EigenVectorWrapper.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 
