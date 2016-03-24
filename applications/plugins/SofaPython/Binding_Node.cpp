@@ -375,8 +375,8 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
-    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // only mechanical mappings
+    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance()); // propagating position and velocity through non mechanical mappings
     node->execute<VisualUpdateVisitor>(sofa::core::MechanicalParams::defaultInstance());
 
     Py_RETURN_NONE;
