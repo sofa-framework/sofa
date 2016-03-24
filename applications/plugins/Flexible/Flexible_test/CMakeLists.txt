@@ -11,7 +11,6 @@ set(SOURCE_FILES
     AffinePatch_test.cpp
     CauchyStrainMapping_test.cpp
     CorotationalStrainMapping_test.cpp
-    Engine_test.cpp
     FramesBeamMaterial_test.cpp
     GreenStrainMapping_test.cpp
     HexahedraMaterial_test.cpp
@@ -23,7 +22,6 @@ set(SOURCE_FILES
     PointDeformationMapping_test.cpp
     PrincipalStretchesMapping_test.cpp
     RigidDeformationMapping_test.cpp
-    ShapeFunction_test.cpp
     StabilizedNeoHookeHexahedraMaterial_test.cpp
     TetrahedraMaterial_test.cpp
     TetrahedronVolumeMapping_test.cpp
@@ -49,9 +47,20 @@ add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes
 
 find_package(image QUIET)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain image)
+if(image_FOUND)
+    list(APPEND SOURCE_FILES
+            Engine_test.cpp
+            ShapeFunction_test.cpp
+        )
+endif()
 
+
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} Flexible SofaTest SofaGTestMain)
+
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
+endif()
 
 
 # #Needed by python test
