@@ -34,7 +34,8 @@ namespace sofa
 namespace simulation
 {
 
-
+/// propagating position and velocity through non-mechanical mappings
+/// (while MechanicalPropagatePositionAndVelocityVisitor is propagating mechanical mappings)
 class SOFA_SIMULATION_COMMON_API UpdateMappingVisitor : public Visitor
 {
 public:
