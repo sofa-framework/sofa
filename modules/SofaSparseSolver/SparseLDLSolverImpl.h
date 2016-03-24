@@ -51,6 +51,7 @@ public :
     VecInt perm, invperm;
     VecReal P_values,L_values,LT_values,invD;
     helper::vector<int> Parent;
+    bool new_factorization_needed;
 };
 
 inline void CSPARSE_symbolic (int n,int * M_colptr,int * M_rowind,int * colptr,int * perm,int * invperm,int * Parent, int * Flag, int * Lnz)
@@ -282,8 +283,7 @@ protected :
 
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SpaseLDLImplInvertData<VecInt,VecReal> * data) {
-        bool new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 
-			|| CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
+        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
@@ -291,7 +291,7 @@ protected :
         memcpy(&data->P_values[0],M_values,data->P_nnz * sizeof(Real));
 
         // we test if the matrix has the same struct as previous factorized matrix
-        if (new_factorization_needed) {
+        if (data->new_factorization_needed) {
             sout << "RECOMPUTE NEW FACTORIZATION" << sendl;
 
             data->perm.clear();data->perm.fastResize(data->n);
@@ -338,7 +338,7 @@ protected :
 
         // split the bloc diag in data->Bdiag
 
-        if (new_factorization_needed) {
+        if (data->new_factorization_needed) {
             //Compute transpose in tran_colptr, tran_rowind, tran_values, tran_D
             tran_countvec.clear();
             tran_countvec.resize(data->n);
@@ -371,6 +371,7 @@ protected : //the folowing variables are used during the factorization they cann
     helper::vector<Real> Y;
     helper::vector<int> Lnz,Flag,Pattern;
     helper::vector<int> tran_countvec;
+
 //    helper::vector<int> perm, invperm; //premutation inverse
 
 };
