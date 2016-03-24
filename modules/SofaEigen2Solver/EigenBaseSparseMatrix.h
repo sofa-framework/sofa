@@ -213,6 +213,21 @@ public:
         incoming.clear();
     }
 
+    Index * getRowBegin() {
+        compress();
+        return compressedMatrix.outerIndexPtr();
+    }
+
+    Index * getColsIndex() {
+        compress();
+        return compressedMatrix.innerIndexPtr();
+    }
+
+    Real * getColsValue() {
+        compress();
+        return compressedMatrix.valuePtr();
+    }
+
 
     /// Set all the entries of a row to 0
     void clearRow(Index i)
