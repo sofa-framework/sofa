@@ -131,7 +131,14 @@ def insertJoint(jointModel, rigids, param):
                 limits.append(d.min)
                 limits.append(d.max)
         mask[d.index] = 0
-        joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=param.jointCompliance)
+    compliance=param.jointCompliance
+    isCompliance=param.jointIsCompliance
+    for tag in jointModel.tags:
+        if tag in param.jointIsComplianceByTag:
+            isCompliance=param.jointIsComplianceByTag[tag]
+        if tag in param.jointComplianceByTag:
+            compliance=param.jointComplianceByTag[tag]
+    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=compliance, isCompliance=isCompliance)
     if isLimited:
         joint.addLimits(limits)
     return joint
@@ -148,7 +155,12 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.joints = dict()
         self.meshExporters = list()
 
+        # default joint is set up using isCompliance=True and self.param.jointCompliance value
+        self.param.jointIsCompliance=True
         self.param.jointCompliance=0
+        # for tagged joints, values come from these dictionnaries if they contain one of the tag
+        self.param.jointIsComplianceByTag=dict()
+        self.param.jointComplianceByTag=dict()
 
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
