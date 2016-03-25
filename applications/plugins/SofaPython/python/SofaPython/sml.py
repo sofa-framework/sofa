@@ -191,11 +191,13 @@ class Model:
             self.offsets = [None,None]
             # dofs
             self.dofs = []
+            self.tags = set() # user-defined tags
             if not jointXml is None:
                 self.parseXml(jointXml)
         
         def parseXml(self, jointXml):
             parseIdName(self,jointXml)
+            parseTag(self,jointXml)
             solidsRef = jointXml.findall("jointSolidRef")
             for i in range(0,2):
                 if not solidsRef[i].find("offset") is None:
