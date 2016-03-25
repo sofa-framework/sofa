@@ -97,7 +97,7 @@ def insertRigid(parentNode, rigidModel, density, param=None):
 
     return rigid
 
-def insertJoint(jointModel, rigids, param=None):
+def insertJoint(jointModel, rigids, param):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
 
     frames=list()
@@ -131,7 +131,6 @@ def insertJoint(jointModel, rigids, param=None):
                 limits.append(d.min)
                 limits.append(d.max)
         mask[d.index] = 0
-    if not param is None:
         joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=param.jointCompliance)
     if isLimited:
         joint.addLimits(limits)
