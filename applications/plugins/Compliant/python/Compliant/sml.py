@@ -103,8 +103,7 @@ def insertJoint(jointModel, rigids, param=None):
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
         if not jointModel.solids[i].id in rigids:
-            if printLog:
-                Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
+            Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
             return None
         rigid = rigids[jointModel.solids[i].id] # shortcut
         if not offset is None:
