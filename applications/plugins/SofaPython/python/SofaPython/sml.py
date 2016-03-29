@@ -12,6 +12,8 @@ import mass
 import DAGValidation
 import SofaPython.MeshLoader
 
+printLog = True
+
 def parseIdName(obj,objXml):
     """ set id and name of obj
     """
@@ -455,7 +457,8 @@ def setupUnits(myUnits):
     for quantity,unit in myUnits.iteritems():
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
-    Sofa.msg_info("SofaPython.sml",message)
+    if printLog:
+        Sofa.msg_info("SofaPython.sml",message)
 
 def getSolidRigidMassInfo(solid, density):
     massInfo = mass.RigidMassInfo()
@@ -579,6 +582,7 @@ class SceneDisplay(BaseScene):
     def createScene(self):
         model=self.model # shortcut
         for solid in model.solids.values():
-            Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
+            if printLog:
+                Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
             color = self.getTagColor(solid.tags)
             insertVisual(self.node, solid, color)
