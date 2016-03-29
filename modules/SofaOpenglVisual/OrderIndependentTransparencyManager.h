@@ -118,7 +118,6 @@ protected:
 private:
     FrameBufferObject            fbo;
     sofa::helper::gl::GLSLShader accumulationShader;
-    sofa::helper::gl::GLSLShader revealageShader;
     sofa::helper::gl::GLSLShader compositionShader;
 
 };

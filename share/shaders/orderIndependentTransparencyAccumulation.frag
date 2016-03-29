@@ -39,6 +39,6 @@ void main()
     float linearDepth = viewDepth * DepthScale;
     float weight = clamp(0.03 / (1e-5 + pow(linearDepth, 4.0)), 1e-2, 3e3);
 
-    gl_FragData[0] = vec4(finalColor.rgb, finalColor.a) * weight;
-//    gl_FragData[1].r = finalColor.a * weight;
+    gl_FragData[0] = vec4(finalColor.rgb * weight, finalColor.a);
+    gl_FragData[1].r = finalColor.a * weight;
 }
