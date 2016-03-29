@@ -1,8 +1,10 @@
 #version 120
 
+varying vec2 TexCoords;
+
 void main()
 {
-    gl_FrontColor = gl_Color;
-    gl_BackColor = gl_Color;
+    TexCoords = gl_MultiTexCoord0.st;
+    
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

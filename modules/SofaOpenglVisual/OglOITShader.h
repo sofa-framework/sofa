@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: OrderIndependentTransparencyManager
+// C++ Interface: Shader
 //
 // Description:
 //
@@ -33,15 +33,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-
-#ifndef SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
-#define SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
-
+#ifndef SOFA_COMPONENT_OGLOITSHADER
+#define SOFA_COMPONENT_OGLOITSHADER
 #include "config.h"
 
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglShader.h>
 
 namespace sofa
@@ -53,80 +48,28 @@ namespace component
 namespace visualmodel
 {
 
-/**
- *  \brief Utility to manage transparency (translucency) into an Opengl scene
- *  \note Reference: http://jcgt.org/published/0002/02/09/paper.pdf
- */
-
-class SOFA_OPENGL_VISUAL_API OrderIndependentTransparencyManager : public core::visual::VisualManager
+class SOFA_OPENGL_VISUAL_API OglOITShader : public sofa::component::visualmodel::OglShader
 {
-    class FrameBufferObject
-    {
-    public:
-        FrameBufferObject();
-
-        void init(int w, int h);
-        void destroy();
-
-        void copyDepth(GLuint fromFBO);
-
-        void bind();
-
-        void bindTextures();
-        void releaseTextures();
-
-    private:
-        GLuint id;
-
-        int width;
-        int height;
-
-        GLuint depthRenderbuffer;
-        GLuint accumulationTexture;
-        GLuint revealageTexture;
-
-    };
-
 public:
-    SOFA_CLASS(OrderIndependentTransparencyManager, core::visual::VisualManager);
-
-public:
-    Data<float> depthScale;
-
+    SOFA_CLASS(OglOITShader, sofa::component::visualmodel::OglShader);
 protected:
-    OrderIndependentTransparencyManager();
-    virtual ~OrderIndependentTransparencyManager();
-
+    OglOITShader();
+    virtual ~OglOITShader();
 public:
     void init();
-    void bwdInit();
-    void reinit();
-    void initVisual();
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
-
-    void draw(const core::visual::VisualParams* vparams);
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    virtual void initShaders();
 
 protected:
-    void drawOpaques(core::visual::VisualParams* vp);
-    void drawTransparents(core::visual::VisualParams* vp, helper::gl::GLSLShader* oitShader);
-
-private:
-    FrameBufferObject            fbo;
-    sofa::helper::gl::GLSLShader accumulationShader;
-    sofa::helper::gl::GLSLShader revealageShader;
-    sofa::helper::gl::GLSLShader compositionShader;
+    static const std::string PATH_TO_OIT_VERTEX_SHADERS;
+    static const std::string PATH_TO_OIT_FRAGMENT_SHADERS;
 
 };
 
-}// namespace visualmodel
+}//namespace visualmodel
 
-}// namespace component
+} //namespace component
 
-}// namespace sofa
+} //namespace sofa
 
-#endif //SOFA_COMPONENT_ORDERINDEPENDENTTRANSPARENCYMANAGER_H
+#endif //SOFA_COMPONENT_OGLOITSHADER

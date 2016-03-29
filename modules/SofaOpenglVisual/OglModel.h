@@ -114,6 +114,7 @@ public:
     virtual void updateBuffers();
 
     bool hasTransparent();
+    bool hasTexture();
 
 public:
     bool isUseEdges()	{ return useEdges; }
