@@ -33,11 +33,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
+#include <SofaOpenglVisual/OglModel.h>
 #include <SofaOpenglVisual/OrderIndependentTransparencyManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+
 
 namespace sofa
 {
@@ -58,8 +61,24 @@ int OrderIndependentTransparencyManagerClass = core::RegisterObject("OrderIndepe
         .add< OrderIndependentTransparencyManager >()
         ;
 
+class VisualOITDrawVisitor : public VisualDrawVisitor
+{
+public:
+    VisualOITDrawVisitor(core::visual::VisualParams* params, GLSLShader* oitShader)
+        : VisualDrawVisitor(params)
+        , shader(oitShader)
+    {
+    }
+
+    void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
+
+public:
+    GLSLShader* shader;
+
+};
+
 OrderIndependentTransparencyManager::OrderIndependentTransparencyManager()
-    : depthScale(initData(&depthScale, 0.005f, "depthScale", "Depth scale"))
+    : depthScale(initData(&depthScale, 0.01f, "depthScale", "Depth scale"))
     , fbo()
     , accumulationShader()
     , revealageShader()
@@ -240,6 +259,18 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     // accumulation pass
 
+//    glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//    glClear(GL_COLOR_BUFFER_BIT);
+
+//    glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//    glClear(GL_COLOR_BUFFER_BIT);
+
+//    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
+//    glDrawBuffers(2, buffers);
+//    glBlendFuncSeparate(GL_ONE, GL_ONE);
+
     glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -247,27 +278,27 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     accumulationShader.TurnOn();
     accumulationShader.SetFloat(accumulationShader.GetVariable("DepthScale"), depthScale.getValue());
-    drawTransparents(vp);
+    drawTransparents(vp, &accumulationShader);
     accumulationShader.TurnOff();
 
     // revealage pass
 
     glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
     revealageShader.TurnOn();
-    drawTransparents(vp);
+    drawTransparents(vp, &revealageShader);
     revealageShader.TurnOff();
+
+// composition
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousDrawFBO);
     // TODO: set the previously bound drawBuffers
 
-// composition
-
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     compositionShader.TurnOn();
 
@@ -297,14 +328,14 @@ void OrderIndependentTransparencyManager::drawOpaques(VisualParams* vp)
 //    DrawQuad(-2.0f, 10.0f);
 }
 
-void OrderIndependentTransparencyManager::drawTransparents(VisualParams* vp)
+void OrderIndependentTransparencyManager::drawTransparents(VisualParams* vp, GLSLShader* oitShader)
 {
     Node* node = dynamic_cast<Node*>(getContext());
     if(!node)
         return;
 
-    vp->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualDrawVisitor drawTransparentVisitor(vp);
+    vp->pass() = sofa::core::visual::VisualParams::Std;
+    VisualOITDrawVisitor drawTransparentVisitor(vp, oitShader);
     drawTransparentVisitor.setTags(this->getTags());
     node->execute(&drawTransparentVisitor);
 
@@ -424,6 +455,31 @@ void OrderIndependentTransparencyManager::FrameBufferObject::releaseTextures()
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+}
+
+void VisualOITDrawVisitor::processVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
+{
+    bool hasTexture = false;
+
+    OglModel* oglModel = dynamic_cast<OglModel*>(vm);
+    if(oglModel)
+        hasTexture = oglModel->hasTexture();
+
+    GLSLShader* oitShader = shader;
+
+//    sofa::core::visual::Shader* nodeShader = NULL;
+//    if (hasShader) // has custom oit shader
+//    {
+//        nodeShader = node->getShader(subsetsToManage);
+
+//        OglOITShader* oglOITShader = dynamic_cast<OglOITShader*>(nodeShader);
+//        if(oglOITShader)
+//            oitShader = oglOITShader->glslShader();
+//    }
+
+    oitShader->TurnOn();
+    oitShader->SetInt(oitShader->GetVariable("HasTexture"), hasTexture ? 1 : 0);
+    vm->drawTransparent(vparams);
 }
 
 } // namespace visualmodel
