@@ -81,7 +81,6 @@ OrderIndependentTransparencyManager::OrderIndependentTransparencyManager()
     : depthScale(initData(&depthScale, 0.01f, "depthScale", "Depth scale"))
     , fbo()
     , accumulationShader()
-    , revealageShader()
     , compositionShader()
 {
 
@@ -115,16 +114,6 @@ void OrderIndependentTransparencyManager::initVisual()
     helper::system::DataRepository.findFile(accumulationFragmentShaderFilename);
 
     accumulationShader.InitShaders(accumulationVertexShaderFilename, accumulationFragmentShaderFilename);
-
-// revealage shader
-
-    std::string revealageVertexShaderFilename = "shaders/orderIndependentTransparencyRevealage.vert";
-    helper::system::DataRepository.findFile(revealageVertexShaderFilename);
-
-    std::string revealageFragmentShaderFilename = "shaders/orderIndependentTransparencyRevealage.frag";
-    helper::system::DataRepository.findFile(revealageFragmentShaderFilename);
-
-    revealageShader.InitShaders(revealageVertexShaderFilename, revealageFragmentShaderFilename);
 
 // composition shader
 
@@ -259,38 +248,22 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     // accumulation pass
 
-//    glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
-
-//    glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
-//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
-
-//    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
-//    glDrawBuffers(2, buffers);
-//    glBlendFuncSeparate(GL_ONE, GL_ONE);
-
     glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glBlendFunc(GL_ONE, GL_ONE);
+
+    glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
+    glDrawBuffers(2, buffers);
+    glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 
     accumulationShader.TurnOn();
     accumulationShader.SetFloat(accumulationShader.GetVariable("DepthScale"), depthScale.getValue());
     drawTransparents(vp, &accumulationShader);
     accumulationShader.TurnOff();
-
-    // revealage pass
-
-    glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-
-    revealageShader.TurnOn();
-    drawTransparents(vp, &revealageShader);
-    revealageShader.TurnOff();
 
 // composition
 
@@ -411,7 +384,7 @@ void OrderIndependentTransparencyManager::FrameBufferObject::init(int w, int h)
     glTexParameterf(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R8, width, height, 0, GL_RED, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R16F, width, height, 0, GL_RED, GL_FLOAT, 0);
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_RECTANGLE, revealageTexture, 0);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 
