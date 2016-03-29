@@ -540,7 +540,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
     }
 
-    if (transparent)
+    if (transparent && core::visual::VisualParams::Transparent == vparams->pass())
     {
         glEnable(GL_BLEND);
         if (writeZTransparent.getValue())
@@ -667,7 +667,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
 
-    if (transparent)
+    if (transparent && core::visual::VisualParams::Transparent == vparams->pass())
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -715,6 +715,11 @@ bool OglModel::hasTransparent()
     if(alphaBlend.getValue())
         return true;
     return VisualModelImpl::hasTransparent();
+}
+
+bool OglModel::hasTexture()
+{
+    return !textures.empty();
 }
 
 bool OglModel::loadTexture(const std::string& filename)

@@ -1,0 +1,102 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+//
+// C++ Implementation: Shader
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <SofaOpenglVisual/OglOITShader.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
+
+#include <SofaOpenglVisual/LightManager.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace visualmodel
+{
+
+
+SOFA_DECL_CLASS(OglOITShader)
+
+//Register OglShader in the Object Factory
+int OglOITShaderClass = core::RegisterObject("OglOITShader")
+        .add< OglOITShader >()
+        ;
+
+const std::string OglOITShader::PATH_TO_OIT_VERTEX_SHADERS = "shaders/hardShadows/shadowMapping.vert";
+const std::string OglOITShader::PATH_TO_OIT_FRAGMENT_SHADERS = "shaders/hardShadows/shadowMapping.frag";
+
+OglOITShader::OglOITShader()
+{
+    passive.setValue(false);
+    turnOn.setValue(true);
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(2);
+    vertF[0] = PATH_TO_OIT_VERTEX_SHADERS;
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(2);
+    fragF[0] = PATH_TO_OIT_FRAGMENT_SHADERS;
+    fragFilename.endEdit();
+}
+
+OglOITShader::~OglOITShader()
+{
+}
+
+void OglOITShader::init()
+{
+    OglShader::init();
+}
+
+void OglOITShader::initShaders()
+{
+    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
+    vertF.resize(2);
+    vertF[0] = PATH_TO_OIT_VERTEX_SHADERS;
+    vertFilename.endEdit();
+    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
+    fragF.resize(2);
+    fragF[0] = PATH_TO_OIT_FRAGMENT_SHADERS;
+    fragFilename.endEdit();
+}
+
+}//namespace visualmodel
+
+} //namespace component
+
+} //namespace sofa

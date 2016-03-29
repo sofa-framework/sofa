@@ -1,13 +1,27 @@
 #version 120
 
-varying vec3 LightPosition;
-varying vec3 LightHalfVector;
-varying vec3 Normal;
+varying vec2 TexCoords;
+
+uniform bool HasTexture;
+uniform sampler2D ColorSampler;
+
+float ComputeAlpha()
+{
+    float alpha = gl_FrontMaterial.diffuse.a;
+    
+    if(HasTexture)
+    {
+        vec4 colorTexture = texture2D(ColorSampler, TexCoords);
+        
+        alpha *= colorTexture.a;
+    }
+    
+    return alpha;
+}
 
 void main()
 {
-    float finalAlpha = gl_FrontMaterial.diffuse.a;
-    //finalAlpha = gl_Color.a; // TODO: remove this
+    float finalAlpha = ComputeAlpha();
 
     gl_FragData[0] = vec4(finalAlpha);
 }
