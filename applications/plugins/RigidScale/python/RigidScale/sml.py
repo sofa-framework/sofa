@@ -366,8 +366,6 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.node.createObject('RequiredPlugin', name='Compliant')
         self.node.createObject('RequiredPlugin', name='RigidScale')
 
-        SofaPython.sml.setupUnits(self.model.units)
-
         # bones
         SMLBones = dict()
 

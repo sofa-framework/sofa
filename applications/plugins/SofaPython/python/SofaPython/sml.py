@@ -487,6 +487,7 @@ class BaseScene:
         if n is None:
             n=self.model.name
         self.node=parentNode.createChild(self.model.name)
+        setupUnits(self.model.units)
 
     def createChild(self, parent, childName):
         """Creates a child node and store it in the Scene nodes dictionary"""
