@@ -44,14 +44,15 @@ def getImageTransform(filename, scaleFactor=1):
     with open(filename,'r') as f:
         for line in f:
             splitted = line.split()
-            if 'ElementSpacing'==splitted[0] or 'spacing'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
-                scale = map(float,splitted[2:5])
-            if 'Position'==splitted[0] or 'Offset'==splitted[0] or 'translation'==splitted[0] or 'origin'==splitted[0]:
-                tr = map(float,splitted[2:5])
-            if 'Orientation'==splitted[0] or 'Rotation'==splitted[0] or 'TransformMatrix'==splitted[0] :
-                R = numpy.array([map(float,splitted[2:5]),map(float,splitted[5:8]),map(float,splitted[8:11])])
-            if 'DimSize'==splitted[0] or 'dimensions'==splitted[0] or 'dim'==splitted[0]:
-                dim = map(int,splitted[2:5])
+            if len(splitted)!=0:
+                if 'ElementSpacing'==splitted[0] or 'spacing'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
+                    scale = map(float,splitted[2:5])
+                if 'Position'==splitted[0] or 'Offset'==splitted[0] or 'translation'==splitted[0] or 'origin'==splitted[0]:
+                    tr = map(float,splitted[2:5])
+                if 'Orientation'==splitted[0] or 'Rotation'==splitted[0] or 'TransformMatrix'==splitted[0] :
+                    R = numpy.array([map(float,splitted[2:5]),map(float,splitted[5:8]),map(float,splitted[8:11])])
+                if 'DimSize'==splitted[0] or 'dimensions'==splitted[0] or 'dim'==splitted[0]:
+                    dim = map(int,splitted[2:5])
     q = quat.from_matrix(R)
     if scaleFactor!=1:
         scale = [s*scaleFactor for s in scale]
@@ -67,8 +68,9 @@ def getImageType(filename):
     with open(filename,'r') as f:
         for line in f:
             splitted = line.split()
-            if 'ElementType'==splitted[0] or 'voxelType'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
-                t = str(splitted[2])
+            if len(splitted)!=0:
+                if 'ElementType'==splitted[0] or 'voxelType'==splitted[0] or 'scale3d'==splitted[0] or 'voxelSize'==splitted[0]:
+                    t = str(splitted[2])
     if t=="MET_CHAR":
         return "ImageC"
     elif t=="MET_DOUBLE":
