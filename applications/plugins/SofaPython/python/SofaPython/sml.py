@@ -51,6 +51,7 @@ class Model:
                 self.tags=set()
 
         def __init__(self, meshXml=None):
+            self.id=None
             self.format=None
             self.source=None
             self.group=dict() # should be groups with *s*
