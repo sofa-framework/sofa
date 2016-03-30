@@ -55,14 +55,13 @@ public:
 protected:
     OglOITShader();
     virtual ~OglOITShader();
+
 public:
-    void init();
+    helper::gl::GLSLShader* accumulationShader();
 
-    virtual void initShaders();
-
-protected:
-    static const std::string PATH_TO_OIT_VERTEX_SHADERS;
-    static const std::string PATH_TO_OIT_FRAGMENT_SHADERS;
+public:
+    static const std::string PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
+    static const std::string PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
 
 };
 
