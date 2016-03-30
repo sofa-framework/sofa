@@ -214,8 +214,6 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
-        
-        SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
         if "rigid" in self.model.solidsByTag:
