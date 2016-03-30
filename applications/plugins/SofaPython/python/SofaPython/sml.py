@@ -450,8 +450,8 @@ def insertVisual(parentNode, solid, color):
     translation=solid.position[:3]
     rotation = Quaternion.to_euler(solid.position[3:])  * 180.0 / math.pi
     for m in solid.mesh:
-        Tools.meshLoader(node, m.source, name="loader_"+solid.name)
-        node.createObject("OglModel",src="@loader_"+solid.name, translation=concat(translation),rotation=concat(rotation), color=color)
+        Tools.meshLoader(node, m.source, name="loader_"+m.id)
+        node.createObject("OglModel",src="@loader_"+m.id, translation=concat(translation),rotation=concat(rotation), color=color)
     
 def setupUnits(myUnits):
     message = "units:"
