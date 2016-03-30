@@ -57,42 +57,34 @@ int OglOITShaderClass = core::RegisterObject("OglOITShader")
         .add< OglOITShader >()
         ;
 
-const std::string OglOITShader::PATH_TO_OIT_VERTEX_SHADERS = "shaders/hardShadows/shadowMapping.vert";
-const std::string OglOITShader::PATH_TO_OIT_FRAGMENT_SHADERS = "shaders/hardShadows/shadowMapping.frag";
+const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS = "shaders/orderIndependentTransparency/accumulation.vert";
+const std::string OglOITShader::PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS = "shaders/orderIndependentTransparency/accumulation.frag";
 
 OglOITShader::OglOITShader()
 {
     passive.setValue(false);
-    turnOn.setValue(true);
+
     helper::vector<std::string>& vertF = *vertFilename.beginEdit();
-    vertF.resize(2);
-    vertF[0] = PATH_TO_OIT_VERTEX_SHADERS;
+    vertF.resize(1);
+    vertF[0] = PATH_TO_OIT_ACCUMULATION_VERTEX_SHADERS;
     vertFilename.endEdit();
     helper::vector<std::string>& fragF = *fragFilename.beginEdit();
-    fragF.resize(2);
-    fragF[0] = PATH_TO_OIT_FRAGMENT_SHADERS;
+    fragF.resize(1);
+    fragF[0] = PATH_TO_OIT_ACCUMULATION_FRAGMENT_SHADERS;
     fragFilename.endEdit();
 }
 
 OglOITShader::~OglOITShader()
 {
+
 }
 
-void OglOITShader::init()
+helper::gl::GLSLShader* OglOITShader::accumulationShader()
 {
-    OglShader::init();
-}
+    if(shaderVector.size() < 1)
+        return 0;
 
-void OglOITShader::initShaders()
-{
-    helper::vector<std::string>& vertF = *vertFilename.beginEdit();
-    vertF.resize(2);
-    vertF[0] = PATH_TO_OIT_VERTEX_SHADERS;
-    vertFilename.endEdit();
-    helper::vector<std::string>& fragF = *fragFilename.beginEdit();
-    fragF.resize(2);
-    fragF[0] = PATH_TO_OIT_FRAGMENT_SHADERS;
-    fragFilename.endEdit();
+    return shaderVector[0];
 }
 
 }//namespace visualmodel

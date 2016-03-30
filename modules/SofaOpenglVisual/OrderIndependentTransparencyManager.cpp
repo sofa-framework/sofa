@@ -107,20 +107,20 @@ void OrderIndependentTransparencyManager::initVisual()
 
 // accumulation shader
 
-    std::string accumulationVertexShaderFilename = "shaders/orderIndependentTransparencyAccumulation.vert";
+    std::string accumulationVertexShaderFilename = "shaders/orderIndependentTransparency/accumulation.vert";
     helper::system::DataRepository.findFile(accumulationVertexShaderFilename);
 
-    std::string accumulationFragmentShaderFilename = "shaders/orderIndependentTransparencyAccumulation.frag";
+    std::string accumulationFragmentShaderFilename = "shaders/orderIndependentTransparency/accumulation.frag";
     helper::system::DataRepository.findFile(accumulationFragmentShaderFilename);
 
     accumulationShader.InitShaders(accumulationVertexShaderFilename, accumulationFragmentShaderFilename);
 
 // composition shader
 
-    std::string compositionVertexShaderFilename = "shaders/orderIndependentTransparencyComposition.vert";
+    std::string compositionVertexShaderFilename = "shaders/orderIndependentTransparency/composition.vert";
     helper::system::DataRepository.findFile(compositionVertexShaderFilename);
 
-    std::string compositionFragmentShaderFilename = "shaders/orderIndependentTransparencyComposition.frag";
+    std::string compositionFragmentShaderFilename = "shaders/orderIndependentTransparency/composition.frag";
     helper::system::DataRepository.findFile(compositionFragmentShaderFilename);
 
     compositionShader.InitShaders(compositionVertexShaderFilename, compositionFragmentShaderFilename);
@@ -208,18 +208,10 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     if(0 == viewport[2] || 0 == viewport[3])
         return false;
 
-    glDisable(GL_CULL_FACE); // TODO: remove this
-
 // draw opaques normally
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
-
-    glDisable(GL_BLEND);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_TEXTURE_RECTANGLE);
 
     drawOpaques(vp);
 
@@ -240,24 +232,16 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     fbo.bind();
 
-    // prepare
+    // accumulation
+
+    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
+    glDrawBuffers(2, buffers);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glDepthMask(GL_FALSE);
-
-    // accumulation pass
-
-    glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
-    glDrawBuffers(2, buffers);
     glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 
     accumulationShader.TurnOn();
@@ -265,7 +249,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     drawTransparents(vp, &accumulationShader);
     accumulationShader.TurnOff();
 
-// composition
+// compose
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousDrawFBO);
     // TODO: set the previously bound drawBuffers
@@ -307,7 +291,7 @@ void OrderIndependentTransparencyManager::drawTransparents(VisualParams* vp, GLS
     if(!node)
         return;
 
-    vp->pass() = sofa::core::visual::VisualParams::Std;
+    vp->pass() = sofa::core::visual::VisualParams::Transparent;
     VisualOITDrawVisitor drawTransparentVisitor(vp, oitShader);
     drawTransparentVisitor.setTags(this->getTags());
     node->execute(&drawTransparentVisitor);
@@ -430,25 +414,31 @@ void OrderIndependentTransparencyManager::FrameBufferObject::releaseTextures()
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
 
-void VisualOITDrawVisitor::processVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
+void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
     bool hasTexture = false;
 
     OglModel* oglModel = dynamic_cast<OglModel*>(vm);
     if(oglModel)
+    {
+        oglModel->blendTransparency.setValue(false);
         hasTexture = oglModel->hasTexture();
+    }
 
-    GLSLShader* oitShader = shader;
+    GLSLShader* oitShader = 0;
 
-//    sofa::core::visual::Shader* nodeShader = NULL;
-//    if (hasShader) // has custom oit shader
-//    {
-//        nodeShader = node->getShader(subsetsToManage);
+    sofa::core::visual::Shader* nodeShader = NULL;
+    if(hasShader) // has custom oit shader
+    {
+        nodeShader = node->getShader(subsetsToManage);
 
-//        OglOITShader* oglOITShader = dynamic_cast<OglOITShader*>(nodeShader);
-//        if(oglOITShader)
-//            oitShader = oglOITShader->glslShader();
-//    }
+        OglOITShader* oglOITShader = dynamic_cast<OglOITShader*>(nodeShader);
+        if(oglOITShader)
+            oitShader = oglOITShader->accumulationShader();
+    }
+
+    if(!oitShader)
+        oitShader = shader;
 
     oitShader->TurnOn();
     oitShader->SetInt(oitShader->GetVariable("HasTexture"), hasTexture ? 1 : 0);

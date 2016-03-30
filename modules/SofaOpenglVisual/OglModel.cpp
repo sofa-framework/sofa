@@ -66,7 +66,8 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
+    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
 #ifndef SOFA_HAVE_GLEW
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
 #else
@@ -540,7 +541,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
     }
 
-    if (transparent && core::visual::VisualParams::Transparent == vparams->pass())
+    if (transparent && blendTransparency.getValue())
     {
         glEnable(GL_BLEND);
         if (writeZTransparent.getValue())
@@ -667,7 +668,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
 
-    if (transparent && core::visual::VisualParams::Transparent == vparams->pass())
+    if (transparent && blendTransparency.getValue())
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
