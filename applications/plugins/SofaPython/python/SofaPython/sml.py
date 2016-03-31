@@ -172,10 +172,12 @@ class Model:
             return self.type == "absolute"
             
     class Dof:
-        def __init__(self, dofXml=None):
+        def __init__(self, dofXml=None, dof=None, min=None, max=None):
             self.index = None
-            self.min = None
-            self.max = None
+            if not dof is None:
+                self.index = Model.dofIndex[dof]
+            self.min = min
+            self.max = max
             if not dofXml is None:
                 self.parseXml(dofXml)
 
