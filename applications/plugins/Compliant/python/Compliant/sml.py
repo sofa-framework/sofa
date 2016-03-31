@@ -145,7 +145,7 @@ def insertJoint(jointModel, rigids, param):
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    [tag] rigid are simulated as RigidBody
+    [tag] rigid are simulated as RigidBody, more tags can be added to param.rigidTags
     Compliant joints are setup between the rigids """
     
     def __init__(self, parentNode, model):
@@ -154,6 +154,9 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.rigids = dict()
         self.joints = dict()
         self.meshExporters = list()
+
+        # the set of tags simulated as rigids
+        self.param.rigidTags={"rigid"}
 
         # default joint is set up using isCompliance=True and self.param.jointCompliance value
         self.param.jointIsCompliance=True
@@ -216,9 +219,10 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
 
         # rigids
-        if "rigid" in self.model.solidsByTag:
-            for rigidModel in self.model.solidsByTag["rigid"]:
-                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
+        for tag in self.param.rigidTags:
+            if tag in self.model.solidsByTag:
+                for rigidModel in self.model.solidsByTag[tag]:
+                    self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
