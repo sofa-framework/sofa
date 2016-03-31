@@ -287,7 +287,7 @@ class Model:
                     self.meshes[m.attrib["id"]] = mesh
 
             # images
-            for m in modelXml.findall("image"):
+            for m in modelXml.iter("image"):
                 if not m.find("source") is None:
                     if m.attrib["id"] in self.images:
                         Sofa.msg_warning("SofaPython.sml","Model: image id {0} already defined".format(m.attrib["id"]) )
