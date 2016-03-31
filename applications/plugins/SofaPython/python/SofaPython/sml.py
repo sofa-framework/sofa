@@ -25,7 +25,7 @@ def parseIdName(obj,objXml):
 def parseTag(obj, objXml):
     """ set tags of the object
     """
-    for xmlTag in objXml.iter("tag"):
+    for xmlTag in objXml.findall("tag"):
         obj.tags.add(xmlTag.text)
 
 def parseData(xmlData):
@@ -65,10 +65,10 @@ class Model:
             self.format = meshXml.find("source").attrib["format"]
             self.source = meshXml.find("source").text
         
-            for g in meshXml.iter("group"):
+            for g in meshXml.findall("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
-                for d in g.iter("data"):
+                for d in g.findall("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
                 parseTag(self.group[g.attrib["id"]], g)
 
@@ -209,7 +209,7 @@ class Model:
                 if not solidsRef[i].find("offset") is None:
                     self.offsets[i] = Model.Offset(solidsRef[i].find("offset"))
                     self.offsets[i].name = "offset_{0}".format(self.name)
-            for dof in jointXml.iter("dof"):
+            for dof in jointXml.findall("dof"):
                 self.dofs.append(Model.Dof(dof))
 
     class Skinning:
@@ -287,7 +287,7 @@ class Model:
                     self.meshes[m.attrib["id"]] = mesh
 
             # images
-            for m in modelXml.iter("image"):
+            for m in modelXml.findall("image"):
                 if not m.find("source") is None:
                     if m.attrib["id"] in self.images:
                         Sofa.msg_warning("SofaPython.sml","Model: image id {0} already defined".format(m.attrib["id"]) )
@@ -301,7 +301,7 @@ class Model:
 
 
             # solids
-            for objXml in modelXml.iter("solid"):
+            for objXml in modelXml.findall("solid"):
                 if objXml.attrib["id"] in self.solids:
                     Sofa.msg_error("SofaPython.sml","Model: solid defined twice, id:" + objXml.attrib["id"])
                     continue
@@ -311,10 +311,10 @@ class Model:
                 self.solids[solid.id]=solid
 
             # skinning
-            for objXml in modelXml.iter("solid"):
+            for objXml in modelXml.findall("solid"):
                 solid=self.solids[objXml.attrib["id"]]
                 # TODO: support multiple meshes for skinning (currently only the first mesh is skinned)
-                for s in objXml.iter("skinning"):
+                for s in objXml.findall("skinning"):
                     if not s.attrib["solid"] in self.solids:
                         Sofa.msg_error("SofaPython.sml","Model: skinning for solid {0}: solid {1} is not defined".format(solid.name, s.attrib["solid"]) )
                         continue
@@ -341,7 +341,7 @@ class Model:
             self.parseJointGenerics(modelXml)
                 
             # contacts
-            for c in modelXml.iter("surfaceLink"):
+            for c in modelXml.findall("surfaceLink"):
                 if c.attrib["id"] in self.surfaceLinks:
                     Sofa.msg_error("SofaPython.sml","Model: surfaceLink defined twice, id:", c.attrib["id"])
                     continue
@@ -396,7 +396,7 @@ class Model:
 
 
     def parseJointGenerics(self,modelXml):
-        for j in modelXml.iter("jointGeneric"):
+        for j in modelXml.findall("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
                 Sofa.msg_error("SofaPython.sml","Model: jointGeneric defined twice, id:", j.attrib["id"])
                 continue
