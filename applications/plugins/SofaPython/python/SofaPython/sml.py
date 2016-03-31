@@ -52,6 +52,7 @@ class Model:
 
         def __init__(self, meshXml=None):
             self.id=None
+            self.name=None
             self.format=None
             self.source=None
             self.group=dict() # should be groups with *s*
