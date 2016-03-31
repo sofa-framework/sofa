@@ -720,7 +720,7 @@ bool OglModel::hasTransparent()
 
 bool OglModel::hasTexture()
 {
-    return !textures.empty();
+    return !textures.empty() || tex;
 }
 
 bool OglModel::loadTexture(const std::string& filename)
