@@ -71,7 +71,7 @@ class Deformable:
 
     def loadVisual(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],**kwargs):
         r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-        self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color),**kwargs)
+        self.visual =  self.node.createObject("VisualModel", name="model", filename=meshPath, translation=concat(offset[:3]) , rotation=concat(r), scale3d=concat(scale), color=concat(color), useNormals=False,computeNormals=False,putOnlyTexCoords=True,computeTangents=True,**kwargs)
         self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.normals = self.visual
 
