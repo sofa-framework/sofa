@@ -18,7 +18,7 @@ This file contains functions dealing with error reporting and termination
 
 /* These are the jmp_buf for the graceful exit in case of severe errors.
    Multiple buffers are defined to allow for recursive invokation. */
-#define MAX_JBUFS 128
+#define MAX_JBUFS 24
 __thread int gk_cur_jbufs=-1;
 __thread jmp_buf gk_jbufs[MAX_JBUFS];
 __thread jmp_buf gk_jbuf;
