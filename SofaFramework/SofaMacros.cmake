@@ -256,7 +256,7 @@ INSTALL( CODE
 
     # get the current working branch
     execute_process(
-      COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+      COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
       WORKING_DIRECTORY ${sourcedir}
       OUTPUT_VARIABLE SOFA_GIT_BRANCH
       OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -264,7 +264,7 @@ INSTALL( CODE
 
     # get the current commit hash
     execute_process(
-      COMMAND  ${GIT_EXECUTABLE} rev-parse -q HEAD
+      COMMAND \${GIT_EXECUTABLE} rev-parse -q HEAD
       WORKING_DIRECTORY ${sourcedir}
       OUTPUT_VARIABLE SOFA_GIT_HASH
       OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -272,7 +272,7 @@ INSTALL( CODE
 
     # get the current commit date
     execute_process(
-      COMMAND ${GIT_EXECUTABLE} show -s --format=%ci
+      COMMAND \${GIT_EXECUTABLE} show -s --format=%ci
       WORKING_DIRECTORY ${sourcedir}
       OUTPUT_VARIABLE SOFA_GIT_DATE
       OUTPUT_STRIP_TRAILING_WHITESPACE
