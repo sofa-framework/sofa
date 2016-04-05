@@ -379,40 +379,38 @@ void DataDisplay::computeNormals()
     {
         const Triangle &t = topology->getTriangle(i);
 
-        Coord edge0 = (x[t[1]]-x[t[0]]); edge0.normalize();
-        Coord edge1 = (x[t[2]]-x[t[0]]); edge1.normalize();
-        Real triangleSurface = (Real)(edge0*edge1*0.5); // after edge normalization, it is no longer the area !?
-        Vec3f triangleNormal = cross( edge0, edge1 ) * triangleSurface;
+        const Coord& v1 = x[t[0]];
+        const Coord& v2 = x[t[1]];
+        const Coord& v3 = x[t[2]];
+        Coord n = cross(v2-v1, v3-v1);
 
-        for( int i=0 ; i<3 ; ++i )
-        {
-            m_normals[t[i]] += triangleNormal;
-        }
+        m_normals[t[0]] += n;
+        m_normals[t[1]] += n;
+        m_normals[t[2]] += n;
     }
 
     for (int i=0; i<topology->getNbQuads(); ++i)
     {
         const Quad &q = topology->getQuad(i);
 
-        for( int i=0 ; i<4 ; ++i )
-        {
-            Coord edge0 = (x[q[(i+1)%3]]-x[q[i]]); edge0.normalize();
-            Coord edge1 = (x[q[(i+2)%3]]-x[q[i]]); edge1.normalize();
-            Real triangleSurface = (Real)(edge0*edge1*0.5);  // after edge normalization, it is no longer the area !? and what about a QUAD area ?
-            Vec3f quadNormal = cross( edge0, edge1 ) * triangleSurface;
+        const Coord & v1 = x[q[0]];
+        const Coord & v2 = x[q[1]];
+        const Coord & v3 = x[q[2]];
+        const Coord & v4 = x[q[3]];
+        Coord n1 = cross(v2-v1, v4-v1);
+        Coord n2 = cross(v3-v2, v1-v2);
+        Coord n3 = cross(v4-v3, v2-v3);
+        Coord n4 = cross(v1-v4, v3-v4);
 
-            m_normals[q[i]] += quadNormal;
-        }
+        m_normals[q[0]] += n1;
+        m_normals[q[1]] += n2;
+        m_normals[q[2]] += n3;
+        m_normals[q[3]] += n4;
     }
 
     // normalization
     for (size_t i=0; i<x.size(); ++i)
-    {
         m_normals[i].normalize();
-    }
-
-
-
 }
 
 } // namespace visualmodel
