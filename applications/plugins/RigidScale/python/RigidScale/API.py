@@ -141,7 +141,7 @@ class ShearlessAffineBody:
 
     def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], mass=[1], inertia=[[1,1,1]], inertia_forces=False, voxelSize=0.01, density=2000, generatedDir=None):
         if len(offset) == 0:
-            print 'StructuralAPIShearlessAffine: The case the number of points per bones equal ' + str(self.numberOfPoints) + 'is not yet handled.'
+            Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
             return
         self.numberOfPoints = len(offset)
         self.framecom = Frame.Frame()
