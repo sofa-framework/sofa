@@ -206,10 +206,26 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     d_currentMin.endEdit();
     d_currentMax.endEdit();
 
-    vparams->drawTool()->setLightingEnabled(false);
+    glPushAttrib ( GL_LIGHTING_BIT );
+
+    static const Vec4f emptyColor = Vec4f();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, emptyColor.ptr());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emptyColor.ptr());
+
+    if( d_shininess.getValue()>=0 )
+    {
+        static const Vec4f specular = Vec4f(.5,.5,.5,1);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, d_shininess.getValue());
+    }
+    else
+    {
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, emptyColor.ptr());
+    }
 
     if (bDrawCellData) {
 
+        glDisable( GL_LIGHTING );
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
         if( !triData.empty() )
@@ -232,6 +248,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointTriData.empty() )
         {
+            glEnable( GL_LIGHTING );
             // Triangles
             int nbTriangles = topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
@@ -247,16 +264,26 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     ? f_colorNaN.getValue()
                     : eval(pointTriData[i*3+2]);
                 const Triangle& t = topology->getTriangle(i);
-                vparams->drawTool()->drawTriangle(
-                    x[ t[0] ], x[ t[1] ], x[ t[2] ],
-                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
-                    color0, color1, color2);
+
+                glNormal3fv(m_normals[t[0]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.ptr());
+                helper::gl::glVertexNv<3>(x[t[0]].ptr());
+
+                glNormal3fv(m_normals[t[1]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.ptr());
+                helper::gl::glVertexNv<3>(x[t[1]].ptr());
+
+                glNormal3fv(m_normals[t[2]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.ptr());
+                helper::gl::glVertexNv<3>(x[t[2]].ptr());
+
             }
             glEnd();
         }
 
         if( !quadData.empty() )
         {
+            glDisable( GL_LIGHTING );
             int nbQuads = topology->getNbQuads();
             glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
@@ -274,6 +301,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointQuadData.empty() )
         {
+            glEnable( GL_LIGHTING );
             int nbQuads = topology->getNbQuads();
             glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
@@ -290,11 +318,24 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 Vec4f color3 = isnan(pointQuadData[i*4+3])
                     ? f_colorNaN.getValue()
                     : eval(pointQuadData[i*4+3]);
-                const Quad& t = topology->getQuad(i);
-                vparams->drawTool()->drawQuad(
-                    x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
-                    m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
-                    color0, color1, color2, color3);
+                const Quad& q = topology->getQuad(i);
+
+                glNormal3fv(m_normals[q[0]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color0.ptr());
+                helper::gl::glVertexNv<3>(x[q[0]].ptr());
+
+                glNormal3fv(m_normals[q[1]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color1.ptr());
+                helper::gl::glVertexNv<3>(x[q[1]].ptr());
+
+                glNormal3fv(m_normals[q[2]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color2.ptr());
+                helper::gl::glVertexNv<3>(x[q[2]].ptr());
+
+                glNormal3fv(m_normals[q[3]].ptr());
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color3.ptr());
+                helper::gl::glVertexNv<3>(x[q[3]].ptr());
+
             }
             glEnd();
         }
@@ -317,9 +358,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     } else if (bDrawPointData) {
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
-        glPushAttrib ( GL_LIGHTING_BIT );
         glEnable ( GL_LIGHTING );
-        glEnable( GL_COLOR_MATERIAL );
 
         // Triangles
         glBegin(GL_TRIANGLES);
@@ -333,10 +372,18 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     : eval(ptData[t[j]]);
             }
 
-            vparams->drawTool()->drawTriangle(
-                x[ t[0] ], x[ t[1] ], x[ t[2] ],
-                m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
-                color[0], color[1], color[2]);
+            glNormal3fv(m_normals[t[0]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].ptr());
+            helper::gl::glVertexNv<3>(x[t[0]].ptr());
+
+            glNormal3fv(m_normals[t[1]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].ptr());
+            helper::gl::glVertexNv<3>(x[t[1]].ptr());
+
+            glNormal3fv(m_normals[t[2]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].ptr());
+            helper::gl::glVertexNv<3>(x[t[2]].ptr());
+
         }
         glEnd();
 
@@ -353,16 +400,27 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 : eval(ptData[q[j]]);
             }
 
-            vparams->drawTool()->drawQuad(
-                x[ q[0] ], x[ q[1] ], x[ q[2] ], x[ q[3] ],
-                m_normals[ q[0] ], m_normals[ q[1] ], m_normals[ q[2] ], m_normals[ q[3] ],
-                color[0], color[1], color[2], color[3]);
+            glNormal3fv(m_normals[q[0]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[0].ptr());
+            helper::gl::glVertexNv<3>(x[q[0]].ptr());
+
+            glNormal3fv(m_normals[q[1]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[1].ptr());
+            helper::gl::glVertexNv<3>(x[q[1]].ptr());
+
+            glNormal3fv(m_normals[q[2]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[2].ptr());
+            helper::gl::glVertexNv<3>(x[q[2]].ptr());
+
+            glNormal3fv(m_normals[q[3]].ptr());
+            glMaterialfv(GL_FRONT,GL_DIFFUSE,color[3].ptr());
+            helper::gl::glVertexNv<3>(x[q[3]].ptr());
 
         }
         glEnd();
-
-        glPopAttrib();
     }
+
+    glPopAttrib();
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
