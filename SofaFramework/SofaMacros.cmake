@@ -254,35 +254,31 @@ INSTALL( CODE
 "
     find_package(Git REQUIRED)
 
+    # the current commit hash should be enough
+    # except if the git history changes...
+    # so adding more stuff to be sure
+
     # get the current working branch
     execute_process(
-      COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
+      COMMAND \${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
       WORKING_DIRECTORY ${sourcedir}
       OUTPUT_VARIABLE SOFA_GIT_BRANCH
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-    # get the current commit hash
+    # get the current commit info (hash, author, date, comment)
     execute_process(
-      COMMAND  ${GIT_EXECUTABLE} rev-parse -q HEAD
+      COMMAND \${GIT_EXECUTABLE} log --format=medium -n 1
       WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_HASH
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    # get the current commit date
-    execute_process(
-      COMMAND ${GIT_EXECUTABLE} show -s --format=%ci
-      WORKING_DIRECTORY ${sourcedir}
-      OUTPUT_VARIABLE SOFA_GIT_DATE
+      OUTPUT_VARIABLE SOFA_GIT_INFO
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
     string( TOLOWER \"${name}\" name_lower )
     if( name_lower STREQUAL \"sofa\" )
-        file(WRITE \"${CMAKE_INSTALL_PREFIX}/git.version\" \"${name}: \${SOFA_GIT_BRANCH} \${SOFA_GIT_HASH} \${SOFA_GIT_DATE} \n\" )
+        file(WRITE  \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
     else()
-        file(APPEND \"${CMAKE_INSTALL_PREFIX}/git.version\" \"${name}: \${SOFA_GIT_BRANCH} \${SOFA_GIT_HASH} \${SOFA_GIT_DATE} \n\" )
+        file(APPEND \"${CMAKE_INSTALL_PREFIX}/git.version\" \"######## ${name} ########\nBranch: \${SOFA_GIT_BRANCH}\n\${SOFA_GIT_INFO}\n############\n\n\" )
     endif()
 "
 )

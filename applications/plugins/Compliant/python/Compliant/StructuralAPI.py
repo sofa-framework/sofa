@@ -283,6 +283,20 @@ class GenericRigidJoint:
     def addDamper( self, damping ):
         return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
 
+    def addSpring( self, translation_stiffness=None, rotation_stiffness=None ):
+        compliance=[]
+        for i in range(0,3):
+            if not self.mask[i]:
+                compliance.append( 1./float(translation_stiffness) )
+            else:
+                compliance.append(0.)
+        for i in range(3,6):
+            if not self.mask[i]:
+                compliance.append( 1./float(rotation_stiffness) )
+            else:
+                compliance.append(0.)
+        return self.node.createObject('DiagonalCompliance', isCompliance=False, compliance=concat(compliance))
+
     class VelocityController:
         def __init__(self, node, mask, velocities, compliance):
             self.node = node.createChild( "controller" )
@@ -426,8 +440,7 @@ class HingeRigidJoint(GenericRigidJoint):
         return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+        return GenericRigidJoint.addSpring( self, rotation_stiffness=stiffness )
 
     def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -458,8 +471,7 @@ class SliderRigidJoint(GenericRigidJoint):
         return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+        return GenericRigidJoint.addSpring( self, translation_stiffness=stiffness)
 
     def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -496,8 +508,7 @@ class CylindricalRigidJoint(GenericRigidJoint):
         return GenericRigidJoint.Limits( self.node, [mask_t_l,mask_t_u,mask_r_l,mask_r_u], [translation_lower,-translation_upper,rotation_lower,-rotation_upper], compliance )
 
     def addSpring( self, translation_stiffness, rotation_stiffness ):
-        mask = [0]*6; mask[self.axis]=1.0/translation_stiffness; mask[3+self.axis]=1.0/rotation_stiffness;
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+        return GenericRigidJoint.addSpring( self, translation_stiffness, rotation_stiffness )
 
 
 class BallAndSocketRigidJoint(GenericRigidJoint):
@@ -518,9 +529,7 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
         # return GenericRigidJoint.Limits( self.node, [mask_x_l,mask_x_u,mask_y_l,mask_y_u,mask_z_l,mask_z_u], [rotationX_lower,-rotationX_upper,rotationY_lower,-rotationY_upper,rotationZ_lower,-rotationZ_upper], compliance )
 
     def addSpring( self, stiffness ):
-        ## only isotropic stiffness makes sense
-        mask = [0, 0, 0, 1.0/stiffness, 1.0/stiffness, 1.0/stiffness ]
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+        return GenericRigidJoint.addSpring( self, rotation_stiffness=stiffness )
 
     def addPositionController( self, axis, target, compliance=0 ):
         """ control rotation around axis (0->x, 1->y, 2->z)

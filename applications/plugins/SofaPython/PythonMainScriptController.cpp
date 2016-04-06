@@ -86,24 +86,35 @@ void PythonMainScriptController::loadScript()
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-    BIND_SCRIPT_FUNC(onLoaded)
-            BIND_SCRIPT_FUNC(createGraph)
-            BIND_SCRIPT_FUNC(initGraph)
-            BIND_SCRIPT_FUNC(bwdInitGraph)
-            BIND_SCRIPT_FUNC(onKeyPressed)
-            BIND_SCRIPT_FUNC(onKeyReleased)
-            BIND_SCRIPT_FUNC(onMouseButtonLeft)
-            BIND_SCRIPT_FUNC(onMouseButtonRight)
-            BIND_SCRIPT_FUNC(onMouseButtonMiddle)
-            BIND_SCRIPT_FUNC(onMouseWheel)
-            BIND_SCRIPT_FUNC(onBeginAnimationStep)
-            BIND_SCRIPT_FUNC(onEndAnimationStep)
-            BIND_SCRIPT_FUNC(storeResetState)
-            BIND_SCRIPT_FUNC(reset)
-            BIND_SCRIPT_FUNC(cleanup)
-            BIND_SCRIPT_FUNC(onGUIEvent)
-            BIND_SCRIPT_FUNC(onScriptEvent)
-            BIND_SCRIPT_FUNC(draw)
+
+    helper::logging::MessageDispatcher::LoggerStream msg = msg_info("PythonMainScriptController");
+    msg << "Found callbacks: ";
+
+    #define BIND_SCRIPT_FUNC_WITH_MESSAGE(funcName){\
+        BIND_SCRIPT_FUNC(funcName)\
+        if( m_Func_##funcName ) msg<<#funcName<<", ";\
+        }
+
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onLoaded)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(createGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(initGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(bwdInitGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onKeyPressed)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onKeyReleased)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonLeft)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonRight)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonMiddle)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseWheel)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onBeginAnimationStep)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onEndAnimationStep)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(storeResetState)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(reset)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(cleanup)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onGUIEvent)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onScriptEvent)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(draw)
+
+    #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
 }
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)

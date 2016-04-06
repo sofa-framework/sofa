@@ -65,6 +65,7 @@ protected:
           , d_userRange(initData(&d_userRange, defaulttype::Vec2f(1,-1), "userRange", "Clamp to this values (if max>min)"))
           , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
           , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
+          , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
           , state(NULL)
           , topology(NULL)
           , oldMin(0)
@@ -84,6 +85,7 @@ public:
     Data<sofa::defaulttype::Vec4f> f_colorNaN; // Color for NaNs (alpha channel is not used)
     Data<defaulttype::Vec2f> d_userRange;
     Data<float> d_currentMin, d_currentMax;
+    Data<float> d_shininess;
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
