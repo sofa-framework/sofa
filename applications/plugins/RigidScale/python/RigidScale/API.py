@@ -55,7 +55,7 @@ class ShearlessAffineBody:
         self.framecom = Frame.Frame() # frame computed at the center of mass
         self.numberOfPoints = 1 # number of controlling a bone
 
-    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxelSize=0.01, generatedDir=None, numberOfPoints=1):
+    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, generatedDir=None, numberOfPoints=1):
         # variables
         r = Quaternion.to_euler(offset[3:]) * 180.0 / math.pi
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
@@ -70,7 +70,7 @@ class ShearlessAffineBody:
             self.framecom.translation = massInfo.com
             self.framecom.rotation = massInfo.inertia_rotation
             self.frame = [Frame.Frame(offset) * self.framecom]
-            self.setFromRigidInfo(massInfo, offset, inertia_forces)
+            self.setFromRigidInfo(massInfo, offset)
 
             # shape function
             self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
@@ -139,7 +139,7 @@ class ShearlessAffineBody:
             serialization.importAffineMass(self.affineNode,generatedDir+self.node.name+"_affinemass.json")
         return
 
-    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], mass=[1], inertia=[[1,1,1]], inertia_forces=False, voxelSize=0.01, density=2000, generatedDir=None):
+    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, generatedDir=None):
         if len(offset) == 0:
             Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
             return
@@ -148,9 +148,6 @@ class ShearlessAffineBody:
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
         if len(offset) == 1: self.frame = [Frame.Frame(offset[0])]
-        rigid_inertia = ' '
-        for m in inertia:
-            rigid_inertia = rigid_inertia + ' ' + concat(m)
         str_position = ""
         for p in offset:
             str_position = str_position + concat(p) + " "
@@ -204,7 +201,7 @@ class ShearlessAffineBody:
         for o in offset:
             self.frame.append(Frame.Frame(o))
 
-    def setFromRigidInfo(self, info, offset=[0,0,0,0,0,0,1], inertia_forces=False):
+    def setFromRigidInfo(self, info, offset=[0,0,0,0,0,0,1]):
         # variables
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
