@@ -35,7 +35,7 @@ target_scale = [1E-6, 1E-6, 1E-6]
 class ShearlessAffineBody:
     
     # Generic Body composed by one or more affine without shear
-    def __init__(self, node, name, numberOfPoints=1):
+    def __init__(self, node, name):
         # node creation
         self.node = node.createChild(name)
         self.rigidNode = self.node.createChild(name + '_rigid')  # rigid node
@@ -53,9 +53,9 @@ class ShearlessAffineBody:
         # others class attributes required for several computation
         self.frame = [] # required for many computation, these position are those used to define bones dofs
         self.framecom = Frame.Frame() # frame computed at the center of mass
-        self.numberOfPoints = numberOfPoints # number of controlling a bone
+        self.numberOfPoints = 1 # number of controlling a bone
 
-    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxelSize=0.01, generatedDir=None):
+    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces=False, voxelSize=0.01, generatedDir=None, numberOfPoints=1):
         # variables
         r = Quaternion.to_euler(offset[3:]) * 180.0 / math.pi
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
@@ -63,7 +63,8 @@ class ShearlessAffineBody:
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
 
-        if self.numberOfPoints == 1:
+        self.numberOfPoints = numberOfPoints
+        if numberOfPoints == 1:
             # get the object mass center
             self.framecom = Frame.Frame()
             self.framecom.translation = massInfo.com
@@ -100,7 +101,7 @@ class ShearlessAffineBody:
                 imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
 
             if generatedDir is None:
-                imageSamplerComponent = self.rigidNode.createObject('ImageSampler', template='ImageUC', name='sampler', src='@image', method=1, param=str(self.numberOfPoints), clearData=1)
+                imageSamplerComponent = self.rigidNode.createObject('ImageSampler', template='ImageUC', name='sampler', src='@image', method=1, param=str(numberOfPoints), clearData=1)
                 self.rigidDofs = self.rigidNode.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs', position='@sampler.position')
             else:
                 self.rigidDofs = serialization.importRigidDofs(self.rigidNode,generatedDir+self.node.name+"_dofs.json")
@@ -150,10 +151,11 @@ class ShearlessAffineBody:
         if len(offset) == 0:
             print 'StructuralAPIShearlessAffine: The case the number of points per bones equal ' + str(self.numberOfPoints) + 'is not yet handled.'
             return
+        self.numberOfPoints = len(offset)
         self.framecom = Frame.Frame()
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
-        if self.numberOfPoints == 1: self.frame = [Frame.Frame(offset[0])]
+        if len(offset) == 1: self.frame = [Frame.Frame(offset[0])]
         rigid_inertia = ' '
         scale_rest_position = ''
         for m in inertia:
