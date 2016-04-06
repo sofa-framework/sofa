@@ -83,14 +83,6 @@ class ShearlessAffineBody:
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
                 serialization.importImageShapeFunction( self.affineNode,generatedDir+self.node.name+"_SF_indices.raw",generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
         else:
-            # variables
-            rigid_mass = ' '
-            rigid_inertia = ' '
-            scale_rest_position = ''
-            for i in range(self.numberOfPoints):
-                rigid_mass = rigid_mass + ' ' + str(massInfo.mass)
-                rigid_inertia = rigid_inertia + ' ' + concat(massInfo.diagonal_inertia)
-                scale_rest_position = scale_rest_position + ' ' + concat([1,1,1])
             # rigid dofs
             meshLoaderComponent = self.rigidNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
 
@@ -107,7 +99,7 @@ class ShearlessAffineBody:
                 self.rigidDofs = serialization.importRigidDofs(self.rigidNode,generatedDir+self.node.name+"_dofs.json")
 
             # scale dofs
-            self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=scale_rest_position)
+            self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=cat([1,1,1]*numberOfPoints))
             positiveNode = self.scaleNode.createChild('positive')
             positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
             positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
@@ -157,11 +149,8 @@ class ShearlessAffineBody:
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
         if len(offset) == 1: self.frame = [Frame.Frame(offset[0])]
         rigid_inertia = ' '
-        scale_rest_position = ''
         for m in inertia:
             rigid_inertia = rigid_inertia + ' ' + concat(m)
-        for i in range(self.numberOfPoints):
-            scale_rest_position = scale_rest_position + ' ' + concat([1,1,1])
         str_position = ""
         for p in offset:
             str_position = str_position + concat(p) + " "
@@ -171,7 +160,7 @@ class ShearlessAffineBody:
         self.rigidDofs = self.rigidNode.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs', position=str_position, rest_position=str_position)
 
         # scale dofs
-        self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=scale_rest_position)
+        self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=concat([1,1,1]*len(offset)))
         positiveNode = self.scaleNode.createChild('positive')
         positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
         positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3'+template_suffix+',Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
