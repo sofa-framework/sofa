@@ -22,7 +22,7 @@ def insertRigidScale(parentNode, solidModel, param):
         return None
 
     body.setFromMesh(solidModel.mesh[0].source, voxelSize=SofaPython.units.length_from_SI(param.voxelSize), density=SofaPython.units.massDensity_from_SI(1000.), offset=solidModel.position)
-    body.addElasticBehavior("behavior", stiffness=1E5, poissonCoef=0, numberOfGaussPoint=8)
+    body.addElasticBehavior("behavior", stiffness=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), poissonCoef=0, numberOfGaussPoint=8)
     cm = body.addCollisionMesh(solidModel.mesh[0].source, offset=solidModel.position)
     cm.addVisualModel()
 
@@ -34,7 +34,8 @@ def insertRigidScale(parentNode, solidModel, param):
 
 class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    [tag] rigidScale are simulated as ShearlessAffineBody, more tags can be added to param.rigidScaleTags
+    [tag] solid tagged with rigidScale are simulated as ShearlessAffineBody, more tags can be added to param.rigidScaleTags
+    [tag] mesh group tagged with rigidScalePosition are used to compute (barycenter) the positions of a rigidScale
     Compliant joints are setup between the bones """
 
 
@@ -52,6 +53,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # simulation
         self.param.jointIsCompliance = False
         self.param.jointCompliance = 1e-6
+        self.param.rigidScaleStiffness = 10e3 # SI unit
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
         self.param.jointIsComplianceByTag=dict()
         self.param.jointComplianceByTag=dict()
