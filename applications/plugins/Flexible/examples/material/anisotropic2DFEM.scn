@@ -30,7 +30,9 @@
             <Node name="StrainNode">
                 <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="F321,E321" />
-	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0"/>	        
+                <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0"/>
+                
+                <VisualStyle displayFlags="showVisualModels hideWireframe" />
 		<PythonScriptController filename="../../python/Flexible/StressVisu.py" classname="ColorMap_Tri" /> 
 	    </Node>
         </Node>
@@ -70,6 +72,8 @@
                 <MechanicalObject template="E321" name="E"/>
                 <GreenStrainMapping template="F321,E321" />
 	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" />	        
+                
+                <VisualStyle displayFlags="showVisualModels hideWireframe" />
 		<PythonScriptController filename="../../python/Flexible/StressVisu.py" classname="ColorMap_Quad" /> 
 	    </Node>
         </Node>
