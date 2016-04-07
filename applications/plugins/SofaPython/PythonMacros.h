@@ -348,17 +348,20 @@ void printPythonExceptions();
 
 // =============================================================================
 // PYTHON SEARCH FOR A FUNCTION WITH A GIVEN NAME
+// @warning storing the function pointer in a variable called 'm_Func_funcName'
+// @warning getting the function pointer from a dictionnary called 'pDict'
+// @todo Is it really generic enough to be here?
 // =============================================================================
 #define BIND_SCRIPT_FUNC(funcName){\
         m_Func_##funcName = PyDict_GetItemString(pDict, #funcName);\
-        if (!PyCallable_Check(m_Func_##funcName)) \
-            {m_Func_##funcName=0; msg_info("PythonMainScriptController")<<#funcName<<" not found";} \
-        else \
-            {msg_info("PythonMainScriptController")<<#funcName<<" found";} \
+        if (!PyCallable_Check(m_Func_##funcName)) m_Func_##funcName=0; \
     }
 
 // =============================================================================
 // PYTHON SEARCH FOR A METHOD WITH A GIVEN NAME
+// @warning storing the function pointer in a variable called 'm_Func_funcName'
+// @warning getting the function pointer from a PythonScriptController
+// @todo Is it really generic enough to be here?
 // =============================================================================
 #define BIND_OBJECT_METHOD(funcName) \
     { \
