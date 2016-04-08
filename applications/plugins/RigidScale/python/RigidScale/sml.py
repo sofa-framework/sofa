@@ -51,12 +51,13 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.param.rigidScaleTags={"rigidScale"}
         self.param.voxelSize = 0.005 # SI unit (m)
         # simulation
-        self.param.jointIsCompliance = False
-        self.param.jointCompliance = 1e-6
         self.param.rigidScaleStiffness = 10e3 # SI unit
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
+
         self.param.jointIsComplianceByTag=dict()
+        self.param.jointIsComplianceByTag["default"]=False
         self.param.jointComplianceByTag=dict()
+        self.param.jointComplianceByTag["default"]=1e-6
 
         # visual
         self.param.showAffine=False
