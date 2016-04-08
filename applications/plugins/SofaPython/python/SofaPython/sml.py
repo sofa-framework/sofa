@@ -565,6 +565,23 @@ class BaseScene:
             for e in err:
                 Sofa.msg_error("SofaPython.sml",e)
 
+def getValueByTag(valueByTag, tags):
+    """ look into the valueByTag dictionary for a tag contained in tags
+        \return the corresponding value, or the "default" value if none is found
+        \todo print a warning if several matching tags are found in valueByTag
+    """
+    if "default" in tags:
+        Sofa.msg_error("SofaPython.sml.getValueByTag", "default tag has a special meaning, it should not be defined in {0}".format(tags))
+
+    for t in tags:
+        if t in valueByTag:
+            return valueByTag[t]
+    if "default" in valueByTag:
+        return valueByTag["default"]
+    else:
+        Sofa.msg_error("SofaPython.sml.getValueByTag", "No default value and no tag from {0} found in {1}".format(tags, valueByTag))
+        return None
+
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
     """
