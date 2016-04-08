@@ -11,6 +11,7 @@ from SofaPython import Quaternion
 from SofaPython.Tools import listToStr as concat
 import SofaPython.mass
 import SofaPython.sml
+import Compliant.StructuralAPI
 import Flexible.API
 import Flexible.sml
 
@@ -161,6 +162,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         # default joint is set up using isCompliance=True and self.param.jointCompliance value
         self.param.jointIsCompliance=True
         self.param.jointCompliance=0
+        self.param.geometricStiffness=0 # TODO doc on the possible values !
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
         self.param.jointIsComplianceByTag=dict()
         self.param.jointComplianceByTag=dict()
@@ -217,6 +219,8 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
+
+        Compliant.StructuralAPI.geometric_stiffness = self.param.geometricStiffness
 
         # rigids
         for tag in self.param.rigidTags:
