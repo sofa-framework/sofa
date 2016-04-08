@@ -23,6 +23,7 @@
     <solid id="2">
         <name>Roue</name>
         <tag>rigidScale</tag>
+        <tag>bigDeformation</tag>
         <position>0 0 -0.148 0 0 0 1</position>
         <mesh id="3.obj" />
     </solid>
