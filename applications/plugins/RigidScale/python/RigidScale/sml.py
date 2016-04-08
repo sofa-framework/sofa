@@ -21,7 +21,12 @@ def insertRigidScale(parentNode, solidModel, param):
         Sofa.msg_warning("RigidScale.sml", "insertRigidScale support only single mesh solid (nb meshes={0}) - solid {1} ignored".format(len(solidModel.mesh), solidModel.name))
         return None
 
-    body.setFromMesh(solidModel.mesh[0].source, voxelSize=SofaPython.units.length_from_SI(param.voxelSize), density=SofaPython.units.massDensity_from_SI(1000.), offset=solidModel.position)
+    # TODO support multi meshes
+    body.setFromMesh(solidModel.mesh[0].source,
+                     numberOfPoints = SofaPython.sml.getValueByTag(param.rigidScaleNbDofByTag, solidModel.tags),
+                     voxelSize = SofaPython.units.length_from_SI(param.voxelSize),
+                     density = SofaPython.units.massDensity_from_SI(1000.),
+                     offset = solidModel.position)
     body.addElasticBehavior("behavior", stiffness=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), poissonCoef=0, numberOfGaussPoint=8)
     cm = body.addCollisionMesh(solidModel.mesh[0].source, offset=solidModel.position)
     cm.addVisualModel()
@@ -53,11 +58,12 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # simulation
         self.param.rigidScaleStiffness = 10e3 # SI unit
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
-
         self.param.jointIsComplianceByTag=dict()
         self.param.jointIsComplianceByTag["default"]=False
         self.param.jointComplianceByTag=dict()
         self.param.jointComplianceByTag["default"]=1e-6
+        self.param.rigidScaleNbDofByTag=dict()
+        self.param.rigidScaleNbDofByTag["default"]=1
 
         # visual
         self.param.showAffine=False
