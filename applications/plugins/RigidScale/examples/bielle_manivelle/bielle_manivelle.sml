@@ -84,7 +84,7 @@
         <jointSolidRef id="1">
             <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
         </jointSolidRef>
-        <dof index="x"/>
+        <dof index="x" min="-0.05" max="0.6"/>
     </jointGeneric>
 
 </sml>
