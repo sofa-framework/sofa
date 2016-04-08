@@ -64,6 +64,9 @@ class ShearlessAffineBody:
         massInfo.setFromMesh(filepath, density, scale3d)
 
         self.numberOfPoints = numberOfPoints
+
+
+        SofaPython.Tools.meshLoader(self.rigidNode, filepath, name='source', triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]), rotation=concat(r))
         if numberOfPoints == 1:
             # get the object mass center
             self.framecom = Frame.Frame()
@@ -72,11 +75,8 @@ class ShearlessAffineBody:
             self.frame = [Frame.Frame(offset) * self.framecom]
             self.setFromRigidInfo(massInfo, offset)
 
-            # shape function
-            self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
-
             if generatedDir is None:
-                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
+                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@../source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
                 self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
             else:
@@ -84,8 +84,6 @@ class ShearlessAffineBody:
                 serialization.importImageShapeFunction( self.affineNode,generatedDir+self.node.name+"_SF_indices.raw",generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
         else:
             # rigid dofs
-            meshLoaderComponent = self.rigidNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
-
             if generatedDir is None:
                 self.meshToImageEngine = self.rigidNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
