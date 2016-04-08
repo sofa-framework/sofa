@@ -132,14 +132,10 @@ def insertJoint(jointModel, rigids, param):
                 limits.append(d.min)
                 limits.append(d.max)
         mask[d.index] = 0
-    compliance=param.jointCompliance
-    isCompliance=param.jointIsCompliance
-    for tag in jointModel.tags:
-        if tag in param.jointIsComplianceByTag:
-            isCompliance=param.jointIsComplianceByTag[tag]
-        if tag in param.jointComplianceByTag:
-            compliance=param.jointComplianceByTag[tag]
-    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=compliance, isCompliance=isCompliance)
+
+    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask,
+                 compliance=SofaPython.sml.getValueByTag(param.jointComplianceByTag, jointModel.tags),
+                 isCompliance=SofaPython.sml.getValueByTag(param.jointIsComplianceByTag, jointModel.tags))
     if isLimited:
         joint.addLimits(limits)
     return joint
@@ -159,13 +155,14 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         # the set of tags simulated as rigids
         self.param.rigidTags={"rigid"}
 
-        # default joint is set up using isCompliance=True and self.param.jointCompliance value
-        self.param.jointIsCompliance=True
-        self.param.jointCompliance=0
         self.param.geometricStiffness=0 # TODO doc on the possible values !
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
         self.param.jointIsComplianceByTag=dict()
         self.param.jointComplianceByTag=dict()
+
+        # default joint is set up using isCompliance=True and self.param.jointCompliance value
+        self.param.jointIsComplianceByTag["default"]=True
+        self.param.jointComplianceByTag["default"]=0 # TODO add 2 default values: for translation and rotation dofs ?
 
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
