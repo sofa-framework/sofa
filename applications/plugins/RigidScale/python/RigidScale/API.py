@@ -253,7 +253,6 @@ class ShearlessAffineBody:
                     ind = i
             # add of the offset according to this position
             offset_computed = (self.frame[ind].inv()*offset_abs).offset()
-            print "addOffset index: {0} offset: {1}".format(index, offset)
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind)
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
