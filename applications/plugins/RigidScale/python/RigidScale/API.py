@@ -263,15 +263,15 @@ class ShearlessAffineBody:
         elif self.numberOfPoints > 1:
             # computation of the index of the closest point to the offset
             index_computed = 0
-            offset = Frame.Frame(offset)
-            min_dist = numpy.linalg.norm(numpy.array(offset.translation) - numpy.array(self.frame[0].translation), 2)
+            frameOffset = Frame.Frame(offset)
+            min_dist = numpy.linalg.norm(numpy.array(frameOffset.translation) - numpy.array(self.frame[0].translation), 2)
             for i, p in enumerate(self.frame):
-                dist = numpy.linalg.norm(numpy.array(offset.translation) - numpy.array(p.translation), 2)
+                dist = numpy.linalg.norm(numpy.array(frameOffset.translation) - numpy.array(p.translation), 2)
                 if(dist < min_dist):
                     min_dist = dist
                     index_computed = i
             # add of the offset according to this position
-            offset_computed = (self.frame[index_computed].inv()*offset).offset()
+            offset_computed = (self.frame[index_computed].inv()*frameOffset).offset()
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):
