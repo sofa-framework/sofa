@@ -51,12 +51,14 @@ class ShearlessAffineBody:
         self.mass = None # mass
         self.fixedConstraint = None # to fix the ShearlessAffineBody
         # others class attributes required for several computation
+        self.bodyOffset = None # to keep track of the
         self.frame = [] # required for many computation, these position are those used to define bones dofs
-        self.framecom = Frame.Frame() # frame computed at the center of mass
+        self.framecom = None # frame computed at the center of mass
         self.numberOfPoints = 1 # number of controlling a bone
 
     def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, generatedDir=None, numberOfPoints=1):
         # variables
+        self.bodyOffset = Frame.Frame(offset)
         r = Quaternion.to_euler(offset[3:]) * 180.0 / math.pi
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
@@ -237,10 +239,10 @@ class ShearlessAffineBody:
         if self.numberOfPoints == 1:
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.framecom.inv() * Frame.Frame(offset)).offset(), 0)
         elif index > -1:
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.frame(offset)).offset(), index) # TODO offset it not absolute
         else:
             # computation of absolute position of the offset
-            offset_abs = self.framecom*Frame.Frame(offset)
+            offset_abs = self.bodyOffset*Frame.Frame(offset)
             # computation of the index of the closest point to the offset
             ind = 0
             min_dist = numpy.linalg.norm(numpy.array(offset_abs.translation) - numpy.array(self.frame[0].translation), 2)
@@ -250,8 +252,9 @@ class ShearlessAffineBody:
                     min_dist = dist
                     ind = i
             # add of the offset according to this position
-            offset = (self.frame[ind].inv()*offset_abs).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, ind)
+            offset_computed = (self.frame[ind].inv()*offset_abs).offset()
+            print "addOffset index: {0} offset: {1}".format(index, offset)
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind)
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a offset given in absolute coordinates to the rigid body
