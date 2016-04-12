@@ -73,12 +73,12 @@ def createScene(node):
         density = float(p[2])
         offset = p[1]
         body.setFromMesh(mesh, density, offset=offset, voxelSize=0.05)
-        body.addElasticBehavior("behavior", stiffness=1E5, poissonCoef=0, numberOfGaussPoint=8)
+        body.addBehavior(youngModulus=1e5, numberOfGaussPoint=8)
         
         cm = body.addCollisionMesh(mesh, scale3d=[1,1,1], offset=offset)
         cm.addVisualModel() # visual model similar to collision model
         
-        body.affineDofs.showObject=False
+        body.affineDofs.showObject=True
         body.affineDofs.showObjectScale=0.5
 
         bodies.append(body)
