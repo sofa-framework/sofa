@@ -120,13 +120,8 @@ class ShearlessAffineBody:
             self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
 
             if generatedDir is None:
-#                self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src=path_affine_rigid+'/rasterizer')
-
                 self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
 
-#                self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
-#                self.meshToImageEngine.init()
-#                imageSamplerComponent.init()
             else:
                 self.shapeFunction=serialization.importImageShapeFunction( self.affineNode, generatedDir+self.node.name+"_SF_indices.raw",generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
 
