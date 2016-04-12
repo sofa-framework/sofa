@@ -48,6 +48,7 @@ class ShearlessAffineBody:
         self.scaleNode.addChild(self.affineNode) # affine node is a child of both rigid and scale node
         # class attributes: API objects
         self.image = None
+        self.sampler = None
         self.shapeFunction = None
         # class attributes: sofa components
         self.collision = None # the added collision mesh if any
@@ -72,6 +73,13 @@ class ShearlessAffineBody:
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
 
+        self.image = SofaImage.API.Image(self.node, name="image_"+self.name, imageType="ImageUC")
+        self.image.node.addChild(self.affineNode) # for initialization
+        self.image.node.addChild(self.rigidNode) # for initialization
+        self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes
+        self.image.addMeshToImage(voxelSize)
+        self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode, useBranchingImage=False)
+
         if numberOfPoints == 1:
             # get the object mass center
             self.framecom = Frame.Frame()
@@ -81,11 +89,6 @@ class ShearlessAffineBody:
             self.setFromRigidInfo(massInfo, offset)
 
             if generatedDir is None:
-                self.image = SofaImage.API.Image(self.node, name="image_"+self.name, imageType="ImageUC")
-                self.image.node.addChild(self.affineNode) # for initialization
-                self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes
-                self.image.addMeshToImage(voxelSize)
-                self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode, useBranchingImage=False)
                 self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
             else:
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
@@ -93,14 +96,14 @@ class ShearlessAffineBody:
         else:
             # rigid dofs
             if generatedDir is None:
-                self.meshToImageEngine = self.rigidNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
-                imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
+                pass
             else:
                 imageContainerComponent = self.rigidNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
 
             if generatedDir is None:
-                imageSamplerComponent = self.rigidNode.createObject('ImageSampler', template='ImageUC', name='sampler', src='@image', method=1, param=str(numberOfPoints), clearData=1)
-                self.rigidDofs = self.rigidNode.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs', position='@sampler.position')
+                self.sampler = SofaImage.API.Sampler(self.rigidNode)
+                self.sampler.addImageSampler(self.image, numberOfPoints)
+                self.rigidDofs = self.sampler.addMechanicalObject('Rigid3'+template_suffix)
             else:
                 self.rigidDofs = serialization.importRigidDofs(self.rigidNode,generatedDir+self.node.name+"_dofs.json")
 
@@ -113,24 +116,28 @@ class ShearlessAffineBody:
             positiveNode.createObject('UnilateralConstraint')
             positiveNode.createObject('Stabilization', name='Stabilization')
             # affine dofs
-            self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs', showObject=1, showObjectScale='0.1')
+            self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')
             self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
 
             if generatedDir is None:
-                self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src=path_affine_rigid+'/rasterizer')
-                self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
-                self.meshToImageEngine.init()
-                imageSamplerComponent.init()
+#                self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src=path_affine_rigid+'/rasterizer')
+
+                self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
+
+#                self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
+#                self.meshToImageEngine.init()
+#                imageSamplerComponent.init()
             else:
                 self.shapeFunction=serialization.importImageShapeFunction( self.affineNode, generatedDir+self.node.name+"_SF_indices.raw",generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
 
             # init of component for being able to acces to bones position
-            imageContainerComponent.init()
+            self.image.image.init()
+            self.sampler.sampler.init()
+#            self.rigidDofs.init() # DO NOT init MO
             # acces to position
             self.frame = []
-            # @warning the position in imageSamplerComponent.position are computed without the offset applying in the mesh loader
-            for t in self.rigidDofs.position:
-                p = t
+            # @warning the position in sampler are computed without the offset applying in the mesh loader
+            for p in self.rigidDofs.position:
                 self.frame.append(Frame.Frame(offset) * Frame.Frame(p))
 
         # mass
@@ -138,12 +145,6 @@ class ShearlessAffineBody:
             densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
             self.affineMass = Flexible.API.AffineMass(self.affineNode)
             self.affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
-#            self.affineMassNode = self.affineNode.createChild('mass')
-#            self.affineMassNode.createObject('TransferFunction', name='density', template='ImageUC,ImageD', inputImage='@../image.image', param='0 0 1 '+str(density))
-#            self.affineMassNode.createObject('MechanicalObject', template='Vec3'+template_suffix)
-#            self.affineMassNode.createObject('LinearMapping', template='Affine,Vec3'+template_suffix)
-#            self.affineMassNode.createObject('MassFromDensity',  name='MassFromDensity', template='Affine,ImageD', image='@density.outputImage', transform='@../image.transform', lumping='0')
-#            self.affineMass = self.affineNode.createObject('AffineMass', massMatrix='@mass/MassFromDensity.massMatrix')
         else:
             serialization.importAffineMass(self.affineNode,generatedDir+self.node.name+"_affinemass.json")
         return
@@ -305,6 +306,7 @@ class ShearlessAffineBody:
         self.behavior = Flexible.API.Behavior(self.affineNode, "behavior", type="331")
         self.behavior.addGaussPointSampler(self.shapeFunction, numberOfGaussPoint)
         self.behavior.addMechanicalObject(dofAffineNode=self.affineNode)
+#        self.behavior.addHooke(youngModulus=youngModulus)
         self.behavior.addProjective(youngModulus=youngModulus) # , poissonRatio=0
         return self.behavior
 
