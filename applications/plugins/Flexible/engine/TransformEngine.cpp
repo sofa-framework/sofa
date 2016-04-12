@@ -42,11 +42,11 @@ template <>
 struct Translation <defaulttype::Affine3Types> : public TransformOperation<defaulttype::Affine3Types>
 {
     typedef defaulttype::Affine3Types DataTypes;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::SpatialCoord SpatialCoord;
+    typedef DataTypes::Real Real;
+    typedef DataTypes::SpatialCoord SpatialCoord;
 
     Translation() { t.clear(); }
-    void execute(typename DataTypes::Coord &p) const
+    void execute(DataTypes::Coord &p) const
     {
         p.getCenter()+=t;
     }
@@ -65,13 +65,13 @@ template <>
 struct Scale<defaulttype::Affine3Types> : public TransformOperation<defaulttype::Affine3Types>
 {
     typedef defaulttype::Affine3Types DataTypes;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::SpatialCoord SpatialCoord;
-    typedef typename DataTypes::Frame Frame;
+    typedef DataTypes::Real Real;
+    typedef DataTypes::SpatialCoord SpatialCoord;
+    typedef DataTypes::Frame Frame;
 
     Scale() { for(unsigned int i=0;i<DataTypes::spatial_dimensions;i++)  s[i]=1.; }
 
-    void execute(typename DataTypes::Coord &p) const
+    void execute(DataTypes::Coord &p) const
     {
         SpatialCoord c = p.getCenter();
         Frame affine = p.getAffine();
@@ -94,11 +94,11 @@ template<>
 struct RotationSpecialized<defaulttype::Affine3Types, 3, false> : public TransformOperation<defaulttype::Affine3Types>
 {
     typedef defaulttype::Affine3Types DataTypes;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::SpatialCoord SpatialCoord;
-    typedef typename DataTypes::Frame Frame;
+    typedef DataTypes::Real Real;
+    typedef DataTypes::SpatialCoord SpatialCoord;
+    typedef DataTypes::Frame Frame;
 
-    void execute(typename DataTypes::Coord &p) const
+    void execute(DataTypes::Coord &p) const
     {
         p.getCenter() = q.rotate(p.getCenter());
         Frame R; q.toMatrix(R);
