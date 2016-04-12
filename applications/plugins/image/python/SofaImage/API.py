@@ -173,8 +173,14 @@ class Sampler:
         self.mesh = self.node.createObject('Mesh', name="mesh" ,src="@"+SofaPython.Tools.getObjectPath(self.sampler))
         return self.mesh
 
-    def addMechanicalObject(self):
-        self.dofs = self.node.createObject("MechanicalObject", template="Vec3d", name="dofs")
+    def addMechanicalObject(self, template="Vec3d"):
+        if self.sampler is None:
+            Sofa.msg_error('Image.API',"addMechanicalObject : no sampler")
+            return None
+        if self.mesh is None:
+            self.dofs = self.node.createObject("MechanicalObject", template=template, name="dofs", position='@sampler.position')
+        else:
+            self.dofs = self.node.createObject("MechanicalObject", template=template, name="dofs")
         return self.dofs
 
     def addUniformMass(self,totalMass):
