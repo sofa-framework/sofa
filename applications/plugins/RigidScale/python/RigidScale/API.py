@@ -76,7 +76,7 @@ class ShearlessAffineBody:
         self.image = SofaImage.API.Image(self.node, name="image_"+self.name, imageType="ImageUC")
         self.image.node.addChild(self.affineNode) # for initialization
         self.image.node.addChild(self.rigidNode) # for initialization
-        self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes
+        self.image.addMeshLoader(filepath, value=1, insideValue=1, closingValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes
         self.image.addMeshToImage(voxelSize)
         self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode, useBranchingImage=False)
 
