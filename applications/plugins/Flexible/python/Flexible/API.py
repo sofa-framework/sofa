@@ -9,6 +9,7 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython.Tools import listListToStr as lconcat
 from SofaPython import Quaternion
+import BranchingImage.API # TODO Flexible should not depend on BranchingImage
 
 printLog = True
 
@@ -208,15 +209,22 @@ class Deformable:
                     Sofa.msg_info("Flexible.API.Deformable",'Imported Weights from '+filename)
 
 class AffineMass:
+
     def __init__(self, dofAffineNode):
         self.dofAffineNode = dofAffineNode # where the mechanical state is located
         self.mass = None
 
-    def massFromDensityImage(self, dofNode, dofRigidNode, densityImage, lumping='0'):
+    def massFromDensityImage(self, dofNode, dofRigidNode=None, densityImage=None, lumping='0'):
+        useBranchingImage = isinstance(densityImage, BranchingImage.API.Image)
         node = dofNode.createChild('Mass')
         node.createObject('MechanicalObject', name='massPoints', template='Vec3')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, assemble=False)
-        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,"+"Branching"+densityImage.imageType, image="@"+SofaPython.Tools.getObjectPath(densityImage.branchingImage)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.branchingImage)+'.transform', lumping=lumping)
+        imagePath = SofaPython.Tools.getObjectPath(densityImage.branchingImage if useBranchingImage else densityImage.image)
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",
+            template="Affine,"+("Branching" if useBranchingImage else "")+densityImage.imageType,
+            image="@"+imagePath+".image",
+            transform="@"+imagePath+'.transform',
+            lumping=lumping)
         self.mass = self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
     def getFilename(self, filenamePrefix=None, directory=""):
@@ -301,9 +309,11 @@ class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
     @todo better handle template
     """
-    def __init__(self, node):
+    # TODO useBranchingImage should be false by default, for now keep True for compatibility
+    def __init__(self, node, useBranchingImage=True):
         self.node = node
         self.shapeFunction=None
+        self.useBranchingImage = useBranchingImage
    
     def addVoronoi(self, image, position='', cells='', nbRef=8):
         """ Add a Voronoi shape function using path to position  and possibly cells
@@ -311,9 +321,10 @@ class ShapeFunction:
         if position =='':
             Sofa.msg_error("Flexible.API.ShapeFunction","addVoronoi : no position")
             return
-        imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
+        imagePath = SofaPython.Tools.getObjectPath(image.branchingImage if self.useBranchingImage else image.image)
         self.shapeFunction = self.node.createObject(
-            "VoronoiShapeFunction", template="ShapeFunction,"+"Branching"+image.imageType, 
+            "VoronoiShapeFunction",
+            template="ShapeFunction,"+ ("Branching" if self.useBranchingImage else "") + image.imageType,
             name="shapeFunction", cell=cells,
             position=position,
             src="@"+imagePath, method=0, nbRef=nbRef, bias=True)
@@ -336,24 +347,34 @@ class ShapeFunction:
             return
         sfPath = SofaPython.Tools.getObjectPath(self.shapeFunction)
         self.node.createObject(
-            "ImageExporter", template="BranchingImageUI", name="exporterIndices", 
+            "ImageExporter",
+            template="BranchingImageUI" if self.useBranchingImage else "ImageUI",
+            name="exporterIndices",
             image="@"+sfPath+".indices", transform="@"+sfPath+".transform",
             filename=self.getFilenameIndices(filenamePrefix, directory),
             exportAtBegin=True, printLog=printLog)
         self.node.createObject(
-            "ImageExporter", template="BranchingImageR", name="exporterWeights",
+            "ImageExporter",
+            template="BranchingImageR" if self.useBranchingImage else "ImageR",
+            name="exporterWeights",
             image="@"+sfPath+".weights", transform="@"+sfPath+".transform",
             filename=self.getFilenameWeights(filenamePrefix, directory), exportAtBegin=True, printLog=printLog)
        
     def addContainer(self, filenamePrefix=None, directory=""):
         self.node.createObject(
-            "ImageContainer", template="BranchingImageUI", name="containerIndices", 
+            "ImageContainer",
+            template="BranchingImageUI" if self.useBranchingImage else "ImageUI",
+            name="containerIndices",
             filename=self.getFilenameIndices(filenamePrefix, directory), drawBB=False)
         self.node.createObject(
-            "ImageContainer", template="BranchingImageR", name="containerWeights",
+            "ImageContainer",
+            template="BranchingImageR" if self.useBranchingImage else "ImageR",
+            name="containerWeights",
             filename=self.getFilenameWeights(filenamePrefix, directory), drawBB=False)
         self.shapeFunction = self.node.createObject(
-            "ImageShapeFunctionContainer", template="ShapeFunction,BranchingImageUC", name="shapeFunction",
+            "ImageShapeFunctionContainer",
+            template="ShapeFunction,BranchingImageUC" if self.useBranchingImage else "ShapeFunction,ImageUC",
+            name="shapeFunction",
             position='0 0 0', # dummy value to avoid a warning from baseShapeFunction
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
@@ -477,6 +498,8 @@ class Behavior:
     """ High level API to add a behavior
     """
     def __init__(self, node, name, type="331", labelImage=None, labels=None):
+        if (labelImage is None) != (labels is None) :
+            Sofa.msg_warning("Flexible.API.Behavior","Invalid label input - labelImage: {0}, labels: {1}".format(labelImage,labels))
         self.node = node.createChild(name)
         self.name = name
         self.labelImage = labelImage
@@ -492,14 +515,23 @@ class Behavior:
 
     def addGaussPointSampler(self, shapeFunction, nbPoints, **kwargs):
         shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
+        samplerMaskArgs = dict()
+        samplerMaskArgs.update(kwargs)
+        if not self.labelImage is None:
+            # TODO take care imabe / bi ?
+            samplerMaskArgs["mask"] = "@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage"
+            samplerMaskArgs["maskLabels"] = concat(self.labels)
         self.sampler = self.node.createObject(
-            "ImageGaussPointSampler", template="BranchingImageR,BranchingImageUC", name="sampler",
-            indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights", transform="@"+shapeFunctionPath+".transform", 
+            "ImageGaussPointSampler",
+            template="BranchingImageR,BranchingImageUC" if shapeFunction.useBranchingImage else "ImageR,ImageUC",
+            name="sampler",
+            indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights",
+            transform="@"+shapeFunctionPath+".transform",
             method="2", order=self.type[2:], targetNumber=nbPoints,
-            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels),
-            **kwargs)
-        celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
-        self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
+            **samplerMaskArgs) # **kwargs
+        if not self.labelImage is None:
+            celloffsets = self.node.createObject("BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", position ="@"+SofaPython.Tools.getObjectPath(self.sampler)+".position", src="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage), labels=concat(self.labels))
+            self.cell = "@"+SofaPython.Tools.getObjectPath(celloffsets)+".cell"
 
     def addTopologyGaussPointSampler(self, mesh, order="2", **kwargs):
         meshPath = SofaPython.Tools.getObjectPath(mesh)
