@@ -27,7 +27,7 @@ def insertRigidScale(parentNode, solidModel, param):
                      voxelSize = SofaPython.units.length_from_SI(param.voxelSize),
                      density = SofaPython.units.massDensity_from_SI(1000.),
                      offset = solidModel.position)
-    body.addElasticBehavior("behavior", stiffness=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), poissonCoef=0, numberOfGaussPoint=8)
+    body.addBehavior(youngModulus=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), numberOfGaussPoint=8)
     cm = body.addCollisionMesh(solidModel.mesh[0].source, offset=solidModel.position)
     cm.addVisualModel()
 
