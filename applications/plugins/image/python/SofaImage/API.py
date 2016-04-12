@@ -129,6 +129,17 @@ class Image:
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtBegin=True, printLog=True)
 
+    def createTransferFunction(self, parentNode, name, param, imageType="ImageR"):
+        """ Apply a TransferFunction component applied to this image
+        Create an output image in parentNode to store the the result
+        returns the corresponding SofaImage.API.Image
+        """
+        inputImagePath = SofaPython.Tools.getObjectPath(self.image)
+        outputImage = Image(parentNode, name, imageType=imageType)
+        outputImage.node.createObject("TransferFunction", template=self.imageType+","+outputImage.imageType, name="transferFunction", inputImage="@"+inputImagePath+".image", param=param)
+        outputImage.image = outputImage.node.createObject("ImageContainer", template=outputImage.imageType, name="image", image="@transferFunction.outputImage", transform="@"+inputImagePath+".transform", drawBB="false")
+        return outputImage
+
 class Sampler:
     """ This class proposes a high-level API to build ImageSamplers
     """
