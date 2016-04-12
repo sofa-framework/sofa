@@ -34,6 +34,9 @@ def insertRigidScale(parentNode, solidModel, param):
     body.affineDofs.showObject=param.showAffine
     body.affineDofs.showObjectScale=SofaPython.units.length_from_SI(param.showAffineScale)
 
+    if param.showImage:
+        body.image.addViewer()
+
     return body
 
 
@@ -70,6 +73,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.param.showAffineScale=0.05 # SI unit (m)
         self.param.showOffset=False
         self.param.showOffsetScale=0.01 # SI unit (m)
+        self.param.showImage = False
 
     def createScene(self):
         self.node.createObject('RequiredPlugin', name='image')

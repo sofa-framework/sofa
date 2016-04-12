@@ -10,6 +10,7 @@ def createScene(node):
     scene.param.voxelSize = 0.005
     scene.param.showAffine=True
     scene.param.showOffset=True
+    scene.param.showImage=False
     scene.param.rigidScaleNbDofByTag["bigDeformation"]=3
     
     scene.createScene()
