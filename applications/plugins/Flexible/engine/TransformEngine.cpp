@@ -125,7 +125,7 @@ private:
 SOFA_DECL_CLASS(TransformAffineEngine)
 
 int TransformAffineEngineClass = core::RegisterObject("Transform position of dofs")
-        .add< TransformEngine<defaulttype::Affine3Types> >(true) // default template
+        .add< TransformEngine<defaulttype::Affine3Types> >()
         ;
 
 template class SOFA_Flexible_API TransformEngine<defaulttype::Affine3Types>;
