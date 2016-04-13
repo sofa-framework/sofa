@@ -1,7 +1,131 @@
 #include "python.h"
 
+#include <sofa/defaulttype/RigidTypes.h>
+
+
 python::map_type python::_argtypes;
 python::map_type python::_restype;
+
+
+
+typedef sofa::core::objectmodel::BaseData* base_data_ptr;
+
+struct data_pointer {
+    void* ptr;
+    unsigned size;
+};
+
+// extract a pointer to vector data
+template<class T>
+static data_pointer get_data_thunk(const base_data_ptr& base_data) {
+
+    using namespace sofa::core::objectmodel;
+    Data<T>* cast = static_cast< Data<T>* >(base_data);
+
+    struct steal : Data<T> {
+        using Data<T>::m_values;
+    };
+
+    // enjoy
+    const T& value = (cast->*&steal::m_values)[ DDGNode::currentAspect(0) ].getValue();
+
+    const void* ptr = value.data();
+
+    data_pointer res;
+    res.ptr = const_cast<void*>(ptr);
+    res.size = value.size();
+
+    return res;
+}
+
+// default case
+static data_pointer get_data_thunk_unknown(const base_data_ptr&) {
+    std::cerr << "warning: unknown data type" << std::endl;
+    
+    data_pointer res;
+    res.ptr = 0;
+    res.size = 0;
+
+    return res;
+}
+
+// for_each< F(T1, T2, ...) >::operator() calls f::template
+// operator()<T>() for all Ti. F must be default-constructible.
+template<class T>
+struct for_each;
+
+template<class F>
+struct for_each : F {
+
+protected:
+    // help lookup a little bit
+    template<class T>
+    void doit() const {
+        F::template operator()<T>();
+    }
+    
+};
+
+template<class F, class T1>
+struct for_each<F (T1) > : for_each<F> {
+    
+    void operator()() const {
+        this->template doit<T1>();
+    }
+};
+
+template<class Tail, class Head>
+struct seq : for_each<Tail> {
+    
+    void operator()() const {
+        for_each<Tail>::operator()();
+        this->template doit<Head>();
+    }
+    
+};
+
+
+template<class F, class T1, class T2>
+struct for_each<F (T1, T2) > : seq< F(T1), T2 > { };
+
+template<class F, class T1, class T2, class T3>
+struct for_each<F (T1, T2, T3) > : seq< F(T1, T2), T3 > { };
+
+template<class F, class T1, class T2, class T3, class T4>
+struct for_each<F (T1, T2, T3, T4) > : seq< F(T1, T2, T3), T4 > { };
+
+template<class F, class T1, class T2, class T3, class T4, class T5>
+struct for_each<F (T1, T2, T3, T4, T5) > : seq< F(T1, T2, T3, T4), T5 > { };
+
+// TODO add more as needed
+
+
+struct vtable {
+    
+    typedef const std::type_info* key_type;
+    typedef data_pointer (*value_type)(const base_data_ptr&);
+        
+    typedef std::map<key_type, value_type > map_type;
+
+    map_type* map;
+    base_data_ptr data;
+    
+    template<class T>
+    void operator()() const {
+
+        using namespace sofa::helper;
+        using namespace sofa::core::objectmodel;
+
+        // tests if data is-a Data<vector<T>>, update vtable if so
+        if(dynamic_cast< Data<vector<T> >* >(data) ) {
+            key_type key = &typeid(*data);
+            map->insert( std::make_pair(key, get_data_thunk< vector<T> > ) );
+        }
+        
+    };
+    
+};
+
 
 extern "C" {
 
@@ -13,6 +137,32 @@ extern "C" {
         return python::restype( func );
     }
 
+
+    data_pointer get_data_pointer(base_data_ptr base_data) {
+        
+        static vtable::map_type map;
+        
+        vtable::key_type key = &typeid(*base_data);
+        vtable::map_type::iterator it = map.find(key);
+
+        if(it == map.end()) {
+            using namespace sofa::defaulttype;            
+            
+            for_each< vtable( Vec3d, Vec6d,
+                              Rigid3dTypes::Deriv, Rigid3dTypes::Coord ) > fill;
+
+            fill.map = &map;
+            fill.data = base_data;
+
+            fill();
+            
+            // defaults to unknown type
+            it = map.insert( std::make_pair(key, get_data_thunk_unknown ) ).first;
+        }
+        
+        return it->second(base_data);
+    }
+    
 }
 
 
