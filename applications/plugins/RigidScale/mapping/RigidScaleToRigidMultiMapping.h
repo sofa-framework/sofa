@@ -167,7 +167,6 @@ public:
     const sofa::defaulttype::BaseMatrix* getK();		                   
 
     Data< helper::vector<unsigned> > index; ///< Two indices per child: the index of the rigid, and the index of scale
-    Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
     Data< bool > useGeometricStiffness; ///< To indication if we use the geometric stiffness
 
 protected:
