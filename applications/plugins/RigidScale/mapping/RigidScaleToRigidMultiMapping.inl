@@ -22,7 +22,6 @@ RigidScaleToRigidMultiMapping
 <I1,I2,O>::RigidScaleToRigidMultiMapping():
 Inherit()
 , index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
-, automaticInit(initData(&automaticInit, false, "autoInit", "Init the scale and affine mechanical state, and the index data."))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
 , _Js(2)
 {
