@@ -109,16 +109,16 @@ class ShearlessAffineBody:
             self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
 
             # init of component for being able to acces to bones position
+            for mesh in self.image.meshes.values():
+                mesh.mesh.init()
             self.image.image.init()
             self.sampler.sampler.init()
-            self.rigidDofs.init() # DO NOT init MO
-            # acces to position
+            # self.rigidDofs.init() # DO NOT init MO
+            # access to position
             self.frame = []
             # @warning the position in sampler are computed without the offset applying in the mesh loader
             for p in self.rigidDofs.position:
                 self.frame.append(Frame.Frame(offset) * Frame.Frame(p))
-                print "DEBUG", self.frame[-1].offset()
-            print "DEBUG", len(self.rigidDofs.position)
 
         # mass
         densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
