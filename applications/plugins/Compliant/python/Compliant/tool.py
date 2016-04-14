@@ -52,13 +52,25 @@ def load_dll():
     get_data_pointer.restype = DataPointer
     get_data_pointer.argtypes = (ctypes.c_void_p, )
 
+    global py_callback_type
+    py_callback_type = ctypes.CFUNCTYPE(None)
+
+    global set_py_callback
+    set_py_callback = dll.set_py_callback
+    
+    set_py_callback.restype = None
+    set_py_callback.argtypes = (ctypes.c_void_p, py_callback_type)
+    
     
 shapes = {
+    'vector<double>': (ctypes.c_double, 1),    
+    'vector<Vec1d>': (ctypes.c_double, 1),
     'vector<Vec3d>': (ctypes.c_double, 3),
     'vector<Vec6d>': (ctypes.c_double, 6),
     'vector<Rigid3dTypes::Coord>': (ctypes.c_double, 7),
     'vector<Rigid3dTypes::Deriv>': (ctypes.c_double, 6),    
 }
+
 
 import numpy
 from numpy import ctypeslib
@@ -69,6 +81,8 @@ def as_numpy( data ):
         dll
     except NameError:
         load_dll()
+
+    # TODO check type(data)
         
     ts = data.getValueTypeString()
     shape = shapes.get(ts, None)
@@ -87,3 +101,102 @@ def as_numpy( data ):
 def numpy_data(obj, name):
     data = obj.findData(name)
     return as_numpy(data)
+
+
+
+
+
+class Mapping(object):
+    '''wraps a PythonMultiMapping into something more usable'''
+    
+    def __init__(self, node, **kwargs):
+        self.node = node
+        self.obj = node.createObject('PythonMultiMapping', **kwargs)
+        
+        self.src = self.obj.getFrom()
+        self.dst = self.obj.getTo()[0]
+
+        self.resize()
+
+        # callback
+        # keep a handle on the closure to prevent gc
+        self._update = lambda: self.update()
+        
+        set_py_callback( sofa_pointer(self.obj),
+                         py_callback_type( self._update ) )
+                         
+    def update(self):
+        pass
+    
+
+    def resize(self):
+        '''update after input/output resize'''
+
+        pos = 'position'        
+        vel = 'velocity'
+
+        self._out_vel = numpy_data(self.dst, vel)
+        self._out_pos = numpy_data(self.dst, pos)
+
+        self._in_vel = [ numpy_data(s, vel) for s in self.src ]
+        self._in_pos = [ numpy_data(s, pos) for s in self.src ]
+        
+        # out dim
+        self.m, out_dim = self._out_vel.shape
+        
+        # in dim
+        self.n = sum( v.shape[0] for v in self._in_vel  )
+        in_dim = self._in_vel[0].shape[1]
+        
+        # resize jacobian/value data
+        size = self.m * self.n * in_dim * out_dim
+        
+        self.obj.jacobian = ' '.join( ['0'] * size )
+        self.obj.value = ' '.join( ['0'] * self.m * out_dim )
+    
+        # map numpy arrays
+        self._jacobian = numpy_data(self.obj, 'jacobian')
+        self._value = numpy_data(self.obj, 'value')
+
+        # reshape jacobian
+        self._jacobian = self._jacobian.reshape(self.m * out_dim, self.n * in_dim)
+
+        
+    @property
+    def jacobian(self):
+        '''a view of the jacobian matrix'''
+        return self._jacobian
+
+    @property
+    def value(self):
+        '''a view of the value vector'''
+        return self._value
+
+    # convenience
+    @jacobian.setter
+    def jacobian(self, value):
+        self._jacobian[:] = value
+    
+    @value.setter
+    def value(self, value):
+        self._value[:] = value
+
+    # these can help when filling jacobian/value
+    @property
+    def out_pos(self):
+        '''a view of the output position vector'''
+        return self._out_pos
+
+    @property
+    def out_vel(self):
+        '''a view of the output velocity vector'''
+        return self._out_vel
+
+    def in_pos(self, i):
+        '''a view of the ith input position vector'''
+        return self._in_pos[i]
+
+    def in_vel(self, i):
+        '''a view of the ith input velocity vector'''
+        return self._in_vel[i]
+    

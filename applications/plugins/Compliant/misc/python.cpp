@@ -1,7 +1,7 @@
 #include "python.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <Compliant/mapping/PythonMultiMapping.h>
 
 python::map_type python::_argtypes;
 python::map_type python::_restype;
@@ -9,6 +9,10 @@ python::map_type python::_restype;
 
 
 typedef sofa::core::objectmodel::BaseData* base_data_ptr;
+typedef sofa::core::objectmodel::Base* base_ptr;
+typedef sofa::core::BaseMapping* base_mapping_ptr;
+
+typedef void* (*py_callback_type)();
 
 struct data_pointer {
     void* ptr;
@@ -61,7 +65,7 @@ protected:
     // help lookup a little bit
     template<class T>
     void doit() const {
-        F::template operator()<T>();
+        this->F::template operator()<T>();
     }
     
 };
@@ -96,6 +100,12 @@ struct for_each<F (T1, T2, T3, T4) > : seq< F(T1, T2, T3), T4 > { };
 
 template<class F, class T1, class T2, class T3, class T4, class T5>
 struct for_each<F (T1, T2, T3, T4, T5) > : seq< F(T1, T2, T3, T4), T5 > { };
+
+template<class F, class T1, class T2, class T3, class T4, class T5, class T6>
+struct for_each<F (T1, T2, T3, T4, T5, T6) > : seq< F(T1, T2, T3, T4, T5), T6 > { };
+
+template<class F, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+struct for_each<F (T1, T2, T3, T4, T5, T6, T7) > : seq< F(T1, T2, T3, T4, T5, T6), T7 > { };
 
 // TODO add more as needed
 
@@ -148,7 +158,8 @@ extern "C" {
         if(it == map.end()) {
             using namespace sofa::defaulttype;            
             
-            for_each< vtable( Vec3d, Vec6d,
+            for_each< vtable( double,
+                              Vec1d, Vec3d, Vec6d,
                               Rigid3dTypes::Deriv, Rigid3dTypes::Coord ) > fill;
 
             fill.map = &map;
@@ -161,6 +172,21 @@ extern "C" {
         }
         
         return it->second(base_data);
+    }
+
+
+    void set_py_callback(base_ptr base, py_callback_type py_callback ) {
+
+        using namespace sofa::component::mapping;
+        using namespace sofa::defaulttype;        
+
+        with_py_callback* cast = dynamic_cast< with_py_callback* >( base );
+        
+        if( cast ) {
+            cast->py_callback = py_callback;
+        } else {
+            std::cerr << "error setting python callback" << std::endl;
+        }
     }
     
 }
