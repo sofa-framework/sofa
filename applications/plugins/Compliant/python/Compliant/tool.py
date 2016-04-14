@@ -42,24 +42,30 @@ def sofa_pointer( obj ):
 def load_dll():
     '''load symbols from compliant dll. you need to load compliant plugin first.'''
 
-    # TODO we probably need to make this portable
-    global dll
-    dll = ctypes.CDLL('libCompliant.so')
+    ext = 'so'
+    prefix = 'lib'
 
-    global get_data_pointer
-    get_data_pointer = dll.get_data_pointer
+    import platform
+    system = platform.system()
     
-    get_data_pointer.restype = DataPointer
-    get_data_pointer.argtypes = (ctypes.c_void_p, )
+    if system == 'Windows':
+        ext = 'dll'
+    elif system == 'Darwin':
+        ext = 'dylib'
+        
+    dll_name = '{0}Compliant.{1}'.format(prefix, ext)
+
+    global dll
+    dll = ctypes.CDLL(dll_name)
+    
+    dll.get_data_pointer.restype = DataPointer
+    dll.get_data_pointer.argtypes = (ctypes.c_void_p, )
 
     global py_callback_type
     py_callback_type = ctypes.CFUNCTYPE(None)
 
-    global set_py_callback
-    set_py_callback = dll.set_py_callback
-    
-    set_py_callback.restype = None
-    set_py_callback.argtypes = (ctypes.c_void_p, py_callback_type)
+    dll.set_py_callback.restype = None
+    dll.set_py_callback.argtypes = (ctypes.c_void_p, py_callback_type)
     
     
 shapes = {
@@ -91,7 +97,7 @@ def as_numpy( data ):
     t, cols = shape
     
     sp = sofa_pointer(data)
-    d = get_data_pointer(sp)
+    d = dll.get_data_pointer(sp)
     rows = d.size
     
     array = ctypes.cast( ctypes.c_void_p(d.ptr), ctypes.POINTER(t))
@@ -128,8 +134,8 @@ class Mapping(object):
         # keep a handle on the closure to prevent gc
         self._update = lambda: self.update()
         
-        set_py_callback( sofa_pointer(self.obj),
-                         py_callback_type( self._update ) )
+        dll.set_py_callback( sofa_pointer(self.obj),
+                             py_callback_type( self._update ) )
                          
     def update(self):
         pass
@@ -191,7 +197,9 @@ class Mapping(object):
 from Tools import node_path_rel as node_path_relative
 
 def object_link_relative(node, obj):
+    '''object link string relative to a given node'''
     return '@{0}/{1}'.format( node_path_relative(node, obj.getContext() ), obj.name )
 
 def multi_mapping_input(node, *dofs ):
+    '''multimapping input field from a list of dofs'''
     return ' '.join( object_link_relative(node, x) for x in dofs )
