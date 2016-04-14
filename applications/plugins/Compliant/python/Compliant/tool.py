@@ -1,4 +1,4 @@
-
+s
 import ctypes
 
 class PyObject(ctypes.Structure):
@@ -111,11 +111,17 @@ class Mapping(object):
     
     def __init__(self, node, **kwargs):
         self.node = node
+
+        self.src = kwargs['input'] 
+        self.dst = kwargs['output']
+
+        kwargs['template'] = '{0},{1}'.format( self.src[0].getTemplateName(),
+                                               self.dst.getTemplateName())
+        kwargs['input'] = multi_mapping_input(node, *self.src)
+        kwargs['output'] = object_link_relative(node, self.dst)
+        
         self.obj = node.createObject('PythonMultiMapping', **kwargs)
         
-        self.src = self.obj.getFrom()
-        self.dst = self.obj.getTo()[0]
-
         self.resize()
 
         # callback
@@ -130,23 +136,23 @@ class Mapping(object):
     
 
     def resize(self):
-        '''update after input/output resize'''
+        '''update stuff after input/output resize'''
 
         pos = 'position'        
         vel = 'velocity'
 
-        self._out_vel = numpy_data(self.dst, vel)
-        self._out_pos = numpy_data(self.dst, pos)
+        self.out_vel = numpy_data(self.dst, vel)
+        self.out_pos = numpy_data(self.dst, pos)
 
-        self._in_vel = [ numpy_data(s, vel) for s in self.src ]
-        self._in_pos = [ numpy_data(s, pos) for s in self.src ]
+        self.in_vel = [ numpy_data(s, vel) for s in self.src ]
+        self.in_pos = [ numpy_data(s, pos) for s in self.src ]
         
         # out dim
-        self.m, out_dim = self._out_vel.shape
+        self.m, out_dim = self.out_vel.shape
         
         # in dim
-        self.n = sum( v.shape[0] for v in self._in_vel  )
-        in_dim = self._in_vel[0].shape[1]
+        self.n = sum( v.shape[0] for v in self.in_vel  )
+        in_dim = self.in_vel[0].shape[1]
         
         # resize jacobian/value data
         size = self.m * self.n * in_dim * out_dim
@@ -181,22 +187,11 @@ class Mapping(object):
     def value(self, value):
         self._value[:] = value
 
-    # these can help when filling jacobian/value
-    @property
-    def out_pos(self):
-        '''a view of the output position vector'''
-        return self._out_pos
 
-    @property
-    def out_vel(self):
-        '''a view of the output velocity vector'''
-        return self._out_vel
+from Tools import node_path_rel as node_path_relative
 
-    def in_pos(self, i):
-        '''a view of the ith input position vector'''
-        return self._in_pos[i]
+def object_link_relative(node, obj):
+    return '@{0}/{1}'.format( node_path_relative(node, obj.getContext() ), obj.name )
 
-    def in_vel(self, i):
-        '''a view of the ith input velocity vector'''
-        return self._in_vel[i]
-    
+def multi_mapping_input(node, *dofs ):
+    return ' '.join( object_link_relative(node, x) for x in dofs )

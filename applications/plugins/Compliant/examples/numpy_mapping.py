@@ -9,7 +9,7 @@ def createScene(node):
                                   pluginName = 'Compliant')
     
     # some mechanical state
-    state = node.createObject('MechanicalObject',
+    src = node.createObject('MechanicalObject',
                               template = 'Rigid3d',
                               position = '1 2 3 0 0 0 1',
                               name = 'dofs')
@@ -24,7 +24,7 @@ def createScene(node):
 
     # a rigid -> vec3 python mapping
     child = node.createChild('child')
-    state = child.createObject('MechanicalObject',
+    dst = child.createObject('MechanicalObject',
                                template = 'Vec3d',
                                position = '0 0 0',
                                name = 'dofs')
@@ -41,11 +41,11 @@ def createScene(node):
             print('python mapping update')
 
             # map input translation
-            self.value[0] = self.in_pos(0)[0, :3]
+            self.value[0] = self.in_pos[0][0, :3]
             
     mapping = MyMapping(child,
                         name = 'mapping',
-                        template = 'Rigid3d,Vec3d',                           
-                        input = '@../dofs', output = '@dofs')
+                        input = [src],               
+                        output = dst)
 
-   
+    print('init done')
