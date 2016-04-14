@@ -1,4 +1,4 @@
-s
+
 import ctypes
 
 class PyObject(ctypes.Structure):

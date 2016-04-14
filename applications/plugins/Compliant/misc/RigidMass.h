@@ -68,17 +68,38 @@ protected:
 	unsigned clamp(unsigned i) const {
 		return std::min<unsigned>(i, mass.getValue().size() - 1);
 	}
+
+    template<class T>
+    static T& edit(const Data<T>& data) {
+        // hell yeah
+        return const_cast<T&>(data.getValue());
+    }
+    
 public:
 
 	void init() {
 		this->core::behavior::Mass<DataTypes>::init();
-		
-		if( mass.getValue().size() != inertia.getValue().size() ) {
-			throw std::logic_error("mass and inertia arrays must have the same size");
-		}
-		
-		if( !mass.getValue().size() ) throw std::logic_error("empty mass field");
-		if( !this->mstate )  throw std::logic_error("no mstate");
+
+        typedef std::runtime_error error;
+
+        try{ 
+            if( !this->mstate )  {
+                throw error("no mstate !");
+            }
+
+            if( !mass.getValue().size() ) {
+                edit(mass).resize( this->mstate->getSize() );
+                serr << "empty data 'mass', auto-resizing" << sendl;
+            }
+            
+            if( mass.getValue().size() != inertia.getValue().size() ) {
+                edit(inertia).resize(mass.getValue().size());
+                serr << "'mass' and 'inertia' data must have the same size, auto-resizing" << sendl;
+            }
+        } catch(error& e) {
+            serr << e.what() << sendl;
+            throw e;
+        }
 
 		this->reinit();
 	} 
