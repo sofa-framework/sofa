@@ -92,8 +92,6 @@ def createScene(root):
     ballandsocket_body2 = createRigidBody(ballandsocketNode, "simpleballandsocket_body2", -5 )
     simpleballandsocket = StructuralAPI.SimpleBallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node, compliance=1e-2, isCompliance=False )
     
-    return
-    
     # PLANAR
     planarNode = root.createChild('planar')
     planar_body1 = createFixedRigidBody(planarNode, "planar_body1", 0 )
@@ -128,8 +126,6 @@ def createScene(root):
     spring_body1 = createFixedRigidBody(springNode, "spring_body1", 15 )
     spring_body2 = createRigidBody(springNode, "spring_body2", 15 )
     spring = StructuralAPI.RigidJointSpring( "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
-  
-    return
   
     # from now work in float
   
