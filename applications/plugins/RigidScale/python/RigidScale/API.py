@@ -1,5 +1,6 @@
 #from operator import ge
 
+import sys
 import math
 import numpy
 
@@ -59,15 +60,12 @@ class ShearlessAffineBody:
         self.mass = None # mass
         self.fixedConstraint = None # to fix the ShearlessAffineBody
         # others class attributes required for several computation
-        self.bodyOffset = None # to keep track of the
-        self.frame = [] # required for many computation, these position are those used to define bones dofs
-        self.framecom = None # frame computed at the center of mass
-        self.numberOfPoints = 1 # number of controlling a bone
+        self.bodyOffset = None # the position of the body
+#        self.frame = [] # required for many computation, these position are those used to define bones dofs
 
     def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, numberOfPoints=1):
         # variables
         self.bodyOffset = Frame.Frame(offset)
-        self.numberOfPoints = numberOfPoints
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
         massInfo = SofaPython.mass.RigidMassInfo()
@@ -76,49 +74,28 @@ class ShearlessAffineBody:
         self.image = SofaImage.API.Image(self.node, name="image_"+self.name, imageType="ImageUC")
         self.image.node.addChild(self.affineNode) # for initialization
         self.image.node.addChild(self.rigidNode) # for initialization
-        self.image.addMeshLoader(filepath, value=1, insideValue=1, closingValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes
+        self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes closingValue=1,
         self.image.addMeshToImage(voxelSize)
-        self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode, useBranchingImage=False)
+        self.shapeFunction = Flexible.API.ShapeFunction(self.rigidNode, useBranchingImage=False)
 
-        if numberOfPoints == 1:
-            # get the object mass center
-            self.framecom = Frame.Frame()
-            self.framecom.translation = massInfo.com
-            self.framecom.rotation = massInfo.inertia_rotation
-            self.frame = [Frame.Frame(offset) * self.framecom]
-            self.setFromRigidInfo(massInfo, offset)
-            self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
-        else:
-            # rigid dofs
-            self.sampler = SofaImage.API.Sampler(self.rigidNode)
-            self.sampler.addImageSampler(self.image, numberOfPoints)
-            self.rigidDofs = self.sampler.addMechanicalObject('Rigid3'+template_suffix)
+        # rigid dofs
+        self.sampler = SofaImage.API.Sampler(self.rigidNode)
+        self.sampler.addImageSampler(self.image, numberOfPoints)
+        self.rigidDofs = self.sampler.addMechanicalObject('Rigid3'+template_suffix)
 
-            # scale dofs
-            self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=concat([1,1,1]*numberOfPoints))
-            positiveNode = self.scaleNode.createChild('positive')
-            positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
-            positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
-            positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
-            positiveNode.createObject('UnilateralConstraint')
-            positiveNode.createObject('Stabilization', name='Stabilization')
-            # affine dofs
-            self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')
-            self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
+        # scale dofs
+        self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=concat([1,1,1]*numberOfPoints))
+        positiveNode = self.scaleNode.createChild('positive')
+        positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
+        positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
+        positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
+        positiveNode.createObject('UnilateralConstraint')
+        positiveNode.createObject('Stabilization', name='Stabilization')
+        # affine dofs
+        self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')
+        self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
 
-            self.shapeFunction.addVoronoi(self.image, position='@../dofs.rest_position')
-
-            # init of component for being able to acces to bones position
-            for mesh in self.image.meshes.values():
-                mesh.mesh.init()
-            self.image.image.init()
-            self.sampler.sampler.init()
-            # self.rigidDofs.init() # DO NOT init MO
-            # access to position
-            self.frame = []
-            # @warning the position in sampler are computed without the offset applying in the mesh loader
-            for p in self.rigidDofs.position:
-                self.frame.append(Frame.Frame(offset) * Frame.Frame(p))
+        self.shapeFunction.addVoronoi(self.image, position='@dofs.rest_position')
 
         # mass
         densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
@@ -129,7 +106,6 @@ class ShearlessAffineBody:
         if len(offset) == 0:
             Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
             return
-        self.numberOfPoints = len(offset)
         self.framecom = Frame.Frame()
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
@@ -187,68 +163,46 @@ class ShearlessAffineBody:
         for o in offset:
             self.frame.append(Frame.Frame(o))
 
-    def setFromRigidInfo(self, info, offset=[0,0,0,0,0,0,1]):
-        # variables
-        path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
-        path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
-        # rigid dofs
-        self.rigidDofs = self.frame[0].insert(self.rigidNode, name = 'dofs', template='Rigid3'+template_suffix)
-        # scale dofs
-        self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position='1 1 1')
-        positiveNode = self.scaleNode.createChild('positive')
-        positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
-        positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3'+template_suffix+',Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
-        positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
-        positiveNode.createObject('UnilateralConstraint')
-        positiveNode.createObject('Stabilization', name='Stabilization')
-        # affine dofs
-        self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='parent', showObject=0)
-        self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
-        return
-
     def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix='', generatedDir=None):
         ## adding a collision mesh to the rigid body with a relative offset
+        ## body offset is added to the offset
         # (only a Triangle collision model is created, more models can be added manually)
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        self.collision = ShearlessAffineBody.CollisionMesh(self.affineNode, filepath, scale3d, offset, name_suffix, generatedDir=generatedDir)
+        self.collision = ShearlessAffineBody.CollisionMesh(self.affineNode, filepath, scale3d, (self.bodyOffset*Frame.Frame(offset)).offset(), name_suffix, generatedDir=generatedDir)
         return self.collision
 
     def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1], name_suffix='', generatedDir=None):
         ## adding a visual model to the rigid body with a relative offset
-        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        self.visual = ShearlessAffineBody.VisualModel(self.affineNode, filepath, scale3d, offset, name_suffix, generatedDir=generatedDir)
+        self.visual = ShearlessAffineBody.VisualModel(self.affineNode, filepath, scale3d, (self.bodyOffset*Frame.Frame(offset)).offset(), name_suffix, generatedDir=generatedDir)
         return self.visual
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        if self.numberOfPoints == 1:
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.framecom.inv() * Frame.Frame(offset)).offset(), 0)
-        elif index > -1:
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.frame(offset)).offset(), index) # TODO offset it not absolute
+        return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.Frame(offset)).offset(), index)
+        if index > -1:
+            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.frame(offset)).offset(), index)
         else:
             # computation of absolute position of the offset
             offset_abs = self.bodyOffset*Frame.Frame(offset)
             # computation of the index of the closest point to the offset
-            ind = 0
-            min_dist = numpy.linalg.norm(numpy.array(offset_abs.translation) - numpy.array(self.frame[0].translation), 2)
+            ind = None
+            min_dist = sys.float_info.max
             for i, p in enumerate(self.frame):
                 dist = numpy.linalg.norm(numpy.array(offset_abs.translation) - numpy.array(p.translation), 2)
                 if(dist < min_dist):
                     min_dist = dist
                     ind = i
+            print "DEBUG", name, ind, min_dist, offset, offset_abs
             # add of the offset according to this position
             offset_computed = (self.frame[ind].inv()*offset_abs).offset()
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind)
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a offset given in absolute coordinates to the rigid body
-        if self.numberOfPoints == 1:
-            offset = (self.frame[0].inv()*Frame.Frame(offset)).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, 0)
-        elif index > -1:
+        return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
+        if index > -1:
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
-        elif self.numberOfPoints > 1:
+        else :
             # computation of the index of the closest point to the offset
             index_computed = 0
             frameOffset = Frame.Frame(offset)
@@ -341,7 +295,7 @@ class ShearlessAffineBody:
 
     class Offset:
 
-        def __init__(self, rigidNode, scaleNode, name, offset, arg=0):
+        def __init__(self, rigidNode, scaleNode, name, offset, arg=-1):
             # node creation
             self.node = rigidNode.createChild(name)
             scaleNode.addChild(self.node)
@@ -351,7 +305,14 @@ class ShearlessAffineBody:
             path_offset_scale = '@'+ Tools.node_path_rel(self.node, scaleNode)
             # scene creation
             self.dofs = self.frame.insert(self.node, template='Rigid3'+template_suffix, name='dofs')
-            self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
+
+            if arg==-1:
+                self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
+                                                                                 , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
+                                                                                 , useGeometricStiffness=geometric_stiffness, printLog='0')
+
+            else:
+                self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
                                                                                  , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
                                                                                  , index='0 '+ str(arg) + ' ' + str(arg), useGeometricStiffness=geometric_stiffness, printLog='0')
 

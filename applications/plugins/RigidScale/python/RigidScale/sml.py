@@ -14,9 +14,6 @@ def insertRigidScale(parentNode, solidModel, param):
 
     body = RigidScale.API.ShearlessAffineBody(parentNode, solidModel.name)
 
-#    massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density)
-#    body.setFromRigidInfo(massinfo, offset=solidModel.position , inertia_forces = False )
-
     if (not len(solidModel.mesh)==1):
         Sofa.msg_warning("RigidScale.sml", "insertRigidScale support only single mesh solid (nb meshes={0}) - solid {1} ignored".format(len(solidModel.mesh), solidModel.name))
         return None
@@ -28,12 +25,11 @@ def insertRigidScale(parentNode, solidModel, param):
                      density = SofaPython.units.massDensity_from_SI(1000.),
                      offset = solidModel.position)
     body.addBehavior(youngModulus=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), numberOfGaussPoint=8)
-    cm = body.addCollisionMesh(solidModel.mesh[0].source, offset=solidModel.position)
+    cm = body.addCollisionMesh(solidModel.mesh[0].source)
     cm.addVisualModel()
 
     body.affineDofs.showObject=param.showAffine
     body.affineDofs.showObjectScale=SofaPython.units.length_from_SI(param.showAffineScale)
-
     if param.showImage:
         body.image.addViewer()
 
