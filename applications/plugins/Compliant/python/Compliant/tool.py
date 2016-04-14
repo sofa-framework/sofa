@@ -114,7 +114,7 @@ def numpy_data(obj, name):
 
 class Mapping(object):
     '''wraps a PythonMultiMapping into something more usable'''
-    
+
     def __init__(self, node, **kwargs):
         self.node = node
 
@@ -132,11 +132,11 @@ class Mapping(object):
 
         # callback
         # keep a handle on the closure to prevent gc
-        self._update = lambda: self.update()
+        self._update = py_callback_type(lambda: self.update())
         
         dll.set_py_callback( sofa_pointer(self.obj),
-                             py_callback_type( self._update ) )
-                         
+                             self._update )
+
     def update(self):
         pass
     
