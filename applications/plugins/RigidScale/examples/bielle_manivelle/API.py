@@ -75,7 +75,7 @@ def createScene(node):
         body.setFromMesh(mesh, density, offset=offset, voxelSize=0.05)
         body.addBehavior(youngModulus=1e5, numberOfGaussPoint=8)
         
-        cm = body.addCollisionMesh(mesh, scale3d=[1,1,1], offset=offset)
+        cm = body.addCollisionMesh(mesh)
         cm.addVisualModel() # visual model similar to collision model
         
         body.affineDofs.showObject=True

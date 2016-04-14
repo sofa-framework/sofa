@@ -38,6 +38,8 @@
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
 
+#include "Flexible/shapeFunction/BaseShapeFunction.h"
+
 #include <RigidScale/mapping/RigidScaleMappingJacobian.h>
 
 namespace sofa
@@ -109,6 +111,9 @@ public:
     typedef helper::vector<defaulttype::BaseMatrix*> stiffnessMatrices;
 
     typedef SE3< Real > se3;
+
+    typedef core::behavior::ShapeFunctionTypes<3,Real> ShapeFunctionType;
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
 
 	/****************** CONSTRUCTOR / DESTRUCTOR ***********************/
     RigidScaleToRigidMultiMapping();
@@ -199,6 +204,8 @@ protected:
 
     // Others
     OutVecCoord relativeCoord;
+
+    BaseShapeFunction* m_shapeFunction;
 };
 
 }//namespace mapping

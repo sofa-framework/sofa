@@ -27,7 +27,8 @@ def createScene(node):
     
     body = RigidScale.API.ShearlessAffineBody(sceneNode, "Roue")
     mesh = SofaPython.Tools.localPath(__file__, "3.obj")
-    body.setFromMesh(mesh, voxelSize=0.05, numberOfPoints=5)
+    body.setFromMesh(mesh, voxelSize=0.05, numberOfPoints=5, offset=[1.,0,0,0,0,0,1])
+    body.image.addViewer()
     body.addBehavior(youngModulus=1e4, numberOfGaussPoint=50)
     
     cm = body.addCollisionMesh(mesh)
@@ -35,5 +36,13 @@ def createScene(node):
     
     body.affineDofs.showObject=True
     body.affineDofs.showObjectScale=0.5
+    
+    offset0 = body.addOffset("offset0", [0, 0, 0.148, 0, 0, 0, 1])
+    offset0.dofs.showObject=True
+    offset0.dofs.showObjectScale=0.25
+    
+    offset1 = body.addOffset("offset1", [0.24, -0.145, 0.478, 0, 0, 0, 1])
+    offset1.dofs.showObject=True
+    offset1.dofs.showObjectScale=0.25
     
     body.setFixed(True)

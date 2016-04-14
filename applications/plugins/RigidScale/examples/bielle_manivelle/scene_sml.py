@@ -11,7 +11,7 @@ def createScene(node):
     scene.param.showAffine=True
     scene.param.showOffset=True
     scene.param.showImage=False
-    scene.param.rigidScaleNbDofByTag["bigDeformation"]=1 # buggy...
+    scene.param.rigidScaleNbDofByTag["bigDeformation"]=1
     
     scene.createScene()
     
