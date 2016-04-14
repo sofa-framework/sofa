@@ -487,9 +487,11 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if ((tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
     {
-        glEnable(GL_TEXTURE_2D);
         if(tex)
+        {
+            glEnable(GL_TEXTURE_2D);
             tex->bind();
+        }
 #ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
@@ -651,9 +653,11 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if ( (tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
     {
         if (tex)
+        {
             tex->unbind();
+            glDisable(GL_TEXTURE_2D);
+        }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisable(GL_TEXTURE_2D);
 #ifdef SOFA_HAVE_GLEW
         if (hasTangents)
         {
