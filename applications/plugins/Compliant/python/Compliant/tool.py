@@ -62,7 +62,7 @@ def load_dll():
     dll.get_data_pointer.argtypes = (ctypes.c_void_p, )
 
     global py_callback_type
-    py_callback_type = ctypes.CFUNCTYPE(None)
+    py_callback_type = ctypes.CFUNCTYPE(None, ctypes.c_int)
 
     dll.set_py_callback.restype = None
     dll.set_py_callback.argtypes = (ctypes.c_void_p, py_callback_type)
@@ -78,7 +78,7 @@ shapes = {
 }
 
 
-import numpy
+import numpy as np
 from numpy import ctypeslib
 
 def as_numpy( data ):
@@ -111,7 +111,56 @@ def numpy_data(obj, name):
 
 
 
+def numpy_property(name):
 
+    @property
+    def res(self):
+        return getattr(self, name)
+
+    @res.setter
+    def res(self, value):
+        getattr(self, name)[:] = value
+    
+    return res
+
+from itertools import izip
+
+def numpy_item_property(name):
+
+    class ItemProperty(object):
+
+        def __init__(self, data):
+            self.data = data
+            
+        def __getitem__(self, index):
+            return self.data[index]
+
+        def __setitem__(self, index, value):
+            self.data[index][:] = value
+
+        def __len__(self):
+            return len(self.data)
+
+        def __iter__(self):
+            for x in self.data: yield x
+
+        def __str__(self):
+            return np.array_str(np.array(self.data))
+            
+    @property
+    def res(self):
+        return ItemProperty(getattr(self, name))
+
+    @res.setter
+    def res(self, value):
+        data = getattr(self, name)
+        for x, v in zip(data, value):
+            x[:] = v
+    
+    return res
+
+
+# TODO enable gs based on update_gs presence in derived classes
 class Mapping(object):
     '''wraps a PythonMultiMapping into something more usable'''
 
@@ -128,33 +177,42 @@ class Mapping(object):
         
         self.obj = node.createObject('PythonMultiMapping', **kwargs)
         
-        self.resize()
+        self.init()
 
         # callback
+        def callback(state):
+            if state == 0:
+                self.update()
+            elif state == 1:
+                self.update_gs(self._out_force)
+            else: raise Exception('unknown callback state')
+
         # keep a handle on the closure to prevent gc
-        self._update = py_callback_type(lambda: self.update())
+        self._cb = py_callback_type(callback)
         
-        dll.set_py_callback( sofa_pointer(self.obj),
-                             self._update )
+        dll.set_py_callback( sofa_pointer(self.obj), self._cb )
+
 
     def update(self):
         pass
     
-
-    def resize(self):
+    def update_gs(self, out_force):
+        pass
+    
+    def init(self):
         '''update stuff after input/output resize'''
 
         pos = 'position'        
         vel = 'velocity'
 
-        self.out_vel = numpy_data(self.dst, vel)
-        self.out_pos = numpy_data(self.dst, pos)
+        self._out_vel = numpy_data(self.dst, vel)
+        self._out_pos = numpy_data(self.dst, pos)
 
-        self.in_vel = [ numpy_data(s, vel) for s in self.src ]
-        self.in_pos = [ numpy_data(s, pos) for s in self.src ]
+        self._in_vel = [ numpy_data(s, vel) for s in self.src ]
+        self._in_pos = [ numpy_data(s, pos) for s in self.src ]
         
         # out dim
-        self.m, out_dim = self.out_vel.shape
+        self.m, out_dim = self._out_vel.shape
         
         # in dim
         self.n = sum( v.shape[0] for v in self.in_vel  )
@@ -163,9 +221,9 @@ class Mapping(object):
         # resize jacobian/value data
         size = self.m * self.n * in_dim * out_dim
         
-        self.obj.jacobian = ' '.join( ['0'] * size )
-        self.obj.value = ' '.join( ['0'] * self.m * out_dim )
-    
+        self.obj.jacobian = [0] * size
+        self.obj.value = [0] * (self.m * out_dim )
+        
         # map numpy arrays
         self._jacobian = numpy_data(self.obj, 'jacobian')
         self._value = numpy_data(self.obj, 'value')
@@ -173,27 +231,35 @@ class Mapping(object):
         # reshape jacobian
         self._jacobian = self._jacobian.reshape(self.m * out_dim, self.n * in_dim)
 
+        # geometric stiffness
+        if self.obj.use_geometric_stiffness:
+
+            size = self.n * in_dim * self.n * in_dim
+            
+            self.obj.geometric_stiffness = [0] * size
+            self.obj.out_force = [0] * (self.m * out_dim)
+            
+            self._gs = numpy_data(self.obj, 'geometric_stiffness')
+            self._gs = self._gs.reshape( self.n * in_dim, self.n * in_dim)
+            self._out_force = numpy_data(self.obj, 'out_force')
+
+
+    # properties
+    jacobian = numpy_property('_jacobian')
+    value = numpy_property('_value')
+
+    out_vel = numpy_property('_out_vel')
+    out_pos = numpy_property('_out_pos')    
+
+    in_vel = numpy_item_property('_in_vel')
+    in_pos = numpy_item_property('_in_pos')    
+
+    geometric_stiffness = numpy_property('_gs')    
+
+    # aliases
+    J = jacobian
+    dJT = geometric_stiffness
         
-    @property
-    def jacobian(self):
-        '''a view of the jacobian matrix'''
-        return self._jacobian
-
-    @property
-    def value(self):
-        '''a view of the value vector'''
-        return self._value
-
-    # convenience
-    @jacobian.setter
-    def jacobian(self, value):
-        self._jacobian[:] = value
-    
-    @value.setter
-    def value(self, value):
-        self._value[:] = value
-
-
 from Tools import node_path_rel as node_path_relative
 
 def object_link_relative(node, obj):

@@ -11,7 +11,7 @@ namespace mapping {
 
 // TODO move this elsewhere if reusable
 struct with_py_callback {
-    typedef void* (*py_callback_type)();
+    typedef void* (*py_callback_type)(int);
     py_callback_type py_callback;
     
     with_py_callback();
@@ -69,6 +69,12 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
         out_coord_size = TOut::Coord::total_size,
         in_coord_size = TIn::Coord::total_size
     };
+
+    enum {
+        // indicate state for python callback
+        apply_state = 0,
+        gs_state = 1
+    };
     
  public:
     
@@ -79,11 +85,59 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
     
  protected:
 
-	virtual void assemble_geometric( const helper::vector<typename self::in_pos_type>& /*in*/,
+	virtual void assemble_geometric( const helper::vector<typename self::in_pos_type>& in,
                                      const typename self::const_out_deriv_type& out) {
         
         if(use_gs.getValue()) {
+            // copy force in data
             set(out_force) = out.ref();
+
+            // std::cout << "c++ out_force: " << set(out_force) << std::endl;
+            
+            // hand over to python
+            if(this->py_callback) {
+                this->py_callback( gs_state );
+            }
+
+            // assemble sparse jacobian from data
+            unsigned rows = 0;
+
+            for(unsigned i = 0, n = in.size(); i < n; ++i) {
+                rows += this->from(i)->getMatrixSize();
+            }
+
+            typedef typename self::geometric_type::CompressedMatrix gs_type;
+            gs_type& dJ = this->geometric.compressedMatrix;
+            
+            dJ.resize(rows, rows);
+            dJ.setZero();
+
+            const unsigned size = rows * rows;
+
+            const matrix_type& gs = gs_matrix.getValue();            
+            if( gs.size() != size ) {
+                
+                if( gs.size() ) {
+                    serr << "assemble: incorrect geometric stiffness size, treating as zero";
+                }
+                
+                return;
+            }
+
+            for(unsigned i = 0; i < rows; ++i) {
+                dJ.startVec(i);
+                
+                for(unsigned j = 0; j < rows; ++j) {
+                    const SReal value = gs[ rows * i + j];
+                    if(value ) dJ.insertBack(i, j) = value;
+                }
+                
+            }
+
+            dJ.finalize();
+
+            // std::cout << "c++ dJT" << std::endl
+            //           << dJ << std::endl;
         }
 	}
 	
@@ -163,55 +217,14 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 			block.finalize();
 		}
 		
-
-        // geometric stiffness
-        if( use_gs.getValue() ) {
-
-            unsigned rows = 0;
-
-            for(unsigned i = 0, n = in.size(); i < n; ++i) {
-                rows += this->from(i)->getMatrixSize();
-            }
-
-            typedef typename self::geometric_type::CompressedMatrix gs_type;
-            gs_type& dJ = this->geometric.compressedMatrix;
-            
-            dJ.resize(rows, rows);
-            dJ.setZero();
-
-            const unsigned size = rows * rows;
-
-            const matrix_type& gs = gs_matrix.getValue();            
-            if( gs.size() != size ) {
-                
-                if( gs.size() ) {
-                    serr << "assemble: incorrect geometric stiffness size, treating as zero";
-                }
-                
-                return;
-            }
-
-
-
-            unsigned off = 0;
-            for(unsigned i = 0; i < rows; ++i) {
-                dJ.startVec(i);
-                
-                for(unsigned j = 0; j < rows; ++j) {
-                    const SReal value = gs[off];
-                    if(value ) dJ.insertBack(i, j) = value;
-                    ++off;
-                }
-                
-            }
-            
-            dJ.finalize();
-        }
 	}
     
     virtual void apply(typename self::out_pos_type& out, 
                        const helper::vector<typename self::in_pos_type>& /*in*/ ) {
-        if(this->py_callback) this->py_callback();
+        
+        if(this->py_callback) {
+            this->py_callback( apply_state );
+        }
         
         const value_type& value = this->value.getValue();
         
