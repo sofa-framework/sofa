@@ -912,7 +912,8 @@ void QtViewer::drawScene(void)
 
     GLdouble mat[16];
 
-    currentCamera->getOpenGLMatrix(mat);
+    //std::cout << "Default" << this->defaultFramebufferObject() << std::endl;
+    currentCamera->getOpenGLModelViewMatrix(mat);
     glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX, lastModelviewMatrix);
@@ -1018,6 +1019,7 @@ void QtViewer::drawScene(void)
         }
     }
     DisplayMenu(); // always needs to be the last object being drawn
+
 }
 
 

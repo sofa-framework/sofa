@@ -98,6 +98,11 @@ public:
     Data<bool> d_computeProjectionMatrix;
     Data<Mat3> d_intrinsicParameters;
 
+    //Data<Mat4> d_modelviewMatrix;
+    //Data<Mat4> d_projectionMatrix;
+    Data<helper::vector<float> > d_modelViewMatrix;
+    Data<helper::vector<float> > d_projectionMatrix;
+
     BaseCamera();
     virtual ~BaseCamera();
 
@@ -225,12 +230,14 @@ public:
     //be according to the gravity.
     void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
 
-    void getProjectionMatrix(Mat4 &projectionMatrix);
+    void getModelViewMatrix(double mat[16]);
+    void getProjectionMatrix(double mat[16]);
 
 #ifndef SOFA_NO_OPENGL
-    void getOpenGLMatrix(GLdouble mat[16]);
-    void getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[]);
+    void getOpenGLModelViewMatrix(GLdouble mat[16]);
+    void getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16]);
 #endif // SOFA_NO_OPENGL
+
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
@@ -287,6 +294,8 @@ public:
     }
 
 protected:
+    void updateOutputData();
+
     Vec3 sceneCenter;
     SReal sceneRadius;
 
