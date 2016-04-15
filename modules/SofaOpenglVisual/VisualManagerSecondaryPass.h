@@ -59,7 +59,8 @@ public:
     sofa::core::objectmodel::DataFileName fragFilename;
 
 protected:
-    OglShader::SPtr shader_postproc;
+    OglShader::SPtr m_shaderPostproc;
+    SingleLink<VisualManagerSecondaryPass, OglShader, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK> l_shader;
 
     VisualManagerSecondaryPass();
     virtual ~VisualManagerSecondaryPass();
