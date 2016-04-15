@@ -47,7 +47,7 @@ public:
 
 
     PairingMultiMapping() :
-        sign(initData(&sign, (SReal)1.0, "sign", "scalar factor (-1 for holonomic constraints)")) {
+        sign(initData(&sign, (SReal)1.0, "sign", "scalar factor")) {
         
     }
     

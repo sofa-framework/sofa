@@ -12,7 +12,7 @@ typedef sofa::core::objectmodel::BaseData* base_data_ptr;
 typedef sofa::core::objectmodel::Base* base_ptr;
 typedef sofa::core::BaseMapping* base_mapping_ptr;
 
-typedef void* (*py_callback_type)();
+typedef sofa::component::mapping::with_py_callback::py_callback_type py_callback_type;
 
 struct data_pointer {
     void* ptr;
