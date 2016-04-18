@@ -17,7 +17,13 @@ namespace mapping {
 
     natural pairing between two vector dofs:
     
-     \[ f(x, y) = x^T y
+     \[ f(x, y) = x^T y \]
+
+     use it to enforce holonomic bilateral constraints in your scene
+     as: -lambda^T f(x) (+ unit compliance on end dofs)
+     
+     note that you need a numerical solver that can handle indefinite
+     systems (e.g. minres)
 
      @author: Maxime Tournier
 
