@@ -61,6 +61,8 @@ public:
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours);
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& colour);
 
+    virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour);
+
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& colour);
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& colour);
     virtual void drawTriangles(const std::vector<Vector3> &points,
