@@ -273,7 +273,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                         typename BaseShapeFunction::VReal::iterator itMax = std::max_element(w.begin(),w.end());
                         std::size_t indexMax = std::distance(w.begin(), itMax);
                         ra_index.push_back(ind0);ra_index.push_back(indexMax);ra_index.push_back(indexMax);
-                        serr << "Child " << ind0 << " has more than one parent, use the most important wight: " << *itMax << sendl;
+                        serr << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax << sendl;
                     }
                 }
             }
