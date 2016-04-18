@@ -107,6 +107,9 @@ def insertJoint(jointModel, rigids, param):
             Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
             return None
         rigid = rigids[jointModel.solids[i].id] # shortcut
+        if rigid is None:
+            Sofa.msg_warning("Compliant.sml", "in joint {0}, solid {1} is missing, ignored".format(jointModel.name, jointModel.solids[i].id))
+            return
         if not offset is None:
             if offset.isAbsolute():
                 frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
