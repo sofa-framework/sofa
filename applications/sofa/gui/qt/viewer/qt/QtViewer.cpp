@@ -1059,7 +1059,7 @@ void QtViewer::calcProjection(int width, int height)
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
-
+    currentCamera->computeZ();
     currentCamera->p_widthViewport.setValue(width);
     currentCamera->p_heightViewport.setValue(height);
 

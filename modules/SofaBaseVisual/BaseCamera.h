@@ -89,6 +89,7 @@ public:
 
     Data<double> p_fieldOfView;
     Data<double> p_zNear, p_zFar;
+    Data<bool> p_computeZClip;
     Data<Vec3> p_minBBox, p_maxBBox;
     Data<unsigned int> p_widthViewport, p_heightViewport;
     Data<sofa::helper::OptionsGroup> p_type;
@@ -96,12 +97,12 @@ public:
     Data<bool> p_activated;
 	Data<bool> p_fixedLookAtPoint;
 
-    Data<Mat3> d_intrinsicParameters;
+    Data<Mat3> p_intrinsicParameters;
 
     //Data<Mat4> d_modelviewMatrix;
     //Data<Mat4> d_projectionMatrix;
-    Data<helper::vector<float> > d_modelViewMatrix;
-    Data<helper::vector<float> > d_projectionMatrix;
+    Data<helper::vector<float> > p_modelViewMatrix;
+    Data<helper::vector<float> > p_projectionMatrix;
 
     BaseCamera();
     virtual ~BaseCamera();
