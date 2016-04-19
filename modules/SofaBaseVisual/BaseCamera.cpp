@@ -47,8 +47,9 @@ BaseCamera::BaseCamera()
     ,p_lookAt(initData(&p_lookAt, "lookAt", "Camera's look at"))
     ,p_distance(initData(&p_distance, "distance", "Distance between camera and look at"))
     ,p_fieldOfView(initData(&p_fieldOfView, (double) (45.0) , "fieldOfView", "Camera's FOV"))
-    ,p_zNear(initData(&p_zNear, (double) 0.0 , "zNear", "Camera's zNear (value <= 0.0 == computed from bounding box)"))
-    ,p_zFar(initData(&p_zFar, (double) 0.0 , "zFar", "Camera's zFar (value <= 0.0 == computed from bounding box)"))
+    ,p_zNear(initData(&p_zNear, (double) 0.0 , "zNear", "Camera's zNear"))
+    ,p_zFar(initData(&p_zFar, (double) 0.0 , "zFar", "Camera's zFar"))
+    ,p_computeZClip(initData(&p_computeZClip, (bool) true, "computeZClip", "Compute Z clip planes (Near and Far) according to the bounding box"))
     ,p_minBBox(initData(&p_minBBox, Vec3(0.0,0.0,0.0) , "minBBox", "minBBox"))
     ,p_maxBBox(initData(&p_maxBBox, Vec3(1.0,1.0,1.0) , "maxBBox", "maxBBox"))
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
@@ -56,13 +57,13 @@ BaseCamera::BaseCamera()
     ,p_type(initData(&p_type,"projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
-    ,d_intrinsicParameters(initData(&d_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
-    ,d_projectionMatrix(initData(&d_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
-    ,d_modelViewMatrix(initData(&d_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
+    ,p_intrinsicParameters(initData(&p_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
+    ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
+    ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
 {
     this->f_listening.setValue(true);
-    this->d_projectionMatrix.setReadOnly(true);
-    this->d_modelViewMatrix.setReadOnly(true);
+    this->p_projectionMatrix.setReadOnly(true);
+    this->p_modelViewMatrix.setReadOnly(true);
     this->p_widthViewport.setReadOnly(true);
     this->p_heightViewport.setReadOnly(true);
     this->p_minBBox.setReadOnly(true);
@@ -72,14 +73,14 @@ BaseCamera::BaseCamera()
     type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
     p_type.setValue(type); 
 
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+    helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 
     wModelViewMatrix.resize(16);
     wProjectionMatrix.resize(16);
 
-    d_modelViewMatrix.endEdit();
-    d_projectionMatrix.endEdit();
+    p_modelViewMatrix.endEdit();
+    p_projectionMatrix.endEdit();
 
 }
 
@@ -282,12 +283,15 @@ void BaseCamera::getProjectionMatrix(double mat[16])
     float width = (float)p_widthViewport.getValue();
     float height = (float)p_heightViewport.getValue();
     //TODO: check if orthographic or projective
+
+    computeZ();
+
     if (p_type.getValue().getSelectedId() == core::visual::VisualParams::PERSPECTIVE_TYPE)
     {
-        Mat3 intrinsicParameters = d_intrinsicParameters.getValue();
-        computeZ();
+        Mat3 intrinsicParameters = p_intrinsicParameters.getValue();
+
         double pm00, pm11;
-        if (d_intrinsicParameters.isSet())
+        if (p_intrinsicParameters.isSet())
         {
             pm00 = intrinsicParameters[0][0] / intrinsicParameters[0][2];
             pm11 = intrinsicParameters[1][1] / intrinsicParameters[1][2];
@@ -488,7 +492,7 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat 
 
 void BaseCamera::computeZ()
 {
-    //if (!p_zNear.isSet() || !p_zFar.isSet())
+    if (p_computeZClip.getValue())
     {
         double zNear = 1e10;
         double zFar = -1e10;
@@ -535,24 +539,28 @@ void BaseCamera::computeZ()
         if (zNear < zMin)
             zNear = zMin;
 
-        if(p_zNear.getValue() >= p_zFar.getValue())
+        currentZNear = zNear;
+        currentZFar = zFar;
+    }
+    else
+    {
+        if (p_zNear.getValue() >= p_zFar.getValue())
         {
-            currentZNear = zNear;
-            currentZFar = zFar;
+            serr << "ZNear > ZFar !" << sendl;
+        }
+        else if (p_zNear.getValue() <= 0.0)
+        {
+            serr << "ZNear is negative!" << sendl;
+        }
+        else if (p_zFar.getValue() <= 0.0)
+        {
+            serr << "ZFar is negative!" << sendl;
         }
         else
         {
-            if (p_zNear.getValue() <= 0.0)
-                currentZNear = zNear;
-            else
-                currentZNear = p_zNear.getValue();
-
-            if (p_zFar.getValue() <= 0.0)
-                currentZFar = zFar;
-            else
-                currentZFar = p_zFar.getValue();
+            currentZNear = p_zNear.getValue();
+            currentZFar = p_zFar.getValue();
         }
-
     }
 }
 
@@ -741,10 +749,10 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 void BaseCamera::updateOutputData()
 {
     //Matrices
-    //sofa::helper::WriteAccessor< Data<Mat4> > wModelViewMatrix = d_modelviewMatrix;
-    //sofa::helper::WriteAccessor< Data<Mat4> > wProjectionMatrix = d_projectionMatrix;
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+    //sofa::helper::WriteAccessor< Data<Mat4> > wModelViewMatrix = p_modelViewMatrix;
+    //sofa::helper::WriteAccessor< Data<Mat4> > wProjectionMatrix = p_projectionMatrix;
+    helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
+    helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
     
     double modelViewMatrix[16];
     double projectionMatrix[16];
@@ -759,8 +767,8 @@ void BaseCamera::updateOutputData()
             wProjectionMatrix[i*4+j] = projectionMatrix[i * 4 + j];
         }
 
-    d_modelViewMatrix.endEdit();
-    d_projectionMatrix.endEdit();
+    p_modelViewMatrix.endEdit();
+    p_projectionMatrix.endEdit();
 
     //TODO: other info to update
     p_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
