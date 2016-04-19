@@ -38,6 +38,7 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/OptionsGroup.h>
 
 namespace sofa
 {
@@ -90,12 +91,11 @@ public:
     Data<double> p_zNear, p_zFar;
     Data<Vec3> p_minBBox, p_maxBBox;
     Data<unsigned int> p_widthViewport, p_heightViewport;
-    Data<int> p_type;
+    Data<sofa::helper::OptionsGroup> p_type;
 
     Data<bool> p_activated;
 	Data<bool> p_fixedLookAtPoint;
 
-    Data<bool> d_computeProjectionMatrix;
     Data<Mat3> d_intrinsicParameters;
 
     //Data<Mat4> d_modelviewMatrix;
@@ -130,7 +130,6 @@ public:
     Vec3 cameraToWorldTransform(const Vec3& v);
     Vec3 worldToCameraTransform(const Vec3& v);
     Vec3 screenToWorldCoordinates(int x, int y);
-
 
     void fitSphere(const Vec3& center, SReal radius);
     void fitBoundingBox(const Vec3& min,const Vec3& max);
@@ -186,17 +185,21 @@ public:
 #endif /* SOFA_NO_OPENGL */
     }
 
-    int getCameraType() const
+    unsigned int getCameraType() const
     {
-        return p_type.getValue();
+        return p_type.getValue().getSelectedId();
     }
 
-    void setCameraType(int type)
+    void setCameraType(unsigned int type)
     {
+        sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
+
         if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
-            p_type.setValue(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
+            optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
         else
-            p_type.setValue(core::visual::VisualParams::PERSPECTIVE_TYPE);
+            optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
+
+        p_type.endEdit();
     }
 
 
@@ -232,11 +235,8 @@ public:
 
     void getModelViewMatrix(double mat[16]);
     void getProjectionMatrix(double mat[16]);
-
-#ifndef SOFA_NO_OPENGL
-    void getOpenGLModelViewMatrix(GLdouble mat[16]);
-    void getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16]);
-#endif // SOFA_NO_OPENGL
+    void getOpenGLModelViewMatrix(double mat[16]);
+    void getOpenGLProjectionMatrix(double mat[16]);
 
     Quat getOrientationFromLookAt(const Vec3 &pos, const Vec3& lookat);
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
