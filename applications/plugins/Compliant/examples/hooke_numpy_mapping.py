@@ -75,7 +75,7 @@ def createScene(node):
             self.rest = theta
 
             
-        def update_gs(self, out_force):
+        def on_stiffness(self, out_force):
             '''update mapping geometric stiffness'''
 
             print('update gs')
@@ -112,7 +112,7 @@ def createScene(node):
                 
 
                 
-        def update(self):
+        def on_apply(self):
             '''update mapping jacobian/value'''
             
             print('update')

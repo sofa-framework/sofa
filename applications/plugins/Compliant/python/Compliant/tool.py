@@ -1,5 +1,7 @@
+from __future__ import print_function
 
 import ctypes
+
 
 class PyObject(ctypes.Structure):
     '''ctypes representation of PyObject_HEAD'''
@@ -111,21 +113,21 @@ def numpy_data(obj, name):
 
 
 
-def numpy_property(name):
+def numpy_property(*name):
 
     @property
     def res(self):
-        return getattr(self, name)
+        return reduce(getattr, name, self)
 
     @res.setter
     def res(self, value):
-        getattr(self, name)[:] = value
-    
+        reduce(getattr, name, self)[:] = value
+        
     return res
 
 from itertools import izip
 
-def numpy_item_property(name):
+def numpy_item_property(*name):
 
     class ItemProperty(object):
 
@@ -149,11 +151,12 @@ def numpy_item_property(name):
             
     @property
     def res(self):
-        return ItemProperty(getattr(self, name))
+        data = reduce(getattr, name, self)
+        return ItemProperty(data)
 
     @res.setter
     def res(self, value):
-        data = getattr(self, name)
+        data = reduce(getattr, name, self)
         for x, v in zip(data, value):
             x[:] = v
     
@@ -181,22 +184,28 @@ class Mapping(object):
 
         # callback
         def callback(state):
-            if state == 0:
-                self.update()
-            elif state == 1:
-                self.update_gs(self._out_force)
-            else: raise Exception('unknown callback state')
-
+            try:
+                if state == 0:
+                    self.on_apply()
+                elif state == 1:
+                    self.on_stiffness(self._out_force)
+                else: raise Exception('unknown callback state')
+            except Exception as e:
+                # print('callback error:', e)
+                raise
+                
         # keep a handle on the closure to prevent gc
         self._cb = py_callback_type(callback)
         
         dll.set_py_callback( sofa_pointer(self.obj), self._cb )
 
 
-    def update(self):
+    def on_apply(self):
+        '''called when value/jacobian are required'''
         pass
     
-    def update_gs(self, out_force):
+    def on_stiffness(self, out_force):
+        '''called when geometric_stiffness is required'''
         pass
     
     def init(self):
@@ -256,10 +265,65 @@ class Mapping(object):
 
     geometric_stiffness = numpy_property('_gs')    
 
-    # aliases
-    J = jacobian
-    dJT = geometric_stiffness
+    
+
+class ForceField(object):
+    '''wraps mapping/state/ff to build arbitrary forcefields'''
+    
+    def __init__(self, node, **kwargs):
+        # object.__init__(self)
         
+        if 'output' in kwargs:
+            raise Exception('can not have output in force field')
+
+        self.node = node 
+        self.dofs = node.createObject('MechanicalObject',
+                                      template = 'Vec1d',
+                                      name = 'dofs',
+                                      position = '0')
+
+        kwargs['output'] = self.dofs
+
+        class Energy(Mapping):
+
+            def on_apply(self):
+                self.owner.on_force()
+
+            def on_stiffness(self, out_force):
+                self.owner.on_stiffness(out_force)
+
+        self._mapping = Energy(node, **kwargs)
+        self._mapping.owner = self
+        
+        self.init(False)
+
+        self._ff = node.createObject('PotentialEnergy')
+        
+
+    def on_force(): pass
+    def on_stiffness(self, arg): pass
+        
+    def init(self, init_mapping = True):
+        if init_mapping: self._mapping.init()
+
+        self._force = self._mapping.jacobian[0]
+        self._energy = self._mapping.value[0]
+
+        if self._mapping.obj.use_geometric_stiffness:
+            self._stiffness = self._mapping.geometric_stiffness
+
+            
+    energy = numpy_property('_energy')
+    force = numpy_property('_force')
+    stiffness = numpy_property('_stiffness')
+
+    out_pos = numpy_property('_mapping', 'out_pos')
+    out_vel = numpy_property('_mapping', 'out_vel')    
+    
+    in_pos = numpy_item_property('_mapping', 'in_pos')
+    in_vel = numpy_item_property('_mapping', 'in_vel')    
+    
+    
 from Tools import node_path_rel as node_path_relative
 
 def object_link_relative(node, obj):
