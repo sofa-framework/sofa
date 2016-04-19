@@ -53,10 +53,9 @@ BaseCamera::BaseCamera()
     ,p_maxBBox(initData(&p_maxBBox, Vec3(1.0,1.0,1.0) , "maxBBox", "maxBBox"))
     ,p_widthViewport(initData(&p_widthViewport, (unsigned int) 800 , "widthViewport", "widthViewport"))
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
-    ,p_type(initData(&p_type, (int) core::visual::VisualParams::PERSPECTIVE_TYPE, "projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
+    ,p_type(initData(&p_type,"projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
-    ,d_computeProjectionMatrix(initData(&d_computeProjectionMatrix, false , "computeProjectionMatrix", "If true, compute projection matrix according to the given intrinsic parameters"))
     ,d_intrinsicParameters(initData(&d_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
     ,d_projectionMatrix(initData(&d_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
     ,d_modelViewMatrix(initData(&d_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
@@ -64,6 +63,14 @@ BaseCamera::BaseCamera()
     this->f_listening.setValue(true);
     this->d_projectionMatrix.setReadOnly(true);
     this->d_modelViewMatrix.setReadOnly(true);
+    this->p_widthViewport.setReadOnly(true);
+    this->p_heightViewport.setReadOnly(true);
+    this->p_minBBox.setReadOnly(true);
+    this->p_maxBBox.setReadOnly(true);
+
+    sofa::helper::OptionsGroup type(2, "Perspective", "Orthographic");
+    type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
+    p_type.setValue(type); 
 
     helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
@@ -264,57 +271,108 @@ void BaseCamera::getModelViewMatrix(double mat[16])
     
 }
 
-#ifndef SOFA_NO_OPENGL
-void BaseCamera::getOpenGLModelViewMatrix(GLdouble mat[16])
+void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
 {
     defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
     world_H_cam.inversed().writeOpenGlMatrix(mat);
 }
-#endif // SOFA_NO_OPENGL
 
 void BaseCamera::getProjectionMatrix(double mat[16])
 {
+    float width = (float)p_widthViewport.getValue();
+    float height = (float)p_heightViewport.getValue();
     //TODO: check if orthographic or projective
-
-    Mat3 intrinsicParameters = d_intrinsicParameters.getValue();
-    computeZ();
-    float pm00, pm11;
-    if (d_intrinsicParameters.isSet())
+    if (p_type.getValue().getSelectedId() == core::visual::VisualParams::PERSPECTIVE_TYPE)
     {
-        pm00 = intrinsicParameters[0][0] / intrinsicParameters[0][2];
-        pm11 = intrinsicParameters[1][1] / intrinsicParameters[1][2];
+        Mat3 intrinsicParameters = d_intrinsicParameters.getValue();
+        computeZ();
+        double pm00, pm11;
+        if (d_intrinsicParameters.isSet())
+        {
+            pm00 = intrinsicParameters[0][0] / intrinsicParameters[0][2];
+            pm11 = intrinsicParameters[1][1] / intrinsicParameters[1][2];
+        }
+        else
+        {
+            double scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5);
+            double aspect = width / height;
+
+            pm00 = scale / aspect;
+            pm11 = scale;
+        }
+
+        mat[0] = pm00; // FocalX
+        mat[1] = 0.0;
+        mat[2] = 0.0;
+        mat[3] = 0.0;
+
+        mat[4] = 0.0;
+        mat[5] = pm11; // FocalY
+        mat[6] = 0.0;
+        mat[7] = 0.0;
+
+        mat[8] = 0;
+        mat[9] = 0;
+        mat[10] = -(currentZFar + currentZNear) / (currentZFar - currentZNear);
+        mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);;
+
+        mat[12] = 0.0;
+        mat[13] = 0.0;
+        mat[14] = -1.0;
+        mat[15] = 0.0;
     }
     else
     {
-        float scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5 );
+        float xFactor, yFactor;
+        if ((height != 0) && (width != 0))
+        {
+            if (height > width)
+            {
+                xFactor = 1.0;
+                yFactor = (double)height / (double)width;
+            }
+            else
+            {
+                xFactor = (double)width / (double)height;
+                yFactor = 1.0;
+            }
+        }
 
-        pm00 = scale;
-        pm11 = scale;
+        double orthoCoef = tan((float)(M_PI / 180.0) * getFieldOfView() / 2.0);
+        double zDist = orthoCoef * fabs(worldToCameraCoordinates(getLookAt())[2]);
+        double halfWidth = zDist * xFactor;
+        double halfHeight = zDist * yFactor;
+
+        float left = -halfWidth;
+        float right = halfWidth;
+        float top = halfHeight;
+        float bottom = -halfHeight;
+        float zfar = currentZFar;
+        float znear = currentZNear;
+        
+        mat[0] = 2 / (right-left);
+        mat[1] = 0.0;
+        mat[2] = 0.0;
+        mat[3] = -1 * (right + left) / (right - left);
+
+        mat[4] = 0.0;
+        mat[5] = 2 / (top-bottom);
+        mat[6] = 0.0;
+        mat[7] = -1 * (top + bottom) / (top - bottom);
+
+        mat[8] = 0;
+        mat[9] = 0;
+        mat[10] = -2 / (zfar - znear);
+        mat[11] = -1 * (zfar + znear) / (zfar - znear);
+
+        mat[12] = 0.0;
+        mat[13] = 0.0;
+        mat[14] = 0.0;
+        mat[15] = 1.0;
     }
-
-    mat[0] = pm00; // FocalX
-    mat[1] = 0.0;
-    mat[2] = 0.0;
-    mat[3] = 0.0;
-
-    mat[4] = 0.0;
-    mat[5] = pm11; // FocalY
-    mat[6] = 0.0;
-    mat[7] = 0.0;
-
-    mat[8] = 0;
-    mat[9] = 0;
-    mat[10] = -( currentZFar + currentZNear ) / ( currentZFar - currentZNear );
-    mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);;
-
-    mat[12] = 0.0;
-    mat[13] = 0.0;
-    mat[14] = -1.0;
-    mat[15] = 0.0;
 }
 
-#ifndef SOFA_NO_OPENGL
-void BaseCamera::getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16])
+void BaseCamera::getOpenGLProjectionMatrix(double oglProjectionMatrix[16])
 {
     double projectionMatrix[16];
     this->getProjectionMatrix(projectionMatrix);
@@ -325,7 +383,6 @@ void BaseCamera::getOpenGLProjectionMatrix(GLdouble oglProjectionMatrix[16])
             oglProjectionMatrix[i+j*4] = projectionMatrix[i*4+j];
     }
 }
-#endif // SOFA_NO_OPENGL
 
 void BaseCamera::reinit()
 {
@@ -706,6 +763,11 @@ void BaseCamera::updateOutputData()
     d_projectionMatrix.endEdit();
 
     //TODO: other info to update
+    p_minBBox.setValue(getContext()->f_bbox.getValue().minBBox());
+    p_maxBBox.setValue(getContext()->f_bbox.getValue().maxBBox());
+
+    p_zNear.setValue(currentZNear);
+    p_zFar.setValue(currentZFar);
 }
 
 void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)

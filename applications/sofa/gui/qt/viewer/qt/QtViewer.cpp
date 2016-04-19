@@ -918,7 +918,6 @@ void QtViewer::drawScene(void)
 
     glGetDoublev(GL_MODELVIEW_MATRIX, lastModelviewMatrix);
     vparams->setModelViewMatrix(lastModelviewMatrix);
-    vparams->setProjectionMatrix(lastProjectionMatrix);
 
     if(supportStereo)
     {
@@ -1050,7 +1049,6 @@ void QtViewer::calcProjection(int width, int height)
 {
     if (!width) width = _W;
     if (!height) height = _H;
-    double xFactor = 1.0, yFactor = 1.0;
 
     /// Camera part
     if (!currentCamera)
@@ -1061,57 +1059,26 @@ void QtViewer::calcProjection(int width, int height)
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
     }
-    currentCamera->computeZ();
 
-    vparams->zNear() = currentCamera->getZNear();
-    vparams->zFar() = currentCamera->getZFar();
+    currentCamera->p_widthViewport.setValue(width);
+    currentCamera->p_heightViewport.setValue(height);
 
-    if ((height != 0) && (width != 0))
-    {
-        if (height > width)
-        {
-            xFactor = 1.0;
-            yFactor = (double) height / (double) width;
-        }
-        else
-        {
-            xFactor = (double) width / (double) height;
-            yFactor = 1.0;
-        }
-    }
-
-    double orthoCoef = tan( (float)(M_PI/180.0) * currentCamera->getFieldOfView()/2.0);
-    double zDist = orthoCoef * fabs(currentCamera->worldToCameraCoordinates(currentCamera->getLookAt())[2]);
-
-    double halfWidth  = zDist * xFactor;
-    double halfHeight = zDist * yFactor;
-
-    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
-
+    GLdouble projectionMatrix[16];
+    currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
+    
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
-    if(!currentCamera->d_computeProjectionMatrix.getValue())
-    {
-        if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
-            gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
-        else
-        {
-            glOrtho( -halfWidth, halfWidth, -halfHeight, halfHeight, vparams->zNear(), vparams->zFar());
-        }
-    }
-    else
-    {
-        GLdouble projectionMatrix[16];
-        currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
-
-        glMultMatrixd(projectionMatrix);
-    }
-
+    glMultMatrixd(projectionMatrix);
+    
+    glMatrixMode(GL_MODELVIEW);
     glGetDoublev(GL_PROJECTION_MATRIX, lastProjectionMatrix);
 
-    glMatrixMode(GL_MODELVIEW);
+    //Update vparams
+    vparams->zNear() = currentCamera->getZNear();
+    vparams->zFar() = currentCamera->getZFar();
+    vparams->viewport() = sofa::helper::make_array(0, 0, width, height);
+    vparams->setProjectionMatrix(projectionMatrix);
 }
 
 // ---------------------------------------------------------
