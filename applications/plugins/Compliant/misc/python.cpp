@@ -65,7 +65,14 @@ protected:
     // help lookup a little bit
     template<class T>
     void doit() const {
+
+#ifdef _MSC_VER
+        // goddamn you visual studio
+        this->F::operator()<T>();
+#else
         this->F::template operator()<T>();
+#endif
+        
     }
     
 };
