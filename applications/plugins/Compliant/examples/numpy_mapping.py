@@ -37,7 +37,7 @@ def createScene(node):
             # jacobian is fixed
             self.jacobian[:3, :3] = numpy.identity(3)
         
-        def update(self):
+        def on_apply(self):
             print('python mapping update')
 
             # map input translation
