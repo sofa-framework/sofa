@@ -57,7 +57,8 @@ PickHandler::PickHandler():
     mouseCollision(NULL),
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
-    _fboAllocated(false)
+    _fboAllocated(false),
+    _fbo(true,true,true,0)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 }
