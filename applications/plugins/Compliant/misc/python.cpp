@@ -26,13 +26,7 @@ static data_pointer get_data_thunk(const base_data_ptr& base_data) {
     using namespace sofa::core::objectmodel;
     Data<T>* cast = static_cast< Data<T>* >(base_data);
 
-    struct steal : Data<T> {
-        using Data<T>::m_values;
-    };
-
-    // enjoy
-    const T& value = (cast->*&steal::m_values)[ DDGNode::currentAspect(0) ].getValue();
-
+    const T& value = cast->getValue();
     const void* ptr = value.data();
 
     data_pointer res;
@@ -60,7 +54,7 @@ struct for_each;
 
 template<class F>
 struct for_each : F {
-
+    
 protected:
     // help lookup a little bit
     template<class T>
