@@ -57,26 +57,38 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-//protected:
-    Data<MassType> mass;    ///< the mass of each particle
-    Data<SReal> totalMass; ///< if >0 : total mass of this body
-    sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
-    /// to display the center of gravity of the system
-    Data< bool > showCenterOfGravity;
-    Data< float > showAxisSize;
 
-    Data<bool> compute_mapping_inertia;
-    Data<bool> showInitialCenterOfGravity;
+    Data<MassType>                        mass;         ///< the mass of each particle
+    Data<SReal>                           totalMass;    ///< if >0 : total mass of this body
+    sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    /// to display the rest positions
-    Data< bool > showX0;
+    Data<bool>                        d_showCenterOfGravity; /// to display the center of gravity of the system
+    Data<float>                       d_showAxisSize;        /// to display the center of gravity of the system
+
+    Data<bool>  d_computeMappingInertia;
+    Data<bool>  d_showInitialCenterOfGravity;
+
+
+    Data<bool>  d_showX0; /// to display the rest positions
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< helper::vector<int> >     d_indices;
 
-    Data< bool > m_handleTopoChange;
+    Data<bool> d_handleTopoChange;
+    Data<bool> d_preserveTotalMass;
 
-    Data< bool > d_preserveTotalMass;
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using core::behavior::ForceField<DataTypes>::mstate ;
+    using core::objectmodel::BaseObject::getContext;
+    ////////////////////////////////////////////////////////////////////////////
+
+    bool m_doesTopoChangeAffect;
+
 
 protected:
     UniformMass();
@@ -93,8 +105,8 @@ public:
     SReal getTotalMass() const { return totalMass.getValue(); }
     void setTotalMass(SReal m);
 
-    void setFileMass(const std::string& file) {filenameMass.setValue(file);}
-    std::string getFileMass() const {return filenameMass.getFullPath();}
+    void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
+    std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
     void loadRigidMass(std::string filename);
     // -- Mass interface
@@ -110,7 +122,7 @@ public:
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const;  ///< vMv/2 using dof->getV()
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
@@ -120,8 +132,7 @@ public:
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
-    /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix); /// Add Mass contribution to global Matrix assembling
 
     SReal getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
