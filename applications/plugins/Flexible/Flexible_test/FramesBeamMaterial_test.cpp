@@ -42,6 +42,7 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
+using helper::vector;
 
 const double pressureArray[] = {0.01, 0.05};
 const size_t sizePressureArray = sizeof(pressureArray)/sizeof(pressureArray[0]);

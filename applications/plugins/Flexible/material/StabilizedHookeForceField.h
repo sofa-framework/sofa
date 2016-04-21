@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/StabilizedHookeMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -43,6 +42,9 @@ namespace forcefield
   * This is the stabilized formulation from "Energetically Consistent Invertible Elasticity", SCA'12
   *
   * The energy is : mu.sum_i((Ui-1)^2) + lambda/2(J-1)^2
+  *
+  @author Matthieu Nesme
+
 */
 
 template <class _DataTypes>
@@ -77,13 +79,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulus.isDirty() || _poissonRatio.isDirty()) reinit();
-        }
-    }
 
 protected:
     StabilizedHookeForceField(core::behavior::MechanicalState<_DataTypes> *mm = NULL)
@@ -92,7 +87,6 @@ protected:
         , _poissonRatio(initData(&_poissonRatio,helper::vector<Real>((int)1,(Real)0),"poissonRatio","Poisson Ratio ]-1,0.5["))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~StabilizedHookeForceField()     {    }

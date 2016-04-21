@@ -1,0 +1,22 @@
+#!/usr/bin/python
+import math
+import Sofa
+
+    
+
+# scene creation method
+def createScene(rootNode):
+
+	rootNode.findData('dt').value = 0.001
+	rootNode.findData('gravity').value=[0.0, -10, 0.0]
+
+	rootNode.createObject('CollisionPipeline', verbose=0, depth=10, draw=0)
+	rootNode.createObject('BruteForceDetection', name='N2')
+	rootNode.createObject('DefaultContactManager', name='Response', response='distanceLMConstraint')
+	rootNode.createObject('DefaultCollisionGroupManager')
+	
+	o = rootNode.createChild("optimize")
+	for i in range(0, 1000):
+        	o.createObject('PythonScriptController', name="Damien"+str(i), filename="EmptyController.py", classname="ExampleController", timingEnabled="1")
+        
+	return rootNode

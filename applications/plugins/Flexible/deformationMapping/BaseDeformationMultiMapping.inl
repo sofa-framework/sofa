@@ -115,8 +115,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
             else this->setNonMechanical();
     }
 
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
-
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
@@ -141,13 +139,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         if(restPositionSet)     // use custom rest positions defined in state (to set material directions or set residual deformations)
         {
             for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+            sout<<rest.size()<<" rest positions imported "<<sendl;
         }
         else
         {
             for(size_t i=0; i<size; ++i) copy(F0[i],sampler->getTransforms()[i]);
         }
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
+        sout<<size <<" gauss points imported"<<sendl;
     }
     else  // retrieve initial positions from children dofs (vec types)
     {
@@ -164,9 +162,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         else if(sf[i]->f_position.getValue().size() == this->fromModel1->getSize()+this->fromModel2->getSize()) _shapeFunction=sf[i];
     }
 
-    if (_shapeFunction)
+    if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // we already have the needed data, we directly use them
     {
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
+        sout<<"using filled data"<<sendl;
+    }
+    else if (_shapeFunction) // if we do not have the needed data, and have a shape function, we use it to compute needed data (index, weights, etc.)
+    {
+        sout<<"found shape function "<<_shapeFunction->getName()<<sendl;
         helper::vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
         for(size_t i=0; i<pos0.size(); ++i)  defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
@@ -175,10 +177,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly(),this->f_cell.getValue());
         else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginWriteOnly(),*this->f_w.beginWriteOnly(),*this->f_dw.beginWriteOnly(),*this->f_ddw.beginWriteOnly());
         this->f_index.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
-    }
-    else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
-    {
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
     }
     else // if the prerequisites are not fulfilled we print an error
     {
@@ -229,8 +227,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
             else this->setNonMechanical();
     }
 
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
-
     helper::WriteOnlyAccessor<Data<VecCoord> > pos0 (this->f_pos0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
 
@@ -246,7 +242,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
-    if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
+    sout<<size <<" custom gauss points imported"<<sendl;
 
     // init jacobians
     initJacobianBlocks();
@@ -303,7 +299,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::init()
     // check that all children particles got a parent
     const VecVRef& indices = this->f_index.getValue();
     for (std::size_t i=0; i < indices.size(); ++i)
-        if (!indices[i].size() > 0)
+        if (indices[i].empty())
             serr << "Particle " << i << " has no parent" << sendl;
 }
 
@@ -433,8 +429,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord1>& dIn1, const Data<InVecCoord2>& dIn2)
 {
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
-
     helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
     //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 
@@ -479,8 +473,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv1>& dIn1, const Data<InVecDeriv2>& dIn2)
 {
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJ"<<std::endl;
-
     if(this->assemble.getValue())
     {
         if( !eigenJacobian1.rows() ) updateJ1();
@@ -532,8 +524,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv1>& dIn1, Data<InVecDeriv2>& dIn2, const Data<OutVecDeriv>& dOut)
 {
-    if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJT"<<std::endl;
-
     if(this->assemble.getValue())
     {
         if( !eigenJacobian1.rows() ) updateJ1();
@@ -593,7 +583,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //    if(!this->isMechanical()) return;
 //    if(BlockType1::constant && BlockType2::constant) return;
 
-//    if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyDJT"<<std::endl;
+//    if(this->f_printLog.getValue()) sout<<":applyDJT"<<sendl;
 
 //    const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
 //    helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);

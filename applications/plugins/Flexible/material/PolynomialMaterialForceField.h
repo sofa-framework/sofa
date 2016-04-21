@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/PolynomialMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -86,13 +85,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(f_C10.isDirty() || f_C01.isDirty() || f_C20.isDirty() || f_C02.isDirty() || f_C30.isDirty() || f_C03.isDirty() || f_C11.isDirty() || f_bulk.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
@@ -109,7 +101,6 @@ protected:
 //        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
 //        , _viscosity(initData(&_viscosity,(Real)0,"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~PolynomialMaterialForceField()     {    }

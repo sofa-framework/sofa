@@ -35,8 +35,8 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
 	
     // zero for non-stabilized
 	unsigned i = 0;
-    for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
-        if( !mask[i] ) memset( dst, 0, dim*sizeof(SReal) );
+    for(SReal *it=dst, *last = dst + size; it < last; it+=dim, ++i) {
+        if( !mask[i] ) memset( it, 0, dim*sizeof(SReal) );
     }
 }
 
@@ -67,9 +67,9 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
             mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
             unsigned i = 0;
-            for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
-                if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
-                else map(dst, dim) *= -1.0 / this->getContext()->getDt(); // not violated
+            for(SReal *it=dst, *last = dst + size; it < last; it+=dim, ++i) {
+                if( mask[i] ) memset( it, 0, dim*sizeof(SReal) ); // already violated
+                else map(it, dim) *= -1.0 / this->getContext()->getDt(); // not violated
             }
         }
     }

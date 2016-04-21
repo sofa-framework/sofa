@@ -29,7 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/OgdenMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
 
 namespace sofa
 {
@@ -41,6 +40,9 @@ namespace forcefield
 
 /** Ogden compressible energy with N=3 (note that a more generic implementation for any N is possible)
     W = sum(1<=i=<N) mui/alphai (~U1^alphai+~U2^alphai+~U3^alphai-3) + sum(1<=i=<N) 1/di(J-1)^{2i} with J = U1*U2*U3 and ~Ui=J^{-1/3}Ui deviatoric principal stretches
+
+    @author Matthieu Nesme
+
   */
 template <class _DataTypes>
 class OgdenForceField : public BaseMaterialForceFieldT<defaulttype::OgdenMaterialBlock<_DataTypes> >
@@ -86,16 +88,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if( f_mu1.isDirty() || f_mu2.isDirty() || f_mu3.isDirty() ||
-                 f_alpha1.isDirty() || f_alpha2.isDirty() || f_alpha3.isDirty() ||
-                    f_d1.isDirty() || f_d2.isDirty() || f_d3.isDirty() ||
-                    f_PSDStabilization.isDirty() ) reinit();
-        }
-    }
 
 
 protected:
@@ -112,7 +104,6 @@ protected:
         , f_d3(initData(&f_d3,helper::vector<Real>((int)1,(Real)1000),"d3",""))
         , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project stiffness matrix to its nearest symmetric, positive semi-definite matrix"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~OgdenForceField()     {    }

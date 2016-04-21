@@ -59,7 +59,7 @@ void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & va
 
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
-#if __cplusplus > 201100L
+#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
@@ -83,7 +83,7 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 
 } // namespase internal
 
-#if __cplusplus > 201100L
+#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 /** A helper function to call \a funcName in \a pythonScriptControllerName.
  * The function returned value is stored in \a result.
  * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.

@@ -6,6 +6,7 @@ set(HEADER_FILES
     ArgumentParser.h
     BackTrace.h
     cast.h
+    ColorMap.h
     DualQuat.h
     DualQuat.inl
     Factory.h
@@ -118,6 +119,7 @@ set(SOURCE_FILES
     AdvancedTimer.cpp
     ArgumentParser.cpp
     BackTrace.cpp
+    ColorMap.cpp
     DualQuat.cpp
     Factory.cpp
     GenerateRigid.cpp

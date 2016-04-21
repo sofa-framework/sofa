@@ -32,11 +32,10 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
 
     install(TARGETS ${the_targets}
             EXPORT ${package_name}Targets
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib
-            PUBLIC_HEADER DESTINATION include/${install_include_subdir})
-
+            RUNTIME DESTINATION bin COMPONENT Runtime
+            LIBRARY DESTINATION lib COMPONENT Runtime
+            ARCHIVE DESTINATION lib COMPONENT Runtime
+            PUBLIC_HEADER DESTINATION include/${install_include_subdir} COMPONENT Development)
 endmacro()
 
 macro(sofa_write_package_config_files package_name version)

@@ -59,6 +59,8 @@ public:
 
     PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
+    bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
+
 protected:
     PythonScriptController();
     virtual ~PythonScriptController();
@@ -110,21 +112,22 @@ protected:
 
     /// @}
 
-
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
+
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
 
     void doLoadScript();
+    sofa::core::objectmodel::Data<bool>         m_timingEnabled;
 protected:
     FileEventListener* m_filelistener ;     // hold a reference to the file listener
                                             // to call when the source file is changed.
 
 
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
-//    PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
+    //PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
 
     // optionnal script entry points:
@@ -142,11 +145,15 @@ protected:
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;
     PyObject *m_Func_initGraph;
+    PyObject *m_Func_bwdInitGraph;
     PyObject *m_Func_storeResetState;
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
+
     */
     sofa::helper::vector<bool> m_functionAvailables;
+
+    PyObject *m_Func_draw;
 };
 
 

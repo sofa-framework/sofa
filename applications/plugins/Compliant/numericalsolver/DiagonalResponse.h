@@ -11,6 +11,9 @@ namespace linearsolver {
 /// Solving the dynamics equation when the matrix is diagonal
 /// It is generally the case for a lumped mass (particles) with the stiffness in compliance and neglecting the geometric stiffness
 /// @warning with "constant" set to true, mass and stiffness cannot be added dynamically (like a mouse-spring or penalities)
+///
+/// @author Matthieu Nesme
+///
 class SOFA_Compliant_API DiagonalResponse : public Response {
 public:
 	SOFA_CLASS(DiagonalResponse, Response);

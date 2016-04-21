@@ -24,7 +24,8 @@
 ******************************************************************************/
 #ifndef OGLTETRAHEDRALMODEL_H_
 #define OGLTETRAHEDRALMODEL_H_
-#include "config.h"
+
+#include <VolumetricRendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -32,6 +33,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseTopology/TopologyData.inl>
+#include <SofaOpenglVisual/OglVariable.h>
 
 namespace sofa
 {
@@ -56,6 +58,7 @@ class OglTetrahedralModel : public core::visual::VisualModel
 {
 public:
     SOFA_CLASS(OglTetrahedralModel, core::visual::VisualModel);
+
     //typedef ExtVec3fTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
@@ -65,61 +68,58 @@ public:
 
     topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
     Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > m_tetrahedrons;
+    Data<bool> depthTest;
+    Data<bool> blending;
+
     bool modified;
     int lastMeshRev;
     bool useTopology;
 
-
-
 private:
-    
+    GLuint m_vbo;
+    void updateVertexBuffer();
 
-    Data<bool> depthTest;
-    Data<bool> blending;
+    //Tables
+    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_mappingTableValues;
+    sofa::component::visualmodel::OglFloatVector4Variable::SPtr m_runSelectTableValues;
 
 protected:
     OglTetrahedralModel();
     virtual ~OglTetrahedralModel();
 public:
     void init();
+    void initVisual();
     void drawTransparent(const core::visual::VisualParams* vparams);
     void computeBBox(const core::ExecParams *, bool onlyVisible=false);
 
     virtual void updateVisual();
     virtual void computeMesh();
-    //virtual std::string getTemplateName() const
-    //{
-    //    return templateName(this);
-    //}
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
 
     static std::string templateName(const OglTetrahedralModel<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    //template<class T>
-    //static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    //{
-    //    if (context->getMechanicalState() == NULL)
-    //        return false;
-    //    return core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    //}
-
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
 #ifndef SOFA_FLOAT
-extern template class OglTetrahedralModel<defaulttype::Vec3dTypes>;
+extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class OglTetrahedralModel<defaulttype::Vec3fTypes>;
+extern template class SOFA_VOLUMETRICRENDERING_API OglTetrahedralModel<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
-}
-}
-}
+} // namespace visualmodel
+
+} // namesapce component
+
+} // namespace sofa
+
 
 #endif /*OGLTETRAHEDRALMODEL_H_*/

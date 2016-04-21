@@ -29,8 +29,6 @@
 #include "../material/BaseMaterialForceField.h"
 #include "../material/ProjectiveMaterialBlock.h"
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-
 
 namespace sofa
 {
@@ -77,14 +75,6 @@ public:
         Inherit::reinit();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
-    {
-        if (simulation::AnimateEndEvent::checkEventType(event))
-        {
-            if(_youngModulus.isDirty() || _viscosity.isDirty()) reinit();
-        }
-    }
-
 
     /// Uniform damping ratio (i.e. viscosity/stiffness) applied to all the constrained values.
     virtual SReal getDampingRatio()
@@ -99,7 +89,6 @@ protected:
         , _youngModulus(initData(&_youngModulus,helper::vector<Real>((int)1,(Real)5000),"youngModulus","Young Modulus"))
         , _viscosity(initData(&_viscosity,helper::vector<Real>((int)1,(Real)0),"viscosity","Viscosity (stress/strainRate)"))
     {
-        this->f_listening.setValue(true);
     }
 
     virtual ~ProjectiveForceField()     {    }

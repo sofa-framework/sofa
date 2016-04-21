@@ -45,15 +45,18 @@ using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace modeling;
+using helper::vector;
 
-const size_t sizePressureArray = 8;
+static const size_t sizePressureArray = 6;
 
-const double poissonRatioArray[] = {0.1,0.33,0.49};
-const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
+static const double poissonRatioArray[] = {0.1,0.33,0.49};
+static const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
-const double pressureNHArray[3][8]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491, 0.2612702806, 0.2990693371},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637, 0.4124247244, 0.4691402652},{-0.438050358e-1,0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498, 0.3154780834, 0.3747238572}};
-const double s1NHArray[3][8]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011, 1.272569570, 1.318981460},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371, 1.556991211, 1.658653303},{.9621812232,1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089, 1.431233010, 1.540828471}};
-const double s2NHArray[3][8]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681, 0.9423200997, 0.9337477636},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514, 0.8462415656, 0.8253942001},{1.009217097,0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984, 0.8383856153, 0.8084210028}};
+
+// how are computed those?
+const double pressureNHArray[sizePoissonRatioArray][sizePressureArray]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637},{-0.438050358e-1,0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498}};
+const double s1NHArray[sizePoissonRatioArray][sizePressureArray]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371},{.9621812232,1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089}};
+const double s2NHArray[sizePoissonRatioArray][sizePressureArray]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514},{1.009217097,0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984}};
 
 /**  Test flexible material. Apply a traction on the top part of an hexahedra and
 test that the longitudinal and radial deformation are related with the material law.
@@ -67,7 +70,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     typedef typename DataTypes::StrainMapping StrainMapping;
 	typedef typename Vec3Types::Coord Coord;
 	typedef typename Vec3Types::Real Real;
-    typedef const double dataArray[3][8];
+    typedef const double dataArray[sizePoissonRatioArray][sizePressureArray];
     typedef typename container::MechanicalObject<Vec3Types> MechanicalObject;
     typedef container::MechanicalObject<StrainType> StrainDOFs;
     typedef typename container::MechanicalObject<StrainType>::SPtr strainDOFsSPtr;
@@ -143,17 +146,15 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     }
 
     ForceFieldSPtr addMooneyRivlinForceField(simulation::Node::SPtr node,
-        double /*youngModulus*/,double poissonRatio)
+        double youngModulus,double poissonRatio)
     {
         // Mooney Rivlin Force Field
         MooneyRivlinForceFieldSPtr hookeFf = addNew<MooneyRivlinForceField>(node,"strainMapping");
 
-//        Real lambda=youngModulus*poissonRatio/((1+poissonRatio)*(1-2*poissonRatio));
-//        Real mu=youngModulus/(2*(1+poissonRatio));
-//        Real bulkModulus=lambda+2*mu/3;
         vector<Real> c1Vec; vector<Real> c2Vec;vector<Real> bulkModulusVec;
-        // Neo Hooke with its mooney rivlin equivalent model
-        c1Vec.push_back(0.25/(1.0+poissonRatio)); c2Vec.push_back(0);bulkModulusVec.push_back(1.0/(3*(1-2*poissonRatio)));
+        // NeoHookean with its mooney rivlin equivalent model
+        c1Vec.push_back(0.5*youngModulus/(1.0+poissonRatio)); c2Vec.push_back(0); bulkModulusVec.push_back(youngModulus/(3*(1-2*poissonRatio)));
+
         hookeFf->f_C1.setValue(c1Vec);
         hookeFf->f_C2.setValue(c2Vec);
         hookeFf->f_bulk.setValue(bulkModulusVec);
@@ -204,6 +205,13 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
                 // Get the simulated final position of that vertex
                 Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
+
+                if(p1[0] != p1[0]) // the simulation crashed for this Poisson ratio, stop here
+                {
+                    ADD_FAILURE() << "Simulation crashed " <<i<< std::endl;
+                    continue;
+                }
+
 
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
@@ -302,7 +310,7 @@ const std::string TypePrincipalStretchesNHHexaTest::sceneName= "AssembledSolverM
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef testing::Types<
-    //TypeInvariantNHHexaTest, 
+    //TypeInvariantNHHexaTest,        // TODO Use TypeInvariantNHHexaTest type to test
     TypePrincipalStretchesNHHexaTest
 > DataTypes; 
 
@@ -310,20 +318,19 @@ typedef testing::Types<
 // Test suite for all the instanciations
 TYPED_TEST_CASE(NeoHookeHexahedraMaterial_test, DataTypes);
 
-// Test NeoHooke with principal stretches mapping
+// Test NeoHookean with principal stretches mapping
 TYPED_TEST( NeoHookeHexahedraMaterial_test , test_NH_Hexahedra_InTraction )
 {
     ASSERT_TRUE( this->testHexahedraInTraction(&sofa::NeoHookeHexahedraMaterial_test<TypeParam>::addNeoHookeForceField,pressureNHArray,s1NHArray, s2NHArray,
                                                 TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
 
-// Use TypeInvariantNHHexaTest type to test
-// NeoHooke with equivalent mooney rivlin for invariant mapping 
-/*TYPED_TEST( NeoHookeHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
+// NeoHookean with equivalent Mooney-Rivlin
+TYPED_TEST( NeoHookeHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {
     ASSERT_TRUE( this->testHexahedraInTraction(&sofa::NeoHookeHexahedraMaterial_test<TypeParam>::addMooneyRivlinForceField,pressureNHArray,s1NHArray, s2NHArray,
-                                                 TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
-}*/
+                                                 TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
+}
 
 
 } // namespace sofa

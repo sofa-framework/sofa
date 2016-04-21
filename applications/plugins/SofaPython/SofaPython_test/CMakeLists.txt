@@ -6,6 +6,7 @@ set(SOURCE_FILES
     PyScene.cpp
     dummy.cpp
     python_test_list.cpp
+    memory.cpp
 )
 
 if(SOFA_USE_C++11)

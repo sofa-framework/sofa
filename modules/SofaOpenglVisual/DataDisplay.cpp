@@ -49,7 +49,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
-using sofa::component::visualmodel::ColorMap;
+using sofa::component::visualmodel::OglColorMap;
 
 SOFA_DECL_CLASS(DataDisplay)
 
@@ -68,7 +68,7 @@ void DataDisplay::init()
     this->getContext()->get(colorMap);
     if (!colorMap) {
         serr << "No ColorMap found, using default." << sendl;
-        colorMap = ColorMap::getDefault();
+        colorMap = OglColorMap::getDefault();
     }
 }
 
@@ -210,7 +210,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     if (bDrawCellData) {
 
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
         if( !triData.empty() )
         {
@@ -301,7 +301,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     if ((bDrawCellData || !topology) && bDrawPointData) {
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
         // Just the points
         glPointSize(10);
         glBegin(GL_POINTS);
@@ -315,7 +315,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         glEnd();
 
     } else if (bDrawPointData) {
-        ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+        helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
         glPushAttrib ( GL_LIGHTING_BIT );
         glEnable ( GL_LIGHTING );

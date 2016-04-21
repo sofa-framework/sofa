@@ -11,6 +11,7 @@ namespace odesolver {
 
    The same as ConstraintValue (default value for damped elasticity) with an offset (added)
 
+   @author Matthieu Nesme
 */
 
 class SOFA_Compliant_API OffsettedConstraintValue : public ConstraintValue {

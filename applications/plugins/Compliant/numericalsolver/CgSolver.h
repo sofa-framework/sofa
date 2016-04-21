@@ -8,6 +8,7 @@ namespace component {
 namespace linearsolver {
 
 /// Conjugate Gradient (iterative, linear solver for symmetric, definite matrix)
+/// @author Matthieu Nesme
 // TODO add numerator threshold ? damping ?
 class SOFA_Compliant_API CgSolver : public KrylovSolver {
 

@@ -29,7 +29,6 @@
 #include "TetrahedronDiffusionFEMForceField.h"
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
@@ -443,18 +442,18 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
     if (!this->mstate)
         return;
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    vparams->drawTool()->saveLastState();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     //draw the conductivity
     if (d_drawConduc.getValue())
     {
         const typename TetrahedronDiffusionFEMForceField<DataTypes>::MechanicalTypes::VecCoord restPosition =
         this->mechanicalObject->read(core::ConstVecCoordId::restPosition())->getValue();
-        glDisable(GL_LIGHTING);
+        vparams->drawTool()->setLightingEnabled(false);
+
         unsigned int nbr = topology->getNbTriangles();
         sofa::helper::vector<unsigned int> surfaceTri;
 
@@ -464,25 +463,24 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 surfaceTri.push_back(i);
         }
 
-        glColor3f(1.0, 0.0, 0.0);
-        glBegin(GL_LINES);
+        sofa::defaulttype::Vec4f colorLine(1.0, 0.0, 0.0, 1.0);
+        helper::vector<sofa::defaulttype::Vector3> vertices;
 
         for (unsigned int i=0; i<surfaceTri.size(); ++i)
         {
-            sofa::defaulttype::Vec<3,SReal> point[3];
+            sofa::defaulttype::Vector3 point[3];
             Triangle tri = topology->getTriangle(surfaceTri[i]);
             for (unsigned int j=0; j<3; ++j)
                 point[j] = restPosition[tri[j]];
 
             for (unsigned int j = 0; j<3; j++)
             {
-                glVertex3d(point[j][0], point[j][1], point[j][2]);
-                glVertex3d(point[(j+1)%3][0], point[(j+1)%3][1], point[(j+1)%3][2]);
+                vertices.push_back(point[j]);
+                vertices.push_back(point[(j+1)%3]);
             }
         }
-        glEnd();
 
-
+        vparams->drawTool()->drawLines(vertices, 1, colorLine);
 
         unsigned int nbrTetra = topology->getNbTetrahedra();
         Real maxDiffusion = 0.0;
@@ -492,12 +490,12 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
                 maxDiffusion = d_tetraDiffusionCoefficient.getValue()[i];
         }
 
+        colorLine = sofa::defaulttype::Vec4f(0.2, 0.2, 0.2, 1.0);
+        vertices.clear();
         for (unsigned int i = 0; i<nbrTetra; ++i)
         {
             Real Ratio = d_tetraDiffusionCoefficient.getValue()[i] / maxDiffusion;
-
-            glBegin(GL_TRIANGLES);
-            glColor3f(0.0, Ratio, 0.5-Ratio);
+            sofa::defaulttype::Vec4f tetraColor(0.0, Ratio, 0.5-Ratio, 1.0);
 
             Tetrahedron tetra = topology->getTetrahedron(i);
             sofa::defaulttype::Vec<3,SReal> point[4];
@@ -505,26 +503,29 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::draw(const core::visual::Visu
             for (unsigned int j = 0; j<4; j++)
                 point[j] = restPosition[tetra[j]];
 
-            for (unsigned int j = 0; j<4; j++)
-            {
-                glVertex3d(point[j][0], point[j][1], point[j][2]);
-                glVertex3d(point[(j+1)%4][0], point[(j+1)%4][1], point[(j+1)%4][2]);
-                glVertex3d(point[(j+2)%4][0], point[(j+2)%4][1], point[(j+2)%4][2]);
-            }
-            glEnd();
+            vparams->drawTool()->drawTetrahedron(point[0],point[1],point[2],point[3],tetraColor);
 
-            glBegin(GL_LINES);
-            glColor3f(0.2, 0.2, 0.2);
             for (unsigned int j = 0; j<4; j++)
             {
-                glVertex3d(point[j][0], point[j][1], point[j][2]);
-                glVertex3d(point[(j+1)%4][0], point[(j+1)%4][1], point[(j+1)%4][2]);
-                glVertex3d(point[(j+2)%4][0], point[(j+2)%4][1], point[(j+2)%4][2]);
+                vertices.push_back(point[j]);
+                vertices.push_back(point[(j+1)%4]);
+
+                vertices.push_back(point[(j+1)%4]);
+                vertices.push_back(point[(j+2)%4]);
+
+                vertices.push_back(point[(j+2)%4]);
+                vertices.push_back(point[j]);
             }
-            glEnd();
         }
+        vparams->drawTool()->drawLines(vertices, 1, colorLine);
+
     }
 
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, false);
+
+
+    vparams->drawTool()->restoreLastState();
 }
 
 
