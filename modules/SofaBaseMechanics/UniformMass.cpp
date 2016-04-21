@@ -107,11 +107,12 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     if (totalMass.getValue() > 0)
     {
         MassType *m = mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) totalMass.getValue() / indices.size() );
+        *m = ( (Real) totalMass.getValue() / indices.size() );
         mass.endEdit();
     }
     else
-        totalMass.setValue ( indices.size() * (Real)mass.getValue() );
+        totalMass.setValue ( indices.size() * (Real)mass.getValue() );    
+
 
     mass.beginEdit()->recalc();
     mass.endEdit();
@@ -499,7 +500,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     if (totalMass.getValue() > 0)
     {
         MassType *m = mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) totalMass.getValue() / indices.size() );
+        *m = ( (Real) totalMass.getValue() / indices.size() );
         mass.endEdit();
     }
     else
