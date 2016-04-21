@@ -83,25 +83,25 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , totalMass ( initData ( &totalMass, (SReal)0.0, "totalmass",
                                "Sum of the particles' masses" ) )
 
-    , d_filenameMass ( initData ( &d_filenameMass, "filename",
+    , filenameMass ( initData ( &filenameMass, "filename",
                                   "Rigid file to load the mass parameters" ) )
 
-    , d_showCenterOfGravity ( initData ( &d_showCenterOfGravity, false, "showGravityCenter",
+    , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter",
                                          "display the center of gravity of the system" ) )
 
-    , d_showAxisSize ( initData ( &d_showAxisSize, 1.0f, "showAxisSizeFactor",
+    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor",
                                   "factor length of the axis displayed (only used for rigids)" ) )
 
-    , d_computeMappingInertia ( initData ( &d_computeMappingInertia, false, "compute_mapping_inertia",
+    , computeMappingInertia ( initData ( &computeMappingInertia, false, "compute_mapping_inertia",
                                            "to be used if the mass is placed under a mapping" ) )
 
-    , d_showInitialCenterOfGravity ( initData ( &d_showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
+    , showInitialCenterOfGravity ( initData ( &showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
                                                 "display the initial center of gravity of the system" ) )
 
-    , d_showX0 ( initData ( &d_showX0, false, "showX0",
+    , showX0 ( initData ( &showX0, false, "showX0",
                             "display the rest positions" ) )
 
-    , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "localRange",
+    , localRange ( initData ( &localRange, Vec<2,int> ( -1,-1 ), "localRange",
                                 "optional range of local DOF indices. \n"
                               "Any computation involving only indices outside of this range \n"
                               "are discarded (useful for parallelization using mesh partitionning)" ) )
@@ -109,10 +109,10 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , d_indices ( initData ( &d_indices, "indices",
                              "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
 
-    , d_handleTopoChange ( initData ( &d_handleTopoChange, false, "handleTopoChange",
+    , handleTopoChange ( initData ( &handleTopoChange, false, "handleTopoChange",
                                       "The mass and totalMass are recomputed on particles add/remove." ) )
 
-    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass",
+    , preserveTotalMass( initData ( &preserveTotalMass, false, "preserveTotalMass",
                                       "Prevent totalMass from decreasing when removing particles."))
 {
     this->addAlias(&totalMass,"totalMass");
@@ -147,12 +147,12 @@ void UniformMass<DataTypes, MassType>::reinit()
     if(mstate==NULL) return;
 
     //If localRange is set, update indices
-    if (d_localRange.getValue()[0] >= 0
-        && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (localRange.getValue()[0] >= 0
+        && localRange.getValue()[1] > 0
+        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
+        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -181,9 +181,9 @@ void UniformMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
-    loadRigidMass ( d_filenameMass.getFullPath() );
-    if ( d_filenameMass.getValue().empty() )
-        d_filenameMass.setDisplayed ( false );
+    loadRigidMass ( filenameMass.getFullPath() );
+    if ( filenameMass.getValue().empty() )
+        filenameMass.setDisplayed ( false );
     Mass<DataTypes>::init();
     reinit();
 }
@@ -212,7 +212,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             switch ( ( *it )->getChangeType() )
             {
             case core::topology::POINTSADDED:
-                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
                     MassType* m = mass.beginEdit();
                     *m = ( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize() );
@@ -221,9 +221,9 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 break;
 
             case core::topology::POINTSREMOVED:
-                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    if (!d_preserveTotalMass.getValue())
+                    if (!preserveTotalMass.getValue())
                         totalMass.setValue (mstate->getSize() * (Real)mass.getValue() );
                     else
                         mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize()) );
@@ -531,12 +531,12 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     }
 #endif
 
-    if ( d_showCenterOfGravity.getValue() )
+    if ( showCenterOfGravity.getValue() )
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        Real axisSize = d_showAxisSize.getValue();
+        Real axisSize = showAxisSize.getValue();
         sofa::defaulttype::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
@@ -551,7 +551,7 @@ template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass ( std::string )
 {
     //If the template is not rigid, we hide the Data filenameMass, to avoid confusion.
-    d_filenameMass.setDisplayed ( false );
+    filenameMass.setDisplayed ( false );
     mass.setDisplayed ( false );
 }
 
