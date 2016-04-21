@@ -172,32 +172,40 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
 
-    def insertMergeRigid(self, mergeNodeName="dofRigid", tag="rigid", rigidIndexById=None ):
+    def insertMergeRigid(self, mergeNodeName="dofRigid", tags=None, rigidIndexById=None ):
         """ Merge all the rigids in a single MechanicalObject using a SubsetMultiMapping
-        optionnaly give a tag to select the rigids which are merged
+        optionnaly give a list of tags to select the rigids which are merged
         return the created node"""
         mergeNode = None
         currentRigidIndex=0
         input=""
         indexPairs=""
-        if tag in self.model.solidsByTag:
-            for solid in self.model.solidsByTag[tag]:
-                if not solid.id in self.rigids:
-                    Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
-                    continue
-                rigid = self.rigids[solid.id]
-                if mergeNode is None:
-                    mergeNode = rigid.node.createChild(mergeNodeName)
-                else:
-                    rigid.node.addChild(mergeNode)
-                input += '@'+rigid.node.getPathName()+" "
-                indexPairs += str(currentRigidIndex) + " 0 "
-                if not rigidIndexById is None:
-                    rigidIndexById[solid.id]=currentRigidIndex
-                currentRigidIndex+=1
+        if tags is None:
+            _tags = self.param.rigidTags
+        else:
+            _tags = tags
+
+        for tag in _tags:
+            if tag in self.model.solidsByTag:
+                for solid in self.model.solidsByTag[tag]:
+                    if not solid.id in self.rigids:
+                        Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
+                        continue
+                    rigid = self.rigids[solid.id]
+                    if mergeNode is None:
+                        mergeNode = rigid.node.createChild(mergeNodeName)
+                    else:
+                        rigid.node.addChild(mergeNode)
+                    input += '@'+rigid.node.getPathName()+" "
+                    indexPairs += str(currentRigidIndex) + " 0 "
+                    if not rigidIndexById is None:
+                        rigidIndexById[solid.id]=currentRigidIndex
+                    currentRigidIndex+=1
         if input:
             mergeNode.createObject("MechanicalObject", template = "Rigid3", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+        else:
+            Sofa.msg_warning("Compliant.sml", "insertMergeRigid: no rigid merged")
         return mergeNode
 
     def addMeshExporters(self, dir, ExportAtEnd=False):
@@ -251,7 +259,7 @@ class SceneSkinning(SceneArticulatedRigid) :
         
         if "armature" in self.model.solidsByTag:
             # insert node containing all bones of the armature
-            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag="armature", rigidIndexById=self.skinningArmatureBoneIndexById)
+            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
             for solidModel in self.model.solids.values():
                 print solidModel.name, len(solidModel.skinnings)
                 if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
