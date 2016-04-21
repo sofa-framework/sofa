@@ -60,23 +60,23 @@ public:
 
     Data<MassType>                        mass;         ///< the mass of each particle
     Data<SReal>                           totalMass;    ///< if >0 : total mass of this body
-    sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
+    sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<bool>                        d_showCenterOfGravity; /// to display the center of gravity of the system
-    Data<float>                       d_showAxisSize;        /// to display the center of gravity of the system
+    Data<bool>                        showCenterOfGravity; /// to display the center of gravity of the system
+    Data<float>                       showAxisSize;        /// to display the center of gravity of the system
 
-    Data<bool>  d_computeMappingInertia;
-    Data<bool>  d_showInitialCenterOfGravity;
+    Data<bool>  computeMappingInertia;
+    Data<bool>  showInitialCenterOfGravity;
 
 
-    Data<bool>  d_showX0; /// to display the rest positions
+    Data<bool>  showX0; /// to display the rest positions
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > d_localRange;
+    Data< defaulttype::Vec<2,int> > localRange;
     Data< helper::vector<int> >     d_indices;
 
-    Data<bool> d_handleTopoChange;
-    Data<bool> d_preserveTotalMass;
+    Data<bool> handleTopoChange;
+    Data<bool> preserveTotalMass;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -105,8 +105,8 @@ public:
     SReal getTotalMass() const { return totalMass.getValue(); }
     void setTotalMass(SReal m);
 
-    void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
-    std::string getFileMass() const {return d_filenameMass.getFullPath();}
+    void setFileMass(const std::string& file) {filenameMass.setValue(file);}
+    std::string getFileMass() const {return filenameMass.getFullPath();}
 
     void loadRigidMass(std::string filename);
     // -- Mass interface

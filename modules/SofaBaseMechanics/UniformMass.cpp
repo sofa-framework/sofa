@@ -85,12 +85,12 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     if(mstate==NULL) return;
 
     //If localRange is set, update indices
-    if (d_localRange.getValue()[0] >= 0
-        && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (localRange.getValue()[0] >= 0
+        && localRange.getValue()[1] > 0
+        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
+        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -266,26 +266,26 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const VisualParams* vparams)
     for (unsigned int i=0; i<indices.size(); i++)
     {
 		if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
 		else
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
     }
 
-    if (d_showInitialCenterOfGravity.getValue())
+    if (showInitialCenterOfGravity.getValue())
     {
         const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (unsigned int i=0; i<indices.size(); i++)
-            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*d_showAxisSize.getValue());
+            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*showAxisSize.getValue());
     }
 
-    if(d_showCenterOfGravity.getValue())
+    if(showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
 }
 
@@ -308,7 +308,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const VisualParams* vparams)
         Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
-        vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -477,12 +477,12 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     if(mstate==NULL) return;
 
     //If localRange is set, update indices
-    if (d_localRange.getValue()[0] >= 0
-        && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (localRange.getValue()[0] >= 0
+        && localRange.getValue()[1] > 0
+        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
+        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -663,16 +663,16 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const VisualParams* vparams)
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
     }
 
-    if(d_showCenterOfGravity.getValue())
+    if(showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
     }
 }
 
@@ -694,7 +694,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const VisualParams* vparams)
         Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
-        vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -765,7 +765,7 @@ void UniformMass<Vec6fTypes, float>::draw(const VisualParams* vparams)
         for(unsigned int j=0 ; j<3 ; j++)
         {
             vertices.push_back(p);
-            vertices.push_back(p + R.col(j)*d_showAxisSize.getValue());
+            vertices.push_back(p + R.col(j)*showAxisSize.getValue());
             colors.push_back(colorSet[j]);
             colors.push_back(colorSet[j]);;
         }
