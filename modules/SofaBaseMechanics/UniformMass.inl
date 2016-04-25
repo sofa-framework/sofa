@@ -198,7 +198,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
     if(m_doesTopoChangeAffect)
     {
         indices.clear();
-        for(int i=0; i<mstate->getSize(); i++)
+        for(size_t i=0; i<mstate->getSize(); i++)
             indices.push_back(i);
     }
 
