@@ -104,7 +104,7 @@ class Deformable:
         self.visual = self.node.createObject("VisualModel", name="model", filename="@"+deformable.meshLoader.getPathName()+".filename", color=concat(color))
         self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.mapping = self.node.createObject("IdentityMapping", name="mapping", input='@'+deformable.node.getPathName(),output="@.", mapForces=False, mapConstraints=False, mapMasses=False )
-        self.normals = self.meshLoader
+        self.normals = self.visual
 
     def subsetFromDeformable(self, deformable, indices ):
         if not deformable.topology is None:
@@ -120,21 +120,67 @@ class Deformable:
         args=dict()
         inputs=[]
         i=1
-        map = True
+        mapTopo = True
+        mapDofs = True
         for s in deformables:
             s.node.addChild(self.node)
-            args["position"+str(i)]=s.topology.getLinkPath()+".position"
-            args["triangles"+str(i)]=s.topology.getLinkPath()+".triangles"
-            args["quads"+str(i)]=s.topology.getLinkPath()+".quads"
-            inputs.append('@'+s.node.getPathName())
             if s.dofs is None:
-                map=False
+                mapDofs = False
+            if s.topology is None:
+                mapTopo = False
+            else:
+                args["position"+str(i)]=s.topology.getLinkPath()+".position"
+                args["triangles"+str(i)]=s.topology.getLinkPath()+".triangles"
+                args["quads"+str(i)]=s.topology.getLinkPath()+".quads"
+            inputs.append('@'+s.node.getPathName())
             i+=1
-        self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
-        self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
-        if map is True:
+        if mapTopo:
+            self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
+            self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
+        if mapDofs:
             self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs")
             self.mapping = self.node.createObject("IdentityMultiMapping", name='mapping',input=SofaPython.Tools.listToStr(inputs),output="@.")
+
+    def subsetFromDeformables(self, deformableIndicesList = list() ):
+        args=dict()
+        inputs=[]
+        indexPairs=[]
+        i=1
+        mapTopo = True
+        mapDofs = True
+        for s,ind in deformableIndicesList:
+            s.node.addChild(self.node)
+            if s.dofs is None:
+                mapDofs = False
+            else:
+                if not ind is None:
+                    for p in ind:
+                        indexPairs+=[i-1,p]
+                else: # no roi -> take all points. Warning: does not work if parent dofs are not initialized
+                    size = len(s.dofs.position)
+                    if size==0:
+                        Sofa.msg_error("Flexible.API.Deformable","subsetFromDeformables: no dof from "+ s.name)
+                    for p in xrange(size):
+                        indexPairs+=[i-1,p]
+            if s.topology is None:
+                mapTopo = False
+            else:
+                if not ind is None:
+                    subset = self.node.createObject("MeshSubsetEngine", template = "Vec3", name='MeshSubsetEngine_'+s.name, inputPosition=s.topology.getLinkPath()+'.position', inputTriangles=s.topology.getLinkPath()+'.triangles', inputQuads=s.topology.getLinkPath()+'.quads', indices=concat(ind))
+                    path = '@'+subset.name
+                else: # map all
+                    path = s.topology.getLinkPath()
+                args["position"+str(i)]=path+".position"
+                args["triangles"+str(i)]=path+".triangles"
+                args["quads"+str(i)]=path+".quads"
+            inputs.append('@'+s.node.getPathName())
+            i+=1
+        if mapTopo:
+            self.meshLoader =  self.node.createObject('MergeMeshes', name='MergeMeshes', nbMeshes=len(inputs), **args )
+            self.topology = self.node.createObject("MeshTopology", name="topology", src="@"+self.meshLoader.name )
+        if mapDofs:
+            self.dofs = self.node.createObject("MechanicalObject", template = "Vec3", name="dofs")
+            self.mapping = self.node.createObject("SubsetMultiMapping", name='mapping', indexPairs=concat(indexPairs), input=concat(inputs),output="@.")
 
     def addMechanicalObject(self):
         if self.meshLoader is None:
