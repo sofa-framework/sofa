@@ -151,7 +151,7 @@ class RigidBody:
 
         class VisualModel:
             def __init__(self, node ):
-                global idxVisualModel;
+                global idxVisualModel
                 self.node = node.createChild( "visual" )  # node
                 # todo improve normal updates by using the Rigid Transform rather than by doing cross product
                 # enforcing mesh loading in VisualModel to have correct texture coordinates
@@ -162,7 +162,7 @@ class RigidBody:
 
     class VisualModel:
         def __init__(self, node, filepath, scale3d, offset, name_suffix=''):
-            global idxVisualModel;
+            global idxVisualModel
             self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
