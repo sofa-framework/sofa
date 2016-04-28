@@ -271,7 +271,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
-                              <<  " difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << std::endl;
+                              <<  "\ndifference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << std::endl;
                 succeed = false;
             }
         }
