@@ -142,13 +142,15 @@ extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObje
     return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
+/// the complete relative path to the object must be given
+/// returns None with a warning if the object is not found
 extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string" )
+        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
         Py_RETURN_NONE;
     }
     if (!context || !path)
@@ -166,6 +168,32 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
 
     return SP_BUILD_PYSPTR(sptr.get());
 }
+
+
+/// the complete relative path to the object must be given
+/// returns None if the object is not found
+extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
+{
+    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    char *path;
+    if (!PyArg_ParseTuple(args, "s",&path))
+    {
+        SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
+        Py_RETURN_NONE;
+    }
+    if (!context || !path)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    BaseObject::SPtr sptr;
+    context->get<BaseObject>(sptr,path);
+    if (!sptr) Py_RETURN_NONE;
+
+    return SP_BUILD_PYSPTR(sptr.get());
+}
+
+
 
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*/)
 {
@@ -197,6 +225,7 @@ SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHOD_KW(BaseContext,createObject)
 SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning)
 SP_CLASS_METHOD(BaseContext,getObject)
+SP_CLASS_METHOD(BaseContext,getObject_noWarning)
 SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END
 
