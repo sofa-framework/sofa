@@ -186,6 +186,11 @@ class RigidBody:
             ## adding a offset given in absolute coordinates to the offset
             return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset() )
 
+        def moveOffset(self, translation=[0,0,0], rotation=[0,0,0]):
+            ## apply a rigid transform to the offset in its local frame (rotation as three Euler angles)
+            self.frame = self.frame * Frame.Frame( translation + SofaPython.Quaternion.from_euler(rotation).tolist() )
+            self.mapping.source = '0 '+str(self.frame)
+
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
             return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))

@@ -24,7 +24,7 @@ def createRigidBody(node,name,posx,posy=0):
     
     
     
-def createScene(root):
+def createSceneAndController(root):
   
     ##### global parameters
     root.createObject('VisualStyle', displayFlags="showBehavior showWireframe showCollisionModels" )
@@ -182,6 +182,7 @@ def createScene(root):
     alignedoffset = body3.addOffset( "world_axis_aligned", [0,0,0,0,0,0,1] )
     alignedoffset.dofs.showObject=True
     alignedoffset.dofs.showObjectScale=.5
+    global notalignedoffset
     notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7071067811865476,0,0,0.7071067811865476] )
     notalignedoffset.dofs.showObject=True
     notalignedoffset.dofs.showObjectScale=.5
@@ -198,4 +199,21 @@ def createScene(root):
     dragon.dofs.showObjectScale=1
     dragon.addCollisionMesh( mesh, [.2,.2,.2] )
     dragon.addVisualModel( mesh, [.2,.2,.2] )
-    
+
+
+def onKeyPressed(k):
+    # print 'onKeyPressed ' + k
+    # sys.stdout.flush()
+
+    global notalignedoffset
+    if k=='Z':
+        notalignedoffset.moveOffset(translation=[0, 1, 0])
+    elif k=='S':
+        notalignedoffset.moveOffset(translation=[0, -1, 0])
+    elif k == 'Q':
+        notalignedoffset.moveOffset(translation=[-1, 0, 0])
+    elif k == 'D':
+        notalignedoffset.moveOffset(translation=[1, 0, 0])
+
+
+    return 0
