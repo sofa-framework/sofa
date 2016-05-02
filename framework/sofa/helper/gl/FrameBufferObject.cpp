@@ -42,7 +42,8 @@ namespace gl
 {
     
 FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
-    :width(0)
+    :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
+    ,width(0)
     ,height(0)
     ,depthTextureID(0)
     ,colorTextureID(0)
@@ -50,12 +51,12 @@ FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool e
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
-    ,m_defaultWindowFramebufferID(defaultWindowFramebuffer)
 {
 }
 
 FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
-    :width(0)
+    :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
+    ,width(0)
     ,height(0)
     ,depthTextureID(0)
     ,colorTextureID(0)
@@ -64,7 +65,6 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthT
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
-    ,m_defaultWindowFramebufferID(defaultWindowFramebuffer)
 {
 }
 

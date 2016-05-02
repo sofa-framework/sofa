@@ -58,8 +58,8 @@ BaseCamera::BaseCamera()
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
     ,p_intrinsicParameters(initData(&p_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
-    ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
     ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
+    ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
 {
     this->f_listening.setValue(true);
     this->p_projectionMatrix.setReadOnly(true);
@@ -327,18 +327,16 @@ void BaseCamera::getProjectionMatrix(double mat[16])
     }
     else
     {
-        float xFactor, yFactor;
+        float xFactor = 1.0, yFactor = 1.0;
         if ((height != 0) && (width != 0))
         {
             if (height > width)
             {
-                xFactor = 1.0;
                 yFactor = (double)height / (double)width;
             }
             else
             {
                 xFactor = (double)width / (double)height;
-                yFactor = 1.0;
             }
         }
 
