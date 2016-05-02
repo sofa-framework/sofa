@@ -229,7 +229,6 @@ protected:
                                 pos.push_back( c + u*gx3 + v*gx2 );
                                 vol.push_back(volumeIntegralType(1,V));
                                 cel.push_back( i );
-                                //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
                                 transforms.push_back( M );
                             }
                     }
@@ -259,10 +258,13 @@ protected:
                     const Coord& p1=parent[cubes[i][0]],p2=parent[cubes[i][1]],p3=parent[cubes[i][2]],p4=parent[cubes[i][3]],p5=parent[cubes[i][4]],p6=parent[cubes[i][5]],p7=parent[cubes[i][6]],p8=parent[cubes[i][7]];
                     pos.push_back( (p1+p2+p3+p4+p5+p6+p7+p8)*0.125 );
                     cel.push_back( i+c0 );
-                    volumeIntegralType v; getCubeVolumes(v,p1,p2,p4,p5,this->f_order.getValue());
-                    if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/v[0];   for (unsigned int j=0; j<v.size(); j++) v[j]*=fact; }
-                    vol.push_back(v);
-                    //vol.push_back(volumeIntegralType(1,(f_fineVolumes.getValue().size()>i+c0)?f_fineVolumes.getValue()[i+c0]:fabs(dot(cross(p4-p1,p3-p1),p2-p1))));
+                    Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
+                    Real V;
+                    if(f_fineVolumes.getValue().size()>i+c0) V=f_fineVolumes.getValue()[i+c0]; else  V=u.norm()*v.norm()*w.norm();
+                    vol.push_back(volumeIntegralType(1,V));
+                    // volumeIntegralType v; getCubeVolumes(v,p1,p2,p4,p5,0);
+                    // if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/v[0];   for (unsigned int j=0; j<v.size(); j++) v[j]*=fact; }
+                    // vol.push_back(v);
                     // compute local orientation given user input and local element frame
                     Transform U=this->getUserOrientation(i+c0);
                     transforms.push_back(this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p1,p2,p5) * U : U);
@@ -333,6 +335,7 @@ protected:
                             Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
                             Real V;
                             if(f_fineVolumes.getValue().size()>i+c0) V=f_fineVolumes.getValue()[i+c0]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
+                            //getCubeVolumes(vol[i+c0],p1,p2,p4,p5,this->f_order.getValue());
                             // compute local orientation given user input and local element frame
                             Transform U=this->getUserOrientation(i+c0);
                             Transform M = this->f_useLocalOrientation.getValue() ? getLocalFrame2D(p1,p2,p5) * U : U;
@@ -345,7 +348,6 @@ protected:
                                         pos.push_back( c + u*gx3 + v*gx2 + w*gx1 );
                                         vol.push_back(volumeIntegralType(1,V));
                                         cel.push_back( i+c0 );
-                                        //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
                                         transforms.push_back( M) ;
                                     }
                         }

@@ -168,7 +168,7 @@ namespace sofa {
     {
         // With small method
         this->loadScene( "SmallCorotationalPatchTest.scn");
-        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,6e-12)); 
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,3e-2));
     }
 
 } // namespace sofa
