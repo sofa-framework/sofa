@@ -123,18 +123,17 @@ class Bone():
         if self.type not in BoneType:
             self.type = "short" # --> to set 1 frame on bone which not have a type
         # Creation of the shearless affine body
-        self.body = RigidScale.API.ShearlessAffineBody(parentNode, self.name, FramePerBoneType[self.type])
+        self.body = RigidScale.API.ShearlessAffineBody(parentNode, self.name)
         # Depending on the frame set in the constructor, let decide how the body will be initialized
         if (self.frame == None) or (len(self.frame) < FramePerBoneType[self.type]):
-            self.body.setFromMesh(self.filepath, density, offset, scale3d, False, self.voxelSize, generatedDir=generatedDir)
+            self.body.setFromMesh(self.filepath, density, offset, scale3d, self.voxelSize, FramePerBoneType[self.type])
         else:
             scale3dList = []
             for i in range(len(self.frame)): scale3dList.append(scale3d)
-            self.body.numberOfPoints = len(self.frame)
-            self.body.setManually(self.filepath, self.frame, [1]*len(self.frame), scale3dList, False, self.voxelSize, generatedDir=generatedDir)
+            self.body.setManually(self.filepath, self.frame, self.voxelSize, density=1000, generatedDir=generatedDir)
         # Add of the behavior model, the collision model and the visual model
         localGeneratedDir=None if generatedDir is None else generatedDir+self.name
-        self.behavior = self.body.addElasticBehavior("behavior", self.elasticity, 0, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir )
+        self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir )
         self.collision = self.body.addCollisionMesh(self.filepath, scale3d, offset, generatedDir=localGeneratedDir)
         self.visual = self.collision.addVisualModel()
         return self.body
@@ -201,7 +200,7 @@ class Joint():
         # Variable
         _isLimited = False
         _compliance = 0 if useCompliant else compliance
-        # Needs to be fixed and used later
+        # Needs to be fixed and used late
         boneA_offset = self.boneA.body.addAbsoluteOffset(self.boneA.name +'_offset_joint_'+self.name, self.frame)
         boneB_offset = self.boneB.body.addAbsoluteOffset(self.boneB.name +'_offset_joint_'+self.name, self.frame)
         # joint creation between the offsets
@@ -255,10 +254,10 @@ class Constraint(Joint):
 
     # Set the constraint in the middle of bone, and set its orientation along the bone axe
     def computeFrame(self):
-        if self.bone.body.numberOfPoints != 2:
+        if len(self.bone.body.frame) != 2:
             print "Only alignement constraint of the bone heads is currently handled."
             return
-        if len(self.bone.frame) < self.bone.body.numberOfPoints:
+        if len(self.bone.frame) < len(self.bone.body.frame):
             print "You need to set some ROI to compute the bone frame for the long bone, to allow the handling of the constraint."
             return
         p1 = self.bone.frame[0]
@@ -270,7 +269,7 @@ class Constraint(Joint):
 
     # Set the constraint position in the middle of the bone
     def computeFramePosition(self):
-        if self.bone.body.numberOfPoints != 2:
+        if len(self.bone.body.frame) != 2:
             print "Only alignement constraint of the bone heads is currently handled."
             return
         p1 = self.bone.frame[0]
@@ -280,7 +279,7 @@ class Constraint(Joint):
 
     # Set the constraint orientation along the bone axe
     def computeFrameOrientation(self):
-        if self.bone.body.numberOfPoints != 2 or len(self.bone.frame) < 2:
+        if len(self.bone.body.frame) != 2 or len(self.bone.frame) < 2:
             print "Only alignement constraint of the bone heads is currently handled."
             return
         p1 = self.bone.frame[0]
@@ -290,7 +289,7 @@ class Constraint(Joint):
 
     # TO DO: fix the attributes @set and @offset de respectivement sur AssembledRigidRigidMapping, ProjectionMapping
     def setup(self, useCompliant=1, compliance=1E-6, showOffset=False, showOffsetScale=0.1):
-        if self.bone.body.numberOfPoints != 2:
+        if len(self.bone.body.frame) != 2:
             print "Only alignement constraint of the bone heads is currently handled."
             return
         # computation of orientation
