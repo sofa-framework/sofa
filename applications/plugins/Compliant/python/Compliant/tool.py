@@ -333,3 +333,29 @@ def object_link_relative(node, obj):
 def multi_mapping_input(node, *dofs ):
     '''multimapping input field from a list of dofs'''
     return ' '.join( object_link_relative(node, x) for x in dofs )
+
+
+def find_node(node, path):
+    '''find node given relative path'''
+    
+    path = path.split('@')[-1]
+    path = path.split('/')
+
+    for p in path:
+        if p == '..':
+            node = node.getParents()[0]
+        else:
+            node = node.getChild(p)
+
+    return node
+
+def find_object(node, path):
+    '''find object given relative path'''
+    
+    split = path.split('/')
+
+    path = '/'.join( split[:-1] )
+    name = split[-1]
+
+    res = find_node(node, path).getObject(name)
+    return res
