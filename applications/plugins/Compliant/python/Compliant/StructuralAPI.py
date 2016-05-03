@@ -20,6 +20,7 @@ from SofaPython import Quaternion
 import SofaPython.Tools
 import SofaPython.mass
 import math
+import sys
 
 # to specify the floating point encoding:
 # "d" to force double
@@ -186,9 +187,9 @@ class RigidBody:
             ## adding a offset given in absolute coordinates to the offset
             return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset() )
 
-        def moveOffset(self, translation=[0,0,0], rotation=[0,0,0]):
-            ## apply a rigid transform to the offset in its local frame (rotation as three Euler angles)
-            self.frame = self.frame * Frame.Frame( translation + SofaPython.Quaternion.from_euler(rotation).tolist() )
+        def applyTransform(self, transform=[0,0,0,0,0,0,1]):
+            ## apply a rigid transform to the offset in its local frame
+            self.frame = self.frame * Frame.Frame( transform )
             self.mapping.source = '0 '+str(self.frame)
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
