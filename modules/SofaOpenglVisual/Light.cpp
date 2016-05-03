@@ -415,8 +415,8 @@ SpotLight::SpotLight()
     , d_cutoff(initData(&d_cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
     , d_exponent(initData(&d_exponent, (float) 20.0, "exponent", "Set the exponent of the spot"))
     , d_lookat(initData(&d_lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
-    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
     , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "ModelView Matrix"))
+    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
 {
     helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
