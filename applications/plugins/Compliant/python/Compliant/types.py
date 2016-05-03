@@ -2,6 +2,9 @@ import numpy as np
 import math
 import sys
 
+def vec(*coords):
+    return np.array(coords)
+
 class Rigid3(np.ndarray):
 
     @property
@@ -179,3 +182,6 @@ class Quaternion(np.ndarray):
         res -= res.T
 
         return res
+
+
+    
