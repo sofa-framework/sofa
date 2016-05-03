@@ -183,7 +183,7 @@ def createSceneAndController(root):
     alignedoffset.dofs.showObject=True
     alignedoffset.dofs.showObjectScale=.5
     global notalignedoffset
-    notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7071067811865476,0,0,0.7071067811865476] )
+    notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7325378163287418,0.4619397662556433,-0.19134171618254486,0.4619397662556433] )
     notalignedoffset.dofs.showObject=True
     notalignedoffset.dofs.showObjectScale=.5
     body3.addCollisionMesh( mesh )
@@ -207,13 +207,16 @@ def onKeyPressed(k):
 
     global notalignedoffset
     if k=='Z':
-        notalignedoffset.moveOffset(translation=[0, 1, 0])
+        notalignedoffset.applyTransform([0, 1, 0, 0,0,0,1])
     elif k=='S':
-        notalignedoffset.moveOffset(translation=[0, -1, 0])
+        notalignedoffset.applyTransform([0, -1, 0, 0,0,0,1])
     elif k == 'Q':
-        notalignedoffset.moveOffset(translation=[-1, 0, 0])
+        notalignedoffset.applyTransform([-1, 0, 0, 0,0,0,1])
     elif k == 'D':
-        notalignedoffset.moveOffset(translation=[1, 0, 0])
+        notalignedoffset.applyTransform([1, 0, 0, 0,0,0,1])
+    elif k == 'W':
+        notalignedoffset.applyTransform([0, 0, 0, 0.7071067811865476,0,0,0.7071067811865476])
+
 
 
     return 0
