@@ -268,7 +268,7 @@ void BaseCamera::getModelViewMatrix(double mat[16])
     mat[12] = 0;
     mat[13] = 0;
     mat[14] = 0;
-    mat[14] = 1;
+    mat[15] = 1;
     
 }
 
