@@ -16,6 +16,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/IntegrateBeginEvent.h>
 #include <sofa/simulation/common/IntegrateEndEvent.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
 
 namespace sofa
 {
@@ -120,8 +121,11 @@ class SOFA_Compliant_API SimpleAnimateVisitor : public Visitor {
 
 
 
-SimpleAnimationLoop::SimpleAnimationLoop() {
-
+SimpleAnimationLoop::SimpleAnimationLoop():
+    extra_steps(initData(&extra_steps, unsigned(0),
+                         "extra_steps",
+                         "perform additional simulation steps during one animation step")) {
+    
 }
 
 
@@ -137,18 +141,35 @@ void SimpleAnimationLoop::step(const core::ExecParams* params, SReal dt)
         dt = gnode->getDt();
     }
 
-    // note: DefaultAnimationLoop propagates an AnimateBeginEvent here (useless)
+    const SReal start = gnode->getTime();
     
-    {
-        sofa::helper::ScopedAdvancedTimer step("animate visitor");
-        AnimateVisitor act(params, dt);
-        gnode->execute ( act );
-    }
+    for(unsigned i = 0, n = 1 + extra_steps.getValue(); i < n; ++i) {
+        
+        {
+            AnimateBeginEvent ev ( dt );
+            PropagateEventVisitor act ( params, &ev );
+            gnode->execute ( act );
+        }
+        
     
-    // note: DefaultAnimationLoop executes UpdateSimulationContextVisitor here
-    
-    // note: DefaultAnimationLoop propagates an AnimateEndEvent here (useless)
+        {
+            sofa::helper::ScopedAdvancedTimer step("animate visitor");
+            AnimateVisitor act(params, dt);
+            gnode->execute ( act );
+        }
 
+        // note: only the root node is updated, which is probably
+        // reasonable anyways
+        gnode->setTime ( start + (i + 1) * dt );
+        
+        // note: DefaultAnimationLoop executes UpdateSimulationContextVisitor here
+        {
+            AnimateEndEvent ev ( dt );
+            PropagateEventVisitor act ( params, &ev );
+            gnode->execute ( act );
+        }
+    }    
+    
     gnode->execute< UpdateMappingVisitor >(params);
     
     // note: DefaultAnimationLoop propagates an UpdateMappingEvent here
