@@ -20,6 +20,8 @@ class SOFA_Compliant_API SimpleAnimationLoop : public sofa::core::behavior::Base
 
     SimpleAnimationLoop();
     
+    Data<unsigned> extra_steps;
+
     /// perform one animation step
     virtual void step(const core::ExecParams* params, SReal dt);
     
