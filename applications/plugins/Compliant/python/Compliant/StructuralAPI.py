@@ -93,25 +93,25 @@ class RigidBody:
         self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), name_suffix )
         return self.visual
 
-    def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+    def addOffset(self, name, offset=[0,0,0,0,0,0,1], isMechanical=True):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
-        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Frame.Frame(offset) ).offset(), isMechanical )
 
-    def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+    def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], isMechanical=True):
         ## adding a offset given in absolute coordinates to the rigid body
-        return RigidBody.Offset( self.node, name, (self.frame.inv()*Frame.Frame(offset)).offset() )
+        return RigidBody.Offset( self.node, name, (self.frame.inv()*Frame.Frame(offset)).offset(), isMechanical )
 
-    def addMappedPoint(self, name, relativePosition=[0,0,0]):
+    def addMappedPoint(self, name, relativePosition=[0,0,0], isMechanical=True):
         ## adding a relative position to the rigid body
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mechanism could be added
         frame = Frame.Frame(); frame.translation = relativePosition
-        return RigidBody.MappedPoint( self.node, name, (self.framecom.inv()*frame).translation )
+        return RigidBody.MappedPoint( self.node, name, (self.framecom.inv()*frame).translation, isMechanical )
 
-    def addAbsoluteMappedPoint(self, name, position=[0,0,0]):
+    def addAbsoluteMappedPoint(self, name, position=[0,0,0], isMechanical=True):
         ## adding a position given in absolute coordinates to the rigid body
         frame = Frame.Frame(); frame.translation = position
-        return RigidBody.MappedPoint( self.node, name, (self.frame.inv()*frame).translation )
+        return RigidBody.MappedPoint( self.node, name, (self.frame.inv()*frame).translation, isMechanical )
 
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
@@ -173,19 +173,25 @@ class RigidBody:
             idxVisualModel+=1
 
     class Offset:
-        def __init__(self, node, name, offset):
+        def __init__(self, node, name, offset, isMechanical):
+            ## @param isMechanical:
+            ##     will the Offset be used for mechanics? And then propagate forces or mass ?
+            ##     Or will it be used only as a passive measure, visualization...?
             self.node = node.createChild( name )
             self.frame = Frame.Frame( offset ) # store the offset, relative position to its reference
             self.dofs = self.node.createObject('MechanicalObject', template="Rigid3"+template_suffix, name='dofs')
             self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
+            self.mapping.mapForces = isMechanical
+            self.mapping.mapConstraints = isMechanical
+            self.mapping.mapMasses = isMechanical
 
-        def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        def addOffset(self, name, offset=[0,0,0,0,0,0,1], isMechanical=True):
             ## adding a relative offset to the offset
-            return RigidBody.Offset( self.node, name, offset )
+            return RigidBody.Offset( self.node, name, offset, isMechanical )
 
-        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], isMechanical=True):
             ## adding a offset given in absolute coordinates to the offset
-            return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset() )
+            return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset(), isMechanical )
 
         def applyTransform(self, transform=[0,0,0,0,0,0,1]):
             ## apply a rigid transform to the offset in its local frame
@@ -196,26 +202,33 @@ class RigidBody:
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
             return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
-        def addMappedPoint(self, name, relativePosition=[0,0,0]):
+        def addMappedPoint(self, name, relativePosition=[0,0,0], isMechanical=True):
             ## adding a relative position to the rigid body
-            return RigidBody.MappedPoint( self.node, name, relativePosition )
+            return RigidBody.MappedPoint( self.node, name, relativePosition, isMechanical )
 
-        def addAbsoluteMappedPoint(self, name, position=[0,0,0]):
+        def addAbsoluteMappedPoint(self, name, position=[0,0,0], isMechanical=True):
             ## adding a position given in absolute coordinates to the rigid body
             frame = Frame.Frame(); frame.translation = position
-            return RigidBody.MappedPoint( self.node, name, (frame * self.frame.inv()).translation )
+            return RigidBody.MappedPoint( self.node, name, (frame * self.frame.inv()).translation, isMechanical )
 
         class MappedPoint:
-            def __init__(self, node, name, position):
+            def __init__(self, node, name, position, isMechanical):
                 self.node = node.createChild( name )
                 self.dofs = self.node.createObject( 'MechanicalObject', name='dofs', template="Vec3"+template_suffix, position=concat(position) )
                 self.mapping = self.node.createObject('RigidMapping', name="mapping", geometricStiffness = geometric_stiffness)
+                self.mapping.mapForces = isMechanical
+                self.mapping.mapConstraints = isMechanical
+                self.mapping.mapMasses = isMechanical
 
     class MappedPoint:
-        def __init__(self, node, name, position):
+        def __init__(self, node, name, position, isMechanical):
             self.node = node.createChild( name )
             self.dofs = self.node.createObject( 'MechanicalObject', name='dofs', template="Vec3"+template_suffix, position=concat(position) )
             self.mapping = self.node.createObject('RigidMapping', name="mapping", geometricStiffness = geometric_stiffness)
+            self.mapping.mapForces = isMechanical
+            self.mapping.mapConstraints = isMechanical
+            self.mapping.mapMasses = isMechanical
+
 
 
 class GenericRigidJoint:
