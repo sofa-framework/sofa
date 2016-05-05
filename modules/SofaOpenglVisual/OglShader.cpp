@@ -231,6 +231,7 @@ void OglShader::start()
     if(turnOn.getValue() && shaderVector[indexActiveShader.getValue()]->IsReady())
     {
         shaderVector[indexActiveShader.getValue()]->TurnOn();
+
         if ( !clampVertexColor.getValue() )
             glClampColorARB(GL_CLAMP_VERTEX_COLOR, GL_FALSE);
         if ( backfaceWriting.getValue() )
@@ -522,7 +523,7 @@ void OglShaderElement::init()
     isMultipass= mycontext->core::objectmodel::BaseContext::get<sofa::component::visualmodel::CompositingVisualLoop>();
     if(isMultipass==NULL)
     {
-        if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>() )
+        if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
 		{
             shaders.insert( shader );
 //            shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());

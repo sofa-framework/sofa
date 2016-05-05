@@ -458,6 +458,13 @@ void SpotLight::drawLight()
 
 void SpotLight::draw(const core::visual::VisualParams* vparams)
 {
+    float zNear, zFar;
+
+    computeClippingPlane(vparams, zNear, zFar);
+
+    computeOpenGLProjectionMatrix(m_lightMatProj, m_shadowTexWidth, m_shadowTexHeight, 2 * d_cutoff.getValue(), zNear, zFar);
+    computeOpenGLModelViewMatrix(m_lightMatModelview, d_position.getValue(), d_direction.getValue());
+
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
@@ -508,23 +515,24 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
+void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar)
 {
-    double zNear=1e10, zFar=-1e10;
+    zNear = 1e10;
+    zFar = -1e10;
 
-    Light::preDrawShadow(vp);
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
     const Vector3 &pos = d_position.getValue();
     Vector3 dir = d_direction.getValue();
-    if (d_lookat.getValue()) dir -= d_position.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
 
     Vector3 xAxis, yAxis;
 
-    yAxis=Vector3(0.0,1.0,0.0);
+    yAxis = Vector3(0.0, 1.0, 0.0);
 
-    if( 1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
+    if (1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
     {
-        dir += Vector3(0.0000001,0.0,0.0) * dot(yAxis, dir.normalized());
+        dir += Vector3(0.0000001, 0.0, 0.0) * dot(yAxis, dir.normalized());
         dir.normalize();
 
     }
@@ -539,12 +547,12 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     if (!d_zNear.isSet() || !d_zFar.isSet())
     {
         //compute zNear, zFar from light point of view
-        for (int corner=0; corner<8; ++corner)
+        for (int corner = 0; corner<8; ++corner)
         {
             Vector3 p(
-                (corner&1)?sceneBBox.minBBox().x():sceneBBox.maxBBox().x(),
-                (corner&2)?sceneBBox.minBBox().y():sceneBBox.maxBBox().y(),
-                (corner&4)?sceneBBox.minBBox().z():sceneBBox.maxBBox().z());
+                (corner & 1) ? sceneBBox.minBBox().x() : sceneBBox.maxBBox().x(),
+                (corner & 2) ? sceneBBox.minBBox().y() : sceneBBox.maxBBox().y(),
+                (corner & 4) ? sceneBBox.minBBox().z() : sceneBBox.maxBBox().z());
             p = q.rotate(p - pos);
             double z = -p[2];
             if (z < zNear) zNear = z;
@@ -581,6 +589,21 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
         zNear = d_zNear.getValue();
         zFar = d_zFar.getValue();
     }
+}
+
+void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
+{
+
+    float zNear = -1e10, zFar = 1e10;
+
+    const Vector3 &pos = d_position.getValue();
+    Vector3 dir = d_direction.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
+
+    Light::preDrawShadow(vp);
+
+    computeClippingPlane(vp, zNear, zFar);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
