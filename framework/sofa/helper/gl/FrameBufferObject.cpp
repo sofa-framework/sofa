@@ -190,6 +190,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         checkFBO();
 #endif
         initialized=true;
+        glDisable(GL_TEXTURE_2D);
     }
     else
         setSize(width, height);

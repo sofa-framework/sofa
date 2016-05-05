@@ -177,9 +177,9 @@ public:
     const GLfloat* getOpenGLProjectionMatrix();
     const GLfloat* getOpenGLModelViewMatrix();
 private:
+    void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar);
     void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction);
-
 
 };
 
