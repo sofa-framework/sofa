@@ -27,8 +27,8 @@
 
 #include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
 #include <SofaGeneralDeformable/initGeneralDeformable.h>
-#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitOdeSolver.h>
-#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitOdeSolver.h>
+#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
+#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
 #include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
 #include <SofaGeneralLoader/initGeneralLoader.h>
 #include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
