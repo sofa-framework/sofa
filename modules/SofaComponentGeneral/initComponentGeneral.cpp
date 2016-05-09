@@ -34,7 +34,7 @@
 #include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
 #include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
 #include <SofaGeneralRigid/initGeneralRigid.h>
-#include <SofaGeneralSimpleFem/initGeneralSimpleFem.h>
+#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
 #include <SofaGeneralTopology/initGeneralTopology.h>
 #include <SofaGeneralVisual/initGeneralVisual.h>
 #include <SofaValidation/initValidation.h>
