@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_FLEXIBLE_TRANSFORMENGINE_CPP
 #include <Flexible/config.h>
-#include <SofaEngine/TransformEngine.inl>
+#include <SofaGeneralEngine/TransformEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 #include "../types/AffineTypes.h"
 
