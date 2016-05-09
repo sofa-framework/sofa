@@ -56,7 +56,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
     sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
-    //std::cout<<"addForce with p_0 ="<<p_0<<" read(core::ConstVecCoordId::restPosition())->getValue()"<<(this->mstate->read(core::ConstVecCoordId::restPosition())->getValue())<<std::endl;
+    //std::cout<<"addForce with p_0 ="<<p0<<std::endl;
 
     f1.resize(p1.size());
     //std::cout<<" size p1:"<<p1.size()<<std::endl;
@@ -73,7 +73,9 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
     {
         //std::cout<<"i="<<i<<std::endl;
         const unsigned int index = m_indices[i];
-        const unsigned int ext_index = m_ext_indices[i];
+        unsigned int ext_index = m_indices[i];
+        if(useRestMState)
+            ext_index= m_ext_indices[i];
 
         // translation
         if (i >= m_pivots.size())
@@ -340,14 +342,9 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
 
     sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
 
-    sofa::defaulttype::Vec4f green(0.0, 1.0, 0.0, 1.0);
     for (unsigned int i=0; i<m_indices.size(); i++)
     {
         const unsigned int index = m_indices[i];
-
-        glLineWidth(4.0);
-        glBegin(GL_LINES);
-        glColor3f(0,1,0);
 
         sofa::defaulttype::Vector3 v0(p[index].getCenter()[0],
                                       p[index].getCenter()[1],

@@ -224,12 +224,14 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
+#ifdef SOFA_USE_MASK
 
             if( this->m_forceMaskNewStep )
             {
                 this->m_forceMaskNewStep = false;
                 updateForceMask();
             }
+#endif /*SOFA_USE_MASK*/
         }
     }
 }// Mapping::applyJT

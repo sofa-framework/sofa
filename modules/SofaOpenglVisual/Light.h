@@ -64,32 +64,32 @@ class SOFA_OPENGL_VISUAL_API Light : public sofa::core::visual::VisualModel
 public:
     SOFA_CLASS(Light, core::visual::VisualModel);
 protected:
-    GLint lightID;
-    GLuint shadowTexWidth, shadowTexHeight;
+    GLint m_lightID;
+    GLuint m_shadowTexWidth, m_shadowTexHeight;
 
 #ifdef SOFA_HAVE_GLEW
-    helper::gl::FrameBufferObject shadowFBO;
-    helper::gl::FrameBufferObject blurHFBO;
-    helper::gl::FrameBufferObject blurVFBO;
+    helper::gl::FrameBufferObject m_shadowFBO;
+    helper::gl::FrameBufferObject m_blurHFBO;
+    helper::gl::FrameBufferObject m_blurVFBO;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER;
-    OglShader::SPtr depthShader;
-    OglShader::SPtr blurShader;
+    OglShader::SPtr m_depthShader;
+    OglShader::SPtr m_blurShader;
 #endif
-    GLfloat lightMatProj[16];
-    GLfloat lightMatModelview[16];
+    GLfloat m_lightMatProj[16];
+    GLfloat m_lightMatModelview[16];
 
     void computeShadowMapSize();
     void blurDepthTexture();
 public:
-    Data<sofa::defaulttype::Vector3> color;
-    Data<GLuint> shadowTextureSize;
-    Data<bool> drawSource;
-    Data<double> p_zNear, p_zFar;
-    Data<bool> shadowsEnabled;
-    Data<bool> softShadows;
+    Data<sofa::defaulttype::Vector3> d_color;
+    Data<GLuint> d_shadowTextureSize;
+    Data<bool> d_drawSource;
+    Data<double> d_zNear, d_zFar;
+    Data<bool> d_shadowsEnabled;
+    Data<bool> d_softShadows;
     Data<unsigned short> d_textureUnit;
 
 protected:
@@ -111,14 +111,14 @@ public:
     virtual GLuint getShadowMapSize();
     virtual GLuint getDepthTexture() { return 0 ;}
     virtual GLuint getColorTexture() { return 0 ;}
-    virtual GLfloat* getProjectionMatrix() { return NULL ;}
-    virtual GLfloat* getModelviewMatrix() { return NULL ;}
+    virtual const GLfloat* getOpenGLProjectionMatrix() { return NULL ;}
+    virtual const GLfloat* getOpenGLModelViewMatrix() { return NULL ;}
     virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
     virtual unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
 
 protected:
-    bool needUpdate;
+    bool b_needUpdate;
 
 };
 
@@ -127,7 +127,7 @@ class SOFA_OPENGL_VISUAL_API DirectionalLight : public Light
 public:
     SOFA_CLASS(DirectionalLight, Light);
 
-    Data<sofa::defaulttype::Vector3> direction;
+    Data<sofa::defaulttype::Vector3> d_direction;
 
     DirectionalLight();
     virtual ~DirectionalLight();
@@ -142,15 +142,15 @@ class SOFA_OPENGL_VISUAL_API PositionalLight : public Light
 public:
     SOFA_CLASS(PositionalLight, Light);
 
-    Data<bool> fixed;
-    Data<sofa::defaulttype::Vector3> position;
-    Data<float> attenuation;
+    Data<bool> d_fixed;
+    Data<sofa::defaulttype::Vector3> d_position;
+    Data<float> d_attenuation;
 
     PositionalLight();
     virtual ~PositionalLight();
     virtual void drawLight();
     virtual void draw(const core::visual::VisualParams* vparams);
-    virtual const sofa::defaulttype::Vector3 getPosition() { return position.getValue(); }
+    virtual const sofa::defaulttype::Vector3 getPosition() { return d_position.getValue(); }
 
 };
 
@@ -159,10 +159,12 @@ class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
 public:
     SOFA_CLASS(SpotLight, PositionalLight);
 
-    Data<sofa::defaulttype::Vector3> direction;
-    Data<float> cutoff;
-    Data<float> exponent;
-    Data<bool> lookat;
+    Data<sofa::defaulttype::Vector3> d_direction;
+    Data<float> d_cutoff;
+    Data<float> d_exponent;
+    Data<bool> d_lookat;
+    Data<helper::vector<float> > d_modelViewMatrix;
+    Data<helper::vector<float> > d_projectionMatrix;
 
     SpotLight();
     virtual ~SpotLight();
@@ -172,9 +174,12 @@ public:
     void preDrawShadow(core::visual::VisualParams*  vp);
     GLuint getDepthTexture();
     GLuint getColorTexture();
-    GLfloat* getProjectionMatrix();
-    GLfloat* getModelviewMatrix();
-
+    const GLfloat* getOpenGLProjectionMatrix();
+    const GLfloat* getOpenGLModelViewMatrix();
+private:
+    void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);
+    void computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar);
+    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction);
 
 };
 

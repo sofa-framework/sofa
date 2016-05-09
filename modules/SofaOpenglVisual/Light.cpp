@@ -81,21 +81,21 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 #endif
 
 Light::Light()
-    : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
+    : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
 #ifdef SOFA_HAVE_GLEW
-    , shadowFBO(true, true, true), blurHFBO(false,false,true), blurVFBO(false,false,true)
-    , depthShader(sofa::core::objectmodel::New<OglShader>())
-    , blurShader(sofa::core::objectmodel::New<OglShader>())
+    , m_shadowFBO(true, true, true), m_blurHFBO(false,false,true), m_blurVFBO(false,false,true)
+    , m_depthShader(sofa::core::objectmodel::New<OglShader>())
+    , m_blurShader(sofa::core::objectmodel::New<OglShader>())
 #endif
-    , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
-    , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
-    , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
-    , p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
-    , p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
-    , shadowsEnabled(initData(&shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
-    , softShadows(initData(&softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
+    , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
+    , d_shadowTextureSize (initData(&d_shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
+    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
+    , d_zNear(initData(&d_zNear, "zNear", "Light's ZNear"))
+    , d_zFar(initData(&d_zFar, "zFar", "Light's ZFar"))
+    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
+    , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
     , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "Texture unit for the genereated shadow texture"))
-    , needUpdate(false)
+    , b_needUpdate(false)
 {
 }
 
@@ -105,7 +105,7 @@ Light::~Light()
 
 void Light::setID(const GLint& id)
 {
-    lightID = id;
+    m_lightID = id;
 }
 
 void Light::init()
@@ -116,7 +116,7 @@ void Light::init()
     if(lm)
     {
         lm->putLight(this);
-        softShadows.setParent(&(lm->softShadowsEnabled));
+        d_softShadows.setParent(&(lm->softShadowsEnabled));
         //softShadows = lm->softShadowsEnabled.getValue();
     }
     else
@@ -133,48 +133,48 @@ void Light::initVisual()
     //Shadow part
     //Shadow texture init
 #ifdef SOFA_HAVE_GLEW
-    shadowFBO.init(shadowTexWidth, shadowTexHeight);
-    blurHFBO.init(shadowTexWidth, shadowTexHeight);
-    blurVFBO.init(shadowTexWidth, shadowTexHeight);
-    depthShader->vertFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
-    depthShader->fragFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
-    depthShader->init();
-    depthShader->initVisual();
-    blurShader->vertFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
-    blurShader->fragFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
-    blurShader->init();
-    blurShader->initVisual();
+    m_shadowFBO.init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurHFBO.init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurVFBO.init(m_shadowTexWidth, m_shadowTexHeight);
+    m_depthShader->vertFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
+    m_depthShader->fragFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    m_depthShader->init();
+    m_depthShader->initVisual();
+    m_blurShader->vertFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
+    m_blurShader->fragFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    m_blurShader->init();
+    m_blurShader->initVisual();
 #endif
 }
 
 void Light::updateVisual()
 {
-    if (!needUpdate) return;
+    if (!b_needUpdate) return;
     computeShadowMapSize();
-    needUpdate = false;
+    b_needUpdate = false;
 }
 
 void Light::reinit()
 {
-    needUpdate = true;
+    b_needUpdate = true;
 }
 
 void Light::drawLight()
 {
-    if (needUpdate)
+    if (b_needUpdate)
         updateVisual();
-    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, 180.0);
-    GLfloat c[4] = { (GLfloat) color.getValue()[0], (GLfloat)color.getValue()[1], (GLfloat)color.getValue()[2], 1.0 };
-    glLightfv(GL_LIGHT0+lightID, GL_AMBIENT, c);
-    glLightfv(GL_LIGHT0+lightID, GL_DIFFUSE, c);
-    glLightfv(GL_LIGHT0+lightID, GL_SPECULAR, c);
-    glLightf(GL_LIGHT0+lightID, GL_LINEAR_ATTENUATION, 0.0);
+    glLightf(GL_LIGHT0+m_lightID, GL_SPOT_CUTOFF, 180.0);
+    GLfloat c[4] = { (GLfloat)d_color.getValue()[0], (GLfloat)d_color.getValue()[1], (GLfloat)d_color.getValue()[2], 1.0 };
+    glLightfv(GL_LIGHT0+m_lightID, GL_AMBIENT, c);
+    glLightfv(GL_LIGHT0+m_lightID, GL_DIFFUSE, c);
+    glLightfv(GL_LIGHT0+m_lightID, GL_SPECULAR, c);
+    glLightf(GL_LIGHT0+m_lightID, GL_LINEAR_ATTENUATION, 0.0);
 
 }
 
 void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
 {
-    if (needUpdate)
+    if (b_needUpdate)
         updateVisual();
     const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
@@ -183,11 +183,11 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
-    depthShader->setFloat(0, "zFar", (GLfloat) p_zFar.getValue());
-    depthShader->setFloat(0, "zNear", (GLfloat) p_zNear.getValue());
-    depthShader->setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
-    depthShader->start();
-    shadowFBO.start();
+    m_depthShader->setFloat(0, "zFar", (GLfloat)d_zFar.getValue());
+    m_depthShader->setFloat(0, "zNear", (GLfloat)d_zNear.getValue());
+    m_depthShader->setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
+    m_depthShader->start();
+    m_shadowFBO.start();
 #endif
 }
 
@@ -195,8 +195,8 @@ void Light::postDrawShadow()
 {
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
-    shadowFBO.stop();
-    depthShader->stop();
+    m_shadowFBO.stop();
+    m_depthShader->stop();
 #endif
 
     glMatrixMode(GL_PROJECTION);
@@ -204,7 +204,7 @@ void Light::postDrawShadow()
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    if(softShadows.getValue())
+    if(d_softShadows.getValue())
         blurDepthTexture();
 }
 
@@ -228,13 +228,13 @@ void Light::blurDepthTexture()
     glPushMatrix();
     glLoadIdentity();
 
-    blurHFBO.start();
+    m_blurHFBO.start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, shadowFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_shadowFBO.getColorTexture());
 
-    blurShader->setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
-    blurShader->setInt(0, "orientation", 0);
-    blurShader->start();
+    m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
+    m_blurShader->setInt(0, "orientation", 0);
+    m_blurShader->start();
 
     glBegin(GL_QUADS);
     {
@@ -244,18 +244,18 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader->stop();
+    m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    blurHFBO.stop();
+    m_blurHFBO.stop();
 
-    blurVFBO.start();
+    m_blurVFBO.start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, blurHFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_blurHFBO.getColorTexture());
 
-    blurShader->setFloat(0, "mapDimX", (GLfloat) shadowTexWidth);
-    blurShader->setInt(0, "orientation", 1);
-    blurShader->start();
+    m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
+    m_blurShader->setInt(0, "orientation", 1);
+    m_blurShader->start();
 
     glBegin(GL_QUADS);
     {
@@ -265,10 +265,10 @@ void Light::blurDepthTexture()
         glTexCoord3f(txmin,tymin,0.0); glVertex3f(vxmin,vymin,0.0);
     }
     glEnd();
-    blurShader->stop();
+    m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    blurVFBO.stop();
+    m_blurVFBO.stop();
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -285,39 +285,39 @@ void Light::computeShadowMapSize()
     GLint windowWidth = viewport[2];
     GLint windowHeight = viewport[3];
 
-    if (shadowTextureSize.getValue() <= 0)
+    if (d_shadowTextureSize.getValue() <= 0)
     {
         //Get the size of the shadow map
         if (windowWidth >= 1024 && windowHeight >= 1024)
         {
-            shadowTexWidth = shadowTexHeight = 1024;
+            m_shadowTexWidth = m_shadowTexHeight = 1024;
         }
         else if (windowWidth >= 512 && windowHeight >= 512)
         {
-            shadowTexWidth = shadowTexHeight = 512;
+            m_shadowTexWidth = m_shadowTexHeight = 512;
         }
         else if (windowWidth >= 256 && windowHeight >= 256)
         {
-            shadowTexWidth = shadowTexHeight = 256;
+            m_shadowTexWidth = m_shadowTexHeight = 256;
         }
         else
         {
-            shadowTexWidth = shadowTexHeight = 128;
+            m_shadowTexWidth = m_shadowTexHeight = 128;
         }
     }
     else
-        shadowTexWidth = shadowTexHeight = shadowTextureSize.getValue();
+        m_shadowTexWidth = m_shadowTexHeight = d_shadowTextureSize.getValue();
 }
 
 
 GLuint Light::getShadowMapSize()
 {
-    return shadowTexWidth;
+    return m_shadowTexWidth;
 }
 
 
-DirectionalLight::DirectionalLight():
-    direction(initData(&direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+DirectionalLight::DirectionalLight()
+    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
 {
 
 }
@@ -332,12 +332,12 @@ void DirectionalLight::drawLight()
     Light::drawLight();
     GLfloat dir[4];
 
-    dir[0]=(GLfloat)(direction.getValue()[0]);
-    dir[1]=(GLfloat)(direction.getValue()[1]);
-    dir[2]=(GLfloat)(direction.getValue()[2]);
+    dir[0]=(GLfloat)(d_direction.getValue()[0]);
+    dir[1]=(GLfloat)(d_direction.getValue()[1]);
+    dir[2]=(GLfloat)(d_direction.getValue()[2]);
     dir[3]=0.0; // directional
 
-    glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
+    glLightfv(GL_LIGHT0+m_lightID, GL_POSITION, dir);
 }
 
 void DirectionalLight::draw(const core::visual::VisualParams* )
@@ -346,9 +346,9 @@ void DirectionalLight::draw(const core::visual::VisualParams* )
 }
 
 PositionalLight::PositionalLight()
-    :fixed(initData(&fixed, (bool) false, "fixed", "Fix light position from the camera"))
-    ,position(initData(&position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
-    ,attenuation(initData(&attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
+    : d_fixed(initData(&d_fixed, (bool) false, "fixed", "Fix light position from the camera"))
+    , d_position(initData(&d_position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
+    , d_attenuation(initData(&d_attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
 {
 
 }
@@ -363,29 +363,29 @@ void PositionalLight::drawLight()
     Light::drawLight();
 
     GLfloat pos[4];
-    pos[0]=(GLfloat)(position.getValue()[0]);
-    pos[1]=(GLfloat)(position.getValue()[1]);
-    pos[2]=(GLfloat)(position.getValue()[2]);
+    pos[0]=(GLfloat)(d_position.getValue()[0]);
+    pos[1]=(GLfloat)(d_position.getValue()[1]);
+    pos[2]=(GLfloat)(d_position.getValue()[2]);
     pos[3]=1.0; // positional
-    if (fixed.getValue())
+    if (d_fixed.getValue())
     {
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
+        glLightfv(GL_LIGHT0+m_lightID, GL_POSITION, pos);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     }
     else
-        glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
+        glLightfv(GL_LIGHT0+m_lightID, GL_POSITION, pos);
 
-    glLightf(GL_LIGHT0+lightID, GL_LINEAR_ATTENUATION, attenuation.getValue());
+    glLightf(GL_LIGHT0+m_lightID, GL_LINEAR_ATTENUATION, d_attenuation.getValue());
 
 }
 
 void PositionalLight::draw(const core::visual::VisualParams* vparams)
 {
-    if (drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
+    if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
@@ -393,8 +393,8 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
         scale *= 0.01f;
 
         GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = position.getValue();
-        const Vector3& col = color.getValue();
+        const Vector3& pos = d_position.getValue();
+        const Vector3& col = d_color.getValue();
 
         glDisable(GL_LIGHTING);
         glColor3fv((float*)col.ptr());
@@ -410,13 +410,22 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
 
 
 
-SpotLight::SpotLight():
-    direction(initData(&direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light")),
-    cutoff(initData(&cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot")),
-    exponent(initData(&exponent, (float) 20.0, "exponent", "Set the exponent of the spot")),
-    lookat(initData(&lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
+SpotLight::SpotLight()
+    : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
+    , d_cutoff(initData(&d_cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
+    , d_exponent(initData(&d_exponent, (float) 20.0, "exponent", "Set the exponent of the spot"))
+    , d_lookat(initData(&d_lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
+    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "ModelView Matrix"))
+    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
 {
+    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
 
+    wModelViewMatrix.resize(16);
+    wProjectionMatrix.resize(16);
+
+    d_modelViewMatrix.endEdit();
+    d_projectionMatrix.endEdit();
 }
 
 SpotLight::~SpotLight()
@@ -427,20 +436,20 @@ SpotLight::~SpotLight()
 void SpotLight::drawLight()
 {
     PositionalLight::drawLight();
-    defaulttype::Vector3 d = direction.getValue();
-    if (lookat.getValue()) d -= position.getValue();
+    defaulttype::Vector3 d = d_direction.getValue();
+    if (d_lookat.getValue()) d -= d_position.getValue();
     d.normalize();
     GLfloat dir[3]= {(GLfloat)(d[0]), (GLfloat)(d[1]), (GLfloat)(d[2])};
-    if (fixed.getValue())
+    if (d_fixed.getValue())
     {
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
     }
-    glLightf(GL_LIGHT0+lightID, GL_SPOT_CUTOFF, cutoff.getValue());
-    glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
-    glLightf(GL_LIGHT0+lightID, GL_SPOT_EXPONENT, exponent.getValue());
-    if (fixed.getValue())
+    glLightf(GL_LIGHT0+m_lightID, GL_SPOT_CUTOFF, d_cutoff.getValue());
+    glLightfv(GL_LIGHT0+m_lightID, GL_SPOT_DIRECTION, dir);
+    glLightf(GL_LIGHT0+m_lightID, GL_SPOT_EXPONENT, d_exponent.getValue());
+    if (d_fixed.getValue())
     {
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -449,21 +458,28 @@ void SpotLight::drawLight()
 
 void SpotLight::draw(const core::visual::VisualParams* vparams)
 {
-    if (drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
+    float zNear, zFar;
+
+    computeClippingPlane(vparams, zNear, zFar);
+
+    computeOpenGLProjectionMatrix(m_lightMatProj, m_shadowTexWidth, m_shadowTexHeight, 2 * d_cutoff.getValue(), zNear, zFar);
+    computeOpenGLModelViewMatrix(m_lightMatModelview, d_position.getValue(), d_direction.getValue());
+
+    if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
         scale *= 0.01f;
         float width = 5.0f;
-        float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
+        float base =(float)(tan(d_cutoff.getValue()*M_PI/360)*width*2);
 
         static GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = position.getValue();
-        Vector3 dir = direction.getValue();
-        if (lookat.getValue()) dir -= position.getValue();
+        const Vector3& pos = d_position.getValue();
+        Vector3 dir = d_direction.getValue();
+        if (d_lookat.getValue()) dir -= d_position.getValue();
 
-        const Vector3& col = color.getValue();
+        const Vector3& col = d_color.getValue();
 
         //get Rotation
         Vector3 xAxis, yAxis;
@@ -499,23 +515,24 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
     }
 }
 
-void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
+void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar)
 {
-    double zNear=1e10, zFar=-1e10;
+    zNear = 1e10;
+    zFar = -1e10;
 
-    Light::preDrawShadow(vp);
     const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
-    const Vector3 &pos = position.getValue();
-    Vector3 dir = direction.getValue();
-    if (lookat.getValue()) dir -= position.getValue();
+    const Vector3 &pos = d_position.getValue();
+    Vector3 dir = d_direction.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
 
     Vector3 xAxis, yAxis;
 
-    yAxis=Vector3(0.0,1.0,0.0);
+    yAxis = Vector3(0.0, 1.0, 0.0);
 
-    if( 1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
+    if (1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
     {
-        dir += Vector3(0.0000001,0.0,0.0) * dot(yAxis, dir.normalized());
+        dir += Vector3(0.0000001, 0.0, 0.0) * dot(yAxis, dir.normalized());
         dir.normalize();
 
     }
@@ -527,15 +544,15 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
 
-    if (!p_zNear.isSet() || !p_zFar.isSet())
+    if (!d_zNear.isSet() || !d_zFar.isSet())
     {
         //compute zNear, zFar from light point of view
-        for (int corner=0; corner<8; ++corner)
+        for (int corner = 0; corner<8; ++corner)
         {
             Vector3 p(
-                (corner&1)?sceneBBox.minBBox().x():sceneBBox.maxBBox().x(),
-                (corner&2)?sceneBBox.minBBox().y():sceneBBox.maxBBox().y(),
-                (corner&4)?sceneBBox.minBBox().z():sceneBBox.maxBBox().z());
+                (corner & 1) ? sceneBBox.minBBox().x() : sceneBBox.maxBBox().x(),
+                (corner & 2) ? sceneBBox.minBBox().y() : sceneBBox.maxBBox().y(),
+                (corner & 4) ? sceneBBox.minBBox().z() : sceneBBox.maxBBox().z());
             p = q.rotate(p - pos);
             double z = -p[2];
             if (z < zNear) zNear = z;
@@ -564,36 +581,140 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
             if (zFar < 2.0) zFar = 2.0;
         }
 
-        p_zNear.setValue(zNear);
-        p_zFar.setValue(zFar);
+        d_zNear.setValue(zNear);
+        d_zFar.setValue(zFar);
     }
     else
     {
-        zNear = p_zNear.getValue();
-        zFar = p_zFar.getValue();
+        zNear = d_zNear.getValue();
+        zFar = d_zFar.getValue();
     }
+}
 
-    //Projection matrix
+void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
+{
+
+    float zNear = -1e10, zFar = 1e10;
+
+    const Vector3 &pos = d_position.getValue();
+    Vector3 dir = d_direction.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
+
+    Light::preDrawShadow(vp);
+
+    computeClippingPlane(vp, zNear, zFar);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    computeOpenGLProjectionMatrix(m_lightMatProj, m_shadowTexWidth, m_shadowTexHeight, 2 * d_cutoff.getValue(), zNear, zFar);
+    glMultMatrixf(m_lightMatProj);
 
-    gluPerspective(2.0*cutoff.getValue(),1.0, zNear, zFar);
-
-    //Modelview matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(pos[0], pos[1], pos[2],dir[0]+pos[0], dir[1]+pos[1], dir[2]+pos[2], 0.0,1.0,0.0);
+    computeOpenGLModelViewMatrix(m_lightMatModelview, pos, dir);
+    glMultMatrixf(m_lightMatModelview);
 
-    //Save the two matrices
-    glGetFloatv(GL_PROJECTION_MATRIX, lightMatProj);
-    glGetFloatv(GL_MODELVIEW_MATRIX, lightMatModelview);
-
-    //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, shadowFBO);
-
-    glViewport(0, 0, shadowTexWidth, shadowTexHeight);
+    glViewport(0, 0, m_shadowTexWidth, m_shadowTexHeight);
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+}
+
+void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &direction)
+{
+    double epsilon = 0.0000001;
+    Vector3 zAxis = -direction;
+    zAxis.normalize();
+    Vector3 yAxis(0, 1, 0);
+
+    if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
+    {
+        if (zAxis[1] > 0)
+            yAxis = Vector3(0, 0, -1);
+        else
+            yAxis = Vector3(0, 0, 1);
+    }
+
+    Vector3 xAxis = yAxis.cross(zAxis);
+    xAxis.normalize();
+
+    yAxis = zAxis.cross(xAxis);
+    yAxis.normalize();
+
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        mat[i * 4] = xAxis[i];
+        mat[i * 4 + 1] = yAxis[i];
+        mat[i * 4 + 2] = zAxis[i];
+    }
+
+    sofa::defaulttype::Quat q;
+    q = sofa::defaulttype::Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+
+    Vector3 origin = q.inverseRotate(-position);
+
+    //translation
+    mat[12] = origin[0];
+    mat[13] = origin[1];
+    mat[14] = origin[2];
+
+    //w
+    mat[15] = 1;
+
+    //Save output as data for external shaders
+    //we transpose it to get a standard matrix (and not OpenGL formatted)
+    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+
+    for (unsigned int i = 0; i < 4; i++)
+        for (unsigned int j = 0; j < 4; j++)
+        {
+            wModelViewMatrix[i * 4 + j] = mat[i * 4 + j];
+        }
+
+    d_modelViewMatrix.endEdit();
+}
+
+
+void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar)
+{
+    float scale = 1.0 / tan(fov * M_PI / 180 * 0.5);
+    float aspect = width / height;
+
+    float pm00 = scale / aspect;
+    float pm11 = scale;
+
+    mat[0] = pm00; // FocalX
+    mat[4] = 0.0;
+    mat[8] = 0.0;
+    mat[12] = 0.0;
+
+    mat[1] = 0.0;
+    mat[5] = pm11; // FocalY
+    mat[9] = 0.0;
+    mat[13] = 0.0;
+
+    mat[2] = 0;
+    mat[6] = 0;
+    mat[10] = -(zFar + zNear) / (zFar - zNear);
+    mat[14] = -2.0 * zFar * zNear / (zFar - zNear);;
+
+    mat[3] = 0.0;
+    mat[7] = 0.0;
+    mat[11] = -1.0;
+    mat[15] = 0.0;
+
+    //Save output as data for external shaders
+    //we transpose it to get a standard matrix (and not OpenGL formatted)
+    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+
+    for (unsigned int i = 0; i < 4; i++)
+        for (unsigned int j = 0; j < 4; j++)
+        {
+            wProjectionMatrix[i * 4 + j] = mat[i * 4 + j];
+        }
+
+    d_projectionMatrix.endEdit();
 }
 
 GLuint SpotLight::getDepthTexture()
@@ -601,7 +722,7 @@ GLuint SpotLight::getDepthTexture()
     //return debugVisualShadowTexture;
     //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
-    return shadowFBO.getDepthTexture();
+    return m_shadowFBO.getDepthTexture();
 #else
     return 0;
 #endif
@@ -612,23 +733,23 @@ GLuint SpotLight::getColorTexture()
     //return debugVisualShadowTexture;
     //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
-    if(softShadows.getValue())
-        return blurVFBO.getColorTexture();
+    if(d_softShadows.getValue())
+        return m_blurVFBO.getColorTexture();
     else
-        return shadowFBO.getColorTexture();
+        return m_shadowFBO.getColorTexture();
 #else
     return 0;
 #endif
 }
 
-GLfloat* SpotLight::getProjectionMatrix()
+const GLfloat* SpotLight::getOpenGLProjectionMatrix()
 {
-    return lightMatProj;
+    return m_lightMatProj;
 }
 
-GLfloat* SpotLight::getModelviewMatrix()
+const GLfloat* SpotLight::getOpenGLModelViewMatrix()
 {
-    return lightMatModelview;
+    return m_lightMatModelview;
 }
 
 }

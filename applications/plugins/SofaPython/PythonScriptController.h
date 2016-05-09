@@ -43,7 +43,7 @@ class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
 
-	PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
+    PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
 
@@ -88,8 +88,8 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
 
-	/// drawing
-	virtual void script_draw(const core::visual::VisualParams*);
+    /// drawing
+    virtual void script_draw(const core::visual::VisualParams*);
 
     /// @}
 
@@ -97,12 +97,12 @@ public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
-
+    sofa::core::objectmodel::Data<bool>         m_timingEnabled;
 protected:
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
-//    PyObject *m_ScriptControllerInstanceDict;  // functions dictionary
+    //PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
-/*
+
     // optionnal script entry points:
     PyObject *m_Func_onKeyPressed;
     PyObject *m_Func_onKeyReleased;
@@ -117,10 +117,11 @@ protected:
     PyObject *m_Func_onLoaded;
     PyObject *m_Func_createGraph;
     PyObject *m_Func_initGraph;
+    PyObject *m_Func_bwdInitGraph;
     PyObject *m_Func_storeResetState;
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
-*/
+    PyObject *m_Func_draw;
 };
 
 

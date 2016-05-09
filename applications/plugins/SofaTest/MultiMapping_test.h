@@ -120,7 +120,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             std::stringstream ss;
             ss << "parentNode" << i;
             parents.push_back(root->createChild(ss.str()));
-            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i]);
+            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i],ss.str().c_str());
             mapping->addInputModel( inDof.get() );
             inDofs.push_back(inDof.get());
         }

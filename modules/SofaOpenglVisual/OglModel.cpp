@@ -66,7 +66,8 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 
 
 OglModel::OglModel()
-    : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+    : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
+    , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
 #ifndef SOFA_HAVE_GLEW
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
 #else
@@ -486,9 +487,11 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if ((tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
     {
-        glEnable(GL_TEXTURE_2D);
         if(tex)
+        {
+            glEnable(GL_TEXTURE_2D);
             tex->bind();
+        }
 #ifdef SOFA_HAVE_GLEW
         if(VBOGenDone && useVBO.getValue())
         {
@@ -540,7 +543,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         }
     }
 
-    if (transparent)
+    if (transparent && blendTransparency.getValue())
     {
         glEnable(GL_BLEND);
         if (writeZTransparent.getValue())
@@ -650,9 +653,11 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     if ( (tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
     {
         if (tex)
+        {
             tex->unbind();
+            glDisable(GL_TEXTURE_2D);
+        }
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glDisable(GL_TEXTURE_2D);
 #ifdef SOFA_HAVE_GLEW
         if (hasTangents)
         {
@@ -667,7 +672,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
 
-    if (transparent)
+    if (transparent && blendTransparency.getValue())
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -715,6 +720,11 @@ bool OglModel::hasTransparent()
     if(alphaBlend.getValue())
         return true;
     return VisualModelImpl::hasTransparent();
+}
+
+bool OglModel::hasTexture()
+{
+    return !textures.empty() || tex;
 }
 
 bool OglModel::loadTexture(const std::string& filename)

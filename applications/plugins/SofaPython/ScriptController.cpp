@@ -158,13 +158,15 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
 
 void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
 {
-    if( script_onKeyPressed(evt->getKey()) ) evt->setHandled();
+    if( script_onKeyPressed(evt->getKey()) )
+        evt->setHandled();
     ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
 {
-    if( script_onKeyReleased(evt->getKey()) ) evt->setHandled();
+    if( script_onKeyReleased(evt->getKey()) )
+        evt->setHandled();
     ScriptEnvironment::initScriptNodes();
 }
 
@@ -189,8 +191,8 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
 
 void ScriptController::draw(const core::visual::VisualParams* vis)
 {
-	script_draw(vis);
-	ScriptEnvironment::initScriptNodes();
+    script_draw(vis);
+    ScriptEnvironment::initScriptNodes();
 }
 
 } // namespace controller

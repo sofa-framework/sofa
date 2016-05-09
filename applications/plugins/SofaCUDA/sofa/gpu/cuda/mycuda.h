@@ -89,7 +89,8 @@ extern "C" {
     extern cusparseHandle_t SOFA_GPU_CUDA_API getCusparseCtx();
     extern cublasHandle_t SOFA_GPU_CUDA_API getCublasCtx();
     extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatGeneralDescr();
-    extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatTriangularDescr();
+    extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatTriangularUpperDescr();
+    extern cusparseMatDescr_t SOFA_GPU_CUDA_API getCusparseMatTriangularLowerDescr();
 
 #endif
 

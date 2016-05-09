@@ -156,6 +156,26 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, const Vec<4,float>& colour)
+{
+    setMaterial(colour);
+    glLineWidth(size);
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINE_STRIP);
+    {
+        for (unsigned int i=0; i<points.size(); ++i)
+        {
+            drawPoint(points[i]  , colour );
+        }
+    } glEnd();
+    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    resetMaterial(colour);
+    glLineWidth(1);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vec<4,float>& colour)
 {
     setMaterial(colour);

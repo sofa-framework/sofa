@@ -1399,6 +1399,7 @@ void RealGUI::loadHtmlDescription(const char* filename)
     std::string htmlFile=filename;
     htmlFile.resize(htmlFile.size()-extension.size()-1);
     htmlFile+=".html";
+
     if (sofa::helper::system::DataRepository.findFile (htmlFile,"",NULL))
     {
 #ifdef WIN32
@@ -1406,8 +1407,9 @@ void RealGUI::loadHtmlDescription(const char* filename)
 #endif
         descriptionScene->show();
 
+        std::string path = helper::system::SetDirectory::GetParentDir(filename);
+        htmlPage->setSearchPaths(QStringList(QString(path.c_str())));
         htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
-
     }
 }
 
@@ -1806,7 +1808,7 @@ void RealGUI::createWindowVisitor()
 void RealGUI::createSceneDescription()
 {
     descriptionScene = new QDialog(this);
-    descriptionScene->resize(400,400);
+    descriptionScene->resize(600,600);
     QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
     htmlPage = new QTextBrowser(descriptionScene);
     descriptionLayout->addWidget(htmlPage);

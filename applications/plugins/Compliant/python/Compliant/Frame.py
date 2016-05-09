@@ -59,8 +59,13 @@ class Frame:
         def set(self, **kwargs):
                 for k in kwargs:
                         setattr(self, k, kwargs[k])
-
                 return self
+
+        def normalizeRotation(self):
+            ## Numerical drift can produce non-unit quaternions.
+            ## Forcing its normalization.
+            self.rotation = quat.normalized(self.rotation)
+
 
         # TODO more: wrench/twist frame change.
 

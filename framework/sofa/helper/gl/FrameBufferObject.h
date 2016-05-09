@@ -66,6 +66,8 @@ struct SOFA_HELPER_API fboParameters
 class SOFA_HELPER_API FrameBufferObject
 {
 private:
+    GLint m_defaultWindowFramebufferID;
+
     unsigned int width, height;
     GLuint id;
     GLuint depthTextureID, colorTextureID;
@@ -75,11 +77,13 @@ private:
     bool enableDepth;
     bool enableColor;
 
+    static GLint getCurrentFramebufferID();
+
 public:
-    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
+    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID());
     virtual ~FrameBufferObject();
 
-    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true);
+    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID() );
     void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; }
 
     void init(unsigned int width, unsigned height);

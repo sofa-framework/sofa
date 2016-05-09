@@ -832,9 +832,9 @@ void VisualModelImpl::computeNormals()
 
         for (unsigned int i = 0; i < triangles.size(); i++)
         {
-            const Coord v1 = vertices[triangles[i][0]];
-            const Coord v2 = vertices[triangles[i][1]];
-            const Coord v3 = vertices[triangles[i][2]];
+            const Coord& v1 = vertices[triangles[i][0]];
+            const Coord& v2 = vertices[triangles[i][1]];
+            const Coord& v3 = vertices[triangles[i][2]];
             Coord n = cross(v2-v1, v3-v1);
 
             normals[triangles[i][0]] += n;

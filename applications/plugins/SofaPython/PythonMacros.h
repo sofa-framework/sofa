@@ -347,6 +347,38 @@ void printPythonExceptions();
 
 
 // =============================================================================
+// PYTHON SEARCH FOR A FUNCTION WITH A GIVEN NAME
+// @warning storing the function pointer in a variable called 'm_Func_funcName'
+// @warning getting the function pointer from a dictionnary called 'pDict'
+// @todo Is it really generic enough to be here?
+// =============================================================================
+#define BIND_SCRIPT_FUNC(funcName){\
+        m_Func_##funcName = PyDict_GetItemString(pDict, #funcName);\
+        if (!PyCallable_Check(m_Func_##funcName)) m_Func_##funcName=0; \
+    }
+
+// =============================================================================
+// PYTHON SEARCH FOR A METHOD WITH A GIVEN NAME
+// @warning storing the function pointer in a variable called 'm_Func_funcName'
+// @warning getting the function pointer from a PythonScriptController
+// @todo Is it really generic enough to be here?
+// =============================================================================
+#define BIND_OBJECT_METHOD(funcName) \
+    { \
+    if( PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController),#funcName ) && \
+        PyObject_RichCompareBool( PyObject_GetAttrString(m_ScriptControllerClass, #funcName),\
+                                   PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController), #funcName),Py_NE ) && \
+        PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
+            m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
+            if (!PyCallable_Check(m_Func_##funcName)) \
+                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+            else \
+                {sout<<#funcName<<" found"<<sendl;} \
+    }else{ \
+        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+    }
+
+// =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
 #define SP_CALL_MODULEFUNC(func, ...) \
@@ -372,6 +404,22 @@ void printPythonExceptions();
     } \
 }
 
+// call a function that returns a boolean
+#define SP_CALL_MODULEBOOLFUNC(func, ...) { \
+    if (func) { \
+        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+        if (!res) \
+        { \
+            SP_MESSAGE_EXCEPTION( "SP_CALL_MODULEFUNC_BOOL" ) \
+            PyErr_Print(); \
+        } \
+        else \
+        { \
+            if PyBool_Check(res) b = ( res == Py_True ); \
+            Py_DECREF(res); \
+        } \
+    } \
+}
 
 
 #endif // PYTHONMACROS_H
