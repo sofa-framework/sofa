@@ -6,15 +6,11 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <map>
 
-#include "AssembledSystem.h"
 #include "../utils/graph.h"
-
-#include "AssemblyHelper.h"
-
 #include "../utils/find.h"
 
-#include <sofa/helper/logging/Messaging.h>
-
+#include "AssembledSystem.h"
+#include "AssemblyHelper.h"
 
 namespace sofa {
 namespace simulation {
