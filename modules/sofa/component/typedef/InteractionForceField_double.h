@@ -39,17 +39,17 @@
 
 
 
-#include <SofaObjectInteraction/BoxStiffSpringForceField.h>
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <SofaDeformable/FrameSpringForceField.h>
 #include <SofaMiscForceField/GearSpringForceField.h>
-#include <SofaObjectInteraction/InteractionEllipsoidForceField.h>
+#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
 #include <SofaMiscForceField/LineBendingSprings.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <SofaDeformable/QuadBendingSprings.h>
 #include <SofaDeformable/RegularGridSpringForceField.h>
-#include <SofaObjectInteraction/RepulsiveSpringForceField.h>
+#include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaDeformable/TriangleBendingSprings.h>

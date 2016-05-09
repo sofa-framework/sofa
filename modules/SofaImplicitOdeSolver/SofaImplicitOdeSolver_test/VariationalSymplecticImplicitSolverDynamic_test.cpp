@@ -37,7 +37,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 // Solvers
-#include <SofaImplicitOdeSolver/VariationalSymplecticSolver.h>
+#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>

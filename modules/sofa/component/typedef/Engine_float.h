@@ -39,32 +39,32 @@
 
 
 
-#include <SofaEngine/AverageCoord.h>
+#include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
 #include <SofaMiscEngine/Distances.h>
-#include <SofaEngine/ExtrudeQuadsAndGenerateHexas.h>
-#include <SofaEngine/ExtrudeSurface.h>
-#include <SofaEngine/GenerateRigidMass.h>
-#include <SofaEngine/GroupFilterYoungModulus.h>
-#include <SofaEngine/IndexValueMapper.h>
-#include <SofaEngine/JoinPoints.h>
-#include <SofaEngine/MergeMeshes.h>
-#include <SofaEngine/MergePoints.h>
-#include <SofaEngine/MeshBarycentricMapperEngine.h>
-#include <SofaEngine/NormalsFromPoints.h>
-#include <SofaEngine/PlaneROI.h>
-#include <SofaEngine/PointsFromIndices.h>
-#include <SofaEngine/QuatToRigidEngine.h>
-#include <SofaEngine/RandomPointDistributionInSurface.h>
-#include <SofaEngine/RigidToQuatEngine.h>
-#include <SofaEngine/SphereROI.h>
-#include <SofaEngine/Spiral.h>
-#include <SofaEngine/SubsetTopology.h>
-#include <SofaEngine/TextureInterpolation.h>
-#include <SofaEngine/TransformEngine.h>
-#include <SofaEngine/TransformPosition.h>
-#include <SofaEngine/ValuesFromPositions.h>
-#include <SofaEngine/Vertex2Frame.h>
+#include <SofaGeneralEngine/ExtrudeQuadsAndGenerateHexas.h>
+#include <SofaGeneralEngine/ExtrudeSurface.h>
+#include <SofaGeneralEngine/GenerateRigidMass.h>
+#include <SofaGeneralEngine/GroupFilterYoungModulus.h>
+#include <SofaGeneralEngine/IndexValueMapper.h>
+#include <SofaGeneralEngine/JoinPoints.h>
+#include <SofaGeneralEngine/MergeMeshes.h>
+#include <SofaGeneralEngine/MergePoints.h>
+#include <SofaGeneralEngine/MeshBarycentricMapperEngine.h>
+#include <SofaGeneralEngine/NormalsFromPoints.h>
+#include <SofaGeneralEngine/PlaneROI.h>
+#include <SofaGeneralEngine/PointsFromIndices.h>
+#include <SofaGeneralEngine/QuatToRigidEngine.h>
+#include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
+#include <SofaGeneralEngine/RigidToQuatEngine.h>
+#include <SofaGeneralEngine/SphereROI.h>
+#include <SofaGeneralEngine/Spiral.h>
+#include <SofaGeneralEngine/SubsetTopology.h>
+#include <SofaGeneralEngine/TextureInterpolation.h>
+#include <SofaGeneralEngine/TransformEngine.h>
+#include <SofaGeneralEngine/TransformPosition.h>
+#include <SofaGeneralEngine/ValuesFromPositions.h>
+#include <SofaGeneralEngine/Vertex2Frame.h>
 
 
 

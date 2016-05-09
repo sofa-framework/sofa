@@ -40,9 +40,9 @@
 
 
 #include <SofaBaseMechanics/DiagonalMass.h>
-#include <SofaSimpleFem/HexahedralFEMForceFieldAndMass.h>
+#include <SofaGeneralSimpleFem/HexahedralFEMForceFieldAndMass.h>
 #include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
-#include <SofaSimpleFem/HexahedronFEMForceFieldAndMass.h>
+#include <SofaGeneralSimpleFem/HexahedronFEMForceFieldAndMass.h>
 #include <SofaMiscForceField/MatrixMass.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <SofaNonUniformFem/NonUniformHexahedralFEMForceFieldAndMass.h>

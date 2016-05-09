@@ -39,7 +39,7 @@
 #include <SofaGeneralVisual/initGeneralVisual.h>
 #include <SofaValidation/initValidation.h>
 #include <SofaExporter/initExporter.h>
-#include <SofaEngine/initEngine.h>
+#include <SofaGeneralEngine/initGeneralEngine.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
 #include <SofaBoundaryCondition/initBoundaryCondition.h>
@@ -92,7 +92,7 @@ void initComponentGeneral()
     initGeneralVisual();
     initValidation();
     initExporter();
-    initEngine();
+    initGeneralEngine();
     initGraphComponent();
     initTopologyMapping();
     initBoundaryCondition();

@@ -40,7 +40,7 @@
 
 
 #include <SofaMiscCollision/TriangleModelInRegularGrid.h>
-#include <SofaMeshCollision/TriangleOctreeModel.h>
+#include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 
 
 

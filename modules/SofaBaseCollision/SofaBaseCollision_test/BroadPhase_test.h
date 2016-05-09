@@ -1,8 +1,8 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <SofaMeshCollision/DirectSAP.h>
-#include <SofaMeshCollision/IncrSAP.h>
+#include <SofaGeneralMeshCollision/DirectSAP.h>
+#include <SofaGeneralMeshCollision/IncrSAP.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/simulation/tree/GNode.h>
 

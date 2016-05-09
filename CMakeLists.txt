@@ -111,6 +111,7 @@ endif()
 
 ### Dependency pack for Windows
 if(MSVC)
+
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
@@ -147,6 +148,7 @@ if(MSVC)
     install(FILES ${DLLS} DESTINATION bin)
     install(FILES ${LIBS} DESTINATION lib)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
+
 endif()
 
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
@@ -189,6 +191,7 @@ add_subdirectory(extlibs)
 
 
 ### Main Sofa subdirectories
+
 add_subdirectory(SofaFramework)
 add_subdirectory(SofaSimulation)
 if(SOFA_BUILD_TESTS)

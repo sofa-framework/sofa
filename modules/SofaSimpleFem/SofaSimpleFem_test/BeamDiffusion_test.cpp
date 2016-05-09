@@ -32,7 +32,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
+#include <SofaGeneralSimpleFem/TetrahedronDiffusionFEMForceField.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <sofa/defaulttype/Vec.h>

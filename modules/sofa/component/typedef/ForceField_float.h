@@ -39,8 +39,8 @@
 
 
 
-#include <SofaSimpleFem/BeamFEMForceField.h>
-#include <SofaObjectInteraction/BoxStiffSpringForceField.h>
+#include <SofaGeneralSimpleFem/BeamFEMForceField.h>
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <SofaBoundaryCondition/BuoyantForceField.h>
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
@@ -49,9 +49,9 @@
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <SofaDeformable/FrameSpringForceField.h>
 #include <SofaMiscForceField/GearSpringForceField.h>
-#include <SofaSimpleFem/HexahedralFEMForceField.h>
+#include <SofaGeneralSimpleFem/HexahedralFEMForceField.h>
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
-#include <SofaObjectInteraction/InteractionEllipsoidForceField.h>
+#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
 #include <SofaMiscForceField/LennardJonesForceField.h>
 #include <SofaMiscForceField/LineBendingSprings.h>
@@ -63,14 +63,14 @@
 #include <SofaDeformable/QuadBendingSprings.h>
 #include <SofaDeformable/QuadularBendingSprings.h>
 #include <SofaDeformable/RegularGridSpringForceField.h>
-#include <SofaObjectInteraction/RepulsiveSpringForceField.h>
+#include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
 #include <SofaDeformable/RestShapeSpringsForceField.h>
 #include <SofaSphFluid/SPHFluidForceField.h>
 #include <SofaBoundaryCondition/SphereForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
-#include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
+#include <SofaGeneralSimpleFem/TetrahedralCorotationalFEMForceField.h>
 #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <SofaDeformable/TriangleBendingSprings.h>
