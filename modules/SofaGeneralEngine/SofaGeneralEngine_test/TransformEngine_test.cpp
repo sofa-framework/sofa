@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include <SofaTest/Sofa_test.h>
-#include <SofaEngine/TransformEngine.h>
+#include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>

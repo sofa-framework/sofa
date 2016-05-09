@@ -36,7 +36,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 // Solvers
-#include <SofaExplicitOdeSolver/CentralDifferenceSolver.h>
+#include <SofaGeneralExplicitOdeSolver/CentralDifferenceSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
