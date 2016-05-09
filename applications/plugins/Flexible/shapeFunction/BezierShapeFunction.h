@@ -28,8 +28,8 @@
 #include <Flexible/config.h>
 #include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 
 #include <algorithm>
 #include <iostream>

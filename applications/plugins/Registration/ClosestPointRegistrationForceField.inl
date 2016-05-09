@@ -38,7 +38,7 @@
 #endif
 
 #include <SofaLoader/MeshObjLoader.h>
-#include <SofaEngine/NormalsFromPoints.h>
+#include <SofaGeneralEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
 #include <iterator>

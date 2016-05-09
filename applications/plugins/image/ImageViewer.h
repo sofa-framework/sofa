@@ -35,7 +35,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaBaseVisual/RecordedCamera.h>
+#include <SofaGeneralVisual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>

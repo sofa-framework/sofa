@@ -63,6 +63,7 @@ set(PYTHON_FILES
 set(README_FILES image.txt)
 
 find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImg REQUIRED)
 
@@ -113,7 +114,7 @@ endif()
 find_package(DiffusionSolver CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 
