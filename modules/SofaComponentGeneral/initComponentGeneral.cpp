@@ -108,7 +108,6 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_TAUCS
     initTaucsSolver();
 #endif
-initEigen2Solver();
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
     initOpenGLVisual();
