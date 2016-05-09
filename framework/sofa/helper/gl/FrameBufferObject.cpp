@@ -40,9 +40,10 @@ namespace helper
 
 namespace gl
 {
-
-FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor)
-    :width(0)
+    
+FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+    :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
+    ,width(0)
     ,height(0)
     ,depthTextureID(0)
     ,colorTextureID(0)
@@ -51,11 +52,11 @@ FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool e
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
 {
-
 }
 
-FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor)
-    :width(0)
+FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+    :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
+    ,width(0)
     ,height(0)
     ,depthTextureID(0)
     ,colorTextureID(0)
@@ -71,6 +72,14 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthT
 FrameBufferObject::~FrameBufferObject()
 {
     destroy();
+}
+
+GLint FrameBufferObject::getCurrentFramebufferID()
+{
+    GLint windowId;
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &windowId);
+
+    return windowId;
 }
 
 void FrameBufferObject::destroy()
@@ -144,7 +153,7 @@ bool FrameBufferObject::checkFBO()
 void FrameBufferObject::init(unsigned int width, unsigned height)
 {
     if (!initialized)
-    {
+    {        
         this->width = width;
         this->height = height;
         glGenFramebuffersEXT(1, &id);
@@ -169,7 +178,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
             glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTextureID, 0);
         }
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_defaultWindowFramebufferID);
 
         if(enableColor)
         {
@@ -181,6 +190,7 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         checkFBO();
 #endif
         initialized=true;
+        glDisable(GL_TEXTURE_2D);
     }
     else
         setSize(width, height);
@@ -218,7 +228,7 @@ void FrameBufferObject::stop()
 {
     if (initialized)
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_defaultWindowFramebufferID);
 
         if(enableColor)
         {

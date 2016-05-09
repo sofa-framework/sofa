@@ -60,6 +60,7 @@ set(HEADER_FILES
     misc/CompliantSolverMerger.h
     misc/FailNode.h
     misc/RigidMass.h
+	misc/SimpleAnimationLoop.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/Benchmark.h
     numericalsolver/BenchmarkSolver.h
@@ -167,6 +168,7 @@ set(SOURCE_FILES
     misc/FailNode.cpp
     misc/RigidMass.cpp
     misc/python.cpp
+	misc/SimpleAnimationLoop.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/Benchmark.cpp
     numericalsolver/BenchmarkSolver.cpp

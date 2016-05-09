@@ -58,6 +58,8 @@ OglVolumetricModel::OglVolumetricModel()
     , d_depthTest(initData(&d_depthTest, (bool)false, "depthTest", "Set Depth Test"))
     , d_blending(initData(&d_blending, (bool)false, "blending", "Set Blending"))
     , d_defaultColor(initData(&d_defaultColor, defaulttype::Vec4f(), "defaultColor", "Color for each volume (if the attribute a_vertexColor is not detected)"))
+    , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedra to draw"))
+    , d_hexahedra(initData(&d_hexahedra, "hexahedra", "Hexahedra to draw"))
 {
     addAlias(&d_defaultColor, "color");
 }
@@ -330,7 +332,7 @@ void OglVolumetricModel::splitHexahedra()
         tet[3][0] = hex[3]; tet[3][1] = hex[6]; tet[3][2] = hex[1]; tet[3][3] = hex[2];
         tet[4][0] = hex[4]; tet[4][1] = hex[6]; tet[4][2] = hex[1]; tet[4][3] = hex[3];
         for (unsigned int j = 0; j < 5; j++)
-            if (j != 40) m_hexaToTetrahedra.push_back(tet[j]);
+            m_hexaToTetrahedra.push_back(tet[j]);
     }
 }
 
@@ -477,7 +479,7 @@ void OglVolumetricModel::drawTransparent(const core::visual::VisualParams* vpara
 
 void OglVolumetricModel::computeBBox(const core::ExecParams * params, bool /* onlyVisible */)
 {
-    if (m_topology)
+    //if (m_topology)
     {
         Coord v;
         const defaulttype::ResizableExtVector<Coord>& position = m_positions.getValue();

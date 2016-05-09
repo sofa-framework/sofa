@@ -124,6 +124,7 @@ set(SOURCE_FILES
     deformationMapping/TriangleDeformationMapping.cpp
     deformationMapping/TriangleStrainAverageMapping.cpp
     deformationMapping/VolumeMapping.cpp
+    engine/TransformEngine.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
     forceField/FlexibleCorotationalFEMForceField.cpp

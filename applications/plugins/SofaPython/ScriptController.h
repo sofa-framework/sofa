@@ -41,10 +41,31 @@ namespace component
 namespace controller
 {
 
+
 class SOFA_SOFAPYTHON_API ScriptController : public Controller
 {
 public:
     SOFA_CLASS(ScriptController,Controller);
+
+
+    typedef enum
+    {
+        DRAW = 0,
+        ONBEGINANIMATIONSTEP,
+        ONENDANIMATIONSTEP,
+        ONKEYPRESSED,
+        ONKEYRELEASED,
+        ONMOUSEMOVE,
+        ONMOUSEBUTTONLEFT,
+        ONMOUSEBUTTONRIGHT,
+        ONMOUSEBUTTONMIDDLE,
+        ONMOUSEWHEEL,
+        ONSCRIPTEVENT,
+        ONGUIEVENT,
+        CONTROLLERFUNCTIONLIST_COUNT
+    } ControllerFunctionList;
+
+
 
 protected:
     ScriptController();
@@ -119,10 +140,10 @@ public:
 
     virtual void handleEvent(core::objectmodel::Event *);
 
-	/**
-	 * @brief draw callback.
-	 */
-	virtual void draw(const core::visual::VisualParams*);
+    /**
+     * @brief draw callback.
+     */
+    virtual void draw(const core::visual::VisualParams*);
 
 protected:
 
@@ -163,11 +184,10 @@ protected:
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent *) = 0;
 
-	/// drawing
-	virtual void script_draw(const core::visual::VisualParams*) = 0;
+    /// drawing
+    virtual void script_draw(const core::visual::VisualParams*) = 0;
 
     /// @}
-
 
 };
 

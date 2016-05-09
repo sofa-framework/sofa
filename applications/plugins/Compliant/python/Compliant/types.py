@@ -2,6 +2,9 @@ import numpy as np
 import math
 import sys
 
+def vec(*coords):
+    return np.array(coords)
+
 class Rigid3(np.ndarray):
 
     @property
@@ -30,24 +33,50 @@ class Rigid3(np.ndarray):
     def inv(self):
         res = Rigid3()
         res.orient = self.orient.inv()
-        res.center = -res.orient.rotate(self.center)
+        res.center = -res.orient(self.center)
         return res
 
     def __mul__(self, other):
         res = Rigid3()
 
         res.orient = self.orient * other.orient
-        res.center = self.center + self.orient.rotate(other.center)
+        res.center = self.center + self.orient(other.center)
         
         return res
-
 
     def __call__(self, x):
         '''applies rigid transform to vector x'''
         return self.center + self.orient(x)
-    
 
+
+    def Ad(self):
+        '''SE(3) group adjoint matrix in lie algebra coordinates'''
+        res = np.zeros((6, 6))
+
+        R = self.orient.matrix()
+        t = Quaternion.hat(self.center)
+
+        res[:3, :3] = R
+        res[3:, 3:] = R
+
+        res[3:, :3] = t.dot(R)
+
+        return res
+
+    def matrix(self):
+        '''homogeneous matrix for rigid transformation'''
+
+        res = np.zeros( (4, 4) )
+
+        res[:3, :3] = self.orient.matrix()
+        res[:3, 3] = self.center
+
+        res[3, 3] = 1
+
+        return res
+        
 class Quaternion(np.ndarray):
+    
     def __new__(cls, *args):
         return np.ndarray.__new__(cls, 4)
         
@@ -105,6 +134,19 @@ class Quaternion(np.ndarray):
         tmp.imag = x
 
         return (self * tmp * self.conj()).imag
+
+
+    # TODO this is horribly inefficient, optimize
+    def matrix(self):
+        '''rotation matrix'''
+
+        R = np.identity(3)
+
+        for i in range(3):
+            R[:, i] = self( np.eye(1, 3, i) )
+
+        return R
+        
     
     @staticmethod
     def exp(x):
@@ -125,3 +167,21 @@ class Quaternion(np.ndarray):
         res.imag = x * (s / theta)
 
         return res
+
+
+    @staticmethod
+    def hat(v):
+        '''cross-product matrix'''
+        
+        res = np.zeros( (3, 3) )
+
+        res[0, 1] = -v[2]
+        res[0, 2] = v[1]
+        res[1, 2] = -v[0]
+
+        res -= res.T
+
+        return res
+
+
+    

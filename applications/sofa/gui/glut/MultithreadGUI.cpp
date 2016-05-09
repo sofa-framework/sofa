@@ -1001,7 +1001,7 @@ void MultithreadGUI::DrawScene(void)
 
     GLdouble mat[16];
 
-    currentCamera->getOpenGLMatrix(mat);
+    currentCamera->getOpenGLModelViewMatrix(mat);
     glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);
