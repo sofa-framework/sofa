@@ -149,7 +149,9 @@ private:
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 
 	Data<float> animationSpeed;
+
 	Data<bool> generateCollisionModels;
+    Data<float> collisionProximity;
 
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
 	Data<bool> useFlexible;
