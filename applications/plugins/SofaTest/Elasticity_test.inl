@@ -33,9 +33,9 @@
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 // Box roi
-#include <SofaEngine/PairBoxRoi.h>
+#include <SofaGeneralEngine/PairBoxRoi.h>
 #include <SofaEngine/BoxROI.h>
-#include <SofaEngine/GenerateCylinder.h>
+#include <SofaGeneralEngine/GenerateCylinder.h>
 
 // Constraint
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>

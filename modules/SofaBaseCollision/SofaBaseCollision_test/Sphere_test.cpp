@@ -1,6 +1,6 @@
 #include <SofaTest/PrimitiveCreation.h>
 
-#include <SofaMeshCollision/MeshMinProximityIntersection.h>
+#include <SofaGeneralMeshCollision/MeshMinProximityIntersection.h>
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
 namespace sofa {

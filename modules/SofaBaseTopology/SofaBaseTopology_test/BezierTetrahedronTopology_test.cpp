@@ -33,13 +33,13 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including constraint, force and mass
-#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
-#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
-#include <SofaEngine/GenerateCylinder.h>
+#include <SofaGeneralEngine/GenerateCylinder.h>
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 
