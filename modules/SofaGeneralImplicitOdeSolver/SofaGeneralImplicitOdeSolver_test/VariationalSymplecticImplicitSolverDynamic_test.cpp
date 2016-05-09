@@ -37,7 +37,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 // Solvers
-#include <SofaImplicitOdeSolver/VariationalSymplecticSolver.h>
+#include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
@@ -73,9 +73,9 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
-    vector<double> positionsArray;
-    vector<double> velocitiesArray;
-    vector<double> energiesArray;
+    helper::vector<double> positionsArray;
+    helper::vector<double> velocitiesArray;
+    helper::vector<double> energiesArray;
     // solver
     VariationalSymplecticSolver::SPtr variationalSolver;
 

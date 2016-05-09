@@ -36,7 +36,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 // Solvers
-#include <SofaExplicitOdeSolver/RungeKutta4Solver.h>
+#include <SofaGeneralExplicitOdeSolver/RungeKutta4Solver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
