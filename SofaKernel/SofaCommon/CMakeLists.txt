@@ -25,6 +25,7 @@ set(SOFACOMMON_TARGETS
     SofaObjectInteraction
     SofaRigid
     SofaSimpleFem
+    SofaEigen2Solver
 )
 
 foreach(TARGET ${SOFACOMMON_TARGETS})

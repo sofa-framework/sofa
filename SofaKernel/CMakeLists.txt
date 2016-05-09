@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(Sofa)
-
-set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/")
+project(SofaKernel)
 
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -31,9 +29,6 @@ message(STATUS "Install prefix: ${CMAKE_INSTALL_PREFIX}")
 # Remove generated CMake files, this prevents CMake from finding packages that
 # were disabled (like, unchecked in cmake-gui) after being built once.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
-# Remove generated SofaPython configuration files, to prevent SofaPython from
-# adding paths to disabled plugins.
-file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
 ## Set the output directories globally
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -43,13 +38,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 ## Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/cmake/Modules")
-list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
+# list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
+# list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
 ## RPATH
 if(UNIX)
@@ -106,11 +99,12 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 
-## Boost is now mandatory.
+## Try to find an installed boost. If boost is not found, use miniBoost.
 find_package(Boost REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)
+
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
@@ -150,26 +144,15 @@ if(MSVC)
 
 endif()
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/) when installing" ON)
 if(SOFA_INSTALL_RESOURCES_FILES)
-    ## Install resource files
-    install(DIRECTORY share/ DESTINATION share/sofa)
-    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
     # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
     # build directory, it points to the source tree, whereas in the install
     # directory, it contains to relative paths to the installed resource directory.
-    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
     install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 endif()
-
-# Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
-
 
 ### Extlibs
 option(SOFA_USE_MASK "Use mask optimization" ON)
@@ -177,74 +160,14 @@ if(SOFA_USE_MASK)
     add_definitions(-DSOFA_USE_MASK)
 endif()
 
-
-### Extlibs
-option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
-if(SOFA_BUILD_TESTS)
-    # Enable testing features of cmake, like the add_test() command.
-    enable_testing()
-    add_subdirectory(extlibs/gtest)
-endif()
-
 add_subdirectory(extlibs)
-
 
 ### Main Sofa subdirectories
 
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-if(SOFA_BUILD_TESTS)
-    # Depends on SofaSimulation
-    add_subdirectory(tools/SofaGTestMain)
-endif()
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
-add_subdirectory(SofaGeneral)
-add_subdirectory(SofaAdvanced)
-add_subdirectory(SofaMisc)
-add_subdirectory(SofaGui)
-
-# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
-sofa_add_plugin( applications/plugins/SofaPython SofaPython )
-
-if(SOFA_BUILD_TESTS)
-    # Library used by SofaTest.
-    add_subdirectory(applications/plugins/SceneCreator SceneCreator)
-    # Library used to write high level tests involving many components.
-    add_subdirectory(applications/plugins/SofaTest SofaTest)
-    # Tests for all the modules, written using SofaTest.
-    add_subdirectory(modules/tests)
-    # SofaPython_test is a special case, because it depends on
-    # SofaTest, which depends on SofaPython...
-    if(PLUGIN_SOFAPYTHON)
-        add_subdirectory(applications/plugins/SofaPython/SofaPython_test)
-    endif()
-
-    # Not sure what is it
-    add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
-endif()
-
-## Plugins
-add_subdirectory(applications/plugins)
-
-## Applications
-add_subdirectory(applications/projects)
-
-## Tutorials
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-if(SOFA_BUILD_TUTORIALS)
-    add_subdirectory(applications/tutorials)
-endif()
-
-## Build external projects at the same time
-set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
-if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
-    foreach(dir ${SOFA_EXTERNAL_DIRECTORIES})
-        get_filename_component(name ${dir} NAME) # Get the name of the actual directory
-        message("Adding external directory: ${name} (${dir})")
-        add_subdirectory(${dir} "${CMAKE_CURRENT_BINARY_DIR}/external_directories/${name}")
-    endforeach()
-endif()
+add_subdirectory(SofaFramework)
+add_subdirectory(SofaSimulation)
+add_subdirectory(SofaBase)
+add_subdirectory(SofaCommon)
 
 
 ## Custom
@@ -266,16 +189,4 @@ SET(CPACK_PACKAGE_VERSION_MINOR "12")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENCE.txt")
 SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/readme.txt")
-
-#dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
-#if not set, it will install everything as usual
-#TODO: Redesign of a better architecture about bundling (runSofa ? libraries ? modeler ? other application ?)
-get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL )
-if(TEMP_CPACK_COMPONENTS_ALL)
-    set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
-    set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
-endif()
-
-INCLUDE(CPack)
-
 

@@ -27,6 +27,5 @@ endif()
 if(SOFA_HAVE_TAUCS)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaTaucsSolver)
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

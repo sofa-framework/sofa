@@ -59,6 +59,7 @@ void initComponentCommon()
     initMeshCollision();
     initExplicitODESolver();
     initImplicitODESolver();
+    initEigen2Solver();
 */
 }
 

@@ -45,7 +45,7 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     target_compile_options(${PROJECT_NAME} PRIVATE "-fPIC")
 endif()
 
-include(../../SofaFramework/SofaMacros.cmake)
+include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
 sofa_create_package(MiniFlowVR 0.0 miniFlowVR "")
 
 foreach(HEADER ${HEADER_FILES})

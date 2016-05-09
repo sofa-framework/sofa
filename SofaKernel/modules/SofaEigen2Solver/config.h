@@ -25,6 +25,6 @@
 #ifndef SOFAEIGEN2SOLVER_CONFIG_H
 #define SOFAEIGEN2SOLVER_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <SofaCommon/config.h>
 
 #endif
