@@ -182,7 +182,7 @@ extern "C"
 {
     int SOFA_GPU_CUDA_API mycudaGetMultiProcessorCount();
     void cuda_void_kernel();
-};
+}
 
 bool cudaCheck(cudaError_t err, const char* src="?")
 {
