@@ -79,6 +79,7 @@ struct aiLogStream
  *  @see aiSetPropertyInteger
  *  @see aiSetPropertyFloat
  *  @see aiSetPropertyString
+ *  @see aiSetPropertyMatrix
  */
 // --------------------------------------------------------------------------------
 struct aiPropertyStore { char sentinel; };
@@ -170,11 +171,13 @@ ASSIMP_API const C_STRUCT aiScene* aiImportFileExWithProperties(
  *   Check the return value, and you'll know ...
  * @return A pointer to the imported data, NULL if the import failed.
  *
- * @note This is a straightforward way to decode models from memory buffers, but it 
- * doesn't handle model formats spreading their data across multiple files or even
- * directories. Examples include OBJ or MD3, which outsource parts of their material
- * stuff into external scripts. If you need the full functionality, provide a custom 
- * IOSystem to make Assimp find these files.
+ * @note This is a straightforward way to decode models from memory
+ * buffers, but it doesn't handle model formats that spread their 
+ * data across multiple files or even directories. Examples include
+ * OBJ or MD3, which outsource parts of their material info into
+ * external scripts. If you need full functionality, provide
+ * a custom IOSystem to make Assimp find these files and use
+ * the regular aiImportFileEx()/aiImportFileExWithProperties() API.
  */
 ASSIMP_API const C_STRUCT aiScene* aiImportFileFromMemory( 
 	const char* pBuffer,
@@ -394,6 +397,23 @@ ASSIMP_API void aiSetImportPropertyString(
 	C_STRUCT aiPropertyStore* store,
 	const char* szName,
 	const C_STRUCT aiString* st);
+
+// --------------------------------------------------------------------------------
+/** Set a matrix property. 
+ *
+ *  This is the C-version of #Assimp::Importer::SetPropertyMatrix(). In the C 
+ *  interface, properties are always shared by all imports. It is not possible to 
+ *  specify them per import.
+ *
+ * @param property store to modify. Use #aiCreatePropertyStore to obtain a store.
+ * @param szName Name of the configuration property to be set. All supported 
+ *   public properties are defined in the config.h header file (#AI_CONFIG_XXX).
+ * @param value New value for the property
+ */
+ASSIMP_API void aiSetImportPropertyMatrix(
+	C_STRUCT aiPropertyStore* store,
+	const char* szName,
+	const C_STRUCT aiMatrix4x4* mat);
 
 // --------------------------------------------------------------------------------
 /** Construct a quaternion from a 3x3 rotation matrix.
