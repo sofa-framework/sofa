@@ -152,16 +152,16 @@ namespace sofa
                             ReadVecCoord posData = mmodel->readPositions();
 
 
-                            for(int i=(int)size; i>0; i--)
+                            for(unsigned i=0; i<size; i++)
                             {
                                 //create an additional point for root tangent
                                 if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))
                                 {
 
-                                   defaulttype::Vector3  x0 = T::getCPos(posData[i-1]);
-                                   defaulttype::Vector3  x1 = T::getCPos(posData[i]);
+                                   defaulttype::Vector3  x0 = T::getCPos(posData[i]);
+                                   defaulttype::Vector3  x1 = T::getCPos(posData[i+1]);
 
-                                    x1 = x1-x0;
+                                    x1 = x0-x1;
                                    // sout<<"tangeant direction: "<<x1<<sendl;
                                     x1.normalize();
 
@@ -173,30 +173,34 @@ namespace sofa
                                     pos0[1] = -(float)x0[2]; 
                                     pos0[2] = (float)x0[1];
 
+                                    pos0[0] = (float)x0[0]; 
+                                    pos0[1] = -(float)x0[2]; 
+                                    pos0[2] = (float)x0[1];
+
                                     file.write((char*)pos0,12);
                                     file.write((char*)vel0,12);
                                     file.write((char*)pos0,12);
                                 }
 
                                 //Coord x0=restData[i];
-                                Coord x=posData[i-1];
+                                Coord x=posData[i];
                                 pos[0] = (float)x[0]; 
                                 pos[1] = -(float)x[2]; 
                                 pos[2] = (float)x[1];
 
                                 Deriv v;
-                                if((mmodel->read(core::ConstVecDerivId::velocity())) && ( (defaulttype::BaseVector::Index)mmodel->readVelocities().size()>i-1))
+                                if((mmodel->read(core::ConstVecDerivId::velocity())) && ( (defaulttype::BaseVector::Index)mmodel->readVelocities().size()>i))
                                 {
-                                    v =mmodel->readVelocities()[i-1];
+                                    v =mmodel->readVelocities()[i];
                                     vel[0] = (float)v[0]; 
                                     vel[1] = -(float)v[2]; 
                                     vel[2] = (float)v[1];
                                 }
 
                                 Coord x0;
-                                if((mmodel->read(core::ConstVecCoordId::restPosition())) && ( (defaulttype::BaseVector::Index)mmodel->readRestPositions().size()>i-1))
+                                if((mmodel->read(core::ConstVecCoordId::restPosition())) && ( (defaulttype::BaseVector::Index)mmodel->readRestPositions().size()>i))
                                 {
-                                    x0 =mmodel->readRestPositions()[i-1];
+                                    x0 =mmodel->readRestPositions()[i];
                                     rest[0] = (float)x0[0]; 
                                     rest[1] = -(float)x0[2]; 
                                     rest[2] = (float)x0[1];
