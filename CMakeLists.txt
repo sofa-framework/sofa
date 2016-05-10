@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(Sofa)
 
-set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/")
+set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/" CACHE STRING "Path to SofaKernel")
+
+if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
+    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/")
+    if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
+        message( FATAL_ERROR "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible.")
+    endif()
+endif()
 
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -152,7 +159,7 @@ if(NOT Boost_FOUND)
         SET(BOOST_TEST_PATH ${BOOST_TEST_PATH} CACHE INTERNAL "string")
 
         if(NOT BOOST_TEST_PATH)
-            message("Boost includes was not found automatically, please set Boost_INCLUDE_DIR (e.g <BOOST_INCLUDE_DIR>\boost\thread\thread.hpp.")
+            message(FATAL_ERROR "Boost includes was not found automatically, please set Boost_INCLUDE_DIR (i.e consistent with this: <BOOST_INCLUDE_DIR>/boost/thread/thread.hpp.")
         else()
             set(Boost_INCLUDE_DIR ${BOOST_TEST_PATH})
             message("Found boost includes at ${Boost_INCLUDE_DIR}")
