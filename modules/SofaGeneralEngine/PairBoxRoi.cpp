@@ -54,14 +54,14 @@ int PairBoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/tri
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API PairBoxROI<Vec3dTypes>;
-template class SOFA_ENGINE_API PairBoxROI<Rigid3dTypes>;
-template class SOFA_ENGINE_API PairBoxROI<Vec6dTypes>; //Phuoc
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3dTypes>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API PairBoxROI<Vec3fTypes>;
-template class SOFA_ENGINE_API PairBoxROI<Rigid3fTypes>;
-template class SOFA_ENGINE_API PairBoxROI<Vec6fTypes>; //Phuoc
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Rigid3fTypes>;
+template class SOFA_GENERAL_ENGINE_API PairBoxROI<Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 
 

@@ -66,26 +66,26 @@ int MathOpClass = core::RegisterObject("Apply a math operation to combine severa
 #endif //SOFA_DOUBLE
         ;
 
-template class SOFA_ENGINE_API MathOp< helper::vector<int> >;
-template class SOFA_ENGINE_API MathOp< helper::vector<bool> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<int> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<bool> >;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API MathOp< helper::vector<double> >;
-template class SOFA_ENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
-template class SOFA_ENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecCoord >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecDeriv >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecCoord >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecDeriv >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<double> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2d> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3d> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecCoord >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2dTypes::VecDeriv >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecCoord >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3dTypes::VecDeriv >;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API MathOp< helper::vector<float> >;
-template class SOFA_ENGINE_API MathOp< helper::vector<defaulttype::Vec2f> >;
-template class SOFA_ENGINE_API MathOp< helper::vector<defaulttype::Vec3f> >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecCoord >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecDeriv >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecCoord >;
-template class SOFA_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecDeriv >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<float> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec2f> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< helper::vector<defaulttype::Vec3f> >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecCoord >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid2fTypes::VecDeriv >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecCoord >;
+template class SOFA_GENERAL_ENGINE_API MathOp< defaulttype::Rigid3fTypes::VecDeriv >;
 #endif //SOFA_DOUBLE
 
 

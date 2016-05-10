@@ -42,7 +42,7 @@ namespace loader
 {
 
 
-class SOFA_LOADER_API VoxelGridLoader : public sofa::core::loader::VoxelLoader
+class SOFA_GENERAL_LOADER_API VoxelGridLoader : public sofa::core::loader::VoxelLoader
 {
 public:
     SOFA_CLASS(VoxelGridLoader,VoxelLoader);

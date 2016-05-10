@@ -51,7 +51,7 @@ namespace collision
 
 class TriangleOctree;
 
-class SOFA_MESH_COLLISION_API TriangleOctreeRoot
+class SOFA_GENERAL_MESH_COLLISION_API TriangleOctreeRoot
 {
 public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
@@ -85,7 +85,7 @@ protected:
     void calcTriangleAABB(int t, double* bb, double& size);
 };
 
-class SOFA_MESH_COLLISION_API TriangleOctree
+class SOFA_GENERAL_MESH_COLLISION_API TriangleOctree
 {
 public:
     class traceResult

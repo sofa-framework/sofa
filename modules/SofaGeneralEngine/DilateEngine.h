@@ -100,12 +100,12 @@ protected:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
 
 //#ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
 //#endif //SOFA_FLOAT
 //#ifndef SOFA_DOUBLE
-//extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
+//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
 //#endif //SOFA_DOUBLE
-//extern template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
 #endif
 
 } // namespace engine

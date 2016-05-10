@@ -15,7 +15,7 @@ namespace component
 namespace loader
 {
 
-class GIDMeshLoader : public sofa::core::loader::MeshLoader
+class SOFA_GENERAL_LOADER_API GIDMeshLoader : public sofa::core::loader::MeshLoader
 {
 public :
 	SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);

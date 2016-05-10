@@ -55,12 +55,12 @@ int ShapeMatchingClass = core::RegisterObject("Compute target positions using sh
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API ShapeMatching<Vec3dTypes>;
-template class SOFA_ENGINE_API ShapeMatching<Rigid3dTypes>;
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API ShapeMatching<Vec3fTypes>;
-template class SOFA_ENGINE_API ShapeMatching<Rigid3fTypes>;
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API ShapeMatching<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

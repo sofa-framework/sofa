@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_FRAMESPRINGFORCEFIELD_CPP
-#include <SofaDeformable/FrameSpringForceField.inl>
+#include <SofaGeneralDeformable/FrameSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -54,10 +54,10 @@ int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API FrameSpringForceField<Rigid3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API FrameSpringForceField<Rigid3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API FrameSpringForceField<Rigid3fTypes>;
 #endif
 
 } // namespace interactionforcefield

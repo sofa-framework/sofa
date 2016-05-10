@@ -102,8 +102,8 @@ int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using inc
         ;
 
 
-template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
 
 } // namespace collision
 

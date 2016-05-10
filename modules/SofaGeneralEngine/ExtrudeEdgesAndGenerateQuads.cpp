@@ -50,10 +50,10 @@ int ExtrudeEdgesAndGenerateQuadsClass = core::RegisterObject("This engine extrud
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

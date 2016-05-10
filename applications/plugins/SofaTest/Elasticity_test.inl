@@ -52,7 +52,7 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseVisual/VisualStyle.h>
-#include <SofaDeformable/RegularGridSpringForceField.h>
+#include <SofaGeneralDeformable/RegularGridSpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>

@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTRIANGLESETTOPOLOGYCONTAINER_H
 
+#include "config.h"
+
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 
 namespace sofa
@@ -48,7 +50,7 @@ typedef sofa::defaulttype::Vec<3,BezierDegreeType> TriangleBezierIndex;
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
 We use a Vec4D to number the control points inside  a Bezier tetrahedron */
-class SOFA_BASE_TOPOLOGY_API BezierTriangleSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
 public:
 	 SOFA_CLASS(BezierTriangleSetTopologyContainer,TriangleSetTopologyContainer);

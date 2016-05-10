@@ -99,10 +99,10 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API GenerateGrid<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API GenerateGrid<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3fTypes>;
 #endif
 #endif
 

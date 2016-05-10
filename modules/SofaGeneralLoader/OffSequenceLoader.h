@@ -39,7 +39,7 @@ namespace loader
 
 /** This class load a sequence of .off mesh files, ordered by index in their name
 */
-class SOFA_LOADER_API OffSequenceLoader : public MeshOffLoader
+class SOFA_GENERAL_LOADER_API OffSequenceLoader : public MeshOffLoader
 {
 public:
     SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);

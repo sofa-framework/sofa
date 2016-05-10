@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-class SOFA_BASE_TOPOLOGY_API SphereQuadTopology : public CubeTopology
+class SOFA_GENERAL_TOPOLOGY_API SphereQuadTopology : public CubeTopology
 {
 public:
     SOFA_CLASS(SphereQuadTopology,CubeTopology);

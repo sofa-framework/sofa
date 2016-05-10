@@ -107,6 +107,72 @@ endif(NOT WIN32)
 
 
 ## Boost is now mandatory.
+find_package(Boost QUIET)
+if(NOT Boost_FOUND)
+    message("Did not find a boost directory from Boost_LIBRARY_DIR and Boost_INCLUDE_DIR, will try to search one in possible directories")
+    ## Try to find an installed boost.
+    ## (only for Windows ; we suppose boost in a POSIX way on an Unix system)
+    ## It will check from different Mount Points, different subdirectory.
+    ## For now, it is only searching within one level of the file hierarchy.
+    ## We assume also that the boost root dirname contains boost....
+    ## TODO: Set an other hint from the PATH, as the user should set it with the binaries directory when he launches Sofa
+    if(WIN32)
+        #set roots
+        set(BOOST_TEST_ROOTS 
+            "C:" "D:" "E:" "F:" "G:" "H:"
+            )
+        #set credible subdirectories
+        set(BOOST_TEST_SUBDIRECTORIES 
+            "/" "/local" "/Dependencies" "/Program Files" "/Program Files (x86)"
+            )
+
+        #create all combinations
+        set(BOOST_TEST_DIRECTORIES)
+        foreach( BOOST_TEST_ROOT ${BOOST_TEST_ROOTS} )
+            foreach( BOOST_TEST_SUBDIRECTORY ${BOOST_TEST_SUBDIRECTORIES} )
+                list(APPEND BOOST_TEST_DIRECTORIES ${BOOST_TEST_ROOT}${BOOST_TEST_SUBDIRECTORY}/)
+            endforeach()
+        endforeach()
+
+        #test if contains a boost_something directory
+        set(BOOST_TEST_POTENTIAL_DIRECTORIES)
+        foreach( BOOST_TEST_DIRECTORY ${BOOST_TEST_DIRECTORIES} )
+            file(GLOB BOOST_TEST_TEMP "${BOOST_TEST_DIRECTORY}*boost*" )
+            list(APPEND BOOST_TEST_POTENTIAL_DIRECTORIES "${BOOST_TEST_TEMP}" )
+        endforeach()
+
+        ## BOOST includes
+        #test if this directory contain a directory with the expected includes
+        #(boost_include_dir = <some_directory>/boost/....h)
+        find_path (BOOST_TEST_PATH boost/config.hpp
+            PATHS ${BOOST_TEST_POTENTIAL_DIRECTORIES}
+            )
+
+        #remove the test variable from the cache
+        SET(BOOST_TEST_PATH ${BOOST_TEST_PATH} CACHE INTERNAL "string")
+
+        if(NOT BOOST_TEST_PATH)
+            message("Boost includes was not found automatically, please set Boost_INCLUDE_DIR (e.g <BOOST_INCLUDE_DIR>\boost\thread\thread.hpp.")
+        else()
+            set(Boost_INCLUDE_DIR ${BOOST_TEST_PATH})
+            message("Found boost includes at ${Boost_INCLUDE_DIR}")
+
+            ## BOOST libraries
+            #test if this directory contain a directory with the expected library
+            # recursive = overkill ?
+            file(GLOB_RECURSE BOOST_TEST_PATH2  "${Boost_INCLUDE_DIR}/*/boost_thread-vc???-mt-?_??.lib")
+
+            SET(BOOST_TEST_PATH2 ${BOOST_TEST_PATH2} CACHE INTERNAL "string")
+            if(NOT BOOST_TEST_PATH2)
+                message("Boost libraries were not found automatically, please set Boost_LIBRARY_DIR.")
+            else()
+                set(Boost_THREAD_LIBRARY_RELEASE ${BOOST_TEST_PATH2})
+                message("Found boost libs at ${Boost_THREAD_LIBRARY_RELEASE}")
+            endif()
+        endif()
+    endif()
+endif()
+
 find_package(Boost REQUIRED)
 
 ### Dependency pack for Windows

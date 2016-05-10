@@ -46,7 +46,7 @@ namespace component
 namespace collision
 {
 
-class SOFA_MESH_COLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
+class SOFA_GENERAL_MESH_COLLISION_API MeshMinProximityIntersection : public core::collision::BaseIntersector
 {
     typedef MinProximityIntersection::OutputVector OutputVector;
 

@@ -95,7 +95,7 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_CPP)
-extern template class SOFA_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
+extern template class SOFA_GENERAL_RIGID_API LaparoscopicRigidMapping< LaparoscopicRigidTypes, RigidTypes >;
 #endif
 
 } // namespace mapping

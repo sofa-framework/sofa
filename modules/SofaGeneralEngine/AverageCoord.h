@@ -94,16 +94,16 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
-extern template class SOFA_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid2fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

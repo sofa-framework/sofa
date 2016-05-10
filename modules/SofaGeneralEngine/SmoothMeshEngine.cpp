@@ -50,10 +50,10 @@ int SmoothMeshEngineClass = core::RegisterObject("Compute the laplacian smoothin
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API SmoothMeshEngine<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API SmoothMeshEngine<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API SmoothMeshEngine<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

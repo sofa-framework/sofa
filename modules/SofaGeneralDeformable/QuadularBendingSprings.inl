@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_INL
 
-#include <SofaDeformable/QuadularBendingSprings.h>
+#include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 

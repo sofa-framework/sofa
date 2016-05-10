@@ -63,21 +63,21 @@ int MinResLinearSolverClass = core::RegisterObject("Linear system solver using t
         .addAlias("MinResSolver")
         ;
 
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< SparseMatrix<double>, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
-template class SOFA_BASE_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< GraphScatteredMatrix, GraphScatteredVector >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< FullMatrix<double>, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< SparseMatrix<double>, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<double>, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<float>, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,double> >, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<2,2,float> >, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,double> >, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<3,3,float> >, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,double> >, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<4,4,float> >, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,double> >, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<6,6,float> >, FullVector<float> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,double> >, FullVector<double> >;
+template class SOFA_GENERAL_LINEAR_SOLVER_API MinResLinearSolver< CompressedRowSparseMatrix<Mat<8,8,float> >, FullVector<float> >;
 
 } // namespace linearsolver
 

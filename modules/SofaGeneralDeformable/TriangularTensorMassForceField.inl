@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_INL
 
-#include <SofaDeformable/TriangularTensorMassForceField.h>
+#include <SofaGeneralDeformable/TriangularTensorMassForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

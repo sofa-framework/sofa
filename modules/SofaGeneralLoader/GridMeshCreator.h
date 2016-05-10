@@ -43,7 +43,7 @@ namespace loader
 
   @author François Faure, 2012
 */
-class SOFA_LOADER_API GridMeshCreator : public sofa::core::loader::MeshLoader
+class SOFA_GENERAL_LOADER_API GridMeshCreator : public sofa::core::loader::MeshLoader
 {
 public:
 

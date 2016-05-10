@@ -92,10 +92,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API Vertex2Frame<defaulttype::Rigid3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API Vertex2Frame<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API Vertex2Frame<defaulttype::Rigid3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API Vertex2Frame<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

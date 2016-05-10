@@ -59,18 +59,18 @@ int HausdorffDistanceClass = core::RegisterObject("Compute the Hausdorff distanc
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API HausdorffDistance<Vec1dTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Vec2dTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Vec3dTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Rigid2dTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Rigid3dTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec1dTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec2dTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid2dTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API HausdorffDistance<Vec1fTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Vec2fTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Vec3fTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Rigid2fTypes>;
-template class SOFA_ENGINE_API HausdorffDistance<Rigid3fTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec1fTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec2fTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid2fTypes>;
+template class SOFA_GENERAL_ENGINE_API HausdorffDistance<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 

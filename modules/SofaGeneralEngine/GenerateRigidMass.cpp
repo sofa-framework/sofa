@@ -48,10 +48,10 @@ int GenerateRigidMassClass = core::RegisterObject("An engine computing the Rigid
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API GenerateRigidMass<Rigid3dTypes, Rigid3dMass>;
+template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3dTypes, Rigid3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API GenerateRigidMass<Rigid3fTypes, Rigid3fMass>;
+template class SOFA_GENERAL_ENGINE_API GenerateRigidMass<Rigid3fTypes, Rigid3fMass>;
 #endif
 
 SOFA_DECL_CLASS(GenerateRigidMass)
