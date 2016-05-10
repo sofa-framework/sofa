@@ -61,5 +61,6 @@ rm -f make-failed
 ( call-make 2>&1 || touch make-failed ) | tee make-output.txt
 
 if [ -e make-failed ]; then
+    echo "Error: make-failed."
     exit 1
 fi
