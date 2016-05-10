@@ -208,7 +208,7 @@ enum aiAnimBehaviour
 	/** This value is not used, it is just here to force the
 	 *  the compiler to map this enum to a 32 Bit integer  */
 #ifndef SWIG
-	_aiAnimBehaviour_Force32Bit = 0x8fffffff
+	_aiAnimBehaviour_Force32Bit = INT_MAX
 #endif
 };
 
@@ -457,7 +457,7 @@ struct Interpolator	 <aiVectorKey>	{
 
 template <>
 struct Interpolator <aiQuatKey>		{
-	void operator () (aiQuaternion& out, const aiQuatKey a,
+	void operator () (aiQuaternion& out, const aiQuatKey& a,
 		const aiQuatKey& b, float d) const
 	{
 		Interpolator<aiQuaternion> ipl;
@@ -467,7 +467,7 @@ struct Interpolator <aiQuatKey>		{
 
 template <>
 struct Interpolator <aiMeshKey>		{
-	void operator () (unsigned int& out, const aiMeshKey a,
+	void operator () (unsigned int& out, const aiMeshKey& a,
 		const aiMeshKey& b, float d) const
 	{
 		Interpolator<unsigned int> ipl;

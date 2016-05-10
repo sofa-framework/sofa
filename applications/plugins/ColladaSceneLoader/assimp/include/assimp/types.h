@@ -50,6 +50,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory.h>
 #include <math.h>
 #include <stddef.h>
+#include <string.h>
+#include <limits.h>
 
 // Our compile configuration
 #include "defs.h"
@@ -63,6 +65,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "quaternion.h"
 
 #ifdef __cplusplus
+#include <cstring>
 #include <new>		// for std::nothrow_t
 #include <string>	// for aiString::Set(const std::string&)
 
@@ -171,6 +174,16 @@ struct aiColor3D
 	bool operator != (const aiColor3D& other) const
 		{return r != other.r || g != other.g || b != other.b;}
 
+	/** Component-wise comparison */
+	// TODO: add epsilon?
+	bool operator < (const aiColor3D& other) const {
+		return r < other.r || (
+			r == other.r && (g < other.g ||
+				(g == other.g && b < other.b)
+			)
+		);
+	}
+
 	/** Component-wise addition */
 	aiColor3D operator+(const aiColor3D& c) const {
 		return aiColor3D(r+c.r,g+c.g,b+c.b);
@@ -178,7 +191,7 @@ struct aiColor3D
 
 	/** Component-wise subtraction */
 	aiColor3D operator-(const aiColor3D& c) const {
-		return aiColor3D(r+c.r,g+c.g,b+c.b);
+		return aiColor3D(r-c.r,g-c.g,b-c.b);
 	}
 
 	/** Component-wise multiplication */
@@ -244,7 +257,7 @@ struct aiString
 	{
 		data[0] = '\0';
 
-#ifdef _DEBUG
+#ifdef ASSIMP_BUILD_DEBUG
 		// Debug build: overwrite the string on its full length with ESC (27)
 		memset(data+1,27,MAXLEN-1);
 #endif
@@ -314,7 +327,7 @@ struct aiString
 
 	/** Append a string to the string */
 	void Append (const char* app)	{
-		const size_t len = strlen(app);
+		const size_t len = ::strlen(app);
 		if (!len) {
 			return;
 		}
@@ -331,7 +344,7 @@ struct aiString
 		length  = 0;
 		data[0] = '\0';
 
-#ifdef _DEBUG
+#ifdef ASSIMP_BUILD_DEBUG
 		// Debug build: overwrite the string on its full length with ESC (27)
 		memset(data+1,27,MAXLEN-1);
 #endif
@@ -358,7 +371,7 @@ struct aiString
 /**	Standard return type for some library functions.
  * Rarely used, and if, mostly in the C API.
  */
-enum aiReturn
+typedef enum aiReturn
 {
 	/** Indicates that a function was successful */
 	aiReturn_SUCCESS = 0x0,
@@ -375,7 +388,7 @@ enum aiReturn
 	 *  Force 32-bit size enum
 	 */
 	_AI_ENFORCE_ENUM_SIZE = 0x7fffffff 
-};  // !enum aiReturn
+} aiReturn;  // !enum aiReturn
 
 // just for backwards compatibility, don't use these constants anymore
 #define AI_SUCCESS     aiReturn_SUCCESS
