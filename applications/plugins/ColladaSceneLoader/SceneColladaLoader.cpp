@@ -33,7 +33,7 @@
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaRigid/RigidMapping.h>
-#include <SofaRigid/SkinningMapping.h>
+#include <SofaGeneralRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
