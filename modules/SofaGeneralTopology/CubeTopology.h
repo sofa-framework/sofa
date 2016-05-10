@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-class SOFA_BASE_TOPOLOGY_API CubeTopology : public MeshTopology
+class SOFA_GENERAL_TOPOLOGY_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);

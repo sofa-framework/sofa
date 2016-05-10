@@ -46,10 +46,10 @@ int SelectConnectedLabelsROIClass = core::RegisterObject("Select a subset of poi
         .add< SelectConnectedLabelsROI<int> >()
         ;
 
-template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned int>;
-template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned char>;
-template class SOFA_ENGINE_API SelectConnectedLabelsROI<unsigned short>;
-template class SOFA_ENGINE_API SelectConnectedLabelsROI<int>;
+template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned int>;
+template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned char>;
+template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<unsigned short>;
+template class SOFA_GENERAL_ENGINE_API SelectConnectedLabelsROI<int>;
 
 } // namespace engine
 

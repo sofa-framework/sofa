@@ -175,14 +175,14 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Rigid3dTypes>;
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Vec6dTypes>; //Phuoc
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Rigid3fTypes>;
-extern template class SOFA_ENGINE_API MeshROI<defaulttype::Vec6fTypes>; //Phuoc
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 #endif
 

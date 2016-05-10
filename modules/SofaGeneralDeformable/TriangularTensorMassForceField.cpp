@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP
 
-#include <SofaDeformable/TriangularTensorMassForceField.inl>
+#include <SofaGeneralDeformable/TriangularTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -60,10 +60,10 @@ int TriangularTensorMassForceFieldClass = core::RegisterObject("Linear Elastic M
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<Vec3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API TriangularTensorMassForceField<Vec3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<Vec3fTypes>;
 #endif
 
 } // namespace forcefield

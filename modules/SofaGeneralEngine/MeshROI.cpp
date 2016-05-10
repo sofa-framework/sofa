@@ -54,14 +54,14 @@ int MeshROIClass = core::RegisterObject("Find the primitives (vertex/edge/triang
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API MeshROI<Vec3dTypes>;
-template class SOFA_ENGINE_API MeshROI<Rigid3dTypes>;
-template class SOFA_ENGINE_API MeshROI<Vec6dTypes>; //Phuoc
+template class SOFA_GENERAL_ENGINE_API MeshROI<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API MeshROI<Rigid3dTypes>;
+template class SOFA_GENERAL_ENGINE_API MeshROI<Vec6dTypes>; //Phuoc
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API MeshROI<Vec3fTypes>;
-template class SOFA_ENGINE_API MeshROI<Rigid3fTypes>;
-template class SOFA_ENGINE_API MeshROI<Vec6fTypes>; //Phuoc
+template class SOFA_GENERAL_ENGINE_API MeshROI<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API MeshROI<Rigid3fTypes>;
+template class SOFA_GENERAL_ENGINE_API MeshROI<Vec6fTypes>; //Phuoc
 #endif //SOFA_DOUBLE
 
 

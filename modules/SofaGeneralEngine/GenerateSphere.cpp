@@ -50,10 +50,10 @@ int GenerateSphereClass = core::RegisterObject("Generate a sphereical (Bezier) T
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API GenerateSphere<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API GenerateSphere<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API GenerateSphere<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

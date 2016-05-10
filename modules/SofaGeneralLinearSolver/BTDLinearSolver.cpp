@@ -25,6 +25,7 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
+#define SOFA_COMPONENT_LINEARSOLVER_BTDLINEARSOLVER_CPP
 
 #include <SofaGeneralLinearSolver/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -46,7 +47,7 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
 .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
 #endif
 #ifndef SOFA_DOUBLE
-        .add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
+.add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
 #endif
 //.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
 //.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
@@ -59,6 +60,13 @@ int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thom
 //.add< BTDLinearSolver<NewMatBandMatrix,NewMatVector> >(true)
 //.add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, double>, BlockVector<6, double> >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_GENERAL_LINEAR_SOLVER_API BTDLinearSolver< BTDMatrix<6, float>, BlockVector<6, float> >;
+#endif
 
 } // namespace linearsolver
 

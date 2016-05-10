@@ -77,8 +77,8 @@ int DirectSAPClassStdVector = core::RegisterObject("Collision detection using sw
         ;
 
 
-template class SOFA_MESH_COLLISION_API TDirectSAP<helper::vector,helper::CPUMemoryManager>;
-template class SOFA_MESH_COLLISION_API TDirectSAP<std::vector,std::allocator>;
+template class SOFA_GENERAL_MESH_COLLISION_API TDirectSAP<helper::vector,helper::CPUMemoryManager>;
+template class SOFA_GENERAL_MESH_COLLISION_API TDirectSAP<std::vector,std::allocator>;
 } // namespace collision
 
 } // namespace component

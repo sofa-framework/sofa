@@ -37,7 +37,7 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_BASE_VISUAL_API RecordedCamera : public BaseCamera
+class SOFA_GENERAL_VISUAL_API RecordedCamera : public BaseCamera
 {
 public:
     SOFA_CLASS(RecordedCamera, BaseCamera);

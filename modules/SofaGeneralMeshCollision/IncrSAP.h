@@ -64,7 +64,7 @@ class EndPointID;
   *The between end poinsts (_min, _max) and the field cube is that cube is always updated whereas
   *_min and _max are stored values of the cube end points at previous time step.
   */
-class SOFA_MESH_COLLISION_API ISAPBox{
+class SOFA_GENERAL_MESH_COLLISION_API ISAPBox{
 public:
     ISAPBox(){}
 
@@ -293,8 +293,8 @@ public:
 typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INCRSAP_CPP)
-extern template class SOFA_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-extern template class SOFA_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
+extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
+extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
 #endif
 
 } // namespace collision

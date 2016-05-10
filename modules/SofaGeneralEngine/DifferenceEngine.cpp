@@ -49,12 +49,12 @@ int DifferenceEngineClass = core::RegisterObject("Computing the difference betwe
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
-template class SOFA_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
-template class SOFA_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
 #endif
 
 } // namespace engine

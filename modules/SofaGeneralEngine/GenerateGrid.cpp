@@ -50,10 +50,10 @@ int GenerateGridClass = core::RegisterObject("Generate a Grid Tetrahedral or Hex
 
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API GenerateGrid<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API GenerateGrid<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API GenerateGrid<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API GenerateGrid<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

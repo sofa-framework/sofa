@@ -47,7 +47,7 @@ typedef sofa::defaulttype::Vec<4,BezierDegreeType> TetrahedronBezierIndex;
 /** a class that stores a set of Bezier tetrahedra and provides access with adjacent triangles, edges and vertices 
 A Bezier Tetrahedron has exactly the same topology as a Tetrahedron but with additional (control) points on its edges, triangles and inside 
 We use a Vec4D to number the control points inside  a Bezier tetrahedron */
-class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
+class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
 {
 
 public: 

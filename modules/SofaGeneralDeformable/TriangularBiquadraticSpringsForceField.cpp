@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBIQUADRATICSPRINGSFORCEFIELD_CPP
 
-#include <SofaDeformable/TriangularBiquadraticSpringsForceField.inl>
+#include <SofaGeneralDeformable/TriangularBiquadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -59,10 +59,10 @@ int TriangularBiquadraticSpringsForceFieldClass = core::RegisterObject("Biquadra
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularBiquadraticSpringsForceField<Vec3fTypes>;
 #endif
 
 

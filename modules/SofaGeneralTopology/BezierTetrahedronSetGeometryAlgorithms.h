@@ -122,14 +122,14 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec1dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<defaulttype::Vec1fTypes>;
 #endif
 #endif
 

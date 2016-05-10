@@ -34,7 +34,7 @@
 //
 //
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP
-#include <SofaDeformable/TriangularBendingSprings.inl>
+#include <SofaGeneralDeformable/TriangularBendingSprings.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -68,10 +68,10 @@ int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a tri
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API TriangularBendingSprings<Vec3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API TriangularBendingSprings<Vec3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularBendingSprings<Vec3fTypes>;
 #endif
 
 

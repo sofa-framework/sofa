@@ -52,10 +52,10 @@ int IndexValueMapperClass = core::RegisterObject("?")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API IndexValueMapper<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API IndexValueMapper<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 

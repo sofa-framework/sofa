@@ -56,15 +56,15 @@ int BezierTriangleSetGeometryAlgorithmsClass = core::RegisterObject("Bezier Tria
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec1dTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec3dTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec2dTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec1fTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec3fTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec2fTypes>;
+template class SOFA_GENERAL_TOPOLOGY_API BezierTriangleSetGeometryAlgorithms<Vec1fTypes>;
 #endif
 
 } // namespace topology

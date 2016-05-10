@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARQUADRATICSPRINGSFORCEFIELD_CPP
 
-#include <SofaDeformable/TriangularQuadraticSpringsForceField.inl>
+#include <SofaGeneralDeformable/TriangularQuadraticSpringsForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
@@ -65,10 +65,10 @@ int TriangularQuadraticSpringsForceFieldClass = core::RegisterObject("Quadratic 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API TriangularQuadraticSpringsForceField<Vec3fTypes>;
 #endif
 
 

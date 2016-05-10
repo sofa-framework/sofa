@@ -164,12 +164,12 @@ private:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PLANEROI_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API PlaneROI<defaulttype::Vec3dTypes>;
-extern template class SOFA_ENGINE_API PlaneROI<defaulttype::Rigid3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API PlaneROI<defaulttype::Vec3fTypes>;
-extern template class SOFA_ENGINE_API PlaneROI<defaulttype::Rigid3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API PlaneROI<defaulttype::Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

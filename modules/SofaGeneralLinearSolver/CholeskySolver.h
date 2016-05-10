@@ -72,12 +72,12 @@ private :
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_CHOLESKYSOLVER_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
-extern template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
+extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<double>, FullVector<double> >;
+extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<double>, FullVector<double> >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<float>, FullVector<float> >;
-extern template class SOFA_BASE_LINEAR_SOLVER_API CholeskySolver< FullMatrix<float>, FullVector<float> >;
+extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< SparseMatrix<float>, FullVector<float> >;
+extern template class SOFA_GENERAL_LINEAR_SOLVER_API CholeskySolver< FullMatrix<float>, FullVector<float> >;
 #endif
 #endif
 

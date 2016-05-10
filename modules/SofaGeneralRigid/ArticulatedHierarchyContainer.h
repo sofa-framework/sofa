@@ -51,7 +51,7 @@ class Articulation;
 * @see ArticulatedCenter
 * @see Articulation
 */
-class SOFA_RIGID_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
+class SOFA_GENERAL_RIGID_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ArticulatedHierarchyContainer,core::objectmodel::BaseObject);
@@ -100,7 +100,7 @@ private:
 *	All the variables which are defined in this class can be modified once sofa is running.
 */
 
-class SOFA_RIGID_API ArticulationCenter : public virtual core::objectmodel::BaseObject
+class SOFA_GENERAL_RIGID_API ArticulationCenter : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(ArticulationCenter,core::objectmodel::BaseObject);
@@ -213,7 +213,7 @@ public:
 *	An articulation is defined by an axis, an orientation and an index.
 *	All the variables which are defined in this class can be modified once sofa is running.
 */
-class SOFA_RIGID_API Articulation : public virtual core::objectmodel::BaseObject
+class SOFA_GENERAL_RIGID_API Articulation : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(Articulation,core::objectmodel::BaseObject);

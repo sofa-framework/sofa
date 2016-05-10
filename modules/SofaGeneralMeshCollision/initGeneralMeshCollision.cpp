@@ -41,7 +41,6 @@ void initGeneralMeshCollision()
     }
 }
 
-SOFA_LINK_CLASS(SubsetContactMapper)
 SOFA_LINK_CLASS(MeshDiscreteIntersection)
 SOFA_LINK_CLASS(MeshMinProximityIntersection)
 

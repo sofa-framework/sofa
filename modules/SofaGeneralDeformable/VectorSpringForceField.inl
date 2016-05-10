@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_VECTORSPRINGFORCEFIELD_INL
 
-#include <SofaDeformable/VectorSpringForceField.h>
+#include <SofaGeneralDeformable/VectorSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>

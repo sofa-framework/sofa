@@ -85,12 +85,12 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3dTypes>;
-extern template class SOFA_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2dTypes>;
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3fTypes>;
-extern template class SOFA_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2fTypes>;
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_DEFORMABLE_API TriangleBendingSprings<defaulttype::Vec2fTypes>;
 #endif
 #endif
 

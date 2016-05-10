@@ -24,7 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_CPP
 
-#include <SofaDeformable/QuadularBendingSprings.inl>
+#include <SofaGeneralDeformable/QuadularBendingSprings.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -53,10 +53,10 @@ int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3dTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API QuadularBendingSprings<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_DEFORMABLE_API QuadularBendingSprings<Vec3fTypes>;
+template class SOFA_GENERAL_DEFORMABLE_API QuadularBendingSprings<Vec3fTypes>;
 #endif
 
 } // namespace forcefield
