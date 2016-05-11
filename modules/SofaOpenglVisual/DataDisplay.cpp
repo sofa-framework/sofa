@@ -180,6 +180,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
     }
 
+    if(m_normals.size() != x.size())
+        computeNormals();
 
     if( d_userRange.getValue()[0] < d_userRange.getValue()[1] )
     {

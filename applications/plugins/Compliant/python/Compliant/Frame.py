@@ -43,6 +43,9 @@ class Frame:
         def offset(self):
             return hstack((self.translation, self.rotation))
 
+        def tolist(self):
+            return [self.translation[0],self.translation[1],self.translation[2],self.rotation[0],self.rotation[1],self.rotation[2],self.rotation[3]]
+
         def __mul__(self, other):
             res = Frame()
             res.translation = self.translation + quat.rotate(self.rotation, other.translation)
