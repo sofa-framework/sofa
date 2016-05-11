@@ -26,7 +26,6 @@
 #include "Binding_MeshLoader.h"
 #include "Binding_BaseLoader.h"
 
-#include <sofa/core/loader/MeshLoader.h>
 using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;

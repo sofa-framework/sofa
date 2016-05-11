@@ -26,7 +26,9 @@
 #define BINDING_SUBSETMULTIMAPPING_H
 
 #include "PythonMacros.h"
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 SP_DECLARE_CLASS_TYPE(SubsetMultiMapping3_to_3)
 
 #endif // BINDING_SUBSETMULTIMAPPING_H

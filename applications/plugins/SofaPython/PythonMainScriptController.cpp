@@ -30,9 +30,6 @@ using sofa::core::RegisterObject;
 #include <sofa/helper/AdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer;
 
-#include "Binding_Base.h"
-#include "Binding_BaseContext.h"
-#include "Binding_Node.h"
 using sofa::core::visual::VisualParams;
 
 #include "ScriptEnvironment.h"
