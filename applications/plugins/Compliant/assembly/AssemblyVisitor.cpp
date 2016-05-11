@@ -86,7 +86,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
         if( !notempty((*js)[i]) )
         {
-            msg_warning("AssemblyVisitor" ) << "Empty mapping block for " << mapping_name(node) << " (is mapping matrix assembled?)";
+            msg_warning("AssemblyVisitor") << "Empty mapping block for " << mapping_name(node) << " (is mapping Jacobian matrix assembled?)";
             continue;
         }
 
@@ -714,7 +714,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
         // only consider mechanical mapped dofs that have geometric stiffness
         if( !c.mechanical || c.master() || !c.Ktilde ) continue;
 
-        // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
+        // Note this is a pointer (no copy for matrices that are already in the right type i.e. EigenBaseSparseMatrix<SReal>)
         MySPtr<rmat> Ktilde( convertSPtr<rmat>( c.Ktilde ) );
 
         if( zero( *Ktilde ) ) continue;
@@ -813,10 +813,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
 				// scoped::timer step("compliant dofs");
 				assert( !zero(Jc) );
 
-
-                // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
+                // Note this is a pointer (no copy for matrices that are already in the right type i.e. EigenBaseSparseMatrix<SReal>)
                 MySPtr<rmat> C( convertSPtr<rmat>( c.C ) );
-
 
                 // fetch projector and constraint value if any
                 AssembledSystem::constraint_type constraint;
@@ -842,7 +840,6 @@ void AssemblyVisitor::assemble(system_type& res) const {
 				res.J.middleRows(off_c, c.size) = Jc;
 
                 // compliance
-
                 if( !zero( *C ) ) add_C(*C, off_c, c_factor);
                 
 				off_c += c.size;
