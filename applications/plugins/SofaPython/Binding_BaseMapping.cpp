@@ -26,7 +26,6 @@
 #include "Binding_BaseMapping.h"
 #include "Binding_BaseObject.h"
 
-#include <sofa/core/BaseMapping.h>
 using namespace sofa;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;

@@ -24,7 +24,6 @@
 ******************************************************************************/
 
 #include "Binding_LinearSpring.h"
-#include <SofaDeformable/SpringForceField.h>
 
 
 using namespace sofa::component::interactionforcefield;

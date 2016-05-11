@@ -27,7 +27,6 @@
 #include "Binding_Topology.h"
 #include "Binding_BaseObject.h"
 
-#include <sofa/core/topology/Topology.h>
 using namespace sofa::core::topology;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;

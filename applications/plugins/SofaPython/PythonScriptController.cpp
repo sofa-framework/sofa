@@ -29,11 +29,7 @@
 using sofa::helper::AdvancedTimer;
 
 
-#include "Binding_Base.h"
 using sofa::core::objectmodel::Base;
-
-#include "Binding_BaseContext.h"
-#include "Binding_Node.h"
 using sofa::simulation::Node;
 
 #include "Binding_PythonScriptController.h"

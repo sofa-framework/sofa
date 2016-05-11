@@ -23,11 +23,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
-#include "PythonScriptController.h"
-using namespace sofa::component::controller;
 
 #include "Binding_PythonScriptController.h"
 #include "Binding_Base.h"
+
+using namespace sofa::component::controller;
 
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;

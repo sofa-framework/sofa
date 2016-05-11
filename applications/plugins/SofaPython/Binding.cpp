@@ -57,56 +57,57 @@
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
 #include "Binding_DataEngine.h"
+#include "PythonFactory.h"
 
-PyObject *SofaPythonModule = 0;
 
-
+using sofa::PythonFactory;
 
 
 void bindSofaPythonModule()
 {
     //PyImport_AppendInittab( (char*)"Sofa", &initSofa );
 
-	SofaPythonModule = SP_INIT_MODULE(Sofa)
-	SP_ADD_CLASS(SofaPythonModule,Data)
-	SP_ADD_CLASS(SofaPythonModule,DisplayFlagsData)
-    SP_ADD_CLASS(SofaPythonModule,OptionsGroupData)
+    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa)
 
-    SP_ADD_CLASS(SofaPythonModule,Link)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Data)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,DisplayFlagsData)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,OptionsGroupData)
 
-	SP_ADD_CLASS(SofaPythonModule,Vector3)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Link)
 
-	SP_ADD_CLASS(SofaPythonModule,LinearSpring)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Vector3)
+
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,LinearSpring)
 
 
-	SP_ADD_CLASS(SofaPythonModule,Base)
-	SP_ADD_CLASS(SofaPythonModule,BaseContext)
-	SP_ADD_CLASS(SofaPythonModule,Context)
-	SP_ADD_CLASS(SofaPythonModule,Node)
-	SP_ADD_CLASS(SofaPythonModule,BaseObject)
-	SP_ADD_CLASS(SofaPythonModule,BaseState)
-	SP_ADD_CLASS(SofaPythonModule,BaseMechanicalState)
-	SP_ADD_CLASS(SofaPythonModule,MechanicalObject)
-	SP_ADD_CLASS(SofaPythonModule,VisualModel)
-    SP_ADD_CLASS(SofaPythonModule,VisualModelImpl)
-	SP_ADD_CLASS(SofaPythonModule,BaseMapping)
-    SP_ADD_CLASS(SofaPythonModule,DataEngine)
-	//SP_ADD_CLASS(SofaPythonModule,Mapping)
-	//SP_ADD_CLASS(SofaPythonModule,RigidMapping)
-	//SP_ADD_CLASS(SofaPythonModule,MultiMapping3_to_3)
-	SP_ADD_CLASS(SofaPythonModule,SubsetMultiMapping3_to_3)
-	SP_ADD_CLASS(SofaPythonModule,BaseLoader)
-	SP_ADD_CLASS(SofaPythonModule,MeshLoader)
-	SP_ADD_CLASS(SofaPythonModule,Topology)
-	SP_ADD_CLASS(SofaPythonModule,BaseMeshTopology)
-	SP_ADD_CLASS(SofaPythonModule,MeshTopology)
-	SP_ADD_CLASS(SofaPythonModule,GridTopology)
-	SP_ADD_CLASS(SofaPythonModule,RegularGridTopology)
-	SP_ADD_CLASS(SofaPythonModule,OBJExporter)
-	//SP_ADD_CLASS(SofaPythonModule,BaseController)
-	//SP_ADD_CLASS(SofaPythonModule,Controller)
-	//SP_ADD_CLASS(SofaPythonModule,ScriptController)
-	SP_ADD_CLASS(SofaPythonModule,PythonScriptController)
+    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Base)
+    SP_ADD_CLASS_IN_FACTORY(BaseContext,sofa::core::objectmodel::BaseContext)
+    SP_ADD_CLASS_IN_FACTORY(Context,sofa::core::objectmodel::Context)
+    SP_ADD_CLASS_IN_FACTORY(Node,sofa::simulation::Node)
+    SP_ADD_CLASS_IN_FACTORY(BaseObject,sofa::core::objectmodel::BaseObject)
+    SP_ADD_CLASS_IN_FACTORY(BaseState,sofa::core::BaseState)
+    SP_ADD_CLASS_IN_FACTORY(BaseMechanicalState,sofa::core::behavior::BaseMechanicalState)
+//    SP_ADD_CLASS_IN_FACTORY(MechanicalObject,MechanicalObject3)
+    SP_ADD_CLASS_IN_FACTORY(VisualModel,sofa::core::visual::VisualModel)
+    SP_ADD_CLASS_IN_FACTORY(VisualModelImpl,sofa::component::visualmodel::VisualModelImpl)
+    SP_ADD_CLASS_IN_FACTORY(BaseMapping,sofa::core::BaseMapping)
+    SP_ADD_CLASS_IN_FACTORY(DataEngine,sofa::core::DataEngine)
+    //SP_ADD_CLASS_IN_FACTORY(Mapping)
+    //SP_ADD_CLASS_IN_FACTORY(RigidMapping)
+    //SP_ADD_CLASS_IN_FACTORY(MultiMapping3_to_3)
+//    SP_ADD_CLASS_IN_FACTORY(SubsetMultiMapping3_to_3,SubsetMultiMapping3_to_3)
+    SP_ADD_CLASS_IN_FACTORY(BaseLoader,sofa::core::loader::BaseLoader)
+    SP_ADD_CLASS_IN_FACTORY(MeshLoader,sofa::core::loader::MeshLoader)
+    SP_ADD_CLASS_IN_FACTORY(Topology,sofa::core::topology::Topology)
+    SP_ADD_CLASS_IN_FACTORY(BaseMeshTopology,sofa::core::topology::BaseMeshTopology)
+    SP_ADD_CLASS_IN_FACTORY(MeshTopology,sofa::component::topology::MeshTopology)
+    SP_ADD_CLASS_IN_FACTORY(GridTopology,sofa::component::topology::GridTopology)
+    SP_ADD_CLASS_IN_FACTORY(RegularGridTopology,sofa::component::topology::RegularGridTopology)
+    SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
+    //SP_ADD_CLASS_IN_FACTORY(BaseController)
+    //SP_ADD_CLASS_IN_FACTORY(Controller)
+    //SP_ADD_CLASS_IN_FACTORY(ScriptController)
+    SP_ADD_CLASS_IN_FACTORY(PythonScriptController,sofa::component::controller::PythonScriptController)
 }
 
 

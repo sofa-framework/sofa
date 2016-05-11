@@ -42,6 +42,7 @@ set(HEADER_FILES
     Binding_VisualModel.h
     PythonCommon.h
     PythonEnvironment.h
+    PythonFactory.h
     PythonMacros.h
     PythonMainScriptController.h
     PythonScriptController.h
@@ -90,6 +91,7 @@ set(SOURCE_FILES
     Binding_Vector.cpp
     Binding_VisualModel.cpp
     PythonEnvironment.cpp
+    PythonFactory.cpp
     PythonMacros.cpp
     PythonMainScriptController.cpp
     PythonScriptController.cpp

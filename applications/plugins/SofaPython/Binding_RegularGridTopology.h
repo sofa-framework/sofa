@@ -26,6 +26,7 @@
 #define BINDING_REGULARGRIDTOPOLOGY_H
 
 #include "PythonMacros.h"
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 SP_DECLARE_CLASS_TYPE(RegularGridTopology)
 
