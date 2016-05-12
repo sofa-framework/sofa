@@ -192,7 +192,7 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
         ja = (int *) &(data->Mfiltered.getColsIndex()[0]);
         a  = (double*) &(data->Mfiltered.getColsValue()[0]);
 
-        numActNZ = ia[n]-1;
+        //numActNZ = ia[n]-1;
 
         if (doExportData) {
             std::string exportDir=f_exportDataToDir.getValue();
@@ -292,7 +292,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
         std::ofstream f;
         char name[100];
         sprintf(name, "%s/matrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
-        std::cout << this->getName() << ": Exporting to " << name << std::endl;
+        //std::cout << this->getName() << ": Exporting to " << name << std::endl;
         f.open(name);
         f << M;
         f.close();
@@ -330,25 +330,30 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
     /*     all memory that is necessary for the factorization.              */
     /* -------------------------------------------------------------------- */
 
-    //if (!data->factorized || numPrevNZ != numAtNZ || numStep < 10)
+    numActNZ = data->Mfiltered.getRowBegin().back();
+    //std::cout << this->getName() << "Actual NNZ = " << numActNZ << " previous NNZ = " << numPrevNZ << std::endl;
+    if (numPrevNZ != numActNZ)
     {
-        sout << "Analyzing the matrix" << std::endl;
+        //std::cout << "[" << this->getName() << "] analyzing the matrix" << std::endl;
+        //sout << "Analyzing the matrix" << std::endl;
         if (callPardiso(data, 11)) return;
-        data->factorized = true;
-        sout << "Reordering completed ..." << sendl;
-        sout << "Number of nonzeros in factors  = " << data->pardiso_iparm[17] << sendl;
-        sout << "Number of factorization MFLOPS = " << data->pardiso_iparm[18] << sendl;
-
-        numPrevNZ = numActNZ;
+        data->factorized = true;        
+        //sout << "Reordering completed ..." << sendl;
+        std::cout << "After analysis: NNZ = " << data->pardiso_iparm[17] << std::endl;
+        //sout << "Number of factorization MFLOPS = " << data->pardiso_iparm[18] << sendl;
     }
+    numPrevNZ = numActNZ;
 
     /* -------------------------------------------------------------------- */
     /* ..  Numerical factorization.                                         */
     /* -------------------------------------------------------------------- */
+    std::cout << "[" << this->getName() << "] factorize the matrix" << std::endl;
     if (callPardiso(data, 22)) { data->factorized = false; return; }    
 
     sout << "Factorization completed ..." << sendl;
     sofa::helper::AdvancedTimer::stepEnd("PardisoInvert");
+
+    numStep++;
 }
 
 template<class TMatrix, class TVector>
@@ -373,8 +378,9 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     /* -------------------------------------------------------------------- */
     /* ..  Back substitution and iterative refinement.                      */
     /* -------------------------------------------------------------------- */
-    data->pardiso_iparm[7] = 1;       /* Max numbers of iterative refinement steps. */
+    data->pardiso_iparm[7] = 0;       /* Max numbers of iterative refinement steps. */
 
+    //std::cout << "[" << this->getName() << "] solve the matrix" << std::endl;
     if (callPardiso(data, 33, &z, &r)) return;
     sofa::helper::AdvancedTimer::stepEnd("PardisoSolve");
 
@@ -386,8 +392,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
         f.open(name);
         f << z;
         f.close();
-    }
-    numStep++;
+    }    
 }
 
 
