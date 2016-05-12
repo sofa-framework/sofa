@@ -454,6 +454,7 @@ void SpotLight::drawLight()
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     }
+
 }
 
 void SpotLight::draw(const core::visual::VisualParams* vparams)
@@ -467,51 +468,22 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
 
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
-        Vector3 sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
-        scale *= 0.01f;
-        float width = 5.0f;
-        float base =(float)(tan(d_cutoff.getValue()*M_PI/360)*width*2);
-
-        static GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = d_position.getValue();
-        Vector3 dir = d_direction.getValue();
-        if (d_lookat.getValue()) dir -= d_position.getValue();
-
+        float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
+        float tipLength = (baseLength*0.5) * (zNear/ zFar);
         const Vector3& col = d_color.getValue();
-
-        //get Rotation
-        Vector3 xAxis, yAxis;
-        yAxis = (fabs(dir[1]) > fabs(dir[2])) ? Vector3(0.0,0.0,1.0) : Vector3(0.0,1.0,0.0);
-        xAxis = yAxis.cross(dir);
-        yAxis = dir.cross(xAxis);
-        xAxis.normalize();
-        yAxis.normalize();
-        dir.normalize();
-        GLfloat rotMat[16] =
-        {
-            (GLfloat)xAxis[0], (GLfloat)xAxis[1], (GLfloat)xAxis[2], 0.0f,
-            (GLfloat)yAxis[0], (GLfloat)yAxis[1], (GLfloat)yAxis[2], 0.0f,
-            (GLfloat)dir  [0], (GLfloat)dir  [1], (GLfloat)dir  [2], 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-        glDisable(GL_LIGHTING);
-        glColor3fv((float*)col.ptr());
-
-        glPushMatrix();
-        glTranslated(pos[0], pos[1], pos[2]);
-        glMultMatrixf(rotMat);
-        glScalef(scale, scale, scale);
-        glPushMatrix();
-        gluSphere(quad, 0.5, 16, 16);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        gluCylinder(quad,0.0, base, width, 10, 10);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glPopMatrix();
-        glPopMatrix();
-
-        glEnable(GL_LIGHTING);
+        sofa::defaulttype::Vec4f color4(col[0], col[1], col[2], 1.0);
+        Vector3 direction = this->d_direction.getValue();
+        direction.normalized();
+        Vector3 base = this->getPosition() + direction*zFar;
+        Vector3 tip = this->getPosition() + direction*zNear;
+        std::vector<Vector3> centers;
+        centers.push_back(this->getPosition());
+        vparams->drawTool()->setPolygonMode(0, true);
+        vparams->drawTool()->setLightingEnabled(false);
+        vparams->drawTool()->drawSpheres(centers, zNear*0.1,color4);
+        vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, color4);
+        vparams->drawTool()->setLightingEnabled(true);
+        vparams->drawTool()->setPolygonMode(0, false);
     }
 }
 
@@ -525,20 +497,24 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     Vector3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
+    
+    double epsilon = 0.0000001;
+    Vector3 zAxis = -dir;
+    zAxis.normalize();
+    Vector3 yAxis(0, 1, 0);
 
-    Vector3 xAxis, yAxis;
-
-    yAxis = Vector3(0.0, 1.0, 0.0);
-
-    if (1.0 - std::abs(dot(yAxis, dir.normalized()))  < 0.0001)
+    if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
     {
-        dir += Vector3(0.0000001, 0.0, 0.0) * dot(yAxis, dir.normalized());
-        dir.normalize();
-
+        if (zAxis[1] > 0)
+            yAxis = Vector3(0, 0, -1);
+        else
+            yAxis = Vector3(0, 0, 1);
     }
-    xAxis = yAxis.cross(dir);
+
+    Vector3 xAxis = yAxis.cross(zAxis);
     xAxis.normalize();
-    yAxis = dir.cross(xAxis);
+
+    yAxis = zAxis.cross(xAxis);
     yAxis.normalize();
 
     defaulttype::Quat q;
@@ -669,7 +645,7 @@ void SpotLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaul
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)
         {
-            wModelViewMatrix[i * 4 + j] = mat[i * 4 + j];
+            wModelViewMatrix[i * 4 + j] = mat[j * 4 + i];
         }
 
     d_modelViewMatrix.endEdit();
@@ -711,7 +687,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     for (unsigned int i = 0; i < 4; i++)
         for (unsigned int j = 0; j < 4; j++)
         {
-            wProjectionMatrix[i * 4 + j] = mat[i * 4 + j];
+            wProjectionMatrix[i * 4 + j] = mat[j * 4 + i];
         }
 
     d_projectionMatrix.endEdit();
@@ -751,6 +727,7 @@ const GLfloat* SpotLight::getOpenGLModelViewMatrix()
 {
     return m_lightMatModelview;
 }
+
 
 }
 
