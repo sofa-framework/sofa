@@ -24,6 +24,7 @@
 ******************************************************************************/
 
 #include <sofa/core/DataEngine.h>
+#include <boost/functional/hash.hpp>
 
 namespace sofa
 {
@@ -77,6 +78,32 @@ void DataEngine::delOutput(objectmodel::BaseData* n)
 {
     core::objectmodel::DDGNode::delOutput(n);
 }
+
+
+
+/// to perform hash on strings
+static boost::hash<std::string> string_hash;
+
+
+void DataEngine::cleanDirty(const core::ExecParams* params)
+{
+    core::objectmodel::DDGNode::cleanDirty(params);
+
+    // it is time to store the value of tracked Data
+    for( StoredPreviousValues::iterator it=m_storedPreviousValues.begin(),itend=m_storedPreviousValues.end() ; it!=itend ; ++it )
+        it->second = string_hash(it->first->getValueString());
+}
+
+void DataEngine::trackData( const objectmodel::BaseData& data )
+{
+    m_storedPreviousValues[&data] = string_hash(data.getValueString());
+}
+
+bool DataEngine::didTrackedDataChanged( const objectmodel::BaseData& data )
+{
+    return m_storedPreviousValues[&data] != string_hash(data.getValueString());
+}
+
 
 } // namespace core
 

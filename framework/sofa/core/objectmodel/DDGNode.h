@@ -185,7 +185,7 @@ public:
     virtual void setDirtyOutputs(const core::ExecParams* params = 0);
 
     /// Set dirty flag to false
-    void cleanDirty(const core::ExecParams* params = 0);
+    virtual void cleanDirty(const core::ExecParams* params = 0);
 
     /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
     void updateIfDirty(const core::ExecParams* params = 0) const
