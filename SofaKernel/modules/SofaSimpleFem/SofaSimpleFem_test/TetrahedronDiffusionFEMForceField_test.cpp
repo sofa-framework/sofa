@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef SOFA_STANDARDTEST_BEAMDIFFUSION_TEST_H
-#define SOFA_STANDARDTEST_BEAMDIFFUSION_TEST_H
+#ifndef SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H
+#define SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -50,7 +50,7 @@ namespace sofa {
  *
  */
 template <typename _ForceFieldType>
-struct BeamDiffusion_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
+struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
 {
     typedef _ForceFieldType ForceField;
     typedef typename ForceField::DataTypes DataTypes;
@@ -93,8 +93,8 @@ struct BeamDiffusion_test : public Sofa_test<typename _ForceFieldType::DataTypes
     /// }
 
 
-    BeamDiffusion_test()
-        : sceneFilename(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "BeamDiffusion.scn")
+    TetrahedronDiffusionFEMForceField_test()
+        : sceneFilename(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "TetrahedronDiffusionFEMForceField.scn")
         , diffusionCoefficient( 1.0 )
         , massDensity( 1.0 )
         , beamDimension(1.0, 0.5, 0.5)
@@ -124,7 +124,7 @@ struct BeamDiffusion_test : public Sofa_test<typename _ForceFieldType::DataTypes
 
         if(!tetraNode || !temperatureNode)
         {
-          std::cerr << "Node not found in BeamDiffusion_test.scn, test will break" << std::endl;
+          std::cerr << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" << std::endl;
           return;
         }
 
@@ -194,10 +194,10 @@ typedef testing::Types<component::forcefield::TetrahedronDiffusionFEMForceField<
 
 
 // ========= Tests to run for each instanciated type
-TYPED_TEST_CASE(BeamDiffusion_test, TestTypes);
+TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 
 // test case
-TYPED_TEST( BeamDiffusion_test , extension )
+TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
     this->debug = false;
 
@@ -213,4 +213,4 @@ TYPED_TEST( BeamDiffusion_test , extension )
 
 } // namespace sofa
 
-#endif /* SOFA_STANDARDTEST_BEAMDIFFUSION_TEST_H */
+#endif /* SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H */
