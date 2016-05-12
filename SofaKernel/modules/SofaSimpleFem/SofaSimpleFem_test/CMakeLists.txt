@@ -5,7 +5,7 @@ project(SofaSimpleFem_test)
 set(SOURCE_FILES
     HexahedronFEMForceField_test.cpp
     TetrahedronFEMForceField_test.cpp
-    BeamDiffusion_test.cpp
+    TetrahedronDiffusionFEMForceField_test.cpp
 )
 
 add_definitions("-DSOFASIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
