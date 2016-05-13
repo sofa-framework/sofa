@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/odesolver/OdeSolverImpl.h>
+#define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP
+
+#include <SofaEngine/ComplementaryROI.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -34,55 +34,31 @@ namespace sofa
 namespace component
 {
 
-namespace odesolver
+namespace engine
 {
 
-/** The simplest time integration.
-the symplectic variant of Euler's method is applied
-*/
-class SOFA_COMPONENT_ODESOLVER_API ComplianceEulerSolver : public sofa::component::odesolver::OdeSolverImpl
-{
-public:
-    SOFA_CLASS(ComplianceEulerSolver, sofa::component::odesolver::OdeSolverImpl);
-    ComplianceEulerSolver();
-    void solve (double dt);
-    Data<bool> firstCallToSolve;
+using namespace sofa::defaulttype;
 
-    /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
-    /// how much will it affect the output derivative of the given order.
-    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
-    {
-        const double dt = getContext()->getDt();
-        double matrix[3][3] =
-        {
-            { 1, dt, dt*dt},
-            { 0, 1, dt},
-            { 0, 0, 0}
-        };
-        if (inputDerivative >= 3 || outputDerivative >= 3)
-            return 0;
-        else
-            return matrix[outputDerivative][inputDerivative];
-    }
+SOFA_DECL_CLASS(ComplementaryROI)
 
-    /// Given a solution of the linear system,
-    /// how much will it affect the output derivative of the given order.
-    ///
-    virtual double getSolutionIntegrationFactor(int outputDerivative) const
-    {
-        const double dt = getContext()->getDt();
-        double vect[3] = { dt*dt, dt, 1};
-        if (outputDerivative >= 3)
-            return 0;
-        else
-            return vect[outputDerivative];
-    }
-};
+int ComplementaryROIClass = core::RegisterObject("Find the points NOT in the input sets")
+#ifndef SOFA_FLOAT
+        .add<ComplementaryROI<Vec3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add<ComplementaryROI<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
 
-} // namespace odesolver
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API ComplementaryROI<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API ComplementaryROI<Vec3fTypes>;
+#endif //SOFA_DOUBLE
+
+} // namespace engine
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

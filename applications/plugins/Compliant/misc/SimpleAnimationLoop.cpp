@@ -45,7 +45,7 @@ class SOFA_Compliant_API SimpleAnimateVisitor : public Visitor {
   protected:
     
     virtual void on_collision_pipeline(simulation::Node* node,
-                                       core::collision::Pipeline* obj) {
+                                       core::collision::Pipeline* /*obj*/) {
 
         sofa::helper::ScopedAdvancedTimer step("collision");
 
