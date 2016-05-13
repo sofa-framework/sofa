@@ -382,6 +382,13 @@ public:
         return img(0).width()*img(0).height()*img(0).depth()*img(0).spectrum()*img.size()*sizeof(T);
     }
 
+
+    friend size_t hash_value( const Image& i )
+    {
+        return boost::hash<cimg_library::CImgList<T>>()(i.img);
+    }
+
+
 };
 
 
@@ -484,6 +491,12 @@ public:
 
     TImageTransform& operator=(const TImageTransform& T) 	{ P=T.getParams(); this->update(); return *this; }
     void set(const Params& _P) { P=_P; 	this->update(); }
+
+
+    friend size_t hash_value( const TImageTransform& t )
+    {
+        return boost::hash<Params>()(t.P);
+    }
 };
 
 
@@ -567,6 +580,14 @@ public:
     }
     virtual Real toImage(const Real& p) const		{ return (p - getOffsetT())/getScaleT(); }
 
+
+    friend size_t hash_value( const ImageLPTransform& t )
+    {
+        size_t hash = boost::hash<Params>()(t.P);
+        boost::hash_combine( hash, t.camx );
+        boost::hash_combine( hash, t.camy );
+        return hash;
+    }
 };
 
 
@@ -659,6 +680,11 @@ public:
         return out;
     }
 
+
+    friend size_t hash_value( const Histogram& h )
+    {
+        return boost::hash< Vec<2,T> >()(h.clamp);
+    }
 };
 
 
@@ -911,6 +937,11 @@ public:
         return out;
     }
 
+    friend size_t hash_value( const ImagePlane& p )
+    {
+        return boost::hash<pCoord>()(p.plane);
+    }
+
 
 };
 
@@ -980,10 +1011,6 @@ struct ImageTypeInfo
         return NULL;
     }
 
-    static void getHash( const DataType& /*data*/, size_t& /*hash*/ )
-    {
-        msg_error("ImageTypeInfo") << "hash on ImageType is not yet implemented. Undefined behavior.";
-    }
 };
 
 

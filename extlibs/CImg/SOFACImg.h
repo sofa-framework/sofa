@@ -44,6 +44,7 @@
 #include <zlib.h>
 #endif
 
+#include <boost/functional/hash.hpp>
 
 namespace cimg_library
 {
@@ -503,6 +504,19 @@ const CImg<T>& save_inr(const CImg<T>& cimg, std::FILE *const file, const char *
 	cimg_forXYZ(cimg,x,y,z) cimg_forC(cimg,c) cimg::fwrite(&(cimg(x,y,z,c)),1,nfile);
     if (!file) cimg::fclose(nfile);
 	return cimg;
+}
+
+
+template<class T>
+size_t hash_value( const CImg<T>& i )
+{
+    return boost::hash_range( i.data(), i.data()+i.size() );
+}
+
+template<class T>
+size_t hash_value( const CImgList<T>& l )
+{
+    return boost::hash_range( l.data(), l.data()+l.size() );
 }
 
 }

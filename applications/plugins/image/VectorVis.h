@@ -109,6 +109,18 @@ public:
         return out;
     }
 
+        friend size_t hash_value(const VectorVis& b)
+    {
+        size_t hash = boost::hash<int>()(b.getSubsampleXY());
+        boost::hash_combine( hash, b.getSubsampleZ() );
+        boost::hash_combine( hash, b.getShapeScale() );
+        boost::hash_combine( hash, b.getRgb() );
+        boost::hash_combine( hash, b.getShape() );
+        boost::hash_combine( hash, b.getTensorOrder() );
+        return hash;
+    }
+
+
 
 };
 
