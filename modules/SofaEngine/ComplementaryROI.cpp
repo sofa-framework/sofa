@@ -25,8 +25,7 @@
 
 #define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP
 
-#include "ComplementaryROI.inl"
-
+#include <SofaEngine/ComplementaryROI.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
