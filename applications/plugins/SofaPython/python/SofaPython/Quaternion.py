@@ -306,6 +306,7 @@ _TUPLE2AXES = dict((v, k) for k, v in _AXES2TUPLE.items())
 
 def euler_from_matrix(M, axes='sxyz'):
     """Return Euler angles from rotation matrix for specified axis sequence.
+    @warning returns a numpy array
 
     axes : One of 24 axis sequences as string or encoded tuple
 
@@ -365,12 +366,14 @@ def euler_from_matrix(M, axes='sxyz'):
 
 def to_euler(q, axes='sxyz'):
     """Return Euler angles from quaternion for specified axis sequence.
+    @warning returns a numpy array
     """
     return euler_from_matrix( to_matrix(q), axes )
 
 
 def from_euler( a, axes='sxyz' ):
     """Return quaternion from Euler angles and axis sequence.
+    @warning returns a numpy array
 
     a is a list of 3 euler angles [x,y,z]
     axes : One of 24 axis sequences as string or encoded tuple

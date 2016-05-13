@@ -785,7 +785,13 @@ void QtGLViewer::drawScene(void)
 
     camera()->getModelViewMatrix( lastModelviewMatrix );
     vparams->setModelViewMatrix( lastModelviewMatrix );
+
     vparams->setProjectionMatrix( lastProjectionMatrix );
+
+    //update info to SofaCamera
+    //TODO
+
+
     //camera()->frame()->getMatrix( lastModelviewMatrix );
 
     //for(int i=0 ; i<16 ;i++)

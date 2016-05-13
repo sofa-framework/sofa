@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.02" showAxis="true">
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="1" showAxis="true">
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
@@ -10,8 +10,8 @@
     <LDLTResponse/>
 
     <!--Nodes-->
-    <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />
-    <RegularGrid name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" position="@defoDOF.position" drawHexahedra="true" />
+    <RegularGrid name ="loader" nx="4" ny="4" nz="4" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1"  drawHexahedra="true" />
+    <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1" position="@loader.position"  showIndicesScale="0.0001" />
     
     <!--Constraint and roi-->
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
@@ -30,19 +30,19 @@
     <!--Shape function-->
     <BarycentricShapeFunction template="ShapeFunctiond" />
     
+    <!-- <HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" /> —>
     <!--Elasticity-->
     <Node 	name="Elasticity" >
-      <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="1" />
-      <MechanicalObject template="F332"  name="MoElasticity" />
-      <LinearMapping template="Vec3d,F332" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1" assemble="1"/>
-
+      <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="2" />
+      <MechanicalObject template="F331"  name="MoElasticity" />
+      <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"   assemble="1"/>
+	<!--<ProjectiveForceField template="F331" youngModulus="1000" poissonRatio="0"  assemble="1"/>-->
       <!--Material-->
       <Node 	name="Material" >
-        <MechanicalObject template="E332"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="F332,E332" method="small" assemble="1"/>
-        <HookeForceField template="E332" youngModulus="1000" poissonRatio="0"  assemble="1"/>
-      </Node>
-    
+        <MechanicalObject template="E331"  name="VoigtStrainDOF" />
+        <CorotationalStrainMapping template="F331,E331" method="small" assemble="1"/>
+        <HookeForceField template="E331" youngModulus="1000" poissonRatio="0"  assemble="1"/>
+      </Node>    
     </Node>
    
     <!--Visualisation-->

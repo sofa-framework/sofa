@@ -55,6 +55,7 @@ PickHandler::PickHandler():
     mouseNode(NULL),
     mouseContainer(NULL),
     mouseCollision(NULL),
+    _fbo(true,true,true,0),
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
     _fboAllocated(false)

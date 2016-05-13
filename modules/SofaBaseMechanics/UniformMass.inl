@@ -52,74 +52,139 @@ namespace component
 namespace mass
 {
 
+using helper::WriteAccessor;
+using helper::ReadAccessor;
+using helper::WriteOnlyAccessor;
+using helper::vector;
+
+using std::list;
+
+using core::behavior::Mass;
+using core::topology::BaseMeshTopology;
+using core::topology::TopologyChange;
+using core::MechanicalParams;
+using core::behavior::MultiMatrixAccessor;
+using core::visual::VisualParams;
+using core::ConstVecCoordId;
+
+using defaulttype::BaseVector;
+using defaulttype::Vec;
+using defaulttype::Vec3d;
+using defaulttype::DataTypeInfo;
+using defaulttype::BaseMatrix;
+
+
+
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : mass ( initData ( &mass, MassType ( 1.0f ), "mass", "Mass of each particle" ) )
-    , totalMass ( initData ( &totalMass, (SReal)0.0, "totalmass", "Sum of the particles' masses" ) )
-    , filenameMass ( initData ( &filenameMass, "filename", "Rigid file to load the mass parameters" ) )
-    , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , compute_mapping_inertia ( initData ( &compute_mapping_inertia, false, "compute_mapping_inertia", "to be used if the mass is placed under a mapping" ) )
-    , showInitialCenterOfGravity ( initData ( &showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
-    , showX0 ( initData ( &showX0, false, "showX0", "display the rest positions" ) )
-    , localRange ( initData ( &localRange, defaulttype::Vec<2,int> ( -1,-1 ), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-    , m_handleTopoChange ( initData ( &m_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
-    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass", "Prevent totalMass from decreasing when removing particles."))
+    : mass ( initData ( &mass, MassType ( 1.0f ), "mass",
+                          "Mass of each particle" ) )
+
+    , totalMass ( initData ( &totalMass, (SReal)0.0, "totalmass",
+                               "Sum of the particles' masses" ) )
+
+    , filenameMass ( initData ( &filenameMass, "filename",
+                                  "Rigid file to load the mass parameters" ) )
+
+    , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter",
+                                         "display the center of gravity of the system" ) )
+
+    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor",
+                                  "factor length of the axis displayed (only used for rigids)" ) )
+
+    , computeMappingInertia ( initData ( &computeMappingInertia, false, "compute_mapping_inertia",
+                                           "to be used if the mass is placed under a mapping" ) )
+
+    , showInitialCenterOfGravity ( initData ( &showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
+                                                "display the initial center of gravity of the system" ) )
+
+    , showX0 ( initData ( &showX0, false, "showX0",
+                            "display the rest positions" ) )
+
+    , localRange ( initData ( &localRange, Vec<2,int> ( -1,-1 ), "localRange",
+                                "optional range of local DOF indices. \n"
+                              "Any computation involving only indices outside of this range \n"
+                              "are discarded (useful for parallelization using mesh partitionning)" ) )
+
+    , d_indices ( initData ( &d_indices, "indices",
+                             "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
+
+    , handleTopoChange ( initData ( &handleTopoChange, false, "handleTopoChange",
+                                      "The mass and totalMass are recomputed on particles add/remove." ) )
+
+    , preserveTotalMass( initData ( &preserveTotalMass, false, "preserveTotalMass",
+                                      "Prevent totalMass from decreasing when removing particles."))
 {
-    this->addAlias ( &totalMass, "totalMass" );
+    this->addAlias(&totalMass,"totalMass");
     constructor_message();
 }
+
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::~UniformMass()
 {}
 
+
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 {
-    this->mass.setValue ( m );
+    mass.setValue ( m );
 }
+
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
-    this->totalMass.setValue ( m );
+    totalMass.setValue ( m );
 }
+
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::reinit()
 {
-    if ( this->totalMass.getValue() >0 && this->mstate!=NULL )
-    {
-        MassType *m = this->mass.beginEdit();
+    WriteAccessor<Data<vector<int> > > indices = d_indices;
+    m_doesTopoChangeAffect = false;
+    if(mstate==NULL) return;
 
-        if (localRange.getValue()[0] >= 0
-            && localRange.getValue()[1] > 0
-            && localRange.getValue()[1] + 1 < (int)this->mstate->getSize())
-        {
-            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / (localRange.getValue()[1]-localRange.getValue()[0]) );
-        }
-        else
-        {
-            *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
-        }
-        this->mass.endEdit();
+    //If localRange is set, update indices
+    if (localRange.getValue()[0] >= 0
+        && localRange.getValue()[1] > 0
+        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    {
+        indices.clear();
+        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
+            indices.push_back(i);
+    }
+
+    //If no given indices
+    if(indices.size()==0)
+    {
+        indices.clear();
+        for(int i=0; i<(int)mstate->getSize(); i++)
+            indices.push_back(i);
+        m_doesTopoChangeAffect = true;
+    }
+
+    //Update mass and totalMass
+    if (totalMass.getValue() > 0)
+    {
+        MassType *m = mass.beginEdit();
+        *m = ( ( typename DataTypes::Real ) totalMass.getValue() / indices.size() );
+        mass.endEdit();
     }
     else
-    {
-        this->totalMass.setValue ( this->mstate->getSize() * (Real)this->mass.getValue() );
-    }
+        totalMass.setValue ( indices.size() * (Real)mass.getValue() );
+
 }
-
-
 
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
     loadRigidMass ( filenameMass.getFullPath() );
-    if ( filenameMass.getValue().empty() ) filenameMass.setDisplayed ( false );
-    this->core::behavior::Mass<DataTypes>::init();
+    if ( filenameMass.getValue().empty() )
+        filenameMass.setDisplayed ( false );
+    Mass<DataTypes>::init();
     reinit();
 }
 
@@ -127,37 +192,41 @@ void UniformMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::handleTopologyChange()
 {
-    using core::topology::TopologyChange;
+    BaseMeshTopology *meshTopology = getContext()->getMeshTopology();
+    WriteAccessor<Data<vector<int> > > indices = d_indices;
 
-    core::topology::BaseMeshTopology *bmt = this->getContext()->getMeshTopology();
-
-    if ( bmt != 0 )
+    if(m_doesTopoChangeAffect)
     {
-        std::list< const TopologyChange * >::const_iterator it = bmt->beginChange();
-        std::list< const TopologyChange * >::const_iterator itEnd = bmt->endChange();
+        indices.clear();
+        for(size_t i=0; i<mstate->getSize(); i++)
+            indices.push_back(i);
+    }
+
+    if ( meshTopology != 0 )
+    {
+        list< const TopologyChange * >::const_iterator it = meshTopology->beginChange();
+        list< const TopologyChange * >::const_iterator itEnd = meshTopology->endChange();
 
         while ( it != itEnd )
         {
             switch ( ( *it )->getChangeType() )
             {
             case core::topology::POINTSADDED:
-                if ( m_handleTopoChange.getValue() )
+                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    MassType* m = this->mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize() );
-                    this->mass.endEdit();
+                    MassType* m = mass.beginEdit();
+                    *m = ( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize() );
+                    mass.endEdit();
                 }
                 break;
 
             case core::topology::POINTSREMOVED:
-                if ( m_handleTopoChange.getValue() )
+                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    if (!d_preserveTotalMass.getValue())
-                    {
-                        this->totalMass.setValue (this->mstate->getSize() * (Real)this->mass.getValue() );
-                    } else {
-                        this->mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) this->totalMass.getValue() / this->mstate->getSize()) );
-                    }
+                    if (!preserveTotalMass.getValue())
+                        totalMass.setValue (mstate->getSize() * (Real)mass.getValue() );
+                    else
+                        mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize()) );
                 }
                 break;
 
@@ -173,71 +242,63 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
+void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*,
+                                                DataVecDeriv& vres,
+                                                const DataVecDeriv& vdx,
+                                                SReal factor)
 {
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
 
-    unsigned int ibegin = 0;
-    unsigned int iend = dx.size();
-
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
+    WriteAccessor<Data<vector<int> > > indices = d_indices;
 
     MassType m = mass.getValue();
     if ( factor != 1.0 )
         m *= ( typename DataTypes::Real ) factor;
 
-    for ( unsigned int i=ibegin; i<iend; i++ )
-    {
-//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, df[i] = "<<res[i]<< endl;
-        res[i] += dx[i] * m;
-//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, dx[i] = "<<dx[i]<<", m = "<<m<<", dx[i] * m = "<<dx[i] * m<< endl;
-//        cerr<<"UniformMass<DataTypes, MassType>::addMDx, df[i] = "<<res[i]<< endl;
-    }
+    for ( unsigned int i=0; i<indices.size(); i++ )
+        res[indices[i]] += dx[indices[i]] * m;
 }
 
+
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
+void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
+                                                  DataVecDeriv& va,
+                                                  const DataVecDeriv& vf )
 {
-    helper::WriteOnlyAccessor<DataVecDeriv> a = va;
-    helper::ReadAccessor<DataVecDeriv> f = vf;
+    WriteOnlyAccessor<DataVecDeriv> a = va;
+    ReadAccessor<DataVecDeriv> f = vf;
 
-    unsigned int ibegin = 0;
-    unsigned int iend = f.size();
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
-
-    const MassType& m = mass.getValue();
-    for ( unsigned int i=ibegin; i<iend; i++ )
-    {
-        a[i] = f[i] / m;
-        // serr<<"f[i] = "<<f[i]<<", m = "<<m<<", f[i] / m = "<<f[i] / m<<sendl;
-    }
+    MassType m = mass.getValue();
+    for ( unsigned int i=0; i<indices.size(); i++ )
+        a[indices[i]] = f[indices[i]] / m;
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDxToVector ( defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, SReal /*mFact*/, unsigned int& /*offset*/ )
+void UniformMass<DataTypes, MassType>::addMDxToVector ( BaseVector * resVect,
+                                                        const VecDeriv* dx,
+                                                        SReal mFact,
+                                                        unsigned int& offset )
 {
-
+    SOFA_UNUSED(resVect);
+    SOFA_UNUSED(dx);
+    SOFA_UNUSED(mFact);
+    SOFA_UNUSED(offset);
 }
 
+
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
+void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mparams,
+                                                     DataVecDeriv& d_v)
 {
     if (mparams)
     {
         VecDeriv& v = *d_v.beginEdit();
 
-        const SReal* g = this->getContext()->getGravity().ptr();
+        const SReal* g = getContext()->getGravity().ptr();
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( Real ) (mparams->dt());
@@ -271,17 +332,8 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
 
     helper::WriteAccessor<DataVecDeriv> f = vf;
 
-    unsigned int ibegin = 0;
-    unsigned int iend = f.size();
-
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
-
     // weight
-    const SReal* g = this->getContext()->getGravity().ptr();
+    const SReal* g = getContext()->getGravity().ptr();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
@@ -291,50 +343,39 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
         serr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<sendl;
 
 
-
-
-
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
-    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<sendl;
-    //serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<sendl;
-    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), this->getContext()->getLocalToWorld() = "<<this->getContext()->getPositionInWorld()<<sendl;
+    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 
     // project back to local frame
-    vframe = this->getContext()->getPositionInWorld() / vframe;
-    aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
-    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<sendl;
-    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<sendl;
-    //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<sendl;
+    vframe = getContext()->getPositionInWorld() / vframe;
+    aframe = getContext()->getPositionInWorld().backProjectVector ( aframe );
 #endif
 
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     // add weight and inertia force
-    if (this->m_separateGravity.getValue() ) for ( unsigned int i=ibegin; i<iend; i++ )
-        {
+    if (this->m_separateGravity.getValue()) for ( unsigned int i=0; i<indices.size(); i++ )
+    {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-            f[i] += core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
+        f[indices[i]] += core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
 #endif
-            //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
-            //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
-        }
-    else for ( unsigned int i=ibegin; i<iend; i++ )
-        {
+    }
+    else for ( unsigned int i=0; i<indices.size(); i++ )
+    {
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-            f[i] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[i],v[i] );
+        f[indices[i]] += mg + core::behavior::inertiaForce ( vframe,aframe,m,x[indices[i]],v[indices[i]] );
 #else
-            f[i] += mg;
+        f[indices[i]] += mg;
 #endif
-            //serr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<sendl;
-            //serr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<sendl;
-        }
+    }
+
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     if ( compute_mapping_inertia.getValue() )
     {
-        helper::ReadAccessor< Data<VecDeriv> > acc = *mparams->readDx(this->mstate);
+        helper::ReadAccessor< Data<VecDeriv> > acc = *mparams->readDx(mstate);
         // add inertia force due to acceleration from the motion of the mapping (coriolis type force)
         if ( acc.size() != f.size() )
             return;
@@ -349,91 +390,78 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
 }
 
 template <class DataTypes, class MassType>
-SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::MechanicalParams*, const DataVecDeriv& vv  ) const
+SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParams* params,
+                                                           const DataVecDeriv& d_v  ) const
 {
-    helper::ReadAccessor<DataVecDeriv> v = vv;
+    SOFA_UNUSED(params);
 
-    unsigned int ibegin = 0;
-    unsigned int iend = v.size();
+    ReadAccessor<DataVecDeriv> v = d_v;
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
-
-    SReal e=0;
+    SReal e = 0;
     const MassType& m = mass.getValue();
-    for ( unsigned int i=ibegin; i<iend; i++ )
-    {
-        e+= v[i]*m*v[i];
-    }
-    //serr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<sendl;
+
+    for ( unsigned int i=0; i<indices.size(); i++ )
+        e+= v[indices[i]]*m*v[indices[i]];
+
     return e/2;
 }
 
 template <class DataTypes, class MassType>
-SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
+SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalParams* params,
+                                                             const DataVecCoord& d_x  ) const
 {
-    helper::ReadAccessor<DataVecCoord> x = vx;
-
-    unsigned int ibegin = 0;
-    unsigned int iend = x.size();
-
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
+    SOFA_UNUSED(params);
+    ReadAccessor<DataVecCoord> x = d_x;
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
     const MassType& m = mass.getValue();
-    // gravity
-    defaulttype::Vec3d g ( this->getContext()->getGravity() );
-    Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2] );
-    Deriv mg = theGravity * m;
-    //serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<sendl;
-    for ( unsigned int i=ibegin; i<iend; i++ )
-    {
-        /*        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<sendl;
-        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<sendl;
-        serr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<sendl;*/
-        e -= mg*x[i];
-    }
+
+    Vec3d g( getContext()->getGravity());
+    Deriv gravity;
+    DataTypes::set(gravity, g[0], g[1], g[2]);
+
+    Deriv mg = gravity * m;
+
+    for ( unsigned int i=0; i<indices.size(); i++ )
+        e -= mg*x[indices[i]];
+
     return e;
 }
+
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
 defaulttype::Vector6
-UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* params,
+                                                const DataVecCoord& d_x,
+                                                const DataVecDeriv& d_v  ) const
 {
+    SOFA_UNUSED(params);
+    SOFA_UNUSED(d_x);
+    SOFA_UNUSED(d_v);
     return defaulttype::Vector6();
 }
 
+
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mparams,
+                                                     const MultiMatrixAccessor* matrix)
 {
     const MassType& m = mass.getValue();
-    const int N = defaulttype::DataTypeInfo<Deriv>::size();
-    const unsigned int size = this->mstate->getSize();
+
+    const int N = DataTypeInfo<Deriv>::size();
+
     AddMToMatrixFunctor<Deriv,MassType> calc;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
+
     Real mFactor = (Real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
-    unsigned int ibegin = 0;
-    unsigned int iend = size;
 
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
-
-    for (unsigned int i=ibegin; i<iend; i++ )
-        calc ( r.matrix, m, r.offset + N*i, mFactor);
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
+    for ( unsigned int i=0; i<indices.size(); i++ )
+        calc ( r.matrix, m, r.offset + N*indices[i], mFactor);
 }
 
 
@@ -443,11 +471,16 @@ SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
     return ( SReal ) ( mass.getValue() );
 }
 
+
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int /* index */, defaulttype::BaseMatrix *m ) const
+void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
+                                                        BaseMatrix *m ) const
 {
-    static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Deriv>::size();
-    if ( m->rowSize() != dimension || m->colSize() != dimension ) m->resize ( dimension, dimension );
+    SOFA_UNUSED(index);
+
+    static const BaseMatrix::Index dimension = (BaseMatrix::Index) DataTypeInfo<Deriv>::size();
+    if ( m->rowSize() != dimension || m->colSize() != dimension )
+        m->resize ( dimension, dimension );
 
     m->clear();
     AddMToMatrixFunctor<Deriv,MassType>() ( m, mass.getValue(), 0, 1 );
@@ -455,37 +488,25 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int /* index */
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
+void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 {
     if ( !vparams->displayFlags().getShowBehaviorModels() )
         return;
-    helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    unsigned int ibegin = 0;
-    unsigned int iend = x.size();
-
-    if ( localRange.getValue() [0] >= 0 )
-        ibegin = localRange.getValue() [0];
-
-    if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
-        iend = localRange.getValue() [1]+1;
-
-    //serr<<"UniformMass<DataTypes, MassType>::draw() "<<x<<sendl;
-
-
-    std::vector<  sofa::defaulttype::Vector3 > points;
-//    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
+    ReadAccessor<VecCoord> x = mstate->read(ConstVecCoordId::position())->getValue();
+    ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     Coord gravityCenter;
-    for ( unsigned int i=ibegin; i<iend; i++ )
+    std::vector<  sofa::defaulttype::Vector3 > points;
+    for ( unsigned int i=0; i<indices.size(); i++ )
     {
         sofa::defaulttype::Vector3 p;
-        p = DataTypes::getCPos(x[i]);
+        p = DataTypes::getCPos(x[indices[i]]);
 
         points.push_back ( p );
-        gravityCenter += x[i];
+        gravityCenter += x[indices[i]];
     }
-//    sofa::defaulttype::Vec4f color(1,1,1,1);
+
 
 #ifdef SOFA_SMP
     static float colorTab[][4]=
@@ -509,7 +530,6 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
         color = colorTab[proc%12];
     }
 #endif
-//    vparams->drawTool()->drawPoints ( points, 2, color);
 
     if ( showCenterOfGravity.getValue() )
     {
@@ -532,7 +552,7 @@ void UniformMass<DataTypes, MassType>::loadRigidMass ( std::string )
 {
     //If the template is not rigid, we hide the Data filenameMass, to avoid confusion.
     filenameMass.setDisplayed ( false );
-    this->mass.setDisplayed ( false );
+    mass.setDisplayed ( false );
 }
 
 } // namespace mass

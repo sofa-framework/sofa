@@ -565,29 +565,37 @@ class BaseScene:
             for e in err:
                 Sofa.msg_error("SofaPython.sml",e)
 
+def getValueByTag(valueByTag, tags):
+    """ look into the valueByTag dictionary for a tag contained in tags
+        \return the corresponding value, or the "default" value if none is found
+        \todo print a warning if several matching tags are found in valueByTag
+    """
+    if "default" in tags:
+        Sofa.msg_error("SofaPython.sml.getValueByTag", "default tag has a special meaning, it should not be defined in {0}".format(tags))
+    tag = tags & set(valueByTag.keys())
+    if len(tag)>1:
+        Sofa.msg_warning("SofaPython.sml.getValueByTag", "sevaral tags from {0} are defined in values {1}".format(tags, valueByTag))
+    if not len(tag)==0:
+        return valueByTag[tag.pop()]
+    else:
+        if "default" in valueByTag:
+            return valueByTag["default"]
+        else:
+            Sofa.msg_error("SofaPython.sml.getValueByTag", "No default value, and no tag from {0} found in {1}".format(tags, valueByTag))
+            return None
+
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
     """
     def __init__(self,parentNode,model):
         BaseScene.__init__(self,parentNode,model)
-        self.param.colorDefault="1. 1. 1."
         self.param.colorByTag=dict()
-   
-    def getTagColor(self, tags):
-        """ get the color from the given tags
-        if several tags are defined, which corresponds to several colors, one of these color is returned
-        """
-        tag = tags & set(self.param.colorByTag.keys())
-        if len(tag)==0:
-            return self.param.colorDefault
-        else:
-            return self.param.colorByTag[tag.pop()]
-
+        self.param.colorByTag["default"]="1. 1. 1."
 
     def createScene(self):
         model=self.model # shortcut
         for solid in model.solids.values():
             if printLog:
                 Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
-            color = self.getTagColor(solid.tags)
+            color = getValueByTag(self.param.colorByTag, solid.tags)
             insertVisual(self.node, solid, color)

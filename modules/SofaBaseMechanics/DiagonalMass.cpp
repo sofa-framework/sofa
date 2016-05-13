@@ -80,6 +80,9 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPar
     const MassVector &masses= f_mass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    if(masses.size() != x.size()) return;
+
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)

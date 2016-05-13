@@ -69,9 +69,9 @@ class MyClass(Sofa.PythonScriptController):
 
         # visual settings
         self.scene.param.showRigid=True
-        self.scene.param.showRigidScale=0.25
+        self.scene.param.showRigidScale=0.025
         self.scene.param.showOffset=True
-        self.scene.param.showOffsetScale=0.20
+        self.scene.param.showOffsetScale=0.020
         self.scene.param.showRigidDOFasSphere=False
 
         # scene creation
