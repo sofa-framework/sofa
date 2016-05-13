@@ -24,12 +24,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
 #define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
+#include "config.h"
 
 #include <sofa/core/DataEngine.h>
-
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-
 #include <sofa/helper/vectorData.h>
 
 namespace sofa
@@ -43,8 +42,6 @@ namespace engine
 
 /**
  * Output the positions and their indices in the global mesh not in the specified sets
- *
- * example in ComplementaryROI.scn
  *
  * @todo make it general as other ROI (edges, triangles,...)
  *
