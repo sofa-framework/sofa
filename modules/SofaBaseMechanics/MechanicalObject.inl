@@ -1206,6 +1206,10 @@ void MechanicalObject<DataTypes>::init()
         vfree.setPersistent(false);
         x0.setPersistent(false);
         reset_position.setPersistent(false);}
+
+    hasForce.resize(getSize());
+    for (int i=0; i<getSize(); i++)
+        hasForce[i] = false;
 }
 
 template <class DataTypes>
@@ -1243,6 +1247,10 @@ void MechanicalObject<DataTypes>::reinit()
 
     if (grid)
         grid->setP0(p0);
+
+    hasForce.resize(getSize());
+    for (int i=0; i<getSize(); i++)
+        hasForce[i] = false;
 }
 
 template <class DataTypes>
@@ -3473,6 +3481,45 @@ bool MechanicalObject<DataTypes>::isIndependent() const
 {
     return static_cast<const simulation::Node*>(this->getContext())->mechanicalMapping.empty();
 }
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setIndex(unsigned int index)
+{
+    if(index<getSize())
+        hasForce[index]=true;
+    else
+        serr<<"Index "<<index<<" out of range in MechanicalObject::setIndex(index)"<<sendl;
+
+    updateIndices();
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setIndices(VecIndex ids)
+{
+    for(int i=0; i<ids.size(); i++)
+    {
+        unsigned int index = ids[i];
+        if(index<getSize())
+            hasForce[index]=true;
+        else
+            serr<<"Index "<<index<<" out of range in MechanicalObject::setIndices(indices)"<<sendl;
+    }
+
+    updateIndices();
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::updateIndices()
+{
+    indices.clear();
+    for(int i=0; i<getSize(); i++)
+        if(hasForce[i])
+            indices.push_back(i);
+}
+
 
 
 } // namespace container

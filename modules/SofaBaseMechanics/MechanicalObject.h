@@ -86,6 +86,8 @@ public:
     typedef typename DataTypes::MatrixDeriv::RowIterator		MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::ColIterator		MatrixDerivColIterator;
 
+    typedef helper::vector< unsigned int > VecIndex;
+
     typedef typename core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
     typedef sofa::defaulttype::Vector3 Vector3;
@@ -150,6 +152,7 @@ public:
     Data< MatrixDeriv > c;
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
+
 #endif
 
     defaulttype::MapMapSparseMatrix< Deriv > c2;
@@ -162,9 +165,12 @@ public:
     Data< float > showIndicesScale;
     Data< bool >  showVectors;
     Data< float > showVectorsScale;
-    Data< int > drawMode;
+    Data< int >   drawMode;
     Data< defaulttype::Vec4f > d_color;  ///< drawing color
     Data < bool > isToPrint; ///< ignore some Data for file export
+
+    VecIndex               indices;  //Indices of nodes subject to a force
+    helper::vector<bool>   hasForce; //Size of mechanical state, if true the corresponding node is subjected to a force
 
     virtual void init();
     virtual void reinit();
@@ -208,6 +214,7 @@ public:
     SReal getVX(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
     SReal getVY(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
     SReal getVZ(size_t i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
+
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
@@ -299,6 +306,11 @@ public:
     void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
     void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
     void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
+
+    void setIndex(unsigned int index);
+    void setIndices(VecIndex ids);
+    const VecIndex &getIndices() {return indices;}
+    void updateIndices();
 
     virtual Vector3 getTranslation() const {return translation.getValue();}
     virtual Vector3 getRotation() const {return rotation.getValue();}
