@@ -104,6 +104,14 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const EdgeRestInformation& e)
+        {
+            size_t hash = boost::hash<Mat3x3>()(e.DfDx);
+            boost::hash_combine( hash, boost::hash_range(e.v,e.v+2) );
+            boost::hash_combine( hash, e.restDp );
+            return hash;
+        }
     };
     /// data structure stored for each tetrahedron
     class TetrahedronRestInformation
@@ -137,6 +145,19 @@ protected:
 
         TetrahedronRestInformation()
         {
+        }
+
+        friend size_t hash_value( const TetrahedronRestInformation& e)
+        {
+            size_t hash = boost::hash_range(e.shapeVector,e.shapeVector+4);
+            boost::hash_combine( hash, e.restVolume);
+            boost::hash_combine( hash, boost::hash_range(e.restEdgeVector,e.restEdgeVector+6) );
+            boost::hash_combine( hash, boost::hash_range(e.linearDfDx,e.linearDfDx+6) );
+            boost::hash_combine( hash, e.rotation);
+            boost::hash_combine( hash, e.restRotation);
+            boost::hash_combine( hash, boost::hash_range(e.v,e.v+4) );
+            boost::hash_combine( hash, boost::hash_range(e.edgeOrientation,e.edgeOrientation+6) );
+            return hash;
         }
     };
 

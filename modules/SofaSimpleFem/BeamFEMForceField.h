@@ -170,6 +170,25 @@ protected:
                 >> bi._k_loc;
             return in;
         }
+
+        friend size_t hash_value(const BeamInfo& c)
+        {
+            size_t hash = boost::hash<double>()(c._E0);
+            boost::hash_combine( hash, c._E );
+            boost::hash_combine( hash, c._nu );
+            boost::hash_combine( hash, c._L );
+            boost::hash_combine( hash, c._r );
+            boost::hash_combine( hash, c._rInner );
+            boost::hash_combine( hash, c._G );
+            boost::hash_combine( hash, c._Iy );
+            boost::hash_combine( hash, c._Iz );
+            boost::hash_combine( hash, c._J );
+            boost::hash_combine( hash, c._A );
+            boost::hash_combine( hash, c._Asy );
+            boost::hash_combine( hash, c._Asz );
+            boost::hash_combine( hash, c._k_loc );
+            return hash;
+        }
     };
 
     //just for draw forces

@@ -159,6 +159,28 @@ public:
         useBumpMapping = mat.useBumpMapping;
         bumpTextureFilename = mat.bumpTextureFilename;
     }
+
+
+    friend size_t hash_value(const Material& c)
+    {
+        size_t hash = boost::hash<std::string>()(c.name);
+        boost::hash_combine( hash, c.diffuse );
+        boost::hash_combine( hash, c.ambient );
+        boost::hash_combine( hash, c.specular );
+        boost::hash_combine( hash, c.emissive );
+        boost::hash_combine( hash, c.shininess );
+        boost::hash_combine( hash, c.useDiffuse );
+        boost::hash_combine( hash, c.useSpecular );
+        boost::hash_combine( hash, c.useAmbient );
+        boost::hash_combine( hash, c.useEmissive );
+        boost::hash_combine( hash, c.useShininess );
+        boost::hash_combine( hash, c.useTexture );
+        boost::hash_combine( hash, c.useBumpMapping );
+        boost::hash_combine( hash, c.activated );
+        boost::hash_combine( hash, c.textureFilename );
+        boost::hash_combine( hash, c.bumpTextureFilename );
+        return hash;
+    }
 };
 
 } // namespace loader

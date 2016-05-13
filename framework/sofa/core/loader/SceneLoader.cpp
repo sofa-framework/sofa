@@ -61,6 +61,7 @@ bool SceneLoader::canLoad()
     return BaseLoader::canLoad();
 }
 
+
 } // namespace loader
 
 } // namespace core

@@ -98,6 +98,14 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const TrianglePressureInformation& c)
+        {
+            size_t hash = boost::hash<Real>()(c.area);
+            boost::hash_combine( hash, c.force );
+            boost::hash_combine( hash, boost::hash_range(c.DfDx,c.DfDx+3) );
+            return hash;
+        }
     };
 
     component::topology::TriangleSparseData<sofa::helper::vector<TrianglePressureInformation> > trianglePressureMap;

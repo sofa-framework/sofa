@@ -63,6 +63,12 @@ public :
 
     CudaVector(const helper::vector<T,CudaMemoryManager< T > >& v) : helper::vector<T,CudaMemoryManager<T> >(v) {}
 
+
+    /// so boost is able to hash a CudaVector
+    friend std::size_t hash_value(const CudaVector& v)
+    {
+        return boost::hash_range( &v[0], &v[v.size()-1] );
+    }
 };
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
@@ -602,6 +608,7 @@ public:
     {
         return cross( a, cross( b,c ));
     }
+
 };
 
 typedef CudaRigidTypes<3,float> CudaRigid3fTypes;
@@ -612,6 +619,7 @@ inline const char* CudaRigid3fTypes::Name()
 {
     return "CudaRigid3f";
 }
+
 
 
 // support for double precision

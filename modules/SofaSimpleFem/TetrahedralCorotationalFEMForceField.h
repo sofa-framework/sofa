@@ -132,6 +132,16 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value(const TetrahedronInformation& c)
+        {
+            size_t hash = boost::hash<MaterialStiffness>()(c.materialMatrix);
+            boost::hash_combine( hash, c.strainDisplacementTransposedMatrix );
+            boost::hash_combine( hash, c.rotatedInitialElements );
+            boost::hash_combine( hash, c.rotation );
+            boost::hash_combine( hash, c.initialTransformation );
+            return hash;
+        }
     };
     /// container that stotes all requires information for each tetrahedron
     topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;

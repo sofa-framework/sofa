@@ -104,6 +104,13 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value(const EdgeRestInformation& c)
+        {
+            size_t hash = boost::hash<Mat3>()(c.DfDx);
+            boost::hash_combine(hash,boost::hash_range(c.vertices,c.vertices+2));
+            return hash;
+        }
     };
     typedef typename VecCoord::template rebind<EdgeRestInformation>::other edgeRestInfoVector;
 

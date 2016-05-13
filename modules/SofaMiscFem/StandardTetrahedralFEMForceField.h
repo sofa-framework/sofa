@@ -132,6 +132,19 @@ public :
 
       TetrahedronRestInformation() : restVolume(0), volScale(0), fiberDirection(), strainEnergy(0) {}
 
+        friend size_t hash_value(const TetrahedronRestInformation& c)
+        {
+            size_t hash = boost::hash<Real>()(c.restVolume);
+            boost::hash_combine( hash, c.volScale );
+            boost::hash_combine( hash, boost::hash_range(c.shapeVector,c.shapeVector+4) );
+            boost::hash_combine( hash, c.fiberDirection );
+            boost::hash_combine( hash, boost::hash_range(c.dJ,c.dJ+4) );
+            boost::hash_combine( hash, c.strainEnergy );
+            boost::hash_combine( hash, boost::hash_range(c.tetraIndices,c.tetraIndices+4) );
+            boost::hash_combine( hash, boost::hash_range(c.tetraEdges,c.tetraEdges+6) );
+            return hash;
+        }
+
     };
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
     
@@ -150,6 +163,14 @@ public :
 	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
      EdgeInformation(): DfDx() { vertices[0]=0.f; vertices[1]=0.f; }
+
+        friend size_t hash_value(const EdgeInformation& c)
+        {
+            size_t hash = boost::hash<Matrix3>()(c.DfDx);
+            boost::hash_combine( hash, boost::hash_range(c.vertices,c.vertices+2) );
+            return hash;
+        }
+
    };
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 

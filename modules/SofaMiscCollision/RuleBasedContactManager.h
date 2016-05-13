@@ -110,6 +110,18 @@ public:
             }
             return true;
         }
+
+        friend size_t hash_value(const Rule& c)
+        {
+            size_t hash = boost::hash<std::string>()(c.name1);
+            boost::hash_combine(hash,c.group1);
+            boost::hash_combine(hash,c.name2);
+            boost::hash_combine(hash,c.group2);
+            boost::hash_combine(hash,c.response);
+            return hash;
+        }
+
+
     };
 
     Data< std::string > d_variables;

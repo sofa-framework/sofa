@@ -144,6 +144,15 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value ( const HexahedronInformation& h )
+        {
+            // hash from string, could be improved
+            std::ostringstream s;
+            s << h;
+            return boost::hash<std::string>()(s.str());
+        }
+
     };
 
 

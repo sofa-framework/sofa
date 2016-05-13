@@ -237,6 +237,21 @@ struct SkeletonJoint
     // times corresponding to each animation channel, the channel mChannels[i] must be played at the time contained in mTimes[i]
     helper::vector<double>				mTimes;
 
+    friend size_t hash_value(const SkeletonJoint& b)
+    {
+        size_t hash = boost::hash<int>()(b.mParentIndex);
+        boost::hash_combine( hash, b.mChannels );
+        boost::hash_combine( hash, b.mTimes );
+        boost::hash_combine( hash, b.mPreviousMotion );
+        boost::hash_combine( hash, b.mNextMotion );
+        boost::hash_combine( hash, b.mPreviousMotionTime );
+        boost::hash_combine( hash, b.mNextMotionTime );
+        boost::hash_combine( hash, b.mLocalRigid );
+        boost::hash_combine( hash, b.mWorldRigid );
+        return hash;
+    }
+
+
 private:
 
     // following data are used internally to compute the final joint transformation at a specific time using interpolation

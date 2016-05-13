@@ -318,6 +318,20 @@ public:
             in >> g.groupName >> g.materialName >> g.materialId >> g.tri0 >> g.nbt >> g.quad0 >> g.nbq >> g.edge0 >> g.nbe;
             return in;
         }
+
+        friend size_t hash_value(const FaceGroup& c)
+        {
+            size_t hash = boost::hash<int>()(c.tri0);
+            boost::hash_combine( hash, c.nbt );
+            boost::hash_combine( hash, c.quad0 );
+            boost::hash_combine( hash, c.nbq );
+            boost::hash_combine( hash, c.edge0 );
+            boost::hash_combine( hash, c.nbe );
+            boost::hash_combine( hash, c.materialName );
+            boost::hash_combine( hash, c.groupName );
+            boost::hash_combine( hash, c.materialId );
+            return hash;
+        }
     };
 
     Data< helper::vector<sofa::core::loader::Material> > materials;

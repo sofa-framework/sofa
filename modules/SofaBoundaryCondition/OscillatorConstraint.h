@@ -95,6 +95,16 @@ protected:
                 << o.pulsation << " " << o.phase << "\n";
             return out;
         }
+
+        friend size_t hash_value(const Oscillator& c)
+        {
+            size_t hash = boost::hash<unsigned int>()(c.index);
+            boost::hash_combine( hash, c.mean );
+            boost::hash_combine( hash, c.amplitude );
+            boost::hash_combine( hash, c.pulsation );
+            boost::hash_combine( hash, c.phase );
+            return hash;
+        }
     };
 
     Data< helper::vector< Oscillator > > constraints; ///< constrained particles

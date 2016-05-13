@@ -104,6 +104,15 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const EdgeRestInformation& e)
+        {
+            size_t hash = boost::hash<Real>()(e.restSquareLength);
+            boost::hash_combine( hash, e.currentSquareLength );
+            boost::hash_combine( hash, e.deltaL2 );
+            boost::hash_combine( hash, e.stiffness );
+            return hash;
+        }
     };
 
     class TriangleRestInformation
@@ -134,6 +143,21 @@ protected:
         inline friend std::istream& operator>> ( std::istream& in, TriangleRestInformation& /*vec*/ )
         {
             return in;
+        }
+
+        friend size_t hash_value( const TriangleRestInformation& e)
+        {
+            size_t hash = boost::hash_range(e.gamma,e.gamma+3);
+            boost::hash_combine( hash, boost::hash_range(e.stiffness,e.stiffness+3) );
+            boost::hash_combine( hash, boost::hash_range(e.DfDx,e.DfDx+3) );
+            boost::hash_combine( hash, e.currentNormal );
+            boost::hash_combine( hash, e.lastValidNormal );
+            boost::hash_combine( hash, e.area );
+            boost::hash_combine( hash, e.restArea );
+            boost::hash_combine( hash, boost::hash_range(e.areaVector,e.areaVector+3) );
+            boost::hash_combine( hash, boost::hash_range(e.dp,e.dp+3) );
+            boost::hash_combine( hash, e.J );
+            return hash;
         }
     };
 

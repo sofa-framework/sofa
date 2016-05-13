@@ -56,6 +56,12 @@ namespace defaulttype
             return in >> p.first >> p.second;
         }
 
+        friend size_t hash_value(const SerializablePairType& c)
+        {
+            size_t hash = boost::hash<PairType>()(c.pair);
+            return hash;
+        }
+
 
 
     };

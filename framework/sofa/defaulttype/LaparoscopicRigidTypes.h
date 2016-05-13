@@ -390,6 +390,24 @@ public:
 
         return d;
     }
+
+    /// so boost is able to hash a RigidDeriv
+    friend std::size_t hash_value(const LaparoscopicRigid3Types::Deriv& r)
+    {
+        size_t seed = boost::hash<LaparoscopicRigid3Types::Deriv::Pos>()(r.getVTranslation());
+        boost::hash_combine(seed, r.getVOrientation());
+        return seed;
+    }
+
+    /// so boost is able to hash a RigidCoord
+    friend std::size_t hash_value(const LaparoscopicRigid3Types::Coord& r)
+    {
+        size_t seed = boost::hash<LaparoscopicRigid3Types::Coord::Pos>()(r.getTranslation());
+        boost::hash_combine(seed, r.getOrientation());
+        return seed;
+    }
+
+
 };
 
 inline LaparoscopicRigid3Types::Deriv operator*(const LaparoscopicRigid3Types::Deriv& d, const Rigid3Mass& m)
@@ -409,6 +427,8 @@ inline LaparoscopicRigid3Types::Deriv operator/(const LaparoscopicRigid3Types::D
 }
 
 typedef LaparoscopicRigid3Types LaparoscopicRigidTypes; ///< Alias
+
+
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 

@@ -108,6 +108,18 @@ public:
      */
     virtual void buildFilter(unsigned int /*e*/);
 
+    friend size_t hash_value( const LineInfo& c)
+    {
+        size_t hash = boost::hash<sofa::defaulttype::Vector3>()(c.m_nMean);
+        boost::hash_combine( hash, c.m_triangleRight );
+        boost::hash_combine( hash, c.m_triangleLeft );
+        boost::hash_combine( hash, c.m_lineVector );
+        boost::hash_combine( hash, c.m_computedRightAngleCone );
+        boost::hash_combine( hash, c.m_twoTrianglesAroundEdge );
+        boost::hash_combine( hash, c.m_twoTrianglesAroundEdge );
+        return hash;
+    }
+
 protected:
 
 

@@ -26,6 +26,8 @@
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
 #include <map>
+#include <sstream>
+#include <boost/functional/hash.hpp>
 
 namespace sofa
 {
@@ -718,7 +720,18 @@ public:
         std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(newId, RowType()));
         return RowIterator(res.first);
     }
+
+
+    friend std::size_t hash_value(const MapMapSparseMatrix<T>& a)
+    {
+        // hash from string, could be improved
+        std::ostringstream s;
+        s << a;
+        return boost::hash<std::string>()(s.str());
+    }
+
 };
+
 
 
 

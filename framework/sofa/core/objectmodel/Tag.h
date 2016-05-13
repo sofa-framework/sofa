@@ -87,9 +87,15 @@ public:
         return i;
     }
 
+    friend size_t hash_value(const Tag& c)
+    {
+        return boost::hash<std::string>()((std::string)c);
+    }
+
 protected:
     int id;
 };
+
 
 class SOFA_CORE_API TagSet : public sofa::helper::set<Tag>
 {

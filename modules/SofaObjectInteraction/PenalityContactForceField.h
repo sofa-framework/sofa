@@ -97,6 +97,20 @@ protected:
             out << c.m1<< " " <<c.m2<< " " << c.index1<< " " <<c.index2<< " " <<c.norm<< " " <<c.dist<<" " <<c.ks<<" " <</*c.mu_s<<" " <<c.mu_v<<" " <<*/c.pen<<" " <<c.age;
             return out;
         }
+
+        friend size_t hash_value(const Contact& c)
+        {
+            size_t hash = boost::hash<int>()(c.m1);
+            boost::hash_combine( hash, c.m2 );
+            boost::hash_combine( hash, c.index1 );
+            boost::hash_combine( hash, c.index2 );
+            boost::hash_combine( hash, c.norm );
+            boost::hash_combine( hash, c.dist );
+            boost::hash_combine( hash, c.ks );
+            boost::hash_combine( hash, c.pen );
+            boost::hash_combine( hash, c.age );
+            return hash;
+        }
     };
 
     Data<sofa::helper::vector<Contact> > contacts;

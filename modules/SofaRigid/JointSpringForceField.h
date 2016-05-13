@@ -264,6 +264,32 @@ public:
         return out;
     }
 
+
+    friend size_t hash_value( const JointSpring<DataTypes>& c)
+    {
+        size_t hash = boost::hash<int>()(c.m1);
+        boost::hash_combine( hash, c.m2 );
+        boost::hash_combine( hash, c.kd );
+        boost::hash_combine( hash, c.torsion );
+        boost::hash_combine( hash, c.lawfulTorsion );
+        boost::hash_combine( hash, c.KT );
+        boost::hash_combine( hash, c.KR );
+        boost::hash_combine( hash, c.ref );
+        boost::hash_combine( hash, c.initTrans );
+        boost::hash_combine( hash, c.initRot );
+        boost::hash_combine( hash, c.KR );
+        boost::hash_combine( hash, c.freeMovements );
+        boost::hash_combine( hash, c.softStiffnessTrans );
+        boost::hash_combine( hash, c.hardStiffnessTrans );
+        boost::hash_combine( hash, c.softStiffnessRot );
+        boost::hash_combine( hash, c.hardStiffnessRot );
+        boost::hash_combine( hash, c.blocStiffnessRot );
+        boost::hash_combine( hash, c.needToInitializeTrans );
+        boost::hash_combine( hash, c.needToInitializeRot );
+        boost::hash_combine( hash, c.limitAngles );
+        return hash;
+    }
+
 };
 // end class JointSpring
 

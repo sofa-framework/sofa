@@ -116,6 +116,11 @@ public:
     /// Hessian, order 3
     Hessian& getHessian() { return *reinterpret_cast<Hessian*>(&v[1+dim]); }
     const Hessian& getHessian() const { return *reinterpret_cast<const Hessian*>(&v[1+dim]); }
+
+    friend std::size_t hash_value(const PolynomialBasis& r)
+    {
+        return boost::hash<CoeffVec>()(r.v);
+    }
 };
 
 

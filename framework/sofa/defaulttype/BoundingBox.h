@@ -104,6 +104,11 @@ public:
         return in;
     }
 
+    friend size_t hash_value(const BoundingBox& b)
+    {
+        return boost::hash<bbox_t>()(b);
+    }
+
 
 protected:
     bbox_t bbox;

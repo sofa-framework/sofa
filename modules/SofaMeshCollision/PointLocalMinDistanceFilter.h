@@ -101,6 +101,14 @@ public:
     //virtual void buildFilter(const Point & /*p*/);
     virtual void buildFilter(unsigned int /*p*/);
 
+
+    friend size_t hash_value( const PointInfo& c)
+    {
+        size_t hash = boost::hash<bool>()(c.m_noLineModel);
+        boost::hash_combine( hash, c.m_computedData );
+        return hash;
+    }
+
 protected:
 
 

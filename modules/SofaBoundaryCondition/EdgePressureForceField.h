@@ -80,6 +80,13 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value(const EdgePressureInformation& c)
+        {
+            size_t hash = boost::hash<Real>()(c.length);
+            boost::hash_combine( hash, c.force );
+            return hash;
+        }
     };
 
     sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;

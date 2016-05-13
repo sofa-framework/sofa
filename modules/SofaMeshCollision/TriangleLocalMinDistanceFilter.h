@@ -101,6 +101,11 @@ public:
     //virtual void buildFilter(const Triangle & /*t*/);
     virtual void buildFilter(unsigned int /*t*/);
 
+    friend size_t hash_value( const TriangleInfo& c)
+    {
+        return boost::hash<sofa::defaulttype::Vector3>()(c.m_normal);
+    }
+
 protected:
 
 

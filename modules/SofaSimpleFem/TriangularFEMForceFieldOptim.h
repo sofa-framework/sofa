@@ -184,6 +184,16 @@ public:
             }
             return in;
         }
+
+        friend size_t hash_value( const TriangleInfo& c)
+        {
+            size_t hash = boost::hash<Real>()(c.bx);
+            boost::hash_combine( hash, c.cx );
+            boost::hash_combine( hash, c.cy );
+            boost::hash_combine( hash, c.ss_factor );
+            boost::hash_combine( hash, c.init_frame );
+            return hash;
+        }
     };
     Real gamma, mu;
 
@@ -214,6 +224,13 @@ public:
             }
             return in;
         }
+
+        friend size_t hash_value( const TriangleState& c)
+        {
+            size_t hash = boost::hash<Transformation>()(c.frame);
+            boost::hash_combine( hash, c.stress );
+            return hash;
+        }
     };
 
     /// Class to store FEM information on each edge, for topology modification handling
@@ -236,6 +253,11 @@ public:
         {
             return in;
         }
+
+        friend size_t hash_value( const EdgeInfo& c)
+        {
+            return boost::hash<bool>()(c.fracturable);
+        }
     };
 
     /// Class to store FEM information on each vertex, for topology modification handling
@@ -254,6 +276,11 @@ public:
         inline friend std::istream& operator>> ( std::istream& in, VertexInfo& /*vi*/)
         {
             return in;
+        }
+
+        friend size_t hash_value( const VertexInfo& )
+        {
+            return 0;
         }
     };
 

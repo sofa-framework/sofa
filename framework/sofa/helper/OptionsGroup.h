@@ -117,6 +117,12 @@ public:
     ///             -1    if not found
     int isInOptionsList(const std::string & m_string) const;
 
+    friend size_t hash_value(const OptionsGroup& b)
+    {
+        return boost::hash<unsigned int>()(b.selectedItem);
+    }
+
+
 };
 
 

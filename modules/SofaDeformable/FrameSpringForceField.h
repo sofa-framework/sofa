@@ -158,6 +158,14 @@ public:
             return out;
         }
 
+        friend size_t hash_value ( const Spring& a )
+        {
+            // hash from string, could be improved
+            std::ostringstream s;
+            s << a;
+            return boost::hash<std::string>()(s.str());
+        }
+
     };
     // end inner class spring
 

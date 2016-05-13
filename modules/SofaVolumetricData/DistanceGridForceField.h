@@ -90,6 +90,14 @@ protected:
             return out;
         }
 
+        friend size_t hash_value( const Contact& c)
+        {
+            size_t hash = boost::hash<int>()(c.index);
+            boost::hash_combine( hash, c.normal );
+            boost::hash_combine( hash, c.fact );
+            return hash;
+        }
+
     };
 
     sofa::helper::vector<bool> pOnBorder;
@@ -115,6 +123,16 @@ protected:
             return out;
         }
 
+        friend size_t hash_value( const TContact& c)
+        {
+            size_t hash = boost::hash<helper::fixed_array<unsigned int,3> >()(c.index);
+            boost::hash_combine( hash, c.normal );
+            boost::hash_combine( hash, c.B );
+            boost::hash_combine( hash, c.C );
+            boost::hash_combine( hash, c.fact );
+            return hash;
+        }
+
     };
 
     Data<sofa::helper::vector<TContact> > tcontacts;
@@ -136,6 +154,16 @@ protected:
         {
             out << c.index << " " << c.A << " " << c.B << " " << c.C << " " << c.fact ;
             return out;
+        }
+
+        friend size_t hash_value( const VContact& c)
+        {
+            size_t hash = boost::hash<helper::fixed_array<unsigned int,4> >()(c.index);
+            boost::hash_combine( hash, c.A );
+            boost::hash_combine( hash, c.B );
+            boost::hash_combine( hash, c.C );
+            boost::hash_combine( hash, c.fact );
+            return hash;
         }
 
     };

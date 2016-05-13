@@ -100,6 +100,12 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const EdgeRestInformation& e)
+        {
+            return boost::hash<Mat3>()(e.DfDx);
+        }
+
     };
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;

@@ -90,6 +90,16 @@ public:
         {
             return in;
         }
+
+        friend size_t hash_value( const Spring& s)
+        {
+            size_t hash = boost::hash<Real>()(s.ks);
+            boost::hash_combine( hash, s.kd );
+            boost::hash_combine( hash, s.restVector );
+            return hash;
+        }
+
+
     };
 protected:
 

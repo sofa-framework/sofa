@@ -163,6 +163,15 @@ public:
         }
 
         Real differenceToCriteria;
+
+        friend size_t hash_value(const TriangleInformation& c)
+        {
+            // TODO improve hash (computed from string for now)
+            std::ostringstream s;
+            s << c;
+            return boost::hash<std::string>()(s.str());
+        }
+
     };
 
     /// Class to store FEM information on each edge, for topology modification handling
@@ -184,6 +193,11 @@ public:
         inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*ei*/ )
         {
             return in;
+        }
+
+        friend size_t hash_value(const EdgeInformation& c)
+        {
+            return boost::hash<bool>()(c.fracturable);
         }
     };
 
@@ -209,6 +223,15 @@ public:
         inline friend std::istream& operator>> ( std::istream& in, VertexInformation& /*vi*/)
         {
             return in;
+        }
+
+        friend size_t hash_value( const VertexInformation& e)
+        {
+            size_t hash = boost::hash<Coord>()(e.meanStrainDirection);
+            boost::hash_combine( hash, e.sumEigenValues );
+            boost::hash_combine( hash, e.rotation );
+//            boost::hash_combine( hash, e.stress );
+            return hash;
         }
     };
 

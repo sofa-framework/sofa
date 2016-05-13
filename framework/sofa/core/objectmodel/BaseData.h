@@ -301,6 +301,10 @@ public:
     /// Update the value of this %Data
     void update();
 
+
+    /// Get a hash for the current value
+    virtual size_t getHash() const = 0;
+
     /// @name Links management
     /// @{
 

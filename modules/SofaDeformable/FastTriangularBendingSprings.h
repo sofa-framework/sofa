@@ -252,6 +252,18 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value(const EdgeSpring& c)
+        {
+            size_t hash = boost::hash<sofa::defaulttype::Vec<4,unsigned> >()(c.vid);
+            boost::hash_combine( hash, c.alpha );
+            boost::hash_combine( hash, c.lambda );
+            boost::hash_combine( hash, c.is_activated );
+            boost::hash_combine( hash, c.is_initialized );
+            return hash;
+        }
+
+
     };
 
     /// The list of edge springs, one for each edge between two triangles

@@ -171,6 +171,13 @@ public:
         }
 
         /// @}
+
+
+        friend std::size_t hash_value(const Deriv& r)
+        {
+            return boost::hash<Basis>()(r.v);
+        }
+
     };
 
     typedef helper::vector<Deriv> VecDeriv;

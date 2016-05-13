@@ -97,6 +97,13 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const QuadPressureInformation& c)
+        {
+            size_t hash = boost::hash<Real>()(c.area);
+            boost::hash_combine( hash, c.force );
+            return hash;
+        }
     };
 
     sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap;

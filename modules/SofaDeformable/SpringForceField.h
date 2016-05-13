@@ -80,7 +80,21 @@ public:
         return out;
     }
 
+    /// so boost is able to hash a LinearSpring
+    friend std::size_t hash_value(const LinearSpring<T>& a)
+    {
+        size_t hash = boost::hash<int>()(a.m1);
+        boost::hash_combine( hash, a.m2 );
+        boost::hash_combine( hash, a.ks );
+        boost::hash_combine( hash, a.kd );
+        boost::hash_combine( hash, a.initpos );
+        return hash;
+    }
+
+
 };
+
+
 
 
 /// This class can be overridden if needed for additionnal storage within template specializations.

@@ -144,6 +144,13 @@ protected:
             out << c.p[0] << " " << c.p[1] << " " << c.p[2] << " " << c.data ;
             return out;
         }
+
+        friend size_t hash_value( const CubeData& c)
+        {
+            size_t hash = boost::hash_range(c.p,c.p+3);
+            boost::hash_combine( hash, c.data );
+            return hash;
+        }
     };
 
     Data < sofa::helper::vector<CubeData> > planes;

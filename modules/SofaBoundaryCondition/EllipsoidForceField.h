@@ -89,6 +89,13 @@ protected:
             return out;
         }
 
+        friend size_t hash_value(const Contact& c)
+        {
+            size_t hash = boost::hash<int>()(c.index);
+            boost::hash_combine( hash, c.m );
+            return hash;
+        }
+
     };
 
     Data<sofa::helper::vector<Contact> > contacts;

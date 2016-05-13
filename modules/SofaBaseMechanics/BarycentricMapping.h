@@ -154,6 +154,13 @@ protected:
             return out;
         }
 
+        friend size_t hash_value(const MappingData<NC,NP>& m)
+        {
+            size_t hash = boost::hash<int>()(m.in_index);
+            boost::hash_combine( hash, boost::hash_range( m.baryCoords, m.baryCoords+NC ) );
+            return hash;
+        }
+
     };
 
 public:
@@ -645,6 +652,13 @@ public:
 
         return out;
     }
+
+    friend size_t hash_value(const BarycentricMapperEdgeSetTopology<In,Out>& c)
+    {
+        std::ostringstream s;
+        s << c;
+        return boost::hash<std::string>()(s.str());
+    }
 };
 
 
@@ -734,6 +748,13 @@ public:
 
         return out;
     }
+
+    friend size_t hash_value(const BarycentricMapperTriangleSetTopology<In,Out>& c)
+    {
+        std::ostringstream s;
+        s << c;
+        return boost::hash<std::string>()(s.str());
+    }
 };
 
 
@@ -821,6 +842,13 @@ public:
         out << b.map;
 
         return out;
+    }
+
+    friend size_t hash_value(const BarycentricMapperQuadSetTopology<In,Out>& c)
+    {
+        std::ostringstream s;
+        s << c;
+        return boost::hash<std::string>()(s.str());
     }
 
 };
@@ -993,6 +1021,13 @@ public:
         out << b.map;
 
         return out;
+    }
+
+    friend size_t hash_value(const BarycentricMapperHexahedronSetTopology<In,Out>& c)
+    {
+        std::ostringstream s;
+        s << c;
+        return boost::hash<std::string>()(s.str());
     }
 
 

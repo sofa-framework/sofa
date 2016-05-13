@@ -77,6 +77,11 @@ struct SOFA_CORE_API tristate
     friend inline tristate fusion_tristate(const tristate& lhs, const tristate& rhs);
     friend inline tristate merge_tristate(const tristate& previous, const tristate& current);
     friend inline tristate difference_tristate(const tristate& previous, const tristate& current);
+
+    friend size_t hash_value(const tristate& b)
+    {
+        return boost::hash<int>()((int)(b.state));
+    }
 };
 
 inline tristate fusion_tristate(const tristate &lhs, const tristate &rhs)
@@ -224,6 +229,30 @@ public:
 
     friend SOFA_CORE_API DisplayFlags merge_displayFlags(const DisplayFlags& previous, const DisplayFlags& current);
     friend SOFA_CORE_API DisplayFlags difference_displayFlags(const DisplayFlags& parent, const DisplayFlags& child);
+
+    friend size_t hash_value(const DisplayFlags& b)
+    {
+        size_t hash = boost::hash<tristate>()(b.getShowAll());
+        boost::hash_combine( hash, b.getShowVisual() );
+        boost::hash_combine( hash, b.getShowVisualModels() );
+        boost::hash_combine( hash, b.getShowBehavior() );
+        boost::hash_combine( hash, b.getShowBehaviorModels() );
+        boost::hash_combine( hash, b.getShowForceFields() );
+        boost::hash_combine( hash, b.getShowInteractionForceFields() );
+        boost::hash_combine( hash, b.getShowCollision() );
+        boost::hash_combine( hash, b.getShowCollisionModels() );
+        boost::hash_combine( hash, b.getShowBoundingCollisionModels() );
+        boost::hash_combine( hash, b.getShowMapping() );
+        boost::hash_combine( hash, b.getShowMappings() );
+        boost::hash_combine( hash, b.getShowMechanicalMappings() );
+        boost::hash_combine( hash, b.getShowOptions() );
+        boost::hash_combine( hash, b.getShowRendering() );
+        boost::hash_combine( hash, b.getShowWireFrame() );
+        boost::hash_combine( hash, b.getShowNormals() );
+        return hash;
+    }
+
+
 protected:
     FlagTreeItem m_root;
 

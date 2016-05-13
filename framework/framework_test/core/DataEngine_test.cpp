@@ -94,7 +94,7 @@ struct DataEngine_test: public ::testing::Test
         // input did not change
         ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
 
-        engine.input.setValue(1);
+        engine.input.setValue(true);
         ASSERT_TRUE(engine.output.getValue()==TestEngine::CHANGED);
 
         engine.update();

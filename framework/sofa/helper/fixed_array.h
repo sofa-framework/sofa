@@ -56,6 +56,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
 #include <boost/static_assert.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <cstddef>
 #include <stdexcept>
@@ -357,6 +358,13 @@ public:
         return false; // (*this)==v
     }
 
+    /// so boost is able to hash a fixed_array
+    friend std::size_t hash_value(const fixed_array<T,N>& a)
+    {
+        return boost::hash_range(a.data(), a.data()+N);
+    }
+
+
 private:
 
     // check range (may be private because it is static)
@@ -486,6 +494,8 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
     v[9] = v9;
     return v;
 }
+
+
 
 } // namespace helper
 

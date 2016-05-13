@@ -173,6 +173,27 @@ public:
         return out;
     }
 
+    friend size_t hash_value(const GearSpring<DataTypes>& c)
+    {
+        size_t hash = boost::hash<unsigned int>()(c.m1);
+        boost::hash_combine( hash, c.m2 );
+        boost::hash_combine( hash, c.p1 );
+        boost::hash_combine( hash, c.p2 );
+        boost::hash_combine( hash, c.previousAngle1 );
+        boost::hash_combine( hash, c.previousAngle2 );
+        boost::hash_combine( hash, c.angle1 );
+        boost::hash_combine( hash, c.angle2 );
+        boost::hash_combine( hash, c.ini1 );
+        boost::hash_combine( hash, c.ini2 );
+        boost::hash_combine( hash, c.kd );
+        boost::hash_combine( hash, c.freeAxis );
+        boost::hash_combine( hash, c.hardStiffnessTrans );
+        boost::hash_combine( hash, c.softStiffnessRot );
+        boost::hash_combine( hash, c.hardStiffnessRot );
+        boost::hash_combine( hash, c.Ratio );
+        return hash;
+    }
+
 };
 // end class GearSpring
 

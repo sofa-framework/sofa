@@ -197,6 +197,8 @@ public:
 
         return c;
     }
+
+
 };
 
 
@@ -365,7 +367,15 @@ public:
         return in;
     }
 
+    /// so boost is able to hash a ExtVector
+    friend std::size_t hash_value(const ExtVector<T>& a)
+    {
+        return boost::hash_range(a.getData(), a.getData()+a.size());
+    }
+
+
 };
+
 
 template<class T>
 class DefaultAllocator : public ExtVectorAllocator<T>

@@ -979,6 +979,11 @@ struct ImageTypeInfo
     {
         return NULL;
     }
+
+    static void getHash( const DataType& /*data*/, size_t& /*hash*/ )
+    {
+        msg_error("ImageTypeInfo") << "hash on ImageType is not yet implemented. Undefined behavior.";
+    }
 };
 
 

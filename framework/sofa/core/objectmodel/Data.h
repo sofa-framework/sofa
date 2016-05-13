@@ -82,6 +82,7 @@ public:
     inline void printValue(std::ostream& out) const;
     inline std::string getValueString() const;
     inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
+    inline size_t getHash() const;
 
     /// Get info about the value type of the associated variable
     virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const
@@ -580,6 +581,14 @@ std::string TData<T>::getValueString() const
     out << virtualGetValue();
     return out.str();
 }
+
+template<class T>
+inline
+size_t TData<T>::getHash() const
+{
+    return boost::hash<T>()(virtualGetValue());
+}
+
 
 template<class T>
 inline

@@ -336,6 +336,14 @@ public:
     enum { total_size = 4 };
     /// Compile-time constant specifying the number of dimensions of space (NOT equivalent to total_size for quaternions)
     enum { spatial_dimensions = 3 };
+
+
+    /// so boost is able to hash a Quater
+    friend std::size_t hash_value(const Quater<Real>& q)
+    {
+        return boost::hash_range(q.ptr(), q.ptr()+4);
+    }
+
 };
 
 //typedef Quater<double> Quat; ///< alias
@@ -346,6 +354,8 @@ public:
 extern template class SOFA_HELPER_API Quater<double>;
 extern template class SOFA_HELPER_API Quater<float>;
 #endif
+
+
 
 } // namespace helper
 

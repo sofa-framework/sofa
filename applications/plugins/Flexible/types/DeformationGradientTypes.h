@@ -163,6 +163,12 @@ struct DefGradientTypes
 
         /// @}
 
+
+        friend std::size_t hash_value(const Deriv& r)
+        {
+            return boost::hash<Basis>()(r.b);
+        }
+
     };
 
     typedef helper::vector<Deriv> VecDeriv;

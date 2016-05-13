@@ -471,6 +471,11 @@ public:
         return os;
     }
 
+    friend size_t hash_value( const CudaMatrix& m )
+    {
+        return boost::hash_range( m.hostPointer, m.hostPointer+sizeX*sizeY );
+    }
+
 protected:
     void copyToHost() const {
         if ( hostIsValid ) return;

@@ -113,6 +113,22 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const EdgeInformation& e)
+        {
+            size_t hash = boost::hash<Mat>()(e.DfDx);
+            boost::hash_combine( hash, e.m1 );
+            boost::hash_combine( hash, e.m2 );
+            boost::hash_combine( hash, e.m3 );
+            boost::hash_combine( hash, e.m4 );
+            boost::hash_combine( hash, e.ks );
+            boost::hash_combine( hash, e.kd );
+            boost::hash_combine( hash, e.restlength1 );
+            boost::hash_combine( hash, e.restlength2 );
+            boost::hash_combine( hash, e.is_activated );
+            boost::hash_combine( hash, e.is_initialized );
+            return hash;
+        }
     };
 
 

@@ -1849,6 +1849,33 @@ typedef Rigid2dMass Rigid2Mass;
 #endif
 
 
+/// so boost is able to hash a RigidDeriv
+template<int N, typename real>
+std::size_t hash_value(const RigidDeriv<N,real>& r)
+{
+    size_t seed = boost::hash<typename RigidDeriv<N,real>::Pos>()(r.getLinear());
+    boost::hash_combine(seed, r.getAngular());
+    return seed;
+}
+
+/// so boost is able to hash a RigidCoord
+template<int N, typename real>
+std::size_t hash_value(const RigidCoord<N,real>& r)
+{
+    size_t seed = boost::hash<typename RigidCoord<N,real>::Pos>()(r.getCenter());
+    boost::hash_combine(seed, r.getOrientation());
+    return seed;
+}
+
+/// so boost is able to hash a RigidMass
+template<int N, typename real>
+std::size_t hash_value(const RigidMass<N,real>& r)
+{
+    size_t seed = boost::hash<real>()(r.mass);
+    boost::hash_combine(seed, r.volume);
+    boost::hash_combine(seed, r.inertiaMatrix);
+    return seed;
+}
 
 // Specialization of the defaulttype::DataTypeInfo type traits template
 

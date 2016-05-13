@@ -83,6 +83,11 @@ protected:
         {
             return in;
         }
+
+        friend size_t hash_value( const TrianglePressureInformation& c)
+        {
+            return boost::hash<Real>()(c.area);
+        }
     };
 
     std::ofstream file;
