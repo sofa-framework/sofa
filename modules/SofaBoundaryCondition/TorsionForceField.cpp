@@ -22,9 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraintset/LagrangianMultiplierContactConstraint.inl>
+#define SOFA_COMPONENT_FORCEFIELD_TORSIONFORCEFIELD_CPP
+
+#include <SofaBoundaryCondition/TorsionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -33,34 +34,33 @@ namespace sofa
 namespace component
 {
 
-namespace constraintset
+namespace forcefield
 {
 
-SOFA_DECL_CLASS(LagrangianMultiplierContactConstraint)
-
 using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
-int LagrangianMultiplierContactConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierContactConstraintClass")
+SOFA_DECL_CLASS(TorsionForceField)
+
+int TorsionForceFieldClass = core::RegisterObject("Applies a torque to specified points")
+#ifndef SOFA_DOUBLE
+		.add< TorsionForceField<Vec3fTypes> >()
+		.add< TorsionForceField<Rigid3fTypes> >()
+#endif
 #ifndef SOFA_FLOAT
-        .add< LagrangianMultiplierContactConstraint<Vec3dTypes> >()
+		.add< TorsionForceField<Vec3dTypes> >()
+		.add< TorsionForceField<Rigid3dTypes> >()
+#endif
+;
+
+#ifndef SOFA_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-        .add< LagrangianMultiplierContactConstraint<Vec3fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API TorsionForceField<Rigid3fTypes>;
 #endif
 
-
-} // namespace constraintset
-
+} // namespace forcefield
 } // namespace component
-
 } // namespace sofa
-
