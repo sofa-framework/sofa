@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "ComplementaryROI.h"
+#include <SofaGeneralEngine/ComplementaryROI.h>
 
 #include <set>
 #include <sstream>
