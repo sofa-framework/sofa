@@ -353,9 +353,9 @@ extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    const behavior::BaseMechanicalState* state = node->mechanicalState.get();
+    behavior::BaseMechanicalState* state = node->mechanicalState.get();
 
-    if( state ) return SP_BUILD_PYSPTR((Base*)state);
+    if( state ) return SP_BUILD_PYSPTR(state);
 
     Py_RETURN_NONE;
 }
@@ -364,9 +364,9 @@ extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*ar
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    const sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
+    sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
 
-    if( mapping ) return SP_BUILD_PYSPTR((Base*)mapping);
+    if( mapping ) return SP_BUILD_PYSPTR(mapping);
 
     Py_RETURN_NONE;
 }
