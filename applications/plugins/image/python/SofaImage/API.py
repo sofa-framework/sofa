@@ -114,6 +114,19 @@ class Image:
         if not color is None:
             mesh.visual.setColor(color[0],color[1],color[2],color[3])
 
+    def addClosingVisual(self, meshName=None, color=None):
+        name = self.meshSeq[0] if meshName is None else meshName
+        mesh = self.meshes[name]
+        if mesh.mesh is None:
+            Sofa.msg_error('Image.API',"addClosingVisual : no mesh for "+ meshName)
+            return
+        if mesh.mesh.findData("closingPosition") is None:
+            Sofa.msg_error('Image.API',"addClosingVisual : mesh is not a closing "+ meshName)
+            return
+        mesh.closingVisual = self.node.createObject("VisualModel", name="closingVisual_"+name, position=mesh.mesh.getLinkPath()+".closingPosition", triangles=mesh.mesh.getLinkPath()+".closingTriangles")
+        if not color is None:
+            mesh.closingVisual.setColor(color[0],color[1],color[2],color[3])
+
     def addAllMeshVisual(self, color=None):
         for name in self.meshSeq:
             self.addMeshVisual(name, color)
