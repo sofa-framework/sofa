@@ -425,6 +425,8 @@ protected:
         // draw edges
         if(this->f_printLog.getValue() && nbedg) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
 
+        unsigned int subdivValue = this->subdiv.getValue();
+
         std::map<unsigned int,T> edgToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -442,8 +444,8 @@ protected:
             }
             if(currentColor == FillColor)
             {
-                if (nbval>1)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),this->subdiv.getValue()); // edge rasterization with interpolated values (if not in roi)
-                else draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+                if (nbval>1)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),subdivValue); // edge rasterization with interpolated values (if not in roi)
+                else draw_line(im,mask,pts[0],pts[1],currentColor,subdivValue);
             }
         }
 
@@ -453,7 +455,7 @@ protected:
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[it->first][j]])));
             const T& currentColor = it->second;
-            draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+            draw_line(im,mask,pts[0],pts[1],currentColor,subdivValue);
         }
 
         //  draw filled faces
@@ -477,9 +479,9 @@ protected:
             if(currentColor == FillColor)
             {
                 if (nbval>1)  // triangle rasterization with interpolated values (if not in roi)
-                    draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),subdivValue);
                 else
-                    draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,subdivValue);
             }
         }
 
@@ -489,7 +491,7 @@ protected:
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[it->first][j]])));
             const T& currentColor = it->second;
-            draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+            draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,subdivValue);
         }
 
         /// fill inside
