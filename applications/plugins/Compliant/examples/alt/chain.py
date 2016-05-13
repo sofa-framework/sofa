@@ -59,7 +59,6 @@ def chain(node, **kwargs):
                                      name = 'dofs')
         dofs.position = ' '.join( ['0'] * (resolution - 1) )
 
-
         if compliance > 0:
             energy = lagrange.createChild('energy')
             
@@ -113,10 +112,11 @@ def createScene(node):
         #                      line_search = 1)
         
         ode = c.createObject('CompliantImplicitSolver',
-                             stabilization = 0)
+                             stabilization = 0,
+                             neglecting_compliance_forces_in_geometric_stiffness = False)
 
-        # num = c.createObject('MinresSolver', iterations = 100, precision = 1e-14)        
-        num = c.createObject('LDLTSolver', schur = False, regularization = 0)
+        num = c.createObject('MinresSolver', iterations = 100, precision = 1e-14)        
+        # num = c.createObject('LDLTSolver', schur = False, regularization = 0)
         # ode.debug = 2
         
         

@@ -43,6 +43,9 @@ class Frame:
         def offset(self):
             return hstack((self.translation, self.rotation))
 
+        def tolist(self):
+            return [self.translation[0],self.translation[1],self.translation[2],self.rotation[0],self.rotation[1],self.rotation[2],self.rotation[3]]
+
         def __mul__(self, other):
             res = Frame()
             res.translation = self.translation + quat.rotate(self.rotation, other.translation)
@@ -59,8 +62,13 @@ class Frame:
         def set(self, **kwargs):
                 for k in kwargs:
                         setattr(self, k, kwargs[k])
-
                 return self
+
+        def normalizeRotation(self):
+            ## Numerical drift can produce non-unit quaternions.
+            ## Forcing its normalization.
+            self.rotation = quat.normalized(self.rotation)
+
 
         # TODO more: wrench/twist frame change.
 

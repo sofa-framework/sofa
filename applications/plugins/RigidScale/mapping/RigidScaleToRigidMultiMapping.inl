@@ -22,7 +22,6 @@ RigidScaleToRigidMultiMapping
 <I1,I2,O>::RigidScaleToRigidMultiMapping():
 Inherit()
 , index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
-, automaticInit(initData(&automaticInit, false, "autoInit", "Init the scale and affine mechanical state, and the index data."))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
 , _Js(2)
 {
@@ -226,14 +225,10 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
 	if ((this->stateIn1 && this->stateIn2) && this->stateOut)
 	{
 		// Get the inputs
-        const helper::vector<unsigned>& index_const = this->index.getValue();
 		const InVecCoord1& x1_const = this->stateIn1->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const InVecCoord2& x2_const = this->stateIn2->read(sofa::core::ConstVecCoordId::position())->getValue();
 		const OutVecCoord& xout_const = this->stateOut->read(sofa::core::ConstVecCoordId::position())->getValue();
-        const OutVecCoord& xr_out_const = this->stateOut->read(sofa::core::ConstVecCoordId::restPosition())->getValue();
 		// Variables
-		unsigned int ind0, ind1, ind2;
-		unsigned int indexSize = (unsigned int)index_const.size() / 3;
 		unsigned int in1Size = (unsigned int)x1_const.size();
 		unsigned int in2Size = (unsigned int)x2_const.size();
 		unsigned int outSize = (unsigned int)xout_const.size();
@@ -244,24 +239,66 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
             std::cout << "RigidScaleToRigidMultiMapping : Setup failed. There is no rigid/scale DOFs. " << std::endl;
 			return;
 		}
+        // Check of the index pair size
+        if (outSize <= 0)
+        {
+            std::cout << "RigidScaleToRigidMultiMapping : Warning ! No initial position is found on the output mechanical object. " << std::endl;
+            return;
+        }
+
+        if( index.getValue().size() == 0 ) {
+            // let's try to init index from a shapefunction
+            sofa::core::objectmodel::BaseContext* context = this->getContext();
+            std::vector<BaseShapeFunction*> sf; context->get<BaseShapeFunction>(&sf,core::objectmodel::BaseContext::SearchUp);
+            if (!sf.empty())
+                m_shapeFunction = sf[0]; // just pick the first one
+            if (m_shapeFunction) {
+                sout << "Using shape function: " << m_shapeFunction->name << " to compute index" << sendl;
+
+                typename BaseShapeFunction::Coord out_pos;
+                typename BaseShapeFunction::VRef ref;
+                typename BaseShapeFunction::VReal w;
+                helper::WriteOnlyAccessor<Data< helper::vector<unsigned> > > ra_index(this->index);
+                for (std::size_t ind0 = 0; ind0 < outSize; ++ind0) {
+                    defaulttype::StdVectorTypes<typename BaseShapeFunction::Coord,typename BaseShapeFunction::Coord>::set( out_pos, xout_const[ind0][0] , xout_const[ind0][1] , xout_const[ind0][2]);
+                    m_shapeFunction->computeShapeFunction(out_pos, ref, w, NULL, NULL);
+                    if (ref.size() == 0) {
+                        serr << "Child " << ind0 << " has no parent" << sendl;
+                        return;
+                    }
+                    else if (ref.size() == 1) {
+                        ra_index.push_back(ind0);ra_index.push_back(ref[0]);ra_index.push_back(ref[0]);
+                    }
+                    else {
+                        typename BaseShapeFunction::VReal::iterator itMax = std::max_element(w.begin(),w.end());
+                        std::size_t indexMax = std::distance(w.begin(), itMax);
+                        ra_index.push_back(ind0);ra_index.push_back(indexMax);ra_index.push_back(indexMax);
+                        serr << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax << sendl;
+                    }
+                }
+            }
+            else {
+                serr << "No index given, no shapefunction found" << sendl;
+                return;
+            }
+        }
+
+        helper::vector<unsigned> const& index_const = this->index.getValue();
 		// Check of the index pair size
 		if (index_const.size() % 3 != 0 || index_const.size() < 3)
 		{
 			std::cout << "RigidScaleToRigidMultiMapping : Setup failed. Some affine are connected to only a rigid, while they require a rigid and a scale, check the data index. " << std::endl;
 			return;
 		}
-		// Check of the index pair size
-        if (outSize <= 0)
-		{
-			std::cout << "RigidScaleToRigidMultiMapping : Warning ! No initial position is found on the output mechanical object. " << std::endl;
-            return;
-        }
-        // Temporary positions
-        OutCoord tmp;
-        OutVecCoord childCoords(xout_const);
-        // Copy of the relative coordinate of the mapped points
+
+        // Compute the relative coordinate of the mapped points
         this->relativeCoord.clear();
-        for(unsigned int i=0; i<xout_const.size(); ++i) this->relativeCoord.push_back(xr_out_const[i]);
+        unsigned int ind0, ind1;
+        for(unsigned int i=0; i<xout_const.size(); ++i) {
+            ind0 = index_const[3 * i];
+            ind1 = index_const[3 * i + 1];
+            this->relativeCoord.push_back(-x1_const[ind1]+xout_const[ind0]);
+        }
 		// Initialization of the jacobian matrix size
 		_J1.resizeBlocks(outSize, in1Size);
 		_J2.resizeBlocks(outSize, in2Size);
@@ -270,17 +307,6 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
         //_K1.resizeBlocks(in1Size, in1Size);
         //_K2.resizeBlocks(in2Size, in2Size);
         //_Ks[0] = &_K1; _Ks[1] = &_K2;
-		// Init of the output position vector
-		for (unsigned int i = 0; i < (indexSize); ++i)
-		{
-			ind0 = index_const[3 * i];
-			ind1 = index_const[3 * i + 1];
-			ind2 = index_const[3 * i + 2];
-			tmp = xout_const[ind0];
-            this->computeRigidFromRigidAndScale(x1_const[ind1], x2_const[ind2], this->relativeCoord[ind0], tmp);
-			childCoords[ind0] = tmp;
-        }
-        (this->stateOut->x).setValue(childCoords);
 	}
     else std::cout << "RigidScaleToRigidMultiMapping : setup failed" << std::endl;
 }

@@ -109,7 +109,7 @@ protected:
 
     }
 
-    void handleEvent(sofa::core::objectmodel::Event */*event*/)
+    void handleEvent(sofa::core::objectmodel::Event * /*event*/)
     {
     }
 

@@ -24,7 +24,7 @@ def createRigidBody(node,name,posx,posy=0):
     
     
     
-def createScene(root):
+def createSceneAndController(root):
   
     ##### global parameters
     root.createObject('VisualStyle', displayFlags="showBehavior showWireframe showCollisionModels" )
@@ -92,8 +92,6 @@ def createScene(root):
     ballandsocket_body2 = createRigidBody(ballandsocketNode, "simpleballandsocket_body2", -5 )
     simpleballandsocket = StructuralAPI.SimpleBallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node, compliance=1e-2, isCompliance=False )
     
-    return
-    
     # PLANAR
     planarNode = root.createChild('planar')
     planar_body1 = createFixedRigidBody(planarNode, "planar_body1", 0 )
@@ -128,8 +126,6 @@ def createScene(root):
     spring_body1 = createFixedRigidBody(springNode, "spring_body1", 15 )
     spring_body2 = createRigidBody(springNode, "spring_body2", 15 )
     spring = StructuralAPI.RigidJointSpring( "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
-  
-    return
   
     # from now work in float
   
@@ -183,14 +179,26 @@ def createScene(root):
     body3.setFromMesh( mesh, 1, [-3,-5,0,0.7071067811865476,0,0,0.7071067811865476])
     body3.dofs.showObject=True
     body3.dofs.showObjectScale=1
+    body3.addCollisionMesh( mesh )
+    body3.addVisualModel( mesh )
+
     alignedoffset = body3.addOffset( "world_axis_aligned", [0,0,0,0,0,0,1] )
     alignedoffset.dofs.showObject=True
     alignedoffset.dofs.showObjectScale=.5
-    notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7071067811865476,0,0,0.7071067811865476] )
+
+    mappedpoint1 = body3.addMappedPoint("point", [1, 0, 0], isMechanical=False)
+    mappedpoint1.dofs.showObject = True
+    mappedpoint1.dofs.showObjectScale = .1
+    mappedpoint1.dofs.drawMode = 1
+
+    global notalignedoffset
+    notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7325378163287418,0.4619397662556433,-0.19134171618254486,0.4619397662556433], isMechanical=False)
     notalignedoffset.dofs.showObject=True
     notalignedoffset.dofs.showObjectScale=.5
-    body3.addCollisionMesh( mesh )
-    body3.addVisualModel( mesh )
+    mappedpoint2 = notalignedoffset.addMappedPoint( "point", [1,0,0], isMechanical=False)
+    mappedpoint2.dofs.showObject=True
+    mappedpoint2.dofs.showObjectScale=.1
+    mappedpoint2.dofs.drawMode=1
     
     
        
@@ -202,4 +210,24 @@ def createScene(root):
     dragon.dofs.showObjectScale=1
     dragon.addCollisionMesh( mesh, [.2,.2,.2] )
     dragon.addVisualModel( mesh, [.2,.2,.2] )
-    
+
+
+def onKeyPressed(k):
+    # print 'onKeyPressed ' + k
+    # sys.stdout.flush()
+
+    global notalignedoffset
+    if k=='Z':
+        notalignedoffset.applyTransform([0, 1, 0, 0,0,0,1])
+    elif k=='S':
+        notalignedoffset.applyTransform([0, -1, 0, 0,0,0,1])
+    elif k == 'Q':
+        notalignedoffset.applyTransform([-1, 0, 0, 0,0,0,1])
+    elif k == 'D':
+        notalignedoffset.applyTransform([1, 0, 0, 0,0,0,1])
+    elif k == 'W':
+        notalignedoffset.applyTransform([0, 0, 0, 0.7071067811865476,0,0,0.7071067811865476])
+
+
+
+    return 0

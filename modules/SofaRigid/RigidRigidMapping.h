@@ -89,7 +89,11 @@ protected:
     RigidRigidMapping()
         : Inherit(),
           points(initData(&points, "initialPoints", "Initial position of the points")),
-          repartition(initData(&repartition,"repartition","number of child frames per parent frame. If empty, all the children are attached to the parent with index given in the \"index\" attribute. If one value, each parent frame drives the given number of children frames. Otherwise, the values are the number of child frames driven by each parent frame. ")),
+          repartition(initData(&repartition,"repartition","number of child frames per parent frame. \n"
+                               "If empty, all the children are attached to the parent with index \n"
+                               "given in the \"index\" attribute. If one value, each parent frame drives \n"
+                               "the given number of children frames. Otherwise, the values are the number \n"
+                               "of child frames driven by each parent frame. ")),
           index(initData(&index,(unsigned)0,"index","input frame index")),
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),

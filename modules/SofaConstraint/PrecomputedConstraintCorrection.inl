@@ -166,18 +166,21 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             else
                 return false;
         }
-        else if ((sofa::helper::system::DataRepository.findFile(fileName)) && (recompute.getValue() == false))
+        else if (recompute.getValue() == false)
         {
-            invM->data = new Real[nbRows * nbCols];
+            if(sofa::helper::system::DataRepository.findFile(fileName))
+            {
+                invM->data = new Real[nbRows * nbCols];
 
-            std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
+                std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
 
-            sout << "File " << fileName << " found. Loading..." << sendl;
+                sout << "File " << fileName << " found. Loading..." << sendl;
 
-            compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
-            compFileIn.close();
+                compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
+                compFileIn.close();
 
-            return true;
+                return true;
+            }
         }
 
         return false;

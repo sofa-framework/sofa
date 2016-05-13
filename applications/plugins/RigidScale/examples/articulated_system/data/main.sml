@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE sml SYSTEM "sml.dtd">
 <sml name="main">
-    <units length="m" mass="kg" time="s"/>
+    <units length="dm" mass="kg" time="s"/>
     <!--Meshes-->
     <mesh id="s_ulna_radius_mesh">
         <source format="obj">./obj/main_s_ulna_radius_mesh.obj</source>

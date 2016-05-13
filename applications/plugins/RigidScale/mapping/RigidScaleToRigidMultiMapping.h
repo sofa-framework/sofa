@@ -38,6 +38,8 @@
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
 
+#include "Flexible/shapeFunction/BaseShapeFunction.h"
+
 #include <RigidScale/mapping/RigidScaleMappingJacobian.h>
 
 namespace sofa
@@ -110,6 +112,9 @@ public:
 
     typedef SE3< Real > se3;
 
+    typedef core::behavior::ShapeFunctionTypes<3,Real> ShapeFunctionType;
+    typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
+
 	/****************** CONSTRUCTOR / DESTRUCTOR ***********************/
     RigidScaleToRigidMultiMapping();
     ~RigidScaleToRigidMultiMapping();
@@ -167,7 +172,6 @@ public:
     const sofa::defaulttype::BaseMatrix* getK();		                   
 
     Data< helper::vector<unsigned> > index; ///< Two indices per child: the index of the rigid, and the index of scale
-    Data< bool > automaticInit; ///< Automatic setup based only on the rigid position. The index data is init, the scale mechanical state is reinit and the affine mechanical state is reinit.
     Data< bool > useGeometricStiffness; ///< To indication if we use the geometric stiffness
 
 protected:
@@ -200,6 +204,8 @@ protected:
 
     // Others
     OutVecCoord relativeCoord;
+
+    BaseShapeFunction* m_shapeFunction;
 };
 
 }//namespace mapping

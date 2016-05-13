@@ -13,7 +13,7 @@
 	<CollisionResponse name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop/>
-	<LCPConstraintSolver />
+	<LCPConstraintSolver tolerance="0.001"  maxIt="1000"/>
 
 	<Node name="Raptor">
 		
@@ -21,6 +21,7 @@
            	<EulerImplicit name="odesolver" />
             	<CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<SparseGrid n="5 5 10" fileTopology="mesh/raptor_8kp.obj" />
+		<HexahedronSetGeometryAlgorithms />
 		<MechanicalObject name="mecaRaptor"  rotation="0 0 90"/>
 		<PrecomputedConstraintCorrection recompute="true"/>
 		<DiagonalMass massDensity="1" name="computed using mass density" />
