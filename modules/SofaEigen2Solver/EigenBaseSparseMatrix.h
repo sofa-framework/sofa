@@ -464,6 +464,18 @@ public:
     }
 
 
+
+    friend size_t hash_value(const EigenBaseSparseMatrix& m)
+    {
+        ((EigenBaseSparseMatrix<Real>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
+        // todo check vector sizes
+        size_t hash = boost::hash_range( m.compressedMatrix.valuePtr(), m.compressedMatrix.valuePtr()+m.compressedMatrix.innerSize() );
+        boost::hash_combine( hash, boost::hash_range( m.compressedMatrix.innerIndexPtr(), m.compressedMatrix.innerIndexPtr()+m.compressedMatrix.innerSize() ));
+        boost::hash_combine( hash, boost::hash_range( m.compressedMatrix.outerIndexPtr(), m.compressedMatrix.outerIndexPtr()+m.compressedMatrix.outerSize() ));
+        return hash;
+    }
+
+
 };
 
 template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "EigenBaseSparseMatrixd"; }

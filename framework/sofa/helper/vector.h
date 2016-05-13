@@ -182,6 +182,11 @@ public:
     void fastResize(size_type n) {
         this->resize(n);
     }
+
+    friend size_t hash_value(const vector& v)
+    {
+        return boost::hash< std::vector<T> >()( (std::vector<T>)v );
+    }
 };
 
 

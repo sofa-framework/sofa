@@ -99,6 +99,11 @@ public:
         return out;
     }
 
+    friend size_t hash_value( const ImageToolBoxData& h )
+    {
+        return boost::hash< Vec<2,T> >()(h.clamp);
+    }
+
 };
 
 }
