@@ -385,7 +385,7 @@ public:
 
     friend size_t hash_value( const Image& i )
     {
-        return boost::hash<cimg_library::CImgList<T>>()(i.img);
+        return boost::hash<cimg_library::CImgList<T> >()(i.img);
     }
 
 
