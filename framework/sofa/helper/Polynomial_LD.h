@@ -116,6 +116,13 @@ public :
     template<typename FReal, unsigned int FN> //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
     friend Monomial_LD<FReal,FN> & operator*(const FReal & alpha,Monomial_LD<FReal,FN> & r);
 
+    friend size_t hash_value( const Monomial_LD& m )
+    {
+        size_t hash = boost::hash<Real>()(m.coef);
+        boost::hash_combine( hash, m.powers );
+        return hash;
+    }
+
 protected :
     sofa::defaulttype::Vec<N,std::string> variables;
 };
@@ -208,6 +215,12 @@ public :
 
     void sort();
 //	void testPolynomial_LD();
+
+    friend size_t hash_value( const Polynomial_LD& p )
+    {
+        return boost::hash<MonomialsList>()(p.listOfMonoMial);
+    }
+
 protected :
 
     ///The sort must be done after each constructor and each operation where monomials are inserted
