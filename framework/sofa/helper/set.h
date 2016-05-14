@@ -122,6 +122,14 @@ public:
     {
         return vec.read(in);
     }
+
+#ifdef WIN32
+    friend size_t hash_value(const set& v)
+    {
+        typedef std::set< T, Compare, Alloc > stdset;
+        return boost::hash<stdset>()((stdset)v);
+    }
+#endif
 };
 
 /// Input stream

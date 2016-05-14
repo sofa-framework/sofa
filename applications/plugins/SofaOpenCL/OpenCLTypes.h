@@ -58,6 +58,11 @@ public :
 
 };
 
+template<class T>
+std::size_t hash_value(const helper::vector<T,OpenCLMemoryManager<T> >& v)
+{
+    return boost::hash_range( &v[0], &v[v.size()-1] );
+}
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class OpenCLVectorTypes

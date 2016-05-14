@@ -107,6 +107,16 @@ public:
     bool includes(const Tag& t) const { return this->count(t) > 0; }
     /// Returns true if this TagSet contains all specified tags
     bool includes(const TagSet& t) const;
+
+
+#ifdef WIN32
+    friend size_t hash_value(const TagSet& v)
+    {
+        typedef std::set< Tag > stdset;
+        return boost::hash<stdset>()((stdset)v);
+    }
+#endif
+
 };
 
 } // namespace objectmodel

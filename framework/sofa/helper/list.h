@@ -120,6 +120,15 @@ public:
         return vec.read(in);
     }
 
+
+#ifdef WIN32
+    friend size_t hash_value(const list& v)
+    {
+        typedef std::list< T, Alloc > stdlist;
+        return boost::hash<stdlist>()((stdlist)v);
+    }
+#endif
+
 };
 
 

@@ -183,7 +183,24 @@ public:
         this->resize(n);
     }
 
+#ifdef WIN32
+    friend size_t hash_value(const vector& v)
+    {
+        typedef std::vector< T, std::allocator<T> > stdvector;
+        return boost::hash<stdvector>()((stdvector)v);
+    }
+#endif
+
 };
+
+#ifdef __APPLE__
+// boost::hash<vector<bool>> is not defined with clang on mac
+template<class A>
+size_t hash_value(const std::vector<bool,A>& v)
+{
+    return boost::hash_range( &v.front(), &v.back() );
+}
+#endif
 
 
 /// Input stream
