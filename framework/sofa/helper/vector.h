@@ -193,12 +193,24 @@ public:
 
 };
 
-#ifdef __APPLE__
-// boost::hash<vector<bool>> is not defined with clang on mac
+#if defined(_LIBCPP_VERSION)
+// boost::hash< vector<bool> > is not working with libc++ (default on mac clang)
+// note it is working with libstd++
 template<class A>
 size_t hash_value(const std::vector<bool,A>& v)
 {
-    return boost::hash_range( &v.front(), &v.back() );
+    size_t hash = 0;
+    for( typename std::vector<bool,A>::const_iterator it=v.begin(), itend = v.end() ; it!=itend ; ++it )
+        boost::hash_combine( hash, (bool)(*it) );
+    return hash;
+}
+template<class A>
+size_t hash_value(const helper::vector<bool,A>& v)
+{
+    size_t hash = 0;
+    for( typename helper::vector<bool,A>::const_iterator it=v.begin(), itend = v.end() ; it!=itend ; ++it )
+        boost::hash_combine( hash, (bool)(*it) );
+    return hash;
 }
 #endif
 

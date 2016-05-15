@@ -963,7 +963,7 @@ protected:
 
     std::size_t hash_value(const vector& v)
     {
-        return boost::hash_range( &v[0], &v[v.size()-1] );
+        return boost::hash_range( v.begin(), v.end() );
     }
 };
 
