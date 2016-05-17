@@ -25,6 +25,7 @@
 
 #include "Binding_BaseMapping.h"
 #include "Binding_BaseObject.h"
+#include "PythonFactory.h"
 
 using namespace sofa;
 using namespace sofa::core;
@@ -41,7 +42,7 @@ extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
     PyObject *list = PyList_New(from.size());
 
     for (unsigned int i=0; i<from.size(); ++i)
-        PyList_SetItem(list,i,SP_BUILD_PYSPTR(from[i]));
+        PyList_SetItem(list,i,sofa::PythonFactory::toPython(from[i]));
 
     return list;
 }
@@ -55,7 +56,7 @@ extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
     PyObject *list = PyList_New(to.size());
 
     for (unsigned int i=0; i<to.size(); ++i)
-        PyList_SetItem(list,i,SP_BUILD_PYSPTR(to[i]));
+        PyList_SetItem(list,i,sofa::PythonFactory::toPython(to[i]));
 
     return list;
 }

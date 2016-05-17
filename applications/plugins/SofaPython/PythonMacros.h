@@ -100,21 +100,6 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
     return (PyObject*)pyObj;
 }
 
-// retourne automatiquement le type Python de plus haut niveau possible,
-// en fonction du type de l'objet Cpp (spécifiquement bindé)
-// afin de permettre l'utilisation de fonctions des sous-classes de Base
-SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::objectmodel::Base* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::loader::BaseLoader* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::topology::BaseMeshTopology* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::topology::Topology* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::visual::VisualModel* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::behavior::BaseMechanicalState* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::BaseState* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::BaseMapping* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::DataEngine* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::objectmodel::BaseObject* obj);
-//SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::objectmodel::BaseContext* obj);
-
 
 // =============================================================================
 // Ptr objects passed to python

@@ -42,6 +42,7 @@ using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::PythonScriptEvent;
 
 #include <sofa/helper/logging/Messaging.h>
+#include "PythonFactory.h"
 
 //TODO(dmarchal): Use the deactivable ScopedTimer
 
@@ -116,12 +117,12 @@ void PythonMainScriptController::loadScript()
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_onLoaded,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_onLoaded,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_createGraph(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_createGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_createGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
@@ -131,12 +132,12 @@ void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
     script_onLoaded( down_cast<simulation::Node>(getContext()) );
     script_createGraph( down_cast<simulation::Node>(getContext()) );
 
-    SP_CALL_MODULEFUNC(m_Func_initGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_initGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 bool PythonMainScriptController::script_onKeyPressed(const char c)
@@ -213,7 +214,7 @@ void PythonMainScriptController::script_onScriptEvent(ScriptEvent* event)
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonMainScriptController_Event_")+this->getName()).c_str() );
 
     PythonScriptEvent *pyEvent = static_cast<PythonScriptEvent*>(event);
-    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
+    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
 }
 
 void PythonMainScriptController::script_draw(const VisualParams*)

@@ -29,6 +29,7 @@
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
+#include "PythonFactory.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -95,7 +96,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     }
 
     // by default, it will always be at least a BaseObject...
-    return SP_BUILD_PYSPTR(obj.get());
+    return sofa::PythonFactory::toPython(obj.get());
 }
 
 
