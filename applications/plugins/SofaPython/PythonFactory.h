@@ -100,7 +100,7 @@ protected:
     {
 //        std::cerr<<"toPython "<<obj->getClassName()<<std::endl;
 
-        for(auto it=list.rbegin(),itend=list.rend();it!=itend;++it)
+        for(PythonBoundTypes::const_reverse_iterator it=list.rbegin(),itend=list.rend();it!=itend;++it)
             if( (*it)->canCast( obj ) ) return BuildPySPtr<sofa::core::objectmodel::Base>(obj,(*it)->pyTypeObject);
 
         return BuildPySPtr<sofa::core::objectmodel::Base>(obj,pyTypeObject);
