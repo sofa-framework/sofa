@@ -135,8 +135,7 @@ protected:
 
         friend size_t hash_value(const TetrahedronInformation& c)
         {
-            size_t hash = 0;
-            boost::hash_combine( hash, c.materialMatrix );
+            size_t hash = hash_value( c.materialMatrix );
             boost::hash_combine( hash, c.strainDisplacementTransposedMatrix );
             boost::hash_combine( hash, c.rotatedInitialElements );
             boost::hash_combine( hash, c.rotation );

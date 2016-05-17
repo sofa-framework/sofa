@@ -148,6 +148,13 @@ public:
         return vec.read(in);
     }
 
+#ifdef WIN32
+    friend size_t hash_value( const SVector& v )
+    {
+        return boost::hash_range( v.begin(), v.end() );
+    }
+#endif
+
 };
 
 } // namespace helper

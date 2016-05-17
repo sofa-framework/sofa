@@ -227,7 +227,7 @@ public:
 
         friend size_t hash_value( const TriangleState& c)
         {
-            size_t hash = boost::hash<Transformation>()(c.frame);
+            size_t hash = hash_value( c.frame );
             boost::hash_combine( hash, c.stress );
             return hash;
         }
