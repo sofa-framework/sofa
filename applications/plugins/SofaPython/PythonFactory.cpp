@@ -33,7 +33,4 @@ namespace sofa
     PythonFactory::PythonBoundTypes PythonFactory::s_boundTypes[PythonFactory::NB_LISTS];
 
 
-
-
-
 } // namespace sofa
