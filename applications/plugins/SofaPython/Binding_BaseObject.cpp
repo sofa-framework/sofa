@@ -25,6 +25,7 @@
 
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
+#include "PythonFactory.h"
 
 using namespace sofa::core::objectmodel;
 
@@ -73,13 +74,13 @@ extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
 extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
-    return SP_BUILD_PYSPTR(obj->getContext());
+    return sofa::PythonFactory::toPython(obj->getContext());
 }
 
 extern "C" PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
-    return SP_BUILD_PYSPTR(obj->getMaster());
+    return sofa::PythonFactory::toPython(obj->getMaster());
 }
 
 
