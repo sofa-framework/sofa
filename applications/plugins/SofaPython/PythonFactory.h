@@ -140,7 +140,6 @@ public:
                 return s_boundTypes[BaseState].push_back( t );
             }
 
-
             if( boost::is_base_of<sofa::core::BaseMapping, T>::value )
                 return s_boundTypes[BaseMapping].push_back( t );
 
@@ -158,53 +157,126 @@ public:
 
 
     /// to convert a sofa::core::objectmodel::Base-inherited object to its corresponding pyObject
+    /// could be improve for known types, but since it is only setup...
     static PyObject* toPython(sofa::core::objectmodel::Base* obj)
     {
 //        std::cerr<<"toPython0 "<<obj->getClassName()<<std::endl;
 
         if( obj->toBaseObject() )
         {
-            if( obj->toBaseLoader() )
-                return toPython( s_boundTypes[BaseLoader], obj, &SP_SOFAPYTYPEOBJECT(BaseLoader) );
+            if( obj->toBaseLoader() ) return toPython( obj->toBaseLoader() );
 
             if( obj->toTopology() )
             {
-                if( obj->toBaseMeshTopology() )
-                    return toPython( s_boundTypes[BaseMeshTopology], obj, &SP_SOFAPYTYPEOBJECT(BaseMeshTopology) );
-                return toPython( s_boundTypes[Topology], obj, &SP_SOFAPYTYPEOBJECT(Topology) );
+                if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
+                return toPython( obj->toTopology() );
             }
 
-            if( obj->toVisualModel())
-                return toPython( s_boundTypes[VisualModel], obj, &SP_SOFAPYTYPEOBJECT(VisualModel) );
+            if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
 
             if( obj->toBaseState() )
             {
-                if (obj->toBaseMechanicalState())
-                    return toPython( s_boundTypes[BaseMechanicalState], obj, &SP_SOFAPYTYPEOBJECT(BaseMechanicalState) );
+                if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
 
-                return toPython( s_boundTypes[BaseState], obj, &SP_SOFAPYTYPEOBJECT(BaseState) );
+                return toPython( obj->toBaseState() );
             }
 
-            if (obj->toBaseMapping())
-                return toPython( s_boundTypes[BaseMapping], obj, &SP_SOFAPYTYPEOBJECT(BaseMapping) );
+            if (obj->toBaseMapping()) return toPython( obj->toBaseMapping() );
 
-            if (obj->toDataEngine())
-                return toPython( s_boundTypes[DataEngine], obj, &SP_SOFAPYTYPEOBJECT(DataEngine) );
+            if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
 
-            return toPython( s_boundTypes[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
+            return toPython( obj->toBaseObject() );
         }
-        else if( obj->toBaseContext() )
-            return toPython( s_boundTypes[BaseContext], obj, &SP_SOFAPYTYPEOBJECT(BaseContext) );
+        else if( obj->toBaseContext() ) return toPython( obj->toBaseContext() );
 
         return toPython( s_boundTypes[Base], obj, &SP_SOFAPYTYPEOBJECT(Base) );
     }
 
-    /// get singleton
-    PythonFactory& getInstance()
+
+    /// to convert a BaseObject-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::objectmodel::BaseObject* obj)
     {
-        static PythonFactory singleton;
-        return singleton;
+            if( obj->toBaseLoader() ) return toPython( obj->toBaseLoader() );
+
+            if( obj->toTopology() )
+            {
+                if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
+                return toPython( obj->toTopology() );
+            }
+
+            if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
+
+            if( obj->toBaseState() )
+            {
+                if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
+
+                return toPython( obj->toBaseState() );
+            }
+
+            if (obj->toBaseMapping()) return toPython( obj->toBaseMapping() );
+
+            if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
+
+            return toPython( s_boundTypes[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
     }
+
+    /// to convert a BaseContext-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::objectmodel::BaseContext* obj)
+    {
+        return toPython( s_boundTypes[BaseContext], obj, &SP_SOFAPYTYPEOBJECT(BaseContext) );
+    }
+
+    /// to convert a BaseLoader-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::loader::BaseLoader* obj)
+    {
+        return toPython( s_boundTypes[BaseLoader], obj, &SP_SOFAPYTYPEOBJECT(BaseLoader) );
+    }
+
+    /// to convert a Topology-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::topology::Topology* obj)
+    {
+        if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
+        return toPython( s_boundTypes[Topology], obj, &SP_SOFAPYTYPEOBJECT(Topology) );
+    }
+
+    /// to convert a BaseMeshTopology-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::topology::BaseMeshTopology* obj)
+    {
+        return toPython( s_boundTypes[BaseMeshTopology], obj, &SP_SOFAPYTYPEOBJECT(BaseMeshTopology) );
+    }
+
+    /// to convert a VisualModel-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::visual::VisualModel* obj)
+    {
+        return toPython( s_boundTypes[VisualModel], obj, &SP_SOFAPYTYPEOBJECT(VisualModel) );
+    }
+
+    /// to convert a BaseState-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::BaseState* obj)
+    {
+        if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
+
+        return toPython( s_boundTypes[BaseState], obj, &SP_SOFAPYTYPEOBJECT(BaseState) );
+    }
+
+    /// to convert a BaseMechanicalState-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::behavior::BaseMechanicalState* obj)
+    {
+        return toPython( s_boundTypes[BaseMechanicalState], obj, &SP_SOFAPYTYPEOBJECT(BaseMechanicalState) );
+    }
+
+    /// to convert a BaseMapping-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::BaseMapping* obj)
+    {
+        return toPython( s_boundTypes[BaseMapping], obj, &SP_SOFAPYTYPEOBJECT(BaseMapping) );
+    }
+
+    /// to convert a DataEngine-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::DataEngine* obj)
+    {
+        return toPython( s_boundTypes[DataEngine], obj, &SP_SOFAPYTYPEOBJECT(DataEngine) );
+    }
+
 
 private:
 
