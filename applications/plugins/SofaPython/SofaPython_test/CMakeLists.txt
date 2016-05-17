@@ -7,11 +7,8 @@ set(SOURCE_FILES
     dummy.cpp
     python_test_list.cpp
     memory.cpp
+    PythonFactory_test.cpp
 )
-
-if(SOFA_USE_C++11)
-    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
-endif()
 
 set(PYTHON_FILES
     python/dataVecResize.py
@@ -22,9 +19,11 @@ set(PYTHON_FILES
     python/test_mass.py
     python/test_units.py
     python/test_MeshLoader.py
+    python/test_PythonFactory.py
 )
 
 if(SOFA_USE_C++11)
+    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
     list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
 endif()
 
