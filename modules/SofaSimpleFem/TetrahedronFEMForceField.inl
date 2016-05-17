@@ -1836,9 +1836,20 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
-    const bool heterogeneous = (drawHeterogeneousTetra.getValue() && minYoung!=maxYoung);
 
-    const VecReal & youngModulus = _youngModulus.getValue();
+    const VecReal& youngModulus = _youngModulus.getValue();
+
+    bool heterogeneous = false;
+    if (drawHeterogeneousTetra.getValue()) {
+        minYoung=youngModulus[0];
+        maxYoung=youngModulus[0];
+        for (unsigned i=0; i<youngModulus.size(); i++)
+        {
+            if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
+            if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
+        }
+        heterogeneous = (fabs(minYoung-maxYoung) > 1e-8);
+    }
 
     /// vonMises stress
     Real minVM = (Real)1e20, maxVM = (Real)-1e20;
@@ -2009,7 +2020,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
             if(heterogeneous)
             {
-                float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
+                float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));                
                 float fac = col * 0.5f;
                 defaulttype::Vec<4,float> color1 = defaulttype::Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
                 defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
@@ -2419,15 +2430,7 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
 {
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
         if (_updateStiffness.getValue()) {
-            //std::cout << this->getName() << " HANDLE EVENT " << std::endl;
-            const VecReal& youngModulus = _youngModulus.getValue();
-            minYoung=youngModulus[0];
-            maxYoung=youngModulus[0];
-            for (unsigned i=0; i<youngModulus.size(); i++)
-            {
-                if (youngModulus[i]<minYoung) minYoung=youngModulus[i];
-                if (youngModulus[i]>maxYoung) maxYoung=youngModulus[i];
-            }
+            //std::cout << this->getName() << " HANDLE EVENT " << std::endl;            
 
             unsigned int i;
             typename VecElement::const_iterator it;

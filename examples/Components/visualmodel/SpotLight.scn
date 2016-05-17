@@ -5,10 +5,10 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.02" contactDistance="0.02" />
     <CollisionGroup />
     <LightManager />
-    <SpotLight name="light1" color="1 0 0" position="0.5 0.7 2" cutoff="25" exponent="1" />
-    <SpotLight name="light2" color="0 1 0" position="0.5 -0.7 2" cutoff="25" exponent="1" />
-    <SpotLight name="light3" color="0 0 1" position="-0.8 0 2" cutoff="25" exponent="1" />
-    <SpotLight name="light4" color="1 1 1" position="0 0 2" cutoff="10" exponent="1000" />
+    <SpotLight name="light1" color="1 0 0" position="0.5 0.7 2" cutoff="25" exponent="1" drawSource="false" />
+    <SpotLight name="light2" color="0 1 0" position="0.5 -0.7 2" cutoff="25" exponent="1"  drawSource="false"/>
+    <SpotLight name="light3" color="0 0 1" position="-0.8 0 2" cutoff="25" exponent="1"  drawSource="false"/>
+    <SpotLight name="light4" color="1 1 1" position="0 0 2" cutoff="10" exponent="1000" drawSource="false" />
     <include href="Objects/SaladBowl.xml" />
     <include href="Objects/TorusRigid.xml" scale="0.05" rx="30" ry="15" dz="1" />
 </Node>

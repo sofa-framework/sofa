@@ -526,6 +526,8 @@ void OglShaderElement::init()
         if ( OglShader* shader = mycontext->core::objectmodel::BaseContext::get<OglShader>(this->getTags()) )
 		{
             shaders.insert( shader );
+            if (f_printLog.getValue())
+                msg_info(this) << this->id.getValue() << " set in " << shader->getName();
 //            shaders.insert(mycontext->core::objectmodel::BaseContext::get<OglShader>());
         }
         return;

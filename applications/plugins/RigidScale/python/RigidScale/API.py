@@ -61,7 +61,7 @@ class ShearlessAffineBody:
         self.fixedConstraint = None # to fix the ShearlessAffineBody
         # others class attributes required for several computation
         self.bodyOffset = None # the position of the body
-#        self.frame = [] # required for many computation, these position are those used to define bones dofs
+        self.frame = [] # required for many computation, these position are those used to define bones dofs
 
     def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, numberOfPoints=1):
         # variables
@@ -99,14 +99,16 @@ class ShearlessAffineBody:
 
         # mass
         densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
-        self.affineMass = Flexible.API.AffineMass(self.affineNode)
-        self.affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
+        affineMass = Flexible.API.AffineMass(self.affineNode)
+        affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
+        self.mass = affineMass.mass
 
     def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, generatedDir=None):
         if len(offset) == 0:
             Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
             return
         self.framecom = Frame.Frame()
+        self.bodyOffset = Frame.Frame([0,0,0,0,0,0,1])
         path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
         path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
         if len(offset) == 1: self.frame = [Frame.Frame(offset[0])]
@@ -127,6 +129,8 @@ class ShearlessAffineBody:
         positiveNode.createObject('UnilateralConstraint')
         positiveNode.createObject('Stabilization', name='Stabilization')
 
+        self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode)
+
         # affine dofs
         self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='parent', showObject=0)
         self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
@@ -135,7 +139,7 @@ class ShearlessAffineBody:
             if generatedDir is None:
                 self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
-                self.shapeFunction=self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
+                self.shapeFunction.shapeFunction = self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
             else:
                 self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
                 serialization.importImageShapeFunction( self.affineNode,generatedDir+self.node.name+"_SF_indices.raw", generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
@@ -147,7 +151,7 @@ class ShearlessAffineBody:
                 self.affineMassNode.createObject('MechanicalObject', template='Vec3'+template_suffix)
                 self.affineMassNode.createObject('LinearMapping', template='Affine,Vec3'+template_suffix)
                 self.affineMassNode.createObject('MassFromDensity',  name='MassFromDensity', template='Affine,ImageD', image='@density.outputImage', transform='@../image.transform', lumping='0')
-                self.affineMass = self.affineNode.createObject('AffineMass', massMatrix='@mass/MassFromDensity.massMatrix')
+                self.mass = self.affineNode.createObject('AffineMass', massMatrix='@mass/MassFromDensity.massMatrix')
             else:
                 serialization.importAffineMass(self.affineNode,generatedDir+self.node.name+"_affinemass.json")
 
@@ -178,7 +182,7 @@ class ShearlessAffineBody:
     def addOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.Frame(offset)).offset(), index)
+        #return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.Frame(offset)).offset(), index) # this line does not cover the case where the shapeFunction is within the affineNode
         if index > -1:
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, (self.bodyOffset*Frame.frame(offset)).offset(), index)
         else:
@@ -199,21 +203,21 @@ class ShearlessAffineBody:
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a offset given in absolute coordinates to the rigid body
-        return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
+        #return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index) # this line does not cover the case where the shapeFunction is within the affineNode
         if index > -1:
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
         else :
             # computation of the index of the closest point to the offset
             index_computed = 0
             frameOffset = Frame.Frame(offset)
-            min_dist = numpy.linalg.norm(numpy.array(frameOffset.translation) - numpy.array(self.frame[0].translation), 2)
+            min_dist = sys.float_info.max
             for i, p in enumerate(self.frame):
                 dist = numpy.linalg.norm(numpy.array(frameOffset.translation) - numpy.array(p.translation), 2)
                 if(dist < min_dist):
                     min_dist = dist
                     index_computed = i
             # add of the offset according to this position
-            offset_computed = (self.frame[index_computed].inv()*frameOffset).offset()
+            offset_computed = frameOffset.offset()
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):
@@ -236,7 +240,7 @@ class ShearlessAffineBody:
         self.behavior = Flexible.API.Behavior(self.affineNode, "behavior", type="331")
         self.behavior.addGaussPointSampler(self.shapeFunction, numberOfGaussPoint)
         self.behavior.addMechanicalObject(dofAffineNode=self.affineNode)
-#        self.behavior.addHooke(youngModulus=youngModulus)
+        #self.behavior.addHooke(youngModulus=youngModulus)
         self.behavior.addProjective(youngModulus=youngModulus) # , poissonRatio=0
         return self.behavior
 
@@ -308,13 +312,12 @@ class ShearlessAffineBody:
 
             if arg==-1:
                 self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
-                                                                                 , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
-                                                                                 , useGeometricStiffness=geometric_stiffness, printLog='0')
-
+                                                                                     , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
+                                                                                     , useGeometricStiffness=geometric_stiffness, printLog='0')
             else:
                 self.mapping = self.node.createObject('RigidScaleToRigidMultiMapping', template='Rigid3'+template_suffix+',Vec3'+template_suffix+',Rigid3'+template_suffix
-                                                                                 , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
-                                                                                 , index='0 '+ str(arg) + ' ' + str(arg), useGeometricStiffness=geometric_stiffness, printLog='0')
+                                                                                     , input1=path_offset_rigid, input2=path_offset_scale, output='@.'
+                                                                                     , index='0 '+ str(arg) + ' ' + str(arg), useGeometricStiffness=geometric_stiffness, printLog='0')
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
             ## adding a relative offset to the offset
@@ -371,7 +374,7 @@ class ShearlessAffineBody:
             serialization.exportGaussPoints(self.behavior.sampler,path+"/"+self.node.name+'_gauss.json')
 
     def exportAffineMass(self,path="./generated"):
-        serialization.exportAffineMass(self.affineMass,path+"/"+self.node.name+'_affinemass.json')
+        serialization.exportAffineMass(self.mass, path+"/"+self.node.name+'_affinemass.json')
 
     def exportRigidDofs(self,path="./generated"):
         serialization.exportRigidDofs(self.rigidDofs,path+"/"+self.node.name+'_dofs.json')
