@@ -11,6 +11,7 @@ set(HEADER_FILES
     ComponentLibrary.h
     ConstraintParams.h
     DataEngine.h
+    DataTracker.h
     ExecParams.h
     Mapping.h
     Mapping.inl
@@ -148,6 +149,7 @@ set(SOURCE_FILES
     ComponentLibrary.cpp
     ConstraintParams.cpp
     DataEngine.cpp
+    DataTracker.cpp
     ExecParams.cpp
     Mapping.cpp
     MechanicalParams.cpp

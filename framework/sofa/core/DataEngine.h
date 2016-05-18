@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <list>
+#include "DataTracker.h"
 
 namespace sofa
 {
@@ -196,6 +197,28 @@ public:
     {
         objectmodel::BaseObject::addLink(l);
     }
+
+
+    /// Set dirty flag to false
+    /// and copy values of tracked Data
+    virtual void cleanDirty(const core::ExecParams* params = 0);
+
+protected:
+
+
+
+    /// the value of the given Data will be automatically stored at each update()
+    /// so it is possible to check if the Data changed since the last update @see hasChanged
+    void trackData( objectmodel::BaseData* data );
+
+    /// has the tracked Data changed since last update?
+    /// @warning data must be a tracked Data @see trackData
+    bool didTrackedDataChange( const objectmodel::BaseData& data );
+
+    /// some selected input values can be saved at each update
+    /// so the update can precisly check if this specific Data has changed since last call
+    typedef std::map<const objectmodel::BaseData*,DataTracker> DataTrackers;
+    DataTrackers m_dataTrackers;
 
 };
 
