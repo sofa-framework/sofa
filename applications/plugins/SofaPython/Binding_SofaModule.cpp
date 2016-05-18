@@ -38,6 +38,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/SceneLoaderFactory.h>
 //#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
 #include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
@@ -56,6 +57,20 @@ using namespace sofa::simulation;
 extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
     return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
+}
+
+extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
+{
+    char *name;
+    if (!PyArg_ParseTuple(args, "s",&name))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    sofa::simulation::Node::SPtr node = sofa::simulation::Node::create( name );
+
+    return sofa::PythonFactory::toPython(node.get());
 }
 
 
@@ -493,9 +508,39 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
 }
 
 
+extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
+{
+    char *filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
+            sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
+        return NULL;
+
+    sofa::simulation::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
+
+    if (loader)
+    {
+        sofa::simulation::Node::SPtr node = loader->load(filename);
+        return sofa::PythonFactory::toPython(node.get());
+    }
+
+    // unable to load file
+    SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
+
+    Py_RETURN_NONE;
+}
+
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
+SP_MODULE_METHOD(Sofa,createNode)
 SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
@@ -514,6 +559,7 @@ SP_MODULE_METHOD(Sofa,msg_deprecated)
 SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
+SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHODS_END
 
 
