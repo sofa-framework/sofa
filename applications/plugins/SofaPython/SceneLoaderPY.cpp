@@ -113,7 +113,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     PyObject *pFunc = PyDict_GetItemString(pDict, "createScene");
     if (PyCallable_Check(pFunc))
     {
-        Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+        Node::SPtr rootNode = Node::create("root");
         ScriptEnvironment::enableNodeQueuedInit(false);
         SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
         ScriptEnvironment::enableNodeQueuedInit(true);
@@ -125,7 +125,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         PyObject *pFunc = PyDict_GetItemString(pDict, "createSceneAndController");
         if (PyCallable_Check(pFunc))
         {
-            Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+            Node::SPtr rootNode = Node::create("root");
             ScriptEnvironment::enableNodeQueuedInit(false);
             SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
             ScriptEnvironment::enableNodeQueuedInit(true);
