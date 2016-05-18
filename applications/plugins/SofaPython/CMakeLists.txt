@@ -26,7 +26,7 @@ set(HEADER_FILES
     Binding_LinearSpring.h
     Binding_Link.h
     Binding_Mapping.h
-    Binding_MechanicalObject.h
+#    Binding_MechanicalObject.h
     Binding_MeshLoader.h
     Binding_MeshTopology.h
     Binding_MultiMapping.h
@@ -36,7 +36,7 @@ set(HEADER_FILES
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
     Binding_SofaModule.h
-    Binding_SubsetMultiMapping.h
+#    Binding_SubsetMultiMapping.h
     Binding_Topology.h
     Binding_Vector.h
     Binding_VisualModel.h
@@ -76,7 +76,7 @@ set(SOURCE_FILES
     Binding_LinearSpring.cpp
     Binding_Link.cpp
     Binding_Mapping.cpp
-    Binding_MechanicalObject.cpp
+#    Binding_MechanicalObject.cpp
     Binding_MeshLoader.cpp
     Binding_MeshTopology.cpp
     Binding_MultiMapping.cpp
@@ -86,7 +86,7 @@ set(SOURCE_FILES
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
     Binding_SofaModule.cpp
-    Binding_SubsetMultiMapping.cpp
+#    Binding_SubsetMultiMapping.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
     Binding_VisualModel.cpp

@@ -69,31 +69,34 @@ void bindSofaPythonModule()
 
     PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa)
 
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Data)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,DisplayFlagsData)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,OptionsGroupData)
 
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Link)
+    // non Base-Inherited types
+    SP_ADD_CLASS_IN_SOFAMODULE(Data)
+    SP_ADD_CLASS_IN_SOFAMODULE(DisplayFlagsData)
+    SP_ADD_CLASS_IN_SOFAMODULE(OptionsGroupData)
 
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Vector3)
+    SP_ADD_CLASS_IN_SOFAMODULE(Link)
 
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,LinearSpring)
+    SP_ADD_CLASS_IN_SOFAMODULE(Vector3)
+
+    SP_ADD_CLASS_IN_SOFAMODULE(LinearSpring)
 
 
     // special component categories gettable by static_cast
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Base)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseContext)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseObject)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseState)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseMechanicalState)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseMapping)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,DataEngine)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,VisualModel)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseLoader)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,Topology)
-    SP_ADD_CLASS(PythonFactory::s_sofaPythonModule,BaseMeshTopology)
+    SP_ADD_CLASS_IN_SOFAMODULE(Base)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseContext)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseObject)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseState)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseMechanicalState)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseMapping)
+    SP_ADD_CLASS_IN_SOFAMODULE(DataEngine)
+    SP_ADD_CLASS_IN_SOFAMODULE(VisualModel)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseLoader)
+    SP_ADD_CLASS_IN_SOFAMODULE(Topology)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseMeshTopology)
 
 
+    // regular component bindings
     SP_ADD_CLASS_IN_FACTORY(Context,sofa::core::objectmodel::Context)
     SP_ADD_CLASS_IN_FACTORY(Node,sofa::simulation::Node)
 //    SP_ADD_CLASS_IN_FACTORY(MechanicalObject,MechanicalObject3)

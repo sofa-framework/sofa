@@ -48,10 +48,13 @@ namespace sofa
 {
 
 
+// shortcut for SP_ADD_CLASS with fixed sofa module
+#define SP_ADD_CLASS_IN_SOFAMODULE(C) SP_ADD_CLASS( PythonFactory::s_sofaPythonModule, C )
+
 
 /// This is the macro to call to bind a new type inherited from sofa::core::objectmodel::Base
 #define SP_ADD_CLASS_IN_FACTORY( PYTHONNAME, CPPCLASSNAME ) {\
-    SP_ADD_CLASS( PythonFactory::s_sofaPythonModule, PYTHONNAME )  \
+    SP_ADD_CLASS_IN_SOFAMODULE( PYTHONNAME )  \
     PythonFactory::add<CPPCLASSNAME>( &SP_SOFAPYTYPEOBJECT(PYTHONNAME) ); \
     }
 
