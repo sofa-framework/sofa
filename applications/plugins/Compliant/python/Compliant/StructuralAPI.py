@@ -198,6 +198,16 @@ class RigidBody:
             self.frame = self.frame * Frame.Frame( transform )
             self.mapping.source = '0 '+str(self.frame)
 
+        def addCollisionMesh(self, filepath, scale3d=[1, 1, 1], offset=[0, 0, 0, 0, 0, 0, 1], name_suffix=''):
+            ## adding a collision mesh to the rigid body with a relative offset
+            self.collision = RigidBody.CollisionMesh(self.node, filepath, scale3d, offset, name_suffix)
+            return self.collision
+
+        def addVisualModel(self, filepath, scale3d=[1, 1, 1], offset=[0, 0, 0, 0, 0, 0, 1], name_suffix=''):
+            ## adding a visual model to the rigid body with a relative offset
+            self.visual = RigidBody.VisualModel(self.node, filepath, scale3d, offset, name_suffix)
+            return self.visual
+
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
             return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
