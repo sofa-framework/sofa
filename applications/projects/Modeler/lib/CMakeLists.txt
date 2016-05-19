@@ -40,7 +40,7 @@ set(UI_FILES ../../../sofa/gui/qt/PluginManager.ui)
 find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
-    message("Modeler: Using Qt5")
+    message("Modeler library: Using Qt5")
     find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
 
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
@@ -53,7 +53,7 @@ if(Qt5Core_FOUND)
     set(FORM_FILES_GROUP "Generated")
 
 else()
-    message("Modeler: Using Qt4")
+    message("Modeler library: Using Qt4")
 
     find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
     set (EXT_QT_INCLUDES ${QT_INCLUDES})

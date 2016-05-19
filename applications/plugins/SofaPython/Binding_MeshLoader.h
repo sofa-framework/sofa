@@ -26,6 +26,7 @@
 #define BINDING_MESHLOADER_H
 
 #include "PythonMacros.h"
+#include <sofa/core/loader/MeshLoader.h>
 
 SP_DECLARE_CLASS_TYPE(MeshLoader)
 

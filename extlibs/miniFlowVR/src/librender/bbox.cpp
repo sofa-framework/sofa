@@ -41,7 +41,7 @@ namespace render
 {
 
 static const float Fmax = std::numeric_limits<float>::max();
-static const float Fmin = std::numeric_limits<float>::min();
+//static const float Fmin = std::numeric_limits<float>::min();
 
 BBox::BBox()
   : a(Fmax,Fmax,Fmax), b(-Fmax,-Fmax,-Fmax)

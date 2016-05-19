@@ -26,6 +26,7 @@
 #define BINDING_TOPOLOGY_H
 
 #include "PythonMacros.h"
+#include <sofa/core/topology/Topology.h>
 
 SP_DECLARE_CLASS_TYPE(Topology)
 

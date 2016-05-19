@@ -185,6 +185,10 @@ def createSceneAndController(root):
     alignedoffset = body3.addOffset( "world_axis_aligned", [0,0,0,0,0,0,1] )
     alignedoffset.dofs.showObject=True
     alignedoffset.dofs.showObjectScale=.5
+    alignedoffset.addVisualModel( "mesh/cube.obj", [0.1,0.1,0.1] )
+    cm = alignedoffset.addCollisionMesh( "mesh/cube.obj", [0.2,0.1,0.1] )
+    cm.addVisualModel()
+
 
     mappedpoint1 = body3.addMappedPoint("point", [1, 0, 0], isMechanical=False)
     mappedpoint1.dofs.showObject = True

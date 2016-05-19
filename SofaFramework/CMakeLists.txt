@@ -191,7 +191,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/s
 add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
 add_subdirectory(../framework/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../framework/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
-if(SOFA_HAVE_GTEST)
+if(SOFA_BUILD_TESTS)
     add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
 endif()
 

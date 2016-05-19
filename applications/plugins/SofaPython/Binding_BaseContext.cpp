@@ -28,6 +28,7 @@
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 #include "ScriptEnvironment.h"
+#include "PythonFactory.h"
 
 #include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::defaulttype;
@@ -71,7 +72,7 @@ extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
-    return SP_BUILD_PYSPTR(obj->getRootContext());
+    return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
 // object factory
@@ -131,7 +132,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         }
     }
 
-    return SP_BUILD_PYSPTR(obj.get());
+    return sofa::PythonFactory::toPython(obj.get());
 }
 extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
@@ -166,7 +167,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    return SP_BUILD_PYSPTR(sptr.get());
+    return sofa::PythonFactory::toPython(sptr.get());
 }
 
 
@@ -190,7 +191,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
     context->get<BaseObject>(sptr,path);
     if (!sptr) Py_RETURN_NONE;
 
-    return SP_BUILD_PYSPTR(sptr.get());
+    return sofa::PythonFactory::toPython(sptr.get());
 }
 
 
@@ -211,7 +212,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*
 
     PyObject *pyList = PyList_New(list.size());
     for (size_t i=0; i<list.size(); i++)
-        PyList_SetItem(pyList, (Py_ssize_t)i, SP_BUILD_PYSPTR(list[i].get()));
+        PyList_SetItem(pyList, (Py_ssize_t)i, sofa::PythonFactory::toPython(list[i].get()));
 
     return pyList;
 }

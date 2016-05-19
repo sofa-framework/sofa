@@ -16,50 +16,21 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraintset/LagrangianMultiplierAttachConstraint.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/core/ObjectFactory.h>
+#include "PythonFactory.h"
+
 
 namespace sofa
 {
 
-namespace component
-{
+    PyObject * PythonFactory::s_sofaPythonModule;
 
-namespace constraintset
-{
+    PythonFactory::PythonBoundTypes PythonFactory::s_boundTypes[PythonFactory::NB_LISTS];
 
-SOFA_DECL_CLASS(LagrangianMultiplierAttachConstraint)
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
-int LagrangianMultiplierAttachConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierAttachConstraintClass")
-#ifndef SOFA_FLOAT
-        .add< LagrangianMultiplierAttachConstraint<Vec3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< LagrangianMultiplierAttachConstraint<Vec3fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class LagrangianMultiplierAttachConstraint<Vec3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class LagrangianMultiplierAttachConstraint<Vec3fTypes>;
-#endif
-
-} // namespace constraintset
-
-} // namespace component
 
 } // namespace sofa
-

@@ -26,7 +26,6 @@
 #include "Binding_BaseState.h"
 #include "Binding_BaseObject.h"
 
-#include <sofa/core/BaseState.h>
 using namespace sofa::core::objectmodel;
 using namespace sofa::core;
 
