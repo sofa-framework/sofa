@@ -54,7 +54,7 @@ public:
     void init()
     {
         addInput(&input);
-        trackData(&input);
+        trackData(&input); // to connect a DataTracker to the Data 'input'
 
         addOutput(&output);
 
@@ -68,7 +68,9 @@ public:
 
     void update()
     {
-        if( didTrackedDataChange( input ) )
+        // true only iff the DataTracker associated to the Data 'input' is Dirty
+        // that could only happen if 'input' was dirtied since last update
+        if( isTrackedDataDirty( input ) )
             output.setValue(CHANGED);
         else
             output.setValue(NO_CHANGED);
@@ -91,14 +93,22 @@ struct DataEngine_test: public ::testing::Test
     /// to test tracked Data
     void testTrackedData()
     {
-        // input did not change
+        // input did not change, it is not dirtied, so neither its associated DataTracker
         ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
 
+        // modifying input sets it as dirty, so its associated DataTracker too
         engine.input.setValue(true);
         ASSERT_TRUE(engine.output.getValue()==TestEngine::CHANGED);
 
+        // nothing changes, no one is dirty
         engine.update();
         ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
+
+        // modifying input sets it as dirty, so its associated DataTracker too
+        engine.input.setValue(true);
+        // cleaning/accessing the input will not clean its associated DataTracker
+        engine.input.cleanDirty();
+        ASSERT_TRUE(engine.output.getValue()==TestEngine::CHANGED);
     }
 
 };
