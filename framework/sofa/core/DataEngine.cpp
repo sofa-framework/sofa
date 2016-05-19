@@ -95,7 +95,7 @@ void DataEngine::trackData( objectmodel::BaseData* data )
     m_dataTrackers[data].setData( data );
 }
 
-bool DataEngine::didTrackedDataChange( const objectmodel::BaseData& data )
+bool DataEngine::isTrackedDataDirty( const objectmodel::BaseData& data )
 {
     return m_dataTrackers[&data].isDirty();
 }
