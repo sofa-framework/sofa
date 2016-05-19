@@ -1,5 +1,6 @@
 import Sofa
 
+import sys
 import os.path
 import math
 import xml.etree.ElementTree as etree 
@@ -67,10 +68,15 @@ class Model:
         
             for g in meshXml.findall("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
-                self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
-                for d in g.findall("data"):
-                    self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
-                parseTag(self.group[g.attrib["id"]], g)
+
+
+                if not g.find("index").text:
+                    Sofa.msg_warning("SofaPython.sml","Group: group '"+g.attrib["id"]+"' of mesh '"+self.name+"' is empty")
+                else:
+                    self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
+                    for d in g.findall("data"):
+                        self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
+                    parseTag(self.group[g.attrib["id"]], g)
 
         def load(self):
             if self.format.lower() == "obj":
