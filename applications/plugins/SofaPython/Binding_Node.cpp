@@ -388,6 +388,14 @@ extern "C" PyObject * Node_isInitialized(PyObject *self, PyObject * /*args*/)
     return PyBool_FromLong( node->isInitialized() );
 }
 
+extern "C" PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
+{
+    Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+    getSimulation()->print(node);
+    Py_RETURN_NONE;
+}
+
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
 SP_CLASS_METHOD(Node,getRoot)
@@ -415,6 +423,7 @@ SP_CLASS_METHOD(Node,getMechanicalState)
 SP_CLASS_METHOD(Node,getMechanicalMapping)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node,isInitialized)
+SP_CLASS_METHOD(Node,printGraph)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)
