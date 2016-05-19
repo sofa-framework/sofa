@@ -60,6 +60,8 @@ set(HEADER_FILES
     SurfacePressureForceField.inl
     TaitSurfacePressureForceField.h
     TaitSurfacePressureForceField.inl
+    TorsionForceField.h
+    TorsionForceField.inl
     TrianglePressureForceField.h
     TrianglePressureForceField.inl
     UniformVelocityDampingForceField.h
@@ -100,6 +102,7 @@ set(SOURCE_FILES
     SphereForceField.cpp
     SurfacePressureForceField.cpp
     TaitSurfacePressureForceField.cpp
+    TorsionForceField.cpp
     TrianglePressureForceField.cpp
     UniformVelocityDampingForceField.cpp
     VaccumSphereForceField.cpp

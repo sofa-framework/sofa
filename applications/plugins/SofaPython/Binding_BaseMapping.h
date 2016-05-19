@@ -26,6 +26,7 @@
 #define BINDING_BASEMAPPING_H
 
 #include "PythonMacros.h"
+#include <sofa/core/BaseMapping.h>
 
 SP_DECLARE_CLASS_TYPE(BaseMapping)
 

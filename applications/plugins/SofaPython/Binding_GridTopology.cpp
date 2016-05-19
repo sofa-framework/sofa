@@ -26,7 +26,6 @@
 #include "Binding_GridTopology.h"
 #include "Binding_MeshTopology.h"
 
-#include <SofaBaseTopology/GridTopology.h>
 using namespace sofa::component::topology;
 using namespace sofa::core::objectmodel;
 

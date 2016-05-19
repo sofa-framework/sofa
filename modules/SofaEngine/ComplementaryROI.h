@@ -22,19 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_RIGIDENGINE_H
-#define SOFA_COMPONENT_ENGINE_RIGIDENGINE_H
-
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+#ifndef SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
+#define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
+#include "config.h"
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/helper/vector.h>
-#include <sofa/helper/Quater.h>
-#include <sofa/defaulttype/RigidTypes.h>
-
-
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/vectorData.h>
 
 namespace sofa
 {
@@ -44,51 +39,68 @@ namespace component
 
 namespace engine
 {
-/*
- * Engine which converts (vector of) Vec3 + Quaternion to give a (vector of) Rigid
- *
- */
 
+/**
+ * Output the positions and their indices in the global mesh not in the specified sets
+ *
+ * @todo make it general as other ROI (edges, triangles,...)
+ *
+ * @author Thomas Lemaire @date 2014
+ */
 template <class DataTypes>
-class RigidToQuatEngine : public sofa::core::DataEngine
+class ComplementaryROI : public core::DataEngine
 {
 public:
-    SOFA_CLASS(RigidToQuatEngine,sofa::core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(ComplementaryROI, DataTypes), core::DataEngine);
 
-    typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<3,Real> Vec3;
-    typedef sofa::helper::Quater<Real> Quat;
-    typedef typename sofa::defaulttype::StdRigidTypes<3,Real>::Coord RigidVec3;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef core::topology::BaseMeshTopology::index_type index_type;
+    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
-    RigidToQuatEngine();
-    virtual ~RigidToQuatEngine();
 
+    ComplementaryROI();
+    ~ComplementaryROI();
+
+    /// Update
     void update();
-    void init();
-    void reinit();
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
-    static std::string templateName(const RigidToQuatEngine<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str );
 
-    //
-    Data<helper::vector<Vec3 > > f_positions;
-    Data<helper::vector<Quat> > f_orientations;
-    Data<helper::vector<RigidVec3> > f_rigids;
+
+    virtual void init();
+    virtual void reinit();
+
+    virtual std::string getTemplateName() const;
+
+    static std::string templateName(const ComplementaryROI<DataTypes>* = NULL);
+
+protected:
+
+    /// inputs
+    /// @{
+    Data<VecCoord> d_position; ///< input positions
+    Data<unsigned int> d_nbSet; ///< number of sets
+    helper::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
+    /// @}
+
+    /// outputs
+    /// @{
+    Data<SetIndex> d_indices; ///< ROI indices
+    Data<VecCoord> d_pointsInROI; ///< ROI positions
+    /// @}
+
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_RIGIDENGINE_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3dTypes>;
+extern template class SOFA_ENGINE_API ComplementaryROI<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::Vec3fTypes>;
+extern template class SOFA_ENGINE_API ComplementaryROI<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
@@ -98,4 +110,4 @@ extern template class SOFA_COMPONENT_ENGINE_API RigidToQuatEngine<defaulttype::V
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H

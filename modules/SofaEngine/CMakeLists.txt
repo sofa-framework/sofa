@@ -8,6 +8,8 @@ set(HEADER_FILES
     BoxROI.inl
     ClusteringEngine.h
     ClusteringEngine.inl
+    ComplementaryROI.h
+    ComplementaryROI.inl
     DilateEngine.h
     DilateEngine.inl
     DifferenceEngine.h
@@ -116,6 +118,7 @@ set(SOURCE_FILES
     AverageCoord.cpp
     BoxROI.cpp
     ClusteringEngine.cpp
+    ComplementaryROI.cpp
     DilateEngine.cpp
     DifferenceEngine.cpp
     ExtrudeEdgesAndGenerateQuads.cpp
