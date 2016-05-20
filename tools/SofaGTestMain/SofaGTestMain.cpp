@@ -3,7 +3,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
-#  include <SofaSimulationGraph\init.h>
+#  include <SofaSimulationGraph/init.h>
 #endif
 #include <SofaSimulationTree/init.h>
 
