@@ -31,24 +31,23 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-//
+
 ////force feedback
 #include <SofaHaptics/ForceFeedback.h>
 #include <SofaHaptics/NullForceFeedback.h>
-//
+
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
 #include <sofa/simulation/common/PauseEvent.h>
-//
+
 #include <sofa/simulation/common/Node.h>
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-//#include <sofa/core/objectmodel/MouseEvent.h>
-//sensable namespace
+
 
 #ifndef WIN32
 #  include <pthread.h>
@@ -609,12 +608,10 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
         {
             if (this->f_printLog.getValue())
             {
-                std::cout << "Data ready, event"<< std::endl;
+                std::cout << "Data ready, event 2"<< std::endl;
             }
 
             data.deviceData.quat.normalize();
-
-            //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << std::endl;
 
             if (isToolControlled) // ignore haptic device if tool is unselected
             {
@@ -642,13 +639,24 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
 
-                xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
-                x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
+                /// FIX : check if the mechanical state is empty, if true, resize it
+                /// otherwise: crash when accessing xfree[] and x[]
+                if(xfree.size() == 0)
+                    xfree.resize(1);
+                if(x.size() == 0)
+                    x.resize(1);
+
+                if(currentToolIndex >= xfree.size() || currentToolIndex >= x.size())
+                    serr<<"currentToolIndex exceed the size of xfree/x vectors"<<std::endl;
+                else
+                {
+                    xfree[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
+                    x[currentToolIndex].getCenter() = world_H_virtualTool.getOrigin();
 
 
-
-                xfree[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
-                x[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
+                    xfree[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
+                    x[currentToolIndex].getOrientation() = world_H_virtualTool.getOrientation();
+                }
 
 
                 sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
@@ -657,15 +665,12 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                     sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
                     sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
                 }
-
-
-
-
             }
             else
             {
                 data.forceFeedbackIndice = -1;
             }
+
 
             if (moveOmniBase)
             {
@@ -679,13 +684,11 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 //this->reinitVisual();
             }
 
+
             executeAsynchro = true;
         }
         else
             std::cout<<"data not ready"<<std::endl;
-        //} else {
-
-
     }
 
     if (dynamic_cast<core::objectmodel::KeypressedEvent *>(event))
