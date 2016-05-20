@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
 
 namespace sofa
 {

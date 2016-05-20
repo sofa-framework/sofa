@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/DeleteVisitor.h>
+#include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaConstraint/FreeMotionAnimationLoop.h>

@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/visual/VisualModel.h>

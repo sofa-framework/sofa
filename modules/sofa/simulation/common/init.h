@@ -58,4 +58,4 @@ SOFA_SIMULATION_COMMON_API bool isCleanedUp();
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_SIMULATION_CORE_INIT_H

@@ -35,7 +35,7 @@ using std::vector;
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/common.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG

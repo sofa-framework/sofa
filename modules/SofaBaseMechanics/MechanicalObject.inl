@@ -38,10 +38,10 @@
 
 #include <sofa/helper/accessor.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #ifdef SOFA_DUMP_VISITOR_INFO
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #endif
 
 #include <assert.h>

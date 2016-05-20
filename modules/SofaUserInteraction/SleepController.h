@@ -4,7 +4,7 @@
 
 #include <SofaUserInteraction/initUserInteraction.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {

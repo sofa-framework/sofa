@@ -29,7 +29,7 @@
 
 using namespace sofa::component::controller;
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 

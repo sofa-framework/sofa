@@ -56,4 +56,4 @@ if(NOT TARGET SofaCore)
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaFrameworkTargets.cmake")
 endif()
 
-check_required_components(SofaHelper SofaDefaultType SofaCore)
+check_required_components(SofaHelper SofaDefaultType SofaCore SofaSimulationCore)

@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_INL
 
 #include "InterpolationController.h"
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/core/visual/VisualParams.h>
 

@@ -32,10 +32,10 @@ using std::string ;
 #include <sofa/simulation/graph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
 #include <sofa/simulation/common/SceneLoaderXML.h>

@@ -28,11 +28,11 @@
 
 #include <sofa/core/objectmodel/Tag.h>
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/VisualVisitor.h>
-#include <sofa/simulation/common/WriteStateVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/VisualVisitor.h>
+#include <sofa/simulation/WriteStateVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
 
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>

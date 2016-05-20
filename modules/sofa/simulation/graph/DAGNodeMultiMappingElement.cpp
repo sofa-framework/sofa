@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/graph/DAGNodeMultiMappingElement.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/Factory.h>
 
 #include <sofa/simulation/common/xml/Element.h>

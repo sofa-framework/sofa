@@ -28,8 +28,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 using namespace sofa::core::objectmodel;

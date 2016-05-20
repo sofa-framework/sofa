@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_TREE_GNODE_H
 
 #include <sofa/simulation/tree/tree.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 
 
@@ -138,7 +138,7 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-    static GNode::SPtr create(GNode*, xml::Element<core::objectmodel::BaseNode>* arg)
+    static GNode::SPtr create(GNode*, core::objectmodel::BaseObjectDescription* arg)
     {
         GNode::SPtr obj = GNode::SPtr();
         obj->parse(arg);

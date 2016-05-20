@@ -36,7 +36,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 
 namespace sofa
 {

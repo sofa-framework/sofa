@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <sofa/core/collision/ContactManager.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
 #include <vector>

@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <iostream>
 #include <algorithm>

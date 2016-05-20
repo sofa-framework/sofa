@@ -33,7 +33,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 
 namespace sofa
 {

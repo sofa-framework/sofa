@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>

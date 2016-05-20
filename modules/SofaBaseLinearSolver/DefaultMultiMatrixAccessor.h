@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_DEFAULTMULTIMATRIXACCESSOR_H
 #include "config.h"
 
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>

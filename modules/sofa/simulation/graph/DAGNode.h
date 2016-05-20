@@ -26,9 +26,9 @@
 #define SOFA_SIMULATION_GRAPH_DAGNODE_H
 
 #include <sofa/simulation/graph/graph.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/Link.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {
@@ -144,7 +144,7 @@ public:
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();
 
-    static DAGNode::SPtr create(DAGNode*, xml::Element<core::objectmodel::BaseNode>* arg)
+    static DAGNode::SPtr create(DAGNode*, core::objectmodel::BaseObjectDescription* arg)
     {
         DAGNode::SPtr obj = DAGNode::SPtr();
         obj->parse(arg);

@@ -31,8 +31,8 @@
 
 #include <SofaEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

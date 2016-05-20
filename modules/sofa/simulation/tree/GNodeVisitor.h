@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_TREE_GNODEVISITOR_H
 #define SOFA_SIMULATION_TREE_GNODEVISITOR_H
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa

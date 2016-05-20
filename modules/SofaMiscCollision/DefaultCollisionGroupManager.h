@@ -27,9 +27,9 @@
 #include "config.h"
 
 #include <sofa/core/collision/CollisionGroupManager.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/DeleteVisitor.h>
+#include <sofa/simulation/CleanupVisitor.h>
 
 
 namespace sofa

@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <SofaLoader/ReadTopology.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 
 #include <fstream>
 

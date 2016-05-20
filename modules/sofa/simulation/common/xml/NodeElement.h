@@ -28,7 +28,7 @@
 #include <sofa/simulation/common/xml/Element.h>
 #include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

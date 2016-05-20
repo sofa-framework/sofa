@@ -28,7 +28,7 @@
 
 #include <sofa/core/behavior/ConstraintSolver.h>
 
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 

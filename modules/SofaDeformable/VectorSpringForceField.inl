@@ -32,7 +32,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <cassert>
 #include <iostream>
 

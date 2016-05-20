@@ -37,8 +37,8 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/GenerateRigid.h>
-#include <sofa/simulation/common/Simulation.h>
-//#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/Simulation.h>
+//#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
 
@@ -48,7 +48,7 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 
 

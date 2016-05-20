@@ -34,7 +34,7 @@
 
 
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <iomanip>
 
 #include <sofa/helper/gl/BasicShapes.h>

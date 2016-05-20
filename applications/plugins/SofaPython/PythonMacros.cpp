@@ -4,7 +4,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Context.h>
 //#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/loader/BaseLoader.h>

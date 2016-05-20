@@ -25,15 +25,15 @@
 #include <SofaBaseAnimationLoop/MultiTagAnimationLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <math.h>
 #include <iostream>
 

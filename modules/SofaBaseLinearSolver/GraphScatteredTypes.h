@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LINEARSOLVER_GRAPHSCATTEREDTYPES_H
 #include "config.h"
 
-#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>

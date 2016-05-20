@@ -25,8 +25,8 @@
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
 #include <SofaUserInteraction/ComponentMouseInteraction.inl>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>

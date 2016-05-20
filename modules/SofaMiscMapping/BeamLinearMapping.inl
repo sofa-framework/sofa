@@ -33,7 +33,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <string>
 

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <math.h>

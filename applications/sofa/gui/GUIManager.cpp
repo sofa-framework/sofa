@@ -30,7 +30,7 @@
 #include <SofaComponentGeneral/initComponentGeneral.h>
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
-#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/init.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
@@ -190,7 +190,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 int GUIManager::Init(const char* argv0, const char* name)
 {
     BaseGUI::SetProgramName(argv0);
-    sofa::simulation::common::init();
+    sofa::simulation::core::init();
 
     static bool first = true;
     if (first)

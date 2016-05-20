@@ -27,9 +27,9 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaBoundaryCondition/PointConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>

@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "tree.h"
 
-#include <sofa/simulation/common/init.h>
+#include <sofa/simulation/init.h>
 #include <sofa/helper/init.h>
 
 namespace sofa
@@ -43,7 +43,7 @@ SOFA_SIMULATION_TREE_API void init()
 {
     if (!s_initialized)
     {
-        sofa::simulation::common::init();
+        sofa::simulation::core::init();
         s_initialized = true;
     }
 }
@@ -57,7 +57,7 @@ SOFA_SIMULATION_TREE_API void cleanup()
 {
     if (!s_cleanedUp)
     {
-        sofa::simulation::common::cleanup();
+        sofa::simulation::core::cleanup();
         s_cleanedUp = true;
     }
 }

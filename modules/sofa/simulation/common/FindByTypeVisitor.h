@@ -25,10 +25,8 @@
 #ifndef SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
 #define SOFA_SIMULATION_TREE_FINDBYTYPE_VISITOR_H
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Visitor.h>
 #include <iostream>
 #include <typeinfo>
 

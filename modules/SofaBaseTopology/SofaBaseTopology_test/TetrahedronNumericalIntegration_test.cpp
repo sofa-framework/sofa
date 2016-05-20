@@ -24,9 +24,9 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 //Including Simulation
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>

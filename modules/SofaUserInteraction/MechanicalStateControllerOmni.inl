@@ -45,9 +45,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 namespace sofa

@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_SCENELOADERPHP_H
 #define SOFA_SIMULATION_SCENELOADERPHP_H
 
-#include <sofa/simulation/common/SceneLoaderFactory.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
 
 namespace sofa
 {

@@ -27,9 +27,9 @@
 
 #include "EvalPointsDistance.h"
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/helper/gl/template.h>
 
 #include <iomanip>

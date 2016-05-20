@@ -31,9 +31,9 @@
 
 
 //Including Simulation
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
 

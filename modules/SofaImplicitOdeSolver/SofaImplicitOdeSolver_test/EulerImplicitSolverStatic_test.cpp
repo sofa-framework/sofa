@@ -31,7 +31,7 @@
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa {
 

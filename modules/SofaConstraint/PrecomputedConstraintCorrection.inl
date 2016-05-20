@@ -29,8 +29,8 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 
@@ -45,7 +45,7 @@
 #include <sofa/helper/Quater.h>
 
 #include <SofaConstraint/LMConstraintSolver.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 
 //#include <glib.h>

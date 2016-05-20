@@ -4,9 +4,9 @@
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/CollisionEndEvent.h>
 
 namespace sofa
 {

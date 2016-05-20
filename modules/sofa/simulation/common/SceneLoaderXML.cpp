@@ -27,6 +27,7 @@
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/cast.h>
 
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 

@@ -29,7 +29,7 @@
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 

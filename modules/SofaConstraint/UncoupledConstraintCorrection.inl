@@ -29,7 +29,7 @@
 
 #include "UncoupledConstraintCorrection.h"
 
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 

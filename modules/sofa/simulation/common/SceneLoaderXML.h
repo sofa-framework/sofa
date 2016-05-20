@@ -25,7 +25,8 @@
 #ifndef SOFA_SIMULATION_SCENELOADERXML_H
 #define SOFA_SIMULATION_SCENELOADERXML_H
 
-#include <sofa/simulation/common/SceneLoaderFactory.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 
 namespace sofa
 {
