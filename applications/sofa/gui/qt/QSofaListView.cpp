@@ -30,9 +30,9 @@
 #include "GenGraphForm.h"
 #include "RealGUI.h"
 #include <sofa/simulation/DeleteVisitor.h>
-#include <sofa/simulation/common/TransformationVisitor.h>
-#include <sofa/simulation/common/xml/BaseElement.h>
-#include <sofa/simulation/common/xml/XML.h>
+#include <SofaSimulationCommon/TransformationVisitor.h>
+#include <SofaSimulationCommon/xml/BaseElement.h>
+#include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/cast.h>
 
 #include <QMenu>

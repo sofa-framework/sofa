@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>

@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>

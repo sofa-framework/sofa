@@ -6,7 +6,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/PrintVisitor.h>
-#include <sofa/simulation/common/FindByTypeVisitor.h>
+#include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -29,7 +29,7 @@
 #include <sofa/simulation/CleanupVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/common/xml/NodeElement.h>
+#include <SofaSimulationCommon/xml/NodeElement.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>

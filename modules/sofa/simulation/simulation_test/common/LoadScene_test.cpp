@@ -32,10 +32,10 @@
 #include <SofaComponentMisc/initComponentMisc.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/common/SceneLoaderXML.h>
+#include <SofaSimulationCommon/SceneLoaderXML.h>
 
 namespace sofa {
 

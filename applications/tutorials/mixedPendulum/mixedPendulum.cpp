@@ -24,10 +24,10 @@
 ******************************************************************************/
 /** A sample program. Laure Heigeas, Francois Faure, 2007. */
 // scene data structure
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>

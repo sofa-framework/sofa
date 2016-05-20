@@ -3,7 +3,7 @@
 #include <SofaPython/PythonScriptController.h>
 #include <SofaPython/PythonScriptFunction.h>
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 

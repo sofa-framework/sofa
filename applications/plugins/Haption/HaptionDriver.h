@@ -48,7 +48,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 //#include <sofa/core/objectmodel/MouseEvent.h>
 #include <math.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include "virtuoseAPI.h"
 
 

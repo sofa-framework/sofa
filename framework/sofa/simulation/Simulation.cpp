@@ -62,7 +62,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
-// #include <sofa/simulation/common/FindByTypeVisitor.h>
+// #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 
 

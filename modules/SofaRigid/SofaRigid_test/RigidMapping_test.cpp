@@ -25,7 +25,7 @@
 
 /* Francois Faure, 2013 */
 #include <SofaTest/Mapping_test.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaRigid/RigidMapping.h>

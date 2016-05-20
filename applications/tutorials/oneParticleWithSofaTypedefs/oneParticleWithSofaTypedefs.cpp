@@ -26,9 +26,9 @@
 // launch sofaTypedefs.exe to generate sofa.h
 #include <sofa/sofa.h>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/tree.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/tree.h>
+#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 

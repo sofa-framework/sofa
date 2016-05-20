@@ -35,10 +35,10 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/simulation/common/xml/ObjectElement.h>
-#include <sofa/simulation/common/xml/AttributeElement.h>
-#include <sofa/simulation/common/xml/DataElement.h>
-#include <sofa/simulation/common/xml/XML.h>
+#include <SofaSimulationCommon/xml/ObjectElement.h>
+#include <SofaSimulationCommon/xml/AttributeElement.h>
+#include <SofaSimulationCommon/xml/DataElement.h>
+#include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/simulation/XMLPrintVisitor.h>
 
 #include <QMenu>

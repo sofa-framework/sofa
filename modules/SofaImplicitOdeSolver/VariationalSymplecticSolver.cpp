@@ -36,8 +36,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #ifdef SOFA_SMP
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationTree/GNode.h>
 #endif
 
 

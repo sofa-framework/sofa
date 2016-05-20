@@ -27,7 +27,7 @@
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/UniformMass.h>

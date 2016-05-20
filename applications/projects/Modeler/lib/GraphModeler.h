@@ -37,7 +37,7 @@
 #include <sofa/gui/qt/QDisplayPropertyWidget.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/common/xml/BaseElement.h>
+#include <SofaSimulationCommon/xml/BaseElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 

@@ -47,7 +47,7 @@
 
 #include "sofa/core/behavior/MechanicalState.h"
 #include "sofa/defaulttype/Vec3Types.h"
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <SofaPML/config.h>
 
 namespace sofa

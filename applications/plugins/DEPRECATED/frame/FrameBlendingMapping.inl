@@ -39,7 +39,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <iostream>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <SofaLoader/MeshObjLoader.h>
 namespace sofa
 {

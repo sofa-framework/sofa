@@ -36,7 +36,7 @@
 #include <CGALPlugin/MeshGenerationFromPolyhedron.h>
 #include <sofa/gui/PickHandler.h>
 #include <set>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 //#include "EventManager.h"
 #include "ComputeMeshIntersection.h"
 #include <SofaOpenglVisual/OglModel.h>

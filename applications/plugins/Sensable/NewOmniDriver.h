@@ -56,7 +56,7 @@
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 

@@ -31,7 +31,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/xml/XML.h>
+#include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 

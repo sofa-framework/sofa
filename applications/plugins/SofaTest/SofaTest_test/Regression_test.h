@@ -27,7 +27,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>

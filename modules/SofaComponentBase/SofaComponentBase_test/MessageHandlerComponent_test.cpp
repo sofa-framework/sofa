@@ -29,7 +29,7 @@
 #include <string>
 using std::string ;
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
 #include <sofa/simulation/Simulation.h>
@@ -38,7 +38,7 @@ using sofa::simulation::Simulation ;
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 
-#include <sofa/simulation/common/SceneLoaderXML.h>
+#include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaComponentBase/messageHandlerComponent.h>

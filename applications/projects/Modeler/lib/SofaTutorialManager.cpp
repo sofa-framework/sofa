@@ -29,7 +29,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/cast.h>
 
-#include <sofa/simulation/common/xml/XML.h>
+#include <SofaSimulationCommon/xml/XML.h>
 
 #include <QHBoxLayout>
 #include <QUrl>

@@ -26,7 +26,7 @@
 #ifndef SOFA_STANDARDTEST_BEAMDIFFUSION_TEST_H
 #define SOFA_STANDARDTEST_BEAMDIFFUSION_TEST_H
 
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaTest/Sofa_test.h>

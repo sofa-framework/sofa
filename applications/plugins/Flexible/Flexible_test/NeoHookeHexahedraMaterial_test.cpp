@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
