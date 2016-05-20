@@ -32,6 +32,7 @@ set(HEADER_FILES
     MechanicalVisitor.h
     MutationListener.h
     Node.h
+    Node.inl
     ParallelVisitorScheduler.h
     PauseEvent.h
     PipelineImpl.h

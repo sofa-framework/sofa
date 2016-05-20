@@ -22,14 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "init.h"
-
-#include <sofa/core/init.h>
-#include <sofa/helper/init.h>
-
-#include <sofa/helper/Factory.h>
-#include <sofa/simulation/Node.inl>
-#include <sofa/simulation/common/xml/NodeElement.h>
+//
+// C++ Implementation: Node
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2008
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {
@@ -37,56 +42,16 @@ namespace sofa
 namespace simulation
 {
 
-namespace common
+template <class RealObject>
+Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-
-static bool s_initialized = false;
-static bool s_cleanedUp = false;
-
-//create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.
-SOFA_SIMULATION_COMMON_API sofa::helper::Creator<xml::NodeElement::Factory, Node> NodeClass("default");
-
-SOFA_SIMULATION_COMMON_API void init()
-{
-    if (!s_initialized)
-    {
-        sofa::core::init();
-        s_initialized = true;
-    }
+//    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
+    Node::SPtr obj=getSimulation()->createNewNode(arg->getName());
+    obj->parse(arg);
+    return obj;
 }
 
-SOFA_SIMULATION_COMMON_API bool isInitialized()
-{
-    return s_initialized;
+
 }
 
-SOFA_SIMULATION_COMMON_API void cleanup()
-{
-    if (!s_cleanedUp)
-    {
-        sofa::core::cleanup();
-        s_cleanedUp = true;
-    }
 }
-
-SOFA_SIMULATION_COMMON_API bool isCleanedUp()
-{
-    return s_cleanedUp;
-}
-
-// Detect missing cleanup() call.
-static const struct CleanupCheck
-{
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
-        if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())
-            helper::printLibraryNotCleanedUpWarning("SofaSimulationCommon", "sofa::simulation::common::cleanup()");
-    }
-} check;
-
-} // namespace common
-
-} // namespace simulation
-
-} // namespace sofa

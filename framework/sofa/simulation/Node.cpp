@@ -34,7 +34,7 @@
 //
 //
 #include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -1051,16 +1051,6 @@ Iterative::IterativePartition* Node::getFirstPartition()
     return NULL;
 }
 #endif
-
-
-//template <class RealObject>
-//Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
-//{
-////    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
-//    Node::SPtr obj=getSimulation()->createNewNode(arg->getName());
-//    obj->parse(arg);
-//    return obj;
-//}
 
 Node::SPtr Node::create( const std::string& name )
 {

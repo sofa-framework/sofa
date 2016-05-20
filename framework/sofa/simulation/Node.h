@@ -477,13 +477,7 @@ public:
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
-    static Node::SPtr create( RealObject* , core::objectmodel::BaseObjectDescription* arg) 
-    {
-        //    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
-        Node::SPtr obj = getSimulation()->createNewNode(arg->getName());
-        obj->parse(arg);
-        return obj;
-    }
+    static Node::SPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
 
 
     static Node::SPtr create( const std::string& name );
