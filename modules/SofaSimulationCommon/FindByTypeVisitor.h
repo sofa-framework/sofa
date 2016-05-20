@@ -27,6 +27,7 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
+#include <sofa/helper/Factory.h>
 #include <iostream>
 #include <typeinfo>
 
