@@ -2,7 +2,7 @@
 #define ASSEMBLYVISITOR_H
 
 #include <Compliant/config.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <map>
 

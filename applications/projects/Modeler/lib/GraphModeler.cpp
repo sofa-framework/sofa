@@ -29,7 +29,7 @@
 #include <sofa/core/ComponentLibrary.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
 
 #include <sofa/helper/system/FileRepository.h>
@@ -39,7 +39,7 @@
 #include <sofa/simulation/common/xml/AttributeElement.h>
 #include <sofa/simulation/common/xml/DataElement.h>
 #include <sofa/simulation/common/xml/XML.h>
-#include <sofa/simulation/common/XMLPrintVisitor.h>
+#include <sofa/simulation/XMLPrintVisitor.h>
 
 #include <QMenu>
 #include <QMessageBox>

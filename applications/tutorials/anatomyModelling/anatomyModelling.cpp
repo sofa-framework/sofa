@@ -34,7 +34,7 @@
 
 #include <sofa/simulation/graph/graph.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

@@ -24,9 +24,9 @@
 ******************************************************************************/
 #include "ParallelSolverImpl.h"
 #include "ParallelMechanicalVisitor.h"
-#include <sofa/simulation/common/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/common/MechanicalVPrintVisitor.h>
-#include <sofa/simulation/common/VelocityThresholdVisitor.h>
+#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/MechanicalVPrintVisitor.h>
+#include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 

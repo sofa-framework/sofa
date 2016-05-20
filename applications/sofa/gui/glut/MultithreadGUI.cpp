@@ -26,11 +26,11 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 //#include <sofa/helper/system/thread/CircularQueue.inl>
-#include <sofa/simulation/common/CopyAspectVisitor.h>
-#include <sofa/simulation/common/ReleaseAspectVisitor.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/CopyAspectVisitor.h>
+#include <sofa/simulation/ReleaseAspectVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -56,7 +56,7 @@
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
-#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5

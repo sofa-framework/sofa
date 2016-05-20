@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "PropagateOgreSceneManager.h"
 #include "OgreSceneObject.h"
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa

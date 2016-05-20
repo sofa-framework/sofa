@@ -33,7 +33,7 @@
 #include <list>
 #include <string>
 //#include <omp.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {

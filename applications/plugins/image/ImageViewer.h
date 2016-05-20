@@ -38,8 +38,8 @@
 #include <SofaBaseVisual/RecordedCamera.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>

@@ -29,7 +29,7 @@
 
 #include <SofaRigid/RigidMapping.inl>
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 
 namespace sofa

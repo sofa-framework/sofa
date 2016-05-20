@@ -25,7 +25,7 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/graph/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaGraphComponent/Gravity.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseVisual/VisualStyle.h>

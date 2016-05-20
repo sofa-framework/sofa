@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/simulation/common/ChangeListener.h>
+#include <sofa/simulation/ChangeListener.h>
 
 namespace sofa
 {

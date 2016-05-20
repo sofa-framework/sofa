@@ -31,8 +31,8 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/DeleteVisitor.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

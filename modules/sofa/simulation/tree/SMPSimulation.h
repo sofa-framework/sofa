@@ -25,9 +25,9 @@
 #ifndef SOFA_SIMULATION_TREE_SMPSIMULATION_H
 #define SOFA_SIMULATION_TREE_SMPSIMULATION_H
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/common/ChangeListener.h>
+#include <sofa/simulation/ChangeListener.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include "Multigraph.h"
 

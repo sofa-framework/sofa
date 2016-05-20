@@ -24,12 +24,12 @@
 ******************************************************************************/
 #include "OptiTrackNatNetDevice.h"
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/glut.h>

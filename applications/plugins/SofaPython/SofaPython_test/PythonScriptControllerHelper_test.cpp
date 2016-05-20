@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaPython/PythonScriptControllerHelper.h>
 

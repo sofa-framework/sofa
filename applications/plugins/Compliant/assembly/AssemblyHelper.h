@@ -1,6 +1,6 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include "../utils/sparse.h"
 

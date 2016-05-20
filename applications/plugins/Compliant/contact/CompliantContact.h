@@ -29,7 +29,7 @@
 #include <sofa/core/collision/Contact.h>
 
 #include <Compliant/utils/edit.h>
-//#include <sofa/simulation/common/MechanicalVisitor.h>
+//#include <sofa/simulation/MechanicalVisitor.h>
 //#include <sofa/core/VecId.h>
 //#include <sofa/core/MultiVecId.h>
 

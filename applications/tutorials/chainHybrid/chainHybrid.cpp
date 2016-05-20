@@ -28,7 +28,7 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

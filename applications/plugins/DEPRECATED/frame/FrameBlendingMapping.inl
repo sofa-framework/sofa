@@ -35,7 +35,7 @@
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/template.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <iostream>

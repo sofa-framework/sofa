@@ -27,7 +27,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/Multi2Mapping.inl>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>

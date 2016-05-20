@@ -31,8 +31,8 @@
 
 
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MutationListener.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/MutationListener.h>
 
 
 

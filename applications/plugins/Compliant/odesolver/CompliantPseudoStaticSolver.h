@@ -2,7 +2,7 @@
 #define COMPLIANT_CompliantPseudoStaticSolver_H
 
 #include <Compliant/config.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
 
 
 namespace sofa {

@@ -6,11 +6,11 @@
 #include <SofaBaseCollision/DefaultPipeline.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/helper/random.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/CollisionEndEvent.h>
-#include <sofa/simulation/common/CollisionBeginEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3Types> MechanicalObjectRigid3;
 

@@ -25,7 +25,7 @@
 /** A sample program. Laure Heigeas, Francois Faure, 2007. */
 // scene data structure
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <SofaGraphComponent/Gravity.h>

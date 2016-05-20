@@ -26,7 +26,7 @@
 #define SOFA_STEREO_PLUGIN_STEREOCAMERA_H
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 #include <SofaBaseVisual/BaseCamera.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 

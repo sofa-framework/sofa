@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/ParallelMechanicalVisitor.h>
+#include <sofa/simulation/ParallelMechanicalVisitor.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

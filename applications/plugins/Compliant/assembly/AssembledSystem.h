@@ -5,7 +5,7 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include "../constraint/BaseConstraintValue.h"
 #include "../constraint/Constraint.h"

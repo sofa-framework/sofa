@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <sofa/core/collision/ParallelPipeline.h>
-#include <sofa/simulation/common/PipelineImpl.h>
+#include <sofa/simulation/PipelineImpl.h>
 
 namespace sofa
 {

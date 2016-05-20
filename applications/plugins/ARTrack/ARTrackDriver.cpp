@@ -25,7 +25,7 @@
 #include "ARTrackDriver.h"
 #include <sofa/core/ObjectFactory.h>
 #include <cstring>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 #include "ARTrackEvent.h"
 
 namespace sofa

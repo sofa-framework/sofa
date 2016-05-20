@@ -3,7 +3,7 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include "BulletCollisionModel.h"
-#include <sofa/simulation/common/CollisionBeginEvent.h>
+#include <sofa/simulation/CollisionBeginEvent.h>
 #include <BulletCollisionDetection/config.h>
 
 namespace sofa

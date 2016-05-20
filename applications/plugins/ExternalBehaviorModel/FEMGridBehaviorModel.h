@@ -38,7 +38,7 @@
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 
 

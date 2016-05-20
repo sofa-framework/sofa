@@ -33,12 +33,12 @@
 #include <SofaHaptics/ForceFeedback.h>
 #include <SofaHaptics/NullForceFeedback.h>
 //
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/simulation/common/PauseEvent.h>
+#include <sofa/simulation/PauseEvent.h>
 //
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>

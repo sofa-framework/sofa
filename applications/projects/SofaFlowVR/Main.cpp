@@ -30,8 +30,8 @@
 #include <flowvr/render/chunkwriter.h>
 //#include <flowvr/interact/chunkwriter.h>
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
@@ -40,12 +40,12 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/simulation/tree/init.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
