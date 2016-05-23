@@ -78,6 +78,31 @@ void DataEngine::delOutput(objectmodel::BaseData* n)
     core::objectmodel::DDGNode::delOutput(n);
 }
 
+
+
+
+void DataEngine::cleanDirty(const core::ExecParams* params)
+{
+    core::objectmodel::DDGNode::cleanDirty(params);
+
+    // it is also time to clean the tracked Data
+    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+        it->second.cleanDirty();
+}
+
+void DataEngine::trackData( objectmodel::BaseData* data )
+{
+    m_dataTrackers[data].setData( data );
+}
+
+bool DataEngine::isTrackedDataDirty( const objectmodel::BaseData& data )
+{
+    return m_dataTrackers[&data].isDirty();
+}
+
+
+
+
 } // namespace core
 
 } // namespace sofa
