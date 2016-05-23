@@ -120,6 +120,7 @@ class Quaternion(np.ndarray):
     def __mul__(self, other):
         '''quaternion product'''
         res = Quaternion()
+        
         res.real = self.real * other.real - self.imag.dot(other.imag)
         res.imag = self.real * other.imag + other.real * self.imag + np.cross(self.imag, other.imag)
         
@@ -150,7 +151,7 @@ class Quaternion(np.ndarray):
     
     @staticmethod
     def exp(x):
-        '''quaternion exponential (doubled)'''
+        '''quaternion exponential (halved)'''
 
         x = np.array( x )
         theta = np.linalg.norm(x)
@@ -158,16 +159,31 @@ class Quaternion(np.ndarray):
         res = Quaternion()
         
         if math.fabs(theta) < sys.float_info.epsilon:
+            res.imag = x / 2.0
+            res.normalize()
             return res
 
-        s = math.sin(theta / 2.0)
-        c = math.cos(theta / 2.0)
+        half_theta = theta / 2.0
+        
+        s = math.sin(half_theta)
+        c = math.cos(half_theta)
 
         res.real = c
         res.imag = x * (s / theta)
 
         return res
 
+    def log(self):
+        '''quaternion logarithm (doubled)'''
+        
+        half_theta = math.acos(self.real)
+        
+        if math.fabs(half_theta) < sys.float_info.epsilon:
+            return 2.0 * self.imag / self.real
+        
+        half_res = (half_theta / math.sin(half_theta)) * np.array(self.imag)
+        return 2.0 * half_res
+    
 
     @staticmethod
     def hat(v):
