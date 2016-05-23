@@ -139,7 +139,7 @@ protected:
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
 		
-        assert( out.size() == p.size() );
+        assert( out.size() == size );
 
         for(unsigned i = 0; i < size; ++i) {
 			
