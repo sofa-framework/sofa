@@ -54,6 +54,7 @@ set(HEADER_FILES
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
+    mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
     misc/CompliantAttachButtonSetting.h
@@ -161,6 +162,7 @@ set(SOURCE_FILES
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/RigidJointMapping.cpp
+    mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
