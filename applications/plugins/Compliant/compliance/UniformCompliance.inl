@@ -40,11 +40,6 @@ void UniformCompliance<DataTypes>::reinit()
 {
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
-#ifndef SOFA_FLOAT
-    static const Real EPSILON = std::numeric_limits<Real>::epsilon();
-#else // hack to be able to specify low complinace value even when sofa is compiled with USE_FLOAT
-    static const Real EPSILON = 1e-11;
-#endif
 
     if( this->isCompliance.getValue() )
     {
@@ -60,7 +55,7 @@ void UniformCompliance<DataTypes>::reinit()
             matC.compressedMatrix.finalize();
         }
 
-        if( helper::rabs(compliance.getValue()) <= EPSILON && this->rayleighStiffness.getValue() )
+        if( helper::rabs(compliance.getValue()) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
         {
             serr<<"Warning: a null compliance can not generate rayleighDamping, forced to 0"<<sendl;
             this->rayleighStiffness.setValue(0);
@@ -72,9 +67,9 @@ void UniformCompliance<DataTypes>::reinit()
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
-        Real k = compliance.getValue() > EPSILON ?
-                -1 / compliance.getValue() :
-                -1 / EPSILON;
+        Real k = compliance.getValue() > std::numeric_limits<Real>::epsilon() ?
+                (compliance.getValue() < 1 / std::numeric_limits<Real>::epsilon() ? -1 / compliance.getValue() : 0 ) : // if the compliance is really large, let's consider the stiffness is null
+                 -1 / std::numeric_limits<Real>::epsilon(); // if the compliance is too small, we have to take a huge stiffness in the numerical limits
 
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
 

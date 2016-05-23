@@ -76,8 +76,8 @@ void DiagonalCompliance<DataTypes>::reinit()
             {
                 // the stiffness df/dx is the opposite of the inverse compliance
                 Real k = diagonal.getValue()[i][j] > std::numeric_limits<Real>::epsilon() ?
-                        -1 / diagonal.getValue()[i][j] :
-                        -1 / std::numeric_limits<Real>::epsilon();
+                        (diagonal.getValue()[i][j] < 1 / std::numeric_limits<Real>::epsilon() ? -1 / diagonal.getValue()[i][j] : 0 ) : // if the compliance is really large, let's consider the stiffness is null
+                        -1 / std::numeric_limits<Real>::epsilon(); // if the compliance is too small, we have to take a huge stiffness in the numerical limits
 
                 matK.beginRow(row);
                 matK.insertBack(row, row, k);
