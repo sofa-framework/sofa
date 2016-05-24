@@ -152,7 +152,7 @@ case $CI_JOB in
             append "-DPLUGIN_MESHSTEPLOADER=OFF"
         fi
         append "-DPLUGIN_MULTITHREADING=ON"
-        # append "-DPLUGIN_OPTITRACKNATNET=ON"
+        append "-DPLUGIN_OPTITRACKNATNET=ON"
         # Does not compile, but it just needs to be updated.
         append "-DPLUGIN_PERSISTENTCONTACT=OFF"
         append "-DPLUGIN_PLUGINEXAMPLE=ON"
