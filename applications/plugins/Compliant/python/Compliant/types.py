@@ -185,6 +185,32 @@ class Quaternion(np.ndarray):
         return 2.0 * half_res
     
 
+    def angle(self):
+        '''rotation angle'''
+        return 2 * math.acos(self.real)
+
+    def axis(self):
+        '''rotation axis'''
+        return self.imag / math.sin(  math.acos(self.real) )
+
+    
+    @staticmethod
+    def from_vectors(x, y):
+        '''rotation sending x to y'''
+        
+        res = Quaternion()
+
+        res.real = y.dot(x)
+        res.imag = np.cross(x, y)
+
+        theta = np.linalg.norm(res)
+        res.real += theta
+
+        res.normalize()
+
+        return res
+
+    
     @staticmethod
     def hat(v):
         '''cross-product matrix'''
