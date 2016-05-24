@@ -173,7 +173,7 @@ class RigidBody:
             idxVisualModel+=1
 
     class Offset:
-        def __init__(self, node, name, offset, isMechanical):
+        def __init__(self, node, name, offset, isMechanical=True):
             ## @param isMechanical:
             ##     will the Offset be used for mechanics? And then propagate forces or mass ?
             ##     Or will it be used only as a passive measure, visualization...?
