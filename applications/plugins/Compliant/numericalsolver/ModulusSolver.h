@@ -43,7 +43,9 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
     solver_type solver;
     
     Data<real> omega;
+    
     Data<unsigned> anderson;
+    Data<bool> nlnscg;
     
   private:
     vec unilateral, diagonal;
