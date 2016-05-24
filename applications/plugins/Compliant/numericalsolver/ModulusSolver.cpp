@@ -4,6 +4,8 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "../utils/anderson.h"
+#include "../utils/nlnscg.h"
+
 #include "../utils/scoped.h"
 
 #include "../constraint/CoulombConstraint.h"
@@ -56,7 +58,11 @@ ModulusSolver::ModulusSolver()
                      "magic stuff")),
       anderson(initData(&anderson, unsigned(0),
                         "anderson",
-                        "anderson acceleration history size, 0 if none"))
+                        "anderson acceleration history size, 0 if none")),
+      nlnscg(initData(&nlnscg, false,
+                        "nlnscg",
+                        "nlnscg acceleration"))
+      
 {
     
 }
@@ -81,43 +87,48 @@ void ModulusSolver::factor(const system_type& sys) {
     // change diagonal compliance 
     const real omega = this->omega.getValue();
 
-    // homogenize tangent diagonal values
-    unsigned off = 0;
+    // compute diagonal + homogenize tangent values
+    {
+        unsigned off = 0;
     
-    for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
-        const unsigned dim = sys.compliant[i]->getMatrixSize();
+        for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
+            const unsigned dim = sys.compliant[i]->getMatrixSize();
 
-        for(unsigned j = off, je = off + dim; j < je; ++j) {
-            diagonal(j) = sys.J.row(j).dot( Hdiag_inv.asDiagonal() * sys.J.row(j).transpose());
-        }
-
-        typedef linearsolver::CoulombConstraintBase proj_type;
-        Constraint* c = sys.constraints[i].projector.get();
-        if( c && proj_type::checkConstraintType(c) ) {
-            assert( dim % 3 == 0 && "non vec3 dofs not handled");
-            for(unsigned j = 0, je = dim / 3; j < je; ++j) {
-                // set both tangent values to max tangent value
-                const unsigned t1 = off + 3 * j + 1;
-                const unsigned t2 = off + 3 * j + 2;
-                
-                const SReal value = std::max(diagonal(t1),
-                                             diagonal(t2));
-
-                diagonal(t1) = value;
-                diagonal(t2) = value;
+            for(unsigned j = off, je = off + dim; j < je; ++j) {
+                diagonal(j) = sys.J.row(j).dot( Hdiag_inv.asDiagonal() * sys.J.row(j).transpose());
             }
-                    
-        }
-        
-        off += dim;
-    }
-    assert( off == sys.n );
 
-    // update system matrix with diagonal
+            typedef linearsolver::CoulombConstraintBase proj_type;
+            Constraint* c = sys.constraints[i].projector.get();
+            if( c && proj_type::checkConstraintType(c) ) {
+                assert( dim % 3 == 0 && "non vec3 dofs not handled");
+                for(unsigned j = 0, je = dim / 3; j < je; ++j) {
+                    
+                    // set both tangent values to max tangent value to
+                    // avoid friction anisotropy
+                    
+                    const unsigned t1 = off + 3 * j + 1;
+                    const unsigned t2 = off + 3 * j + 2;
+                
+                    const SReal value = std::max(diagonal(t1),
+                                                 diagonal(t2));
+
+                    diagonal(t1) = value;
+                    diagonal(t2) = value;
+                }
+                    
+            }
+        
+            off += dim;
+        }
+        assert( off == sys.n );
+    }
+
+    // update system matrix (2, 2 block) with diagonal
     for(unsigned i = 0; i < sys.n; ++i) {
 
         sub.matrix.coeffRef(sub.primal.cols() + i,
-                            sub.primal.cols() + i) = -omega * diagonal(i);
+                            sub.primal.cols() + i) += -omega * diagonal(i);
     }
 
     // factor the modified kkt
@@ -171,10 +182,14 @@ void ModulusSolver::solve(vec& res,
     const real omega = this->omega.getValue();
     const real precision = this->precision.getValue();
 
-    utils::anderson accel(sys.n, anderson.getValue(), diagonal);
+    // utils::anderson accel(sys.n, anderson.getValue(), diagonal);
+    utils::nlnscg accel(sys.n, diagonal);    
     
     unsigned k;
     const unsigned kmax = iterations.getValue();
+
+    const bool use_accel = anderson.getValue();
+    
     for(k = 0; k < kmax; ++k) {
         
         // tmp = (x, |z|)
@@ -208,15 +223,14 @@ void ModulusSolver::solve(vec& res,
         y.head(sys.m).array() -= tmp.head(sys.m).array();
         y.tail(sys.n).array() -= tmp.tail(sys.n).array() + y.tail(sys.n).array();
 
-        if( anderson.getValue() ) {
-
+        if( use_accel ) {
+            
             // reuse zabs
             zabs = y.tail(sys.n);
-            accel(zabs, true);
+            accel(zabs);
             y.tail(sys.n) = zabs;
-
         }
-        
+
         error = (old - y.tail(sys.n)).norm();
         if( error <= precision ) break;
     }

@@ -97,6 +97,7 @@ set(HEADER_FILES
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
     utils/anderson.h
+    utils/nlnscg.h	
     utils/basis.h
     utils/bicgstab.h
     utils/cg.h
@@ -199,6 +200,7 @@ set(SOURCE_FILES
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
+	utils/nlnscg.cpp	
     utils/sub_kkt.cpp
 )
 
