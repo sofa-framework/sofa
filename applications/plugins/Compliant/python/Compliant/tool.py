@@ -175,9 +175,11 @@ class Mapping(object):
 
         kwargs['template'] = '{0},{1}'.format( self.src[0].getTemplateName(),
                                                self.dst.getTemplateName())
+        
         kwargs['input'] = multi_mapping_input(node, *self.src)
         kwargs['output'] = object_link_relative(node, self.dst)
-        
+
+
         self.obj = node.createObject('PythonMultiMapping', **kwargs)
         
         self.init()
@@ -199,6 +201,11 @@ class Mapping(object):
         
         dll.set_py_callback( sofa_pointer(self.obj), self._cb )
 
+        # post-initialization
+        self.on_init()
+        
+    def on_init(self):
+        '''called after init'''
 
     def on_apply(self):
         '''called when value/jacobian are required'''
@@ -265,7 +272,54 @@ class Mapping(object):
 
     geometric_stiffness = numpy_property('_gs')    
 
+
+    def in_vel_stack(self):
+        '''concatenation of all input velocities'''
+        return np.hstack( tuple(v[i] for v in self.in_vel for i in xrange(len(v))) )
     
+def cat(x):
+    return ' '.join(map(str, x))
+
+
+class Constraint(Mapping):
+    '''wraps mapping/state/compliance to build arbitrary constraints
+    (setting mapping output to zero, possibly with compilance)'''
+
+    def __init__(self, name, node, dim, **kwargs):
+
+        if ' ' in name: raise Exception('space in constraint name')
+        
+        if 'output' in kwargs:
+            raise Exception('can not have output in constraints')
+
+        # constraint node
+        node = node.createChild(name)
+        
+        self.dim = dim
+
+        # create dofs
+        dofs = node.createObject('MechanicalObject',
+                                 template = 'Vec1d',
+                                 name = 'dofs',
+                                 position = cat(np.zeros(dim)),
+                                 velocity = cat(np.zeros(dim)))
+        
+        kwargs['output'] = dofs
+
+        # create mapping
+        Mapping.__init__(self, node, **kwargs)
+
+        # compliance
+        self.compliance = kwargs.get('compliance', 0)
+
+        # TODO auto-update compliance ?
+        self.ff = node.createObject('UniformCompliance',
+                                    template = 'Vec1d',
+                                    name = 'ff',
+                                    compliance = self.compliance)
+        
+                                    
+        
 
 class ForceField(object):
     '''wraps mapping/state/ff to build arbitrary forcefields'''
