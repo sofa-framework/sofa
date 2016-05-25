@@ -1,5 +1,5 @@
-#ifndef DIFFERENCEMAPPING_H
-#define DIFFERENCEMAPPING_H
+#ifndef AdditionMapping_H
+#define AdditionMapping_H
 
 #include <Compliant/config.h>
 
@@ -17,21 +17,24 @@ namespace mapping
 
 
 /**
- Maps two dofs to their spatial position difference:
+ Maps two dofs to their spatial position Addition:
 
- (p1, p2) -> p2.t - p1.t
+ (p1, p2) -> p1.t + p2.t
  (with .t the translation obtained by DataTypes::getCPos)
 
- This is used to obtain relative dofs
- on which a stiffness/compliance may be applied
+ This is used to compute a vector end position from its start position and its direction.
+
+ @author Matthieu Nesme
+ @date 2016
+
 */
 template <class TIn, class TOut >
-class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
+class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
 {
   public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(AdditionMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
-    typedef DifferenceMapping self;
+    typedef AdditionMapping self;
 	
 	typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
@@ -43,8 +46,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 
 	
-	DifferenceMapping() 
-        : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
+    AdditionMapping()
+        : pairs( initData(&pairs, "pairs", "index pairs for computing additions") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
         , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {}
@@ -72,7 +75,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         for( unsigned j = 0, m = p.size(); j < m; ++j)
         {
-            out[j] = TIn::getCPos( in[p[j][1]] ) - TIn::getCPos( in[p[j][0]] );
+            out[j] = TIn::getCPos( in[p[j][0]] ) + TIn::getCPos( in[p[j][1]] );
         }
 	}
 
@@ -99,11 +102,11 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 if( p[k][1] < p[k][0] )
                 {
                     J.insertBack(row, p[k][1] * Nin + i ) = 1;
-                    J.insertBack(row, p[k][0] * Nin + i ) = -1;
+                    J.insertBack(row, p[k][0] * Nin + i ) = 1;
                 }
                 else
                 {
-                    J.insertBack(row, p[k][0] * Nin + i ) = -1;
+                    J.insertBack(row, p[k][0] * Nin + i ) = 1;
                     J.insertBack(row, p[k][1] * Nin + i ) = 1;
                 }
 			}
@@ -173,22 +176,24 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 
 /**
- Multi-maps two vec dofs to their spatial position difference:
+ Multi-maps two vec dofs to their spatial position addition:
 
- (p1, p2) -> p2.t - p1.t
+ (p1, p2) -> p2.t + p1.t
  (with .t the translation obtained by DataTypes::getCPos)
 
- This is used to obtain relative dofs
- on which a stiffness/compliance may be applied
+ This is used to compute a vector end position from its start position and its direction.
+
+ @author Matthieu Nesme
+ @date 2016
 */
 
     template <class TIn, class TOut >
-    class SOFA_Compliant_API DifferenceMultiMapping : public AssembledMultiMapping<TIn, TOut>
+    class SOFA_Compliant_API AdditionMultiMapping : public AssembledMultiMapping<TIn, TOut>
     {
-        typedef DifferenceMultiMapping self;
+        typedef AdditionMultiMapping self;
 
     public:
-        SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+        SOFA_CLASS(SOFA_TEMPLATE2(AdditionMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
 
         typedef AssembledMultiMapping<TIn, TOut> Inherit;
         typedef TIn In;
@@ -246,7 +251,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
             assert( !p.empty() );
 
             for( unsigned j = 0, m = p.size(); j < m; ++j) {
-                out[j] = TIn::getCPos( in[1] [p[j][1]] ) - TIn::getCPos( in[0] [p[j][0]] );
+                out[j] = TIn::getCPos( in[1] [p[j][1]] ) + TIn::getCPos( in[0] [p[j][0]] );
             }
 
         }
@@ -259,7 +264,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
     protected:
 
-        DifferenceMultiMapping()
+        AdditionMultiMapping()
             : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") ) {
 
         }
@@ -276,10 +281,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 J.resize( Nout * p.size(), Nin * in[i].size());
                 J.setZero();
 
-                Real sign = (i == 0) ? -1 : 1;
-
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {
-                    write_block(J, k, p[k][i], sign);
+                    write_block(J, k, p[k][i], 1);
                 }
 
                 J.finalize();
