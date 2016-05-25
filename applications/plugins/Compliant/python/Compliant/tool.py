@@ -58,8 +58,13 @@ def load_dll():
     dll_name = '{0}Compliant.{1}'.format(prefix, ext)
 
     global dll
-    dll = ctypes.CDLL(dll_name)
-    
+    try:
+        dll = ctypes.CDLL(dll_name)
+    except:
+        # try debug
+        dll_name = '{0}Compliant_d.{1}'.format(prefix, ext)
+        dll = ctypes.CDLL(dll_name)
+        
     dll.get_data_pointer.restype = DataPointer
     dll.get_data_pointer.argtypes = (ctypes.c_void_p, )
 
