@@ -678,8 +678,9 @@ public:
         if( !normalize(threshold) ) *this=failsafe;
     }
 
-    /// Return the normalized the vector.
-    Vec<N,real> normalized()
+    /// Return the normalized vector.
+    /// @warning 'this' is not normalized.
+    Vec<N,real> normalized() const
     {
         Vec<N,real> r(*this);
         r.normalize();
