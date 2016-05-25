@@ -103,7 +103,8 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
 
         // note: empty 'jacobian' will be silently treated as zero
         if( matrix.size() ) {
-            serr << "assemble: incorrect jacobian size, treating as zero" << sendl;
+            serr << "assemble: incorrect jacobian size, treating as zero (solve *will* fail !)"
+                 << sendl;
         }
             
         return;
@@ -112,7 +113,9 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
 
     // each out dof
     unsigned off = 0;
-			
+
+    unsigned nnz = 0;
+    
     // each output mstate
     for(unsigned i = 0, n = value.size(); i < n; ++i) {
 
@@ -134,7 +137,11 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
                     for(unsigned u = 0; u < in_deriv_size; ++u) {
                         const unsigned c = k * in_deriv_size + u;
                         const SReal value = matrix[off + c];
-                        if( value ) block.insertBack(r, c) = value;
+
+                        if( value ) {
+                            block.insertBack(r, c) = value;
+                            ++nnz;
+                        }
                     }					
                 }
                 off += dim;
@@ -145,6 +152,10 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
     }
     assert( off == matrix.size() );
 
+    if(!nnz) {
+        serr << "assemble: zero jacobian, solve *will* fail !" << sendl;
+    }
+    
     // each input mstate
     for(unsigned j = 0, m = in.size(); j < m; ++j) {
         block_type& block = this->jacobian(j).compressedMatrix;
