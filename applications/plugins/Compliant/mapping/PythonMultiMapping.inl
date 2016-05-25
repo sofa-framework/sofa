@@ -1,6 +1,11 @@
 #ifndef PYTHONMULTIMAPPING_INL
 #define PYTHONMULTIMAPPING_INL
 
+#ifdef NDEBUG
+#undef NDEBUG
+#warning NDEBUG
+#endif
+
 #include "PythonMultiMapping.h"
 
 namespace sofa {
@@ -22,13 +27,22 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric( const helper::vector<typ
 														const typename self::const_out_deriv_type& out) {
         
     if(use_gs.getValue()) {
-        // copy force in data
-        set(out_force) = out.ref();
+
+        if( set(out_force).size() != out.ref().size() ) {
+            serr << "assemble_geometric: force size error, ignoring" << sendl;
+        } else {
+            // copy output force into data for the python side to
+            // assemble gs, being careful not to cause reallocation
+            std::copy(out.ref().begin(), out.ref().end(), set(out_force).begin());
+        }
+        
+        // set(out_force) = out.ref();
 
         // std::cout << "c++ out_force: " << set(out_force) << std::endl;
             
         // hand over to python
         if(this->py_callback) {
+            // std::cerr << "callback gs" << std::endl;
             this->py_callback( gs_state );
         }
 
@@ -170,6 +184,7 @@ void PythonMultiMapping<TIn, TOut>::apply(typename self::out_pos_type& out,
                                           const helper::vector<typename self::in_pos_type>& /*in*/ ){
         
     if(this->py_callback) {
+        // std::cerr << "callback apply" << std::endl;
         this->py_callback( apply_state );
     }
         
