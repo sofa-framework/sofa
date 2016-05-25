@@ -1,4 +1,4 @@
-#include "PythonMultiMapping.h"
+#include "PythonMultiMapping.inl"
 
 #include <sofa/core/MultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -15,7 +15,7 @@ SOFA_DECL_CLASS(PythonMultiMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-const int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
+static const int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
 
 #ifndef SOFA_FLOAT
 .add< PythonMultiMapping< Rigid3dTypes, Vec6dTypes > >()            

@@ -51,6 +51,7 @@ set(HEADER_FILES
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
+    mapping/PythonMultiMapping.inl	
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
