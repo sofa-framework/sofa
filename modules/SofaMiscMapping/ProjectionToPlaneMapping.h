@@ -176,6 +176,8 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
+    Data< Real > d_factor;
+
     Data< SReal >            d_drawScale; ///< drawing scale
     Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
 
