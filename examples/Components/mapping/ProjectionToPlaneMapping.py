@@ -22,3 +22,9 @@ def createScene(node):
     projectednode.createObject('MechanicalObject', template="Vec3d",showObject="1", showObjectScale=".12", drawMode="2")
     projectednode.createObject('ProjectionToPlaneMultiMapping', template="Vec3d,Vec3d", indices="0 1", input="@.. @/plane/.",output="@.")
     planenode.addChild(projectednode)
+
+
+    symnode = pointnode.createChild("symmetry")
+    symnode.createObject('MechanicalObject', template="Vec3d",showObject="1", showObjectScale=".12", drawMode="3")
+    symnode.createObject('ProjectionToPlaneMultiMapping', template="Vec3d,Vec3d", indices="0 1", factor=2, input="@.. @/plane/.",output="@.")
+    planenode.addChild(symnode)

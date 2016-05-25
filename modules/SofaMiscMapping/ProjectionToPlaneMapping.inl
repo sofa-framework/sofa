@@ -223,6 +223,7 @@ template <class TIn, class TOut>
 ProjectionToPlaneMultiMapping<TIn, TOut>::ProjectionToPlaneMultiMapping()
     : Inherit1()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
+    , d_factor(initData(&d_factor, Real(1), "factor", "Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ..."))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
     , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(0,1,0,1), "drawColor", "Draw color"))
 {
@@ -279,14 +280,16 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::apply(const core::MechanicalParam
     Real n_norm = std::sqrt( n_norm2 );
     nn.normalizeWithNorm( n_norm );
 
+    Real factor = d_factor.getValue();
+
 
     for(unsigned i=0; i<nb; i++ )
     {
         const unsigned& index = indices.empty() ? i : indices[i] ;
         const InCoord& p = in[index];
-        out[i] = p - nn * ( ( p - o ) * nn ); // projection on the plane
+        out[i] = p - factor * nn * ( ( p - o ) * nn ); // projection on the plane
 
-        defaulttype::Matrix3 Jo = dyad( nn, nn );
+        defaulttype::Matrix3 Jo = factor * dyad( nn, nn );
         defaulttype::Matrix3 Jp = defaulttype::Matrix3::Identity() - Jo;
         defaulttype::Matrix3 Jd;
 
@@ -308,33 +311,35 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::apply(const core::MechanicalParam
         Real t4 = n_norm2; //t1 + t2 + t3; // squared norm
         Real t5 = 1./(n_norm2 * n_norm);//pow(t4, -0.3e1 / 0.2e1); // 1/(squared norm * norm)
         t4 = t4 * t5;
-        Real t6 = o0 - p0;
+        Real t6 = -p0 + o0;
         Real t7 = p1 - o1;
         Real t8 = p2 - o2;
         Real t9 = n1 * t7;
         Real t10 = n2 * t8;
         t2 = t2 * t5;
         Real t11 = n0 * t6;
-        Real t12 = (-t9 - t10 + t11) * t4;
+        Real t12 = (t11 - t9 - t10) * t4;
         t6 = (-t2 * t6 + t4 * t6 + (t9 + t10) * t5 * n0) * t4;
         t3 = t3 * t5;
-        t7 = (-t3 * t7 + t4 * t7 + (-t10 + t11) * t5 * n1) * t4;
-        t10 = t12 * n1 * t5 + t7;
+        Real t13 = t12 * t5;
+        t7 = (-t3 * t7 + t4 * t7 + (t11 - t10) * t5 * n1) * t4;
+        t10 = t13 * n1 + t7;
+        Real t14 = factor * n0;
         t1 = t1 * t5;
-        t8 = (-t1 * t8 + t4 * t8 + (-t9 + t11) * t5 * n2) * t4;
-        t9 = t12 * n2 * t5 + t8;
-        t5 = -t12 * t5 * n0 + t6;
-        Jd[0][0] = t12 * (-t2 + t4) + n0 * t6;
-        Jd[0][1] = -n0 * t10;
-        Jd[0][2] = -n0 * t9;
-        Jd[1][0] = n1 * t5;
-        Jd[1][1] = t12 * (-t3 + t4) - n1 * t7;
-        Jd[1][2] = -n1 * t9;
-        Jd[2][0] = n2 * t5;
-        Jd[2][1] = -n2 * t10;
-        Jd[2][2] = t12 * (-t1 + t4) - n2 * t8;
-
-
+        t5 = (-t1 * t8 + t4 * t8 + (t11 - t9) * t5 * n2) * t4;
+        t8 = t13 * n2 + t5;
+        t9 = t13 * n0 - t6;
+        t11 = factor * n1;
+        t13 = factor * n2;
+        Jd[0][0] = factor * (t12 * (-t2 + t4) + n0 * t6);
+        Jd[0][1] = -t14 * t10;
+        Jd[0][2] = -t14 * t8;
+        Jd[1][0] = -t11 * t9;
+        Jd[1][1] = -factor * (t12 * (t3 - t4) + n1 * t7);
+        Jd[1][2] = -t11 * t8;
+        Jd[2][0] = -t13 * t9;
+        Jd[2][1] = -t13 * t10;
+        Jd[2][2] = -factor * (t12 * (t1 - t4) + t5 * n2);
 
         for(unsigned j=0; j<Nout; j++)
         {
