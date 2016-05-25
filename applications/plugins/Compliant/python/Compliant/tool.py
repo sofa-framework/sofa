@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import ctypes
-
+import sys
 
 class PyObject(ctypes.Structure):
     '''ctypes representation of PyObject_HEAD'''
@@ -167,12 +167,15 @@ def numpy_item_property(*name):
     
     return res
 
-
 # TODO enable gs based on update_gs presence in derived classes
 class Mapping(object):
     '''wraps a PythonMultiMapping into something more usable'''
 
+    _instances_ = []
+    
     def __init__(self, node, **kwargs):
+
+        
         self.node = node
 
         self.src = kwargs['input'] 
@@ -191,19 +194,22 @@ class Mapping(object):
 
         # callback
         def callback(state):
+
             try:
                 if state == 0:
                     self.on_apply()
                 elif state == 1:
                     self.on_stiffness(self._out_force)
                 else: raise Exception('unknown callback state')
+                
             except Exception as e:
                 # print('callback error:', e)
                 raise
-                
-        # keep a handle on the closure to prevent gc
-        self._cb = py_callback_type(callback)
+
+        # keep a handle on self/closure to prevent gc
+        Mapping._instances_.append(self)
         
+        self._cb = py_callback_type(callback)
         dll.set_py_callback( sofa_pointer(self.obj), self._cb )
 
         # post-initialization
