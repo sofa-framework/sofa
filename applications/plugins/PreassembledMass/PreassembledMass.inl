@@ -54,7 +54,7 @@ void PreassembledMass< DataTypes >::bwdInit()
     MassMatrix& massMatrix = *d_massMatrix.beginEdit();
 
     // if the mass matrix is not given manually
-    if( massMatrix.rows() != massMatrix.cols() || massMatrix.rows()!=this->mstate->getMatrixSize() )
+    if( massMatrix.rows() != massMatrix.cols() || massMatrix.rows()!=(typename MassMatrix::Index)this->mstate->getMatrixSize() )
     {
         // perform assembly
         core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
@@ -69,7 +69,7 @@ void PreassembledMass< DataTypes >::bwdInit()
         assemblyVisitor.assemble( sys );
         massMatrix.compressedMatrix = sys.H;
 
-        if( massMatrix.rows()!=this->mstate->getMatrixSize() )
+        if( massMatrix.rows()!=(typename MassMatrix::Index)this->mstate->getMatrixSize() )
         {
             serr<<"Are you sure that every independent dofs are in independent graph branches?\n";
             assert(false);
@@ -94,8 +94,8 @@ void PreassembledMass< DataTypes >::bwdInit()
 
     // for human debug
     Real totalmass = 0;
-    for(size_t r=0;r<massMatrix.rows();++r)
-        for(size_t c=0;c<massMatrix.cols();++c)
+    for(typename MassMatrix::Index r=0;r<massMatrix.rows();++r)
+        for(typename MassMatrix::Index c=0;c<massMatrix.cols();++c)
             totalmass+=massMatrix.element(r,c);
     sout<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize()<<sendl;
 
