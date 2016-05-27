@@ -138,6 +138,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::reinit()
         this->setMethod(POLAR);
     else this->setMethod(LARGE);
 
+    // Need to initialize the _stiffnesses vector before using it
+    size_t sizeMO=this->mstate->getSize();
+    if(_assembling.getValue())
+    {
+        _stiffnesses.resize( sizeMO * 3 );
+    }
+
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     tetrahedronInf.resize(_topology->getNbTetrahedra());
