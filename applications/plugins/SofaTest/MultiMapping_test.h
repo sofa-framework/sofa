@@ -258,6 +258,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, dfp[p] );
         }
+        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness

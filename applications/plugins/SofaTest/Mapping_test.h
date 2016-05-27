@@ -82,6 +82,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typedef typename Mapping::In In;
     typedef component::container::MechanicalObject<In> InDOFs;
     typedef typename InDOFs::Real  Real;
+    typedef typename InDOFs::Coord  InCoord;
     typedef typename InDOFs::Deriv  InDeriv;
     typedef typename InDOFs::VecCoord  InVecCoord;
     typedef typename InDOFs::VecDeriv  InVecDeriv;
