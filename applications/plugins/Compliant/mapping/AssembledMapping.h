@@ -22,6 +22,8 @@ namespace sofa {
 			public:
 
 				SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
+
+                typedef typename Out::Real Real; // used in Mapping_test
 	
 				// TODO make this final ?
 				void init() {
