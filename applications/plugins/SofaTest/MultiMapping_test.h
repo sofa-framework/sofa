@@ -244,6 +244,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv vin = inDofs[p]->writeVelocities();
             copyToData( vin, vp[p] );
         }
+        mparams.setDx(core::ConstVecDerivId::velocity());
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
