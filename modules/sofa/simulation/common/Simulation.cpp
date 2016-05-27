@@ -262,7 +262,7 @@ void Simulation::animate ( Node* root, SReal dt )
     }
     else
     {
-        serr<<"ERROR in Simulation::animate(): AnimationLoop expected at the root node"<<sendl;
+        serr<<"animate(): AnimationLoop expected at the root node (missing a BaseAnimationLoop, maybe you did not call init)"<<sendl;
         return;
     }
 
