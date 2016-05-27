@@ -47,6 +47,7 @@ set(HEADER_FILES
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
     mapping/AdditionMapping.h
+    mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
     mapping/PairingMultiMapping.h
@@ -158,6 +159,7 @@ set(SOURCE_FILES
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
     mapping/AdditionMapping.cpp
+    mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp
     mapping/PairingMultiMapping.cpp
