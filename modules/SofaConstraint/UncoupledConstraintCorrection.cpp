@@ -54,6 +54,8 @@ SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Type
     , d_handleTopologyChange(initData(&d_handleTopologyChange, false, "handleTopologyChange", "Enable support of topological changes for compliance vector (should be disabled for rigids)"))
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , m_pOdeSolver(NULL)
 {
 }
 
@@ -62,10 +64,31 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 {
     Inherit::init();
 
-    double dt = this->getContext()->getDt();
+
     const VecReal& comp = compliance.getValue();
 
     VecReal usedComp;
+    double  odeFactor = 1.0;
+
+    this->getContext()->get(m_pOdeSolver);
+    if (!m_pOdeSolver)
+    {
+        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        {
+            serr << "Can't find any odeSolver" << sendl;
+            d_useOdeSolverIntegrationFactors.setValue(false);
+        }
+        d_useOdeSolverIntegrationFactors.setReadOnly(true);
+    }
+    else
+    {
+        if( !d_useOdeSolverIntegrationFactors.getValue() )
+        {
+            const double dt = this->getContext()->getDt();
+            odeFactor = dt*dt; // W = h^2 * JMinvJt : only correct when solving in constraint equation in position. Must be deprecated.
+        }
+    }
+
 
     if (comp.size() != 7)
     {
@@ -93,21 +116,31 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         {
             serr << "\n WARNING : node is not found => massValue could be incorrect in addComplianceInConstraintSpace function" << sendl;
         }
+        
 
-        const double dt2 = dt * dt;
+        if (defaultCompliance.isSet())
+        {
+            usedComp.push_back(defaultCompliance.getValue());
+        }
+        else
+        {
+            usedComp.push_back(odeFactor / massValue.mass);
+        }
 
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][0]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][1]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][2]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][1]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][2]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[2][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][0]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][1]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][1]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[2][2]);
         compliance.setValue(usedComp);
     }
     else
     {
         sout << "COMPLIANCE VALUE FOUND" << sendl;
     }
+    
+
 }
 
 

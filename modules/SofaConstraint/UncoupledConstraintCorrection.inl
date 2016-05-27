@@ -114,6 +114,8 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
     , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
     , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , m_pOdeSolver(NULL)
 {
 }
 
@@ -155,6 +157,17 @@ void UncoupledConstraintCorrection<DataTypes>::init()
         {
             compliance.setValue(UsedComp);
         }
+    }
+
+    this->getContext()->get(m_pOdeSolver);
+    if (!m_pOdeSolver)
+    {
+        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        {
+            serr << "Can't find any odeSolver" << sendl;
+            d_useOdeSolverIntegrationFactors.setValue(false);
+        }
+        d_useOdeSolverIntegrationFactors.setReadOnly(true);
     }
 }
 
@@ -303,12 +316,37 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, sofa::defaulttype::BaseMatrix *W)
+void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
-    const VecReal& comp = compliance.getValue();
-    const Real comp0 = defaultCompliance.getValue();
+    VecReal comp = compliance.getValue();
+    Real comp0   = defaultCompliance.getValue();
     const bool verbose = f_verbose.getValue();
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+    // use the OdeSolver to get the position integration factor
+    double factor = 1.0;
+    switch (cparams->constOrder())
+    {
+    case core::ConstraintParams::POS_AND_VEL :
+    case core::ConstraintParams::POS :
+        factor = useOdeIntegrationFactors ? m_pOdeSolver->getPositionIntegrationFactor() : 1.0;
+        break;
+
+    case core::ConstraintParams::ACC :
+    case core::ConstraintParams::VEL :
+        factor = useOdeIntegrationFactors ? m_pOdeSolver->getVelocityIntegrationFactor() : 1.0;
+        break;
+
+    default :
+        break;
+    }
+
+    comp0 *= Real(factor);
+    for(std::size_t i=0;i<comp.size(); ++i)
+    {
+        comp[i] *= Real(factor);
+    }
+
 
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
     {
@@ -448,26 +486,30 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
       
-    const Real xFactor = this->d_correctionPositionFactor.getValue();
-    const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     const double invDt = 1.0 / this->getContext()->getDt();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
-        x[i] += dx[i] * xFactor;
-        v[i] += dx[i] * vFactor;
+        const Deriv dxi = dx[i] * xFactor;
+        const Deriv dvi = dx[i] * vFactor;
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
     v_d.endEdit();
+    this->mstate->write(core::VecDerivId::dx())->endEdit();
 }
 
 
@@ -482,16 +524,21 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
 
-    const Real xFactor = this->d_correctionPositionFactor.getValue();
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i] + dx[i] * xFactor;
+        const  Deriv dxi = dx[i] * xFactor;
+        x[i] = x_free[i] + dxi;
+        dx[i] = dxi;
     }
 
     x_d.endEdit();
+    this->mstate->write(core::VecDerivId::dx())->endEdit();
 }
 
 
@@ -506,16 +553,21 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
 
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-    //const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
-    const Real vFactor = this->d_correctionVelocityFactor.getValue();
+    VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
 
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : this->d_correctionVelocityFactor.getValue();
+    
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i] * vFactor;
+        const Deriv dvi = dx[i] * vFactor;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dvi;
     }
 
     v_d.endEdit();
+    this->mstate->write(core::VecDerivId::dx())->endEdit();
 }
 
 
@@ -557,23 +609,26 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
 
-    const Real xFactor = this->d_correctionPositionFactor.getValue();
-    const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
+    const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
+
+    const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
+    const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
 
         // compliance * force
         //dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
         dx[i] = UncoupledConstraintCorrection_computeDx(i, force[i], comp0, comp);
 
-        x[i] += dx[i] * xFactor;
-        v[i] += dx[i] * vFactor;
+        const Deriv dxi = dx[i] * xFactor;
+        const Deriv dvi = dx[i] * vFactor;
+        x[i] = x_free[i] + dxi;
+        v[i] = v_free[i] + dvi;
+        dx[i] = dxi;
     }
 }
 

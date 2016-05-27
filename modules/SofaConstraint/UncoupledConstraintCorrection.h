@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 
 namespace sofa
@@ -132,6 +133,8 @@ public:
     Data< Real > d_correctionVelocityFactor;
     Data< Real > d_correctionPositionFactor;
 
+    Data < bool > d_useOdeSolverIntegrationFactors;
+
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
@@ -140,6 +143,9 @@ private:
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
 
 protected:
+
+    sofa::core::behavior::OdeSolver* m_pOdeSolver;
+
     /**
      * @brief Compute dx correction from motion space force vector.
      */
