@@ -43,6 +43,7 @@
 #include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
 
+#include "SceneLoaderPY.h"
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
@@ -519,7 +520,7 @@ extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
-        return NULL;
+        Py_RETURN_NONE;
 
     sofa::simulation::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
@@ -533,6 +534,33 @@ extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
     SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
 
     Py_RETURN_NONE;
+}
+
+
+
+extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    if( !argSize )
+    {
+        SP_MESSAGE_ERROR( "Sofa_loadPythonSceneWithArguments: should have at least a filename as arguments" );
+        Py_RETURN_NONE;
+    }
+
+    // PyString_Check(PyTuple_GetItem(args,0)) // to check the arg type and raise an error
+    char *filename = PyString_AsString(PyTuple_GetItem(args,0));
+
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() ) // no filename
+        Py_RETURN_NONE;
+
+    std::vector<std::string> arguments;;
+    for( size_t i=1 ; i<argSize ; i++ )
+        arguments.push_back( PyString_AsString(PyTuple_GetItem(args,i)) );
+
+    sofa::simulation::SceneLoaderPY loader;
+    sofa::simulation::Node::SPtr node = loader.loadSceneWithArguments(filename,arguments);
+    return sofa::PythonFactory::toPython(node.get());
 }
 
 
@@ -560,6 +588,7 @@ SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
+SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHODS_END
 
 
