@@ -127,6 +127,7 @@ class Model:
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
             self.image = list() # list of images
+            self.offsets = list()  # list of rigid offsets
 
             #TODO replace this with a MassInfo?
             self.mass = None
@@ -161,6 +162,9 @@ class Model:
                 self.inertia = Tools.strToListFloat(objXml.find("inertia").text)
             if not objXml.find("inertia_rotation") is None:
                 self.inertia_rotation = Tools.strToListFloat(objXml.find("inertia_rotation").text)
+            for o in objXml.findall("offset"):
+                self.offsets.append( Model.Offset(o) )
+
 
     class Offset:
         def __init__(self, offsetXml=None):
@@ -173,7 +177,9 @@ class Model:
         def parseXml(self, offsetXml):
             self.value = Tools.strToListFloat(offsetXml.text)
             self.type = offsetXml.attrib["type"]
-            
+            if "name" in offsetXml.attrib:
+                self.name = offsetXml.attrib["name"]
+
         def isAbsolute(self):
             return self.type == "absolute"
             
