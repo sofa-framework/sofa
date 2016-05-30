@@ -59,10 +59,9 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
 	virtual void apply(typename self::out_pos_type& out, 
 	                   const typename self::in_pos_type& in )  {
-		assert( this->Nout == this->Nin );
 
         const pairs_type& p = pairs.getValue();
-        assert( !p.empty() );
+        assert( out.size() == p.size() );
 
         for( size_t j = 0, m = p.size(); j < m; ++j)
         {
@@ -76,32 +75,18 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         const pairs_type& p = pairs.getValue();
 		assert( !p.empty() );
 
-		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
-        this->jacobian.resizeBlocks( p.size(), in.size() );
+        typename self::jacobian_type& J = this->jacobian;
+        J.resizeBlocks( p.size(), in.size() );
 
         for(size_t k = 0, n = p.size(); k < n; ++k)
         {
-            J.startVec( k );
-
-            // needs to be inserted in the right order in the eigen matrix
-            if( p[k][1] < p[k][0] )
+            for(size_t i = 0; i < Nin; ++i)
             {
-                for(size_t i = 0; i < Nin; ++i)
-                {
-                    J.insertBack(k, p[k][1] * Nin + i ) = in[p[k][0]][i];
-                    J.insertBack(k, p[k][0] * Nin + i ) = in[p[k][1]][i];
-                }
-            }
-            else
-            {
-                for(size_t i = 0; i < Nin; ++i)
-                {
-                    J.insertBack(k, p[k][0] * Nin + i ) = in[p[k][1]][i];
-                    J.insertBack(k, p[k][1] * Nin + i ) = in[p[k][0]][i];
-                }
+                J.add(k, p[k][1] * Nin + i, in[p[k][0]][i] );
+                J.add(k, p[k][0] * Nin + i, in[p[k][1]][i] );
             }
 		}
-        J.finalize();
+        J.compress();
 	}
 
 
@@ -222,7 +207,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
                            const helper::vector<typename self::in_pos_type>& in)  {
 
             const pairs_type& p = pairs.getValue();
-            assert( !p.empty() );
+            assert( out.size() == p.size() );
 
             for( unsigned j = 0, m = p.size(); j < m; ++j) {
 
