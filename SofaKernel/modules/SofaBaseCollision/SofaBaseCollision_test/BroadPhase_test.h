@@ -4,7 +4,7 @@
 #include <SofaGeneralMeshCollision/DirectSAP.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
 #include <sofa/component/typedef/Sofa_typedef.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 
 #include <gtest/gtest.h>
 

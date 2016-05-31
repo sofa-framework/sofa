@@ -3,9 +3,9 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
-#  include <sofa/simulation/graph/init.h>
+#  include <SofaSimulationGraph/init.h>
 #endif
-#include <sofa/simulation/tree/init.h>
+#include <SofaSimulationTree/init.h>
 
 #include <gtest/gtest.h>
 

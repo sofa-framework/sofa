@@ -28,8 +28,8 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseMechanics/UniformMass.h>

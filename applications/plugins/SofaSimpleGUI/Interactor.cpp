@@ -1,8 +1,8 @@
 #include "Interactor.h"
 #include "PickedPoint.h"
 #include "SofaScene.h"
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/DeleteVisitor.h>
 
 using namespace sofa;
 

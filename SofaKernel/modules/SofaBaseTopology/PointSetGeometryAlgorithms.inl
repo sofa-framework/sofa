@@ -31,8 +31,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

@@ -28,9 +28,9 @@
 #include "ScriptEnvironment.h"
 
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/xml/NodeElement.h>
-#include <sofa/simulation/common/FindByTypeVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationCommon/xml/NodeElement.h>
+#include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 #include <sstream>
 

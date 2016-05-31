@@ -33,8 +33,8 @@
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <map>
 #include <list>

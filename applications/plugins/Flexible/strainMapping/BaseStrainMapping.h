@@ -29,7 +29,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/core/Mapping.h>
 

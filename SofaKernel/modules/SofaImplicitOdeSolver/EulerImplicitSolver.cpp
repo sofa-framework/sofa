@@ -27,9 +27,9 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -37,8 +37,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #ifdef SOFA_SMP
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationTree/GNode.h>
 #endif
 
 

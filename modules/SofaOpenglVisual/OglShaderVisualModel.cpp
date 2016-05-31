@@ -35,7 +35,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaOpenglVisual/OglAttribute.inl>
 

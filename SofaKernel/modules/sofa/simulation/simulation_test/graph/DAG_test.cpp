@@ -26,9 +26,9 @@
 #include "../Node_test.h"
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/graph/DAGNode.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Visitor.h>
+#include <SofaSimulationGraph/DAGNode.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 using sofa::simulation::graph::DAGNode;
 

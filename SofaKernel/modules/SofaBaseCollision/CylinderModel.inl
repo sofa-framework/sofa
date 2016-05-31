@@ -13,7 +13,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

@@ -37,9 +37,9 @@
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <gtest/gtest.h>
 

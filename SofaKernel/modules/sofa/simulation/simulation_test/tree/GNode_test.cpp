@@ -25,7 +25,7 @@
 
 #include "../Node_test.h"
 #include <gtest/gtest.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 
 using sofa::simulation::tree::GNode;
 

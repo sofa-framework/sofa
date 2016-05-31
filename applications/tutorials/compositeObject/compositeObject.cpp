@@ -32,10 +32,10 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

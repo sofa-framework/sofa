@@ -3,7 +3,7 @@ using namespace std;
 #include "SpringInteractor.h"
 #include "PickedPoint.h"
 #include <sofa/core/SofaLibrary.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
 namespace sofa{

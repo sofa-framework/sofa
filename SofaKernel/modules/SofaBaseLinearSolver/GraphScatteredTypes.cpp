@@ -24,10 +24,10 @@
 ******************************************************************************/
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/MechanicalMatrixVisitor.h>
-#include <sofa/simulation/common/MechanicalVPrintVisitor.h>
-#include <sofa/simulation/common/VelocityThresholdVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalMatrixVisitor.h>
+#include <sofa/simulation/MechanicalVPrintVisitor.h>
+#include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include <stdlib.h>

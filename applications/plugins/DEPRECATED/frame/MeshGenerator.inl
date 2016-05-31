@@ -37,8 +37,8 @@
 #include <SofaLoader/VoxelGridLoader.h>
 #include <SofaOpenglVisual/OglAttribute.inl>
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/Visitor.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <map>
@@ -47,7 +47,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/glText.inl>
 #include <algorithm>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include "GridMaterial.inl"
 

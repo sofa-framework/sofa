@@ -11,12 +11,10 @@ set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/sofa/simulation)
 
-SET(SOFA_SIMULATION_FILES_PATH ../modules/sofa/simulation)
-
 ## Subdirectories
-add_subdirectory(${SOFA_SIMULATION_FILES_PATH}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
-add_subdirectory(${SOFA_SIMULATION_FILES_PATH}/tree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
-add_subdirectory(${SOFA_SIMULATION_FILES_PATH}/graph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
+add_subdirectory(../modules/SofaSimulationCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
+add_subdirectory(../modules/SofaSimulationTree ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree)
+add_subdirectory(../modules/SofaSimulationGraph ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph)
 
 set(SOFASIMULATION_TARGETS
     SofaSimulationCommon

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GenGraphForm.h"
-#include <sofa/simulation/tree/ExportDotVisitor.h>
+#include <SofaSimulationTree/ExportDotVisitor.h>
 
 #ifdef WIN32
 #include <windows.h>

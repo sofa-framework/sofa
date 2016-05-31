@@ -25,7 +25,7 @@
 #ifndef SOFA_QTOGREVIEWER_PROPAGATEOGRESCENEMANAGER_H
 #define SOFA_QTOGREVIEWER_PROPAGATEOGRESCENEMANAGER_H
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #include <Ogre.h>
 
 

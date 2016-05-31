@@ -29,7 +29,7 @@
 
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>
 
@@ -42,7 +42,7 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/logging/Messaging.h>

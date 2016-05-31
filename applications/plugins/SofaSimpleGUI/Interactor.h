@@ -2,7 +2,7 @@
 #define SOFA_Interactor_H
 
 #include <SofaSimpleGUI/config.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include "PickedPoint.h"
 
 

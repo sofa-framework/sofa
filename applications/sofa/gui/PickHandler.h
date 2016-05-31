@@ -31,8 +31,8 @@
 
 #include <sofa/gui/ColourPickingVisitor.h>
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 

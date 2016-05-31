@@ -26,7 +26,7 @@
 #include <SofaBoundaryCondition/PointConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

@@ -41,7 +41,7 @@
 
 
 #include <SceneCreator/SceneCreator.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include "../deformationMapping/LinearMapping.h"
 
 namespace sofa {

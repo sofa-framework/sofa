@@ -37,8 +37,8 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>

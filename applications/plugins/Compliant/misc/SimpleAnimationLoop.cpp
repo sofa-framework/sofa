@@ -1,22 +1,22 @@
 #include "SimpleAnimationLoop.h"
 
 
-#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/CollisionBeginEvent.h>
-#include <sofa/simulation/common/CollisionEndEvent.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/IntegrateBeginEvent.h>
-#include <sofa/simulation/common/IntegrateEndEvent.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/CollisionBeginEvent.h>
+#include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/IntegrateBeginEvent.h>
+#include <sofa/simulation/IntegrateEndEvent.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
 
 namespace sofa
 {

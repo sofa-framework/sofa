@@ -41,8 +41,8 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 
@@ -52,11 +52,11 @@
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/NullForceFeedbackT.h>
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <cstring>
 
 #include <SofaOpenglVisual/OglModel.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 

@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "QVisitorControlPanel.h"
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 
 #include <QPushButton>
 #include <QCheckBox>

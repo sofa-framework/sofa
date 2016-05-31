@@ -60,9 +60,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
 
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 
 #include <iostream>
 #include <fstream>

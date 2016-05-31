@@ -27,8 +27,8 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/common/XMLPrintVisitor.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+#include <sofa/simulation/XMLPrintVisitor.h>
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>

@@ -42,7 +42,7 @@
 #include <fstream>
 #include <string.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa

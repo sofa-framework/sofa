@@ -31,11 +31,11 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Visitor.h>
+#include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/CollisionEndEvent.h>
 
 
 namespace sofa

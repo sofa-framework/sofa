@@ -40,7 +40,7 @@
 #endif
 
 #ifdef SOFA_PML
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #endif
 
 #include "QSofaListView.h"
@@ -55,14 +55,14 @@
 #include "viewer/SofaViewer.h"
 
 #include <sofa/gui/BaseViewer.h>
-#include <sofa/simulation/common/xml/XML.h>
-#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
+#include <SofaSimulationCommon/xml/XML.h>
+#include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/simulation/common/SceneLoaderFactory.h>
-#include <sofa/simulation/common/ExportGnuplotVisitor.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
+#include <sofa/simulation/ExportGnuplotVisitor.h>
 
 #include <QApplication>
 #include <QTimer>

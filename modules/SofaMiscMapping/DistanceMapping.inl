@@ -28,7 +28,7 @@
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

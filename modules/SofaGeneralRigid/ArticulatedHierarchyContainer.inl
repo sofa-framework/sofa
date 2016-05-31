@@ -29,7 +29,7 @@
 #include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

@@ -32,7 +32,7 @@
 
 #include <SofaPython/config.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include "PythonScriptController.h"
 #include "PythonScriptFunction.h"

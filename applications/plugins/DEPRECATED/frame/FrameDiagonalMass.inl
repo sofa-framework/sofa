@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa

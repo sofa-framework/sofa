@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
 #include "config.h"
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/DeleteVisitor.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/Mapping.h>

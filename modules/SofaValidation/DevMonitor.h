@@ -28,7 +28,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/DevBaseMonitor.h>
 
 namespace sofa

@@ -28,8 +28,8 @@
 
 #include <SofaValidation/CompareTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
 
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>

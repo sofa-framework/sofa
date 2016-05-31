@@ -36,7 +36,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaUserInteraction/RayTraceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <map>
 #include <queue>
 #include <stack>

@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

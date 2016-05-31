@@ -6,7 +6,7 @@
 #include <sofa/helper/io/ImageBMP.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>

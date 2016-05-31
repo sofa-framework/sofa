@@ -3,7 +3,7 @@
 
 #include <Compliant/config.h>
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
 
 
 namespace sofa {

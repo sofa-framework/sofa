@@ -27,9 +27,9 @@
 
 #include <SofaValidation/ExtraMonitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/Data.h>

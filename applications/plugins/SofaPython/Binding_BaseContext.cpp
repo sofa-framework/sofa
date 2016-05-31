@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core;
 #include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 using namespace sofa::defaulttype;
 

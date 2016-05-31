@@ -34,19 +34,19 @@ using std::vector;
 
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/common.h>
-#include <sofa/simulation/common/Node.h>
+#include <SofaSimulationCommon/common.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #ifdef SOFA_HAVE_DAG
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
-#include <sofa/simulation/tree/SMPSimulation.h>
+#include <SofaSimulationTree/SMPSimulation.h>
 #endif
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
 
 #include <SofaComponentCommon/initComponentCommon.h>

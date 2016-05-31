@@ -29,19 +29,19 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "BaseAnimationLoop_mt.h"
 #include <sofa/core/ExecParams.h>
-#include <sofa/simulation/common/common.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <SofaSimulationCommon/common.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Visitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 
 
 //using namespace sofa::core::objectmodel;

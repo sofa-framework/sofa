@@ -191,7 +191,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/s
 add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper)
 add_subdirectory(../framework/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../framework/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
-
+add_subdirectory(../framework/sofa/simulation ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCore)
 ##TODO: reactivate this part when SofaTest will be rewritten to take account the split
 if(SOFA_BUILD_TESTS AND SOFA_BUILD_PACKAGES_EXTENSIONS)
     add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
@@ -201,7 +201,7 @@ endif()
 set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
 set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
-
+set_target_properties(SofaSimulationCore PROPERTIES FOLDER "SofaFramework")
 
 # NDEBUG preprocessor macro
 if(WIN32 OR APPLE)
