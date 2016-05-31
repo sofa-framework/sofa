@@ -46,14 +46,18 @@ set(HEADER_FILES
     mapping/ContactMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
+    mapping/AdditionMapping.h
+    mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
+    mapping/PythonMultiMapping.inl	
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
+    mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
     misc/CompliantAttachButtonSetting.h
@@ -96,6 +100,7 @@ set(HEADER_FILES
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
     utils/anderson.h
+    utils/nlnscg.h	
     utils/basis.h
     utils/bicgstab.h
     utils/cg.h
@@ -153,6 +158,8 @@ set(SOURCE_FILES
     mapping/ContactMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
+    mapping/AdditionMapping.cpp
+    mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp
     mapping/PairingMultiMapping.cpp
@@ -161,6 +168,7 @@ set(SOURCE_FILES
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/RigidJointMapping.cpp
+    mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
@@ -197,6 +205,7 @@ set(SOURCE_FILES
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
+	utils/nlnscg.cpp	
     utils/sub_kkt.cpp
 )
 

@@ -26,7 +26,6 @@
 #define BINDING_LINEARSPRING_H
 
 #include "PythonMacros.h"
-
 #include <SofaDeformable/SpringForceField.h>
 
 SP_DECLARE_CLASS_TYPE(LinearSpring)

@@ -173,7 +173,7 @@ class RigidBody:
             idxVisualModel+=1
 
     class Offset:
-        def __init__(self, node, name, offset, isMechanical):
+        def __init__(self, node, name, offset, isMechanical=True):
             ## @param isMechanical:
             ##     will the Offset be used for mechanics? And then propagate forces or mass ?
             ##     Or will it be used only as a passive measure, visualization...?
@@ -197,6 +197,16 @@ class RigidBody:
             ## apply a rigid transform to the offset in its local frame
             self.frame = self.frame * Frame.Frame( transform )
             self.mapping.source = '0 '+str(self.frame)
+
+        def addCollisionMesh(self, filepath, scale3d=[1, 1, 1], offset=[0, 0, 0, 0, 0, 0, 1], name_suffix=''):
+            ## adding a collision mesh to the rigid body with a relative offset
+            self.collision = RigidBody.CollisionMesh(self.node, filepath, scale3d, offset, name_suffix)
+            return self.collision
+
+        def addVisualModel(self, filepath, scale3d=[1, 1, 1], offset=[0, 0, 0, 0, 0, 0, 1], name_suffix=''):
+            ## adding a visual model to the rigid body with a relative offset
+            self.visual = RigidBody.VisualModel(self.node, filepath, scale3d, offset, name_suffix)
+            return self.visual
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)

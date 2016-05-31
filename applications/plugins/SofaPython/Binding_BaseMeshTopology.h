@@ -26,6 +26,7 @@
 #define BINDING_BASEMESHTOPOLOGY_H
 
 #include "PythonMacros.h"
+#include <sofa/core/topology/BaseMeshTopology.h>
 
 SP_DECLARE_CLASS_TYPE(BaseMeshTopology)
 

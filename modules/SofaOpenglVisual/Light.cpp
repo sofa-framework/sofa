@@ -473,7 +473,7 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
         const Vector3& col = d_color.getValue();
         sofa::defaulttype::Vec4f color4(col[0], col[1], col[2], 1.0);
         Vector3 direction = this->d_direction.getValue();
-        direction.normalized();
+        direction.normalize();
         Vector3 base = this->getPosition() + direction*zFar;
         Vector3 tip = this->getPosition() + direction*zNear;
         std::vector<Vector3> centers;

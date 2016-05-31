@@ -26,6 +26,7 @@
 #define BINDING_DATAENGINE_H
 
 #include "PythonMacros.h"
+#include <sofa/core/DataEngine.h>
 
 SP_DECLARE_CLASS_TYPE(DataEngine)
 

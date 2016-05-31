@@ -36,6 +36,7 @@
 
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
+#include "PythonFactory.h"
 
 using namespace sofa::core::objectmodel;
 
@@ -112,9 +113,9 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     PyObject *pFunc = PyDict_GetItemString(pDict, "createScene");
     if (PyCallable_Check(pFunc))
     {
-        Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+        Node::SPtr rootNode = Node::create("root");
         ScriptEnvironment::enableNodeQueuedInit(false);
-        SP_CALL_MODULEFUNC(pFunc, "(O)", SP_BUILD_PYSPTR(rootNode.get()))
+        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
         ScriptEnvironment::enableNodeQueuedInit(true);
 
         return rootNode;
@@ -124,9 +125,9 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         PyObject *pFunc = PyDict_GetItemString(pDict, "createSceneAndController");
         if (PyCallable_Check(pFunc))
         {
-            Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+            Node::SPtr rootNode = Node::create("root");
             ScriptEnvironment::enableNodeQueuedInit(false);
-            SP_CALL_MODULEFUNC(pFunc, "(O)", SP_BUILD_PYSPTR(rootNode.get()))
+            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
             ScriptEnvironment::enableNodeQueuedInit(true);
 
             rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );

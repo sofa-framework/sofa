@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <list>
+#include "DataTracker.h"
 
 namespace sofa
 {
@@ -196,6 +197,35 @@ public:
     {
         objectmodel::BaseObject::addLink(l);
     }
+
+
+    /// Set dirty flag to false
+    /// for the Engine and for all the tracked Data
+    virtual void cleanDirty(const core::ExecParams* params = 0);
+
+protected:
+
+
+    /// @name Tracking Data mechanism
+    /// each tracked Data is connected to a DataTracker
+    /// that is dirtied with the tracked Data
+    /// but cleaned only in the DataEngine::cleanDirty()
+    /// @{
+
+    /// select a Data to track to be able to check
+    /// if it was dirtied since the previous update.
+    /// @see isTrackedDataDirty
+    void trackData( objectmodel::BaseData* data );
+
+    /// Was the tracked Data dirtied since last update?
+    /// @warning data must be a tracked Data @see trackData
+    bool isTrackedDataDirty( const objectmodel::BaseData& data );
+
+    /// map a tracked Data to a DataTracker
+    typedef std::map<const objectmodel::BaseData*,DataTracker> DataTrackers;
+    DataTrackers m_dataTrackers;
+
+    /// @}
 
 };
 

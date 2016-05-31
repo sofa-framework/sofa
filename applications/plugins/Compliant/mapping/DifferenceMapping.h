@@ -45,7 +45,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 	
 	DifferenceMapping() 
         : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
-        , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+        , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
         , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {}
 
@@ -117,12 +117,16 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 #ifndef SOFA_NO_OPENGL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+        SReal scale = d_showObjectScale.getValue();
+
+        if( scale < 0 ) return;
+
         glEnable(GL_LIGHTING);
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = pairs.getValue();
 
-        if( d_showObjectScale.getValue() == 0 )
+        if( !scale )
         {
             helper::vector< defaulttype::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )

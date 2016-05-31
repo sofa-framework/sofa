@@ -208,10 +208,12 @@ struct SE3 {
 	static mat33 Ad(const ::sofa::helper::Quater<real>& at) {
 		return coord(at).toRotationMatrix();
 	}
-	
+
+    
 	// SE(3) adjoint, matrix version
 	static mat66 Ad(const coord_type& at) {
 
+        // TODO do we need normalize here ?
 		mat33 R = rotation(at).normalized().toRotationMatrix();
 		mat33 T = hat( translation(at) );
 
@@ -334,7 +336,7 @@ struct SE3 {
 		return res;
 	}
 
-	// TODO provide exponential lol
+	// TODO provide SE(3) exponential lol
 
     // SO(3) exponential
     static quat exp(const vec3& v) {
@@ -408,6 +410,22 @@ struct SE3 {
 		// return sofa( prod(g, h) ) * Ad( inv(h) ) * body(g);
 	}
 
+
+    // d g^{-1} in sofa coordinates
+    static mat66 dInv(const coord_type& g) {
+        mat66 res;
+
+        mat33 R = rotation(g);
+        
+        res <<
+            -R.transpose() , -R.transpose() * hat( translation(g) ),
+            mat33::Zero(), -R.transpose();
+
+        return res;
+
+        // // this should be equal to
+        // return sofa( inv(g) ) * (- Ad(g))  * body(g);
+    }
 
     
 

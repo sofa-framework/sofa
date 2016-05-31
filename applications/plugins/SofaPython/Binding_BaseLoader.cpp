@@ -26,7 +26,6 @@
 #include "Binding_BaseLoader.h"
 #include "Binding_BaseObject.h"
 
-#include <sofa/core/loader/BaseLoader.h>
 using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
