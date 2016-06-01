@@ -35,12 +35,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef SOFA_SMP
-#include <SofaSimulationTree/TreeSimulation.h>
-#include <SofaSimulationTree/GNode.h>
-#endif
-
-
 
 namespace sofa
 {

@@ -28,7 +28,6 @@
 #include "PythonCommon.h"
 #include "PythonMacros.h"
 
-//#include <SofaSimulationTree/GNode.h>
 #include "Binding.h"
 #include <SofaPython/config.h>
 #include <vector>

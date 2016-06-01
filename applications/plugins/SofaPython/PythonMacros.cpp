@@ -3,7 +3,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Context.h>
-//#include <SofaSimulationTree/GNode.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
