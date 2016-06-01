@@ -94,7 +94,6 @@ protected:
         const unsigned size = size_x + size_y;
         
         dJ.resize( size, size );
-        dJ.setZero();
 
         // we want dJ = mu * (0 I \\ I 0)
 
@@ -120,7 +119,6 @@ protected:
 
             // resize/clean
             J.resize( 1, self::Nin * in[i].size() );
-			J.setZero();
 
             const SReal& s = sign.getValue();
             

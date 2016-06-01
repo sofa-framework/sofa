@@ -57,7 +57,6 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric( const helper::vector<typ
         gs_type& dJ = this->geometric.compressedMatrix;
             
         dJ.resize(rows, rows);
-        dJ.setZero();
 
         const unsigned size = rows * rows;
 
@@ -109,7 +108,6 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
         const unsigned cols = this->from(j)->getMatrixSize();
 
         block.resize(rows, cols);
-        block.setZero();
         size += rows * cols;
     }
 

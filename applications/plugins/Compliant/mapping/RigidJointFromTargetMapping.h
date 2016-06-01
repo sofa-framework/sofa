@@ -79,10 +79,8 @@ protected:
         assert( in_pos.size() == targets.size() );
 
 
-        J.resize(in_pos.size() * 6,
-		         in_pos.size() * 6);
-
-//		J.setZero();
+        J.resize(in_pos.size() * 6, in_pos.size() * 6);
+        J.reserve( 36*in_pos.size() );
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;
@@ -236,10 +234,9 @@ protected:
         bool translation = this->translation.getValue();
 
 
-        J.resize(in_pos.size() * 6,
-                 in_pos.size() * 6);
-
-//		J.setZero();
+        J.resize(in_pos.size() * 6, in_pos.size() * 6);
+        if( !translation || !rotation ) J.reserve( 9*in_pos.size() );
+        else J.reserve( 18*in_pos.size() );
 
         typedef typename se3::mat66 mat66;
         typedef typename se3::mat33 mat33;

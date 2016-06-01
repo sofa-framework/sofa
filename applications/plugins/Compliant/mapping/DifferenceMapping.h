@@ -84,7 +84,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 		J.resize( Nout * p.size(), Nin * in.size());
-		J.setZero();
+        J.reserve( p.size()*Nout*2 );
 
 		for(unsigned k = 0, n = p.size(); k < n; ++k) {
 			
@@ -274,7 +274,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
                 J.resize( Nout * p.size(), Nin * in[i].size());
-                J.setZero();
+                J.reserve( p.size()*Nout );
 
                 Real sign = (i == 0) ? -1 : 1;
 

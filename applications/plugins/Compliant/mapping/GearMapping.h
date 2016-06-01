@@ -100,7 +100,7 @@ namespace mapping
                 typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
                 J.resize( Nout * p.size(), Nin * in[i].size());
-                J.setZero();
+                J.reserve( Nout * p.size() );
 
                 const Real sign = (i == 0) ? -ratio : 1;
 

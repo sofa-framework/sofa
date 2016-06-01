@@ -139,9 +139,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         matrix_type& dJ = this->geometric.compressedMatrix;
 
         dJ.resize( 6 * in_pos.size(),
-                   6 * in_pos.size() );
-
-        dJ.setZero();
+                   6 * in_pos.size() );          
+        dJ.reserve( 9 * src.size() );
 
         for(in_out_type::const_iterator it = in_out.begin(), end = in_out.end();
             it != end; ++it) {
@@ -237,8 +236,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         assert( src.size() );
 		
         J.resize(6 * src.size(),
-		         6 * in_pos.size() );
-		J.setZero();
+                 6 * in_pos.size() );
+        J.reserve( 36 * src.size() );
 		
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];

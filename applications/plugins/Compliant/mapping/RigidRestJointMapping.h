@@ -66,11 +66,14 @@ protected:
 
         const size_t size = in_pos.size();
 
-        J.resizeBlocks( size, size );
-
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
         bool exact_dlog = this->exact_dlog.getValue();
+
+        J.resizeBlocks( size, size );
+        if( !translation ) J.compressedMatrix.reserve( 18*size );
+        else if( !rotation ) J.compressedMatrix.reserve( 9*size );
+        else J.compressedMatrix.reserve( 27*size );
 
         typedef typename se3::mat66 mat66;
         typedef typename se3::mat33 mat33;

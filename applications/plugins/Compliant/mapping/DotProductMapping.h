@@ -75,27 +75,41 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         const pairs_type& p = pairs.getValue();
 		assert( !p.empty() );
 
-        typename self::jacobian_type& J = this->jacobian;
-        J.resizeBlocks( p.size(), in.size() );
+        typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+        this->jacobian.resizeBlocks( p.size(), in.size() );
+        J.reserve(p.size()*2);
 
         for(size_t k = 0, n = p.size(); k < n; ++k)
         {
-            for(size_t i = 0; i < Nin; ++i)
+            J.startVec( k );
+
+            // needs to be inserted in the right order in the eigen matrix
+            if( p[k][1] < p[k][0] )
             {
-                J.add(k, p[k][1] * Nin + i, in[p[k][0]][i] );
-                J.add(k, p[k][0] * Nin + i, in[p[k][1]][i] );
+                for(size_t i = 0; i < Nin; ++i)
+                    J.insertBack(k, p[k][1] * Nin + i ) = in[p[k][0]][i];
+                 for(size_t i = 0; i < Nin; ++i)
+                    J.insertBack(k, p[k][0] * Nin + i ) = in[p[k][1]][i];
+            }
+            else
+            {
+                for(size_t i = 0; i < Nin; ++i)
+                    J.insertBack(k, p[k][0] * Nin + i ) = in[p[k][1]][i];
+                for(size_t i = 0; i < Nin; ++i)
+                    J.insertBack(k, p[k][1] * Nin + i ) = in[p[k][0]][i];
             }
 		}
-        J.compress();
+        J.finalize();
 	}
 
 
     virtual void assemble_geometric( const typename self::in_pos_type& in, const typename self::out_force_type& out )
     {
+        const pairs_type& p = pairs.getValue();
+
         typename self::geometric_type& K = this->geometric;
         K.resizeBlocks( in.size(), in.size() );
-
-        const pairs_type& p = pairs.getValue();
+        K.compressedMatrix.reserve(p.size()*2*Nin);
 
         for(size_t i = 0, n = p.size(); i < n; ++i)
         {
@@ -238,7 +252,10 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
             assert( !p.empty() );
 
             for(unsigned i = 0, n = in.size(); i < n; ++i)
+            {
                 this->jacobian(i).resizeBlocks( p.size(), in[i].size() );
+                this->jacobian(i).compressedMatrix.reserve(p.size());
+            }
 
 
             for( unsigned j = 0, m = p.size(); j < m; ++j)
@@ -260,7 +277,6 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
             for(unsigned i = 0, n = in.size(); i < n; ++i)
                 this->jacobian(i).compress();
-
         }
 
         virtual void assemble_geometric( const helper::vector<typename self::const_in_coord_type>& in, const typename self::const_out_deriv_type& out)
@@ -276,9 +292,10 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
                 cumulatedSize[i] = cumulatedSize[i-1]+in[i-1].size();
             }
 
-            K.resizeBlocks( size, size );
-
             const pairs_type& p = pairs.getValue();
+
+            K.resizeBlocks( size, size );
+            K.compressedMatrix.reserve(p.size()*2*Nin);
 
             for(size_t i = 0, n = p.size(); i < n; ++i)
             {

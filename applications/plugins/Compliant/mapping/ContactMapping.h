@@ -99,7 +99,7 @@ protected:
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         J.resize( this->toModel->getSize() * self::Nout, n * self::Nin );
-//		J.setZero(); // resize should set to 0
+        J.reserve( n * self::Nout * self::Nin );
 
         assert( !normal.getValue().empty() && normal.getValue().size() == n );
 		

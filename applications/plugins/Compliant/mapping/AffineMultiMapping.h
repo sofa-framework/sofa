@@ -80,8 +80,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 
 			const unsigned cols = this->from(j)->getMatrixSize();
 			
-			jack.resize(rows, cols );
-			jack.setZero();
+            jack.resize(rows, cols );
             size += rows * cols;
 		}
 

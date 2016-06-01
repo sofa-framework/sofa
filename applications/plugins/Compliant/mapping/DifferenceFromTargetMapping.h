@@ -146,6 +146,7 @@ public:
         else
         {
             J.resize( Nout * ind.size(), Nin * in.size());
+            J.reserve( Nout * ind.size() );
 
             const int value = inverted.getValue() ? -1 : 1;
 
