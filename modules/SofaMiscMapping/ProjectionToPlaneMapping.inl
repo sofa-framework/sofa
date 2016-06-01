@@ -349,8 +349,10 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::apply(const core::MechanicalParam
             {
                 jacobian0.insertBack( i*Nout+j, index*Nin+k, Jp[j][k] ); // dp
                 jacobian1.insertBack( i*Nout+j, k, Jo[j][k] ); // do
-                jacobian1.insertBack( i*Nout+j, Nout+k, Jd[j][k] ); // do
             }
+
+            for(unsigned k=0; k<Nout; k++ )
+                jacobian1.insertBack( i*Nout+j, Nout+k, Jd[j][k] ); // do
         }
     }
 
