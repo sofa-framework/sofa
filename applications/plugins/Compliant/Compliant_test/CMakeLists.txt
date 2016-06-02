@@ -14,6 +14,7 @@ set(SOURCE_FILES
     DampedOscillator_test.cpp
     RigidJointMapping_test.cpp
     DotProductMapping_test.cpp
+    NormalizationMapping_test.cpp
 )
 
 set(PYTHON_FILES

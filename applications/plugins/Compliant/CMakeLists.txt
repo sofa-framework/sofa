@@ -50,6 +50,7 @@ set(HEADER_FILES
     mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
+    mapping/NormalizationMapping.h
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
@@ -162,6 +163,7 @@ set(SOURCE_FILES
     mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp
+    mapping/NormalizationMapping.cpp
     mapping/PairingMultiMapping.cpp
     mapping/ProjectionMapping.cpp
     mapping/PythonMultiMapping.cpp
