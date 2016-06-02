@@ -437,7 +437,7 @@ public:
     
 protected:
     
-    static const unsigned cutplane_res=256;
+    static const unsigned cutplane_res=1024;
     helper::gl::Texture* cutplane_tex[3];
 
     //Draw vectors as arrows
