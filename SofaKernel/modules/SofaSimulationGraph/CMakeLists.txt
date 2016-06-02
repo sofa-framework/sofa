@@ -6,6 +6,7 @@ set(HEADER_FILES
     DAGNodeMultiMappingElement.h
     DAGSimulation.h
     init.h
+    graph.h
 )
 
 set(SOURCE_FILES
