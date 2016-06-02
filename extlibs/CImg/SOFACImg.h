@@ -54,7 +54,7 @@ inline CImg<unsigned char> convertToUC(const CImg<char> &Image) {	return convert
 
 
 template<typename T,typename F>
-bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, F offsetT=0, F scaleT=0, bool isPerspective=false)
+bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, const F *const scale=0, const F *const translation=0, const F *const affine=0, F offsetT=0, F scaleT=0, int isPerspective=0)
 {
     if(!img.size()) return false;
 
@@ -114,7 +114,7 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 
 
 template<typename T,typename F>
-CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, bool *const isPerspective=0)
+CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, int *const isPerspective=0)
 {
     CImgList<T> ret;
 
@@ -179,7 +179,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(affine) { for(unsigned int i=0;i<3;i++) if(i<nbdims) for(unsigned int j=0;j<3;j++) if(j<nbdims) affine[i*3+j] = (F)val[i*nbdims+j]; }
             // to do: handle "CenterOfRotation" Tag
         }
-        else if(!str.compare("isPerpective")) { fileStream >> str2; bool val; fileStream >> val; if(isPerspective) *isPerspective=val; }
+        else if(!str.compare("isPerpective")) { fileStream >> str2; int val; fileStream >> val; *isPerspective=val; }
         else if(!str.compare("ElementType") || !str.compare("voxelType"))  // not used (should be known in advance for template)
         {
             fileStream >> str2; // '='

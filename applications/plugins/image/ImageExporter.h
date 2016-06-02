@@ -98,7 +98,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
             double affine[9]; for(unsigned int i=0; i<3; i++) for(unsigned int j=0; j<3; j++) affine[3*i+j]=(double)R[i][j];
             double offsetT=(double)rtransform->getOffsetT();
             double scaleT=(double)rtransform->getScaleT();
-            bool isPerspective=rtransform->isPerspective();
+            int isPerspective=rtransform->isPerspective();
             cimg_library::save_metaimage<T,double>(rimage->getCImgList(),fname.c_str(),scale,translation,affine,offsetT,scaleT,isPerspective);
         }
         else if(fname.find(".nfo")!=std::string::npos || fname.find(".NFO")!=std::string::npos || fname.find(".Nfo")!=std::string::npos)

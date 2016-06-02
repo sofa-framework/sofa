@@ -67,7 +67,7 @@ public:
         ,_translation(initData(&_translation, Vec3(),"translation","Translation"))
         ,_euler(initData(&_euler, Vec3(),"euler","Euler angles"))
         ,_scale(initData(&_scale, Vec3(1,1,1),"scale","Voxel size"))
-        ,_isPerspective(initData(&_isPerspective, true,"isPerspective","Is perspective?"))
+        ,_isPerspective(initData(&_isPerspective, 0,"isPerspective","Is perspective?"))
         ,_timeOffset(initData(&_timeOffset, (Real)0,"timeOffset","Time offset"))
         ,_timeScale(initData(&_timeScale, (Real)1,"timeScale","Time scale"))
         ,_update(initData(&_update, "update","Type of update"))
@@ -104,7 +104,7 @@ public:
     Data<Vec3> _translation;
     Data<Vec3> _euler;
     Data<Vec3> _scale;
-    Data<bool> _isPerspective;
+    Data<int> _isPerspective;
     Data<Real> _timeOffset;
     Data<Real> _timeScale;
 
@@ -123,7 +123,7 @@ protected:
         if (!_translation.isSet()) _translation.setValue(wTransform->getTranslation()); else wTransform->getTranslation()=_translation.getValue();
         if (!_euler.isSet()) _euler.setValue(wTransform->getRotation()); else wTransform->getRotation()=_euler.getValue();
         if (!_scale.isSet()) _scale.setValue(wTransform->getScale()); else wTransform->getScale()=_scale.getValue();
-        if (!_isPerspective.isSet()) _isPerspective.setValue(wTransform->isPerspective()!=0); else wTransform->isPerspective()=_isPerspective.getValue();
+        if (!_isPerspective.isSet()) _isPerspective.setValue(wTransform->isPerspective()); else wTransform->isPerspective()=_isPerspective.getValue();
         if (!_timeOffset.isSet()) _timeOffset.setValue(wTransform->getOffsetT()); else wTransform->getOffsetT()=_timeOffset.getValue();
         if (!_timeScale.isSet()) _timeScale.setValue(wTransform->getScaleT()); else wTransform->getScaleT()=_timeScale.getValue();
     }

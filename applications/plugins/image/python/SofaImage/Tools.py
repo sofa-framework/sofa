@@ -96,7 +96,7 @@ def getImageType(filename):
     else:
         return None
 
-def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=False):
+def transformToData(scale,offset,timeOffset=0,timeScale=1,isPerspective=0):
     """ Returns a transform, formatted to sofa data given voxelsize, rigid position (offset), time and camera parameters
     """
     return concat(offset[:3])+' '+concat(quat.to_euler(offset[3:])*180./math.pi)+' '+concat(scale)+' '+str(timeOffset)+' '+str(timeScale)+' '+str(int(isPerspective))

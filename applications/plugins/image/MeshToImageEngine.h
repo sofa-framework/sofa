@@ -371,7 +371,7 @@ protected:
 
         tr->getOffsetT()=(Real)0.0;
         tr->getScaleT()=(Real)1.0;
-        tr->isPerspective()=false;
+        tr->isPerspective()=0;
         tr->update(); // update of internal data
 
         // update image extents

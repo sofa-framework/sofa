@@ -147,7 +147,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 if(fname.find(".raw")!=std::string::npos || fname.find(".RAW")!=std::string::npos || fname.find(".Raw")!=std::string::npos)      fname.replace(fname.find_last_of('.')+1,fname.size(),"mhd");
 
                 double scale[3]={1.,1.,1.},translation[3]={0.,0.,0.},affine[9]={1.,0.,0.,0.,1.,0.,0.,0.,1.},offsetT=0.,scaleT=1.;
-                bool isPerspective=false;
+                int isPerspective=0;
                 wimage->getCImgList().assign(cimg_library::load_metaimage<T,double>(fname.c_str(),scale,translation,affine,&offsetT,&scaleT,&isPerspective));
                 if (!container->transformIsSet)
                 {
