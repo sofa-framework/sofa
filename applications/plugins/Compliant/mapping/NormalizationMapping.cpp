@@ -16,7 +16,7 @@ SOFA_DECL_CLASS(NormalizationMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-int NormalizationMappingClass = core::RegisterObject("Compute Dot Products between dofs")
+int NormalizationMappingClass = core::RegisterObject("Compute 3d vector normalization")
 #ifndef SOFA_FLOAT
 .add< NormalizationMapping< Vec3dTypes > >()
 #endif
