@@ -4,6 +4,7 @@
 
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <Compliant/config.h>
 
 namespace sofa {
 	namespace component {
@@ -19,20 +20,23 @@ namespace sofa {
 	
                 typedef helper::vector<sofa::defaulttype::BaseMatrix*> js_type;
 				js_type js;
+
+
+            protected:
+
+                AssembledMapping()
+                {
+                    js.resize(1);
+                    js[0] = &jacobian;
+                }
+
+
+
 			public:
 
 				SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
 
                 typedef typename Out::Real Real; // used in Mapping_test
-	
-				// TODO make this final ?
-				void init() {
-					js.resize(1);
-					js[0] = &jacobian;
-					// assemble( in_pos() );
-
-					base::init();
-				}
 
                 virtual void reinit()
                 {

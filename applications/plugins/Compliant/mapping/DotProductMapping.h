@@ -176,7 +176,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         typedef DotProductMultiMapping self;
 
     public:
-        SOFA_CLASS(SOFA_TEMPLATE2(DotProductMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+        SOFA_CLASS(SOFA_TEMPLATE2(DotProductMultiMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 
         typedef AssembledMultiMapping<TIn, TOut> Inherit;
         typedef TIn In;

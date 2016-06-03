@@ -48,7 +48,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
     virtual void init()
     {
         reinit();
-        AssembledMapping<T, T>::init();
+        Inherit1::init();
     }
 
     virtual void reinit()
@@ -57,7 +57,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
         size_t size = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
         this->getToModel()->resize( size );
-        AssembledMapping<T, T>::reinit();
+        Inherit1::reinit();
     }
 
 	virtual void apply(typename self::out_pos_type& out, 

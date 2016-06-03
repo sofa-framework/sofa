@@ -196,6 +196,11 @@ public:
         return compressedMatrix.cols();
     }
 
+    inline void reserve(typename CompressedMatrix::Index reserveSize)
+    {
+        compressedMatrix.reserve(reserveSize);
+    }
+
     SReal element(Index i, Index j) const
     {
         return (SReal)compressedMatrix.coeff(i,j);

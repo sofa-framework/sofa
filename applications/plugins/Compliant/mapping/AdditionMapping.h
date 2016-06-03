@@ -1,10 +1,11 @@
 #ifndef AdditionMapping_H
 #define AdditionMapping_H
 
-#include <Compliant/config.h>
 
-#include "AssembledMapping.h"
-#include "AssembledMultiMapping.h"
+#include "ConstantAssembledMapping.h"
+#include "ConstantAssembledMultiMapping.h"
+
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -29,10 +30,10 @@ namespace mapping
 
 */
 template <class TIn, class TOut >
-class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
+class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, TOut>
 {
   public:
-    SOFA_CLASS(SOFA_TEMPLATE2(AdditionMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(AdditionMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
 	
     typedef AdditionMapping self;
 	
@@ -57,13 +58,13 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
     virtual void init()
     {
         this->getToModel()->resize( pairs.getValue().size() );
-        AssembledMapping<TIn, TOut>::init();
+        Inherit1::init();
     }
 
     virtual void reinit()
     {
         this->getToModel()->resize( pairs.getValue().size() );
-        AssembledMapping<TIn, TOut>::reinit();
+        Inherit1::reinit();
     }
 
 	virtual void apply(typename self::out_pos_type& out, 
@@ -188,14 +189,13 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
 */
 
     template <class TIn, class TOut >
-    class SOFA_Compliant_API AdditionMultiMapping : public AssembledMultiMapping<TIn, TOut>
+    class SOFA_Compliant_API AdditionMultiMapping : public ConstantAssembledMultiMapping<TIn, TOut>
     {
         typedef AdditionMultiMapping self;
 
     public:
-        SOFA_CLASS(SOFA_TEMPLATE2(AdditionMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+        SOFA_CLASS(SOFA_TEMPLATE2(AdditionMultiMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMultiMapping,TIn,TOut));
 
-        typedef AssembledMultiMapping<TIn, TOut> Inherit;
         typedef TIn In;
         typedef TOut Out;
         typedef typename Out::VecCoord OutVecCoord;
@@ -225,7 +225,7 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
                 for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
             }
             this->getToModels()[0]->resize( pairs.getValue().size() );
-            AssembledMultiMapping<TIn, TOut>::init();
+            Inherit1::init();
         }
 
         virtual void reinit()
@@ -237,7 +237,7 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
                 for( unsigned j = 0; j < p.size(); ++j) p[j]=index_pair(j,j);
             }
             this->getToModels()[0]->resize( pairs.getValue().size() );
-            AssembledMultiMapping<TIn, TOut>::reinit();
+            Inherit1::reinit();
         }
 
         virtual void apply(typename self::out_pos_type& out,
@@ -276,7 +276,7 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
 
             for(unsigned i = 0, n = in.size(); i < n; ++i) {
 
-                typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
+                typename Inherit1::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
                 J.resize( Nout * p.size(), Nin * in[i].size());
                 J.reserve( p.size()*Nout );
@@ -292,7 +292,7 @@ class SOFA_Compliant_API AdditionMapping : public AssembledMapping<TIn, TOut>
 
 
         // write sign * identity in jacobian(obj)
-        void write_block(typename Inherit::jacobian_type::CompressedMatrix& J,
+        void write_block(typename Inherit1::jacobian_type::CompressedMatrix& J,
                          unsigned row, unsigned col,
                          SReal sign) {
             assert( Nout == Nin );

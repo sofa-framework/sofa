@@ -3,7 +3,7 @@
 
 #include <Compliant/config.h>
 
-#include "AssembledMapping.h"
+#include "ConstantAssembledMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
@@ -26,10 +26,10 @@ namespace mapping
  (ie conversion to a holonomic constraint)
 */
 template <class TIn, class TOut >
-class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<TIn, TOut>
+class SOFA_Compliant_API DifferenceFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DifferenceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(DifferenceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
 
     typedef DifferenceFromTargetMapping Self;
 

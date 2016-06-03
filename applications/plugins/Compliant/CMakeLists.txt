@@ -44,6 +44,8 @@ set(HEADER_FILES
     mapping/AssembledMultiMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/ContactMapping.h
+    mapping/ConstantAssembledMapping.h
+    mapping/ConstantAssembledMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
     mapping/AdditionMapping.h
