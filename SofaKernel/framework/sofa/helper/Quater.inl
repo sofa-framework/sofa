@@ -554,7 +554,6 @@ defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 
     Quater<Real> q = *this;
         q.normalize();
-        if(q[0]*q[0]+q[1]*q[1]==0.5 || q[1]*q[1]+q[2]*q[2]==0.5) {q[3]+=10-3; q.normalize();} // HACK to avoid singularities
         defaulttype::Vec<3,Real> vEuler;
         vEuler[0] = atan2(2*(q[3]*q[0] + q[1]*q[2]) , (1-2*(q[0]*q[0] + q[1]*q[1])));   //roll
         vEuler[1] = asin(2*(q[3]*q[1] - q[2]*q[0]));                                    //pitch
