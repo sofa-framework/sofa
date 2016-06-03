@@ -174,8 +174,9 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream
     else
     {
         const std::string msg = "Plugin not found: \"" + pluginName + "\"";
-        msg_error("PluginManager") << msg;
         if (errlog) (*errlog) << msg << std::endl;
+        else msg_error("PluginManager") << msg;
+
         return false;
     }
 }

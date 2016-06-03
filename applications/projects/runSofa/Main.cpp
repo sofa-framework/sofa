@@ -311,6 +311,12 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
+    // to force loading plugin SofaPython if existing
+    {
+        std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+    }
+
     PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
