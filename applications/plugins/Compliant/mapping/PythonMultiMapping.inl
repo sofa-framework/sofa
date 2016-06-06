@@ -3,7 +3,9 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
+#ifdef __GNUC__
 #warning NDEBUG
+#endif
 #endif
 
 #include "PythonMultiMapping.h"
