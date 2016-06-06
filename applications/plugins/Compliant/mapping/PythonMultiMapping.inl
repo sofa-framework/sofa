@@ -1,11 +1,6 @@
 #ifndef PYTHONMULTIMAPPING_INL
 #define PYTHONMULTIMAPPING_INL
 
-#ifdef NDEBUG
-#undef NDEBUG
-#warning NDEBUG
-#endif
-
 #include "PythonMultiMapping.h"
 
 namespace sofa {
