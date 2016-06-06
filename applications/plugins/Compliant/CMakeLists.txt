@@ -57,6 +57,7 @@ set(HEADER_FILES
     mapping/RigidJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
+    mapping/WinchMultiMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -164,6 +165,7 @@ set(SOURCE_FILES
     mapping/RigidJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
+    mapping/WinchMultiMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp
