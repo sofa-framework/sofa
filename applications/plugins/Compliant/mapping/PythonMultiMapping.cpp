@@ -15,7 +15,7 @@ SOFA_DECL_CLASS(PythonMultiMapping)
 using namespace defaulttype;
 
 // Register in the Factory
-static const int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
+int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
 
 #ifndef SOFA_FLOAT
 .add< PythonMultiMapping< Rigid3dTypes, Vec6dTypes > >()            
