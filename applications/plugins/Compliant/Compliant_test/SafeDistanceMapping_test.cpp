@@ -105,4 +105,92 @@ TYPED_TEST( SafeDistanceMappingTest, test )
 
 
 
+
+///////////////////////////
+
+
+
+
+/**  Test suite for SafeDistanceFromTargetMapping
+  */
+template <typename Mapping>
+struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
+{
+
+    typedef SafeDistanceFromTargetMappingTest self;
+    typedef Mapping_test<Mapping> base;
+
+    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+
+    Mapping* mapping;
+
+    SafeDistanceFromTargetMappingTest() {
+        mapping = static_cast<Mapping*>(this->base::mapping);
+    }
+
+    bool test()
+    {
+        // we need to increase the error, the mapping is too much non-linear
+        // and the finite differences are too different from the analytic Jacobian
+        this->errorMax *= 200;
+
+        // mapping parameters
+        helper::vector<unsigned> indices(3);
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 1;
+        mapping->d_indices.setValue(indices);
+
+        typename self::InVecCoord targets(3);
+        targets[0] = typename self::InCoord(0,0,0);
+        targets[1] = typename self::InCoord(0,0,0);
+        targets[2] = typename self::InCoord(0,0,0);
+        mapping->d_targetPositions.setValue(targets);
+
+        helper::vector<SReal> restLengths(3);
+        restLengths[0] = 0;
+        restLengths[1] = 0;
+        restLengths[2] = 1;
+        mapping->d_restLengths.setValue(restLengths);
+
+        mapping->d_geometricStiffness.setValue(1); // exact
+
+
+        // parents
+        typename self::InVecCoord xin(2);
+        xin[0] = typename self::InCoord(325,23,-54);
+        xin[1] = typename self::InCoord(1e-5,-1e-5,1e-7);
+
+        typename self::OutVecCoord expected(5);
+        expected[0] = typename self::OutCoord(xin[0].norm());
+        expected[1] = typename self::OutCoord(xin[1][0]);
+        expected[2] = typename self::OutCoord(xin[1][1]);
+        expected[3] = typename self::OutCoord(xin[1][2]);
+        expected[4] = typename self::OutCoord(xin[1].norm()-restLengths[2]);
+
+        return this->runTest(xin, expected);
+    }
+
+};
+
+
+// Define the list of types to instanciate. We do not necessarily need to test all combinations.
+using testing::Types;
+typedef Types<
+    component::mapping::SafeDistanceFromTargetMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
+> DataTypes2; // the types to instanciate.
+
+// Test suite for all the instanciations
+TYPED_TEST_CASE(SafeDistanceFromTargetMappingTest, DataTypes2);
+
+TYPED_TEST( SafeDistanceFromTargetMappingTest, test )
+{
+    ASSERT_TRUE( this->test() );
+}
+
+
+
+
+
+
 } // namespace sofa
