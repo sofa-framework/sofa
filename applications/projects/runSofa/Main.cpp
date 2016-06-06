@@ -38,6 +38,7 @@ using std::vector;
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <SofaSimulationCommon/init.h>
 #ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -413,6 +414,7 @@ int main(int argc, char** argv)
 
     GUIManager::closeGUI();
 
+    sofa::simulation::common::cleanup();
     sofa::simulation::tree::cleanup();
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();
