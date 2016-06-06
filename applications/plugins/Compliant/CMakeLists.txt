@@ -61,6 +61,7 @@ set(HEADER_FILES
     mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
+    mapping/SafeDistanceMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -173,6 +174,7 @@ set(SOURCE_FILES
     mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
+    mapping/SafeDistanceMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp

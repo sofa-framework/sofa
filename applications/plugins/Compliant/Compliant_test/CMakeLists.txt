@@ -15,6 +15,7 @@ set(SOURCE_FILES
     RigidJointMapping_test.cpp
     DotProductMapping_test.cpp
     NormalizationMapping_test.cpp
+    SafeDistanceMapping_test.cpp
 )
 
 set(PYTHON_FILES
