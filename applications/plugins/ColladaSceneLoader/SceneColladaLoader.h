@@ -152,7 +152,9 @@ private:
 
 	Data<bool> generateCollisionModels;
     Data<float> collisionProximity;
-
+    Data<float> collisionStiffness;
+    Data<float> collisionFriction;
+    Data<helper::set<int> > collisionGroup;
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
 	Data<bool> useFlexible;
 #endif

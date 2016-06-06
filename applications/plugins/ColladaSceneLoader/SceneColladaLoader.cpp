@@ -86,7 +86,10 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-    , collisionProximity(initData(&collisionProximity, 0.01f, "collisionProximity", "collision proximity for the generated collision models"))
+    , collisionProximity(initData(&collisionProximity, 0.01f, "contactProximity", "collision proximity for the generated collision models"))
+    , collisionStiffness(initData(&collisionStiffness, 10.0f, "contactStiffness", "collision stiffness for the generated collision models"))
+    , collisionFriction(initData(&collisionFriction, 0.0f, "contactFriction", "collision friction for the generated collision models"))
+    , collisionGroup(initData(&collisionGroup, "collisionGroup", "collision group for the generated collision models"))
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
     , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
 #endif
@@ -559,7 +562,11 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentSubNode->addObject(currentTTriangleModel);
 							currentTTriangleModel->setName("triangleModel");
                             currentTTriangleModel->setProximity(collisionProximity.getValue());
+                            currentTTriangleModel->setContactStiffness(collisionStiffness.getValue());
+                            currentTTriangleModel->setContactFriction(collisionFriction.getValue());
+                            currentTTriangleModel->setGroups(collisionGroup.getValue());
 						}
+
 
                         TLineModel<defaulttype::Vec3Types>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3Types> >();
 						{
@@ -567,6 +574,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentSubNode->addObject(currentTLineModel);
 							currentTLineModel->setName("lineModel");
                             currentTLineModel->setProximity(collisionProximity.getValue());
+                            currentTLineModel->setContactStiffness(collisionStiffness.getValue());
+                            currentTLineModel->setContactFriction(collisionFriction.getValue());
+                            currentTLineModel->setGroups(collisionGroup.getValue());
 						}
 
                         TPointModel<defaulttype::Vec3Types>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3Types> >();
@@ -575,6 +585,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentSubNode->addObject(currentTPointModel);
 							currentTPointModel->setName("pointModel");
                             currentTPointModel->setProximity(collisionProximity.getValue());
+                            currentTPointModel->setContactStiffness(collisionStiffness.getValue());
+                            currentTPointModel->setContactFriction(collisionFriction.getValue());
+                            currentTPointModel->setGroups(collisionGroup.getValue());
                         }
 					}
 
