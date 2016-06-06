@@ -34,15 +34,15 @@ namespace sofa {
 					base::init();
 				}
 
-                virtual void reinit()
-                {
-                    base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-                    base::applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
-                    if (this->f_applyRestPosition.getValue())
-                        base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
+//                virtual void reinit()
+//                {
+//                    base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
+//                    base::applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
+//                    if (this->f_applyRestPosition.getValue())
+//                        base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
 
-                    base::reinit();
-                }
+//                    base::reinit();
+//                }
 	
 				const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
 					assert( !js.empty() );
