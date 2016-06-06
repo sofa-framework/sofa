@@ -90,10 +90,10 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 			
             for(unsigned i = 0; i < Nout; ++i) {
 
-                if(p[k][1] == p[k][0]) continue;
-
                 unsigned row = k * Nout + i;
                 J.startVec( row );
+
+                if(p[k][1] == p[k][0]) continue;
 
                 // needs to be inserted in the right order in the eigen matrix
                 if( p[k][1] < p[k][0] )
