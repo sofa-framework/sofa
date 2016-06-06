@@ -50,7 +50,7 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
     , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
-    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
+    , d_geometricStiffness(initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
 {
 }
 
@@ -67,8 +67,13 @@ void DistanceMapping<TIn, TOut>::init()
     if( !edgeContainer ) serr<<"No EdgeSetTopologyContainer found ! "<<sendl;
 
     SeqEdges links = edgeContainer->getEdges();
+    typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
 
     this->getToModel()->resize( links.size() );
+    jacobian.resizeBlocks(links.size(),pos.size());
+
+    directions.resize(links.size());
+    invlengths.resize(links.size());
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
@@ -77,7 +82,6 @@ void DistanceMapping<TIn, TOut>::init()
     if( f_restLengths.getValue().size() != links.size() )
     {
         helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-        typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
         {
@@ -123,11 +127,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
     helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
-    //    jacobian.clear();
-    jacobian.resizeBlocks(out.size(),in.size());
-
-    directions.resize(out.size());
-    invlengths.resize(out.size());
+    jacobian.clear();
 
     for(unsigned i=0; i<links.size(); i++ )
     {
