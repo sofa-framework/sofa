@@ -78,8 +78,8 @@ public:
     typedef std::pair<ctime_t,ctime_t> TimeInterval;
     typedef sofa::defaulttype::Vec4f Color;
 
-    virtual const char* getName();
-    virtual Color getColor();
+    virtual const char* getName() const;
+    virtual Color getColor() const;
     
     virtual bool runTask(WorkerThread* thread);
 

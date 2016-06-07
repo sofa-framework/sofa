@@ -65,12 +65,12 @@ bool Task::runTask(WorkerThread* thread)
     return res;
 }
 
-const char* Task::getName()
+const char* Task::getName() const
 {
     return "Task";
 }
 
-Task::Color Task::getColor()
+Task::Color Task::getColor() const
 {
     return Color(0.5f,0.5f,0.5f,1.0f);
 }
