@@ -77,7 +77,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         this->jacobian.resizeBlocks( p.size(), in.size() );
-        J.reserve(p.size()*2);
+        J.reserve(p.size()*2*Nin);
 
         for(size_t k = 0, n = p.size(); k < n; ++k)
         {
@@ -254,7 +254,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
             for(unsigned i = 0, n = in.size(); i < n; ++i)
             {
                 this->jacobian(i).resizeBlocks( p.size(), in[i].size() );
-                this->jacobian(i).compressedMatrix.reserve(p.size());
+                this->jacobian(i).compressedMatrix.reserve( p.size()*Nin );
             }
 
 
