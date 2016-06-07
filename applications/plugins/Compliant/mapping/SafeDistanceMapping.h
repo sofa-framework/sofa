@@ -112,7 +112,6 @@ public:
 
 	virtual void apply(typename self::out_pos_type& out, 
 	                   const typename self::in_pos_type& in )  {
-		assert( this->Nout == this->Nin );
 
         const pairs_type& pairs = d_pairs.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
@@ -430,7 +429,8 @@ public:
         m_lengths.resize(indices.size());
         m_invlengths.resize(indices.size());
 
-        assert( targets.size() == indices.size() );
+        if( targets.size() != indices.size() )
+            serr << "The target number does not correspond to the indices number";
 
         // compute the current rest lengths
         if( restLengths.empty() )
@@ -453,7 +453,6 @@ public:
 
     virtual void apply(typename self::out_pos_type& out,
                        const typename self::in_pos_type& in )  {
-        assert( this->Nout == this->Nin );
 
         const helper::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
