@@ -52,7 +52,7 @@ struct SafeDistanceMappingTest : public Mapping_test<Mapping>
     {
         // we need to increase the error, the mapping is too much non-linear
         // and the finite differences are too different from the analytic Jacobian
-        this->errorMax *= 200;
+        this->errorMax *= 300;
 
         // mapping parameters
         typename Mapping::pairs_type pairs(3);
@@ -132,7 +132,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
     {
         // we need to increase the error, the mapping is too much non-linear
         // and the finite differences are too different from the analytic Jacobian
-        this->errorMax *= 200;
+        this->errorMax *= 300;
 
         // mapping parameters
         helper::vector<unsigned> indices(3);
