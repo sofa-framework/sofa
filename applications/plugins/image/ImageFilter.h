@@ -454,7 +454,11 @@ protected:
 
                 outT->getTranslation() = origin;
                 outT->getScale() = scale;
-                outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
+                outT->getRotation() = Coord();
+                if(dimz!=1) outT->isPerspective()=0;
+                else outT->setCamPos((Real)(out->getDimensions()[0]-1)/2.0,(Real)(out->getDimensions()[1]-1)/2.0);
+                outT->update();
+
 
                 unsigned int nbc=in->getDimensions()[3];
                 Ti OutValue=(Ti)0.;
