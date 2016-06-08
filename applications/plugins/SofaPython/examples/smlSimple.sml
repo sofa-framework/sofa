@@ -6,14 +6,14 @@
     <units length="dm" mass="kg" time="s"/>
 
     <mesh id="ball">
-        <source format="obj">/home/nesme_local/sofa/sofa/share/mesh/ball.obj</source>
+        <source format="obj">mesh/ball.obj</source>
         <group id="group01">
             <index>1 2 3 4</index>
             <tag>test</tag>
         </group>
     </mesh>
     <mesh id="armadillo">
-        <source format="obj">/home/nesme_local/sofa/sofa/share/mesh/Armadillo_verysimplified.obj</source>
+        <source format="obj">mesh/Armadillo_verysimplified.obj</source>
     </mesh>
     
     <solid id="armadillo">
