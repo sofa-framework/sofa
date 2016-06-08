@@ -51,7 +51,7 @@ struct DotProductMappingTest : public Mapping_test<Mapping>
     bool test()
     {
         // we need to increase the error for avoiding numerical problem
-        this->errorMax *= 500;
+        this->errorMax *= 600;
         this->deltaRange.first = this->errorMax*100;
         this->deltaRange.second = this->errorMax*1000;
 
@@ -120,7 +120,7 @@ struct DotProductMultiMappingTest : public MultiMapping_test<Mapping>
     bool test()
     {
         // we need to increase the error for avoiding numerical problem
-        this->errorMax *= 500;
+        this->errorMax *= 600;
         this->deltaRange.first = this->errorMax*100;
         this->deltaRange.second = this->errorMax*1000;
 
