@@ -371,9 +371,17 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrixT(const core::Mechani
             mbc = matCross((x[t[2]]-x[t[1]])*dfscale2);
             mca = matCross((x[t[0]]-x[t[2]])*dfscale2);
             mab = matCross((x[t[1]]-x[t[0]])*dfscale2);
-            mwriter.add(t[0],t[1],mab); mwriter.add(t[1],t[0],-mab);
-            mwriter.add(t[1],t[2],mbc); mwriter.add(t[2],t[1],-mbc);
-            mwriter.add(t[2],t[0],mca); mwriter.add(t[0],t[2],-mca);
+
+            // Full derivative matrix of triangle (ABC):
+            // K(A,A) = mbc   K(A,B) = mca   K(A,C) = mab
+            // K(B,A) = mbc   K(B,B) = mca   K(B,C) = mab
+            // K(C,A) = mbc   K(C,B) = mca   K(C,C) = mab
+
+            // -> the diagonal contributions become zero for closed meshes
+
+            /*mwriter.add(t[0], t[0], mbc);*/ mwriter.add(t[0], t[1], mca); mwriter.add(t[0], t[2], mab);
+            mwriter.add(t[1], t[0], mbc); /*mwriter.add(t[1], t[1], mca);*/ mwriter.add(t[1], t[2], mab);
+            mwriter.add(t[2], t[0], mbc); mwriter.add(t[2], t[1], mca); /*mwriter.add(t[2],t[2], mab); */
         }
     }
 }
