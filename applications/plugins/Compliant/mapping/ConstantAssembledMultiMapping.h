@@ -14,9 +14,9 @@ namespace mapping
 
 
 /**  
-    When its parameters won't change, a MultiMapping can be *constant*
-    i.e. its Jacobian and Hessian (for geometric stiffness)
-    can be precomputed once for all.
+     When theirs parameters do not change, some MultiMappings are *constant*
+     i.e. their Jacobian and Hessian (for geometric stiffness)
+     can be precomputed once for all.
      
      @author: matthieu nesme
      @date 2016
@@ -114,11 +114,11 @@ protected:
     virtual void apply( out_pos_type& out, const helper::vector<in_pos_type>& in ) = 0;
 
 
-    /// The Hessian can be constant, while geometric stiffness is not
+    /// The Hessian can be constant, while geometric stiffness is not:
     /// K = Hessian * out_force
     /// In a constant mapping, the Hessian can be precomputed during 'init'
     /// and then be used in 'assemble_geometric' to perform Hessian * out_force.
-    /// Note the Hessian type is not trivial and the user can choose what is best in his case.
+    /// The best data structure to store the Hessian depends on the mapping.
     virtual void assemble_hessian( const helper::vector<const_in_coord_type>& /*in*/ ) {}
 };
 
