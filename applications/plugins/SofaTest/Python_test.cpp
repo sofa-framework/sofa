@@ -14,7 +14,7 @@ namespace sofa {
 
 Python_test::Python_test()
 {
-    std::string plugin = "SofaPython";
+    static const std::string plugin = "SofaPython";
     sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
 }
 

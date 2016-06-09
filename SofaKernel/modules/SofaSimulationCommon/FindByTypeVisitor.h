@@ -29,6 +29,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <iostream>
 #include <typeinfo>
+#include <sofa/helper/Factory.h>
 
 namespace sofa
 {

@@ -38,6 +38,7 @@ using std::vector;
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <SofaSimulationCommon/init.h>
 #ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -311,6 +312,12 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
+    // to force loading plugin SofaPython if existing
+    {
+        std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+    }
+
     PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
@@ -407,6 +414,7 @@ int main(int argc, char** argv)
 
     GUIManager::closeGUI();
 
+    sofa::simulation::common::cleanup();
     sofa::simulation::tree::cleanup();
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();

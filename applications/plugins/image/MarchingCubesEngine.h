@@ -94,7 +94,7 @@ public:
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
         , subdiv(initData(&subdiv,defaulttype::Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
-        , invertNormals(initData(&invertNormals,false,"invertNormals","invert triangle vertex order"))
+        , invertNormals(initData(&invertNormals,true,"invertNormals","invert triangle vertex order"))
         , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))

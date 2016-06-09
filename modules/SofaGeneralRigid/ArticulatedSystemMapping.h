@@ -94,6 +94,7 @@ protected:
     }
 public:
     void init();
+    void bwdInit();
     void reset();
 
     using Inherit::apply;

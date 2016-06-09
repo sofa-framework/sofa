@@ -51,10 +51,10 @@ int ComplementaryROIClass = core::RegisterObject("Find the points NOT in the inp
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API ComplementaryROI<Vec3dTypes>;
+template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_ENGINE_API ComplementaryROI<Vec3fTypes>;
+template class SOFA_GENERAL_ENGINE_API ComplementaryROI<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 } // namespace engine

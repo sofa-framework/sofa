@@ -91,16 +91,18 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
         J.reserve( p.size()*Nout*2 );
 
 		for(unsigned k = 0, n = p.size(); k < n; ++k) {
-			
-            for(unsigned i = 0; i < Nout; ++i) {
 
-                if(p[k][1] == p[k][0]) continue;
+            for(unsigned i = 0; i < Nout; ++i) {
 
                 unsigned row = k * Nout + i;
                 J.startVec( row );
 
                 // needs to be inserted in the right order in the eigen matrix
-                if( p[k][1] < p[k][0] )
+                if(p[k][1] == p[k][0])
+                {
+                    J.insertBack(row, p[k][0] * Nin + i ) = 2;
+                }
+                else if( p[k][1] < p[k][0] )
                 {
                     J.insertBack(row, p[k][1] * Nin + i ) = 1;
                     J.insertBack(row, p[k][0] * Nin + i ) = 1;

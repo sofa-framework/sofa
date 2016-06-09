@@ -23,7 +23,7 @@ def createScene(node):
     Sofa.msg_fatal( "my message fatal" )
 
     # more complex code was causing trouble, so try it
-    model = SofaPython.sml.Model("smlSimple.xml")
+    model = SofaPython.sml.Model("smlSimple.sml")
 
 
     # # invalid calls
