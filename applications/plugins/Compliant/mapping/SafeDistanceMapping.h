@@ -6,6 +6,8 @@
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
 
+#include <sofa/core/visual/VisualParams.h>
+
 namespace sofa
 {
 	
