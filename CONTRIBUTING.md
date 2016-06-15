@@ -43,8 +43,9 @@ Exceptions:  mathematical objects like `Matrix M`, local iterators variables lik
 
 ### Formatting
 - Special characters like TAB and page break must be avoided.
-- Indentation must use 4 spaces everywhere (C++ and Python), but there must be no indentation for namespaces
-- Braces use the Allman style: the opening brace associated with a control statement is on the next line, indented to the same level as the control statement, and statements within the braces are indented to the next level.
+- Indentation must use **4 spaces** everywhere (C++ and Python), but there must be no indentation for namespaces
+- Braces use the **Allman style**: the opening brace associated with a control statement is on the next line, indented to the same level as the control statement, and statements within the braces are indented to the next level.
+
     ```cpp
     while (x == y)
     {
