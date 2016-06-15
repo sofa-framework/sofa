@@ -123,17 +123,6 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
 
 void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        sofa::core::objectmodel::BaseObject* obj = it->get();
-        if (    obj->toBaseInteractionForceField() == NULL
-            &&  obj->toBaseInteractionConstraint() == NULL
-            &&  obj->toBaseInteractionProjectiveConstraintSet() == NULL
-            &&  obj->toBaseLMConstraint() == NULL
-           )
-            this->processObject(obj);
-    }
-
     --level;
 
     for (int i=0; i<level; i++)
