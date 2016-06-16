@@ -25,6 +25,7 @@
 #include <sofa/helper/system/config.h>
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaLoader/initLoader.h>
+#include <SofaEngine/initEngine.h>
 /*
 #include <SofaRigid/initRigid.h>
 #include <SofaDeformable/initDeformable.h>
@@ -51,6 +52,7 @@ void initComponentCommon()
     }
 
     initLoader();
+    initEngine();
 /*
     initRigid();
     initDeformable();
