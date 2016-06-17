@@ -179,7 +179,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
             if(affine) { for(unsigned int i=0;i<3;i++) if(i<nbdims) for(unsigned int j=0;j<3;j++) if(j<nbdims) affine[i*3+j] = (F)val[i*nbdims+j]; }
             // to do: handle "CenterOfRotation" Tag
         }
-        else if(!str.compare("isPerpective")) { fileStream >> str2; int val; fileStream >> val; *isPerspective=val; }
+        else if(!str.compare("isPerpective")) { fileStream >> str2; int val; fileStream >> val; if(isPerspective) *isPerspective=val; }
         else if(!str.compare("ElementType") || !str.compare("voxelType"))  // not used (should be known in advance for template)
         {
             fileStream >> str2; // '='
