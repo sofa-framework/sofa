@@ -80,7 +80,19 @@ void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& m
     int i = parentOf[childIndex];
     elems[i].minBBox = min;
     elems[i].maxBBox = max;
+    elems[i].coneAngle = 2*M_PI;
 }
+
+void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& max, const Vector3& normal, const SReal angle)
+{
+    int i = parentOf[childIndex];
+    elems[i].minBBox = min;
+    elems[i].maxBBox = max;
+
+    elems[i].coneAxis = normal;
+    elems[i].coneAngle = angle;
+}
+
 
 void CubeModel::setLeafCube(int cubeIndex, int childIndex)
 {
@@ -120,11 +132,29 @@ void CubeModel::updateCube(int index)
         Cube c = subcells.first;
         Vector3 minBBox = c.minVect();
         Vector3 maxBBox = c.maxVect();
+
+        elems[index].coneAxis = c.getConeAxis();
+        elems[index].coneAngle = c.getConeAngle();
+
+        int subCellsNb = 1;
+
         ++c;
         while(c != subcells.second)
         {
+            subCellsNb++;
             const Vector3& cmin = c.minVect();
             const Vector3& cmax = c.maxVect();
+
+            SReal alpha = std::max<SReal>(elems[index].coneAngle, c.getConeAngle());
+            if(alpha <= M_PI/2)
+            {
+                SReal beta = acos(c.getConeAxis() *  elems[index].coneAxis);
+                elems[index].coneAxis = (c.getConeAxis() + elems[index].coneAxis).normalized();
+                elems[index].coneAngle = beta/2 + alpha;
+            }
+            else
+                elems[index].coneAngle = 2*M_PI;
+            
             for (int j=0; j<3; j++)
             {
                 if (cmax[j] > maxBBox[j]) maxBBox[j] = cmax[j];
@@ -154,7 +184,7 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
     {
         m = m->getPrevious();
         ++level;
-        color *= 0.5f;
+        color *= 0.8f;
     }
     Vec<4,float> c;
     if (isSimulated())
@@ -162,9 +192,19 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
     else
         c=Vec<4,float>(1.0f, 1.0f, 1.0f, color);
 
+
     std::vector< Vector3 > points;
+    std::vector< Vec<4,float> > colours;
     for (int i=0; i<size; i++)
     {
+        if(elems[i].coneAngle < M_PI/2)
+            c[1] = c[2] = 0.5f;
+        else
+            c[1] = c[2] = 1.0f;
+
+        for(int j=0; j<12; j++)
+            colours.push_back(c);
+
         const Vector3& vmin = elems[i].minBBox;
         const Vector3& vmax = elems[i].maxBBox;
 

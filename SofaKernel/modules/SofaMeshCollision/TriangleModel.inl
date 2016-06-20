@@ -40,7 +40,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -56,6 +56,8 @@ TTriangleModel<DataTypes>::TTriangleModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , triangulateQuads(initData(&triangulateQuads, true, "triangulateQuads", "split quads into triangles for collision detection"))
+    , useCurvature(initData(&useCurvature, false, "useCurvature", "use the curvature of the mesh to avoid some self-intersection test"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)
 {
@@ -71,6 +73,7 @@ void TTriangleModel<DataTypes>::resize(int size)
     //e.resize(size);
     //elems.endEdit();
     normals.resize(size);
+    toIgnore.resize(this->getContext()->getMeshTopology()->getNbPoints(), false);
 }
 
 template<class DataTypes>
@@ -132,8 +135,10 @@ void TTriangleModel<DataTypes>::updateFromTopology()
     //    needsUpdate = false;
     const unsigned npoints = mstate->getSize();
     const unsigned ntris = _topology->getNbTriangles();
+    unsigned newsize = ntris;
     const unsigned nquads = _topology->getNbQuads();
-    const unsigned newsize = ntris+2*nquads;
+    if(triangulateQuads.getValue())
+        newsize += 2*nquads;
 
     int revision = _topology->getRevision();
     if (newsize==(unsigned)size && revision == meshRevision)
@@ -167,25 +172,28 @@ void TTriangleModel<DataTypes>::updateFromTopology()
             mytriangles[index] = idx;
             ++index;
         }
-        for (unsigned i=0; i<nquads; i++)
+        if(triangulateQuads.getValue())
         {
-            core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
-            if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+            for (unsigned i=0; i<nquads; i++)
             {
-                serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
-                if (idx[0] >= npoints) idx[0] = npoints-1;
-                if (idx[1] >= npoints) idx[1] = npoints-1;
-                if (idx[2] >= npoints) idx[2] = npoints-1;
-                if (idx[3] >= npoints) idx[3] = npoints-1;
+                core::topology::BaseMeshTopology::Quad idx = _topology->getQuad(i);
+                if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+                {
+                    serr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")"<<sendl;
+                    if (idx[0] >= npoints) idx[0] = npoints-1;
+                    if (idx[1] >= npoints) idx[1] = npoints-1;
+                    if (idx[2] >= npoints) idx[2] = npoints-1;
+                    if (idx[3] >= npoints) idx[3] = npoints-1;
+                }
+                mytriangles[index][0] = idx[1];
+                mytriangles[index][1] = idx[2];
+                mytriangles[index][2] = idx[0];
+                ++index;
+                mytriangles[index][0] = idx[3];
+                mytriangles[index][1] = idx[0];
+                mytriangles[index][2] = idx[2];
+                ++index;
             }
-            mytriangles[index][0] = idx[1];
-            mytriangles[index][1] = idx[2];
-            mytriangles[index][2] = idx[0];
-            ++index;
-            mytriangles[index][0] = idx[3];
-            mytriangles[index][1] = idx[0];
-            mytriangles[index][2] = idx[2];
-            ++index;
         }
     }
     updateFlags();
@@ -771,7 +779,10 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
                     t.n() = cross(pt2-pt1,pt3-pt1);
                     t.n().normalize();
                 }
-                cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+                if(useCurvature.getValue())
+                    cubeModel->setParentOf(i, minElem, maxElem, t.n()); // define the bounding box of the current triangle
+                else
+                    cubeModel->setParentOf(i, minElem, maxElem);
             }
             cubeModel->computeBoundingTree(maxDepth);
         }
@@ -832,7 +843,10 @@ void TTriangleModel<DataTypes>::computeContinuousBoundingTree(double dt, int max
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
 
-            cubeModel->setParentOf(i, minElem, maxElem);
+            if(useCurvature.getValue())
+                cubeModel->setParentOf(i, minElem, maxElem, t.n(), acos(cross(pt2v-pt1v,pt3v-pt1v).normalized() * t.n()));
+            else
+                cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
@@ -863,7 +877,9 @@ int TTriangleModel<DataTypes>::getTriangleFlags(int i)
         {
             const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& tav = _topology->getTrianglesAroundVertex(t[j]);
             if (tav[0] == (sofa::core::topology::BaseMeshTopology::TriangleID)i)
+            {
                 f |= (FLAG_P1 << j);
+            }
         }
 
         const sofa::core::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);

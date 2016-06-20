@@ -259,9 +259,12 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
         //pos.peq( vel, h );                  // pos = pos + h vel
-        newPos.eq(pos, newVel, h);
-        sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        if(!this->f_onlyVelocity.getValue())
+        {
+            newPos.eq(pos, newVel, h);
+            sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
+            mop.solveConstraint(newPos,core::ConstraintParams::POS);
+        }
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 
