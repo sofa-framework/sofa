@@ -17,7 +17,7 @@
             <Data value="0" />
         </Attribute>
     </CGImplicitSolver>
-    <MechanicalObject template="Vec3d">
+    <MechanicalObject template="Vec3d" showObject="1" drawMode="1">
         <Attribute type="name">
             <Data value="particleDOF" />
         </Attribute>

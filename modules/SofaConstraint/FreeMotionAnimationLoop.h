@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ANIMATIONLOOP_FREEMOTIONANIMATIONLOOP_H
 #include "config.h"
 
-#include <sofa/simulation/common/CollisionAnimationLoop.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
 
 namespace sofa

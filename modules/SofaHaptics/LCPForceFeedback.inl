@@ -29,7 +29,7 @@
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 #include <algorithm>
 #include <boost/thread/mutex.hpp>

@@ -26,6 +26,7 @@
 #define BINDING_GRIDTOPOLOGY_H
 
 #include "PythonMacros.h"
+#include <SofaBaseTopology/GridTopology.h>
 
 SP_DECLARE_CLASS_TYPE(GridTopology)
 

@@ -14,13 +14,14 @@ set(SOURCE_FILES
 set(README_FILES ColladaSceneLoader.txt)
 
 find_package(SofaBase REQUIRED)
+find_package(SofaGeneral REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Assimp REQUIRED)
 #find_package(Flexible QUIET)
 find_package(image QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
+target_link_libraries(${PROJECT_NAME} SofaGeneralRigid SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
 set(COLLADASCENELOADER_COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 

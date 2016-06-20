@@ -59,8 +59,8 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
     virtual void assemble( const typename self::in_pos_type& in ) {
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
         J.resize( 1, self::Nin * in.size());
-        
-        J.setZero();
+        J.reserve( self::Nin * in.size() );
+
         J.startVec( 0 );
 
         const SReal& s = stiffness.getValue();
@@ -88,7 +88,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
         typename self::geometric_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
         const unsigned size = self::Nin * in.size();
         dJ.resize( size, size );
-        dJ.setZero();
+        dJ.reserve( size );
 
         for(unsigned i = 0, n = in.size(); i < n; ++i) {
             dJ.startVec(i);

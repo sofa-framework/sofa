@@ -57,7 +57,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "i
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaGeneralEngine)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()

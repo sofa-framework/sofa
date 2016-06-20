@@ -26,7 +26,7 @@
 #include <SofaConstraint/LocalMinDistance.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/proximity.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/visual/VisualParams.h>
 

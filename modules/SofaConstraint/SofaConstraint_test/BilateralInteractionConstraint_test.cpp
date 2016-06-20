@@ -25,7 +25,7 @@
 
 
 #include <SofaTest/Sofa_test.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <SofaConstraint/BilateralInteractionConstraint.h>
@@ -33,7 +33,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/simulation/common/SceneLoaderXML.h>
+#include <SofaSimulationCommon/SceneLoaderXML.h>
 
 
 namespace sofa {

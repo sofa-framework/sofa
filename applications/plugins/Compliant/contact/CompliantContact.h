@@ -29,7 +29,7 @@
 #include <sofa/core/collision/Contact.h>
 
 #include <Compliant/utils/edit.h>
-//#include <sofa/simulation/common/MechanicalVisitor.h>
+//#include <sofa/simulation/MechanicalVisitor.h>
 //#include <sofa/core/VecId.h>
 //#include <sofa/core/MultiVecId.h>
 
@@ -231,13 +231,13 @@ protected:
         {
             this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
             this->deltaContactMap->pairs.endEdit();
-            this->deltaContactMap->reinit();
+            this->deltaContactMap->update();
         }
         else
         {
             this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
             this->deltaContactMultiMap->pairs.endEdit();
-            this->deltaContactMultiMap->reinit();
+            this->deltaContactMultiMap->update();
         }
 
         contact_dofs->resize( size );
@@ -245,7 +245,7 @@ protected:
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
-        contact_map->reinit();
+        contact_map->update();
 
         if( compliance->compliance.getValue() != this->compliance_value.getValue() ||
                 compliance->damping.getValue() != this->damping_ratio.getValue() )
@@ -290,7 +290,7 @@ protected:
                     friction_dofs->resize( nout );
                     this->copyNormals( *editOnly(friction_map->normal) );
                     friction_map->mask = *cvmask; // by pointer copy, the vector was deleted before being used in contact mapping...  // TODO improve this by avoiding a copy
-                    friction_map->reinit();
+                    friction_map->update();
                     friction_node->setActive(true);
                 }
             }

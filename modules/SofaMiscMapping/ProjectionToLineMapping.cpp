@@ -63,6 +63,30 @@ template class SOFA_MISC_MAPPING_API ProjectionToTargetLineMapping< Rigid3fTypes
 #endif
 
 
+///////////////////
+
+SOFA_DECL_CLASS(ProjectionToLineMultiMapping)
+
+using namespace defaulttype;
+
+// Register in the Factory
+int ProjectionToLineMultiMappingClass = core::RegisterObject("Compute distance between a moving point and a moving line")
+#ifndef SOFA_FLOAT
+        .add< ProjectionToLineMultiMapping< Vec3dTypes, Vec3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ProjectionToLineMultiMapping< Vec3fTypes, Vec3fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3dTypes, Vec3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API ProjectionToLineMultiMapping< Vec3fTypes, Vec3fTypes >;;
+#endif
+
 
 
 } // namespace mapping

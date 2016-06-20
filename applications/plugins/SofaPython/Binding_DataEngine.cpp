@@ -26,7 +26,6 @@
 #include "Binding_DataEngine.h"
 #include "Binding_BaseObject.h"
 
-#include <sofa/core/DataEngine.h>
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 

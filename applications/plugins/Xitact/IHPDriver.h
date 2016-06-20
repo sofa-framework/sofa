@@ -37,10 +37,10 @@
 #include <SofaHaptics/LCPForceFeedback.h>
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <SofaHaptics/NullForceFeedbackT.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #ifdef SOFA_DEV

@@ -48,8 +48,8 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/gl/template.h>
 
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/Simulation.h>
 
 
 namespace sofa

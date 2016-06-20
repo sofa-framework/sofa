@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SceneCreator/SceneCreator.h>
 //Including Simulation
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/DataEngine_test.h>

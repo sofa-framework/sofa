@@ -159,10 +159,16 @@ cusparseMatDescr_t getCusparseMatGeneralDescr()
     return NULL;
 }
 
-cusparseMatDescr_t getCusparseMatTriangularDescr()
+cusparseMatDescr_t getCusparseMatTriangularLowerDescr()
 {
     return NULL;
 }
+
+cusparseMatDescr_t getCusparseMatTriangularUpperDescr()
+{
+    return NULL;
+}
+
 
 void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t *  	free,size_t *  	total) {
 
@@ -176,7 +182,7 @@ extern "C"
 {
     int SOFA_GPU_CUDA_API mycudaGetMultiProcessorCount();
     void cuda_void_kernel();
-};
+}
 
 bool cudaCheck(cudaError_t err, const char* src="?")
 {
@@ -458,24 +464,44 @@ cusparseMatDescr_t getCusparseMatGeneralDescr()
     return matdescGen;
 }
 
-static cusparseMatDescr_t matdescTri=NULL;
+static cusparseMatDescr_t matdescTriLower=NULL;
 
-cusparseMatDescr_t getCusparseMatTriangularDescr()
+cusparseMatDescr_t getCusparseMatTriangularLowerDescr()
 {
-    if (matdescTri==NULL)
+    if (matdescTriLower==NULL)
     {
-        cusparseStatus_t status = cusparseCreateMatDescr(&matdescTri);
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdescTriLower);
         if (status != CUSPARSE_STATUS_SUCCESS)
         {
             mycudaPrintf("Matrix descriptor init failed\n");
         }
-        cusparseSetMatType ( matdescTri, CUSPARSE_MATRIX_TYPE_TRIANGULAR );
-        cusparseSetMatIndexBase ( matdescTri, CUSPARSE_INDEX_BASE_ZERO );
-        cusparseSetMatDiagType ( matdescTri, CUSPARSE_DIAG_TYPE_UNIT );
-        cusparseSetMatFillMode ( matdescTri, CUSPARSE_FILL_MODE_UPPER );
+        cusparseSetMatType ( matdescTriLower, CUSPARSE_MATRIX_TYPE_TRIANGULAR );
+        cusparseSetMatIndexBase ( matdescTriLower, CUSPARSE_INDEX_BASE_ZERO );
+        cusparseSetMatDiagType ( matdescTriLower, CUSPARSE_DIAG_TYPE_UNIT );
+        cusparseSetMatFillMode ( matdescTriLower, CUSPARSE_FILL_MODE_LOWER );
     }
 
-    return matdescTri;
+    return matdescTriLower;
+}
+
+static cusparseMatDescr_t matdescTriUpper=NULL;
+
+cusparseMatDescr_t getCusparseMatTriangularUpperDescr()
+{
+    if (matdescTriUpper==NULL)
+    {
+        cusparseStatus_t status = cusparseCreateMatDescr(&matdescTriUpper);
+        if (status != CUSPARSE_STATUS_SUCCESS)
+        {
+            mycudaPrintf("Matrix descriptor init failed\n");
+        }
+        cusparseSetMatType ( matdescTriUpper, CUSPARSE_MATRIX_TYPE_TRIANGULAR );
+        cusparseSetMatIndexBase ( matdescTriUpper, CUSPARSE_INDEX_BASE_ZERO );
+        cusparseSetMatDiagType ( matdescTriUpper, CUSPARSE_DIAG_TYPE_UNIT );
+        cusparseSetMatFillMode ( matdescTriUpper, CUSPARSE_FILL_MODE_UPPER );
+    }
+
+    return matdescTriUpper;
 }
 
 void SOFA_GPU_CUDA_API mycudaMemGetInfo(size_t * free,size_t * total) {

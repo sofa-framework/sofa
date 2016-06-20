@@ -38,7 +38,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/simulation/common/ResetVisitor.h>
+#include <sofa/simulation/ResetVisitor.h>
 #include <boost/unordered_map.hpp>
 
 namespace sofa

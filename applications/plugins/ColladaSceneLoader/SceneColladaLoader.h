@@ -28,7 +28,7 @@
 #include <ColladaSceneLoader/config.h>
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/helper/SVector.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 
 #include <assimp/Importer.hpp>      // C++ importer interface

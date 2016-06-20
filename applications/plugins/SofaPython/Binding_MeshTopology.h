@@ -26,6 +26,7 @@
 #define BINDING_MESHTOPOLOGY_H
 
 #include "PythonMacros.h"
+#include <SofaBaseTopology/MeshTopology.h>
 
 SP_DECLARE_CLASS_TYPE(MeshTopology)
 

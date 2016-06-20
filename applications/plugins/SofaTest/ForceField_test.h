@@ -28,8 +28,8 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>

@@ -26,6 +26,7 @@
 #define BINDING_BASEMECHANICALSTATE_H
 
 #include "PythonMacros.h"
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 SP_DECLARE_CLASS_TYPE(BaseMechanicalState)
 

@@ -30,7 +30,7 @@
 #include <sofa/core/CategoryLibrary.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/common/Colors.h>
+#include <sofa/simulation/Colors.h>
 
 using namespace sofa::core;
 

@@ -76,14 +76,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
         Inherit::init();
 	}
 
-    virtual void reinit() {
-
+    void update() {
+        this->reinit();
         Inherit::apply(core::MechanicalParams::defaultInstance() , core::VecCoordId::position(), core::ConstVecCoordId::position());
         Inherit::applyJ(core::MechanicalParams::defaultInstance() , core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
         if (this->f_applyRestPosition.getValue())
             Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
-
-        Inherit::reinit();
     }
 
     typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
@@ -183,12 +181,43 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		}
 	}
 
-    virtual void applyDJT(const core::MechanicalParams*,
-	                      core::MultiVecDerivId /*inForce*/, 
+    virtual void applyDJT(const core::MechanicalParams* mparams,
+                          core::MultiVecDerivId inForce,
                           core::ConstMultiVecDerivId /*outForce*/)
     {
-        if( geometric.compressedMatrix.nonZeros() ) serr<<"applyDJT is not yet implemented"<<sendl;
-        // TODO implement it!
+        if( geometric.compressedMatrix.nonZeros() )
+        {
+            const SReal& kfactor = mparams->kFactor();
+            unsigned size = this->getFromModels().size();
+
+            // TODO not optimized but at least it is implemented
+
+            // merge all parent displacements
+            InVecDeriv parentDisplacements;
+
+            for( unsigned i=0; i< size ; i++ )
+            {
+                const core::State<In>* fromModel = this->getFromModels()[i];
+                const InVecDeriv& parentDisplacement = mparams->readDx(fromModel)->getValue();
+                parentDisplacements.insert(parentDisplacements.end(), parentDisplacement.begin(), parentDisplacement.end());
+            }
+
+            // merged parent forces
+            InVecDeriv parentForces(parentDisplacements.size());
+            geometric.addMult( parentForces, parentDisplacements, kfactor );
+
+            // un-merge parent forces
+            size_t offset=0;
+            for( unsigned i=0; i< size ; i++ )
+            {
+                core::State<In>* fromModel = this->getFromModels()[i];
+                InVecDeriv& parentForce = *inForce[fromModel].write()->beginEdit();
+                for( size_t j=0;j<parentForce.size();++j)
+                    parentForce[j] += parentForces[offset+j];
+                offset += parentForce.size();
+                inForce[fromModel].write()->endEdit();
+            }
+        }
     }
 
     virtual void applyJT( const core::ConstraintParams*,

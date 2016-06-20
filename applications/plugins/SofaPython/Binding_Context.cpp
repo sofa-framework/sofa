@@ -26,7 +26,6 @@
 #include "Binding_Context.h"
 #include "Binding_BaseContext.h"
 
-#include <sofa/core/objectmodel/Context.h>
 using namespace sofa::core::objectmodel;
 
 

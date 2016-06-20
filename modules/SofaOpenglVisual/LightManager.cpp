@@ -35,7 +35,7 @@
 //
 #include <SofaOpenglVisual/LightManager.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -187,8 +187,8 @@ void LightManager::putLights(std::vector<Light::SPtr> lights)
 
 void LightManager::makeShadowMatrix(unsigned int i)
 {
-    const GLfloat* lp = lights[i]->getProjectionMatrix();
-    const GLfloat* lmv = lights[i]->getModelviewMatrix();
+    const GLfloat* lp = lights[i]->getOpenGLProjectionMatrix();
+    const GLfloat* lmv = lights[i]->getOpenGLModelViewMatrix();
 
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
@@ -215,8 +215,8 @@ void LightManager::makeShadowMatrix(unsigned int i)
         lightModelViewMatrix[i] = lmv;
         lightProjectionMatrix[i] = lp;
     }
-//    std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
-//    std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
+    //std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
+    //std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
 
     glMatrixMode(GL_MODELVIEW);
 }
@@ -260,10 +260,10 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
 
                 lightFlag[i] = 1;
                 shadowTextureID[i] = 0;
-                zNears[i] = (GLfloat) lights[i]->p_zNear.getValue();
-                zFars[i] = (GLfloat) lights[i]->p_zFar.getValue();
+                zNears[i] = (GLfloat) lights[i]->d_zNear.getValue();
+                zFars[i] = (GLfloat) lights[i]->d_zFar.getValue();
 
-                if (shadowsEnabled.getValue() && lights[i]->shadowsEnabled.getValue())
+                if (shadowsEnabled.getValue() && lights[i]->d_shadowsEnabled.getValue())
                 {
                     lightFlag[i] = 2;
                     shadowTextureID[i] = shadowTextureUnit;

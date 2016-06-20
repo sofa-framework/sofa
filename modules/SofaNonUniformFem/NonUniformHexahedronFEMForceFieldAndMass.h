@@ -27,7 +27,7 @@
 #include "config.h"
 
 
-#include <SofaSimpleFem/HexahedronFEMForceFieldAndMass.h>
+#include <SofaGeneralSimpleFem/HexahedronFEMForceFieldAndMass.h>
 
 namespace sofa
 {

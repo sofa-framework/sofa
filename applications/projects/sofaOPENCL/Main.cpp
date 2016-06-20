@@ -29,9 +29,9 @@
 
 #include <SofaOpenCL/myopencl.h>
 
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationTree/init.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>

@@ -26,7 +26,6 @@
 #include "Binding_BaseMeshTopology.h"
 #include "Binding_Topology.h"
 
-#include <sofa/core/topology/BaseMeshTopology.h>
 using namespace sofa::core::topology;
 using namespace sofa::core::objectmodel;
 

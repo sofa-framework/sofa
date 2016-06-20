@@ -25,7 +25,7 @@
 #define SOFA_COMPONENT_COLLISION_STARTNAVIGATIONPERFORMER_CPP
 
 #include <SofaUserInteraction/StartNavigationPerformer.h>
-#include <SofaBaseVisual/RecordedCamera.h>
+#include <SofaGeneralVisual/RecordedCamera.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>

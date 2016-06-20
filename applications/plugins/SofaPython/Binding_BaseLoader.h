@@ -26,6 +26,7 @@
 #define BINDING_BASELOADER_H
 
 #include "PythonMacros.h"
+#include <sofa/core/loader/BaseLoader.h>
 
 SP_DECLARE_CLASS_TYPE(BaseLoader)
 

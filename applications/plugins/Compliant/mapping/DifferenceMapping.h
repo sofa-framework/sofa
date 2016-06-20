@@ -45,7 +45,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 	
 	DifferenceMapping() 
         : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
-        , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+        , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
         , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {}
 
@@ -84,16 +84,16 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
 		J.resize( Nout * p.size(), Nin * in.size());
-		J.setZero();
+        J.reserve( p.size()*Nout*2 );
 
 		for(unsigned k = 0, n = p.size(); k < n; ++k) {
 			
             for(unsigned i = 0; i < Nout; ++i) {
 
-                if(p[k][1] == p[k][0]) continue;
-
                 unsigned row = k * Nout + i;
                 J.startVec( row );
+
+                if(p[k][1] == p[k][0]) continue;
 
                 // needs to be inserted in the right order in the eigen matrix
                 if( p[k][1] < p[k][0] )
@@ -117,12 +117,16 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 #ifndef SOFA_NO_OPENGL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+        SReal scale = d_showObjectScale.getValue();
+
+        if( scale < 0 ) return;
+
         glEnable(GL_LIGHTING);
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = pairs.getValue();
 
-        if( d_showObjectScale.getValue() == 0 )
+        if( !scale )
         {
             helper::vector< defaulttype::Vector3 > points(p.size()*2);
             for(unsigned i=0; i<p.size(); i++ )
@@ -270,7 +274,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
                 J.resize( Nout * p.size(), Nin * in[i].size());
-                J.setZero();
+                J.reserve( p.size()*Nout );
 
                 Real sign = (i == 0) ? -1 : 1;
 

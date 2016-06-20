@@ -30,7 +30,7 @@
  */
 
 #include "PostProcessManager.h"
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 
 

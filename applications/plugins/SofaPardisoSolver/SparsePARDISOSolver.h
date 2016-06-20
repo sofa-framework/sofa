@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
@@ -60,9 +60,9 @@ public:
 
     //Data< helper::vector<std::string> > f_options;
     Data<int> f_symmetric;
-
     Data<bool> f_verbose;
-
+    Data<std::string> f_exportDataToDir;
+    Data<bool> f_iterativeSolverNumbering;
     Data<bool> f_saveDataToFile;
 
     SparsePARDISOSolver();
@@ -78,7 +78,11 @@ public:
     }
 
 protected:
+    bool doExportData;
+    std::string suffix;
+
     int numStep;
+    long int timeStep;
     int numPrevNZ, numActNZ;
     class SparsePARDISOSolverInvertData : public MatrixInvertData
     {

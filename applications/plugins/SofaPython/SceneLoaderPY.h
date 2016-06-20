@@ -26,10 +26,10 @@
 #define SCENELOADERPY_H
 
 #include <SofaPython/config.h>
-#include <sofa/simulation/common/SceneLoaderFactory.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
 
 
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #include <string>
 #include <map>
 

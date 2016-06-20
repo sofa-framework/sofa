@@ -35,7 +35,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 
 
 #include <sofa/helper/AdvancedTimer.h>

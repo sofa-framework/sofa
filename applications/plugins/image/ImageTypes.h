@@ -543,11 +543,23 @@ public:
     // note: for perpective transforms (f_x and f_y pinhole camera intrinsic parameters are scalez/2*scalex and scalez/2*scaley)
     virtual Coord fromImage(const Coord& ip) const
     {
-        if(!isPerspective()) return qrotation.rotate( ip.linearProduct(getScale()) ) + getTranslation();
-        else
+        if(isPerspective()==0) return qrotation.rotate( ip.linearProduct(getScale()) ) + getTranslation();
+        else if(isPerspective()==1)
         {
             Coord sp=ip.linearProduct(getScale());
             sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camx);
+            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camy);
+            return qrotation.rotate( sp ) + getTranslation();
+        }
+        else if(isPerspective()==2) // half perspective, half orthographic
+        {
+            Coord sp=ip.linearProduct(getScale());
+            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camx);
+            return qrotation.rotate( sp ) + getTranslation();
+        }
+        else // half perspective, half orthographic
+        {
+            Coord sp=ip.linearProduct(getScale());
             sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camy);
             return qrotation.rotate( sp ) + getTranslation();
         }
@@ -555,8 +567,8 @@ public:
     virtual Real fromImage(const Real& ip) const	{ return ip*getScaleT() + getOffsetT(); }
     virtual Coord toImage(const Coord& p) const
     {
-        if(!isPerspective()) return qrotation.inverseRotate( p-getTranslation() ).linearDivision(getScale());
-        else
+        if(isPerspective()==0) return qrotation.inverseRotate( p-getTranslation() ).linearDivision(getScale());
+        else if(isPerspective()==1)
         {
             Coord sp=qrotation.inverseRotate( p-getTranslation() );
             sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camx/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
@@ -564,7 +576,24 @@ public:
             sp[2]=(Real)0.0;
             return sp;
         }
+        else if(isPerspective()==2)
+        {
+            Coord sp=qrotation.inverseRotate( p-getTranslation() );
+            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camx/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[1]=sp[1]/getScale()[1];
+            sp[2]=(Real)0.0;
+            return sp;
+        }
+        else
+        {
+            Coord sp=qrotation.inverseRotate( p-getTranslation() );
+            sp[0]=sp[0]/getScale()[0];
+            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camy/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[2]=(Real)0.0;
+            return sp;
+        }
     }
+
     virtual Real toImage(const Real& p) const		{ return (p - getOffsetT())/getScaleT(); }
 
 };

@@ -127,13 +127,13 @@ protected:
         {
             this->copyPairs( *this->deltaContactMap->pairs.beginEdit() );
             this->deltaContactMap->pairs.endEdit();
-            this->deltaContactMap->reinit();
+            this->deltaContactMap->update();
         }
         else
         {
             this->copyPairs( *this->deltaContactMultiMap->pairs.beginEdit() );
             this->deltaContactMultiMap->pairs.endEdit();
-            this->deltaContactMultiMap->reinit();
+            this->deltaContactMultiMap->update();
         }
 
         contact_dofs->resize( size );
@@ -141,7 +141,7 @@ protected:
         this->copyNormals( *editOnly(contact_map->normal) );
         this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
-        contact_map->reinit();
+        contact_map->update();
 
         forcefield->d_damping.setValue( this->damping_ratio.getValue() );
         forcefield->d_stiffness.setValue( this->stiffness.getValue() );

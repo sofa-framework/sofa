@@ -25,7 +25,7 @@
 #include <SofaGraphComponent/Gravity.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 

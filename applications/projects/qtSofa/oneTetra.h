@@ -39,8 +39,8 @@
 //#include <sofa/helper/system/FileRepository.h>
 //#include <sofa/helper/system/glut.h>
 
-//#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+//#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <iostream>
 #include <fstream>

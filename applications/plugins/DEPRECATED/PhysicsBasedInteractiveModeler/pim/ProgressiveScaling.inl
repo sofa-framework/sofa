@@ -32,9 +32,9 @@
 #include "ProgressiveScaling.h"
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/gui/GUIManager.h>
 #include <flowvr/render/mesh.h>

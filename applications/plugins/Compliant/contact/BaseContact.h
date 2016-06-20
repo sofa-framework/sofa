@@ -13,7 +13,7 @@
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
 
-//#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
+//#include <sofa/simulation/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/cast.h>
 

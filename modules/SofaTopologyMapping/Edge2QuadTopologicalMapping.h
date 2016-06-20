@@ -35,7 +35,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include <SofaSimpleFem/RadiusContainer.h>
+#include <SofaGeneralSimpleFem/RadiusContainer.h>
 
 
 namespace sofa

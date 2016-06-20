@@ -1,6 +1,6 @@
 #ifndef SOFA_SIMPLEGUI_VisualPickVisitor_H
 #define SOFA_SIMPLEGUI_VisualPickVisitor_H
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa

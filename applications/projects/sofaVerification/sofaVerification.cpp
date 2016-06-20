@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+#include <SofaSimulationTree/GNode.h>
+#include <SofaSimulationTree/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>

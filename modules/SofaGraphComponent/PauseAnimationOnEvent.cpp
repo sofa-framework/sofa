@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <SofaGraphComponent/PauseAnimationOnEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/PauseEvent.h>
+#include <sofa/simulation/PauseEvent.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

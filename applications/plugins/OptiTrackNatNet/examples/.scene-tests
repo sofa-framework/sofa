@@ -1,0 +1,7 @@
+# ignore the scenes that crash on CI
+ignore "optitrackCutting.scn"
+ignore "optitrack.scn"
+ignore "TestCutting.scn"
+ignore "optitrackFullBorderFixed.scn"
+ignore "OmniCutting.scn"
+ignore "optitrackFull.scn"

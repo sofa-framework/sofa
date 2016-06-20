@@ -80,7 +80,7 @@ protected:
 			typename self::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 			J.resize( self::Nout, 
 			          self::Nin * in[i].size() );
-			J.setZero();
+            J.reserve( self::Nout *in[i].size()  );
 			
 			for(unsigned k = 0; k < self::Nout; ++k) {
 				unsigned row = k;

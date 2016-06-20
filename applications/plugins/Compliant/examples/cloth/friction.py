@@ -9,12 +9,14 @@ localdir = os.path.dirname(__file__)
 def createScene(node):
     node.gravity = '0 -10 0'
     node.dt = 1e-2
-    
+
     scene.display_flags(node, show = 'Behavior Visual CollisionModels',
                   hide = 'MechanicalMappings')
     
     scene.requires(node, 'Flexible', 'Compliant')
 
+    node.createObject('SimpleAnimationLoop')
+    
     scene.contacts(node,
                    response = 'FrictionCompliantContact',                 
                    # response = 'CompliantContact',
@@ -30,6 +32,7 @@ def createScene(node):
     num = node.createObject('ModulusSolver',
                             iterations = 15,
                             precision = 1e-6,
+                            nlnscg = True,
                             anderson = 4)
 
     # num = node.createObject('SequentialSolver',

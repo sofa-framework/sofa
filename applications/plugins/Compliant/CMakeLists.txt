@@ -47,21 +47,28 @@ set(HEADER_FILES
     mapping/ContactMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
+    mapping/AdditionMapping.h
+    mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
+    mapping/NormalizationMapping.h
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
+    mapping/PythonMultiMapping.inl	
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
+    mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
+    mapping/SafeDistanceMapping.h
     mapping/WinchMultiMapping.h
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
     misc/RigidMass.h
+	misc/SimpleAnimationLoop.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/Benchmark.h
     numericalsolver/BenchmarkSolver.h
@@ -97,6 +104,7 @@ set(HEADER_FILES
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
     utils/anderson.h
+    utils/nlnscg.h	
     utils/basis.h
     utils/bicgstab.h
     utils/cg.h
@@ -155,22 +163,28 @@ set(SOURCE_FILES
     mapping/ContactMultiMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
+    mapping/AdditionMapping.cpp
+    mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp
+    mapping/NormalizationMapping.cpp
     mapping/PairingMultiMapping.cpp
     mapping/ProjectionMapping.cpp
     mapping/PythonMultiMapping.cpp
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/RigidJointMapping.cpp
+    mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
+    mapping/SafeDistanceMapping.cpp
     mapping/WinchMultiMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp
     misc/RigidMass.cpp
     misc/python.cpp
+	misc/SimpleAnimationLoop.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/Benchmark.cpp
     numericalsolver/BenchmarkSolver.cpp
@@ -199,6 +213,7 @@ set(SOURCE_FILES
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
+	utils/nlnscg.cpp	
     utils/sub_kkt.cpp
 )
 

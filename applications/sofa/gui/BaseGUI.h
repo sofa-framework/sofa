@@ -26,7 +26,7 @@
 #define SOFA_GUI_BASEGUI_H
 
 #include "SofaGUI.h"
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/Vec.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>

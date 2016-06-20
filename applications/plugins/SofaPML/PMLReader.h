@@ -48,7 +48,7 @@
 #include "PMLBody.h"
 #include <SofaPML/config.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 
 namespace sofa
 {

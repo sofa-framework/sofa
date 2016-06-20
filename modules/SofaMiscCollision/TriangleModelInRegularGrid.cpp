@@ -27,7 +27,7 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
@@ -38,7 +38,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

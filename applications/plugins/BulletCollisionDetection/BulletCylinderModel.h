@@ -3,7 +3,7 @@
 
 #include <SofaBaseCollision/CylinderModel.h>
 #include "BulletCollisionModel.h"
-#include <sofa/simulation/common/CollisionBeginEvent.h>
+#include <sofa/simulation/CollisionBeginEvent.h>
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <BulletCollisionDetection/config.h>

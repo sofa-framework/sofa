@@ -23,13 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "PythonMacros.h"
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 #include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
@@ -39,6 +38,7 @@ using namespace sofa::core::objectmodel;
 #include "Binding_Context.h"
 #include "PythonVisitor.h"
 #include "PythonScriptEvent.h"
+#include "PythonFactory.h"
 
 extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
@@ -58,7 +58,7 @@ extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     // BaseNode is not binded in SofaPython, so getRoot is binded in Node instead of BaseNode
-    return SP_BUILD_PYSPTR(node->getRoot());
+    return sofa::PythonFactory::toPython(node->getRoot());
 }
 
 // step the simulation
@@ -126,7 +126,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
-    return SP_BUILD_PYSPTR(childNode);
+    return sofa::PythonFactory::toPython(childNode);
 }
 
 extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
@@ -141,7 +141,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
     PyObject *list = PyList_New(children.size());
 
     for (unsigned int i=0; i<children.size(); ++i)
-        PyList_SetItem(list,i,SP_BUILD_PYSPTR(children[i]));
+        PyList_SetItem(list,i,sofa::PythonFactory::toPython(children[i]));
 
     return list;
 }
@@ -158,7 +158,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
     PyObject *list = PyList_New(parents.size());
 
     for (unsigned int i=0; i<parents.size(); ++i)
-        PyList_SetItem(list,i,SP_BUILD_PYSPTR(parents[i]));
+        PyList_SetItem(list,i,sofa::PythonFactory::toPython(parents[i]));
 
     return list;
 }
@@ -194,7 +194,7 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     Node* child = obj->createChild(nodeName).get();
     ScriptEnvironment::nodeCreatedByScript(child);
-    return SP_BUILD_PYSPTR(child);
+    return sofa::PythonFactory::toPython(child);
 }
 
 extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool printWarnings)
@@ -353,9 +353,9 @@ extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    const behavior::BaseMechanicalState* state = node->mechanicalState.get();
+    behavior::BaseMechanicalState* state = node->mechanicalState.get();
 
-    if( state ) return SP_BUILD_PYSPTR((Base*)state);
+    if( state ) return sofa::PythonFactory::toPython(state);
 
     Py_RETURN_NONE;
 }
@@ -364,9 +364,9 @@ extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*ar
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    const sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
+    sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
 
-    if( mapping ) return SP_BUILD_PYSPTR((Base*)mapping);
+    if( mapping ) return sofa::PythonFactory::toPython(mapping);
 
     Py_RETURN_NONE;
 }
@@ -375,8 +375,8 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
-    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance());
+    node->execute<MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // only mechanical mappings
+    node->execute<UpdateMappingVisitor>(sofa::core::MechanicalParams::defaultInstance()); // propagating position and velocity through non mechanical mappings
     node->execute<VisualUpdateVisitor>(sofa::core::MechanicalParams::defaultInstance());
 
     Py_RETURN_NONE;
@@ -387,6 +387,14 @@ extern "C" PyObject * Node_isInitialized(PyObject *self, PyObject * /*args*/)
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     return PyBool_FromLong( node->isInitialized() );
 }
+
+extern "C" PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
+{
+    Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+    getSimulation()->print(node);
+    Py_RETURN_NONE;
+}
+
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node,executeVisitor)
@@ -415,6 +423,7 @@ SP_CLASS_METHOD(Node,getMechanicalState)
 SP_CLASS_METHOD(Node,getMechanicalMapping)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node,isInitialized)
+SP_CLASS_METHOD(Node,printGraph)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node,Node,Context)

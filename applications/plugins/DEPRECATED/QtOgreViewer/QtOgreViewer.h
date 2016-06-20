@@ -35,7 +35,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/gui/qt/viewer/ViewerFactory.h>
 #ifdef SOFA_QT4
 #include <QPaintEvent>

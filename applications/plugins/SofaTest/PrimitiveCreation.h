@@ -4,7 +4,7 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 
 namespace sofa{
 

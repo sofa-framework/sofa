@@ -60,6 +60,7 @@ class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
 public:
     SOFA_CLASS(OglModel, VisualModelImpl);
 
+    Data<bool> blendTransparency;
 protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
     Data<int> cullFace;
@@ -114,6 +115,7 @@ public:
     virtual void updateBuffers();
 
     bool hasTransparent();
+    bool hasTexture();
 
 public:
     bool isUseEdges()	{ return useEdges; }

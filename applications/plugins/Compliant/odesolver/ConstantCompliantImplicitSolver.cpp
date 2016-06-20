@@ -2,8 +2,8 @@
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include "../assembly/AssemblyVisitor.h"
 #include "../constraint/ConstraintValue.h"

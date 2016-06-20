@@ -39,7 +39,7 @@
 
 
 
-#include <SofaObjectInteraction/AttachConstraint.h>
+#include <SofaGeneralObjectInteraction/AttachConstraint.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 #include <SofaBoundaryCondition/FixedRotationConstraint.h>

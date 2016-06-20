@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include "GraphListenerQListView.h"
-#include <sofa/simulation/common/Colors.h>
+#include <sofa/simulation/Colors.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>

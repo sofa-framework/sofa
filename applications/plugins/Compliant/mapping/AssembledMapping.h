@@ -22,6 +22,8 @@ namespace sofa {
 			public:
 
 				SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
+
+                typedef typename Out::Real Real; // used in Mapping_test
 	
 				// TODO make this final ?
 				void init() {
@@ -32,14 +34,13 @@ namespace sofa {
 					base::init();
 				}
 
-                virtual void reinit()
+                void update()
                 {
+                    this->reinit();
                     base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
                     base::applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::velocity(), core::ConstVecDerivId::velocity());
                     if (this->f_applyRestPosition.getValue())
                         base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
-
-                    base::reinit();
                 }
 	
 				const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {

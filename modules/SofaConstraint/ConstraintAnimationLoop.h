@@ -34,9 +34,9 @@
 
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
-#include <sofa/simulation/common/CollisionAnimationLoop.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/CollisionAnimationLoop.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
 
 
 #include <vector>

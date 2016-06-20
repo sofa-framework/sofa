@@ -27,7 +27,7 @@
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <SofaRigid/ArticulatedHierarchyContainer.h>
+#include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include "ARTrackEvent.h"
 

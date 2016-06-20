@@ -26,6 +26,7 @@
 #define BINDING_PYTHONSCRIPTCONTROLLER_H
 
 #include "PythonMacros.h"
+#include "PythonScriptController.h"
 
 SP_DECLARE_CLASS_TYPE(PythonScriptController)
 

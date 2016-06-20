@@ -55,7 +55,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 
 #include "sofa/defaulttype/Vec3Types.h"
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include <SofaPML/config.h>
 
 #include <map>

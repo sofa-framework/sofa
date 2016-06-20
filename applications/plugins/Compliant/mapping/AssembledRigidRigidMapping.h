@@ -81,6 +81,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                 
     }
 
+
+
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
     typedef helper::vector< source_type > source_vectype;
     Data< helper::vector< source_type > > source;
@@ -89,12 +91,27 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
     typedef typename TIn::Real Real;
 
+
+ public:
+
+	void init() {
+	  const unsigned n = source.getValue().size();
+	  if(this->getToModel()->getSize() != n) {
+		serr << "init: output size does not match 'source' data, auto-resizing " << n << sendl;
+		this->getToModel()->resize( n );
+	  }
+
+	  // must resize first, otherwise segfault lol (!??!?!)
+	  this->AssembledMapping<TIn, TOut>::init();
+	}
+
+	
   protected:
 	typedef SE3< typename TIn::Real > se3;
   
 	typedef AssembledRigidRigidMapping self;
 
-
+	
     virtual void assemble_geometric(const typename self::in_pos_type& in_pos,
                                     const typename self::out_force_type& out_force) {
 
@@ -111,6 +128,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         in_out_type in_out;
 
         // wahoo it is heavy, can't we find lighter?
+		// max: probably we can cache it and rebuild only when needed,
+		// which is most likely never
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
             in_out[ s.first() ].push_back(i);
@@ -120,9 +139,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         matrix_type& dJ = this->geometric.compressedMatrix;
 
         dJ.resize( 6 * in_pos.size(),
-                   6 * in_pos.size() );
-
-        dJ.setZero();
+                   6 * in_pos.size() );          
+        dJ.reserve( 9 * src.size() );
 
         for(in_out_type::const_iterator it = in_out.begin(), end = in_out.end();
             it != end; ++it) {
@@ -218,8 +236,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         assert( src.size() );
 		
         J.resize(6 * src.size(),
-		         6 * in_pos.size() );
-		J.setZero();
+                 6 * in_pos.size() );
+        J.reserve( 36 * src.size() );
 		
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];

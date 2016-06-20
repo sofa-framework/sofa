@@ -30,7 +30,7 @@
  */
 
 #include <SofaOpenglVisual/VisualManagerSecondaryPass.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -54,9 +54,10 @@ int VisualManagerSecondaryPassClass = core::RegisterObject("VisualManagerSeconda
         ;
 
 VisualManagerSecondaryPass::VisualManagerSecondaryPass()
-    :input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures")),
-     output_tags(initData( &output_tags, "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)")),
-     fragFilename(initData(&fragFilename, "fragFilename", "Set the fragment shader filename to load"))
+    : input_tags(initData( &input_tags, "input_tags", "list of input passes used as source textures"))
+    , output_tags(initData( &output_tags, "output_tags", "output reference tag (use it if the resulting fbo is used as a source for another secondary pass)"))
+    , fragFilename(initData(&fragFilename, "fragFilename", "Set the fragment shader filename to load"))
+    , l_shader(initLink("shader", "Shader to apply for compositing"))
 {
     nbFbo=0;
     prerendered=false;
@@ -75,21 +76,30 @@ void VisualManagerSecondaryPass::init()
 
 void VisualManagerSecondaryPass::initVisual()
 {
-    shader_postproc = sofa::core::objectmodel::New<OglShader>();
-    shader_postproc->vertFilename.setValueAsString("shaders/compositing.vert");
-
-    if(fragFilename.getValue().empty())
+    if (l_shader.get())
     {
-        std::cerr << "fragFilename attribute shall not be null. Using compositing.frag instead" << std::endl;
-        shader_postproc->fragFilename.setValueAsString("shaders/compositing.frag");
+        m_shaderPostproc = l_shader.get();
     }
     else
-        shader_postproc->fragFilename.setValueAsString(fragFilename.getFullPath());
+    {
+        m_shaderPostproc = sofa::core::objectmodel::New<OglShader>();
+        m_shaderPostproc->vertFilename.setValueAsString("shaders/compositing.vert");
 
-    shader_postproc->init();
-    shader_postproc->initVisual();
+
+        if(fragFilename.getValue().empty())
+        {
+            std::cerr << "fragFilename attribute shall not be null. Using compositing.frag instead" << std::endl;
+            m_shaderPostproc->fragFilename.setValueAsString("shaders/compositing.frag");
+        }
+        else
+            m_shaderPostproc->fragFilename.setValueAsString(fragFilename.getFullPath());
+
+        m_shaderPostproc->init();
+        m_shaderPostproc->initVisual();
+    }
+
     initShaderInputTexId();
-
+        
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     passWidth = (GLint)(viewport[2]*factor.getValue());
@@ -114,7 +124,7 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
         {
             if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
             {
-                shader_postproc->setInt(0, (currentSecondaryPass->getOutputName()).c_str(), nbFbo);
+                m_shaderPostproc->setInt(0, (currentSecondaryPass->getOutputName()).c_str(), nbFbo);
                 //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentSecondaryPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                 nbFbo++;
             }
@@ -125,10 +135,10 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
             {
                 if(input_tags.getValue().includes(currentPass->getTags()))
                 {
-                    shader_postproc->setInt(0, (currentPass->getOutputName()).c_str(), nbFbo);
+                    m_shaderPostproc->setInt(0, (currentPass->getOutputName()).c_str(), nbFbo);
                     //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
-                    shader_postproc->setInt(0, (currentPass->getOutputName()+"_Z").c_str(), nbFbo);
+                    m_shaderPostproc->setInt(0, (currentPass->getOutputName()+"_Z").c_str(), nbFbo);
                     //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"_Z\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
                 }
@@ -143,10 +153,10 @@ void VisualManagerSecondaryPass::preDrawScene(core::visual::VisualParams* vp)
     if(renderToScreen.getValue() || (!multiPassEnabled))
         return;
 
-    shader_postproc->setFloat(0,"zNear", (float)vp->zNear());
-    shader_postproc->setFloat(0,"zFar", (float)vp->zFar());
-    shader_postproc->setInt(0,"width", /*passWidth*/vp->viewport()[2]); //not sure of the value I should put here...
-    shader_postproc->setInt(0,"height", /*passHeight*/vp->viewport()[3]);
+    m_shaderPostproc->setFloat(0,"zNear", (float)vp->zNear());
+    m_shaderPostproc->setFloat(0,"zFar", (float)vp->zFar());
+    m_shaderPostproc->setInt(0,"width", /*passWidth*/vp->viewport()[2]); //not sure of the value I should put here...
+    m_shaderPostproc->setInt(0,"height", /*passHeight*/vp->viewport()[3]);
 
 
     glMatrixMode(GL_PROJECTION);
@@ -163,8 +173,7 @@ void VisualManagerSecondaryPass::preDrawScene(core::visual::VisualParams* vp)
     //todo: bind input textures
     bindInput(vp);
 
-    shader_postproc->start();
-
+    m_shaderPostproc->start();
 
     fbo->start();
 
@@ -172,8 +181,8 @@ void VisualManagerSecondaryPass::preDrawScene(core::visual::VisualParams* vp)
     traceFullScreenQuad();
 
     fbo->stop();
-    shader_postproc->stop();
-
+    m_shaderPostproc->stop();
+    
     //todo: unbind input textures
     unbindInput();
 
@@ -288,10 +297,12 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
 
     if(renderToScreen.getValue())
     {
-        shader_postproc->setFloat(0,"zNear", (float)vp->zNear());
-        shader_postproc->setFloat(0,"zFar", (float)vp->zFar());
-        shader_postproc->setInt(0,"width", vp->viewport()[2]);
-        shader_postproc->setInt(0,"height", vp->viewport()[3]);
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+        m_shaderPostproc->setFloat(0,"zNear", (float)vp->zNear());
+        m_shaderPostproc->setFloat(0,"zFar", (float)vp->zFar());
+        m_shaderPostproc->setInt(0,"width", vp->viewport()[2]);
+        m_shaderPostproc->setInt(0,"height", vp->viewport()[3]);
 
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
@@ -309,9 +320,9 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
         glViewport(vp->viewport()[0],vp->viewport()[1],vp->viewport()[2],vp->viewport()[3]);
 
         bindInput(vp);//bind input textures from FBOs
-        shader_postproc->start();
+        m_shaderPostproc->start();
         traceFullScreenQuad();
-        shader_postproc->stop();
+        m_shaderPostproc->stop();
         unbindInput();//unbind input textures
 
         glEnable(GL_LIGHTING);
@@ -321,6 +332,7 @@ bool VisualManagerSecondaryPass::drawScene(VisualParams* vp)
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
         return true;
+        glPopAttrib();
     }
     else
         return false;

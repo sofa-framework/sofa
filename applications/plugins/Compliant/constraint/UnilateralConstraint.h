@@ -8,7 +8,7 @@ namespace component {
 namespace linearsolver {
 
 
-/// Inequality constraint guaranteeing positiveness
+/// Inequality constraint guaranteeing positiveness >= 0
 struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 	
     SOFA_CLASS(UnilateralConstraint, Constraint);
@@ -19,7 +19,7 @@ struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 };
 
 
-/// Inequality constraint guaranteeing negativeness
+/// Inequality constraint guaranteeing negativeness <= 0
 struct SOFA_Compliant_API NegativeUnilateralConstraint : Constraint {
 
     SOFA_CLASS(NegativeUnilateralConstraint, Constraint);

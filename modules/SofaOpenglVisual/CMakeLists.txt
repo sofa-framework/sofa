@@ -8,6 +8,8 @@ set(HEADER_FILES
     DataDisplay.h
     Light.h
     LightManager.h
+    OrderIndependentTransparencyManager.h
+    OglOITShader.h
     OglCylinderModel.h
     OglGrid.h
     OglLabel.h
@@ -28,6 +30,8 @@ set(SOURCE_FILES
     DataDisplay.cpp
     Light.cpp
     LightManager.cpp
+    OrderIndependentTransparencyManager.cpp
+    OglOITShader.cpp
     OglCylinderModel.cpp
     OglGrid.cpp
     OglLabel.cpp

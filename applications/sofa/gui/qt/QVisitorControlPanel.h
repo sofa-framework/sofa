@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_QT_SOFA_GUI_QT_QVISITORCONTROLPANEL_H
 #define SOFA_GUI_QT_SOFA_GUI_QT_QVISITORCONTROLPANEL_H
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <QWidget>
 

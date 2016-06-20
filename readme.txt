@@ -1,6 +1,6 @@
 
    SOFA, Simulation Open-Framework Architecture
-     (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH
+     (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH
 
 Authors: See Authors.txt
 
@@ -28,4 +28,4 @@ an efficient prototyping tool. SOFA's advanced software architecture allows:
 INSTALLATION
 
 For up-to-date instructions, please refer to the SOFA documentation:
-  https://www.sofa-framework.org/documentation/online-documentation/
+  https://www.sofa-framework.org/doc
