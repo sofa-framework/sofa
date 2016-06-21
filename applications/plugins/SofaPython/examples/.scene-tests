@@ -6,11 +6,11 @@ add "DAG.py"
 add "ControllerVariable.py"
 add "link.py"
 add "linkPath.py"
-add "logger.py"
+# add "logger.py"  # it logs an error on purpose
 add "mass.py"
 add "meshLoader.py"
 add "MultiMapping.py"
 add "PythonMainScriptController.py"
-add "units.py"
-add "variables.py"
+#add "units.py" # it is pure python file (not a sofa scene) and should be tested in a specific unit test
+# add "variables.py" # this is not a sofa scene, simply a Controller definition called in variables.scn
 add "Visitor.py"

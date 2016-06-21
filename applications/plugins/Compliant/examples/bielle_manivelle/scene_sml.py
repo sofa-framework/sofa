@@ -1,6 +1,5 @@
-import os.path
-
 import Sofa
+import SofaPython
 
 import SofaPython.sml
 import Compliant.sml
@@ -14,11 +13,12 @@ def createScene(node):
     node.createObject('CompliantAttachButtonSetting' )
     node.createObject('CompliantImplicitSolver', name='odesolver',stabilization=1)
     node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14')
-    
-    model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__), "bielle_manivelle.sml"))
+
+
+    model = SofaPython.sml.Model( SofaPython.Tools.localPath( __file__, "bielle_manivelle.sml") )
     
     scene_bielle_manivelle = Compliant.sml.SceneArticulatedRigid(node, model)
-    scene_bielle_manivelle.material.load(os.path.join(os.path.dirname(__file__), "material.json"))
+    scene_bielle_manivelle.material.load( SofaPython.Tools.localPath( __file__, "material.json") )
     scene_bielle_manivelle.setMaterialByTag("part", "steel")
     
     scene_bielle_manivelle.param.showRigid=True
