@@ -40,7 +40,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {
