@@ -275,5 +275,12 @@ class ComponentDataIO:
 def localPath( localfile, filename ):
     ## concatenate the absolute filepath of localfile with filename
     ## returns /abs/path/filename (with /abs/path/localfile)
-    return os.path.join(os.path.dirname(os.path.abspath(os.path.basename(localfile))), filename)
+    # path in python are a real mess!
 
+    # when loading a scene .py, the current working dir is sometimes the path containing the scene file
+    # but it depends, I cannot figure where is the difference
+    # this creates lot of troubles
+    if os.path.dirname(localfile) in os.getcwd():
+        return os.path.join(os.path.dirname(os.path.abspath(os.path.basename(localfile))), filename)
+    else:
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), filename)
