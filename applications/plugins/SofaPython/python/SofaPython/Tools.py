@@ -275,5 +275,5 @@ class ComponentDataIO:
 def localPath( localfile, filename ):
     ## concatenate the absolute filepath of localfile with filename
     ## returns /abs/path/filename (with /abs/path/localfile)
-    return os.path.join(os.path.dirname(os.path.abspath(localfile)), filename)
+    return os.path.join(os.path.dirname(os.path.abspath(os.path.basename(localfile))), filename)
 
