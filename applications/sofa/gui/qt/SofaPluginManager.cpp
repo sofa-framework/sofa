@@ -181,7 +181,7 @@ void SofaPluginManager::removeLibrary()
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         //listPlugins->removeItem(curItem);
-        delete curItem->parent()->takeChild(curItem->parent()->indexOfChild(curItem));
+        delete curItem;
 
         savePluginsToIniFile();
         emit( libraryRemoved() );
