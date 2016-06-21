@@ -185,6 +185,12 @@ void SofaPluginManager::removeLibrary()
 
         savePluginsToIniFile();
         emit( libraryRemoved() );
+
+        if(this->listPlugins->selectedItems().count() < 1)
+        {
+            description->clear();
+            listComponents->clear();
+        }
     }
     else
     {
