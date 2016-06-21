@@ -185,8 +185,6 @@ void SofaPluginManager::removeLibrary()
 
         savePluginsToIniFile();
         emit( libraryRemoved() );
-        //description->clear();
-        //listComponents->clear();
     }
     else
     {
@@ -210,7 +208,7 @@ void SofaPluginManager::updateComponentList()
 
     if(curItem == NULL ) return;
     //update the component list when an item is selected
-    //listComponents->clear();
+    listComponents->clear();
 
     std::string location( curItem->text(LOCATION_COLUMN).toStdString() ); //get the location value
 
