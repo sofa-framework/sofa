@@ -253,16 +253,17 @@ void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool o
 
     std::vector<Coord> p;
     const int npoints = mstate->getSize();
+    
     for(int i = 0 ; i < npoints ; ++i )
     {
         TSphere<DataTypes> t(this,i);
         defaulttype::Vector3 p = t.p();
         float r = (float)t.r();
-
+                
         for (int c=0; c<3; c++)
         {
             if (p[c]+r > maxBBox[c]) maxBBox[c] = (Real)p[c]+r;
-            else if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
+            if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
         }
     }
 
