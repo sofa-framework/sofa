@@ -869,14 +869,16 @@ extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
     void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
 
 
-    // N-dimension arrays
+    // N-dimensional arrays
     sofa::helper::vector<size_t> dimensions;
     dimensions.push_back( typeinfo->size(dataValueVoidPtr) ); // total size to begin with
-    const AbstractTypeInfo* valuetypeinfo = typeinfo;
+    const AbstractTypeInfo* valuetypeinfo = typeinfo; // to go trough encapsulated types (at the end, it will correspond to the finest type)
+
+
     while( valuetypeinfo->Container() )
     {
-        size_t s = typeinfo->size();
-        dimensions.back() /= s;
+        size_t s = typeinfo->size(); // the current type size
+        dimensions.back() /= s; // to get the number of current type, the previous total size must be devided by the current type size
         dimensions.push_back( s );
         valuetypeinfo=valuetypeinfo->ValueType();
     }

@@ -3,7 +3,7 @@ import SofaPython.SofaNumpy
 import sys
 
 
-def createScene(node):
+def createSceneAndController(node):
 
     mo = node.createObject("MechanicalObject",position="1 2 3 4 5 6")
 
@@ -26,6 +26,15 @@ def createScene(node):
     print( "before:",mo.position[0][0] )
     pos[0][0] = 123
     print( "after:",mo.position[0][0] )
+
+
+
+    fc = node.createObject("FixedConstraint", fixAll=False, indices="0")
+    print "a simple bool:", fc.fixAll, SofaPython.SofaNumpy.numpy_data( fc, "fixAll" )
+    print "a simple scalar:", fc.drawSize, SofaPython.SofaNumpy.numpy_data( fc, "drawSize" )
+    print "a 1D array:", fc.indices, SofaPython.SofaNumpy.numpy_data( fc, "indices" )
+    print "a 2D array:", mo.position, SofaPython.SofaNumpy.numpy_data( mo, "position" )
+
 
 
     sys.stdout.flush()

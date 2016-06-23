@@ -12,13 +12,13 @@ ctypeFromName = {
     'float': ctypes.c_float,
     'bool': ctypes.c_bool,
     'char': ctypes.c_char,
-    'uchar': ctypes.c_ubyte,
+    'unsigned char': ctypes.c_ubyte,
     'short': ctypes.c_short,
-    'ushort': ctypes.c_ushort,
+    'unsigned short': ctypes.c_ushort,
     'int': ctypes.c_int,
-    'uint': ctypes.c_uint,
+    'unsigned int': ctypes.c_uint,
     'long': ctypes.c_long,
-    'ulong': ctypes.c_ulong,
+    'unsigned long': ctypes.c_ulong,
 }
 
 
@@ -29,6 +29,8 @@ def as_numpy( data ):
 
     type = ctypeFromName.get(typename,None)
     if not type: raise Exception("can't map data of type " + typename)
+
+    # print (shape)
 
     array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
     return numpy.ctypeslib.as_array(array, shape )
