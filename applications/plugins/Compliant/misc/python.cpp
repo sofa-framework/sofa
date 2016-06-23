@@ -1,7 +1,6 @@
 #include "python.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <Compliant/mapping/PythonMultiMapping.h>
 
 python::map_type python::_argtypes;
 python::map_type python::_restype;
@@ -12,7 +11,9 @@ typedef sofa::core::objectmodel::BaseData* base_data_ptr;
 typedef sofa::core::objectmodel::Base* base_ptr;
 typedef sofa::core::BaseMapping* base_mapping_ptr;
 
-typedef sofa::component::mapping::with_py_callback::py_callback_type py_callback_type;
+
+typedef with_py_callback::py_callback_type py_callback_type;
+
 
 struct data_pointer {
     void* ptr;
@@ -178,7 +179,6 @@ extern "C" {
 
     void set_py_callback(base_ptr base, py_callback_type py_callback ) {
 
-        using namespace sofa::component::mapping;
         using namespace sofa::defaulttype;        
 
         with_py_callback* cast = dynamic_cast< with_py_callback* >( base );
@@ -193,5 +193,8 @@ extern "C" {
 }
 
 
+
+with_py_callback::with_py_callback() : py_callback(0) { }
+with_py_callback::~with_py_callback() { }
 
 
