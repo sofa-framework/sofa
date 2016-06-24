@@ -39,6 +39,7 @@ set(HEADER_FILES
     forcefield/PotentialEnergy.h
     forcefield/UniformLinearPotentialEnergy.h
     forcefield/CompliantPenaltyForceField.h
+    mapping/AdditionMapping.h
     mapping/AffineMultiMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -48,7 +49,6 @@ set(HEADER_FILES
     mapping/ConstantAssembledMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
-    mapping/AdditionMapping.h
     mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
@@ -157,12 +157,12 @@ set(SOURCE_FILES
     forcefield/UniformLinearPotentialEnergy.cpp
     forcefield/CompliantPenaltyForceField.cpp
     initCompliant.cpp
+    mapping/AdditionMapping.cpp
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/ContactMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
-    mapping/AdditionMapping.cpp
     mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp

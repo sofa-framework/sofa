@@ -367,6 +367,10 @@ public:
  In that case the output becomes a difference  p -> p.t - target
  @warning the output size can then be different.
 
+
+ Another way to stabilize the distance mapping is to give a known direction for each edge.
+ In that case, pure distance can always be computed. @see Data d_directions
+
  @author Matthieu Nesme
  @date 2016
 
@@ -383,6 +387,9 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
     Data< typename self::InVecCoord > d_targetPositions; ///< positions the distances are measured from
     Data< helper::vector< SReal > > d_restLengths;
 
+    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
+    Data< helper::vector<Direction> > d_directions; ///< Unit vectors in the directions of the lines
+
     Data< SReal > d_epsilonLength;
 
     Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
@@ -392,8 +399,6 @@ class SOFA_Compliant_API SafeDistanceFromTargetMapping : public AssembledMapping
 
 protected:
 
-    typedef defaulttype::Vec<TIn::spatial_dimensions,SReal> Direction;
-
     helper::vector<Direction> m_directions;   ///< Unit vectors in the directions of the lines
     helper::vector<SReal> m_lengths, m_invlengths;       ///< inverse of current distances. Null represents the infinity (null distance)
 
@@ -402,7 +407,8 @@ protected:
     SafeDistanceFromTargetMapping()
         : d_indices( initData(&d_indices, "indices", "index of dof to compute the distance") )
         , d_targetPositions( initData(&d_targetPositions, "targets", "positions the distances are measured from") )
-        , d_restLengths( initData(&d_restLengths, "restLengths", "rest lengths") )
+        , d_restLengths( initData(&d_restLengths, "restLengths", "rest lengths") )        
+        , d_directions( initData(&d_directions, "directions", "Given directions (must be colinear with the vector formed by the points)") )
         , d_epsilonLength( initData(&d_epsilonLength, 1e-4, "epsilonLength", "Threshold to consider a length too close to 0") )
         , d_geometricStiffness( initData(&d_geometricStiffness, 2u, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(-1), "showObjectScale", "Scale for object display"))
@@ -450,6 +456,13 @@ public:
         }
 
         d_restLengths.endEdit();
+
+        helper::vector<Direction>& directions = *d_directions.beginEdit();
+        for( size_t i=0, iend=directions.size() ; i<iend ; ++i )
+            directions[i].normalize(); // just to be sure
+        d_directions.endEdit();
+
+
         Inherit1::reinit();
     }
 
@@ -459,6 +472,7 @@ public:
         const helper::vector< unsigned >& indices = d_indices.getValue();
         const typename self::InVecCoord& targets = d_targetPositions.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
+        const helper::vector<Direction>& directions = d_directions.getValue();
         const SReal& epsilon = d_epsilonLength.getValue();
 
         size_t size = 0;
@@ -485,7 +499,12 @@ public:
              {
                  m_invlengths[i] = 0;
 
-                 if( restLengths[i] != 0 )
+                 if( directions.size() > i ) // direction is given, let's use it
+                 {
+                     gap = -directions[i];
+                     size++;
+                 }
+                 else if( restLengths[i] != 0 ) // direction is not given, let's see if it is valid
                  {
                     // arbritary vector mapping all directions
                      SReal p = 1.0f/std::sqrt((SReal)TIn::spatial_dimensions);
@@ -494,7 +513,7 @@ public:
 
                      size++;
                  }
-                 else
+                 else // no direction are given and is undefined -> switching to failsafe differencemapping
                  {
                      size += TIn::spatial_dimensions; // for the difference
                  }
@@ -510,12 +529,12 @@ public:
         {
             Direction& gap = m_directions[i];
 
-            if( m_invlengths[i] != 0 || restLengths[i] )
+            if( m_invlengths[i] != 0 || restLengths[i] || directions.size() > i ) // a distance is actually computable
             {
                 out[s] = m_lengths[i]-restLengths[i];
                 s++;
             }
-            else
+            else // difference mapping failsafe
             {
                 for(unsigned j=0;j<TIn::spatial_dimensions;++j)
                     out[s+j] = gap[j];
@@ -531,6 +550,7 @@ public:
 
         const helper::vector< unsigned >& indices = d_indices.getValue();
         const helper::vector<SReal>& restLengths = d_restLengths.getValue();
+        const helper::vector<Direction>& directions = d_directions.getValue();
 
         typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
@@ -539,19 +559,18 @@ public:
 
         for( unsigned i = 0, n = indices.size(), s=0 ; i < n; ++i)
         {
-            Direction& gap = m_directions[i];
+            const Direction& gap = m_directions[i];
 
-            if( m_invlengths[i] != 0 || restLengths[i] )
+            if( m_invlengths[i] != 0 || restLengths[i] || directions.size() > i )  // a distance is actually computable
             {
                 J.startVec(s);
 
                 for(unsigned k=0; k<TIn::spatial_dimensions; k++ )
                     J.insertBack( s, indices[i]*Nin+k ) = gap[k];
 
-
                 s++;
             }
-            else
+            else // difference mapping failsafe
             {
                 for(unsigned j=0; j<TIn::spatial_dimensions; j++ )
                 {
@@ -575,11 +594,12 @@ public:
 
 
         const helper::vector< unsigned >& indices = d_indices.getValue();
+        const helper::vector<Direction>& directions = d_directions.getValue();
 
         K.resizeBlocks(in.size(),in.size());
         for(size_t i=0; i<indices.size(); i++)
         {
-            if( !m_invlengths[i] ) continue;
+            if( !m_invlengths[i] && i>=directions.size() ) continue; // difference mapping failsafe
 
             // force in compression (>0) can lead to negative eigen values in geometric stiffness
             // this results in a undefinite implicit matrix that causes instabilies
