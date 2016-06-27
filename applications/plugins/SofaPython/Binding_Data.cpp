@@ -856,6 +856,58 @@ extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(data->getName().c_str());
 }
 
+
+
+
+// returns a pointer to the Data
+extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); // data->beginEditVoidPtr();  // warning a endedit should be necessary somewhere (when releasing the python variable?)
+    void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
+
+
+    // N-dimensional arrays
+    sofa::helper::vector<size_t> dimensions;
+    dimensions.push_back( typeinfo->size(dataValueVoidPtr) ); // total size to begin with
+    const AbstractTypeInfo* valuetypeinfo = typeinfo; // to go trough encapsulated types (at the end, it will correspond to the finest type)
+
+
+    while( valuetypeinfo->Container() )
+    {
+        size_t s = typeinfo->size(); // the current type size
+        dimensions.back() /= s; // to get the number of current type, the previous total size must be devided by the current type size
+        dimensions.push_back( s );
+        valuetypeinfo=valuetypeinfo->ValueType();
+    }
+
+    PyObject* shape = PyTuple_New(dimensions.size());
+    for( size_t i=0; i<dimensions.size() ; ++i )
+        PyTuple_SetItem( shape, i, PyLong_FromSsize_t( dimensions[i] ) );
+
+
+
+    // output = tuple( pointer, shape tuple, type name)
+    PyObject* res = PyTuple_New(3);
+
+    // the data pointer
+    PyTuple_SetItem( res, 0, PyLong_FromVoidPtr( valueVoidPtr ) );
+
+    // the shape
+    PyTuple_SetItem( res, 1, shape );
+
+    // the most basic type name
+    PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->name().c_str() ) );
+
+
+    return res;
+}
+
+
+
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
@@ -868,6 +920,7 @@ SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
+SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHODS_END
 
 

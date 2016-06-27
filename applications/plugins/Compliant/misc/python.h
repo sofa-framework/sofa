@@ -129,4 +129,16 @@ public:
 };
 
 
+
+struct with_py_callback {
+    typedef void* (*py_callback_type)(int);
+    py_callback_type py_callback;
+
+    with_py_callback();
+    virtual ~with_py_callback();
+};
+
+
+
+
 #endif
