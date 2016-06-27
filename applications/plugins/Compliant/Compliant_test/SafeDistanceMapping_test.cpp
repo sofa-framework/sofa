@@ -116,7 +116,6 @@ TYPED_TEST( SafeDistanceMappingTest, test )
 template <typename Mapping>
 struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
 {
-
     typedef SafeDistanceFromTargetMappingTest self;
     typedef Mapping_test<Mapping> base;
 
@@ -128,7 +127,7 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         mapping = static_cast<Mapping*>(this->base::mapping);
     }
 
-    bool test()
+    bool test_differencefailsafe()
     {
         // we need to increase the error, the mapping is too much non-linear
         // and the finite differences are too different from the analytic Jacobian
@@ -171,6 +170,53 @@ struct SafeDistanceFromTargetMappingTest : public Mapping_test<Mapping>
         return this->runTest(xin, expected);
     }
 
+    bool test_givendirections()
+    {
+        // we need to increase the error, the mapping is too much non-linear
+        // and the finite differences are too different from the analytic Jacobian
+        this->errorMax *= 300;
+
+        // mapping parameters
+        helper::vector<unsigned> indices(3);
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 1;
+        mapping->d_indices.setValue(indices);
+
+        typename self::InVecCoord targets(3);
+        targets[0] = typename self::InCoord(0,0,0);
+        targets[1] = typename self::InCoord(0,0,0);
+        targets[2] = typename self::InCoord(0,0,0);
+        mapping->d_targetPositions.setValue(targets);
+
+        helper::vector<SReal> restLengths(3);
+        restLengths[0] = 0;
+        restLengths[1] = 0;
+        restLengths[2] = 1;
+        mapping->d_restLengths.setValue(restLengths);
+
+        helper::vector<defaulttype::Vector3> directions(3);
+        directions[0] = defaulttype::Vector3(325,23,-54);
+        directions[1] = defaulttype::Vector3(1,0,0);
+        directions[2] = defaulttype::Vector3(1,0,0);
+        mapping->d_directions.setValue(directions);
+
+        mapping->d_geometricStiffness.setValue(1); // exact
+
+
+        // parents
+        typename self::InVecCoord xin(2);
+        xin[0] = typename self::InCoord(325,23,-54);
+        xin[1] = typename self::InCoord(1e-5,-1e-5,1e-7);
+
+        typename self::OutVecCoord expected(3);
+        expected[0] = typename self::OutCoord(xin[0].norm());
+        expected[1] = typename self::OutCoord(xin[1].norm());
+        expected[2] = typename self::OutCoord(xin[1].norm()-restLengths[2]);
+
+        return this->runTest(xin, expected);
+    }
+
 };
 
 
@@ -183,12 +229,15 @@ typedef Types<
 // Test suite for all the instanciations
 TYPED_TEST_CASE(SafeDistanceFromTargetMappingTest, DataTypes2);
 
-TYPED_TEST( SafeDistanceFromTargetMappingTest, test )
+TYPED_TEST( SafeDistanceFromTargetMappingTest, test_differencefailsafe )
 {
-    ASSERT_TRUE( this->test() );
+    ASSERT_TRUE( this->test_differencefailsafe() );
 }
 
-
+TYPED_TEST( SafeDistanceFromTargetMappingTest, test_givendirections )
+{
+    ASSERT_TRUE( this->test_givendirections() );
+}
 
 
 
