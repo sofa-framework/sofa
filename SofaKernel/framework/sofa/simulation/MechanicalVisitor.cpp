@@ -1638,27 +1638,9 @@ void MechanicalPickParticlesVisitor::getClosestParticle( core::behavior::BaseMec
 Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
 	//    std::cerr << "MechanicalPickParticlesVisitor::fwdMechanicalState, Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
-	bool tagOk = mustContainAllTags || tags.empty();
-    for(std::list<sofa::core::objectmodel::Tag>::const_iterator tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
-	{
-		if (!mm->hasTag(*tagIt)) // picking disabled for this model
-		{
-			if(mustContainAllTags)
-			{
-				tagOk = false;
-				break;
-			}
-		}
-		else if (mm->hasTag(*tagIt)) // picking disabled for this model
-		{
-			tagOk = true;
 
-			if(!mustContainAllTags)
-				break;
-		}
-	}
 
-	if(!tagOk)
+    if(!isComponentTagIncluded(mm))
 		return RESULT_CONTINUE;
 
 	//We deactivate the Picking with static objects (not simulated)
@@ -1678,6 +1660,10 @@ Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMappedMechanicalState
 {
 	if (node->mechanicalMapping  && !node->mechanicalMapping->isMechanical())
 		return RESULT_PRUNE;
+
+    if(!isComponentTagIncluded(mm))
+        return RESULT_CONTINUE;
+
 	mm->pickParticles(this->params, rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
 	return RESULT_CONTINUE;
 }
@@ -1690,7 +1676,29 @@ Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalMapping(sim
 	return RESULT_CONTINUE;
 }
 
+bool MechanicalPickParticlesWithTagsVisitor::isComponentTagIncluded(const behavior::BaseMechanicalState *mm)
+{
+    bool tagOk = mustContainAllTags || tags.empty();
+    for(std::list<sofa::core::objectmodel::Tag>::const_iterator tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
+    {
+        if (!mm->hasTag(*tagIt)) // picking disabled for this model
+        {
+            if(mustContainAllTags)
+            {
+                tagOk = false;
+                break;
+            }
+        }
+        else if (mm->hasTag(*tagIt)) // picking disabled for this model
+        {
+            tagOk = true;
 
+            if(!mustContainAllTags)
+                break;
+        }
+    }
+    return tagOk;
+}
 
 /// get the closest pickable particle
 void MechanicalPickParticlesWithTagsVisitor::getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength )
