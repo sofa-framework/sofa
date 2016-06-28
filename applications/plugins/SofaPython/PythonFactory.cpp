@@ -28,7 +28,7 @@
 namespace sofa
 {
 
-    PyObject * PythonFactory::s_sofaPythonModule;
+    PyObject * PythonFactory::s_sofaPythonModule = NULL;
 
     PythonFactory::PythonBoundTypes PythonFactory::s_boundTypes[PythonFactory::NB_LISTS];
 

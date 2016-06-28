@@ -56,7 +56,7 @@ set(HEADER_FILES
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
-    mapping/PythonMultiMapping.inl	
+    mapping/PythonMultiMapping.inl
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
@@ -68,7 +68,7 @@ set(HEADER_FILES
     misc/CompliantSolverMerger.h
     misc/FailNode.h
     misc/RigidMass.h
-	misc/SimpleAnimationLoop.h
+    misc/SimpleAnimationLoop.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/Benchmark.h
     numericalsolver/BenchmarkSolver.h
@@ -104,7 +104,7 @@ set(HEADER_FILES
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
     utils/anderson.h
-    utils/nlnscg.h	
+    utils/nlnscg.h
     utils/basis.h
     utils/bicgstab.h
     utils/cg.h
@@ -182,7 +182,7 @@ set(SOURCE_FILES
     misc/FailNode.cpp
     misc/RigidMass.cpp
     misc/python.cpp
-	misc/SimpleAnimationLoop.cpp
+    misc/SimpleAnimationLoop.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/Benchmark.cpp
     numericalsolver/BenchmarkSolver.cpp
@@ -211,7 +211,7 @@ set(SOURCE_FILES
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
-	utils/nlnscg.cpp	
+    utils/nlnscg.cpp
     utils/sub_kkt.cpp
 )
 
