@@ -206,7 +206,10 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
 //		else
 #endif /* SOFA_SMP */
     this->apply(mparams, vecOutPos, vecInPos);
+
+#ifdef SOFA_USE_MASK
     this->m_forceMaskNewStep = true;
+#endif
 }// MultiMapping::apply
 
 template <class In, class Out>
@@ -236,11 +239,13 @@ void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDeri
 
     this->applyJT(mparams, vecOutForce, vecInForce);
 
+#ifdef SOFA_USE_MASK
     if( this->m_forceMaskNewStep )
     {
         this->m_forceMaskNewStep = false;
         updateForceMask();
     }
+#endif
 }// MultiMapping::applyJT
 
 template <class In, class Out>

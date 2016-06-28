@@ -184,7 +184,9 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
             else
 #endif /* SOFA_SMP */
                 this->apply(mparams, *out, *in);
+#ifdef SOFA_USE_MASK
             this->m_forceMaskNewStep = true;
+#endif
         }
     }
 }// Mapping::apply
@@ -224,14 +226,15 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
-#ifdef SOFA_USE_MASK
 
+#ifdef SOFA_USE_MASK
             if( this->m_forceMaskNewStep )
             {
                 this->m_forceMaskNewStep = false;
                 updateForceMask();
             }
 #endif /*SOFA_USE_MASK*/
+
         }
     }
 }// Mapping::applyJT
