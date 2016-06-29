@@ -568,9 +568,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = sofa::helper::round(
-                    cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]), 1.)
-                );
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
