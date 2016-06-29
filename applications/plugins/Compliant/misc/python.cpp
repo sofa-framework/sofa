@@ -215,7 +215,7 @@ with_py_callback::~with_py_callback() { }
 
 
 /////////////////////////////////////////////////////////////////
-//////////////// CREATING A NEW PYTHON MODULE: SofaCompliant ////
+//////////////// CREATING A NEW PYTHON MODULE: _Compliant ////
 /////////////////////////////////////////////////////////////////
 
 
@@ -230,14 +230,14 @@ with_py_callback::~with_py_callback() { }
 #include "../assembly/AssembledSystem.h"
 
 /// args are node + factors m,b,k to return the linear combinaison mM+bB+kK
-extern "C" PyObject * SofaCompliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyObject * args)
+extern "C" PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
 
     float M,B,K;
     if (!PyArg_ParseTuple(args, "Offf", &pyNode, &M, &B, &K))
     {
-        SP_MESSAGE_ERROR( "SofaCompliant_getAssembledImplicitMatrix: wrong arguments" );
+        SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: wrong arguments" );
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
@@ -245,13 +245,13 @@ extern "C" PyObject * SofaCompliant_getAssembledImplicitMatrix(PyObject * /*self
     sofa::core::objectmodel::BaseNode* node=((PySPtr<sofa::core::objectmodel::Base>*)pyNode)->object->toBaseNode();
     if (!node)
     {
-        SP_MESSAGE_ERROR( "SofaCompliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
+        SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
 
-//    SP_MESSAGE_INFO( "SofaCompliant_getAssembledImplicitMatrix: "<<M<<" "<<B<<" "<<K );
+//    SP_MESSAGE_INFO( "_Compliant_getAssembledImplicitMatrix: "<<M<<" "<<B<<" "<<K );
 
     sofa::core::MechanicalParams mparams = *sofa::core::MechanicalParams::defaultInstance();
     mparams.setMFactor( M );
@@ -263,7 +263,7 @@ extern "C" PyObject * SofaCompliant_getAssembledImplicitMatrix(PyObject * /*self
     assemblyVisitor.assemble(sys); // assemble system
 
 
-//    SP_MESSAGE_INFO( "SofaCompliant_getAssembledImplicitMatrix: "<<sys.H );
+//    SP_MESSAGE_INFO( "_ompliant_getAssembledImplicitMatrix: "<<sys.H );
 
 
 
@@ -288,7 +288,7 @@ extern "C" PyObject * SofaCompliant_getAssembledImplicitMatrix(PyObject * /*self
 
 
 // Methods of the module
-SP_MODULE_METHODS_BEGIN(SofaCompliant)
-SP_MODULE_METHOD(SofaCompliant,getAssembledImplicitMatrix)
+SP_MODULE_METHODS_BEGIN(_Compliant)
+SP_MODULE_METHOD(_Compliant,getAssembledImplicitMatrix)
 SP_MODULE_METHODS_END
 
