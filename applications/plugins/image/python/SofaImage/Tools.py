@@ -120,10 +120,16 @@ class ImagePlaneController(Sofa.PythonScriptController):
 
 # simpler python script controllers based on SofaPython.script
 class Controller(ImagePlaneController):
-    def __new__(cls, node, name='pythonScriptController'):
+
+    def __new__(cls, node, name='pythonScriptController', filename=''):
+        """
+        :param filename: you may have to define it (at least once) to create
+                        a controller for which the class is defined in an external
+                        file. Be aware the file will then be read several times.
+        """
 
         node.createObject('PythonScriptController',
-                          filename = inspect.getfile(cls),
+                          filename = filename,
                           classname = cls.__name__,
                           name = name)
         try:
@@ -133,9 +139,10 @@ class Controller(ImagePlaneController):
         except AttributeError:
             # if this fails, you need to call
             # Controller.onLoaded(self, node) in derived classes
-            print "[SofaPython.script.Controller.__new__] instance not found, did you call 'SofaPython.script.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
+            print "[SofaImage.Controller.__new__] instance not found, did you call 'SofaImage.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
             raise
 
     def onLoaded(self, node):
         Controller.instance = self
+
 
