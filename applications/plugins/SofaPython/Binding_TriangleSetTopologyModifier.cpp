@@ -1,8 +1,5 @@
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
-#include <sofa/core/topology/Topology.h>
-#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
-#include <sofa/helper/vector.h>
 
 using namespace sofa;
 using namespace sofa::core::topology;
@@ -94,8 +91,8 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 {
     sofa::helper::vector< sofa::helper::vector< T > > vectorOfvector;
 
-    bool isList = PyList_Check(args);
-    bool isTwoDimensionsList = PyList_Check(PyList_GetItem(args,0));
+//    bool isList = PyList_Check(args);
+//    bool isTwoDimensionsList = PyList_Check(PyList_GetItem(args,0));
 
     std::size_t nbRows = PyList_Size(args);
     for (std::size_t i=0; i<nbRows; ++i)
@@ -114,7 +111,7 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
 {
 
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
     
     PyObject* triangleArgs  = NULL;
     PyObject* ancestorsArgs = NULL;
@@ -144,7 +141,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, P
 
 extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
 {
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
     
     PyObject* triangleIndicesArg      = NULL;
     PyObject* removeIsolatedEdgesArg  = NULL;
@@ -188,7 +185,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self
 extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
 {
 
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
 
     PyObject* trianglesArg            = NULL;
     PyObject* triangleIndicesArg      = NULL;

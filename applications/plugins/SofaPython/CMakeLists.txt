@@ -17,6 +17,7 @@ set(HEADER_FILES
     Binding_BaseMeshTopology.h
     Binding_BaseObject.h
     Binding_BaseState.h
+    Binding_BaseTopologyObject.h
     Binding_Context.h
     Binding_Data.h
     Binding_DataEngine.h
@@ -70,6 +71,7 @@ set(SOURCE_FILES
     Binding_BaseMeshTopology.cpp
     Binding_BaseObject.cpp
     Binding_BaseState.cpp
+    Binding_BaseTopologyObject.cpp
     Binding_Context.cpp
     Binding_Data.cpp
     Binding_DataEngine.cpp

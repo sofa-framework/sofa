@@ -1,7 +1,5 @@
 #include "Binding_PointSetTopologyModifier.h"
 #include "Binding_BaseObject.h"
-#include <SofaBaseTopology/PointSetTopologyModifier.h>
-#include <sofa/core/topology/TopologyChange.h>
 
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
@@ -13,7 +11,7 @@ using namespace sofa::core::topology;
 
 extern "C" PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * args)
 {
-    PointSetTopologyModifier* obj = dynamic_cast<PointSetTopologyModifier*>(((PySPtr<Base>*)self)->object.get());
+    PointSetTopologyModifier* obj = dynamic_cast<PointSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
 
     PyObject* ancestorElemsArg = NULL;
 

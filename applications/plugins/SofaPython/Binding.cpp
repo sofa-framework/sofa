@@ -50,6 +50,7 @@
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
 #include "Binding_LinearSpring.h"
+#include "Binding_BaseTopologyObject.h"
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
 #include "Binding_BaseMapping.h"
@@ -77,6 +78,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_SOFAMODULE(Data)
     SP_ADD_CLASS_IN_SOFAMODULE(DisplayFlagsData)
     SP_ADD_CLASS_IN_SOFAMODULE(OptionsGroupData)
+    SP_ADD_CLASS_IN_SOFAMODULE(PointAncestorElem)
 
     SP_ADD_CLASS_IN_SOFAMODULE(Link)
 
@@ -89,6 +91,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_SOFAMODULE(Base)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseContext)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseObject)
+    SP_ADD_CLASS_IN_SOFAMODULE(BaseTopologyObject)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseState)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseMechanicalState)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseMapping)
@@ -117,6 +120,8 @@ void bindSofaPythonModule()
     //SP_ADD_CLASS_IN_FACTORY(Controller)
     //SP_ADD_CLASS_IN_FACTORY(ScriptController)
     SP_ADD_CLASS_IN_FACTORY(PythonScriptController,sofa::component::controller::PythonScriptController)
+    SP_ADD_CLASS_IN_FACTORY(PointSetTopologyModifier,sofa::component::topology::PointSetTopologyModifier)
+    SP_ADD_CLASS_IN_FACTORY(TriangleSetTopologyModifier,sofa::component::topology::TriangleSetTopologyModifier)
 }
 
 

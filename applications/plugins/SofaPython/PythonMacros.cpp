@@ -20,20 +20,8 @@
 #include <sofa/core/BaseMapping.h>
 #include "PythonScriptController.h"
 
-
-#include "Binding_PointSetTopologyModifier.h"
-#include "Binding_TriangleSetTopologyModifier.h"
-
 typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
 typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
-
-
-    if( dynamic_cast<sofa::component::topology::TriangleSetTopologyModifier*>(obj) )
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(TriangleSetTopologyModifier));
-    if( dynamic_cast<sofa::component::topology::PointSetTopologyModifier*>(obj) )
-        return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(PointSetTopologyModifier));
-
-
 
 
 void printPythonExceptions()
