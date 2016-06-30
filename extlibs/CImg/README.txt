@@ -12,16 +12,16 @@
 
                     C++ Template Image Processing Toolkit
 
-                       ( http://cimg.sourceforge.net )
+                             ( http://cimg.eu )
 
-                                   1.6.2_pre040815
+                                   1.7.3
 
 --------------------------------------------------------------------------------
 
 # Summary
 #---------
 
-  The CImg Library is an open-source C++ toolkit for image processing.
+  The CImg Library is a small, open-source, modern C++ toolkit for image processing.
   It consists in a single header file 'CImg.h' providing a minimal set of C++
   classes and methods that can be used in your own sources, to load/save,
   process and display images. Very portable (Unix/X11,Windows, MacOS X, FreeBSD, .. ),
@@ -36,6 +36,8 @@
   - Maksim Aizenshtein
   - Alberto Albiol
   - Antonio Albiol
+  - Simon Barthelme
+  - Neil Brown
   - Haz-Edine Assemlal
   - Vincent Barra
   - Wolf Blecher
@@ -57,6 +59,7 @@
   - David Grimbichler
   - Jinwei Gu
   - Jean-Daniel Guyot
+  - Cedric Hammiche
   - Matt Hanson
   - Sebastien Hanel
   - Michael Holroyd
@@ -64,6 +67,7 @@
   - Werner Jainek
   - Daniel Kondermann
   - Pierre Kornprobst
+  - Jan W. Krieger
   - Orges Leka
   - Francois Lauze
   - Xie Long
@@ -106,7 +110,7 @@
  Antipolis/France ( http://www-sop.inria.fr/ ), in the ROBOTVIS / ODYSSEE Team.
  Since October 2004, it is maintained and developed in the Image team of
  the GREYC Lab (CNRS, UMR 6072), in Caen/France.
- Team web page : http://www.greyc.ensicaen.fr/EquipeImage/
+ Team web page : http://www.greyc.fr/image
 
 # Licenses
 #----------
@@ -165,7 +169,7 @@
   If you are new to CImg, you should first try to compile the different examples
   provided in the 'examples/' directory, to see what CImg is capable of
   (as CImg is a template-based library, no prior compilation of the library is mandatory).
-  Look at the 'resources/' directory to ease this compilation on different plateforms.
+  Look at the 'resources/' directory to ease this compilation on different platforms.
 
   Then, you can look at the documentation 'html/reference/' to learn more about CImg
   functions and classes. Finally, you can participate to the 'Forum' section

@@ -26,7 +26,7 @@
 // this file contains CImg extensions for SOFA
 
 #include <queue>
-#define cimg_plugin "skeleton.h"
+#define cimg_plugin "plugins/skeleton.h"
 
 #if defined(_OPENMP) && (_OPENMP >= 200805)
 #include <omp.h>
