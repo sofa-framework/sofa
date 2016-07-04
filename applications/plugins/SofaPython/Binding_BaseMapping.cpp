@@ -128,7 +128,7 @@ extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 
 
 // TODO inefficient
-// have a look to how to directlry bind sparse Eigen matrices
+// have a look to how to directly bind Eigen sparse matrices
 extern "C" PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();

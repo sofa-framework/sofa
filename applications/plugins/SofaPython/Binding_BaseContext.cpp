@@ -196,6 +196,8 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
 
 
 
+
+// @TODO: pass keyword arguments rather than optional arguments?
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
@@ -213,9 +215,6 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    std::string name_str ( name ? name : "" );
-    ObjectFactory::ClassEntry* class_entry = type_name ? &ObjectFactory::getInstance()->getEntry(type_name) : NULL;
-    
     sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
     if ( search_direction ) 
     {
@@ -253,9 +252,10 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     for (size_t i=0; i<list.size(); i++)
     {
         BaseObject* o = list[i].get();
-        if ( !class_entry || o->getClassName() == class_entry->className || class_entry->creatorMap.find(o->getClassName()) != class_entry->creatorMap.end())
+
+        if( !type_name || o->getClass()->hasParent( type_name ) )
         {
-            if ( !name || name_str == o->getName())
+            if ( !name || name == o->getName() )
             {
                 PyObject* obj=sofa::PythonFactory::toPython(o); // ref 1
                 PyList_Append(pyList,obj); // ref 2
