@@ -90,10 +90,12 @@ typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::
 typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
+
+static sofa::simulation::Node::SPtr root;
+
 simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
-
-    simulation::Node::SPtr root = simulation::getSimulation()->createNewGraph("root");
+    root = simulation::getSimulation()->createNewGraph("root");
 
     //Components for collision management
     //------------------------------------
@@ -434,10 +436,12 @@ simulation::Node::SPtr massSpringString
 
 }
 
+
 Node::SPtr initSofa()
 {
     setSimulation(new simulation::graph::DAGSimulation());
-    return simulation::getSimulation()->createNewGraph("root");
+    root = simulation::getSimulation()->createNewGraph("root");
+    return root;
 //    root = modeling::newRoot();
 //    root->setName("Solver_test_scene_root");
 }
@@ -458,7 +462,7 @@ simulation::Node::SPtr clearScene()
 }
 
 
-Node::SPtr getRoot() { return simulation::getSimulation()->GetRoot(); }
+Node::SPtr getRoot() { return root; }
 
 Vector getVector( core::ConstVecId id, bool indep )
 {

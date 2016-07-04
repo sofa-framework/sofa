@@ -73,9 +73,7 @@ DAGSimulation::~DAGSimulation()
 
 Node::SPtr DAGSimulation::createNewGraph(const std::string& name)
 {
-    unload(sRoot);
-    sRoot = sofa::core::objectmodel::New<DAGNode>(name);
-    return sRoot;
+    return createNewNode( name );
 }
 
 Node::SPtr DAGSimulation::createNewNode(const std::string& name)

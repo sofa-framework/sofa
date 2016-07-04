@@ -87,7 +87,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
     helper::vector<InDOFs*>  inDofs;  ///< mapping input
     OutDOFs* outDofs; ///< mapping output
-    simulation::Node* root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Node::SPtr child; ///< Child node, created by setupScene
     helper::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
@@ -106,7 +106,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     */
     void setupScene(int numParents)
     {
-        root = simulation->createNewGraph("root").get();
+        root = simulation->createNewGraph("root");
 
         /// Child node
         child = root->createChild("childNode");
@@ -170,7 +170,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root);
+        sofa::simulation::getSimulation()->init(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());

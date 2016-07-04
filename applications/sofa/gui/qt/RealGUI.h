@@ -327,6 +327,8 @@ protected:
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
+    sofa::simulation::Node::SPtr mSimulation;
+
 private:
     void addViewer();//? where is the implementation ?
 

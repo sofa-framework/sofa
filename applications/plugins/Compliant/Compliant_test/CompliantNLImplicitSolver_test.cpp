@@ -225,7 +225,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         }
 
 
-//        sofa::simulation::getSimulation()->exportXML( sofa::simulation::getSimulation()->GetRoot().get(), "/tmp/test.scn" );
+//        sofa::simulation::getSimulation()->exportXML( root.get(), "/tmp/test.scn" );
 
 
         //**************************************************
