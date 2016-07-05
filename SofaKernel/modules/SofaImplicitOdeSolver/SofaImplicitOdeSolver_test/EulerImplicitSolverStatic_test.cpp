@@ -82,7 +82,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 
         // end create scene
         //*********
-        initScene();
+        initScene(root);
         //*********
         // run simulation
 
@@ -191,7 +191,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         // end create scene
         //*********
-        initScene();
+        initScene(root);
         //*********
         // run simulation
 

@@ -91,7 +91,7 @@ typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3
 typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
 
-static sofa::simulation::Node::SPtr root;
+static sofa::simulation::Node::SPtr root = NULL;
 
 simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
@@ -447,28 +447,26 @@ Node::SPtr initSofa()
 }
 
 
-void initScene()
+void initScene(simulation::Node::SPtr _root)
 {
-    sofa::simulation::getSimulation()->init(getRoot().get());
-
+    root = _root;
+    sofa::simulation::getSimulation()->init(root.get());
 }
 
 simulation::Node::SPtr clearScene()
 {
-    if( getRoot() )
-        Simulation::theSimulation->unload( getRoot() );
-    Simulation::theSimulation->createNewGraph("");
-    return getRoot();
+    if( root )
+        Simulation::theSimulation->unload( root );
+    root = Simulation::theSimulation->createNewGraph("");
+    return root;
 }
 
-
-Node::SPtr getRoot() { return root; }
 
 Vector getVector( core::ConstVecId id, bool indep )
 {
     GetAssembledSizeVisitor getSizeVisitor;
     getSizeVisitor.setIndependentOnly(indep);
-    getRoot()->execute(getSizeVisitor);
+    root->execute(getSizeVisitor);
     unsigned size;
     if (id.type == sofa::core::V_COORD)
         size =  getSizeVisitor.positionSize();
@@ -477,7 +475,7 @@ Vector getVector( core::ConstVecId id, bool indep )
     FullVector v(size);
     GetVectorVisitor getVec( core::MechanicalParams::defaultInstance(), &v, id);
     getVec.setIndependentOnly(indep);
-    getRoot()->execute(getVec);
+    root->execute(getVec);
 
     Vector ve(size);
     for(size_t i=0; i<size; i++)
