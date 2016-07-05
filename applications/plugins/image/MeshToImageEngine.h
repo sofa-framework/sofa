@@ -677,8 +677,12 @@ protected:
         triangles.push_back(_Triangle(p2,p0,p1));
         std::sort(triangles.begin(), triangles.end());
 
-        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), color0, color1, color2, subdiv);
-        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), color0, color1, color2, subdiv);
+        std::map<Coord,Real> ptoC;
+        ptoC[p0]=color0;
+        ptoC[p1]=color1;
+        ptoC[p2]=color2;
+        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), ptoC[triangles[0].p0()], ptoC[triangles[0].p1()], ptoC[triangles[0].p2()], subdiv);
+        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), ptoC[triangles[1].p0()], ptoC[triangles[1].p1()], ptoC[triangles[1].p2()], subdiv);
     }
 
     template<class PixelT>
