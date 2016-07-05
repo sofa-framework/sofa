@@ -21,7 +21,7 @@ import RigidScale.API
 # Recognized flag from the sml
 BoneType = ("flat", "irregular", "long", "short", "special")
 FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 5, "special": 20}
-IntegrationPointPerBoneType = {"short": 1, "long": 20, "flat": 10, "irregular": 20, "special": 20}
+IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 20, "special": 20}
 TransferMethod = ("minimal", "interpolation", "classic", "icp")
 ConstraintType = ("straight")
 ROIFlag = ("frameROI", "registrationROI")
@@ -127,6 +127,7 @@ class Bone():
         # Depending on the frame set in the constructor, let decide how the body will be initialized
         if (self.frame == None) or (len(self.frame) < FramePerBoneType[self.type]):
             self.body.setFromMesh(self.filepath, density, offset, scale3d, self.voxelSize, FramePerBoneType[self.type])
+            for p in self.body.frame: self.frame.append(p.offset())
         else:
             scale3dList = []
             for i in range(len(self.frame)): scale3dList.append(scale3d)
