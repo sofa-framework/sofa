@@ -1074,7 +1074,7 @@ void MechanicalObject<DataTypes>::init()
 
     if (l_topology)
     {
-        sout << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() << " ( " << l_topology->getNbPoints() << " points " << (l_topology->hasPos() ? "WITH" : "WITHOUT") << " positions)" << sendl;
+        sout << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() << " ( " << l_topology->getNbPoints() << " points)" << sendl; // << (l_topology->hasPos() ? "WITH" : "WITHOUT") << " positions)"
     }
 
     //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
