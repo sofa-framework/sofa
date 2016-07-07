@@ -32,7 +32,7 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 # target scale used when the scale is close to 0
-target_scale = [1E-6, 1E-6, 1E-6]
+target_scale = [1E-3, 1E-3, 1E-3]
 
 class ShearlessAffineBody:
     
@@ -102,6 +102,12 @@ class ShearlessAffineBody:
         affineMass = Flexible.API.AffineMass(self.affineNode)
         affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
         self.mass = affineMass.mass
+
+        # hack to get the frame position
+        self.node.init()
+        for p in self.sampler.sampler.position:
+            p.extend([0,0,0,1])
+            self.frame.append(Frame.Frame(p))
 
     def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, generatedDir=None):
         if len(offset) == 0:

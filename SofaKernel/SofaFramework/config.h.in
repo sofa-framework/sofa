@@ -59,6 +59,8 @@
 
 #cmakedefine SOFA_DOUBLE
 
+#cmakedefine SOFA_USE_MASK
+
 #ifdef SOFA_FLOAT
 typedef float SReal;
 #else

@@ -244,14 +244,11 @@ endif()
 install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
 
 
-### Extlibs
+### Mask
 option(SOFA_USE_MASK "Use mask optimization" ON)
-if(SOFA_USE_MASK)
-    add_definitions(-DSOFA_USE_MASK)
-endif()
 
 
-### Extlibs
+### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
@@ -259,6 +256,7 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+### Extlibs
 add_subdirectory(extlibs)
 
 

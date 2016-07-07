@@ -964,7 +964,7 @@ struct ImageTypeInfo
     enum { Scalar          = 0                             }; ///< 1 if this type uses scalar values
     enum { Text            = 0                             }; ///< 1 if this type uses text values
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write -> it seems to be THE important option not to perform too many copies
-    enum { Container       = 1                             }; ///< 1 if this type is a container
+    enum { Container       = 0                             }; ///< 1 if this type is a container
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
 

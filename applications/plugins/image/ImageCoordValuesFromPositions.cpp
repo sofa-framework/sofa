@@ -16,72 +16,41 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MatEigen_H
-#define SOFA_DEFAULTTYPE_MatEigen_H
+#define SOFA_IMAGE_ImageCoordValuesFromPositions_CPP
 
-/** Helpers to apply Eigen matrix methods to the Mat sofa type */
-
-#include <sofa/defaulttype/Mat.h>
-#include <Eigen/Dense>
-#include <iostream>
-
+#include "ImageCoordValuesFromPositions.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-template <int NumRows, int NumCols, class Real>
-Eigen::Matrix<Real, NumRows, NumCols> eigenMat( const defaulttype::Mat< NumRows, NumCols, Real>& mat )
+namespace engine
 {
-    Eigen::Matrix<Real, NumRows, NumCols> emat;
-    for(int i=0; i<NumRows; i++)
-        for(int j=0; j<NumCols; j++)
-            emat(i,j) = mat[i][j];
-    return emat;
-}
 
-template <int NumRows, int NumCols, class Real>
-defaulttype::Mat<NumRows, NumCols, Real>  sofaMat( const Eigen::Matrix<Real, NumRows, NumCols>& emat )
-{
-    defaulttype::Mat<NumRows, NumCols, Real> mat;
-    for(int i=0; i<NumRows; i++)
-        for(int j=0; j<NumCols; j++)
-            mat[i][j] = emat(i,j);
-    return mat;
-}
+using namespace defaulttype;
 
-template <int NumRows, class Real>
-defaulttype::Vec<NumRows, Real>  sofaVec( const Eigen::Matrix<Real, NumRows, 1>& evec )
-{
-    defaulttype::Vec<NumRows, Real> vec;
-    for(int i=0; i<NumRows; i++)
-        vec[i] = evec(i);
-    return vec;
-}
+SOFA_DECL_CLASS(ImageCoordValuesFromPositions)
 
-template <int NumRows, class Real>
-Eigen::Matrix<Real, NumRows, 1>  eigenVec( const defaulttype::Vec<NumRows, Real>& vec )
-{
-    Eigen::Matrix<Real, NumRows, 1> evec;
-    for(int i=0; i<NumRows; i++)
-        evec(i)  = vec[i];
-    return evec;
-}
+int ImageCoordValuesFromPositionsClass = core::RegisterObject("Get interpolated coordinates at sample locations in an image with 3 channels")
+        .add<ImageCoordValuesFromPositions<ImageD> >(true)
+        .add<ImageCoordValuesFromPositions<ImageF> >()
+        ;
+
+template class SOFA_IMAGE_API ImageCoordValuesFromPositions<ImageD>;
+template class SOFA_IMAGE_API ImageCoordValuesFromPositions<ImageF>;
 
 
-
-} // namespace defaulttype
+} //
+} // namespace component
 
 } // namespace sofa
 
-// iostream
-
-#endif

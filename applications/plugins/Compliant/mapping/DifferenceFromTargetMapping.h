@@ -33,13 +33,11 @@ public:
 
     typedef DifferenceFromTargetMapping Self;
 
-    typedef typename TIn::Coord InCoord;
     typedef typename TIn::VecCoord InVecCoord;
 
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    typedef helper::vector< InCoord > targets_type;
-    Data< targets_type > targets;
+    Data< InVecCoord > targets;
 
     Data< bool > inverted;
     Data< SReal > d_showObjectScale; ///< drawing size
@@ -67,7 +65,7 @@ public:
         else this->toModel->resize( ind.size() );
 
         // if targets is empty, set it with actual positions
-        targets_type& t = *targets.beginEdit();
+        InVecCoord& t = *targets.beginEdit();
         if( t.empty() )
         {
             helper::ReadAccessor<Data<InVecCoord> > x = this->fromModel->read(core::ConstVecCoordId::position());
@@ -95,7 +93,7 @@ public:
     virtual void apply(typename Self::out_pos_type& out,
                        const typename Self::in_pos_type& in )
     {
-        const targets_type& t = targets.getValue();
+        const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
 
         if( ind.empty() )
@@ -170,7 +168,7 @@ public:
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        const targets_type& t = targets.getValue();
+        const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
 
         helper::vector< sofa::defaulttype::Vector3 > points;

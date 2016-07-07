@@ -150,7 +150,6 @@ struct DotProductMultiMappingTest : public MultiMapping_test<Mapping>
 
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
-using testing::Types;
 typedef Types<
     component::mapping::DotProductMultiMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
 > DataTypes2; // the types to instanciate.
@@ -159,6 +158,78 @@ typedef Types<
 TYPED_TEST_CASE(DotProductMultiMappingTest, DataTypes2);
 
 TYPED_TEST( DotProductMultiMappingTest, test )
+{
+    ASSERT_TRUE( this->test() );
+}
+
+/////////////////////
+
+
+
+/**  Test suite for DotProductFromTargetMapping
+  */
+template <typename Mapping>
+struct DotProductFromTargetMappingTest : public Mapping_test<Mapping>
+{
+
+    typedef DotProductFromTargetMappingTest self;
+    typedef Mapping_test<Mapping> base;
+
+    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+
+    Mapping* mapping;
+
+    DotProductFromTargetMappingTest() {
+        mapping = static_cast<Mapping*>(this->base::mapping);
+    }
+
+    bool test()
+    {
+        // we need to increase the error for avoiding numerical problem
+        this->errorMax *= 600;
+        this->deltaRange.first = this->errorMax*100;
+        this->deltaRange.second = this->errorMax*1000;
+
+        // parents
+        typename self::InVecCoord xin(4);
+        xin[0] = typename self::InCoord(1,1,1);
+        xin[1] = typename self::InCoord(5,6,7);
+        xin[2] = typename self::InCoord(12,-3,6);
+        xin[3] = typename self::InCoord(8,-2,-4);
+
+        typename self::OutVecCoord expected(3);
+        expected[0] = typename self::OutCoord(20);
+        expected[1] = typename self::OutCoord(18);
+        expected[2] = typename self::OutCoord(15);
+
+        // mapping parameters
+        helper::vector<unsigned> indices(3);
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+        mapping->d_indices.setValue(indices);
+
+        typename self::InVecCoord targets(2);
+        targets[0] = typename self::InCoord(10,-20,30);
+        targets[1] = typename self::InCoord(1,1,1);
+        mapping->d_targets.setValue(targets);
+
+
+        return this->runTest(xin, expected);
+    }
+
+};
+
+
+// Define the list of types to instanciate. We do not necessarily need to test all combinations.
+typedef Types<
+    component::mapping::DotProductFromTargetMapping<defaulttype::Vec3Types, defaulttype::Vec1Types>
+> DataTypes3; // the types to instanciate.
+
+// Test suite for all the instanciations
+TYPED_TEST_CASE(DotProductFromTargetMappingTest, DataTypes3);
+
+TYPED_TEST( DotProductFromTargetMappingTest, test )
 {
     ASSERT_TRUE( this->test() );
 }

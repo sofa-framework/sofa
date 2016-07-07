@@ -22,6 +22,7 @@ set(SOURCE_FILES
     ImageTransformEngine.cpp
     ImageTypes.cpp
     ImageValuesFromPositions.cpp
+    ImageCoordValuesFromPositions.cpp
     MarchingCubesEngine.cpp
     MergeImages.cpp
     MeshToImageEngine.cpp
@@ -47,6 +48,7 @@ set(HEADER_FILES
     ImageTransformEngine.h
     ImageTypes.h
     ImageValuesFromPositions.h
+    ImageCoordValuesFromPositions.h
     MarchingCubesEngine.h
     MergeImages.h
     MeshToImageEngine.h

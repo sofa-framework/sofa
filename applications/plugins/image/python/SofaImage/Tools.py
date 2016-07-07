@@ -119,6 +119,8 @@ class ImagePlaneController(Sofa.PythonScriptController):
 
 
 # simpler python script controllers based on SofaPython.script
+# TODO maybe this should be double Inherited from both ImagePlaneController and SofaPython.script.Controller
+# not to copy code. But then testing inheritance against ImagePlaneController has to be checked.
 class Controller(ImagePlaneController):
 
     def __new__(cls, node, name='pythonScriptController', filename=''):
