@@ -27,7 +27,7 @@
 
 #include <sofa/core/collision/DetectionOutput.h>
 
-#include <sofa/component/initConstraint.h>
+#include <SofaConstraint/initConstraint.h>
 
 #include <list>
 

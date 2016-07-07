@@ -205,7 +205,6 @@ private:
     unsigned int _offset;
 };
 
-        c->setConstraintId(contactId);
 } // namespace constraintset
 
 } // namespace component

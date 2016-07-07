@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
-#include <sofa/component/collision/ContactIdentifier.h>
+#include <SofaConstraint/ContactIdentifier.h>
 namespace sofa
 {
 
@@ -47,16 +47,18 @@ namespace collision
 
 
 
-template <class TCollisionModel1, class TCollisionModel2>
+template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
 class FrictionContact : public core::collision::Contact, public ContactIdentifier
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2), core::collision::Contact);
+    SOFA_CLASS(SOFA_TEMPLATE3(FrictionContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), core::collision::Contact);
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
-    typedef ResponseDataTypes DataTypes1;
-    typedef ResponseDataTypes DataTypes2;
+    typedef typename TCollisionModel1::DataTypes::CPos TVec1;
+    typedef typename TCollisionModel1::DataTypes::CPos TVec2;
+    typedef sofa::defaulttype::StdVectorTypes<TVec1, TVec2, typename TCollisionModel1::DataTypes::Real > DataTypes1;
+    typedef sofa::defaulttype::StdVectorTypes<TVec1, TVec2, typename TCollisionModel1::DataTypes::Real > DataTypes2;
 
     typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;

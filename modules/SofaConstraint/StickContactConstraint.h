@@ -32,7 +32,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <sofa/component/collision/ContactIdentifier.h>
+#include <SofaConstraint/ContactIdentifier.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
