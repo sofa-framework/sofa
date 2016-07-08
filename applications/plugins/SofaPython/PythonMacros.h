@@ -100,7 +100,6 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
     return (PyObject*)pyObj;
 }
 
-
 // =============================================================================
 // Ptr objects passed to python
 // deletion can be made by Python IF the "deletable" flag is true,
@@ -252,7 +251,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_DECLARE_CLASS_TYPE(Type) SOFA_SOFAPYTHON_API extern PyTypeObject SP_SOFAPYTYPEOBJECT(Type);
 
 // définition générique (macro intermédiaire)
-#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc, DeallocFunc)   \
+#define SP_CLASS_TYPE_DEF(Type,ObjSize,AttrTable,ParentTypeObjet,NewFunc,FreeFunc,GetAttrFunc,SetAttrFunc,DeallocFunc)   \
                                                                     PyTypeObject SP_SOFAPYTYPEOBJECT(Type) = { \
                                                                     PyVarObject_HEAD_INIT(NULL, 0) \
                                                                     "Sofa."#Type, \

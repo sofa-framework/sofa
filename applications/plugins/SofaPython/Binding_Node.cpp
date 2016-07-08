@@ -317,7 +317,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
-    down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
