@@ -185,22 +185,20 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         else:
             _tags = tags
 
-        for tag in _tags:
-            if tag in self.model.solidsByTag:
-                for solid in self.model.solidsByTag[tag]:
-                    if not solid.id in self.rigids:
-                        Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
-                        continue
-                    rigid = self.rigids[solid.id]
-                    if mergeNode is None:
-                        mergeNode = rigid.node.createChild(mergeNodeName)
-                    else:
-                        rigid.node.addChild(mergeNode)
-                    input += '@'+rigid.node.getPathName()+" "
-                    indexPairs += str(currentRigidIndex) + " 0 "
-                    if not rigidIndexById is None:
-                        rigidIndexById[solid.id]=currentRigidIndex
-                    currentRigidIndex+=1
+        for solid in self.model.getSolidsByTags(_tags):
+            if not solid.id in self.rigids:
+                Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
+                continue
+            rigid = self.rigids[solid.id]
+            if mergeNode is None:
+                mergeNode = rigid.node.createChild(mergeNodeName)
+            else:
+                rigid.node.addChild(mergeNode)
+            input += '@'+rigid.node.getPathName()+" "
+            indexPairs += str(currentRigidIndex) + " 0 "
+            if not rigidIndexById is None:
+                rigidIndexById[solid.id]=currentRigidIndex
+            currentRigidIndex+=1
         if input:
             mergeNode.createObject("MechanicalObject", template = "Rigid3", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
@@ -231,10 +229,8 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         Compliant.StructuralAPI.geometric_stiffness = self.param.geometricStiffness
 
         # rigids
-        for tag in self.param.rigidTags:
-            if tag in self.model.solidsByTag:
-                for rigidModel in self.model.solidsByTag[tag]:
-                    self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
+        for rigidModel in self.model.getSolidsByTags(self.param.rigidTags):
+            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
@@ -253,27 +249,26 @@ class SceneSkinning(SceneArticulatedRigid) :
 
     def createScene(self):
 
-        self.model.setSolidTagFromTag("armature", "rigid")
+        self.param.rigidTags.add("armature")
 
         SceneArticulatedRigid.createScene(self)
         
-        if "armature" in self.model.solidsByTag:
-            # insert node containing all bones of the armature
-            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
-            for solidModel in self.model.solids.values():
-                print solidModel.name, len(solidModel.skinnings)
-                if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
-                    # for each mesh create a Flexible.API.Deformable
-                    for mesh in solidModel.mesh:
-                        # take care only of visual meshes with skinning
-                        if solidModel.meshAttributes[mesh.id].visual:
-                            deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
-                            deformable.loadMesh(mesh.source)
-                            deformable.addMechanicalObject()
-                            (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
-                            deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
-                            deformable.addVisual()
-                            self.deformables[mesh.id] = deformable
+        # insert node containing all bones of the armature
+        self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
+        for solidModel in self.model.solids.values():
+            print solidModel.name, len(solidModel.skinnings)
+            if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
+                # for each mesh create a Flexible.API.Deformable
+                for mesh in solidModel.mesh:
+                    # take care only of visual meshes with skinning
+                    if solidModel.meshAttributes[mesh.id].visual:
+                        deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
+                        deformable.loadMesh(mesh.source)
+                        deformable.addMechanicalObject()
+                        (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
+                        deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
+                        deformable.addVisual()
+                        self.deformables[mesh.id] = deformable
 
 #                        self.deformables[solidModel.id]=Flexible.API.Deformable(self.nodes["armature"], solidModel.name)
 #                    self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
