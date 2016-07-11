@@ -429,11 +429,6 @@ class Model:
                 obj.tags.add(newTag)
         self._updateTag(objects, objectsByTag)
 
-    def setTagFromTag(self, tag, newTag):
-        """ @deprecated use setSolidTagFromTag() instead
-        """
-        self.setSolidTagFromTag(tag, newTag)
-
     def setSolidTagFromTag(self, tag, newTag):
         """ assign newTag to all solids with tag
         """

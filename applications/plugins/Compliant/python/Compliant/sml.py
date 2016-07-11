@@ -253,7 +253,7 @@ class SceneSkinning(SceneArticulatedRigid) :
 
     def createScene(self):
 
-        self.model.setTagFromTag("armature", "rigid")
+        self.model.setSolidTagFromTag("armature", "rigid")
 
         SceneArticulatedRigid.createScene(self)
         
