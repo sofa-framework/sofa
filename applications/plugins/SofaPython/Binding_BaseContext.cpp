@@ -114,7 +114,9 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
     if (obj==0)
     {
-        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" )
+        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            SP_MESSAGE_ERROR(*it);
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
