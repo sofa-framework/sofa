@@ -158,6 +158,14 @@ class Model:
         def addImage(self, image):
             self.image.append(image)
 
+        def getParamByTag(self, paramsByTag):
+            """ Look for the first value in paramsByTag which matches a tag for this solid
+            \todo print warning when 2 tags or more are suitable
+            """
+            for tag in self.tags:
+                if tag in paramsByTag:
+                    return paramsByTag[tag]
+            Sofa.msg_info('SofaPython.sml',"Solid.getParamByTag: no suitable value for "+self.name+" in "+paramsByTag+" solid tags are: "+self.tags)
 
         def parseXml(self, objXml):
             parseIdName(self, objXml)
