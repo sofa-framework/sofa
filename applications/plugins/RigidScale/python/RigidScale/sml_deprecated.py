@@ -349,6 +349,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # sofa important component
         self.collisions = dict()
         self.visuals = dict()
+        self.visualStyles = dict()
         self.behaviors = dict()
 
         # settings
@@ -379,15 +380,16 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
 
         # scene creation
         for b in SMLBones.values():
-            self.bones[b.name] = b.setup(self.node,generatedDir=self.generatedDir)
-            self.bones[b.name].affineDofs.showObject=self.param.showRigid
-            self.bones[b.name].affineDofs.showObjectScale=SofaPython.units.length_from_SI(self.param.showRigidScale)
+            self.bones[b.name] = b.setup(self.node, generatedDir=self.generatedDir)
+            self.bones[b.name].affineDofs.showObject = self.param.showRigid
+            self.bones[b.name].affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
             # add of behavior models
             self.behaviors[b.name] = b.behavior
             # add of collision models
             self.collisions[b.name] = b.collision
             # add of visual models
-            self.visuals[b.name] = b.visual
+            self.visuals[b.name] = b.visual.model
+            self.visualStyles[b.name] = b.visual.node.createObject('VisualStyle', displayFlags='showVisual')
             # visualisation of dofs as point
             if self.param.showRigidDOFasSphere:
                 l = 0.00675 if b.type != "short" else 0.00335
