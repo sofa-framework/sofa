@@ -371,12 +371,11 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         SMLBones = dict()
 
         # rigids
-        if "bone" in self.model.solidsByTag:
-            for rigidModel in self.model.solidsByTag["bone"]:
-                bone = Bone(rigidModel.name)
-                bone.elasticity = SofaPython.units.elasticity_from_SI(self.param.elasticity)
-                bone.voxelSize = SofaPython.units.length_from_SI(self.param.voxelSize)
-                SMLBones[bone.name] = bone.initUsingSMLModel(rigidModel)
+        for rigidModel in self.model.getSolidsByTags({"bone"}):
+            bone = Bone(rigidModel.name)
+            bone.elasticity = SofaPython.units.elasticity_from_SI(self.param.elasticity)
+            bone.voxelSize = SofaPython.units.length_from_SI(self.param.voxelSize)
+            SMLBones[bone.name] = bone.initUsingSMLModel(rigidModel)
 
         # scene creation
         for b in SMLBones.values():
@@ -419,11 +418,10 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # -- constraints: only alignement constrainy will be handle for the moment
         # variables
         SMLBonesStraightConstraint = dict() # all  the constraints
-        if "straight" in self.model.solidsByTag:
-            for boneModel in self.model.solidsByTag["straight"]:
-                bone = SMLBones[boneModel.name]
-                constraint = Constraint(bone.name, bone)
-                SMLBonesStraightConstraint[bone.name] = constraint.initUsingSMLModel(boneModel)
+        for boneModel in self.model.getSolidsByTags({"straight"}):
+            bone = SMLBones[boneModel.name]
+            constraint = Constraint(bone.name, bone)
+            SMLBonesStraightConstraint[bone.name] = constraint.initUsingSMLModel(boneModel)
 
         for c in SMLBonesStraightConstraint.values():
             constraint = c.setup(self.param.useCompliance, self.param.constraintCompliance, self.param.showOffset, SofaPython.units.length_from_SI(self.param.showOffsetScale))
