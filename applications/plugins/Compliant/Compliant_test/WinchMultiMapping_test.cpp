@@ -27,7 +27,7 @@
 
 #include <SofaTest/MultiMapping_test.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <Compliant/mapping/WinchMultiMapping.h>
 
 

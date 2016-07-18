@@ -68,7 +68,7 @@ namespace mapping
                            const helper::vector<typename self::in_pos_type>& in)  {
             Real f = factor.getValue();
 
-            for( unsigned j = 0, m = in[0].size(); j < m; ++j) {
+            for( size_t j = 0, m = in[0].size(); j < m; ++j) {
                 out[j] = f * TIn::getCPos( in[1] [j] ) - TIn::getCPos( in[0] [j] );
             }
 
@@ -87,7 +87,7 @@ namespace mapping
 
             Real f = factor.getValue();
 
-            for(unsigned i = 0, n = in.size(); i < n; ++i) {
+            for(size_t i = 0, n = in.size(); i < n; ++i) {
 
                 typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
@@ -96,7 +96,7 @@ namespace mapping
 
                 Real sign = (i == 0) ? -1 : f;
 
-                for(unsigned k = 0, n = in[i].size(); k < n; ++k) {
+                for(size_t k = 0, n = in[i].size(); k < n; ++k) {
                     write_block(J, k, k, sign);
                 }
 
