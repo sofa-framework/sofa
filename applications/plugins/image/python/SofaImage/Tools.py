@@ -60,6 +60,14 @@ def getImageTransform(filename, scaleFactor=1):
     offset=[tr[0],tr[1],tr[2],q[0],q[1],q[2],q[3]]
     return (dim,scale,offset)
 
+def getImagePerspective(filename):
+    with open(filename,'r') as f:
+        for line in f:
+            splitted = line.split()
+            if len(splitted)!=0:
+                if 'isPerpective'==splitted[0]:
+                    return map(int,splitted[2:3])[0]
+    return 0
 
 def getImageType(filename):
     """ Returns type of an image given an .mhd header image file
