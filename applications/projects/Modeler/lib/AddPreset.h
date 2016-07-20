@@ -25,7 +25,7 @@
 #ifndef ADDPRESET_H
 #define ADDPRESET_H
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 #include <QDialog>
 

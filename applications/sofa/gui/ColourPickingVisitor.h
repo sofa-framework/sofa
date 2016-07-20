@@ -26,8 +26,8 @@
 #define SOFA_GUI_COLOURPICKING_VISITOR
 
 #include <sofa/gui/SofaGUI.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ExecParams.h>
 #include <SofaMeshCollision/TriangleModel.h>

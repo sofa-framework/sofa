@@ -27,7 +27,7 @@
 
 #include "QGraphStatWidget.h"
 
-#include <sofa/simulation/common/MechanicalGetMomentumVisitor.h>
+#include <sofa/simulation/MechanicalGetMomentumVisitor.h>
 
 namespace sofa
 {

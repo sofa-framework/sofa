@@ -36,7 +36,7 @@
 
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 
 
@@ -109,7 +109,7 @@ protected:
 
     }
 
-    void handleEvent(sofa::core::objectmodel::Event */*event*/)
+    void handleEvent(sofa::core::objectmodel::Event * /*event*/)
     {
     }
 

@@ -27,18 +27,18 @@
 
 #include <SofaConstraint/ConstraintSolverImpl.h>
 
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/SolveVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/SolveVisitor.h>
+#include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/simulation/UpdateMappingEndEvent.h>
+#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 

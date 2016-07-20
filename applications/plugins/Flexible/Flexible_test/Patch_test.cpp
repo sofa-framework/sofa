@@ -29,9 +29,9 @@
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Node.h>
 
 // Including component
 #include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
@@ -168,7 +168,7 @@ namespace sofa {
     {
         // With small method
         this->loadScene( "SmallCorotationalPatchTest.scn");
-        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,6e-12)); 
+        ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-12,3e-2));
     }
 
 } // namespace sofa

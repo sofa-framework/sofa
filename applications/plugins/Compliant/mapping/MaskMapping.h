@@ -58,8 +58,7 @@ protected:
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 		J.resize( base::Nout * index.size(),
 				  base::Nin * in.size() );
-		
-		J.setZero();
+        J.reserve( base::Nout * index.size() );
 
 		for( unsigned i = 0, n = index.size(); i < n; ++i) {
 			unsigned row = i;

@@ -27,7 +27,7 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -35,7 +35,7 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <SofaLoader/ReadState.h>
+#include <SofaGeneralLoader/ReadState.h>
 #include <SofaExporter/WriteState.h>
 #include <SofaValidation/CompareState.h>
 

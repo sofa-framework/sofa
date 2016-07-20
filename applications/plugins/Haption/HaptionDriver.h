@@ -35,20 +35,20 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaHaptics/MechanicalStateForceFeedback.h>
 #include <SofaHaptics/NullForceFeedbackT.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <cstring>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 //#include <sofa/core/objectmodel/MouseEvent.h>
 #include <math.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <SofaSimulationTree/GNode.h>
 #include "virtuoseAPI.h"
 
 

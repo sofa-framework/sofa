@@ -261,9 +261,8 @@ protected:
 		// resize/clean jacobians
 		for(unsigned j = 0, m = in.size(); j < m; ++j) {
 			typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
-			J.resize( 6 * p.size(), 
-			          6 * in[j].size() );
-//			J.setZero();
+            J.resize( 6 * p.size(), 6 * in[j].size() );
+            J.reserve( 27 * p.size() );
 		}
 		
 		// each pair

@@ -33,7 +33,7 @@
 #define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #include "config.h"
 
-#include <sofa/simulation/common/DefaultVisualManagerLoop.h>
+#include <sofa/simulation/DefaultVisualManagerLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #ifdef SOFA_HAVE_GLEW

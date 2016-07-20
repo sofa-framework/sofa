@@ -29,11 +29,7 @@
 using sofa::helper::AdvancedTimer;
 
 
-#include "Binding_Base.h"
 using sofa::core::objectmodel::Base;
-
-#include "Binding_BaseContext.h"
-#include "Binding_Node.h"
 using sofa::simulation::Node;
 
 #include "Binding_PythonScriptController.h"
@@ -42,6 +38,11 @@ using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
 using sofa::core::objectmodel::PythonScriptEvent;
+
+
+#include "PythonFactory.h"
+
+
 
 //TODO(dmarchal): This have to be merged with the ScopedAdvancedTimer
 struct ActivableScopedAdvancedTimer {
@@ -138,44 +139,44 @@ void PythonScriptController::loadScript()
     }
 
     BIND_OBJECT_METHOD(onLoaded)
-            BIND_OBJECT_METHOD(createGraph)
-            BIND_OBJECT_METHOD(initGraph)
-            BIND_OBJECT_METHOD(bwdInitGraph)
-            BIND_OBJECT_METHOD(onKeyPressed)
-            BIND_OBJECT_METHOD(onKeyReleased)
-            BIND_OBJECT_METHOD(onMouseButtonLeft)
-            BIND_OBJECT_METHOD(onMouseButtonRight)
-            BIND_OBJECT_METHOD(onMouseButtonMiddle)
-            BIND_OBJECT_METHOD(onMouseWheel)
-            BIND_OBJECT_METHOD(onBeginAnimationStep)
-            BIND_OBJECT_METHOD(onEndAnimationStep)
-            BIND_OBJECT_METHOD(storeResetState)
-            BIND_OBJECT_METHOD(reset)
-            BIND_OBJECT_METHOD(cleanup)
-            BIND_OBJECT_METHOD(onGUIEvent)
-            BIND_OBJECT_METHOD(onScriptEvent)
-            BIND_OBJECT_METHOD(draw)
+    BIND_OBJECT_METHOD(createGraph)
+    BIND_OBJECT_METHOD(initGraph)
+    BIND_OBJECT_METHOD(bwdInitGraph)
+    BIND_OBJECT_METHOD(onKeyPressed)
+    BIND_OBJECT_METHOD(onKeyReleased)
+    BIND_OBJECT_METHOD(onMouseButtonLeft)
+    BIND_OBJECT_METHOD(onMouseButtonRight)
+    BIND_OBJECT_METHOD(onMouseButtonMiddle)
+    BIND_OBJECT_METHOD(onMouseWheel)
+    BIND_OBJECT_METHOD(onBeginAnimationStep)
+    BIND_OBJECT_METHOD(onEndAnimationStep)
+    BIND_OBJECT_METHOD(storeResetState)
+    BIND_OBJECT_METHOD(reset)
+    BIND_OBJECT_METHOD(cleanup)
+    BIND_OBJECT_METHOD(onGUIEvent)
+    BIND_OBJECT_METHOD(onScriptEvent)
+    BIND_OBJECT_METHOD(draw)
 }
 
 
 void PythonScriptController::script_onLoaded(Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_onLoaded, "(O)", SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_onLoaded, "(O)", sofa::PythonFactory::toPython(node))
 }
 
 void PythonScriptController::script_createGraph(Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_createGraph, "(O)", SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_createGraph, "(O)", sofa::PythonFactory::toPython(node))
 }
 
 void PythonScriptController::script_initGraph(Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_initGraph, "(O)", SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_initGraph, "(O)", sofa::PythonFactory::toPython(node))
 }
 
 void PythonScriptController::script_bwdInitGraph(Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph, "(O)", SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph, "(O)", sofa::PythonFactory::toPython(node))
 }
 
 bool PythonScriptController::script_onKeyPressed(const char c)
@@ -260,7 +261,7 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     ActivableScopedAdvancedTimer advancedTimer(m_timingEnabled.getValue(), "PythonScriptController_onScriptEvent", this);
 
     PythonScriptEvent *pyEvent = static_cast<PythonScriptEvent*>(event);
-    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
+    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
 }
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)

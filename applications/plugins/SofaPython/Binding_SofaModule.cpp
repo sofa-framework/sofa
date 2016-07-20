@@ -29,6 +29,7 @@
 #include "Binding_BaseObject.h"
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
+#include "PythonFactory.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -36,18 +37,20 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/GenerateRigid.h>
-#include <sofa/simulation/common/Simulation.h>
-//#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
+//#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
 
+#include "SceneLoaderPY.h"
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 using namespace sofa::component;
 
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 
 
@@ -55,6 +58,20 @@ using namespace sofa::simulation;
 extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
     return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
+}
+
+extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
+{
+    char *name;
+    if (!PyArg_ParseTuple(args, "s",&name))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    sofa::simulation::Node::SPtr node = sofa::simulation::Node::create( name );
+
+    return sofa::PythonFactory::toPython(node.get());
 }
 
 
@@ -95,7 +112,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     }
 
     // by default, it will always be at least a BaseObject...
-    return SP_BUILD_PYSPTR(obj.get());
+    return sofa::PythonFactory::toPython(obj.get());
 }
 
 
@@ -492,9 +509,66 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
 }
 
 
+extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
+{
+    char *filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
+            sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
+        Py_RETURN_NONE;
+
+    sofa::simulation::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
+
+    if (loader)
+    {
+        sofa::simulation::Node::SPtr node = loader->load(filename);
+        return sofa::PythonFactory::toPython(node.get());
+    }
+
+    // unable to load file
+    SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
+
+    Py_RETURN_NONE;
+}
+
+
+
+extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
+{
+    size_t argSize = PyTuple_Size(args);
+
+    if( !argSize )
+    {
+        SP_MESSAGE_ERROR( "Sofa_loadPythonSceneWithArguments: should have at least a filename as arguments" );
+        Py_RETURN_NONE;
+    }
+
+    // PyString_Check(PyTuple_GetItem(args,0)) // to check the arg type and raise an error
+    char *filename = PyString_AsString(PyTuple_GetItem(args,0));
+
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() ) // no filename
+        Py_RETURN_NONE;
+
+    std::vector<std::string> arguments;;
+    for( size_t i=1 ; i<argSize ; i++ )
+        arguments.push_back( PyString_AsString(PyTuple_GetItem(args,i)) );
+
+    sofa::simulation::SceneLoaderPY loader;
+    sofa::simulation::Node::SPtr node = loader.loadSceneWithArguments(filename,arguments);
+    return sofa::PythonFactory::toPython(node.get());
+}
+
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
+SP_MODULE_METHOD(Sofa,createNode)
 SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18
 SP_MODULE_METHOD(Sofa,getChildNode)     // deprecated on date 2012/07/18
@@ -513,6 +587,8 @@ SP_MODULE_METHOD(Sofa,msg_deprecated)
 SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
+SP_MODULE_METHOD(Sofa,loadScene)
+SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHODS_END
 
 

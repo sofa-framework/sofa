@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ParallelCollisionModel.h>
 #include <sofa/core/collision/ParallelNarrowPhaseDetection.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <athapascan-1>

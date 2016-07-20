@@ -29,8 +29,8 @@
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <SofaDeformable/MeshSpringForceField.inl>
-#include <SofaDeformable/TriangleBendingSprings.inl>
-#include <SofaDeformable/QuadBendingSprings.inl>
+#include <SofaGeneralDeformable/TriangleBendingSprings.inl>
+#include <SofaGeneralDeformable/QuadBendingSprings.inl>
 
 namespace sofa
 {

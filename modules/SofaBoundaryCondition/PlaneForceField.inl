@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
@@ -279,7 +279,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real minBBox[3] = {max_real,max_real,max_real};
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue(params);
-    SReal size=10.0;
+    SReal size=drawSize.getValue();
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;

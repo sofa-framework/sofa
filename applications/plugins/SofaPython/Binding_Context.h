@@ -26,6 +26,7 @@
 #define BINDING_CONTEXT_H
 
 #include "PythonMacros.h"
+#include <sofa/core/objectmodel/Context.h>
 
 SP_DECLARE_CLASS_TYPE(Context)
 

@@ -26,7 +26,9 @@
 #define BINDING_MECHANICALOBJECT_H
 
 #include "PythonMacros.h"
+#include <SofaBaseMechanics/MechanicalObject.inl>
 
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 SP_DECLARE_CLASS_TYPE(MechanicalObject)
 
 #endif // BINDING_MECHANICALOBJECT_H

@@ -57,7 +57,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
     simulation::MechanicalPropagatePositionAndVelocityVisitor propagatePositionAndVelocityVisitor( sofa::core::MechanicalParams::defaultInstance() );
 
     unsigned i=0;
-    for( unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
+    for( const unsigned imax=d_iterations.getValue() ; i<imax ; ++i )
     {
         // dynamics integation
         CompliantOdeSolver::solve( params, dt, posId, velId );
@@ -72,7 +72,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
         if( printLog )
             sout<<"velocity norm: "<<sqrt(lastVelocity)<<sendl;
 
-        if( lastVelocity < threshold*threshold ) break;
+        if( lastVelocity < threshold*threshold || i==imax-1 ) break;
 
         // propagating damped velocity
         // note the last propagation will be performed by the AnimationLoop

@@ -11,6 +11,7 @@ from SofaPython import Quaternion
 from SofaPython.Tools import listToStr as concat
 import SofaPython.mass
 import SofaPython.sml
+import Compliant.StructuralAPI
 import Flexible.API
 import Flexible.sml
 
@@ -97,16 +98,18 @@ def insertRigid(parentNode, rigidModel, density, param=None):
 
     return rigid
 
-def insertJoint(jointModel, rigids, param=None):
+def insertJoint(jointModel, rigids, param):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
 
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
         if not jointModel.solids[i].id in rigids:
-            if printLog:
-                Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
+            Sofa.msg_warning("Compliant.sml","insertJoint "+jointModel.name+" failed: "+jointModel.solids[i].id+" is not a rigid body")
             return None
         rigid = rigids[jointModel.solids[i].id] # shortcut
+        if rigid is None:
+            Sofa.msg_warning("Compliant.sml", "in joint {0}, solid {1} is missing, ignored".format(jointModel.name, jointModel.solids[i].id))
+            return
         if not offset is None:
             if offset.isAbsolute():
                 frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
@@ -132,15 +135,17 @@ def insertJoint(jointModel, rigids, param=None):
                 limits.append(d.min)
                 limits.append(d.max)
         mask[d.index] = 0
-    if not param is None:
-        joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask, compliance=param.jointCompliance)
+
+    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask,
+                 compliance=SofaPython.sml.getValueByTag(param.jointComplianceByTag, jointModel.tags),
+                 isCompliance=SofaPython.sml.getValueByTag(param.jointIsComplianceByTag, jointModel.tags))
     if isLimited:
         joint.addLimits(limits)
     return joint
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    [tag] rigid are simulated as RigidBody
+    [tag] rigid are simulated as RigidBody, more tags can be added to param.rigidTags
     Compliant joints are setup between the rigids """
     
     def __init__(self, parentNode, model):
@@ -150,39 +155,57 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.joints = dict()
         self.meshExporters = list()
 
-        self.param.jointCompliance=0
+        # the set of tags simulated as rigids
+        self.param.rigidTags={"rigid"}
+
+        self.param.geometricStiffness=0 # TODO doc on the possible values !
+        # for tagged joints, values come from these dictionnaries if they contain one of the tag
+        self.param.jointIsComplianceByTag=dict()
+        self.param.jointComplianceByTag=dict()
+
+        # default joint is set up using isCompliance=True and self.param.jointCompliance value
+        self.param.jointIsComplianceByTag["default"]=True
+        self.param.jointComplianceByTag["default"]=0 # TODO add 2 default values: for translation and rotation dofs ?
 
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
 
-    def insertMergeRigid(self, mergeNodeName="dofRigid", tag="rigid", rigidIndexById=None ):
+    def insertMergeRigid(self, mergeNodeName="dofRigid", tags=None, rigidIndexById=None ):
         """ Merge all the rigids in a single MechanicalObject using a SubsetMultiMapping
-        optionnaly give a tag to select the rigids which are merged
+        optionnaly give a list of tags to select the rigids which are merged
         return the created node"""
         mergeNode = None
         currentRigidIndex=0
         input=""
         indexPairs=""
-        if tag in self.model.solidsByTag:
-            for solid in self.model.solidsByTag[tag]:
-                if not solid.id in self.rigids:
-                    Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
-                    continue
-                rigid = self.rigids[solid.id]
-                if mergeNode is None:
-                    mergeNode = rigid.node.createChild(mergeNodeName)
-                else:
-                    rigid.node.addChild(mergeNode)
-                input += '@'+rigid.node.getPathName()+" "
-                indexPairs += str(currentRigidIndex) + " 0 "
-                if not rigidIndexById is None:
-                    rigidIndexById[solid.id]=currentRigidIndex
-                currentRigidIndex+=1
+        if tags is None:
+            _tags = self.param.rigidTags
+        else:
+            _tags = tags
+
+        for tag in _tags:
+            if tag in self.model.solidsByTag:
+                for solid in self.model.solidsByTag[tag]:
+                    if not solid.id in self.rigids:
+                        Sofa.msg_warning("Compliant.sml","SceneArticulatedRigid.insertMergeRigid: "+solid.name+" is not a rigid")
+                        continue
+                    rigid = self.rigids[solid.id]
+                    if mergeNode is None:
+                        mergeNode = rigid.node.createChild(mergeNodeName)
+                    else:
+                        rigid.node.addChild(mergeNode)
+                    input += '@'+rigid.node.getPathName()+" "
+                    indexPairs += str(currentRigidIndex) + " 0 "
+                    if not rigidIndexById is None:
+                        rigidIndexById[solid.id]=currentRigidIndex
+                    currentRigidIndex+=1
         if input:
             mergeNode.createObject("MechanicalObject", template = "Rigid3", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Rigid3,Rigid3", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+        else:
+            Sofa.msg_warning("Compliant.sml", "insertMergeRigid: no rigid merged")
         return mergeNode
 
     def addMeshExporters(self, dir, ExportAtEnd=False):
@@ -204,13 +227,14 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
-        
-        SofaPython.sml.setupUnits(self.model.units)
+
+        Compliant.StructuralAPI.geometric_stiffness = self.param.geometricStiffness
 
         # rigids
-        if "rigid" in self.model.solidsByTag:
-            for rigidModel in self.model.solidsByTag["rigid"]:
-                self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
+        for tag in self.param.rigidTags:
+            if tag in self.model.solidsByTag:
+                for rigidModel in self.model.solidsByTag[tag]:
+                    self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
@@ -235,7 +259,7 @@ class SceneSkinning(SceneArticulatedRigid) :
         
         if "armature" in self.model.solidsByTag:
             # insert node containing all bones of the armature
-            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag="armature", rigidIndexById=self.skinningArmatureBoneIndexById)
+            self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
             for solidModel in self.model.solids.values():
                 print solidModel.name, len(solidModel.skinnings)
                 if len(solidModel.skinnings)>0: # ignore solid if it has no skinning

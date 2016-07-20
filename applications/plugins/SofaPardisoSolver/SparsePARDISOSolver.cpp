@@ -36,6 +36,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
 
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -129,7 +131,9 @@ template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolver()
     : f_symmetric( initData(&f_symmetric,1,"symmetric","0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_saveDataToFile( initData(&f_saveDataToFile, "saveDataToFile", "save matrix, RHS and solution vectors to file"))
+    , f_exportDataToDir( initData(&f_exportDataToDir, std::string(""), "exportDataToDir", "export data (matrix, RHS, solution) to files in given directory"))
+    , f_iterativeSolverNumbering( initData(&f_iterativeSolverNumbering,false,"iterativeSolverNumbering","if true, the naming convention is incN_itM where N is the time step and M is the iteration inside the step") )
+    , f_saveDataToFile( initData(&f_saveDataToFile,false,"saveDataToFile","if true, export the data to the current directory (if exportDataToDir not set)") )
 {
 }
 
@@ -140,6 +144,25 @@ void SparsePARDISOSolver<TMatrix,TVector>::init()
     numPrevNZ = 0;
     numActNZ = 0;
     Inherit::init();
+
+    std::string exportDir=f_exportDataToDir.getValue();
+
+    doExportData = false;
+    if (!exportDir.empty()) {
+        int status;
+        status = mkdir(exportDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        if (status == 0 || errno == EEXIST)
+            doExportData = true;
+        else
+            std::cout << this->getName() << " WARNING: cannot create directory " << exportDir << " for exporting the solver data" << std::endl;
+
+    } else {
+        if (f_saveDataToFile.getValue()) {
+            f_exportDataToDir.setValue(".");
+            doExportData = 1;
+        }
+    }
+    timeStep = -1;
 }
 
 template<class TMatrix, class TVector>
@@ -169,12 +192,13 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
         ja = (int *) &(data->Mfiltered.getColsIndex()[0]);
         a  = (double*) &(data->Mfiltered.getColsValue()[0]);
 
-        numActNZ = ia[n]-1;
+        //numActNZ = ia[n]-1;
 
-        if (f_saveDataToFile.getValue()) {
-            std::ofstream f;
+        if (doExportData) {
+            std::string exportDir=f_exportDataToDir.getValue();
+            std::ofstream f;            
             char name[100];
-            sprintf(name, "spmatrix_PARD_%04d.txt", numStep);
+            sprintf(name, "%s/spmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
             f.open(name);
 
             int rw = 0;
@@ -186,7 +210,7 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
 
             f.close();
 
-            sprintf(name, "compmatrix_PARD_%04d.txt", numStep);
+            sprintf(name, "%s/compmatrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
             f.open(name);
 
             for (int i = 0; i <= n; i++)
@@ -241,13 +265,34 @@ int SparsePARDISOSolver<TMatrix,TVector>::callPardiso(SparsePARDISOSolverInvertD
 template<class TMatrix, class TVector>
 void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
 {
+    if (f_iterativeSolverNumbering.getValue()) {
+        double dt = Inherit::getContext()->getDt();
+        double actualTime = Inherit::getContext()->getTime();
+
+        long int actTimeStep = lround(actualTime/dt);
+
+        if (timeStep != actTimeStep)
+            numStep = 0;
+        timeStep = actTimeStep;
+        char nm[100];
+        sprintf(nm, "step%04ld_iter%04d", timeStep, numStep);
+        suffix = nm;
+    } else {
+        char nm[100];
+        sprintf(nm, "%04d", numStep);
+        suffix = nm;
+    }
+
+
+
     sofa::helper::AdvancedTimer::stepBegin("PardisoInvert");
 
-    if (f_saveDataToFile.getValue()) {
-        std::cout << this->getName() << ": saving to " << numStep << std::endl;
+    if (doExportData) {
+        std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
         char name[100];
-        sprintf(name, "matrix_PARD_%04d.txt", numStep);
+        sprintf(name, "%s/matrix_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
+        //std::cout << this->getName() << ": Exporting to " << name << std::endl;
         f.open(name);
         f << M;
         f.close();
@@ -285,34 +330,40 @@ void SparsePARDISOSolver<TMatrix,TVector>::invert(Matrix& M)
     /*     all memory that is necessary for the factorization.              */
     /* -------------------------------------------------------------------- */
 
-    //if (!data->factorized || numPrevNZ != numAtNZ || numStep < 10)
+    numActNZ = data->Mfiltered.getRowBegin().back();
+    //std::cout << this->getName() << "Actual NNZ = " << numActNZ << " previous NNZ = " << numPrevNZ << std::endl;
+    if (numPrevNZ != numActNZ)
     {
-        sout << "Analyzing the matrix" << std::endl;
+        //std::cout << "[" << this->getName() << "] analyzing the matrix" << std::endl;
+        //sout << "Analyzing the matrix" << std::endl;
         if (callPardiso(data, 11)) return;
-        data->factorized = true;
-        sout << "Reordering completed ..." << sendl;
-        sout << "Number of nonzeros in factors  = " << data->pardiso_iparm[17] << sendl;
-        sout << "Number of factorization MFLOPS = " << data->pardiso_iparm[18] << sendl;
-
-        numPrevNZ = numActNZ;
+        data->factorized = true;        
+        //sout << "Reordering completed ..." << sendl;
+        std::cout << "After analysis: NNZ = " << data->pardiso_iparm[17] << std::endl;
+        //sout << "Number of factorization MFLOPS = " << data->pardiso_iparm[18] << sendl;
     }
+    numPrevNZ = numActNZ;
 
     /* -------------------------------------------------------------------- */
     /* ..  Numerical factorization.                                         */
     /* -------------------------------------------------------------------- */
+    std::cout << "[" << this->getName() << "] factorize the matrix" << std::endl;
     if (callPardiso(data, 22)) { data->factorized = false; return; }    
 
     sout << "Factorization completed ..." << sendl;
     sofa::helper::AdvancedTimer::stepEnd("PardisoInvert");
+
+    numStep++;
 }
 
 template<class TMatrix, class TVector>
 void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
-{
-    if (f_saveDataToFile.getValue()){
+{        
+    if (doExportData){
+        std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
         char name[100];
-        sprintf(name, "rhs_PARD_%04d.txt", numStep);
+        sprintf(name, "%s/rhs_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
         f.open(name);
         f << r;
         f.close();
@@ -327,20 +378,21 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& 
     /* -------------------------------------------------------------------- */
     /* ..  Back substitution and iterative refinement.                      */
     /* -------------------------------------------------------------------- */
-    data->pardiso_iparm[7] = 1;       /* Max numbers of iterative refinement steps. */
+    data->pardiso_iparm[7] = 0;       /* Max numbers of iterative refinement steps. */
 
+    //std::cout << "[" << this->getName() << "] solve the matrix" << std::endl;
     if (callPardiso(data, 33, &z, &r)) return;
     sofa::helper::AdvancedTimer::stepEnd("PardisoSolve");
 
-    if (f_saveDataToFile.getValue()) {
+    if (doExportData){
+        std::string exportDir=f_exportDataToDir.getValue();
         std::ofstream f;
         char name[100];
-        sprintf(name, "solution_PARD_%04d.txt", numStep);
+        sprintf(name, "%s/solution_PARD_%s.txt", exportDir.c_str(), suffix.c_str());
         f.open(name);
         f << z;
         f.close();
-    }
-    numStep++;
+    }    
 }
 
 

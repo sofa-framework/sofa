@@ -179,7 +179,7 @@ void ImageLPTransformWidget<TransformType>::readFromData()
     scale[2]->setValue(ra->getScale()[2]);
     offsetT->setValue(ra->getOffsetT());
     scaleT->setValue(ra->getScaleT());
-    isPerspective->setChecked(ra->isPerspective());
+    isPerspective->setChecked(ra->isPerspective()!=0);
 
     this->setWidgetDirty(false);
 }
@@ -200,7 +200,7 @@ void ImageLPTransformWidget<TransformType>::writeToData()
     wa->getScale()[2]=scale[2]->getValue();
     wa->getOffsetT()=offsetT->getValue();
     wa->getScaleT()=scaleT->getValue();
-    wa->isPerspective()=isPerspective->isChecked();
+    wa->isPerspective()=(int)isPerspective->isChecked();
     wa->update();
 }
 

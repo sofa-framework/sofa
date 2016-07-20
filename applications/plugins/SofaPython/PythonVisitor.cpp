@@ -1,5 +1,6 @@
 #include "PythonMacros.h"
 #include "PythonVisitor.h"
+#include "PythonFactory.h"
 
 
 
@@ -18,7 +19,7 @@ PythonVisitor::PythonVisitor(const core::ExecParams* params, PyObject *pyVisitor
 
 Visitor::Result PythonVisitor::processNodeTopDown(simulation::Node* node)
 {
-    PyObject *res = PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeTopDown"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node));
+    PyObject *res = PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeTopDown"),const_cast<char*>("(O)"),sofa::PythonFactory::toPython(node));
     if( !res || !PyBool_Check(res) )
     {
         // no error -> the function is not overloaded -> default implementation
@@ -36,7 +37,7 @@ Visitor::Result PythonVisitor::processNodeTopDown(simulation::Node* node)
 
 void PythonVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    PyObject *res = PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeBottomUp"),const_cast<char*>("(O)"),SP_BUILD_PYSPTR(node));
+    PyObject *res = PyObject_CallMethod(m_PyVisitor,const_cast<char*>("processNodeBottomUp"),const_cast<char*>("(O)"),sofa::PythonFactory::toPython(node));
     Py_XDECREF(res);
 //    if (!res)
 //    {

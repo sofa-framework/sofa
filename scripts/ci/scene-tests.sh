@@ -116,7 +116,7 @@ list-scenes() {
 
 get-lib() {
     pushd "$build_dir/lib/" > /dev/null
-    ls {lib,}"$1"*.{dylib,so,lib}* 2> /dev/null | xargs echo
+    ls {lib,}"$1".{dylib,so,lib}* 2> /dev/null | xargs echo
     popd > /dev/null
 }
 
@@ -246,7 +246,7 @@ parse-options-files() {
         else
             cp  "$output_dir/$path/scenes.txt" "$output_dir/$path/tested-scenes.txt"
         fi
-	
+
         sed -e "s:^:$path/:" "$output_dir/$path/ignored-scenes.txt" >> "$output_dir/all-ignored-scenes.txt"
 
         # Add scenes

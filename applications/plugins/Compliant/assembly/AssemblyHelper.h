@@ -1,10 +1,12 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include "../utils/sparse.h"
 
 #include <Compliant/config.h>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa {
 
@@ -186,38 +188,40 @@ static void convertDenseToSparse( mat& res, const densemat& m )
     res.finalize();
 }
 
-// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-template<class mat>
-mat convert( const defaulttype::BaseMatrix* m) {
-    assert( m );
+//// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
+/// @warning this is performing a copy, even when the type is ok
+/// prefer to use convertSPtr
+//template<class mat>
+//mat convert( const defaulttype::BaseMatrix* m) {
+//    assert( m );
 
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-    if ( smd ) return smd->compressedMatrix.cast<SReal>();
-    }
+//    {
+//    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+//    const matrixd* smd = dynamic_cast<const matrixd*> (m);
+//    if ( smd ) return smd->compressedMatrix.cast<SReal>();
+//    }
 
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-    if( smf ) return smf->compressedMatrix.cast<SReal>();
-    }
+//    {
+//    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+//    const matrixf* smf = dynamic_cast<const matrixf*>(m);
+//    if( smf ) return smf->compressedMatrix.cast<SReal>();
+//    }
 
-    std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
+//    msg_warning("AssemblyHelper)"<<"very slow matrix conversion";
 
-    mat res(m->rowSize(), m->colSize());
+//    mat res(m->rowSize(), m->colSize());
 
-    res.reserve(res.rows() * res.cols());
-    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
-        res.startVec( i );
-        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-            SReal e = m->element(i, j);
-            if( e ) res.insertBack(i, j) = e;
-        }
-    }
+//    res.reserve(res.rows() * res.cols());
+//    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
+//        res.startVec( i );
+//        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
+//            SReal e = m->element(i, j);
+//            if( e ) res.insertBack(i, j) = e;
+//        }
+//    }
 
-    return res;
-}
+//    return res;
+//}
 
 
 
@@ -252,6 +256,8 @@ MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
     if ( smr ) return MySPtr<mat>(&smr->compressedMatrix, false);
     }
 
+    msg_warning("AssemblyHelper")<<"slow matrix conversion (scalar type conversion)";
+
     {
     typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
     const matrixd* smd = dynamic_cast<const matrixd*> (m);
@@ -264,8 +270,7 @@ MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
     if( smf ) return MySPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
     }
 
-
-    std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
+    msg_warning("AssemblyHelper")<<"very slow matrix conversion (from BaseMatrix)";
 
     mat* res = new mat(m->rowSize(), m->colSize());
 

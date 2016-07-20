@@ -34,19 +34,20 @@ using std::vector;
 
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/common/common.h>
-#include <sofa/simulation/common/Node.h>
+#include <SofaSimulationCommon/common.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
+#include <SofaSimulationCommon/init.h>
 #ifdef SOFA_HAVE_DAG
-#include <sofa/simulation/graph/init.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/init.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #endif
 #ifdef SOFA_SMP
-#include <sofa/simulation/tree/SMPSimulation.h>
+#include <SofaSimulationTree/SMPSimulation.h>
 #endif
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
 
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -55,7 +56,7 @@ using sofa::simulation::Node;
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <SofaLoader/ReadState.h>
+#include <SofaGeneralLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/cast.h>
@@ -311,6 +312,12 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
+    // to force loading plugin SofaPython if existing
+    {
+        std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
+        sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+    }
+
     PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
@@ -407,6 +414,7 @@ int main(int argc, char** argv)
 
     GUIManager::closeGUI();
 
+    sofa::simulation::common::cleanup();
     sofa::simulation::tree::cleanup();
 #ifdef SOFA_HAVE_DAG
     sofa::simulation::graph::cleanup();

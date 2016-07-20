@@ -29,7 +29,7 @@
 #if 0
 #include <SofaMiscCollision/TetrahedronModel.h>
 #endif
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 namespace sofa
 {

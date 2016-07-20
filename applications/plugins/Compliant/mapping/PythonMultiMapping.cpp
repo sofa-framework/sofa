@@ -1,4 +1,4 @@
-#include "PythonMultiMapping.h"
+#include "PythonMultiMapping.inl"
 
 #include <sofa/core/MultiMapping.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -8,14 +8,29 @@ namespace sofa {
 namespace component {
 namespace mapping {
 
+
+    
 SOFA_DECL_CLASS(PythonMultiMapping)
 
 using namespace defaulttype;
 
 // Register in the Factory
-const int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
+int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mapping")
 
 #ifndef SOFA_FLOAT
+.add< PythonMultiMapping< Rigid3dTypes, Vec6dTypes > >()            
+.add< PythonMultiMapping< Rigid3dTypes, Vec3dTypes > >()        
+.add< PythonMultiMapping< Rigid3dTypes, Vec1dTypes > >()
+
+.add< PythonMultiMapping< Vec6dTypes, Rigid3dTypes > >()
+.add< PythonMultiMapping< Vec3dTypes, Rigid3dTypes > >()
+.add< PythonMultiMapping< Vec1dTypes, Rigid3dTypes > >()
+
+    
+.add< PythonMultiMapping< Vec6dTypes, Vec3dTypes > >()
+.add< PythonMultiMapping< Vec3dTypes, Vec3dTypes > >()
+.add< PythonMultiMapping< Vec1dTypes, Vec3dTypes > >()
+    
 .add< PythonMultiMapping< Vec6dTypes, Vec1dTypes > >()
 .add< PythonMultiMapping< Vec3dTypes, Vec1dTypes > >()
 .add< PythonMultiMapping< Vec1dTypes, Vec1dTypes > >()
@@ -30,6 +45,18 @@ const int PythonMultiMappingClass = core::RegisterObject("Arbitrary Python mappi
 ;
 
 #ifndef SOFA_FLOAT
+template class SOFA_Compliant_API PythonMultiMapping<  Rigid3dTypes, Vec6dTypes >;            
+template class SOFA_Compliant_API PythonMultiMapping<  Rigid3dTypes, Vec3dTypes >;        
+template class SOFA_Compliant_API PythonMultiMapping<  Rigid3dTypes, Vec1dTypes >;
+
+template class SOFA_Compliant_API PythonMultiMapping<  Vec6dTypes, Rigid3dTypes >;
+template class SOFA_Compliant_API PythonMultiMapping<  Vec3dTypes, Rigid3dTypes >;
+template class SOFA_Compliant_API PythonMultiMapping<  Vec1dTypes, Rigid3dTypes >;
+
+template class SOFA_Compliant_API PythonMultiMapping<  Vec6dTypes, Vec3dTypes >;
+template class SOFA_Compliant_API PythonMultiMapping<  Vec3dTypes, Vec3dTypes >;
+template class SOFA_Compliant_API PythonMultiMapping<  Vec1dTypes, Vec3dTypes >;
+
 template class SOFA_Compliant_API PythonMultiMapping<  Vec6dTypes, Vec1dTypes >;
 template class SOFA_Compliant_API PythonMultiMapping<  Vec3dTypes, Vec1dTypes >;
 template class SOFA_Compliant_API PythonMultiMapping<  Vec1dTypes, Vec1dTypes >;
@@ -44,6 +71,10 @@ template class SOFA_Compliant_API PythonMultiMapping< Vec1fTypes, Vec1fTypes >;
 #endif
 
 
+
+with_py_callback::with_py_callback() : py_callback(0) { }
+with_py_callback::~with_py_callback() { }
+    
 
 }
 }

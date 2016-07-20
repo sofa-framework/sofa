@@ -4,10 +4,11 @@
 #include <Compliant/config.h>
 
 #include "AssembledMapping.h"
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
-	
+
 namespace component
 {
 
@@ -27,9 +28,9 @@ namespace mapping
 template <class TIn, class TOut >
 class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<TIn, TOut>
 {
-  public:
+public:
     SOFA_CLASS(SOFA_TEMPLATE2(DifferenceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
-	
+
     typedef DifferenceFromTargetMapping Self;
 
     typedef typename TIn::Coord InCoord;
@@ -41,12 +42,16 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
     Data< targets_type > targets;
 
     Data< bool > inverted;
+    Data< SReal > d_showObjectScale; ///< drawing size
+    Data< defaulttype::Vec4f > d_color; ///< drawing color
 
-	
+
     DifferenceFromTargetMapping()
         : indices( initData(&indices, "indices", "indices of the parent points") )
         , targets( initData(&targets, "targets", "target positions which who computes deltas") )
         , inverted( initData(&inverted, false, "inverted", "target-p (rather than p-target)") )
+        , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {
 
         // backward compatibility with OffsetMapping, a previous identical mapping
@@ -123,7 +128,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
                     out[j] = in[k] - t[std::min(t.size()-1,j)];
                 }
         }
-	}
+    }
 
     virtual void assemble( const typename Self::in_pos_type& in )
     {
@@ -141,6 +146,7 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
         else
         {
             J.resize( Nout * ind.size(), Nin * in.size());
+            J.reserve( Nout * ind.size() );
 
             const int value = inverted.getValue() ? -1 : 1;
 
@@ -156,9 +162,47 @@ class SOFA_Compliant_API DifferenceFromTargetMapping : public AssembledMapping<T
                 }
             }
         }
-	}
+    }
 
-	
+
+    void draw(const core::visual::VisualParams* vparams)
+    {
+        if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
+        typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
+        const targets_type& t = targets.getValue();
+        const helper::vector<unsigned>& ind = indices.getValue();
+
+        helper::vector< sofa::defaulttype::Vector3 > points;
+        if( ind.empty() )
+        {
+            points.resize(2*pos.size());
+            for( size_t j = 0 ; j < pos.size() ; ++j )
+            {
+                points[2*j] = t[std::min(t.size()-1,j)];
+                points[2*j+1] = pos[j];
+            }
+        }
+        else
+        {
+            points.resize(2*ind.size());
+            for( size_t j = 0 ; j < ind.size() ; ++j )
+            {
+                const unsigned k = ind[j];
+                points[2*j] = t[std::min(t.size()-1,j)];
+                points[2*j+1] = pos[k];
+            }
+        }
+
+        SReal scale = d_showObjectScale.getValue();
+        if( scale == 0 )
+            vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
+        else
+            for (unsigned int i=0; i<points.size()/2; ++i)
+                vparams->drawTool()->drawCylinder( points[2*i+1], points[2*i], scale, d_color.getValue() );
+    }
+
+
 };
 
 

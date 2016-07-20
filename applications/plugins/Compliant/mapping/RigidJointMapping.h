@@ -81,15 +81,15 @@ protected:
 
 
         const pairs_type& p = pairs.getValue();
-
-        J.resize(6 * p.size(),
-		         in_pos.size() * 6);
-
-//		J.setZero();
-
         bool rotation = this->rotation.getValue();
         bool translation = this->translation.getValue();
         bool exact_dlog = this->exact_dlog.getValue();
+
+        J.resize(6 * p.size(), in_pos.size() * 6);
+        if( !translation ) J.reserve( 18*p.size() );
+        else if( !rotation ) J.reserve( 27*p.size() );
+        else J.reserve( 45*p.size() );
+
 
 		typedef typename se3::mat66 mat66;
 		typedef typename se3::mat33 mat33;

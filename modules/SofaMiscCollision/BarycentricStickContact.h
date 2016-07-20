@@ -29,7 +29,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaDeformable/VectorSpringForceField.h>
+#include <SofaGeneralDeformable/VectorSpringForceField.h>
 
 
 namespace sofa

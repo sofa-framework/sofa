@@ -30,8 +30,8 @@
 #include <sofa/core/collision/Intersection.h>
 #include <SofaConstraint/DistanceLMContactConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>

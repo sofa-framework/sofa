@@ -31,11 +31,11 @@
 
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/MultiMapping.h>
@@ -120,7 +120,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             std::stringstream ss;
             ss << "parentNode" << i;
             parents.push_back(root->createChild(ss.str()));
-            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i]);
+            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i],ss.str().c_str());
             mapping->addInputModel( inDof.get() );
             inDofs.push_back(inDof.get());
         }
@@ -244,6 +244,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv vin = inDofs[p]->writeVelocities();
             copyToData( vin, vp[p] );
         }
+        mparams.setDx(core::ConstVecDerivId::velocity());
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
@@ -258,6 +259,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, dfp[p] );
         }
+        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness

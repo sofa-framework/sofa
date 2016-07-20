@@ -33,11 +33,11 @@
 #include <SofaUserInteraction/MouseInteractor.inl>
 #include <SofaBaseMechanics/IdentityMapping.inl>
 
-#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/InitVisitor.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

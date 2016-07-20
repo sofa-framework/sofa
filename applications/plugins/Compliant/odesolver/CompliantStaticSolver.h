@@ -8,9 +8,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MultiVec.h>
 
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/MechanicalOperations.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include <sofa/helper/OptionsGroup.h>
 

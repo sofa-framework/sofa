@@ -13,6 +13,10 @@ set(SOURCE_FILES
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
     RigidJointMapping_test.cpp
+    DotProductMapping_test.cpp
+    NormalizationMapping_test.cpp
+    SafeDistanceMapping_test.cpp
+	WinchMultiMapping_test.cpp
 )
 
 set(PYTHON_FILES

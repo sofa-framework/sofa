@@ -39,7 +39,7 @@
 
 
 
-#include <SofaObjectInteraction/InteractionEllipsoidForceField.h>
+#include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 
 
 

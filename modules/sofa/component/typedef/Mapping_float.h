@@ -42,7 +42,7 @@
 #include <sofa/core/Mapping.h>
 
 
-#include <SofaRigid/ArticulatedSystemMapping.h>
+#include <SofaGeneralRigid/ArticulatedSystemMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaMiscMapping/BeamLinearMapping.h>
 #include <SofaMiscMapping/CenterOfMassMapping.h>
@@ -54,13 +54,13 @@
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaVolumetricData/ImplicitSurfaceMapping.h>
-#include <SofaRigid/LineSetSkinningMapping.h>
+#include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaRigid/RigidRigidMapping.h>
 #include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
-#include <SofaRigid/SkinningMapping.h>
+#include <SofaGeneralRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaMiscMapping/TubularMapping.h>

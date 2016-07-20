@@ -26,8 +26,8 @@
 #include "GraphHistoryManager.h"
 #include "GraphModeler.h"
 
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/XMLPrintVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/XMLPrintVisitor.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/cast.h>
 

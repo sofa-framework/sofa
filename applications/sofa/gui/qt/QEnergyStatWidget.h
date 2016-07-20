@@ -27,7 +27,7 @@
 
 #include "QGraphStatWidget.h"
 
-#include <sofa/simulation/common/MechanicalComputeEnergyVisitor.h>
+#include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
 
 namespace sofa
 {

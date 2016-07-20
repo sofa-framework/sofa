@@ -24,9 +24,22 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <SofaComponentGeneral/initComponentGeneral.h>
+
+#include <SofaGeneralAnimationLoop/initGeneralAnimationLoop.h>
+#include <SofaGeneralDeformable/initGeneralDeformable.h>
+#include <SofaGeneralExplicitOdeSolver/initGeneralExplicitODESolver.h>
+#include <SofaGeneralImplicitOdeSolver/initGeneralImplicitODESolver.h>
+#include <SofaGeneralLinearSolver/initGeneralLinearSolver.h>
+#include <SofaGeneralLoader/initGeneralLoader.h>
+#include <SofaGeneralMeshCollision/initGeneralMeshCollision.h>
+#include <SofaGeneralObjectInteraction/initGeneralObjectInteraction.h>
+#include <SofaGeneralRigid/initGeneralRigid.h>
+#include <SofaGeneralSimpleFem/initGeneralSimpleFEM.h>
+#include <SofaGeneralTopology/initGeneralTopology.h>
+#include <SofaGeneralVisual/initGeneralVisual.h>
 #include <SofaValidation/initValidation.h>
 #include <SofaExporter/initExporter.h>
-#include <SofaEngine/initEngine.h>
+#include <SofaGeneralEngine/initGeneralEngine.h>
 #include <SofaGraphComponent/initGraphComponent.h>
 #include <SofaTopologyMapping/initTopologyMapping.h>
 #include <SofaBoundaryCondition/initBoundaryCondition.h>
@@ -64,9 +77,22 @@ void initComponentGeneral()
         first = false;
     }
 
+
+    initGeneralAnimationLoop();
+    initGeneralDeformable();
+    initGeneralExplicitODESolver();
+    initGeneralImplicitODESolver();
+    initGeneralLinearSolver();
+    initGeneralLoader();
+    initGeneralMeshCollision();
+    initGeneralObjectInteraction();
+    initGeneralRigid();
+    initGeneralSimpleFEM();
+    initGeneralTopology();
+    initGeneralVisual();
     initValidation();
     initExporter();
-    initEngine();
+    initGeneralEngine();
     initGraphComponent();
     initTopologyMapping();
     initBoundaryCondition();
@@ -82,7 +108,6 @@ void initComponentGeneral()
 #ifdef SOFA_HAVE_TAUCS
     initTaucsSolver();
 #endif
-initEigen2Solver();
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
     initOpenGLVisual();

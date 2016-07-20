@@ -28,7 +28,7 @@
 #include "ClosestPointRegistrationForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 #include <map>
@@ -38,7 +38,7 @@
 #endif
 
 #include <SofaLoader/MeshObjLoader.h>
-#include <SofaEngine/NormalsFromPoints.h>
+#include <SofaGeneralEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
 #include <iterator>

@@ -41,7 +41,7 @@
 #endif
 
 #include <SceneCreator/config.h>
-#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <Eigen/Dense>

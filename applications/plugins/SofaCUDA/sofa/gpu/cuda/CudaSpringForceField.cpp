@@ -25,7 +25,7 @@
 #include "CudaTypes.h"
 #include "CudaSpringForceField.inl"
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <SofaObjectInteraction/BoxStiffSpringForceField.inl>
+#include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

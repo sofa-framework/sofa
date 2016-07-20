@@ -37,7 +37,7 @@
 #include <string.h>
 
 #include <sofa/core/ExecParams.h>
-#include <sofa/simulation/common/ExportGnuplotVisitor.h>
+#include <sofa/simulation/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
 using sofa::helper::system::FileSystem;

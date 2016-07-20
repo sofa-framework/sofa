@@ -27,7 +27,7 @@
 
 #include <SofaBaseCollision/Sphere.h>
 #include <SofaMeshCollision/TriangleModel.inl>
-#include <SofaMeshCollision/TriangleOctreeModel.h>
+#include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/Line.h>
 #include <SofaMeshCollision/Point.h>
@@ -36,7 +36,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaUserInteraction/RayTraceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <map>
 #include <queue>
 #include <stack>

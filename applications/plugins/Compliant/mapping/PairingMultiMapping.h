@@ -17,7 +17,13 @@ namespace mapping {
 
     natural pairing between two vector dofs:
     
-     \[ f(x, y) = x^T y
+     \[ f(x, y) = x^T y \]
+
+     use it to enforce holonomic bilateral constraints in your scene
+     as: -lambda^T f(x) (+ unit compliance on end dofs)
+     
+     note that you need a numerical solver that can handle indefinite
+     systems (e.g. minres)
 
      @author: Maxime Tournier
 
@@ -88,7 +94,6 @@ protected:
         const unsigned size = size_x + size_y;
         
         dJ.resize( size, size );
-        dJ.setZero();
 
         // we want dJ = mu * (0 I \\ I 0)
 
@@ -114,7 +119,6 @@ protected:
 
             // resize/clean
             J.resize( 1, self::Nin * in[i].size() );
-			J.setZero();
 
             const SReal& s = sign.getValue();
             

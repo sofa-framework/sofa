@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(SofaGeneral)
 
-
-
 ## Dependencies
 find_package(SofaCommon REQUIRED)
 find_package(Newmat)
@@ -22,10 +20,22 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h" DESTINATION "in
 ### Subdirectories
 
 set(SOFAGENERAL_TARGETS
+    SofaGeneralAnimationLoop
+    SofaGeneralDeformable
+    SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
+    SofaGeneralLoader
+    SofaGeneralMeshCollision
+    SofaGeneralObjectInteraction
+    SofaGeneralRigid
+    SofaGeneralSimpleFem
+    SofaGeneralTopology
+    SofaGeneralVisual
     SofaBoundaryCondition
     SofaComponentGeneral
     SofaConstraint
-    SofaEngine
+    SofaGeneralEngine
     SofaExporter
     SofaGraphComponent
     SofaHaptics
@@ -47,9 +57,6 @@ endif()
 if(SOFA_HAVE_TAUCS)
     list(APPEND SOFAGENERAL_TARGETS SofaTaucsSolver)
 endif()
-
-list(APPEND SOFAGENERAL_TARGETS SofaEigen2Solver)
-
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

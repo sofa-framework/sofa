@@ -31,8 +31,8 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>

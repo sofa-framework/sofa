@@ -31,11 +31,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 

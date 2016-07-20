@@ -27,11 +27,11 @@
 #include <SofaUserInteraction/ComponentMouseInteraction.h>
 #include <SofaUserInteraction/RayContact.h>
 
-#include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/InitVisitor.h>
+#include <sofa/simulation/DeleteVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
@@ -55,6 +55,7 @@ PickHandler::PickHandler():
     mouseNode(NULL),
     mouseContainer(NULL),
     mouseCollision(NULL),
+    _fbo(true,true,true,0),
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
     _fboAllocated(false)

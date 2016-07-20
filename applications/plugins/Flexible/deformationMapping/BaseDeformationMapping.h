@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../quadrature/BaseGaussPointSampler.h"

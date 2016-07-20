@@ -9,6 +9,16 @@ namespace sofa {
 namespace component {
 namespace mapping {
 
+// TODO move this elsewhere if reusable
+struct with_py_callback {
+    typedef void* (*py_callback_type)(int);
+    py_callback_type py_callback;
+    
+    with_py_callback();
+    virtual ~with_py_callback();
+};
+
+
 /** 
 	a very general mapping defined on the python side: f(x) = value, df(x) = jacobian
 
@@ -24,11 +34,11 @@ namespace mapping {
 // TODO also fill a mask Data from python to be able to setup frommasks
 
 template<class TIn, class TOut>
-class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, TOut> {
+class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, TOut>,
+                                              public with_py_callback {
 	typedef PythonMultiMapping self;
-	
-
-  public:
+    
+ public:
 	SOFA_CLASS(SOFA_TEMPLATE2(PythonMultiMapping,TIn,TOut), 
 			   SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut));
 	
@@ -36,103 +46,45 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 	typedef typename TOut::VecCoord value_type;
 
 	Data<matrix_type> matrix;
-	Data<value_type> value;		
+	Data<value_type> value;
+
+	Data<matrix_type> gs_matrix;
+    Data<bool> use_gs;
+	Data<typename TOut::VecDeriv> out_force;
+    
+	PythonMultiMapping();
 	
-	PythonMultiMapping() :
-		matrix(initData(&matrix, "jacobian", "jacobian for the mapping (row-major)")),
-		value(initData(&value, "value", "mapping value")) {
-	}
+    enum {
+        out_deriv_size = TOut::Deriv::total_size,
+        in_deriv_size = TIn::Deriv::total_size,
 
+        out_coord_size = TOut::Coord::total_size,
+        in_coord_size = TIn::Coord::total_size
+    };
 
-    virtual void assemble( const helper::vector<typename self::in_pos_type>& in )  {
-		// initialize jacobians
+    enum {
+        // indicate state for python callback
+        apply_state = 0,
+        gs_state = 1
+    };
+    
+ public:
+    
+    template<class T>
+    static T& set(const Data<T>& data) {
+        return const_cast<T&>(data.getValue());
+    }
+    
+ protected:
 
-		typedef typename self::jacobian_type::CompressedMatrix jack_type;
-
-		// each input mstate
-        unsigned size = 0;
-        const unsigned rows = value.getValue().size() * TOut::Deriv::total_size;
-
-		for(unsigned j = 0, m = in.size(); j < m; ++j) {
-			jack_type& jack = this->jacobian(j).compressedMatrix;
-
-            const unsigned cols = this->from(j)->getMatrixSize();
-			jack.resize(rows, cols );
-			jack.setZero();
-            size += rows * cols;
-		}
-
-        if(matrix.getValue().size() != size) {
-
-            if( matrix.getValue().size() ) serr << "matrix size incorrect" << sendl;
-            else {
-                // std::cout << "derp" << std::endl;
-                return;
-            }
-        }
-
-
-		// each out dof
-		unsigned off = 0;
-			
-		// each output mstate
-		for(unsigned i = 0, n = value.getValue().size(); i < n; ++i) {
-
-            for(unsigned v = 0; v < self::Nout; ++v) {
-
-                // each input mstate
-                for(unsigned j = 0, m = in.size(); j < m; ++j) {
-                    jack_type& jack = this->jacobian(j).compressedMatrix;
-				
-                    const unsigned dim = this->from(j)->getMatrixSize();
-				
-                    const unsigned r = self::Nout * i + v;
-                    jack.startVec(r);
-
-                    // each input mstate dof
-                    for(unsigned k = 0, p = in[j].size(); k < p; ++k) {
-					
-                        // each dof dimension
-                        for(unsigned u = 0; u < self::Nin; ++u) {
-                            const unsigned c = k * self::Nin + u;
-                            const SReal value = matrix.getValue()[off + c];
-                            if( value ) jack.insertBack(r, c) = value;
-                        }					
-                    }
-                    off += dim;
-                }
-                
-            }
-			
-		}
-		assert( off == matrix.getValue().size() );
-
-		// each input mstate
-		for(unsigned j = 0, m = in.size(); j < m; ++j) {
-			jack_type& jack = this->jacobian(j).compressedMatrix;
-			
-			jack.finalize();
-            // std::cout << jack << std::endl;
-		}
-		
-		
-	}
-
-
+	virtual void assemble_geometric( const helper::vector<typename self::in_pos_type>& in,
+                                     const typename self::const_out_deriv_type& out);
+	
+	
+    virtual void assemble( const helper::vector<typename self::in_pos_type>& in );
+    
     virtual void apply(typename self::out_pos_type& out, 
-                       const helper::vector<typename self::in_pos_type>& /*in*/ ) {
-		
-		// let's be paranoid
-		assert( out.size() == value.getValue().size() );
-		assert( matrix.getValue().size() % value.getValue().size() == 0 );
-		
-		// each out dof
-//		unsigned off = 0;
-		for(unsigned i = 0, n = out.size(); i < n; ++i) {
-			out[i] = value.getValue()[i];
-		}
-		
-	}
+                       const helper::vector<typename self::in_pos_type>& /*in*/ );
 	
 };
 

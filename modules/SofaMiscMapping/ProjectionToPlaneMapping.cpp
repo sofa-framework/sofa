@@ -62,6 +62,30 @@ template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Vec3fTypes,
 template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
+///////////////////
+
+SOFA_DECL_CLASS(ProjectionToPlaneMultiMapping)
+
+using namespace defaulttype;
+
+// Register in the Factory
+int ProjectionToPlaneMultiMappingClass = core::RegisterObject("Compute distance between a moving point and a moving line")
+#ifndef SOFA_FLOAT
+        .add< ProjectionToPlaneMultiMapping< Vec3dTypes, Vec3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ProjectionToPlaneMultiMapping< Vec3fTypes, Vec3fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< Vec3dTypes, Vec3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API ProjectionToPlaneMultiMapping< Vec3fTypes, Vec3fTypes >;;
+#endif
+
 
 
 

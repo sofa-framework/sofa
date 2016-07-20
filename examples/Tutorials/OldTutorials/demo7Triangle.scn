@@ -110,7 +110,7 @@
             <MechanicalObject template="Rigid" dz="31.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+                <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
                 <RigidMapping />
             </Node>
             <Node name="Visu">

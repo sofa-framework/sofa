@@ -32,7 +32,7 @@
 
 #include <sofa/core/VecId.h>
 
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <string.h>
 #include <iostream>

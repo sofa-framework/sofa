@@ -25,9 +25,9 @@
 #include "SimpleGUI.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -51,14 +51,14 @@
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 
-#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 #ifdef SOFA_SMP
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/CollisionVisitor.h>
+#include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
+#include <sofa/simulation/VisualVisitor.h>
 #include <athapascan-1>
 #include "Multigraph.inl"
 #endif /* SOFA_SMP */
@@ -958,7 +958,7 @@ void SimpleGUI::DrawScene(void)
 
     GLdouble mat[16];
 
-    currentCamera->getOpenGLMatrix(mat);
+    currentCamera->getOpenGLModelViewMatrix(mat);
     glMultMatrixd(mat);
 
     glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);

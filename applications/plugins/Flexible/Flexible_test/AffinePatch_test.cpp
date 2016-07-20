@@ -30,9 +30,9 @@
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Node.h>
 
 // Including component
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>

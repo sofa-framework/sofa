@@ -3,7 +3,7 @@
 #include "Python_test.h"
 
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -14,7 +14,7 @@ namespace sofa {
 
 Python_test::Python_test()
 {
-    std::string plugin = "SofaPython";
+    static const std::string plugin = "SofaPython";
     sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
 }
 

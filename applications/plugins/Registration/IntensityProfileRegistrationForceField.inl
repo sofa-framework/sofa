@@ -28,7 +28,7 @@
 
 #include "IntensityProfileRegistrationForceField.h"
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include "float.h"

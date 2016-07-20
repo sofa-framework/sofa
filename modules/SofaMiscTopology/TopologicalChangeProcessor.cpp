@@ -27,7 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
@@ -39,7 +39,7 @@
 #include <SofaBaseTopology/HexahedronSetTopologyModifier.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 
 #include <time.h>
 

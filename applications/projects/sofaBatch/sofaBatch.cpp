@@ -37,8 +37,8 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaSimulationTree/init.h>
+#include <SofaSimulationTree/TreeSimulation.h>
 
 
 

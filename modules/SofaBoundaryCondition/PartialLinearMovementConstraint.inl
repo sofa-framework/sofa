@@ -28,7 +28,7 @@
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
@@ -425,45 +425,51 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
 
 // Matrix Integration interface
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
+void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     //const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
 
-    VecBool movedDirection = movedDirections.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<NumDimensions; ++c)
+    if (r) {
+        VecBool movedDirection = movedDirections.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            if( movedDirection[c] ) mat->clearRowCol(offset + NumDimensions * (*it) + c);
-        }
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<NumDimensions; ++c)
-        {
-            if( movedDirection[c] ) mat->set(offset + NumDimensions * (*it) + c, offset + NumDimensions * (*it) + c, 1.0);
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<NumDimensions; ++c)
+            {
+                if( movedDirection[c] ) r.matrix->clearRowCol(r.offset + NumDimensions * (*it) + c);
+            }
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<NumDimensions; ++c)
+            {
+                if( movedDirection[c] ) r.matrix->set(r.offset + NumDimensions * (*it) + c, r.offset + NumDimensions * (*it) + c, 1.0);
+            }
         }
     }
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
+void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     //const unsigned int N = Deriv::size();
-
-    VecBool movedDirection = movedDirections.getValue();
-    const SetIndexArray & indices = m_indices.getValue();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        for (unsigned int c = 0; c < NumDimensions; ++c)
+    int o = matrix->getGlobalOffset(this->mstate.get(mparams));
+    if (o >= 0) {
+        unsigned int offset = (unsigned int)o;
+        VecBool movedDirection = movedDirections.getValue();
+        const SetIndexArray & indices = m_indices.getValue();
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            if (movedDirection[c])
+            for (unsigned int c = 0; c < NumDimensions; ++c)
             {
-                vect->clear(offset + NumDimensions * (*it) + c);
+                if (movedDirection[c])
+                {
+                    vector->clear(offset + NumDimensions * (*it) + c);
+                }
             }
         }
     }

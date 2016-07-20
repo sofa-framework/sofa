@@ -26,6 +26,7 @@
 #define BINDING_NODE_H
 
 #include "PythonMacros.h"
+#include <sofa/simulation/Node.h>
 
 SP_DECLARE_CLASS_TYPE(Node)
 

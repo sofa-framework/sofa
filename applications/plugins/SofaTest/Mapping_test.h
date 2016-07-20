@@ -29,7 +29,7 @@
 
 #include "Sofa_test.h"
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/simulation/common/VectorOperations.h>
+#include <sofa/simulation/VectorOperations.h>
 
 #include <SceneCreator/SceneCreator.h>
 
@@ -42,7 +42,7 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/logging/Messaging.h>
@@ -82,6 +82,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typedef typename Mapping::In In;
     typedef component::container::MechanicalObject<In> InDOFs;
     typedef typename InDOFs::Real  Real;
+    typedef typename InDOFs::Coord  InCoord;
     typedef typename InDOFs::Deriv  InDeriv;
     typedef typename InDOFs::VecCoord  InVecCoord;
     typedef typename InDOFs::VecDeriv  InVecDeriv;
@@ -271,7 +272,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
-                              <<  " difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << std::endl;
+                              <<  "\ndifference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << std::endl;
                 succeed = false;
             }
         }

@@ -109,11 +109,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 
 if(WIN32)
     target_compile_options(${PROJECT_NAME} PRIVATE "-DCREATE_QGLVIEWER_DLL")
+	target_compile_options(${PROJECT_NAME} PRIVATE "/DNOMINMAX")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QGLVIEWER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-include(../../../SofaFramework/SofaMacros.cmake)
+include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
 sofa_create_package(QGLViewer ${QGLVIEWER_VERSION} QGLViewer QGLViewer)

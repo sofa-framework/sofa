@@ -28,6 +28,7 @@
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 #include "ScriptEnvironment.h"
+#include "PythonFactory.h"
 
 #include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::defaulttype;
@@ -35,7 +36,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core;
 #include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 using namespace sofa::defaulttype;
 
@@ -71,7 +72,7 @@ extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
-    return SP_BUILD_PYSPTR(obj->getRootContext());
+    return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
 // object factory
@@ -131,7 +132,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         }
     }
 
-    return SP_BUILD_PYSPTR(obj.get());
+    return sofa::PythonFactory::toPython(obj.get());
 }
 extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
@@ -142,13 +143,15 @@ extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObje
     return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
+/// the complete relative path to the object must be given
+/// returns None with a warning if the object is not found
 extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string" )
+        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
         Py_RETURN_NONE;
     }
     if (!context || !path)
@@ -164,8 +167,34 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    return SP_BUILD_PYSPTR(sptr.get());
+    return sofa::PythonFactory::toPython(sptr.get());
 }
+
+
+/// the complete relative path to the object must be given
+/// returns None if the object is not found
+extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
+{
+    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    char *path;
+    if (!PyArg_ParseTuple(args, "s",&path))
+    {
+        SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
+        Py_RETURN_NONE;
+    }
+    if (!context || !path)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    BaseObject::SPtr sptr;
+    context->get<BaseObject>(sptr,path);
+    if (!sptr) Py_RETURN_NONE;
+
+    return sofa::PythonFactory::toPython(sptr.get());
+}
+
+
 
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*/)
 {
@@ -183,7 +212,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*
 
     PyObject *pyList = PyList_New(list.size());
     for (size_t i=0; i<list.size(); i++)
-        PyList_SetItem(pyList, (Py_ssize_t)i, SP_BUILD_PYSPTR(list[i].get()));
+        PyList_SetItem(pyList, (Py_ssize_t)i, sofa::PythonFactory::toPython(list[i].get()));
 
     return pyList;
 }
@@ -197,6 +226,7 @@ SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHOD_KW(BaseContext,createObject)
 SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning)
 SP_CLASS_METHOD(BaseContext,getObject)
+SP_CLASS_METHOD(BaseContext,getObject_noWarning)
 SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END
 

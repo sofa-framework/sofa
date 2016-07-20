@@ -27,7 +27,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 
 
 #include <QApplication>

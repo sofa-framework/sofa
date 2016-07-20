@@ -28,7 +28,7 @@
 #include <ColladaSceneLoader/config.h>
 #include <sofa/core/loader/SceneLoader.h>
 #include <sofa/helper/SVector.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/Node.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
@@ -152,7 +152,9 @@ private:
 
 	Data<bool> generateCollisionModels;
     Data<float> collisionProximity;
-
+    Data<float> collisionStiffness;
+    Data<float> collisionFriction;
+    Data<helper::set<int> > collisionGroup;
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
 	Data<bool> useFlexible;
 #endif

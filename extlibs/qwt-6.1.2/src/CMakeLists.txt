@@ -285,5 +285,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "SofaExtlibs")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QWT_VERSION})
 
-include(../../../SofaFramework/SofaMacros.cmake)
+include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
 sofa_create_package(Qwt ${QWT_VERSION} qwt .)

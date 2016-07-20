@@ -27,13 +27,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
 #include <SofaUserInteraction/MouseInteractor.h>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
 #include <Compliant/compliance/UniformCompliance.h>
-#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/InitVisitor.h>
 
 
 

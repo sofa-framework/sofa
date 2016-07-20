@@ -27,7 +27,7 @@
 
 #include "FrameSpringForceField2.h"
 #include <sofa/core/behavior/ForceField.inl>
-#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>

@@ -27,15 +27,8 @@
 #include "Binding_BaseMapping.h"
 
 #include <sofa/core/BaseState.h>
-#include <SofaMiscMapping/SubsetMultiMapping.h>
 
-typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
-#ifndef SOFA_FLOAT
-typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > SubsetMultiMapping3d_to_3d;
-#endif
-#ifndef SOFA_DOUBLE
-typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > SubsetMultiMapping3f_to_3f;
-#endif
+
 
 extern "C" PyObject * SubsetMultiMapping3_to_3_addPoint(PyObject *self, PyObject * args)
 {
@@ -57,8 +50,3 @@ SP_CLASS_METHODS_BEGIN(SubsetMultiMapping3_to_3)
 SP_CLASS_METHOD(SubsetMultiMapping3_to_3,addPoint)
 SP_CLASS_METHODS_END
 
-#ifndef SOFA_FLOAT
-SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3d_to_3d,BaseMapping) // temp: MultiMapping3_to_3
-#else
-SP_CLASS_TYPE_SPTR(SubsetMultiMapping3_to_3,SubsetMultiMapping3f_to_3f,BaseMapping) // temp: MultiMapping3_to_3
-#endif

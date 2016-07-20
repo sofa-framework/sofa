@@ -23,8 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BatchGUI.h"
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/UpdateContextVisitor.h>
 #ifdef SOFA_SMP
 #include <athapascan-1>
 #endif

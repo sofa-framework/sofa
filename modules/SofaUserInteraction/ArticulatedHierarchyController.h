@@ -40,7 +40,7 @@
 
 #include <SofaUserInteraction/Controller.h>
 
-#include <SofaRigid/ArticulatedHierarchyContainer.h>
+#include <SofaGeneralRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
 

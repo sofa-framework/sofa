@@ -371,7 +371,7 @@ protected:
 
         tr->getOffsetT()=(Real)0.0;
         tr->getScaleT()=(Real)1.0;
-        tr->isPerspective()=false;
+        tr->isPerspective()=0;
         tr->update(); // update of internal data
 
         // update image extents
@@ -413,8 +413,8 @@ protected:
         if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<": mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
 
         /// colors definition
-        T FillColor = (T)getValue(meshId,0);
-        T InsideColor = (T)this->vf_InsideValues[meshId]->getValue();
+        const T FillColor = (T)getValue(meshId,0);
+        const T InsideColor = (T)this->vf_InsideValues[meshId]->getValue();
         //        T OutsideColor = (T)this->backgroundValue.getValue();
 
         /// draw surface
@@ -423,7 +423,9 @@ protected:
         mask.fill(false);
 
         // draw edges
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue() && nbedg) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+
+        unsigned int subdivValue = this->subdiv.getValue();
 
         std::map<unsigned int,T> edgToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
@@ -442,8 +444,8 @@ protected:
             }
             if(currentColor == FillColor)
             {
-                if (nbval>1)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),this->subdiv.getValue()); // edge rasterization with interpolated values (if not in roi)
-                else draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+                if (nbval>1)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),subdivValue); // edge rasterization with interpolated values (if not in roi)
+                else draw_line(im,mask,pts[0],pts[1],currentColor,subdivValue);
             }
         }
 
@@ -452,12 +454,12 @@ protected:
         {
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[it->first][j]])));
-            T currentColor = it->second;
-            draw_line(im,mask,pts[0],pts[1],currentColor,this->subdiv.getValue());
+            const T& currentColor = it->second;
+            draw_line(im,mask,pts[0],pts[1],currentColor,subdivValue);
         }
 
         //  draw filled faces
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue() && nbtri) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
 
         std::map<unsigned int,T> triToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
@@ -477,9 +479,9 @@ protected:
             if(currentColor == FillColor)
             {
                 if (nbval>1)  // triangle rasterization with interpolated values (if not in roi)
-                    draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],getValue(meshId,tri[i][0]),getValue(meshId,tri[i][1]),getValue(meshId,tri[i][2]),subdivValue);
                 else
-                    draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+                    draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,subdivValue);
             }
         }
 
@@ -488,8 +490,8 @@ protected:
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[it->first][j]])));
-            T currentColor = it->second;
-            draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,this->subdiv.getValue());
+            const T& currentColor = it->second;
+            draw_triangle(im,mask,pts[0],pts[1],pts[2],currentColor,subdivValue);
         }
 
         /// fill inside
@@ -498,7 +500,7 @@ protected:
             if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
             // flood fill from the exterior point (0,0,0) with the color outsideColor
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
-            bool colorTrue=true;
+            static const bool colorTrue=true;
             mask.draw_fill(0,0,0,&colorTrue);
             cimg_foroff(mask,off) if(!mask[off]) im[off]=InsideColor;
         }
@@ -566,7 +568,9 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
+        unsigned int dmax = sofa::helper::round(
+                    cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]), 1.)
+                );
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -589,7 +593,9 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
+        unsigned int dmax = sofa::helper::round(
+                    cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]), 1.)
+                );
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);

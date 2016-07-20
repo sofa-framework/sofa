@@ -30,9 +30,6 @@ using sofa::core::RegisterObject;
 #include <sofa/helper/AdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer;
 
-#include "Binding_Base.h"
-#include "Binding_BaseContext.h"
-#include "Binding_Node.h"
 using sofa::core::visual::VisualParams;
 
 #include "ScriptEnvironment.h"
@@ -45,6 +42,7 @@ using sofa::core::objectmodel::ScriptEvent;
 using sofa::core::objectmodel::PythonScriptEvent;
 
 #include <sofa/helper/logging/Messaging.h>
+#include "PythonFactory.h"
 
 //TODO(dmarchal): Use the deactivable ScopedTimer
 
@@ -86,34 +84,45 @@ void PythonMainScriptController::loadScript()
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-    BIND_SCRIPT_FUNC(onLoaded)
-            BIND_SCRIPT_FUNC(createGraph)
-            BIND_SCRIPT_FUNC(initGraph)
-            BIND_SCRIPT_FUNC(bwdInitGraph)
-            BIND_SCRIPT_FUNC(onKeyPressed)
-            BIND_SCRIPT_FUNC(onKeyReleased)
-            BIND_SCRIPT_FUNC(onMouseButtonLeft)
-            BIND_SCRIPT_FUNC(onMouseButtonRight)
-            BIND_SCRIPT_FUNC(onMouseButtonMiddle)
-            BIND_SCRIPT_FUNC(onMouseWheel)
-            BIND_SCRIPT_FUNC(onBeginAnimationStep)
-            BIND_SCRIPT_FUNC(onEndAnimationStep)
-            BIND_SCRIPT_FUNC(storeResetState)
-            BIND_SCRIPT_FUNC(reset)
-            BIND_SCRIPT_FUNC(cleanup)
-            BIND_SCRIPT_FUNC(onGUIEvent)
-            BIND_SCRIPT_FUNC(onScriptEvent)
-            BIND_SCRIPT_FUNC(draw)
+
+    helper::logging::MessageDispatcher::LoggerStream msg = msg_info("PythonMainScriptController");
+    msg << "Found callbacks: ";
+
+    #define BIND_SCRIPT_FUNC_WITH_MESSAGE(funcName){\
+        BIND_SCRIPT_FUNC(funcName)\
+        if( m_Func_##funcName ) msg<<#funcName<<", ";\
+        }
+
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onLoaded)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(createGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(initGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(bwdInitGraph)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onKeyPressed)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onKeyReleased)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonLeft)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonRight)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseButtonMiddle)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onMouseWheel)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onBeginAnimationStep)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onEndAnimationStep)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(storeResetState)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(reset)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(cleanup)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onGUIEvent)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onScriptEvent)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(draw)
+
+    #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
 }
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_onLoaded,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_onLoaded,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_createGraph(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_createGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_createGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
@@ -123,12 +132,12 @@ void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
     script_onLoaded( down_cast<simulation::Node>(getContext()) );
     script_createGraph( down_cast<simulation::Node>(getContext()) );
 
-    SP_CALL_MODULEFUNC(m_Func_initGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_initGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
 {
-    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph,"(O)",SP_BUILD_PYSPTR(node))
+    SP_CALL_MODULEFUNC(m_Func_bwdInitGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 bool PythonMainScriptController::script_onKeyPressed(const char c)
@@ -205,7 +214,7 @@ void PythonMainScriptController::script_onScriptEvent(ScriptEvent* event)
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonMainScriptController_Event_")+this->getName()).c_str() );
 
     PythonScriptEvent *pyEvent = static_cast<PythonScriptEvent*>(event);
-    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",SP_BUILD_PYSPTR(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
+    SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
 }
 
 void PythonMainScriptController::script_draw(const VisualParams*)
