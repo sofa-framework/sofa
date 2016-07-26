@@ -64,6 +64,17 @@ set(PYTHON_FILES
 
 set(README_FILES image.txt)
 
+
+find_package(SofaPython QUIET)
+if( SofaPython_FOUND )
+    list(APPEND SOURCE_FILES python/Binding_ImageData.cpp)
+    list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
+endif()
+
+
+
+
+
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
@@ -135,6 +146,11 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_IMAGE")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+if( SofaPython_FOUND )
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DSOFA_HAVE_SOFAPYTHON")
+endif()
 
 if(SOFA_HAVE_ZLIB)
     target_link_libraries(${PROJECT_NAME} SofaFramework::ZLIB)
