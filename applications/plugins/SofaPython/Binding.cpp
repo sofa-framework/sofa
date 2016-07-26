@@ -71,9 +71,11 @@ void bindSofaPythonModule()
 
 
     // non Base-Inherited types
+
     SP_ADD_CLASS_IN_SOFAMODULE(Data)
-    SP_ADD_CLASS_IN_SOFAMODULE(DisplayFlagsData)
-    SP_ADD_CLASS_IN_SOFAMODULE(OptionsGroupData)
+    // special Data cases
+    SP_ADD_CLASS_IN_FACTORY(DisplayFlagsData,sofa::core::objectmodel::Data<sofa::core::visual::DisplayFlags>)
+    SP_ADD_CLASS_IN_FACTORY(OptionsGroupData,sofa::core::objectmodel::Data<sofa::helper::OptionsGroup>)
 
     SP_ADD_CLASS_IN_SOFAMODULE(Link)
 

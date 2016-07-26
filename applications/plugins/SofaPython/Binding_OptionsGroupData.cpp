@@ -25,7 +25,6 @@
 #include "Binding_OptionsGroupData.h"
 #include "Binding_Data.h"
 
-#include <sofa/helper/OptionsGroup.h>
 using namespace sofa::helper;
 using namespace sofa::core::objectmodel;
 
