@@ -22,7 +22,7 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
     Data<IMAGETYPE>* data=((PyPtr< Data<IMAGETYPE> >*)self)->object;
     IMAGETYPE& image = *data->beginEdit();  // where should be the endedit?
 
-    typename IMAGETYPE::imCoord dim = image.getDimensions();
+    IMAGETYPE::imCoord dim = image.getDimensions();
 
 
     PyObject* imglist = PyList_New(dim[4]); // t
@@ -47,7 +47,7 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
     PyTuple_SetItem( res, 1, shape );
 
     // the type name
-    PyTuple_SetItem( res, 2, PyString_FromString( DataTypeName<typename IMAGETYPE::T>::name() ) );
+    PyTuple_SetItem( res, 2, PyString_FromString( DataTypeName<IMAGETYPE::T>::name() ) );
 
     return res;
 }
