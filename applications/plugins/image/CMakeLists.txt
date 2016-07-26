@@ -144,12 +144,15 @@ if(FREENECT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_IMAGE")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
+
+set(IMAGE_COMPILER_FLAGS "-DSOFA_BUILD_IMAGE")
+
+
 if( SofaPython_FOUND )
-    target_link_libraries(${PROJECT_NAME} SofaPython)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -DSOFA_HAVE_SOFAPYTHON")
+    target_link_libraries(${PROJECT_NAME} SofaPython)    
+    set(IMAGE_COMPILER_FLAGS "${IMAGE_COMPILER_FLAGS} -DSOFA_HAVE_SOFAPYTHON")
 endif()
 
 if(SOFA_HAVE_ZLIB)
@@ -162,6 +165,10 @@ if(SOFA_BUILD_TESTS)
         add_subdirectory(image_test)
     endif()
 endif()
+
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${IMAGE_COMPILER_FLAGS}")
+
 
 find_package(SofaGui QUIET)
 if(SofaGui_FOUND AND SOFA_GUI_QT)
