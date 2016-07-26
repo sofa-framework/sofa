@@ -29,7 +29,6 @@
 #include <SofaPython/PythonCommon.h>
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonFactory.h>
-#include "misc/python.h"
 extern PyMethodDef _CompliantModuleMethods[]; // functions of the _Compliant python module
 
 
