@@ -169,7 +169,7 @@ public:
     //    const InternalStorage& getEntries() const { return mask; }
 
     void resize( size_t size ) { m_size=size; }
-    inline void clear() {}
+    inline void clear() { m_size=0; }
 
     size_t size() const {
         return m_size;
