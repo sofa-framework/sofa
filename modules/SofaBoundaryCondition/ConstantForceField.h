@@ -107,6 +107,8 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
+    virtual void updateForceMask();
+
 protected:
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
