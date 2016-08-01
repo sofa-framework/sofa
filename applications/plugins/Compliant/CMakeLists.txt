@@ -103,6 +103,7 @@ set(HEADER_FILES
     preconditioner/CompliantJacobiPreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
+    python/Binding_AssembledSystem.h
     python/python.h
     utils/anderson.h
     utils/nlnscg.h
@@ -211,6 +212,7 @@ set(SOURCE_FILES
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     python/_Compliant.cpp
+    python/Binding_AssembledSystem.cpp
     python/python.cpp
     utils/anderson.cpp
     utils/nlnscg.cpp

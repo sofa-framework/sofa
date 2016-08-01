@@ -30,6 +30,7 @@
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonFactory.h>
 extern PyMethodDef _CompliantModuleMethods[]; // functions of the _Compliant python module
+#include "python/Binding_AssembledSystem.h"
 
 
 namespace sofa
@@ -66,7 +67,9 @@ void initExternalModule()
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
             static PyObject *s__CompliantPythonModule = SP_INIT_MODULE(_Compliant);
-            (void)s__CompliantPythonModule;
+
+            // adding more bindings to the _Compliant module
+            SP_ADD_CLASS( s__CompliantPythonModule, AssembledSystem );
         }
     }
 }

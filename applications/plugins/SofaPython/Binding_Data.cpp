@@ -83,7 +83,7 @@ PyObject *GetDataValuePython(BaseData* data)
         if (typeinfo->size(valueVoidPtr)==1)
         {
             // this type is NOT a vector; return directly the proper native type
-            const LinearSpring<SReal> value = vectorLinearSpring->getValue()[0];
+            const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[0];
             LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
             return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself
         }
@@ -96,7 +96,7 @@ PyObject *GetDataValuePython(BaseData* data)
                 for (int j=0; j<rowWidth; j++)
                 {
                     // build each value of the list
-                    const LinearSpring<SReal> value = vectorLinearSpring->getValue()[i*rowWidth+j];
+                    const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[i*rowWidth+j];
                     LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
                     PyList_SetItem(row,j,SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true));
                 }
