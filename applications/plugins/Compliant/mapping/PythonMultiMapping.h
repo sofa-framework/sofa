@@ -4,7 +4,7 @@
 
 #include "AssembledMultiMapping.h"
 #include "../utils/map.h"
-#include "../misc/python.h"
+#include "../python/python.h"
 
 namespace sofa {
 namespace component {

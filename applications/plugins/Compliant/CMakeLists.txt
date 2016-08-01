@@ -103,6 +103,7 @@ set(HEADER_FILES
     preconditioner/CompliantJacobiPreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
+    python/python.h
     utils/anderson.h
     utils/nlnscg.h
     utils/basis.h
@@ -181,7 +182,6 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp
     misc/RigidMass.cpp
-    misc/python.cpp
     misc/SimpleAnimationLoop.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/Benchmark.cpp
@@ -210,6 +210,8 @@ set(SOURCE_FILES
     preconditioner/CompliantJacobiPreconditioner.cpp
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
+    python/_Compliant.cpp
+    python/python.cpp
     utils/anderson.cpp
     utils/nlnscg.cpp
     utils/sub_kkt.cpp
