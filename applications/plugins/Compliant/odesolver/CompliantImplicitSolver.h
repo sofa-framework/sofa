@@ -96,8 +96,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
         SReal alpha;
         SReal beta;
         core::MechanicalParams _mparams;
-        const core::MultiVecCoordId& posId;
-        const core::MultiVecDerivId& velId;
+        core::MultiVecCoordId posId;
+        core::MultiVecDerivId velId;
 
         SolverOperations( const core::ExecParams* ep , sofa::core::objectmodel::BaseContext* ctx,
                           SReal a, SReal b, SReal dt,
@@ -146,6 +146,17 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
             mop.mparams = mparams();
         }
+
+//        SolverOperations( const SolverOperations& sop )
+//            : vop(sop.vop)
+//            , mop(sop.mop)
+//            , ctx(sop.ctx)
+//            , alpha(sop.alpha)
+//            , beta(sop.beta)
+//            , _mparams(sop._mparams)
+//            , posId(sop.posId)
+//            ,velId(sop.velId)
+//        {}
 
         inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
         inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
@@ -285,7 +296,6 @@ public:
     const system_type::rmat& P() const {return sys.P;}
     const system_type::rmat& J() const {return sys.J;}
     const system_type::rmat& C() const {return sys.C;}
-
     //@}
 
     /// compute post-stabilization correcting constraint in position-based

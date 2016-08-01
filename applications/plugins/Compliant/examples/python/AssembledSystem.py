@@ -10,9 +10,6 @@ def createSceneAndController(root):
 
     node.gravity="0 0 0"
 
-    global simuNode
-    simuNode = node
-
     node.createObject('CompliantImplicitSolver')
     node.createObject('LDLTSolver',schur=False)
 
@@ -36,14 +33,14 @@ def onEndAnimationStep(dt):
 
     global node
 
-    toto = Compliant.getImplicitAssembledSystem(node)
-    print toto
-    print "nb independent dofs:",toto.m
-    print "nb constraints:",toto.n
-    print "H", toto.getH()
-    print "P", toto.getP()
-    print "J", toto.getJ()
-    print "C", toto.getC()
+    assembledSystem = Compliant.getImplicitAssembledSystem(node)
+    print assembledSystem
+    print "nb independent dofs:",assembledSystem.m
+    print "nb constraints:",assembledSystem.n
+    print "H", assembledSystem.getH()
+    print "P", assembledSystem.getP()
+    print "J", assembledSystem.getJ()
+    print "C", assembledSystem.getC()
 
     sys.stdout.flush()
 
