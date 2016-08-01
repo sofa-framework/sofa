@@ -215,10 +215,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
 	
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
-		if( js.empty() ) std::cout << "warning: empty js for " << this->getName() << " " 
-		                           <<  this->getClassName() << std::endl;
 
-		assert( !js.empty() );
+        if( js.empty() )
+        {
+            serr << "empty js for " << this->getPathName() << sendl;
+            assert(false);
+        }
 		
 		return &js;
     }
