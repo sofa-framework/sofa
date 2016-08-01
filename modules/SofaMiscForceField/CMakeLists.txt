@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(SofaMiscForceField)
 
 set(HEADER_FILES
+    ForceMaskOff.h
     GearSpringForceField.h
     GearSpringForceField.inl
     LennardJonesForceField.h
@@ -19,6 +20,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ForceMaskOff.cpp
     GearSpringForceField.cpp
     LennardJonesForceField.cpp
     LineBendingSprings.cpp
