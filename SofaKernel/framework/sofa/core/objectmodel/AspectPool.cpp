@@ -141,7 +141,7 @@ AspectRef AspectPool::allocate()
 void AspectPool::release(int id)
 {
     // std::cout << "AspectPool"<<this<<": release aspect " << id << std::endl;
-    if(releaseCallback != 0)
+    if(releaseCallback)
     {
         releaseCallback(id);
     }
