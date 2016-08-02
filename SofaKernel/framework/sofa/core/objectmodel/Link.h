@@ -425,8 +425,8 @@ public:
         unsigned int index = TraitsContainer::find(m_value[aspect],v);
         if (index >= m_value[aspect].size()) return false;
         TraitsContainer::remove(m_value[aspect],index);
-//        this->updateCounter(aspect);
-//        removed(v, index);
+        this->updateCounter(aspect);
+        removed(v, index);
         return true;
     }
 
