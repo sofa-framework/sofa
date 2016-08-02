@@ -278,9 +278,28 @@ add_subdirectory(SofaGui)
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
-if(SOFA_BUILD_TESTS)
-    # Library used by SofaTest.
+
+## Scene creator option
+option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
+
+## Tutorials option
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+
+
+# Activate SceneCreator when required
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
+    set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
+endif()
+
+message("prout : ${SOFA_BUILD_SCENECREATOR}")
+
+# Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
+if(SOFA_BUILD_SCENECREATOR)
     add_subdirectory(applications/plugins/SceneCreator SceneCreator)
+endif()
+
+# Tests : define subdirectories
+if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest SofaTest)
     # Tests for all the modules, written using SofaTest.
@@ -301,8 +320,7 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
-## Tutorials
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+# Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
