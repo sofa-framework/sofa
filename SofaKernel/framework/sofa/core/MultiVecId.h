@@ -261,7 +261,7 @@ protected:
         return *idMap_ptr;
     }
 public:
-    bool hasIdMap() const { return idMap_ptr != NULL; }
+    bool hasIdMap() const { return idMap_ptr != nullptr; }
     const  IdMap& getIdMap() const
     {
         if (!idMap_ptr)
@@ -529,7 +529,7 @@ protected:
         return *idMap_ptr;
     }
 public:
-    bool hasIdMap() const { return idMap_ptr != NULL; }
+    bool hasIdMap() const { return idMap_ptr != nullptr; }
     const  IdMap& getIdMap() const
     {
         if (!idMap_ptr)
