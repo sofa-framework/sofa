@@ -247,7 +247,7 @@ public:
 #else
 
 private:
-    boost::shared_ptr< IdMap > idMap_ptr;
+    std::shared_ptr< IdMap > idMap_ptr;
 
 	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
 
@@ -327,7 +327,7 @@ public:
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
 #endif
 #	endif
-            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop
@@ -515,7 +515,7 @@ public:
 #else
 
 private:
-    boost::shared_ptr< IdMap > idMap_ptr;
+    std::shared_ptr< IdMap > idMap_ptr;
 
 	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
 
@@ -592,7 +592,7 @@ public:
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
 #endif
 #	endif
-            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop

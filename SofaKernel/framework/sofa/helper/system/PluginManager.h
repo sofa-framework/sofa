@@ -27,7 +27,6 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/DynamicLibrary.h>
-#include <boost/shared_ptr.hpp>
 #include <vector>
 #include <map>
 

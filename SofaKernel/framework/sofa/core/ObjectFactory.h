@@ -35,8 +35,6 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <boost/shared_ptr.hpp>
-
 namespace sofa
 {
 
