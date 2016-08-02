@@ -30,7 +30,7 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
 #include <sofa/helper/vector.h>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 #include <boost/function.hpp>
 
 namespace sofa

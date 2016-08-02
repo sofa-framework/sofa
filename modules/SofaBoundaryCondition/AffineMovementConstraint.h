@@ -36,7 +36,7 @@
 #include <SofaBaseTopology/TopologySubsetData.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <boost/type_traits/is_same.hpp>
+#include <type_traits>
 #include <boost/utility/enable_if.hpp>
 #include <set>
 
