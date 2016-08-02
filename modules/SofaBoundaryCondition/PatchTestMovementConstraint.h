@@ -37,7 +37,6 @@
 #include <sofa/helper/vector.h>
 
 #include <type_traits>
-#include <boost/utility/enable_if.hpp>
 #include <set>
 
 
