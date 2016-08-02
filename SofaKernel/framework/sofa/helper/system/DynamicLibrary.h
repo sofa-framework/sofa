@@ -59,7 +59,7 @@ public:
         const std::string& filename() const;
     private:
         void * m_realHandle;
-        boost::shared_ptr<std::string> m_filename;
+        std::shared_ptr<std::string> m_filename;
         Handle(const std::string& filename, void *handle);
     };
 

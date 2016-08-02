@@ -130,7 +130,7 @@ public:
 
     virtual Eigen::Matrix<Real,size,size,Eigen::RowMajor> assembleK(const Real &vol) const
     {
-        BOOST_STATIC_ASSERT( dim<=size );
+        static_assert( dim<=size, "" );
         typedef Eigen::Matrix<Real,size,size,Eigen::RowMajor> block;
         block K=block::Zero();
         if(!vol) return K;

@@ -245,7 +245,7 @@ public:
 template <class T>
 class DataValue<T, true>
 {
-    boost::shared_ptr<T> ptr;
+    std::shared_ptr<T> ptr;
 public:
 
     DataValue()
