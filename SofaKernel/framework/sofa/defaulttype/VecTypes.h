@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
