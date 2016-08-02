@@ -105,7 +105,7 @@ AspectPool::~AspectPool()
     }
 }
 
-void AspectPool::setReleaseCallback(const boost::function<void (int)>& callback)
+void AspectPool::setReleaseCallback(const std::function<void (int)>& callback)
 {
     releaseCallback = callback;
 }
