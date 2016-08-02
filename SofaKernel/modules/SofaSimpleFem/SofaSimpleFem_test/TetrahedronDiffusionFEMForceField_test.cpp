@@ -36,8 +36,6 @@
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <math.h>
-#include <boost/math/special_functions/erf.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -171,7 +169,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * boost::math::erfc( temp );
+        theorX[0] = 1.0 * std::erfc( temp );
     }
 
 
