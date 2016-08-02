@@ -271,10 +271,7 @@ public:
     }
     static void remove(T& c, unsigned index)
     {
-        size_t s = c.size();
-        for (size_t i=index+1; i < s; ++i)
-            c[i-1] = c[i];
-        c.resize(s-1);
+        c.erase( c.begin()+index );
     }
 };
 
@@ -428,8 +425,8 @@ public:
         unsigned int index = TraitsContainer::find(m_value[aspect],v);
         if (index >= m_value[aspect].size()) return false;
         TraitsContainer::remove(m_value[aspect],index);
-        this->updateCounter(aspect);
-        removed(v, index);
+//        this->updateCounter(aspect);
+//        removed(v, index);
         return true;
     }
 
