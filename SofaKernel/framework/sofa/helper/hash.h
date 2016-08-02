@@ -14,7 +14,7 @@ inline void hash_combine(std::size_t& seed, const T& v)
 /// generic hash for pairs
 namespace std
 {
-  template<typename S, typename T> struct hash<pair<S, T>>
+  template<typename S, typename T> struct hash<pair<S, T> >
   {
     inline size_t operator()(const pair<S, T> & v) const
     {
