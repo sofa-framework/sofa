@@ -150,17 +150,14 @@ if(SOFA_HAVE_BOOST_SYSTEM
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostChrono SofaFramework "${Boost_CHRONO_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 
     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
     sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
     sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
-    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
 else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
