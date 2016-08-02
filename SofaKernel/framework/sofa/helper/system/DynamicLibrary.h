@@ -26,6 +26,7 @@
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
 #include <sofa/helper/helper.h>
+#include <memory>
 #include <iostream>
 
 

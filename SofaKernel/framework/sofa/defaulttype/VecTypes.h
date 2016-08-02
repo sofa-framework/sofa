@@ -210,7 +210,7 @@ public:
     virtual ~ExtVectorAllocator() {}
     virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)=0;
     virtual void close(value_type*& data)=0;
-    virtual void cloneTo( boost::scoped_ptr<ExtVectorAllocator>& clone ) = 0; ///< clone "this" into given "clone"
+    virtual void cloneTo( std::unique_ptr<ExtVectorAllocator>& clone ) = 0; ///< clone "this" into given "clone"
 };
 
 /// Custom vector class.
@@ -231,7 +231,7 @@ protected:
     value_type* data;
     size_type   maxsize;
     size_type   cursize;
-    boost::scoped_ptr<ExtVectorAllocator<T> > allocator;
+    std::unique_ptr<ExtVectorAllocator<T> > allocator;
 
 public:
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL),  maxsize(0), cursize(0), allocator(alloc) {}
@@ -393,7 +393,7 @@ public:
         }
         cursize = size;
     }
-   virtual void cloneTo( boost::scoped_ptr< ExtVectorAllocator<T> >& clone )
+   virtual void cloneTo( std::unique_ptr< ExtVectorAllocator<T> >& clone )
     {
         clone.reset( new DefaultAllocator<T> );
     }

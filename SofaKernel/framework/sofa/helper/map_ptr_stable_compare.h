@@ -27,7 +27,7 @@
 
 #include <sofa/helper/helper.h>
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace sofa
 {
@@ -186,7 +186,7 @@ public:
 
 private:
     /// smart ptr for memory ownership
-    boost::scoped_ptr<stable_id_map_type> m_stable_id_map;
+    std::unique_ptr<stable_id_map_type> m_stable_id_map;
 };
 
 } // namespace helper

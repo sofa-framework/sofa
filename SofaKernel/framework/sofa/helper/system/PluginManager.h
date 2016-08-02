@@ -29,6 +29,7 @@
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <vector>
 #include <map>
+#include <memory>
 
 namespace sofa
 {

@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
+#include <memory>
 #include <string>
 
 namespace sofa

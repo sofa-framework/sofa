@@ -35,7 +35,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
@@ -140,7 +140,7 @@ protected:
 public:
 
 protected:
-    boost::scoped_ptr<MatrixType> matrixJ;
+    std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
 
     /// Pointer to the current topology
