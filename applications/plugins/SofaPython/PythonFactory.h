@@ -42,7 +42,7 @@
 #include <SofaPython/Binding_BaseContext.h>
 #include <SofaPython/Binding_Data.h>
 
-#include <boost/type_traits/is_base_of.hpp>
+#include <type_traits>
 
 
 namespace sofa
@@ -129,40 +129,40 @@ public:
 
         PythonBoundType<T>* t = new PythonBoundType<T>(pyTypeObject);
 
-        if( boost::is_base_of<sofa::core::objectmodel::BaseObject,T>::value )
+        if( std::is_base_of<sofa::core::objectmodel::BaseObject,T>::value )
         {
-            if( boost::is_base_of<sofa::core::loader::BaseLoader, T>::value )
+            if( std::is_base_of<sofa::core::loader::BaseLoader, T>::value )
                 return s_boundComponents[BaseLoader].push_back( t );
 
-            if( boost::is_base_of<sofa::core::topology::Topology, T>::value )
+            if( std::is_base_of<sofa::core::topology::Topology, T>::value )
             {
-                if( boost::is_base_of<sofa::core::topology::BaseMeshTopology, T>::value )
+                if( std::is_base_of<sofa::core::topology::BaseMeshTopology, T>::value )
                     return s_boundComponents[BaseMeshTopology].push_back( t );
                 return s_boundComponents[Topology].push_back( t );
             }
 
-            if( boost::is_base_of<sofa::core::visual::VisualModel, T>::value )
+            if( std::is_base_of<sofa::core::visual::VisualModel, T>::value )
                 return s_boundComponents[VisualModel].push_back( t );
 
-            if( boost::is_base_of<sofa::core::BaseState, T>::value )
+            if( std::is_base_of<sofa::core::BaseState, T>::value )
             {
-                if( boost::is_base_of<sofa::core::behavior::BaseMechanicalState, T>::value )
+                if( std::is_base_of<sofa::core::behavior::BaseMechanicalState, T>::value )
                     return s_boundComponents[BaseMechanicalState].push_back( t );
 
                 return s_boundComponents[BaseState].push_back( t );
             }
 
-            if( boost::is_base_of<sofa::core::BaseMapping, T>::value )
+            if( std::is_base_of<sofa::core::BaseMapping, T>::value )
                 return s_boundComponents[BaseMapping].push_back( t );
 
-            if( boost::is_base_of<sofa::core::DataEngine, T>::value )
+            if( std::is_base_of<sofa::core::DataEngine, T>::value )
                 return s_boundComponents[DataEngine].push_back( t );
 
             return s_boundComponents[BaseObject].push_back( t );
         }
-        else if( boost::is_base_of<sofa::core::objectmodel::BaseContext, T>::value )
+        else if( std::is_base_of<sofa::core::objectmodel::BaseContext, T>::value )
             return s_boundComponents[BaseContext].push_back( t );
-        else if( boost::is_base_of<sofa::core::objectmodel::Base, T>::value )
+        else if( std::is_base_of<sofa::core::objectmodel::Base, T>::value )
             return s_boundComponents[Base].push_back( t );
 
         return s_boundData.push_back( t );
