@@ -140,25 +140,27 @@ set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
-if(SOFA_HAVE_BOOST_SYSTEM
-   AND SOFA_HAVE_BOOST_THREAD
-   AND SOFA_HAVE_BOOST_DATE_TIME)
-    set(SOFA_HAVE_BOOST 1)
+# if(SOFA_HAVE_BOOST_SYSTEM
+#    AND SOFA_HAVE_BOOST_THREAD
+#    AND SOFA_HAVE_BOOST_DATE_TIME)
+#     set(SOFA_HAVE_BOOST 1)
 
-    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+#     sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
+# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
+# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
+#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
 
-    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
-    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
-    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
-else()
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
-endif()
+#     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+#     sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+#     sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+# else()
+#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+# endif()
+
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
 ## Eigen
 find_package(Eigen3 REQUIRED)
