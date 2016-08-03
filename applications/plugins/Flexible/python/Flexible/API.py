@@ -9,7 +9,15 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython.Tools import listListToStr as lconcat
 from SofaPython import Quaternion
-import BranchingImage.API # TODO Flexible should not depend on BranchingImage
+
+IsBranchingImagePresent = False
+try:
+    import BranchingImage.API # TODO Flexible should not depend on BranchingImage
+    IsBranchingImagePresent = True
+except:
+    pass
+
+
 
 printLog = True
 
@@ -263,7 +271,7 @@ class AffineMass:
         self.mass = None
 
     def massFromDensityImage(self, dofNode, dofRigidNode=None, densityImage=None, lumping='0'):
-        useBranchingImage = isinstance(densityImage, BranchingImage.API.Image)
+        useBranchingImage = isinstance(densityImage, BranchingImage.API.Image) if IsBranchingImagePresent else False
         node = dofNode.createChild('Mass')
         node.createObject('MechanicalObject', name='massPoints', template='Vec3')
         insertLinearMapping(node, dofRigidNode, self.dofAffineNode, assemble=False)
