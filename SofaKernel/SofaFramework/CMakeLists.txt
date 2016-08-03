@@ -132,19 +132,17 @@ endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 ## Boost
-find_package(Boost COMPONENTS thread system date_time chrono QUIET)
+find_package(Boost COMPONENTS thread system date_time QUIET)
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
-set(SOFA_HAVE_BOOST_CHRONO ${Boost_CHRONO_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
 if(SOFA_HAVE_BOOST_SYSTEM
    AND SOFA_HAVE_BOOST_THREAD
-   AND SOFA_HAVE_BOOST_DATE_TIME
-   AND SOFA_HAVE_BOOST_CHRONO)
+   AND SOFA_HAVE_BOOST_DATE_TIME)
     set(SOFA_HAVE_BOOST 1)
 
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
