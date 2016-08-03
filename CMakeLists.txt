@@ -291,8 +291,6 @@ if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
     set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
 endif()
 
-message("prout : ${SOFA_BUILD_SCENECREATOR}")
-
 # Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
 if(SOFA_BUILD_SCENECREATOR)
     add_subdirectory(applications/plugins/SceneCreator SceneCreator)
