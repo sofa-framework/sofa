@@ -61,6 +61,10 @@
 
 #cmakedefine SOFA_USE_MASK
 
+#ifdef _MSC_VER
+#define EIGEN_DONT_ALIGN
+#endif // _MSC_VER
+
 #ifdef SOFA_FLOAT
 typedef float SReal;
 #else
