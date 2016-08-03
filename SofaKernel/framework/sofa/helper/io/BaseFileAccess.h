@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
+#ifndef SOFA_HELPER_IO_BASEFILEACCESS_H
+#define SOFA_HELPER_IO_BASEFILEACCESS_H
+
 #include <sofa/helper/helper.h>
-#include <istream>
+
+#include <iostream>
+#include <string>
 
 namespace sofa
 {
@@ -38,23 +40,60 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+class BaseFileAccess;
+
+class BaseFileAccessCreator
 {
 public:
+    virtual ~BaseFileAccessCreator() {}
 
-    MeshOBJ(const std::string& filename)
-    {
-        init (filename);
-    }
-
-    void init (std::string filename);
-
-protected:
-
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+    virtual BaseFileAccess* create() const = 0;
 
 };
+
+template<class T>
+class FileAccessCreator : public BaseFileAccessCreator
+{
+public:
+    virtual T* create() const
+    {
+        return new T();
+    }
+};
+
+// \brief The goal of this class is to unify the way we access files in Sofa and to be able to change this way, transparently, according to the need of the end-user application
+class SOFA_HELPER_API BaseFileAccess
+{
+public:
+    static void SetDefaultCreator(); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    static void SetCreator(BaseFileAccessCreator* baseFileAccessCreator); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    template<class T>
+    static void SetCreator(); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    static BaseFileAccess* Create();
+
+protected:
+    BaseFileAccess();
+
+public:
+    virtual ~BaseFileAccess();
+
+    virtual bool open(const std::string& filename, std::ios_base::openmode openMode) = 0;
+    virtual void close() = 0;
+
+    virtual std::streambuf* streambuf() const = 0;
+    virtual std::string readAll() = 0;
+
+private:
+    static BaseFileAccessCreator* OurCreator;
+
+};
+
+template<class T>
+inline void BaseFileAccess::SetCreator()
+{
+    delete OurCreator;
+    OurCreator = new FileAccessCreator<T>();
+}
 
 } // namespace io
 
@@ -62,4 +101,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_BASEFILEACCESS_H

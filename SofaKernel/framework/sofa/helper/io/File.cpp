@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/helper.h>
-#include <istream>
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/logging/Messaging.h>
+
+#include "File.h"
+#include "File.h"
+
+#include <iostream>
 
 namespace sofa
 {
@@ -38,28 +40,73 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+File::File() :
+    myFileAccess(BaseFileAccess::Create())
 {
-public:
 
-    MeshOBJ(const std::string& filename)
+}
+
+File::File(const std::string& filename, std::ios_base::openmode openMode) :
+    myFileAccess(BaseFileAccess::Create())
+{
+    open(filename, openMode);
+}
+
+File::~File()
+{
+    close();
+
+    delete myFileAccess;
+}
+
+bool File::open(const std::string& filename, std::ios_base::openmode openMode)
+{
+    if(!checkFileAccess())
     {
-        init (filename);
+        msg_error("File") << "While trying to read file: " + filename;
+        return false;
     }
 
-    void init (std::string filename);
+    return myFileAccess->open(filename, openMode);
+}
 
-protected:
+void File::close()
+{
+    if(!checkFileAccess())
+        return;
 
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+    myFileAccess->close();
+}
 
-};
+std::streambuf* File::streambuf() const
+{
+    if(!checkFileAccess())
+        return nullptr;
+
+    return myFileAccess->streambuf();
+}
+
+std::string File::readAll()
+{
+    if(!checkFileAccess())
+        return "";
+
+    return myFileAccess->readAll();
+}
+
+bool File::checkFileAccess() const
+{
+    if(!myFileAccess)
+    {
+        msg_error("File") << "File cannot be accessed without a FileAccess object";
+        return false;
+    }
+
+    return true;
+}
 
 } // namespace io
 
 } // namespace helper
 
 } // namespace sofa
-
-#endif
