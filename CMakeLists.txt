@@ -79,12 +79,6 @@ endif(UNIX)
 include(CompilerOptions)
 
 
-# C++11 is now mandatory
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# TODO how to propagate such properties to dependents?
-
-
 ## Boost is now mandatory.
 find_package(Boost QUIET)
 if(NOT Boost_FOUND)

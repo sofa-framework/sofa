@@ -74,3 +74,15 @@ if(SOFA_OPENMP)
     endif()
 endif()
 
+
+
+# C++11 is now mandatory
+# TODO how to propagate such properties to dependents?
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(APPLE)  # only for macos versions < 10.9
+     # libstdc++ is used by default on old macos plateform
+     # and at that date it did not contain every c++11 implementations
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+endif(APPLE)
+
