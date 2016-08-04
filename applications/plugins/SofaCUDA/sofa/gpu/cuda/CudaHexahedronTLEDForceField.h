@@ -1,66 +1,24 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+*       SOFA, Simulation Open-Framework Architecture, v16.08                  *
 *                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-/************************************************************************************************************************************
-*                                                                                                                                   *
-*                          About this GPU implementation of the Total Lagrangian Explicit Dynamics                                  *
-*                                                    (TLED) algorithm                                                               *
-*                                                                                                                                   *
-*************************************************************************************************************************************
-                                                                                                                                    *
-This work was carried out by Olivier Comas and Zeike Taylor and funded by INRIA and CSIRO.                                          *
-This implementation was optimised for graphics cards Geforce 8800GTX                                                                *
-                                                                                                                                    *
- - Preventative Health Flagship, CSIRO ICT, AEHRC, Brisbane, Australia                                                              *
-   http://aehrc.com/biomedical_imaging/surgical_simulation.html                                                                     *
- - INRIA, Shaman team                                                                                                               *
-   http://www.inria.fr/recherche/equipes/shaman.en.html                                                                             *
-                                                                                                                                    *
- (1) For more details about the CUDA implementation of TLED into SOFA                                                               *
-@InProceedings{Comas2008,                                                                                                           *
-Author = {Comas, O. and Taylor, Z. and Allard, J. and Ourselin, S. and Cotin, S. and Passenger, J.},                                *
-Title = {Efficient nonlinear FEM for soft tissue modelling and its GPU implementation within the open source framework SOFA},       *
-Booktitle = {In Proceedings of ISBMS 2008},                                                                                         *
-Year = {2008},                                                                                                                      *
-Month = {July 7-8},                                                                                                                 *
-Address = {London, United Kingdom}                                                                                                  *
-}                                                                                                                                   *
-                                                                                                                                    *
-(2) For more details about the models implemented by the TLED algorithm and its validation                                          *
-@article{Taylor2009,                                                                                                                *
-Author = {Taylor, Z.A. and Comas, O. and Cheng, M. and Passenger, J. and Hawkes, D.J. and Atkinson, D. and Ourselin, S.},           *
-Journal = {Medical Image Analysis},                                                                                                 *
-Month = {April},                                                                                                                    *
-Number = {2},                                                                                                                       *
-Pages = {234-244},                                                                                                                  *
-Title = {On modelling of anisotropic viscoelasticity for soft tissue simulation: Numerical solution and {GPU} execution},           *
-Volume = {13},                                                                                                                      *
-Year = {2009}                                                                                                                       *
-}                                                                                                                                   *
-                                                                                                                                    *
-************************************************************************************************************************************/
 
 #ifndef SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H
 #define SOFA_CUDA_CUDA_HEXAHEDRON_TLED_FORCEFIELD_H

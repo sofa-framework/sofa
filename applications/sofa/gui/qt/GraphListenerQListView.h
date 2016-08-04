@@ -1,5 +1,5 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+*       SOFA, Simulation Open-Framework Architecture, v16.08                  *
 *                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -13,64 +13,12 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef GRAPHLISTENERQTreeWidget_H
-#define GRAPHLISTENERQTreeWidget_H
-
-
-#include "SofaGUIQt.h"
-
-#include <QAbstractItemView>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-
-
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/MutationListener.h>
-
-
-
-namespace sofa
-{
-
-namespace gui
-{
-
-namespace qt
-{
-using sofa::simulation::Node;
-using sofa::simulation::Simulation;
-using sofa::simulation::MutationListener;
-
-QPixmap* getPixmap(core::objectmodel::Base* obj);
-
-class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
-{
-public:
-    //Q3ListView* widget;
-    QTreeWidget* widget;
-    bool frozen;
-    std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
-    std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
-    std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
-
-    GraphListenerQListView(QTreeWidget* w)
-        : widget(w), frozen(false)
-    {
-    }
-
-
-    /*****************************************************************************************************************/
     QTreeWidgetItem* createItem(QTreeWidgetItem* parent);
 
     virtual void addChild(Node* parent, Node* child);
