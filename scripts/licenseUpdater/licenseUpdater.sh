@@ -87,13 +87,15 @@ main() {
         case "$licence" in
             "LGPL")
                 # search for /***(78)***...is free software...***(78)***/ and replace with escaped header
-                perl -0777 -i -pe "s/\/(\*){78}(.*)is free software(.*)(\*){78}\//$LGPL_HEADER/s" "$file" && rm "$file.bak"
+                perl -0777 -i -pe "s/\/(\*){78}(.*)is free software(.*)(\*){78}\//$LGPL_HEADER/s" "$file"
+				rm "$file.bak" 2> /dev/null # Created by Windows only
 
                 echo "$file updated with LGPL"
                 ;;
             "GPL")
                 # search for /***(78)***...is free software...***(78)***/ and replace with escaped header
-                perl -0777 -i -pe "s/\/(\*){78}(.*)is free software(.*)(\*){78}\//$GPL_HEADER/s" "$file" && rm "$file.bak"
+                perl -0777 -i -pe "s/\/(\*){78}(.*)is free software(.*)(\*){78}\//$GPL_HEADER/s" "$file"
+				rm "$file.bak" 2> /dev/null # Created by Windows only
 
                 echo "$file updated with GPL"
                 ;;
