@@ -51,7 +51,7 @@ FileAccess::~FileAccess()
 
 bool FileAccess::open(const std::string& filename, std::ios_base::openmode openMode)
 {
-    myFile.open(filename, openMode);
+    myFile.open(filename.c_str(), openMode);
     return myFile.is_open();
 }
 
