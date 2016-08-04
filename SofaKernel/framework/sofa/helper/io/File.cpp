@@ -27,7 +27,6 @@
 #include <sofa/helper/logging/Messaging.h>
 
 #include "File.h"
-#include "File.h"
 
 #include <iostream>
 
@@ -81,7 +80,7 @@ void File::close()
 std::streambuf* File::streambuf() const
 {
     if(!checkFileAccess())
-        return nullptr;
+        return NULL;
 
     return myFileAccess->streambuf();
 }
