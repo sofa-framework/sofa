@@ -410,6 +410,14 @@ class ShapeFunction:
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
 
+    def addViewer(self):
+        if len(self.prefix)==0:
+            self.node.createObject("BranchingImageToImageConverter", template="ImageD", name="SFSelectNode", shapeFunctionWeights="@shapeFunction.weights", shapeFunctionIndices="@shapeFunction.indices", nodeIndex=0)
+        else: # brute conversion for now, not so bad
+            self.node.createObject("BranchingImageToImageConverter", template="BranchingImageD,ImageD", name="weigthsImage", conversionType=0, inputBranchingImage="@shapeFunction.weights")
+            self.node.createObject("BranchingImageToImageConverter", template="BranchingImageUI,ImageUI", name="indicesImage", conversionType=0, inputBranchingImage="@shapeFunction.indices")
+            self.node.createObject("ImageShapeFunctionSelectNode", template="ImageD", name="SFSelectNode", shapeFunctionWeights="@weigthsImage.image", shapeFunctionIndices="@indicesImage.image", nodeIndex=0)
+        self.node.createObject('ImageViewer', template="ImageD", name="SFViewer", image="@SFSelectNode.nodeWeights", transform="@shapeFunction.transform")
 
 
 class FEMDof:
