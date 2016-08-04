@@ -417,7 +417,7 @@ class ShapeFunction:
             self.node.createObject("BranchingImageToImageConverter", template="BranchingImageD,ImageD", name="weigthsImage", conversionType=0, inputBranchingImage="@shapeFunction.weights")
             self.node.createObject("BranchingImageToImageConverter", template="BranchingImageUI,ImageUI", name="indicesImage", conversionType=0, inputBranchingImage="@shapeFunction.indices")
             self.node.createObject("ImageShapeFunctionSelectNode", template="ImageD", name="SFSelectNode", shapeFunctionWeights="@weigthsImage.image", shapeFunctionIndices="@indicesImage.image", nodeIndex=0)
-        self.node.createObject('ImageViewer', template="ImageD", name="SFViewer", image="@SFSelectNode.nodeWeights", transform="@shapeFunction.transform")
+        self.node.createObject('ImageViewer', template="ImageD", name="SFViewer", listening=True, image="@SFSelectNode.nodeWeights", transform="@shapeFunction.transform")
 
 
 class FEMDof:
