@@ -345,14 +345,16 @@ endif()
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
 install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/LICENCE.txt" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "15.12.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "15")
-SET(CPACK_PACKAGE_VERSION_MINOR "12")
+SET(CPACK_PACKAGE_VERSION "16.dev.0")
+SET(CPACK_PACKAGE_VERSION_MAJOR "16")
+SET(CPACK_PACKAGE_VERSION_MINOR "dev")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENCE.txt")
-SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
@@ -364,5 +366,3 @@ if(TEMP_CPACK_COMPONENTS_ALL)
 endif()
 
 INCLUDE(CPack)
-
-
