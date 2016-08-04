@@ -354,7 +354,7 @@ class ShapeFunction:
     def __init__(self, node):
         self.node = node
         self.shapeFunction=None
-        self.prefix = ""
+        self.prefix = "" # image type prefix, can be Branching
    
     def addVoronoi(self, image, position='', cells='', nbRef=8):
         """ Add a Voronoi shape function using path to position  and possibly cells
