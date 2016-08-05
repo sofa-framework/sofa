@@ -102,6 +102,7 @@ public:
     //@{
     Data< float > showSamplesScale; ///< Samples scale
     Data< int > drawMode; ///< Drawing mode: 0. Green points; 1. Green spheres
+    Data< float > showIndicesScale; ///< Indices samples scale
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -115,6 +116,7 @@ public:
       , f_volume(initData(&f_volume,helper::vector<volumeIntegralType>(),"volume","output weighted volume"))
       , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
       , drawMode(initData(&drawMode,0,"drawMode","0: Green points; 1: Green spheres"))
+      , showIndicesScale(initData(&showIndicesScale,0.0f,"showIndicesScale", "show indices scale"))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
                                            ,"1 - Newton-Cotes"
@@ -148,16 +150,21 @@ protected:
 
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
-        if (showSamplesScale.getValue()<=0) return;
-        switch( drawMode.getValue() )
-        {
-        case 1:
-            glPushAttrib(GL_LIGHTING_BIT);
-            glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
-            glPopAttrib();
-        default:
-            vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+        if (showSamplesScale.getValue()>0) {
+            switch( drawMode.getValue() ) {
+            case 1:
+                glPushAttrib(GL_LIGHTING_BIT);
+                glEnable(GL_LIGHTING);
+                vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
+                glPopAttrib();
+                break;
+            default:
+                vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
+                break;
+            }
+        }
+        if (showIndicesScale.getValue()>0) {
+            vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
         }
 
 #endif /* SOFA_NO_OPENGL */
