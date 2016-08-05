@@ -114,7 +114,7 @@ public:
       , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
       , f_volume(initData(&f_volume,helper::vector<volumeIntegralType>(),"volume","output weighted volume"))
       , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples scale"))
-      , drawMode(initData(&drawMode,0,"drawMode",""))
+      , drawMode(initData(&drawMode,0,"drawMode","0: Green points; 1: Green spheres"))
     {
         helper::OptionsGroup methodOptions(3,"0 - Gauss-Legendre"
                                            ,"1 - Newton-Cotes"
