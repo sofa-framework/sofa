@@ -22,12 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
+#ifndef SOFA_HELPER_IO_FILEACCESS_H
+#define SOFA_HELPER_IO_FILEACCESS_H
+
 #include <sofa/helper/helper.h>
-#include <istream>
+
+#include "BaseFileAccess.h"
+
+#include <fstream>
+#include <string>
 
 namespace sofa
 {
@@ -38,21 +42,25 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+// \brief Allow reading and writing into a file.
+class SOFA_HELPER_API FileAccess : public BaseFileAccess
 {
-public:
-
-    MeshOBJ(const std::string& filename)
-    {
-        init (filename);
-    }
-
-    void init (std::string filename);
+    friend class FileAccessCreator<FileAccess>;
 
 protected:
+    FileAccess();
 
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+public:
+    ~FileAccess();
+
+    virtual bool open(const std::string& filename, std::ios_base::openmode openMode);
+    virtual void close();
+
+    virtual std::streambuf* streambuf() const;
+    virtual std::string readAll();
+
+private:
+    std::fstream myFile;
 
 };
 
@@ -62,4 +70,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_FILEACCESS_H

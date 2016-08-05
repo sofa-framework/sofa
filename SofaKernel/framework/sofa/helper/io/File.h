@@ -22,12 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
+#ifndef SOFA_HELPER_IO_FILEIO_H
+#define SOFA_HELPER_IO_FILEIO_H
+
 #include <sofa/helper/helper.h>
-#include <istream>
+
+#include "BaseFileAccess.h"
+
+#include <iostream>
+#include <string>
 
 namespace sofa
 {
@@ -38,21 +42,26 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+// \brief Abstract representation of a file (could be on disk, memory, network, etc.)
+class SOFA_HELPER_API File
 {
 public:
+    File();
+    File(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary);
 
-    MeshOBJ(const std::string& filename)
-    {
-        init (filename);
-    }
+    ~File();
 
-    void init (std::string filename);
+    bool open(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary);
+    void close();
+
+    std::streambuf* streambuf() const;
+    std::string readAll();
 
 protected:
+    bool checkFileAccess() const;
 
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+private:
+    BaseFileAccess* myFileAccess;
 
 };
 
@@ -62,4 +71,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_FILEIO_H

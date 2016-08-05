@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/helper.h>
-#include <istream>
+#include <sofa/helper/system/config.h>
+
+#include "BaseFileAccess.h"
+#include "FileAccess.h"
 
 namespace sofa
 {
@@ -38,23 +37,40 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+BaseFileAccessCreator* BaseFileAccess::OurCreator = NULL;
+
+void BaseFileAccess::SetDefaultCreator()
 {
-public:
+    delete OurCreator;
+    OurCreator = new FileAccessCreator<FileAccess>();
+}
 
-    MeshOBJ(const std::string& filename)
-    {
-        init (filename);
-    }
+void BaseFileAccess::SetCreator(BaseFileAccessCreator* creator)
+{
+    if(creator == OurCreator)
+        return;
 
-    void init (std::string filename);
+    delete OurCreator;
+    OurCreator = creator;
+}
 
-protected:
+BaseFileAccess* BaseFileAccess::Create()
+{
+    if(NULL == OurCreator)
+        SetDefaultCreator();
 
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+    return OurCreator->create();
+}
 
-};
+BaseFileAccess::BaseFileAccess()
+{
+
+}
+
+BaseFileAccess::~BaseFileAccess()
+{
+
+}
 
 } // namespace io
 
@@ -62,4 +78,3 @@ protected:
 
 } // namespace sofa
 
-#endif

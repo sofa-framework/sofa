@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHOBJ_H
-#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/helper.h>
-#include <istream>
+#include <sofa/helper/system/config.h>
+
+#include "FileAccess.h"
+
+#include <iostream>
 
 namespace sofa
 {
@@ -38,23 +38,46 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshOBJ : public Mesh
+FileAccess::FileAccess() : BaseFileAccess(),
+    myFile()
 {
-public:
 
-    MeshOBJ(const std::string& filename)
-    {
-        init (filename);
-    }
+}
 
-    void init (std::string filename);
+FileAccess::~FileAccess()
+{
+    close();
+}
 
-protected:
+bool FileAccess::open(const std::string& filename, std::ios_base::openmode openMode)
+{
+    myFile.open(filename.c_str(), openMode);
+    return myFile.is_open();
+}
 
-    void readOBJ (std::istream &file, const std::string &filename);
-    void readMTL (const char *filename);
+void FileAccess::close()
+{
+    myFile.close();
+}
 
-};
+std::streambuf* FileAccess::streambuf() const
+{
+    return myFile.rdbuf();
+}
+
+std::string FileAccess::readAll()
+{
+    std::string data;
+
+    myFile.seekg(0, std::ios::end);
+    data.reserve(myFile.tellg());
+    myFile.seekg(0, std::ios::beg);
+
+    data.assign(std::istreambuf_iterator<char>(myFile),
+                std::istreambuf_iterator<char>());
+
+    return data;
+}
 
 } // namespace io
 
@@ -62,4 +85,3 @@ protected:
 
 } // namespace sofa
 
-#endif
