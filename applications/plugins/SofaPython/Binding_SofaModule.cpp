@@ -316,28 +316,51 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 {
     char* filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename))
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
-    getSimulation()->exportGraph( Simulation::GetRoot().get(), filename );
+    BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!node)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+
+    getSimulation()->exportGraph( down_cast<Node>(node), filename );
 
     return Py_BuildValue("i",0);
 }
 
 
 
-extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * /*args*/)
+extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 {
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "O", &pyNode))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseNode* basenode=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!basenode)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    Node* node = down_cast<Node>(basenode);
     Simulation* simulation = getSimulation();
-    Node*root=simulation->GetRoot().get();
 
     //    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-//    root->execute<UpdateBoundingBoxVisitor>(params);
-//    simulation->updateVisualContext(root);
-    simulation->updateVisual(root);
+//    node->execute<UpdateBoundingBoxVisitor>(params);
+//    simulation->updateVisualContext(node);
+    simulation->updateVisual(node);
 
 
     Py_RETURN_NONE;

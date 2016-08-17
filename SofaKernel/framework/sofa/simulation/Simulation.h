@@ -128,18 +128,14 @@ public:
     /// creates and returns a new node.
     virtual Node::SPtr createNewNode(const std::string& name)=0;
 
-
-    /// Get the top root simulation::Node of the Sofa scene
-    static sofa::simulation::Node::SPtr GetRoot();
-
+    /// @warning this singleton has one limitation: it is easy to create several types of
+    /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
+    /// but it does not sound like a huge limitation
     static Simulation::SPtr theSimulation;
 
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
 
-protected:
-    /// The only one top root Node of the Sofa scene
-    static Node::SPtr sRoot;
 };
 
 /// Set the (unique) simulation which controls the scene

@@ -89,11 +89,11 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot());
+        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root);
         eulerSolver->f_rayleighStiffness.setValue(rk);
         eulerSolver->f_rayleighMass.setValue(rm);
 
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (getRoot() );
+        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver>   (root);
         cgLinearSolver->f_maxIter=3000;
         cgLinearSolver->f_tolerance =1e-9;
         cgLinearSolver->f_smallDenominatorThreshold=1e-9;
