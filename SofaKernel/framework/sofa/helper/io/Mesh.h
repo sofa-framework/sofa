@@ -30,7 +30,6 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/loader/Material.h>
-#include <sofa/helper/helper.h>
 
 namespace sofa
 {
