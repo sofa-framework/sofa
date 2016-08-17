@@ -57,7 +57,7 @@ extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    // BaseNode is not binded in SofaPython, so getRoot is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
     return sofa::PythonFactory::toPython(node->getRoot());
 }
 
@@ -100,7 +100,7 @@ extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char *path;
 
@@ -152,7 +152,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
 
 extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -169,7 +169,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& parents = node->getParents();
@@ -186,7 +186,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getPathName().c_str());
@@ -194,7 +194,7 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getRootPath is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getRootPath is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getRootPath().c_str());

@@ -147,7 +147,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 
 extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getClassName().c_str());
@@ -155,7 +155,7 @@ extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getTemplateName().c_str());
@@ -163,7 +163,7 @@ extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getName().c_str());
