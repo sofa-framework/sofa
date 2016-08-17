@@ -103,7 +103,8 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
     // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char *path;
-    if (!PyArg_ParseTuple(args, "s",&path))
+    unsigned char warning = true;
+    if (!PyArg_ParseTuple(args, "s|B",&path,&warning))
         Py_RETURN_NONE;
     if (!node || !path)
     {
@@ -123,7 +124,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
+        if( warning ) SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
     return sofa::PythonFactory::toPython(childNode);
