@@ -1,7 +1,7 @@
 #### Compiler options
 
 ## GCC-specific
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
     ## Find out the version of g++ (and save it in GCXX_VERSION)
     if(CMAKE_CXX_COMPILER_ARG1) # CXX="ccache g++"
         string(STRIP ${CMAKE_CXX_COMPILER_ARG1} CMAKE_CXX_COMPILER_ARG1_stripped)
@@ -28,7 +28,7 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 endif()
 
 ## GCC/Clang-specific
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
     # Warnings
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W")
 endif()
@@ -80,9 +80,11 @@ endif()
 # TODO how to propagate such properties to dependents?
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if(APPLE)  # only for macos versions < 10.9
-     # libstdc++ is used by default on old macos plateform
-     # and at that date it did not contain every c++11 implementations
+
+# hack for clang on old macosx (version < 10.9, such as the dashboard servers)
+# that is using, by default at that time, a libstdc++ that did not fully implement c++11
+if(APPLE AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS "10.9" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" )
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-endif(APPLE)
+#    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+endif()
 
