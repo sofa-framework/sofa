@@ -40,6 +40,14 @@
 #include <iostream>
 #include <fstream>
 
+
+#if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
+    #include <amp_math.h>  // erfc was not yet included in the STL (c++11)
+    #define ERFC(x) concurrency::precise_math::erfc(x)
+#else
+    #define ERFC(x) std::erfc(x)
+#endif
+
 namespace sofa {
 
 /** @brief Comparison of the result of simulation with theoretical values in Diffusion case
@@ -169,7 +177,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * std::erfc( temp );
+        theorX[0] = 1.0 * ERFC( temp );
     }
 
 
@@ -210,5 +218,7 @@ TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 
 
 } // namespace sofa
+
+#undef ERFC
 
 #endif /* SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H */
