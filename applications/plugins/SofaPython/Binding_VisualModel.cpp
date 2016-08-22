@@ -26,6 +26,7 @@
 
 #include "Binding_VisualModel.h"
 #include "Binding_BaseState.h"
+#include <fstream>
 
 using namespace sofa::component::visualmodel;
 using namespace sofa::core::objectmodel;
@@ -52,8 +53,33 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
+{
+    VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
+
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    std::ofstream outfile(filename);
+
+    int vindex = 0;
+    int nindex = 0;
+    int tindex = 0;
+    int count = 0;
+
+    obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);
+
+    outfile.close();
+
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(VisualModel)
+SP_CLASS_METHOD(VisualModel,exportOBJ)
 SP_CLASS_METHODS_END
 
 SP_CLASS_METHODS_BEGIN(VisualModelImpl)
