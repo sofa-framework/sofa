@@ -52,8 +52,8 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
 
     defaulttype::Vector3 pq = q-p;
-    if(useNormal && pq*n<0) // inclusion test
-        return 0;
+    //if(useNormal && pq*n<0) // inclusion test
+    //    return 0;
     SReal norm2 = pq.norm2();
 
     if (norm2 >= dist2)
@@ -341,12 +341,12 @@ inline int MeshNewProximityIntersection::doIntersectionTrianglePoint(SReal dist2
         detection->normal = pq / detection->value;
     }
 
-    if(useNormal && detection->normal*n<0) // inclusion test
-    {
-        //detection->normal = detection->normal - 2*(detection->normal*n)*n;
-        detection->value = 0;
-        detection->normal = n;
-    }
+    //if(useNormal && detection->normal*n<0) // inclusion test
+    //{
+    //    //detection->normal = detection->normal - 2*(detection->normal*n)*n;
+    //    detection->value = 0;
+    //    detection->normal = n;
+    //}
 
     return 1;
 }
