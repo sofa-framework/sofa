@@ -95,8 +95,7 @@ public:
         TOPOLOGY_TRIANGLESET=2,
         TOPOLOGY_TETRAHEDRONSET=3,
         TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5,
-        TOPOLOGY_BEZIERTETRAHEDRONSET=6,
+        TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 	/// the way the mass should be computed on non-linear elements
 	typedef enum 
@@ -111,14 +110,7 @@ public:
     topology::PointData<helper::vector<MassType> >  vertexMassInfo;
     topology::EdgeData<helper::vector<MassType> >   edgeMassInfo;
 
-    /* ---------- Specific data for Bezier Elements ------*/
-    /// use this data structure to store mass for Bezier tetrahedra. 
-    //// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
-    topology::TetrahedronData<helper::vector<MassVector> > tetrahedronMassInfo;
-    // array of Tetrahedral Bezier indices
-    //sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
-    /* ---------- end ------*/
-
+ 
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real >         m_massDensity;
 
@@ -130,14 +122,7 @@ public:
     /// if specific mass information should be outputed
     Data< bool >         printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-    /// the order of integration for numerical integration
-    Data<size_t>	     numericalIntegrationOrder;
-    /// the type of numerical integration method chosen
-    Data<size_t>	     numericalIntegrationMethod;
-    /// the type of integration method chosen for non linear element.
-    Data<std::string>	 d_integrationMethod; 
-    IntegrationMethod    integrationMethod;
-
+   
 
 
 protected:
@@ -163,7 +148,6 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-    sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<GeometricalTypes>* bezierTetraGeo;
 
     virtual void clear();
 
@@ -224,8 +208,7 @@ public:
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }
-	// returns the mass vector for a given index of a Bezier tetrahedron
-	virtual const  MassVector &getBezierTetrahedronMassVector(const size_t i) const;
+
 
 protected:
 
@@ -403,27 +386,6 @@ protected:
     };
 
     EdgeMassHandler* edgeMassHandler;
-
-    class TetrahedronMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,MassVectorVector>
-    {
-    public:
-        typedef typename DataTypes::Real Real;
-        TetrahedronMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::TetrahedronData<helper::vector<MassVector> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,helper::vector<MassVector> >(_data), m(_m) {}
-
-        /// Edge mass coefficient matrix creation function
-        void applyCreateFunction(unsigned int tetrahedronIndex, MassVector & tetrahedronMass,
-                const core::topology::BaseMeshTopology::Tetrahedron&,
-                const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double >&);
-
-               /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
-
-    protected:
-        MeshMatrixMass<DataTypes,TMassType>* m;
-    };
-
-    TetrahedronMassHandler* tetrahedronMassHandler;
 
 };
 
