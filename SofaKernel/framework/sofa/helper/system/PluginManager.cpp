@@ -256,6 +256,9 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
 #ifdef SOFA_LIBSUFFIX
     name += sofa_tostring(SOFA_LIBSUFFIX);
 #endif
+#if defined(_DEBUG) && defined(_MSC_VER) 
+	 name += "_d";
+#endif
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
