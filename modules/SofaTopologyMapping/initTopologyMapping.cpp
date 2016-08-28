@@ -39,9 +39,7 @@ void initTopologyMapping()
     }
 }
 
-SOFA_LINK_CLASS(BezierTetra2BezierTriangleTopologicalMapping)
-SOFA_LINK_CLASS(Bezier2MeshTopologicalMapping)
-SOFA_LINK_CLASS(Bezier2MeshMechanicalMapping)
+
 SOFA_LINK_CLASS(Mesh2PointMechanicalMapping)
 SOFA_LINK_CLASS(SimpleTesselatedTetraMechanicalMapping)
 SOFA_LINK_CLASS(CenterPointTopologicalMapping)
