@@ -2,7 +2,27 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(CImg)
 
-install(FILES CImg.h cimgmatlab.h jpeg_buffer.h nlmeans.h skeleton.h SOFACImg.h vrml.h
+install(FILES 
+    CImg.h
+    SOFACImg.h
+    plugins/add_fileformat.h
+    plugins/chlpca.h
+    plugins/draw_gradient.h
+    plugins/ipl_alt.h
+    plugins/jpeg_buffer.h
+    plugins/matlab.h
+    plugins/patchmatch.h
+    plugins/tiff_stream.h
+    plugins/vrml.h
+    plugins/bayer.h
+    plugins/cvMat.h
+    plugins/inpaint.h
+    plugins/ipl.h
+    plugins/loop_macros.h
+    plugins/nlmeans.h
+    plugins/skeleton.h
+    plugins/tinymatwriter.h
+    plugins/vtk.h
         DESTINATION include/CImg
         COMPONENT CImg_headers)
 

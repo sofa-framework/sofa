@@ -39,6 +39,16 @@ def parseData(xmlData):
     elif xmlData.attrib["type"]=="string":
         return xmlData.text.split()
 
+def _getObjectsByTags(objects, tags):
+    """ internal function to return a list of objects with given tags
+    \todo add an explicit option atLeastOneTag, allTags,...
+    """
+    taggedObjects = list()
+    for obj in objects:
+        if len(obj.tags & tags) > 0:
+            taggedObjects.append(obj)
+    return taggedObjects
+
 class Model:
     """ This class stores a Sofa Model read from a sml/xml (Sofa Modelling Language) file.
     """
@@ -57,7 +67,6 @@ class Model:
             self.format=None
             self.source=None
             self.group=dict() # should be groups with *s*
-            self.groupsByTag=dict()
             if not meshXml is None:
                 self.parseXml(meshXml)
 
@@ -149,6 +158,11 @@ class Model:
         def addImage(self, image):
             self.image.append(image)
 
+        def getValueByTag(self, valuesByTag):
+            """
+            \sa getValueByTag()
+            """
+            return getValueByTag(valuesByTag, self.tags)
 
         def parseXml(self, objXml):
             parseIdName(self, objXml)
@@ -264,8 +278,6 @@ class Model:
         self.meshes=dict()
         self.images=dict()
         self.solids=dict()
-        self.solidsByTag=dict()
-        self.surfaceLinksByTag=dict()
         self.genericJoints=dict()
         self.surfaceLinks=dict()
 
@@ -378,8 +390,6 @@ class Model:
 #                               reg.surfaces[i].image = self.images[s.attrib["image"]]
                 self.surfaceLinks[surfaceLink.id]=surfaceLink
 
-            self.updateTag()
-
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
         if not xmlUnits is None:
@@ -422,43 +432,15 @@ class Model:
                     Sofa.msg_error("SofaPython.sml","Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"]))
             self.genericJoints[joint.id]=joint
 
-    def _setTagFromTag(self, tag, newTag, objects, objectsByTag):
-
-        if tag in objectsByTag:
-            for obj in objectsByTag[tag]:
-                obj.tags.add(newTag)
-        self._updateTag(objects, objectsByTag)
-
-    def setTagFromTag(self, tag, newTag):
-        """ @deprecated use setSolidTagFromTag() instead
+    def getSolidsByTags(self, tags):
+        """ \return a list of solids which contains at least one tag from tags
         """
-        self.setSolidTagFromTag(tag, newTag)
+        return _getObjectsByTags(self.solids.values(), tags)
 
-    def setSolidTagFromTag(self, tag, newTag):
-        """ assign newTag to all solids with tag
+    def getSurfaceLinksByTags(self, tags):
+        """ \return a list of solids which contains at least one tag from tags
         """
-        self._setTagFromTag(tag, newTag, self.solids, self.solidsByTag)
-
-    def setSurfaceLinkTagFromTag(self, tag, newTag):
-        """ assign newTag to all surfaceLinks with tag
-        """
-        self._setTagFromTag(tag, newTag, self.surfaceLinks, self.surfaceLinksByTag)
-
-    def _updateTag(self, objects, objectsByTag):
-        objectsByTag.clear()
-        for obj in objects.values():
-            for tag in obj.tags:
-                if not tag in objectsByTag:
-                    objectsByTag[tag]=list()
-                objectsByTag[tag].append(obj)
-
-    def updateTag(self):
-        """ Update internal Model tag structures
-        Call this method after you changed solids, surfaceLinks or mesh groups tags """
-        self._updateTag(self.solids, self.solidsByTag)
-        self._updateTag(self.surfaceLinks, self.surfaceLinksByTag)
-        for id,mesh in self.meshes.iteritems():
-            self._updateTag(mesh.group, mesh.groupsByTag)
+        return _getObjectsByTags(self.surfaceLinks.values(), tags)
 
 def insertVisual(parentNode, solid, color):
     node = parentNode.createChild("node_"+solid.name)
@@ -530,9 +512,8 @@ class BaseScene:
     def setMaterialByTag(self, tag, material):
         """ assign material to all solids with tag
         """
-        if tag in self.model.solidsByTag:
-            for solid in self.model.solidsByTag[tag]:
-                self.solidMaterial[solid.id] = material
+        for solid in self.model.getSolidsByTags({tag}):
+            self.solidMaterial[solid.id] = material
     
     def getMaterial(self, solid):
         """ return the solid material, "default" if none is defined

@@ -2255,6 +2255,10 @@ public:
 	/// get the closest pickable particle
 	void getClosestParticle( core::behavior::BaseMechanicalState*& mstate, unsigned int& indexCollisionElement, defaulttype::Vector3& point, SReal& rayLength );
 
+private:
+
+    // this function checks if the component must be included in the pick process according to its tags
+    bool isComponentTagIncluded(const core::behavior::BaseMechanicalState* mm);
 
 };
 

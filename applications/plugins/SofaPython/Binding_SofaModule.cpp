@@ -45,6 +45,8 @@
 
 #include "SceneLoaderPY.h"
 
+#include <sofa/helper/system/PluginManager.h>
+
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -314,28 +316,51 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 {
     char* filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename))
     {
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
 
-    getSimulation()->exportGraph( Simulation::GetRoot().get(), filename );
+    BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!node)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+
+    getSimulation()->exportGraph( down_cast<Node>(node), filename );
 
     return Py_BuildValue("i",0);
 }
 
 
 
-extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * /*args*/)
+extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 {
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "O", &pyNode))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseNode* basenode=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!basenode)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    Node* node = down_cast<Node>(basenode);
     Simulation* simulation = getSimulation();
-    Node*root=simulation->GetRoot().get();
 
     //    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-//    root->execute<UpdateBoundingBoxVisitor>(params);
-//    simulation->updateVisualContext(root);
-    simulation->updateVisual(root);
+//    node->execute<UpdateBoundingBoxVisitor>(params);
+//    simulation->updateVisualContext(node);
+    simulation->updateVisual(node);
 
 
     Py_RETURN_NONE;
@@ -565,6 +590,46 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
 
 
 
+extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
+{
+    char *pluginName;
+    if (!PyArg_ParseTuple(args, "s",&pluginName))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    using sofa::helper::system::PluginManager;
+
+    PluginManager& pluginManager = PluginManager::getInstance();
+
+    const std::string path = pluginManager.findPlugin(pluginName);
+    if (path != "")
+    {
+        if (!PluginManager::getInstance().pluginIsLoaded(path))
+        {
+            if (PluginManager::getInstance().loadPlugin(path))
+            {
+                const std::string guiPath = pluginManager.findPlugin( std::string( pluginName ) + "_" + PluginManager::s_gui_postfix);
+                if (guiPath != "")
+                {
+                    PluginManager::getInstance().loadPlugin(guiPath);
+                }
+            }
+        }
+    }
+    else
+    {
+        SP_MESSAGE_WARNING( "Sofa_loadPlugin: cannot find plugin: " << pluginName );
+        PyErr_BadArgument();
+    }
+
+    Py_RETURN_NONE;
+}
+
+
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -589,6 +654,7 @@ SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
+SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHODS_END
 
 

@@ -32,11 +32,9 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
 using namespace sofa::core::objectmodel;
-#include <sofa/core/visual/DisplayFlags.h>
-using namespace sofa::core::visual;
-#include <sofa/helper/OptionsGroup.h>
-using namespace sofa::helper;
 #include <sofa/helper/logging/Messaging.h>
+
+#include "PythonFactory.h"
 
 extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 {
@@ -65,11 +63,13 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
         Py_RETURN_NONE;
     }
 
-    if (dynamic_cast<Data<DisplayFlags>*>(data))
-        return SP_BUILD_PYPTR(DisplayFlagsData,BaseData,data,false);
 
-    if (dynamic_cast<Data<OptionsGroup>*>(data))
-        return SP_BUILD_PYPTR(OptionsGroupData,BaseData,data,false);
+
+    // special cases... from factory (e.g DisplayFlags, OptionsGroup)
+    {
+        PyObject* res = sofa::PythonFactory::toPython(data);
+        if( res ) return res;
+    }
 
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
@@ -147,7 +147,7 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
 
 extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getClassName().c_str());
@@ -155,7 +155,7 @@ extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getTemplateName().c_str());
@@ -163,7 +163,7 @@ extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Base* node = ((PySPtr<Base>*)self)->object.get();
 
     return PyString_FromString(node->getName().c_str());
@@ -179,7 +179,7 @@ extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
         Py_RETURN_NONE;
     }
 
-    const vector<BaseData*> dataFields = component->getDataFields();
+    const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
 
     PyObject * pyDict = PyDict_New();
     for (size_t i=0; i<dataFields.size(); i++)

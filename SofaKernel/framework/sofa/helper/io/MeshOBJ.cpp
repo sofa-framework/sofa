@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/io/File.h>
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sstream>
+#include <istream>
 
 namespace sofa
 {
@@ -53,12 +55,15 @@ void MeshOBJ::init (std::string filename)
         return;
     }
     loaderType = "obj";
-    std::ifstream file(filename.c_str());
-    readOBJ(file, filename);
+
+    File file(filename);
+    std::istream stream(file.streambuf());
+
+    readOBJ(stream, filename);
     file.close();
 }
 
-void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
+void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
 {
     vector< vector<int> > vertNormTexIndices;
     vector<int>vIndices, nIndices, tIndices;
@@ -72,7 +77,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
 
     PrimitiveGroup curGroup;
 
-    while( std::getline(file,line) )
+    while( std::getline(stream,line) )
     {
         if (line.empty()) continue;
         std::istringstream values(line);

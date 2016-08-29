@@ -741,7 +741,7 @@ void DAGNode::updateSimulationContext()
 
 Node* DAGNode::findCommonParent( simulation::Node* node2 )
 {
-    return static_cast<DAGNode*>(getSimulation()->GetRoot().get())->findCommonParent( this, static_cast<DAGNode*>(node2) );
+    return static_cast<DAGNode*>(getRoot())->findCommonParent( this, static_cast<DAGNode*>(node2) );
 }
 
 

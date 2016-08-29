@@ -59,8 +59,6 @@ int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
 
 OBJExporter::OBJExporter()
     : stepCounter(0)
-    , outfile(NULL)
-    , mtlfile(NULL)
     , objFilename( initData(&objFilename, "filename", "output OBJ file name"))
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
@@ -72,10 +70,6 @@ OBJExporter::OBJExporter()
 
 OBJExporter::~OBJExporter()
 {
-    if (outfile)
-        delete outfile;
-    if (mtlfile)
-        delete mtlfile;
 }
 
 void OBJExporter::init()
@@ -97,18 +91,18 @@ void OBJExporter::writeOBJ()
     }
     if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
         filename += ".obj";
-    outfile = new std::ofstream(filename.c_str());
+    std::ofstream outfile(filename.c_str());
 
     std::string mtlfilename = objFilename.getFullPath();
     if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
         mtlfilename += ".mtl";
     else
         mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
-    mtlfile = new std::ofstream(mtlfilename.c_str());
-    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
+    std::ofstream mtlfile(mtlfilename.c_str());
+    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
     context->executeVisitor(&exportOBJ);
-    outfile->close();
-    mtlfile->close();
+    outfile.close();
+    mtlfile.close();
 
     sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
 }

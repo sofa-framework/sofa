@@ -25,6 +25,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaLoader/MeshObjLoader.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/io/File.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 
@@ -38,6 +39,7 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper::io;
 using namespace sofa::core::loader;
 
 SOFA_DECL_CLASS(MeshObjLoader)
@@ -100,16 +102,18 @@ bool MeshObjLoader::load()
 
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
-    std::ifstream file(filename);
+    File file;
 
-    if (!file.good())
+    if (!file.open(filename))
     {
         serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
+    std::istream stream(file.streambuf());
+
     // -- Reading file
-    fileRead = this->readOBJ (file,filename);
+    fileRead = this->readOBJ (stream, filename);
     file.close();
 
     return fileRead;
@@ -141,7 +145,7 @@ bool MeshObjLoader::load()
 //    quadsGroups.endEdit();
 //}
 
-bool MeshObjLoader::readOBJ (std::ifstream &file, const char* /*filename*/)
+bool MeshObjLoader::readOBJ (std::istream &stream, const char* /*filename*/)
 {
     if( this->f_printLog.getValue() )
         sout << "MeshObjLoader::readOBJ" << sendl;
@@ -164,7 +168,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* /*filename*/)
     helper::vector<Triangle >& my_triangles = *(triangles.beginWriteOnly());
     helper::vector<Quad >& my_quads = *(quads.beginWriteOnly());
 
-    //BUGFIX: clear pre-existing data before loading the file
+    //BUGFIX: clear pre-existing data before loading the stream
     my_positions.clear();
 //    my_texCoords.clear();
 //    my_normals.clear();
@@ -193,7 +197,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* /*filename*/)
     int nbFaces[NBFACETYPE] = {0}; // number of edges, triangles, quads
     int groupF0[NBFACETYPE] = {0}; // first primitives indices in current group for edges, triangles, quads
     std::string line;
-    while( std::getline(file,line) )
+    while( std::getline(stream,line) )
     {
         if (line.empty()) continue;
         std::istringstream values(line);

@@ -39,6 +39,7 @@ set(HEADER_FILES
     forcefield/PotentialEnergy.h
     forcefield/UniformLinearPotentialEnergy.h
     forcefield/CompliantPenaltyForceField.h
+    mapping/AdditionMapping.h
     mapping/AffineMultiMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -48,7 +49,6 @@ set(HEADER_FILES
     mapping/ConstantAssembledMultiMapping.h
     mapping/DifferenceFromTargetMapping.h
     mapping/DifferenceMapping.h
-    mapping/AdditionMapping.h
     mapping/DotProductMapping.h
     mapping/GearMapping.h
     mapping/MaskMapping.h
@@ -56,7 +56,7 @@ set(HEADER_FILES
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
     mapping/PythonMultiMapping.h
-    mapping/PythonMultiMapping.inl	
+    mapping/PythonMultiMapping.inl
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
@@ -68,7 +68,7 @@ set(HEADER_FILES
     misc/CompliantSolverMerger.h
     misc/FailNode.h
     misc/RigidMass.h
-	misc/SimpleAnimationLoop.h
+    misc/SimpleAnimationLoop.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/Benchmark.h
     numericalsolver/BenchmarkSolver.h
@@ -103,8 +103,10 @@ set(HEADER_FILES
     preconditioner/CompliantJacobiPreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
+    python/Binding_AssembledSystem.h
+    python/python.h
     utils/anderson.h
-    utils/nlnscg.h	
+    utils/nlnscg.h
     utils/basis.h
     utils/bicgstab.h
     utils/cg.h
@@ -157,12 +159,12 @@ set(SOURCE_FILES
     forcefield/UniformLinearPotentialEnergy.cpp
     forcefield/CompliantPenaltyForceField.cpp
     initCompliant.cpp
+    mapping/AdditionMapping.cpp
     mapping/AffineMultiMapping.cpp
     mapping/AssembledRigidRigidMapping.cpp
     mapping/ContactMapping.cpp
     mapping/DifferenceFromTargetMapping.cpp
     mapping/DifferenceMapping.cpp
-    mapping/AdditionMapping.cpp
     mapping/DotProductMapping.cpp
     mapping/GearMapping.cpp
     mapping/MaskMapping.cpp
@@ -181,8 +183,7 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/FailNode.cpp
     misc/RigidMass.cpp
-    misc/python.cpp
-	misc/SimpleAnimationLoop.cpp
+    misc/SimpleAnimationLoop.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/Benchmark.cpp
     numericalsolver/BenchmarkSolver.cpp
@@ -210,8 +211,11 @@ set(SOURCE_FILES
     preconditioner/CompliantJacobiPreconditioner.cpp
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
+    python/_Compliant.cpp
+    python/Binding_AssembledSystem.cpp
+    python/python.cpp
     utils/anderson.cpp
-	utils/nlnscg.cpp	
+    utils/nlnscg.cpp
     utils/sub_kkt.cpp
 )
 
@@ -241,7 +245,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Compliant/config.h" DESTINATION "incl
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaPython)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")

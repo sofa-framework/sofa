@@ -18,7 +18,7 @@ import SofaPython.mass
 import SofaPython.Quaternion as quat
 
 import SofaImage.API
-import Flexible.Serialization
+import Flexible.Serialization as serialization
 import Flexible.API
 
 # to specify the floating point encoding (double by default)
@@ -32,7 +32,7 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 # target scale used when the scale is close to 0
-target_scale = [1E-6, 1E-6, 1E-6]
+target_scale = [1E-3, 1E-3, 1E-3]
 
 class ShearlessAffineBody:
     
@@ -63,25 +63,29 @@ class ShearlessAffineBody:
         self.bodyOffset = None # the position of the body
         self.frame = [] # required for many computation, these position are those used to define bones dofs
 
-    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, numberOfPoints=1):
+    def setFromMesh(self, filepath, density=1000, offset=[0,0,0,0,0,0,1], scale3d=[1,1,1], voxelSize=0.01, numberOfPoints=1, generatedDir=None):
         # variables
         self.bodyOffset = Frame.Frame(offset)
-        path_affine_rigid = '@'+ Tools.node_path_rel(self.affineNode, self.rigidNode)
-        path_affine_scale = '@'+ Tools.node_path_rel(self.affineNode, self.scaleNode)
+        path_affine_rigid = '@' + Tools.node_path_rel(self.affineNode, self.rigidNode)
+        path_affine_scale = '@' + Tools.node_path_rel(self.affineNode, self.scaleNode)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
 
-        self.image = SofaImage.API.Image(self.node, name="image_"+self.name, imageType="ImageUC")
-        self.image.node.addChild(self.affineNode) # for initialization
-        self.image.node.addChild(self.rigidNode) # for initialization
-        self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes closingValue=1,
-        self.image.addMeshToImage(voxelSize)
+        self.image = SofaImage.API.Image(self.node, name="image_" + self.name, imageType="ImageUC")
+        self.image.node.addChild(self.affineNode)  # for initialization
+        self.image.node.addChild(self.rigidNode)  # for initialization
         self.shapeFunction = Flexible.API.ShapeFunction(self.rigidNode)
 
-        # rigid dofs
-        self.sampler = SofaImage.API.Sampler(self.rigidNode)
-        self.sampler.addImageSampler(self.image, numberOfPoints)
-        self.rigidDofs = self.sampler.addMechanicalObject('Rigid3'+template_suffix)
+        if generatedDir is None:
+            self.image.addMeshLoader(filepath, value=1, insideValue=1, offset=offset, scale=scale3d) # TODO support multiple meshes closingValue=1,
+            self.image.addMeshToImage(voxelSize)
+            # rigid dofs
+            self.sampler = SofaImage.API.Sampler(self.rigidNode)
+            self.sampler.addImageSampler(self.image, numberOfPoints)
+            self.rigidDofs = self.sampler.addMechanicalObject('Rigid3'+template_suffix)
+        else:
+            self.image.addContainer(filename=self.node.name+"_rasterization.raw", directory=generatedDir)
+            self.rigidDofs = serialization.importRigidDofs(self.rigidNode, generatedDir+"/"+self.node.name+'_dofs.json')
 
         # scale dofs
         self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=concat([1,1,1]*numberOfPoints))
@@ -91,17 +95,28 @@ class ShearlessAffineBody:
         positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
         positiveNode.createObject('UnilateralConstraint')
         positiveNode.createObject('Stabilization', name='Stabilization')
+
         # affine dofs
         self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')
         self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3d,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
 
-        self.shapeFunction.addVoronoi(self.image, position='@dofs.rest_position')
+        # shapefunction and mass
+        if generatedDir is None:
+            self.shapeFunction.addVoronoi(self.image, position='@dofs.rest_position')
+            # mass
+            densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
+            affineMass = Flexible.API.AffineMass(self.affineNode)
+            affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
+            self.mass = affineMass.mass
+        else:
+            self.shapeFunction.shapeFunction = serialization.importImageShapeFunction(self.affineNode, generatedDir+self.node.name+"_SF_indices.raw", generatedDir+self.node.name+"_SF_weights.raw", 'dofs')
+            self.mass = serialization.importAffineMass(self.affineNode, generatedDir+self.node.name+"_affinemass.json")
 
-        # mass
-        densityImage = self.image.createTransferFunction(self.affineNode, "density", param='0 0 1 '+str(density))
-        affineMass = Flexible.API.AffineMass(self.affineNode)
-        affineMass.massFromDensityImage(self.affineNode, densityImage=densityImage)
-        self.mass = affineMass.mass
+        # hack to get the frame position
+        self.node.init()
+        for p in self.rigidDofs.position:
+            p.extend([0,0,0,1])
+            self.frame.append(Frame.Frame(p))
 
     def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, generatedDir=None):
         if len(offset) == 0:
@@ -116,7 +131,7 @@ class ShearlessAffineBody:
         for p in offset:
             str_position = str_position + concat(p) + " "
 
-        # scene creation
+        ### scene creation
         # rigid dof
         self.rigidDofs = self.rigidNode.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs', position=str_position, rest_position=str_position)
 
@@ -129,23 +144,17 @@ class ShearlessAffineBody:
         positiveNode.createObject('UnilateralConstraint')
         positiveNode.createObject('Stabilization', name='Stabilization')
 
-        self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode)
-
         # affine dofs
         self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='parent', showObject=0)
         self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
         if filepath:
-            self.affineNode.createObject('MeshObjLoader',name='source', filename=filepath, triangulate=1)
+            self.image = SofaImage.API.Image(self.affineNode, name="image_" + self.name, imageType="ImageUC")
+            self.shapeFunction = Flexible.API.ShapeFunction(self.affineNode)
             if generatedDir is None:
-                self.meshToImageEngine = self.affineNode.createObject('MeshToImageEngine', template='ImageUC', name='rasterizer', src='@source', value=1, insideValue=1, voxelSize=voxelSize, padSize=0, rotateImage='false')
-                self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', src='@rasterizer')
-                self.shapeFunction.shapeFunction = self.affineNode.createObject('VoronoiShapeFunction', template='ShapeFunctiond,ImageUC', name='SF', position='@dofs.rest_position', image='@image.image', transform='@image.transform', nbRef=8, clearData=1, bias=0)
-            else:
-                self.affineNode.createObject('ImageContainer', template='ImageUC', name='image', filename=generatedDir+self.node.name+"_rasterization.raw", drawBB='false')
-                serialization.importImageShapeFunction( self.affineNode,generatedDir+self.node.name+"_SF_indices.raw", generatedDir+self.node.name+"_SF_weights.raw", 'dofs' )
-
-            # mass
-            if generatedDir is None:
+                self.image.addMeshLoader(filepath, value=1, insideValue=1, scale=scale3d)  # TODO support multiple meshes closingValue=1,
+                self.image.addMeshToImage(voxelSize)
+                self.shapeFunction.addVoronoi(self.image, position='@dofs.rest_position')
+                # mass
                 self.affineMassNode = self.affineNode.createChild('mass')
                 self.affineMassNode.createObject('TransferFunction', name='density', template='ImageUC,ImageD', inputImage='@../image.image', param='0 0 1 '+str(density))
                 self.affineMassNode.createObject('MechanicalObject', template='Vec3'+template_suffix)
@@ -153,7 +162,9 @@ class ShearlessAffineBody:
                 self.affineMassNode.createObject('MassFromDensity',  name='MassFromDensity', template='Affine,ImageD', image='@density.outputImage', transform='@../image.transform', lumping='0')
                 self.mass = self.affineNode.createObject('AffineMass', massMatrix='@mass/MassFromDensity.massMatrix')
             else:
-                serialization.importAffineMass(self.affineNode,generatedDir+self.node.name+"_affinemass.json")
+                self.image.addContainer(filename=self.node.name + "_rasterization.raw", directory=generatedDir)
+                self.shapeFunction.shapeFunction = serialization.importImageShapeFunction(self.affineNode, generatedDir+self.node.name+"_SF_indices.raw", generatedDir+self.node.name+"_SF_weights.raw", 'dofs')
+                self.mass = serialization.importAffineMass(self.affineNode, generatedDir+self.node.name+"_affinemass.json")
 
             # computation of the object mass center
             massInfo = SofaPython.mass.RigidMassInfo()
@@ -255,7 +266,7 @@ class ShearlessAffineBody:
     class CollisionMesh:
 
         def __init__(self, node, filepath, scale3d, offset, name_suffix='', generatedDir=None):
-            r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+            r = Quaternion.to_euler(offset[3:]) * 180.0 / math.pi
             self.node = node.createChild('collision'+name_suffix)  # node
             self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r), triangulate=True)
             self.topology = self.node.createObject('MeshTopology', name='topology', src='@loader')
@@ -264,7 +275,7 @@ class ShearlessAffineBody:
             if generatedDir is None:
                 self.mapping = self.node.createObject('LinearMapping', template='Affine,Vec3'+template_suffix, name='mapping')
             else:
-                serialization.importLinearMapping(self.node,generatedDir+"_collisionmapping.json")
+                serialization.importLinearMapping(self.node, generatedDir+"_collisionmapping.json")
             self.normals = None
 
         def addNormals(self, invert=False):
@@ -280,7 +291,7 @@ class ShearlessAffineBody:
             def __init__(self, node):
                 global idxVisualModel;
                 self.node = node.createChild('visual')  # node
-                self.model = self.node.createObject('VisualModel', name='model'+str(idxVisualModel))
+                self.model = self.node.createObject('VisualModel', name='model'+str(idxVisualModel)) # @to do: Add the filename in order to keep the texture coordinates otherwise we lost them ...
                 self.mapping = self.node.createObject('IdentityMapping', name='mapping')
                 idxVisualModel+=1
 
@@ -294,7 +305,7 @@ class ShearlessAffineBody:
             if generatedDir is None:
                 self.mapping = self.node.createObject('LinearMapping', template='Affine,ExtVec3f', name='mapping')
             else:
-                serialization.importLinearMapping(self.node,generatedDir+"_visualmapping.json")
+                serialization.importLinearMapping(self.node, generatedDir+"_visualmapping.json")
             idxVisualModel+=1
 
     class Offset:
@@ -355,26 +366,26 @@ class ShearlessAffineBody:
             self.mapping = self.node.createObject('LinearMapping', name='mapping', geometricStiffness = geometric_stiffness)
 
     # Export of class
-    def exportRasterization(self,path="./generated"):
-        self.meshToImageEngine.getContext().createObject('ImageExporter', name="writer", src="@rasterizer", filename=path+"/"+self.node.name+"_rasterization.raw", exportAtBegin="true")
+    def exportRasterization(self, path="./generated"):
+        self.image.addExporter(filename=self.node.name+"_rasterization.raw", directory=path)
 
-    def exportShapeFunction(self,path="./generated"):
-        serialization.exportImageShapeFunction(self.affineNode,self.shapeFunction,path+"/"+self.node.name+"_SF_indices.raw",path+"/"+self.node.name+"_SF_weights.raw")
+    def exportShapeFunction(self, path="./generated"):
+        serialization.exportImageShapeFunction(self.affineNode, self.shapeFunction.shapeFunction, path+"/"+self.node.name+"_SF_indices.raw", path+"/"+self.node.name+"_SF_weights.raw")
 
-    def exportMappings(self,path="./generated"):
+    def exportMappings(self, path="./generated"):
         if self.collision is not None:
-            serialization.exportLinearMapping(self.collision.mapping,path+"/"+self.node.name+'_collisionmapping.json')
+            serialization.exportLinearMapping(self.collision.mapping, path+"/"+self.node.name+'_collisionmapping.json')
         if self.visual is not None:
-            serialization.exportLinearMapping(self.visual.mapping,path+"/"+self.node.name+'_visualmapping.json')
+            serialization.exportLinearMapping(self.visual.mapping, path+"/"+self.node.name+'_visualmapping.json')
         if self.behavior is not None:
-            serialization.exportLinearMapping(self.behavior.mapping,path+"/"+self.node.name+'_behaviormapping.json')
+            serialization.exportLinearMapping(self.behavior.mapping, path+"/"+self.node.name+'_behaviormapping.json')
 
-    def exportGaussPoints(self,path="./generated"):
+    def exportGaussPoints(self, path="./generated"):
         if self.behavior is not None:
-            serialization.exportGaussPoints(self.behavior.sampler,path+"/"+self.node.name+'_gauss.json')
+            serialization.exportGaussPoints(self.behavior.sampler, path+"/"+self.node.name+'_gauss.json')
 
-    def exportAffineMass(self,path="./generated"):
+    def exportAffineMass(self, path="./generated"):
         serialization.exportAffineMass(self.mass, path+"/"+self.node.name+'_affinemass.json')
 
-    def exportRigidDofs(self,path="./generated"):
-        serialization.exportRigidDofs(self.rigidDofs,path+"/"+self.node.name+'_dofs.json')
+    def exportRigidDofs(self, path="./generated"):
+        serialization.exportRigidDofs(self.rigidDofs, path+"/"+self.node.name+'_dofs.json')

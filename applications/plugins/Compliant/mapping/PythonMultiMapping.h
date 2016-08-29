@@ -4,19 +4,13 @@
 
 #include "AssembledMultiMapping.h"
 #include "../utils/map.h"
+#include "../python/python.h"
 
 namespace sofa {
 namespace component {
 namespace mapping {
 
-// TODO move this elsewhere if reusable
-struct with_py_callback {
-    typedef void* (*py_callback_type)(int);
-    py_callback_type py_callback;
-    
-    with_py_callback();
-    virtual ~with_py_callback();
-};
+
 
 
 /** 

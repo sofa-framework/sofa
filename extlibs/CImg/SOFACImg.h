@@ -26,7 +26,7 @@
 // this file contains CImg extensions for SOFA
 
 #include <queue>
-#define cimg_plugin "skeleton.h"
+#define cimg_plugin "plugins/skeleton.h"
 
 #if defined(_OPENMP) && (_OPENMP >= 200805)
 #include <omp.h>
@@ -226,8 +226,16 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     }
     else
     {
+//        // get file size for verifications
+//        fseek( nfile, 0, SEEK_END );  // set the file pointer to end of file
+//        const size_t filesize = ftell( nfile ); // get the file size (position of last pos)
+//        rewind( nfile );  // return to begin of file
+
+
+
         if(inputType==std::string("char"))
         {
+//            if( filesize != nb*sizeof(char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             char *const buffer = new char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -236,6 +244,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("double"))
         {
+//            if( filesize != nb*sizeof(double) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             double *const buffer = new double[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -244,6 +253,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("float"))
         {
+//            if( filesize != nb*sizeof(float) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             float *const buffer = new float[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -252,6 +262,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("int"))
         {
+//            if( filesize != nb*sizeof(int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             int *const buffer = new int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -260,6 +271,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("long"))
         {
+//            if( filesize != nb*sizeof(long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             long *const buffer = new long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -268,6 +280,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("short"))
         {
+//            if( filesize != nb*sizeof(short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             short *const buffer = new short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -276,6 +289,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned char"))
         {
+//            if( filesize != nb*sizeof(unsigned char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned char *const buffer = new unsigned char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -284,6 +298,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned int"))
         {
+//            if( filesize != nb*sizeof(unsigned int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned int *const buffer = new unsigned int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -292,6 +307,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned long"))
         {
+//            if( filesize != nb*sizeof(unsigned long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned long *const buffer = new unsigned long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -300,6 +316,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned short"))
         {
+//            if( filesize != nb*sizeof(unsigned short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned short *const buffer = new unsigned short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -308,6 +325,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("bool"))
         {
+//            if( filesize != nb*sizeof(bool) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             bool *const buffer = new bool[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
