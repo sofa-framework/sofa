@@ -31,7 +31,6 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         for mesh in rigidModel.mesh :
             if rigidModel.meshAttributes[mesh.id].collision is True:
                 Sofa.msg_info("Compliant.sml","     collision mesh: "+mesh.name)
-        sys.stdout.flush()
 
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
