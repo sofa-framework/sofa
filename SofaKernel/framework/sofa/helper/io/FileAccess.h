@@ -22,10 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#ifndef SOFA_HELPER_IO_FILEACCESS_H
+#define SOFA_HELPER_IO_FILEACCESS_H
+
+#include <sofa/helper/helper.h>
+
+#include "BaseFileAccess.h"
+
+#include <fstream>
+#include <string>
 
 namespace sofa
 {
@@ -36,18 +42,26 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+// \brief Allow reading and writing into a file.
+class SOFA_HELPER_API FileAccess : public BaseFileAccess
 {
+    friend class FileAccessCreator<FileAccess>;
+
+protected:
+    FileAccess();
+
 public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
+    ~FileAccess();
+
+    virtual bool open(const std::string& filename, std::ios_base::openmode openMode);
+    virtual void close();
+
+    virtual std::streambuf* streambuf() const;
+    virtual std::string readAll();
+
+private:
+    std::fstream myFile;
+
 };
 
 } // namespace io
@@ -56,4 +70,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_FILEACCESS_H

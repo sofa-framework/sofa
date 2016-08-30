@@ -22,10 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/system/config.h>
+
+#include "FileAccess.h"
+
+#include <iostream>
 
 namespace sofa
 {
@@ -36,19 +38,46 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+FileAccess::FileAccess() : BaseFileAccess(),
+    myFile()
 {
-public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
-};
+
+}
+
+FileAccess::~FileAccess()
+{
+    close();
+}
+
+bool FileAccess::open(const std::string& filename, std::ios_base::openmode openMode)
+{
+    myFile.open(filename.c_str(), openMode);
+    return myFile.is_open();
+}
+
+void FileAccess::close()
+{
+    myFile.close();
+}
+
+std::streambuf* FileAccess::streambuf() const
+{
+    return myFile.rdbuf();
+}
+
+std::string FileAccess::readAll()
+{
+    std::string data;
+
+    myFile.seekg(0, std::ios::end);
+    data.reserve(myFile.tellg());
+    myFile.seekg(0, std::ios::beg);
+
+    data.assign(std::istreambuf_iterator<char>(myFile),
+                std::istreambuf_iterator<char>());
+
+    return data;
+}
 
 } // namespace io
 
@@ -56,4 +85,3 @@ public:
 
 } // namespace sofa
 
-#endif

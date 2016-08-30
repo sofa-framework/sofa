@@ -291,7 +291,7 @@ class ShearlessAffineBody:
             def __init__(self, node):
                 global idxVisualModel;
                 self.node = node.createChild('visual')  # node
-                self.model = self.node.createObject('VisualModel', name='model'+str(idxVisualModel))
+                self.model = self.node.createObject('VisualModel', name='model'+str(idxVisualModel)) # @to do: Add the filename in order to keep the texture coordinates otherwise we lost them ...
                 self.mapping = self.node.createObject('IdentityMapping', name='mapping')
                 idxVisualModel+=1
 

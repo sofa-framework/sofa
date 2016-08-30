@@ -73,7 +73,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         /// Load the scene
         std::string sceneName = "BilateralInteractionConstraint.scn";
         std::string fileName  = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
-        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
+        root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
 
         // Test if load has succeeded
         sofa::simulation::SceneLoaderXML scene;

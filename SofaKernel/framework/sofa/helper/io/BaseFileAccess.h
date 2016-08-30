@@ -22,10 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#ifndef SOFA_HELPER_IO_BASEFILEACCESS_H
+#define SOFA_HELPER_IO_BASEFILEACCESS_H
+
+#include <sofa/helper/helper.h>
+
+#include <iostream>
+#include <string>
 
 namespace sofa
 {
@@ -36,19 +40,60 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+class BaseFileAccess;
+
+class BaseFileAccessCreator
 {
 public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
+    virtual ~BaseFileAccessCreator() {}
+
+    virtual BaseFileAccess* create() const = 0;
+
 };
+
+template<class T>
+class FileAccessCreator : public BaseFileAccessCreator
+{
+public:
+    virtual T* create() const
+    {
+        return new T();
+    }
+};
+
+// \brief The goal of this class is to unify the way we access files in Sofa and to be able to change this way, transparently, according to the need of the end-user application
+class SOFA_HELPER_API BaseFileAccess
+{
+public:
+    static void SetDefaultCreator(); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    static void SetCreator(BaseFileAccessCreator* baseFileAccessCreator); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    template<class T>
+    static void SetCreator(); // \warning: Should be called only from the end-user application to avoid undesired FileAccess overriding
+    static BaseFileAccess* Create();
+
+protected:
+    BaseFileAccess();
+
+public:
+    virtual ~BaseFileAccess();
+
+    virtual bool open(const std::string& filename, std::ios_base::openmode openMode) = 0;
+    virtual void close() = 0;
+
+    virtual std::streambuf* streambuf() const = 0;
+    virtual std::string readAll() = 0;
+
+private:
+    static BaseFileAccessCreator* OurCreator;
+
+};
+
+template<class T>
+inline void BaseFileAccess::SetCreator()
+{
+    delete OurCreator;
+    OurCreator = new FileAccessCreator<T>();
+}
 
 } // namespace io
 
@@ -56,4 +101,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_BASEFILEACCESS_H

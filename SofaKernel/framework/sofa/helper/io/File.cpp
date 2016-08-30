@@ -22,10 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/logging/Messaging.h>
+
+#include "File.h"
+
+#include <iostream>
 
 namespace sofa
 {
@@ -36,24 +39,73 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+File::File() :
+    myFileAccess(BaseFileAccess::Create())
 {
-public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
-};
+
+}
+
+File::File(const std::string& filename, std::ios_base::openmode openMode) :
+    myFileAccess(BaseFileAccess::Create())
+{
+    open(filename, openMode);
+}
+
+File::~File()
+{
+    close();
+
+    delete myFileAccess;
+}
+
+bool File::open(const std::string& filename, std::ios_base::openmode openMode)
+{
+    if(!checkFileAccess())
+    {
+        msg_error("File") << "While trying to read file: " + filename;
+        return false;
+    }
+
+    return myFileAccess->open(filename, openMode);
+}
+
+void File::close()
+{
+    if(!checkFileAccess())
+        return;
+
+    myFileAccess->close();
+}
+
+std::streambuf* File::streambuf() const
+{
+    if(!checkFileAccess())
+        return NULL;
+
+    return myFileAccess->streambuf();
+}
+
+std::string File::readAll()
+{
+    if(!checkFileAccess())
+        return "";
+
+    return myFileAccess->readAll();
+}
+
+bool File::checkFileAccess() const
+{
+    if(!myFileAccess)
+    {
+        msg_error("File") << "File cannot be accessed without a FileAccess object";
+        return false;
+    }
+
+    return true;
+}
 
 } // namespace io
 
 } // namespace helper
 
 } // namespace sofa
-
-#endif

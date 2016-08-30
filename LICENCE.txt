@@ -1,6 +1,6 @@
 
    SOFA, Simulation Open-Framework Architecture
-     (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH
+     (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH
 
 LICENSES: 
 

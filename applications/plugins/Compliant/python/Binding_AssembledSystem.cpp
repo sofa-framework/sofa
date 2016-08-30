@@ -17,11 +17,11 @@ using namespace sofa::component::linearsolver;
 PyObject* getMatrice( const AssembledSystem::rmat& A )
 {
     PyObject* pyA = PyList_New(A.rows());
-    for( size_t row=0 ; row<A.rows() ; ++row )
+    for( AssembledSystem::rmat::Index row=0 ; row<A.rows() ; ++row )
     {
         PyObject* rowpython = PyList_New(A.cols());
 
-        for( size_t col=0 ; col<A.cols() ; ++col )
+        for( AssembledSystem::rmat::Index col=0 ; col<A.cols() ; ++col )
             PyList_SetItem( rowpython, col, PyFloat_FromDouble( A.coeff(row,col) ) );
 
         PyList_SetItem( pyA, row, rowpython );

@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/system/config.h>
+
+#include "BaseFileAccess.h"
+#include "FileAccess.h"
 
 namespace sofa
 {
@@ -36,19 +37,40 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+BaseFileAccessCreator* BaseFileAccess::OurCreator = NULL;
+
+void BaseFileAccess::SetDefaultCreator()
 {
-public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
-};
+    delete OurCreator;
+    OurCreator = new FileAccessCreator<FileAccess>();
+}
+
+void BaseFileAccess::SetCreator(BaseFileAccessCreator* creator)
+{
+    if(creator == OurCreator)
+        return;
+
+    delete OurCreator;
+    OurCreator = creator;
+}
+
+BaseFileAccess* BaseFileAccess::Create()
+{
+    if(NULL == OurCreator)
+        SetDefaultCreator();
+
+    return OurCreator->create();
+}
+
+BaseFileAccess::BaseFileAccess()
+{
+
+}
+
+BaseFileAccess::~BaseFileAccess()
+{
+
+}
 
 } // namespace io
 
@@ -56,4 +78,3 @@ public:
 
 } // namespace sofa
 
-#endif

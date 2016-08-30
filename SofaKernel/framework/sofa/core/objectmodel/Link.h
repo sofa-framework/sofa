@@ -271,10 +271,7 @@ public:
     }
     static void remove(T& c, unsigned index)
     {
-        size_t s = c.size();
-        for (size_t i=index+1; i < s; ++i)
-            c[i-1] = c[i];
-        c.resize(s-1);
+        c.erase( c.begin()+index );
     }
 };
 

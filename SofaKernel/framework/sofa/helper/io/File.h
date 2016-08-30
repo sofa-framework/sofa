@@ -22,10 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
-#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-#include <sofa/defaulttype/Vec.h>
+#ifndef SOFA_HELPER_IO_FILEIO_H
+#define SOFA_HELPER_IO_FILEIO_H
+
+#include <sofa/helper/helper.h>
+
+#include "BaseFileAccess.h"
+
+#include <iostream>
+#include <string>
 
 namespace sofa
 {
@@ -36,18 +42,27 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MassSpringLoader
+// \brief Abstract representation of a file (could be on disk, memory, network, etc.)
+class SOFA_HELPER_API File
 {
 public:
-    virtual ~MassSpringLoader() {}
-    bool load(const char *filename);
-    virtual void setNumMasses(int /*n*/) {}
-    virtual void setNumSprings(int /*n*/) {}
-    virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal /*mass*/, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/) {}
-    virtual void addSpring(int /*m1*/, int /*m2*/, SReal /*ks*/, SReal /*kd*/, SReal /*initpos*/) {}
-    virtual void addVectorSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos, SReal /*restx*/, SReal /*resty*/, SReal /*restz*/) { addSpring(m1, m2, ks, kd, initpos); }
-    virtual void setGravity(SReal /*gx*/, SReal /*gy*/, SReal /*gz*/) {}
-    virtual void setViscosity(SReal /*visc*/) {}
+    File();
+    File(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary);
+
+    ~File();
+
+    bool open(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary);
+    void close();
+
+    std::streambuf* streambuf() const;
+    std::string readAll();
+
+protected:
+    bool checkFileAccess() const;
+
+private:
+    BaseFileAccess* myFileAccess;
+
 };
 
 } // namespace io
@@ -56,4 +71,4 @@ public:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_FILEIO_H

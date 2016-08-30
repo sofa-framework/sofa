@@ -32,6 +32,7 @@
 #include <SofaRigid/JointSpringForceField.inl>
 #include <SofaDeformable/SpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/helper/cast.h>
 
 
 using namespace sofa::component::interactionforcefield;
@@ -48,7 +49,7 @@ namespace sofa
 
             void StartNavigationPerformer::start()
             {
-                sofa::simulation::Node::SPtr root =sofa::simulation::getSimulation()->GetRoot();
+                sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( interactor->getContext()->getRootContext() );
                 if(root)
                 {
                     sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();

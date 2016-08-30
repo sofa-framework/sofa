@@ -58,7 +58,7 @@ def node_depth(node):
     
 
 # path from root
-# DEPRECATED : use binded BaseNode::getPathName() instead
+# DEPRECATED : use bound BaseNode::getPathName() instead
 def node_path_abs(node):
     parents = node.getParents()
     if len(parents) == 0: return ''
