@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "GenerateRigid.h"
 
+#include "sofa/config.h"
+
 #include <cstdlib>
 #include <cmath>
 #include <sofa/helper/vector.h>
