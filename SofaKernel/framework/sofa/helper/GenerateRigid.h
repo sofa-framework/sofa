@@ -25,6 +25,8 @@
 #ifndef GENERATERIGID_H
 #define GENERATERIGID_H
 
+#include "sofa/config.h"
+
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
