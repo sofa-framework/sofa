@@ -1,13 +1,15 @@
 import Sofa
 import SofaPython
 
+import SofaPython.units
 import SofaPython.sml
+import SofaPython.SofaNumpy
 import Compliant.sml
 
 def createScene(node):
     
     node.dt=0.01
-    node.gravity='0 -9.81 0'
+    node.gravity=[0, -9.81, 0]
     
     node.createObject('RequiredPlugin', name = 'Compliant' )
     node.createObject('CompliantAttachButtonSetting' )
@@ -27,6 +29,9 @@ def createScene(node):
     scene_bielle_manivelle.createScene()
     
     scene_bielle_manivelle.rigids["1"].node.createObject('FixedConstraint')
+    
+    gravity = SofaPython.SofaNumpy.numpy_data(node, "gravity")
+    gravity=SofaPython.units.acceleration_from_SI(gravity)
     
     return node
 
