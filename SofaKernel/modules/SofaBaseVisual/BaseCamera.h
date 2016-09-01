@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
 #define SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
+#include "sofa/config.h"
 #include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
