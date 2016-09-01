@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_VISUALMODEL_BASECAMERA_H
 #include "config.h"
 
-#include <cmath>
-
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
