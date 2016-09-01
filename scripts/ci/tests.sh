@@ -73,7 +73,7 @@ run-single-test() {
 
     echo "$test_cmd" > "$output_dir/$test/command.txt"
     # echo "Running $test with a timeout of $timeout seconds"
-    echo "Running $test"
+    printf "\n\nRunning $test\n"
     rm -f report.xml
     # "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout | tee $output_dir/$test/output.txt
     bash -c "$test_cmd" | tee $output_dir/$test/output.txt

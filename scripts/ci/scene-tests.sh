@@ -288,7 +288,7 @@ test-all-scenes() {
     while read scene; do
         echo "- $scene"
         local iterations=$(cat "$output_dir/$scene/iterations.txt")
-        local options="-g batch -s dag -n $iterations"
+        local options="-g batch -s dag -n $iterations" # -z test
         local runSofa_cmd="$runSofa $options $src_dir/$scene >> $output_dir/$scene/output.txt 2>&1"
         local timeout=$(cat "$output_dir/$scene/timeout.txt")
         echo "$runSofa_cmd" > "$output_dir/$scene/command.txt"

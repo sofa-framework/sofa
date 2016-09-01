@@ -90,6 +90,8 @@ fi
 
 if [[ -n "$CI_TEST_SCENES" ]]; then
     "$src_dir/scripts/ci/scene-tests.sh" run "$build_dir" "$src_dir"
+    scenes_errors_count=$("$src_dir/scripts/ci/scene-tests.sh" count-errors "$build_dir" "$src_dir")
+    send-message-to-dashboard "scenes_errors=$scenes_errors_count"
     scenes_crashes_count=$("$src_dir/scripts/ci/scene-tests.sh" count-crashes "$build_dir" "$src_dir")
     send-message-to-dashboard "scenes_crashes=$scenes_crashes_count"
 fi

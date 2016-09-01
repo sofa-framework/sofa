@@ -42,9 +42,11 @@ call-make() {
         # We need to call vcvarsall.bat before nmake to setup compiler stuff
         if [ "$CI_COMPILER" = "VS-2015" ]; then
             local vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+            echo "$COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
             $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
         else
             local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+            echo "$COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
             $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
         fi
     else
