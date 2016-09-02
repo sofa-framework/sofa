@@ -336,7 +336,7 @@ extract-crashes() {
 }
 
 count-tested-scenes() {
-    wc -l < "$output_dir/all-tested-scenes.txt" #| tr -d '   '
+    wc -l < "$output_dir/all-tested-scenes.txt" | tr -d '   '
 }
 
 count-warnings() {
@@ -348,7 +348,7 @@ count-errors() {
 }
 
 count-crashes() {
-    wc -l < "$output_dir/crashes.txt" #| tr -d '   '
+    wc -l < "$output_dir/crashes.txt" | tr -d '   '
 }
 
 print-summary() {
@@ -357,7 +357,7 @@ print-summary() {
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
-    echo "- $(count-errors) error(s):"
+    echo "- $errors error(s)"
     if [[ "$errors" != 0 ]]; then
         while read error; do
 			echo "  - $error"
@@ -365,7 +365,7 @@ print-summary() {
     fi
     
     local crashes='$(count-crashes)'
-    echo "- $(count-crashes) crash(es):"
+    echo "- $crashes crash(es)"
     if [[ "$crashes" != 0 ]]; then
         while read scene; do
             if [[ -e "$output_dir/$scene/status.txt" ]]; then
