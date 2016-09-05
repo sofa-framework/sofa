@@ -35,9 +35,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 install(TARGETS ${PROJECT_NAME}
         COMPONENT DiffusionSolver_libraries
         EXPORT DiffusionSolverTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+        RUNTIME DESTINATION ${RUNTIME_OUTPUT_DIRECTORY}
+        LIBRARY DESTINATION ${LIBRARY_OUTPUT_DIRECTORY}
+        ARCHIVE DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
 
 include(CMakePackageConfigHelpers)
 # imageConfigVersion.cmake
