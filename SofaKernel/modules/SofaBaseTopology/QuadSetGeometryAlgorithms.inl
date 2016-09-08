@@ -352,7 +352,7 @@ template<class DataTypes>
 void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     EdgeSetGeometryAlgorithms<DataTypes>::draw(vparams);
-
+#ifndef SOFA_NO_OPENGL
     // Draw Quads indices
     if (showQuadIndices.getValue())
     {
@@ -384,7 +384,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
-
+#endif //SOFA_NO_OPENGL
 
     // Draw Quads
     if (_drawQuads.getValue())

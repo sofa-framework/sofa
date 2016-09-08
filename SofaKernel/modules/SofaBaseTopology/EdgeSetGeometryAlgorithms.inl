@@ -712,6 +712,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 {
     PointSetGeometryAlgorithms<DataTypes>::draw(vparams);
 
+#ifndef SOFA_NO_OPENGL 
     // Draw Edges indices
     if (showEdgeIndices.getValue())
     {
@@ -741,7 +742,6 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
 
-
     // Draw edges
     if (_draw.getValue())
     {
@@ -764,6 +764,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
             vparams->drawTool()->drawPoints(positions, 4.0f, defaulttype::Vec4f(color[0], color[1], color[2], 1.0f));
         }
     }
+#endif //SOFA_NO_OPENGL
 
 }
 

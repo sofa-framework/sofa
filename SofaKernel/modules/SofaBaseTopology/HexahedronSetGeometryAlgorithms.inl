@@ -837,7 +837,7 @@ template<class DataTypes>
 void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     QuadSetGeometryAlgorithms<DataTypes>::draw(vparams);
-
+#ifndef SOFA_NO_OPENGL
     // Draw Hexa indices
     if (d_showHexaIndices.getValue())
     {
@@ -873,6 +873,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
 
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
+
 
 
     //Draw hexahedra
@@ -913,6 +914,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visual
             vparams->drawTool()->setPolygonMode(0, false);
            
     }
+#endif //SOFA_NO_OPENGL
 }
 
 
