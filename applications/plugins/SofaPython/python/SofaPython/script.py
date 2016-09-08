@@ -13,7 +13,7 @@ class Controller(Sofa.PythonScriptController):
         """
 
         # temporary variable to store optional arguments
-        cls.kwarg = kwarg
+        Controller.kwarg = kwarg
 
         node.createObject('PythonScriptController',
                           filename = filename,
@@ -22,7 +22,7 @@ class Controller(Sofa.PythonScriptController):
         # note the previous calls callbacks onLoaded and createGraph
 
         # no need for storing optional arguments any longer
-        del cls.kwarg
+        del Controller.kwarg
 
         try:
             res = Controller.instance
@@ -36,7 +36,7 @@ class Controller(Sofa.PythonScriptController):
 
     def onLoaded(self, node):
         Controller.instance = self
-        self.additionalArguments(self.kwarg)
+        self.additionalArguments(Controller.kwarg)
 
     def additionalArguments(self,kwarg):
         """ to handle optional constructor arguments before createGraph

@@ -10,7 +10,7 @@ from SofaPython import script
 
 def createScene( root ):
 
-    myController = MyControllerClass(root,"hello world controller", myArg = 'additionalArguement')
+    myController = MyControllerClass(root,"hello world controller", myArg = 'additionalArgument', myArg2 = 'additionalArgument2')
     myController.helloWorld()
     myController.myText = "hello world!"
 
@@ -42,4 +42,3 @@ class MyControllerClass(script.Controller):
     def additionalArguments(self,kwarg):
         print "additionalArguments",kwarg
         self.myText = kwarg['myArg']
-        pass
