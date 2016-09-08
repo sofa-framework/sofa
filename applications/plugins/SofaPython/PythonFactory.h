@@ -125,7 +125,7 @@ public:
     template<class T>
     static void add( PyTypeObject* pyTypeObject )
     {
-//        std::cerr<<"ADD "<<T::template className<T>()<<std::endl;
+//        std::cerr<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
 
         PythonBoundType<T>* t = new PythonBoundType<T>(pyTypeObject);
 
