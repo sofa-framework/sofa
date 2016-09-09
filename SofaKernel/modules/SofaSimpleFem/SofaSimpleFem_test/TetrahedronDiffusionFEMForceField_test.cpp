@@ -43,7 +43,10 @@
 
 #if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
     #include <amp_math.h>  // erfc was not yet included in the STL (c++11)
-    #define ERFC(x) concurrency::precise_math::erfc(x)
+	namespace sofa{
+		using concurrency::precise_math::erfc;
+		#define ERFC(x) erfc(x)
+	}
 #else
     #define ERFC(x) std::erfc(x)
 #endif
