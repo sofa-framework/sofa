@@ -46,7 +46,7 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
 endif()
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(MiniFlowVR 0.0 miniFlowVR "")
+sofa_create_package(MiniFlowVR 0.0 ${PROJECT_NAME} "")
 
 foreach(HEADER ${HEADER_FILES})
     string(REGEX MATCH "f(.*)[/\\]" DIR ${HEADER})
