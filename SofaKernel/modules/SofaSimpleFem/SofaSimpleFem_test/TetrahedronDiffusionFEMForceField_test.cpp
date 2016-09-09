@@ -42,10 +42,10 @@
 
 
 #if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
-	#include <boost/math/special_functions/math_fwd.hpp>
-	#define ERFC(x) boost::math::erfc(x)
+   #include <boost/math/special_functions/erf.hpp>
+   #define ERFC(x) boost::math::erfc(x)
 #else
-    #define ERFC(x) std::erfc(x)
+   #define ERFC(x) std::erfc(x)
 #endif
 
 
