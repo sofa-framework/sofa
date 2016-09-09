@@ -85,7 +85,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
         }
 
 
-        if( this->root ) modeling::initScene();
+        if( this->root ) modeling::initScene(this->root);
     }
 
 

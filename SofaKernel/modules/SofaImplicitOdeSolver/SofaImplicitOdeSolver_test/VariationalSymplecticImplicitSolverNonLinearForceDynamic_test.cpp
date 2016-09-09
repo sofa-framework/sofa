@@ -109,7 +109,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         root->setGravity(Coord(0,0,0));
 
         // Solver Variational
-        variationalSolver = addNew<VariationalSymplecticSolver> (getRoot());
+        variationalSolver = addNew<VariationalSymplecticSolver> (root);
         variationalSolver->f_rayleighStiffness.setValue(0);
         variationalSolver->f_rayleighMass.setValue(0);
         variationalSolver->f_newtonError.setValue(1e-12);//1e-18
@@ -117,7 +117,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
         variationalSolver->f_computeHamiltonian.setValue(1);
         variationalSolver->f_saveEnergyInFile.setValue(0);
 
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (getRoot());
+        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->f_maxIter=3000;
         cgLinearSolver->f_tolerance =1e-12;
         cgLinearSolver->f_smallDenominatorThreshold=1e-12;

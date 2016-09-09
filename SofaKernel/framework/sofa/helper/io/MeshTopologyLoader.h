@@ -25,7 +25,6 @@
 #ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 #define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 
-#include <sofa/helper/helper.h>
 #include <sofa/helper/io/Mesh.h>
 #include <fstream>
 

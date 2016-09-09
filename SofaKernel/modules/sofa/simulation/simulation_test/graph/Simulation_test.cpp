@@ -94,7 +94,7 @@ struct Scene_test: public Sofa_test<SReal>
 
         // end create scene
         //*********
-        initScene();
+        initScene(root);
         //*********
 
         defaulttype::Vector3 sceneMinBBox, sceneMaxBBox;

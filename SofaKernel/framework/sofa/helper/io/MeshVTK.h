@@ -26,7 +26,6 @@
 #define SOFA_HELPER_IO_MESHVTK_H
 
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/helper.h>
 #include <fstream>
 
 namespace sofa

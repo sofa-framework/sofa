@@ -86,7 +86,7 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        EulerSolver::SPtr eulerSolver = addNew<EulerSolver> (getRoot());
+        EulerSolver::SPtr eulerSolver = addNew<EulerSolver> (root);
 
         // Set initial positions and velocities of fixed point and mass
         MechanicalObject3::VecCoord xFixed(1);

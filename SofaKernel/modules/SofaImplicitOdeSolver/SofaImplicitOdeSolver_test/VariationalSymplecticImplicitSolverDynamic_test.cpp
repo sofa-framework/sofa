@@ -94,14 +94,14 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
         root->setGravity(Coord(0,-10,0));
 
         // Solver
-        variationalSolver = addNew<VariationalSymplecticSolver> (getRoot());
+        variationalSolver = addNew<VariationalSymplecticSolver> (root);
         variationalSolver->f_rayleighStiffness.setValue(rk);
         variationalSolver->f_rayleighMass.setValue(rm);
         variationalSolver->f_computeHamiltonian.setValue(1);
         variationalSolver->f_newtonError.setValue(1e-12);//1e-18
         variationalSolver->f_newtonSteps.setValue(4);//7
 
-        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (getRoot());
+        CGLinearSolver::SPtr cgLinearSolver = addNew<CGLinearSolver> (root);
         cgLinearSolver->f_maxIter=3000;
         cgLinearSolver->f_tolerance =1e-12;
         cgLinearSolver->f_smallDenominatorThreshold=1e-12;

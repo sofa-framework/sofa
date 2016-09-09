@@ -90,7 +90,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
     {
         // Load the scene from the xml file
 	std::string fileName = std::string(SOFABASETOPOLOGY_TEST_SCENES_DIR) + "/" + sceneName;
-        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
+        root = sofa::simulation::getSimulation()->load(fileName.c_str());
     }
 	 // Load the scene BezierTetrahedronTopology.sc from the Scenes directory
     void createScene()

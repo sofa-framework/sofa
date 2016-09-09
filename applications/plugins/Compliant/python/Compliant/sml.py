@@ -19,8 +19,9 @@ import Sofa
 
 printLog = True
 
-def insertRigid(parentNode, rigidModel, density, param=None):
-    """ create a StructuralAPI.RigidBody from the rigidModel, compute rigidMass from
+def insertRigid(parentNode, rigidModel, density, scale=1, param=None):
+    """ create a StructuralAPI.RigidBody from the rigidModel. The model geometry is scaled with scale.
+    The rigidMass is computed from:
         1) mass, com and inertia if present
         2) mesh if possible
         3) default to a unit sphere TODO: is it relevant to do so ?
@@ -31,7 +32,6 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         for mesh in rigidModel.mesh :
             if rigidModel.meshAttributes[mesh.id].collision is True:
                 Sofa.msg_info("Compliant.sml","     collision mesh: "+mesh.name)
-        sys.stdout.flush()
 
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
@@ -41,6 +41,8 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
 
     if not rigidModel.mass is None and not rigidModel.com is None and not rigidModel.inertia is None:
+        if not 1==scale:
+            Sofa.msg_info("Compliant.sml","scale is not supported in that case")
         # all inertial data is present, let's use it
         massinfo = SofaPython.mass.RigidMassInfo()
         massinfo.mass = rigidModel.mass # TODO: convert units ?
@@ -53,11 +55,11 @@ def insertRigid(parentNode, rigidModel, density, param=None):
             massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
                                     rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
                                     rigidModel.inertia[5] ) # Izz
-        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
+        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position, inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 and meshFormatSupported:
         # get inertia from meshes and density
-        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density)
-        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
+        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density, scale)
+        rigid.setFromRigidInfo(massinfo, offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
             ## no density but a mesh let's normalise computed mass with specified mass
@@ -72,12 +74,12 @@ def insertRigid(parentNode, rigidModel, density, param=None):
         # no mesh, get mass/inertia if present, default to a unit sphere
         Sofa.msg_warning("Compliant.sml","insertRigid: using default rigidMass")
         mass = rigidModel.mass  if not rigidModel.mass is None else SofaPython.units.mass_from_SI(1.)
-        inertia = [1,1,1]
-        t = rigidModel.position
+        inertia = scale*scale*[1,1,1]
+        t = scale*rigidModel.position
         if not rigidModel.com is None:
-            t[0] += rigidModel.com[0]
-            t[1] += rigidModel.com[1]
-            t[2] += rigidModel.com[2]
+            t[0] += scale*rigidModel.com[0]
+            t[1] += scale*rigidModel.com[1]
+            t[2] += scale*rigidModel.com[2]
         rigid.setManually(t, mass, inertia)
 
     if not param is None:
@@ -90,15 +92,15 @@ def insertRigid(parentNode, rigidModel, density, param=None):
     rigid.visuals=dict()
     for mesh in rigidModel.mesh :
         if rigidModel.meshAttributes[mesh.id].collision is True:
-            rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source,name_suffix='_'+mesh.name)
+            rigid.collisions[mesh.id] = rigid.addCollisionMesh(mesh.source,name_suffix='_'+mesh.name, scale3d=[scale]*3)
             if rigidModel.meshAttributes[mesh.id].visual is True:
                 rigid.visuals[mesh.id] = rigid.collisions[mesh.id].addVisualModel()
         elif rigidModel.meshAttributes[mesh.id].visual is True:
-            rigid.visuals[mesh.id] = rigid.addVisualModel(mesh.source,name_suffix='_'+mesh.name)
+            rigid.visuals[mesh.id] = rigid.addVisualModel(mesh.source,name_suffix='_'+mesh.name, scale3d=[scale]*3)
 
     return rigid
 
-def insertJoint(jointModel, rigids, param):
+def insertJoint(jointModel, rigids, scale=1, param=None):
     """ create a StructuralAPI.GenericRigidJoint from the jointModel """
 
     frames=list()
@@ -112,9 +114,9 @@ def insertJoint(jointModel, rigids, param):
             return
         if not offset is None:
             if offset.isAbsolute():
-                frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
+                frames.append( rigid.addAbsoluteOffset(offset.name, StructuralAPI.scaleOffset(scale,offset.value)) )
             else:
-                frames.append( rigid.addOffset(offset.name, offset.value) )
+                frames.append( rigid.addOffset(offset.name, StructuralAPI.scaleOffset(scale,offset.value)) )
             if not param is None:
                 frames[-1].dofs.showObject = param.showOffset
                 frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
@@ -166,6 +168,14 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         # default joint is set up using isCompliance=True and self.param.jointCompliance value
         self.param.jointIsComplianceByTag["default"]=True
         self.param.jointComplianceByTag["default"]=0 # TODO add 2 default values: for translation and rotation dofs ?
+
+        # specify the length unit into with the simulated model should be converted
+        # hm, dam, m, dm, cm, mm
+        # if None, no conversion is applied
+        self.param.simuLengthUnit=None
+        # internal variable to store the geometric scale factor to be applied on the model
+        # to obtain the specified simuLengthUnit
+        self._geometricScale=1
 
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
@@ -228,13 +238,17 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
 
         Compliant.StructuralAPI.geometric_stiffness = self.param.geometricStiffness
 
+        if not self.param.simuLengthUnit is None:
+            self._geometricScale = eval("SofaPython.units.length_"+self.model.units["length"]) / eval("SofaPython.units.length_"+self.param.simuLengthUnit)
+            SofaPython.units.local_length = eval("SofaPython.units.length_"+self.param.simuLengthUnit)
+
         # rigids
         for rigidModel in self.model.getSolidsByTags(self.param.rigidTags):
-            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)) , self.param)
+            self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.material.density(self.getMaterial(rigidModel.id)), self._geometricScale, self.param)
         
         # joints
         for jointModel in self.model.genericJoints.values():
-            self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self.param)
+            self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self._geometricScale, self.param)
 
 
 class SceneSkinning(SceneArticulatedRigid) :

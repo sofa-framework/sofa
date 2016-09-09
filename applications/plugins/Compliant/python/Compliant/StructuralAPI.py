@@ -35,6 +35,10 @@ idxVisualModel = 0
 # @warning WIP, the API will change
 geometric_stiffness = 0
 
+def scaleOffset(scale, offset):
+    """ scale the translation part of an offset
+    """
+    return (scale*numpy.asarray(offset[0:3])).tolist() + offset[3:]
 
 class RigidBody:
     ## Generic Rigid Body
@@ -121,7 +125,7 @@ class RigidBody:
         """ Add/remove a fixed constraint for this rigid, also set speed to 0
         """
         if isFixed and self.fixedConstraint is None:
-            self.fixedConstraint = self.node.createObject_noWarning("FixedConstraint", name="fixedConstraint")
+            self.fixedConstraint = self.node.createObject("FixedConstraint", warning=False, name="fixedConstraint")
             self.dofs.velocity=[0,0,0,0,0,0]
             self.fixedConstraint.init()
         elif not isFixed and not self.fixedConstraint is None:

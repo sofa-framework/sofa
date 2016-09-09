@@ -93,6 +93,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     // if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);
 
+    bool warning = printWarnings;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -101,11 +102,20 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
-        //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
-            if (PyString_Check(value))
-                desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
+
+            if( !strcmp( PyString_AsString(key), "warning") )
+            {
+                if( PyBool_Check(value) )
+                    warning = (value==Py_True);
+            }
             else
-                desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
+            {
+            //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
+                if (PyString_Check(value))
+                    desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
+                else
+                    desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
+            }
         }
         Py_DecRef(keys);
         Py_DecRef(values);
@@ -121,7 +131,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         Py_RETURN_NONE;
     }
 
-    if( printWarnings )
+    if( warning )
     {
         Node *node = static_cast<Node*>(context);
         if (node)
@@ -142,12 +152,13 @@ extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args,
 }
 extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
+    SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
     return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
 /// the complete relative path to the object must be given
 /// returns None with a warning if the object is not found
-extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
+extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
     char *path;
@@ -156,6 +167,27 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
         SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
         Py_RETURN_NONE;
     }
+
+    bool warning = true;
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+            if( !strcmp(PyString_AsString(key),"warning") )
+            {
+                if( PyBool_Check(value) )
+                    warning = (value==Py_True);
+                break;
+            }
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
+    }
+
     if (!context || !path)
     {
         PyErr_BadArgument();
@@ -165,7 +197,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
+        if(warning) SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
         Py_RETURN_NONE;
     }
 
@@ -177,6 +209,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
 /// returns None if the object is not found
 extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
+    SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
@@ -276,9 +309,9 @@ SP_CLASS_METHOD(BaseContext,getDt)
 SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHOD_KW(BaseContext,createObject)
-SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning)
-SP_CLASS_METHOD(BaseContext,getObject)
-SP_CLASS_METHOD(BaseContext,getObject_noWarning)
+SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning) // deprecated
+SP_CLASS_METHOD_KW(BaseContext,getObject)
+SP_CLASS_METHOD(BaseContext,getObject_noWarning) // deprecated
 SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END
 

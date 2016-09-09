@@ -75,7 +75,7 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
     {
         // Load the scene from the xml file
         std::string fileName = std::string(SOFAIMPLICITODESOLVER_TEST_SCENES_DIR) + "/" + sceneName;
-        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
+        root = sofa::simulation::getSimulation()->load(fileName.c_str());
     }
 
     /// After simulation compare the positions of points to the theoretical positions.

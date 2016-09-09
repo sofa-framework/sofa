@@ -193,7 +193,7 @@ class Deformable:
             Sofa.msg_error("Flexible.API.Deformable","addNormals : no topology for "+ self.name)
             return
         pos = '@'+self.topology.name+'.position' if self.dofs is None else  '@'+self.dofs.name+'.position'
-        self.normals = self.node.createObject_noWarning("NormalsFromPoints", template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
+        self.normals = self.node.createObject("NormalsFromPoints", warning=False, template='Vec3', name="normalsFromPoints", position=pos, triangles='@'+self.topology.name+'.triangles', quads='@'+self.topology.name+'.quads', invertNormals=invert )
 
     def addMass(self,totalMass):
         if self.dofs is None:
@@ -563,6 +563,7 @@ class Behavior:
             "ImageGaussPointSampler",
             template=shapeFunction.prefix+"ImageR,"+(self.labelImage.template() if not self.labelImage is None else "ImageUC"),
             name="sampler",
+            evaluateShapeFunction=False,
             indices=shapeFunctionPath+".indices", weights=shapeFunctionPath+".weights", transform=shapeFunctionPath+".transform",
             method="2", order=self.type[2:], targetNumber=nbPoints,
             **samplerArgs)

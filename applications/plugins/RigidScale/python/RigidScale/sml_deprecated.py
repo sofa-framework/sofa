@@ -20,8 +20,8 @@ import RigidScale.API
 
 # Recognized flag from the sml
 BoneType = ("flat", "irregular", "long", "short", "special")
-FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 5, "special": 20}
-IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 20, "special": 20}
+FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 3, "special": 20}
+IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 12, "special": 20}
 TransferMethod = ("minimal", "interpolation", "classic", "icp")
 ConstraintType = ("straight")
 ROIFlag = ("frameROI", "registrationROI")
@@ -137,10 +137,11 @@ class Bone():
             self.body.setManually(self.filepath, self.frame, self.voxelSize, density=1000, generatedDir=generatedDir)
 
         # Add of the behavior model, the collision model and the visual model
-        localGeneratedDir=None if generatedDir is None else generatedDir+self.name
+        localGeneratedDir = None if generatedDir is None else generatedDir+self.name
         self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir )
         self.collision = self.body.addCollisionMesh(self.filepath, scale3d, offset, generatedDir=localGeneratedDir)
         self.visual = self.collision.addVisualModel()
+        self.visual.filename = self.collision.loader.filename
         return self.body
 
 ## ==============================================================================
