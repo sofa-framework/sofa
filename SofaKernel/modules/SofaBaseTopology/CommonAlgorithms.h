@@ -59,6 +59,13 @@ inline Real areaProduct(const defaulttype::Vec<1,Real>&, const defaulttype::Vec<
     assert(false);
     return (Real)0;
 }
+/// orthogonal of a 2D vector
+template< class Real>
+defaulttype::Vec<2,Real> ortho(const defaulttype::Vec<2,Real> &in)
+{
+	sofa::defaulttype::Vec<2,Real> out(-in[1],in[0]);
+	return(out);
+}
 
 /// cross product  for 2-elements sofa::helper::vectors.
 template< class Real>
