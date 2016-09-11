@@ -545,7 +545,7 @@ public:
         for (unsigned int k = 0; k < dim; ++k)
         {
             for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+i*mdim,i)=Ft[j];
-            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; i++) J(j+offset+i*mdim,i)=dFt[k][j];
+            for(unsigned int i=0; i<dim; i++) for(unsigned int j=0; j<mdim; j++) J(j+offset+i*mdim,i)=dFt[k][j];
             offset+=mdim*dim;
         }
         return J;
