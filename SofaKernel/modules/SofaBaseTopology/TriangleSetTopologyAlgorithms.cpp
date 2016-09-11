@@ -114,6 +114,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(unsig
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
     sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
 }
 template<>
 int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
@@ -123,6 +124,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsig
                                                               sofa::helper::vector<EdgeID>& , double  , double )
 {
     sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
 }
 
 
