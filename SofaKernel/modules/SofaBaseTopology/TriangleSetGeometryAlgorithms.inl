@@ -35,6 +35,156 @@ namespace component
 
 namespace topology
 {
+	const size_t permutation3[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
+	template< class DataTypes>
+NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3> &TriangleSetGeometryAlgorithms< DataTypes >::getTriangleNumericalIntegrationDescriptor()
+{
+    // initialize the cubature table only if needed.
+    if (initializedCubatureTables==false) {
+        initializedCubatureTables=true;
+        defineTetrahedronCubaturePoints();
+    }
+    return triangleNumericalIntegration;
+}
+
+template< class DataTypes>
+void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints() {
+    typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePoint QuadraturePoint;
+    typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::BarycentricCoordinatesType BarycentricCoordinatesType;
+    // Gauss method
+    typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_SIMPLEX_METHOD;
+    typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePointArray qpa;
+    BarycentricCoordinatesType v;
+    /// integration with linear accuracy.
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    qpa.push_back(QuadraturePoint(v,1/(Real)2));
+    triangleNumericalIntegration.addQuadratureMethod(m,1,qpa);
+    /// integration with quadratic accuracy.
+    qpa.clear();
+    Real a=1/(Real)6;
+    Real b=(Real) (2.0/3.0);
+    size_t i;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,1/(Real)6));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,2,qpa);
+    /// integration with cubic accuracy.
+	qpa.clear();
+	v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+	qpa.push_back(QuadraturePoint(v,(Real) -9/32));
+	a=(Real)1/5.0;
+    b=(Real)3/5.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,(Real)25/(Real)96));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,3,qpa);
+    /// integration with quadric accuracy with 6 points
+    qpa.clear();
+    a=(Real)0.445948490915965;
+    b=(Real)1-2*a;
+    Real c1=0.111690794839005;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)0.091576213509771;
+    b=(Real)1-2*a;
+    Real c2=0.054975871827661;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,4,qpa);
+    /// integration with quintic accuracy and 7 points
+    qpa.clear();
+	v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+	qpa.push_back(QuadraturePoint(v,9/(Real)80));
+	a=(Real)(6.0+sqrt(15.0))/21.0;
+	b=(Real)1-2*a;
+	c1=(Real)(155.0+sqrt(15.0))/2400.0;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	}
+	a=(Real)4/7.0-a;
+	b=(Real)1-2*a;
+	 c2=(Real)31/240.0 -c1;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c2));
+	}
+	triangleNumericalIntegration.addQuadratureMethod(m,5,qpa);
+	/// integration with order 6 accuracy and 12 points
+	 qpa.clear();
+    a=(Real) 0.063089104491502;
+    b=(Real)1-2*a;
+    c1=(Real)0.025422453185103;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+	a=(Real) 0.249286745170910;
+	b=(Real)1-2*a;
+	c1=(Real)0.058393137863189;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	}
+	Real aa[3];
+	aa[0]=(Real)0.310352451033785;
+	aa[1]=(Real)0.053145049844816;
+	aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)0.041425537809187;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+	triangleNumericalIntegration.addQuadratureMethod(m,6,qpa);
+	/// integration with order 7 accuracy and 13 points
+	 qpa.clear();
+	 v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+	qpa.push_back(QuadraturePoint(v,(Real)-0.0747850222338));
+	a=(Real)0.0651301029022;
+    b=(Real)1-2*a;
+    c1=(Real)0.0266736178044;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+	a=(Real) 0.2603459660790;
+	b=(Real)1-2*a;
+	c1=(Real)0.0878076287166;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	}
+	
+	aa[0]=(Real)0.3128654960049;
+	aa[1]=(Real)0.6384441885698;
+	aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)0.0385568804451;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+	triangleNumericalIntegration.addQuadratureMethod(m,7,qpa);
+
+
+}
+
+
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::init()
 {
