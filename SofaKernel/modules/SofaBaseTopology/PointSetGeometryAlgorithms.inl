@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-
+#include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
@@ -41,9 +41,21 @@ namespace topology
 {
 
 template <class DataTypes>
+ PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
+        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+        ,showPointIndices (core::objectmodel::Base::initData(&showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
+		, m_tagMechanics( initData(&m_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+    {
+    }
+template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+	if ( this->m_tagMechanics.getValue().size()>0) {
+		sofa::core::objectmodel::Tag mechanicalTag(this->m_tagMechanics.getValue());
+		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
+	} else {
+		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+	}
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
 }
