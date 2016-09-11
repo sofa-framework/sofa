@@ -27,7 +27,7 @@
 
 #include <sofa/helper/helper.h>
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace sofa
 {
@@ -67,8 +67,8 @@ public:
     }
 
 protected:
-    mutable boost::shared_ptr<unsigned int> counter;
-    mutable boost::shared_ptr< std::map<T*,unsigned int> > idMap;
+    mutable std::shared_ptr<unsigned int> counter;
+    mutable std::shared_ptr< std::map<T*,unsigned int> > idMap;
 };
 
 /// A comparison object that order pointers in a stable way, i.e. in the order pointers are presented
@@ -186,7 +186,7 @@ public:
 
 private:
     /// smart ptr for memory ownership
-    boost::scoped_ptr<stable_id_map_type> m_stable_id_map;
+    std::unique_ptr<stable_id_map_type> m_stable_id_map;
 };
 
 } // namespace helper

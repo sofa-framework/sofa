@@ -200,7 +200,7 @@ void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::Mechanical
 
 template <class DataTypes>
 template <class MyCoord>
-void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     // set the motion to the SkeletonJoint corresponding rigid
     
@@ -277,7 +277,7 @@ void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 
 template <class DataTypes>
 template <class MyCoord>
-void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
+void SkeletalMotionConstraint<DataTypes>::localToGlobal(typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
     {

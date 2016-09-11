@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 set(SOFA_KERNEL_MODULES_SOURCE_DIR ${SOFA_KERNEL_SOURCE_DIR}/modules)
 set(SOFA_EXT_MODULES_SOURCE_DIR ..)

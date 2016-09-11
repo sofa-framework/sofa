@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(Sofa)
 
-set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/" CACHE STRING "Path to SofaKernel")
+set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
 if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/")
+    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel")
     if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
         message( FATAL_ERROR "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible.")
     endif()
@@ -86,40 +86,6 @@ if(UNIX)
 endif(UNIX)
 
 include(CompilerOptions)
-
-# C++11 Support
-#
-# Note for the future: CMake 3.1 has a CMAKE_CXX_STANDARD variable
-# that handles versions of the C++ standard...
-if(NOT WIN32)
-    option(SOFA_USE_C++11
-        "Use C++11 as a target language. Even though Sofa is written in C++98, it is
-        compatible with C++11. Targetting this standard allows you to benefit from
-        a more optimized STL."  OFF)
-
-    if(SOFA_USE_C++11)
-
-        if(CMAKE_COMPILER_IS_GNUCXX)
-
-            EXEC_PROGRAM(${CMAKE_CXX_COMPILER} ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-
-            if(GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
-                set(CXX11_FLAG "-std=c++11" CACHE STRING "c++11 compiler flag")
-            elseif(GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
-                message(WARNING "c++0x activated. g++ compiler with a version >= 4.7 is needed to fully support c++11.")
-                set(CXX11_FLAG "-std=c++0x" CACHE STRING "c++11 compiler flag")
-            else ()
-                message("Warning: a g++ compiler with a version >= 4.3 is needed to support c++11.")
-            endif()
-
-        else() # not gcc -> clang?
-            # TODO detect clang versions ?
-            set(CXX11_FLAG "-std=c++11" CACHE STRING "c++11 compiler flag")
-        endif()
-
-    endif(SOFA_USE_C++11)
-
-endif(NOT WIN32)
 
 
 ## Boost is now mandatory.

@@ -30,8 +30,8 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
 #include <sofa/helper/vector.h>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
-#include <boost/function.hpp>
+#include <boost/intrusive_ptr.hpp>
+#include <functional>
 
 namespace sofa
 {
@@ -93,7 +93,7 @@ public:
     AspectPool();
     ~AspectPool();
 
-    void setReleaseCallback(const boost::function<void (int)>& callback);
+    void setReleaseCallback(const std::function<void (int)>& callback);
 
     /**
      * Request a new aspect.
@@ -132,7 +132,7 @@ private:
 
     helper::vector<Aspect*> aspects;
     AspectQueue freeAspects;
-    boost::function<void (int)> releaseCallback;
+    std::function<void (int)> releaseCallback;
 };
 
 /**

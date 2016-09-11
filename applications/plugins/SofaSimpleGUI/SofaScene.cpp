@@ -33,7 +33,7 @@ SofaScene::SofaScene()
 {
     _groot = _iroot = NULL;
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
-    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
+    std::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
     sofaSimulation = sofa::simulation::graph::getSimulation(); // creates one if it is not already created

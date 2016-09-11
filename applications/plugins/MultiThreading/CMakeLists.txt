@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(MultiThreading)
 
 set(MULTITHREADING_MAJOR_VERSION 0)
@@ -66,3 +66,10 @@ sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading Mult
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+
+# TODO replace boost::thread by std::thread in this plugin
+find_package(Boost REQUIRED COMPONENTS thread)
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+endif()
