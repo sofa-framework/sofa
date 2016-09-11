@@ -4,7 +4,8 @@ project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
     BezierTetrahedronTopology_test.cpp
-    TetrahedronNumericalIntegration_test.cpp)
+    TetrahedronNumericalIntegration_test.cpp
+	TriangleNumericalIntegration_test.cpp)
 
 add_definitions("-DSOFABASETOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
