@@ -105,7 +105,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
 
             if( !strcmp( PyString_AsString(key), "warning") )
             {
-                if( PyBool_Check(value) )
+                if PyBool_Check(value)
                     warning = (value==Py_True);
             }
             else
@@ -179,7 +179,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
             PyObject *value = PyList_GetItem(values,i);
             if( !strcmp(PyString_AsString(key),"warning") )
             {
-                if( PyBool_Check(value) )
+                if PyBool_Check(value)
                     warning = (value==Py_True);
                 break;
             }
