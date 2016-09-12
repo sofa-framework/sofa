@@ -80,7 +80,7 @@ template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
 #ifndef SOFA_FLOAT
 
 
-template<>
+template<> SOFA_BASE_TOPOLOGY_API
 int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<unsigned int>& ,
@@ -90,7 +90,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(unsig
     serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented"<<sendl;
     return 0;
 }
-template<>
+template<> SOFA_BASE_TOPOLOGY_API
 int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<unsigned int>& ,
@@ -106,7 +106,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(unsig
 
 #ifndef SOFA_DOUBLE
 
-template<>
+template<> SOFA_BASE_TOPOLOGY_API
 int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<unsigned int>& ,
@@ -116,7 +116,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(unsig
     sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
     return 0;
 }
-template<>
+template<> SOFA_BASE_TOPOLOGY_API
 int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<unsigned int>& ,
