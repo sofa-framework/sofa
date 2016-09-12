@@ -19,7 +19,7 @@ set(SOURCE_FILES
 )
 
 find_package(SofaMisc REQUIRED)
-find_package(Boost QUIET COMPONENTS thread)
+find_package(Boost QUIET COMPONENTS system thread)
 
 if(Boost_FOUND)
     list(APPEND HEADER_FILES
@@ -68,7 +68,6 @@ sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading Mult
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 # TODO replace boost::thread by std::thread in this plugin
-find_package(Boost REQUIRED COMPONENTS thread)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
   target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
