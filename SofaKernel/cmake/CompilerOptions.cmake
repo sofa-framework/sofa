@@ -81,6 +81,14 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# An important C++11 feature may be not enabled due to
+# the compiler being built without the --enable-libstdcxx-time option.
+if(CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_NANOSLEEP -D_GLIBCXX_USE_SCHED_YIELD")
+    endif()
+endif()
+
 # hack for clang on old macosx (version < 10.9, such as the dashboard servers)
 # that is using, by default at that time, a libstdc++ that did not fully implement c++11
 if(APPLE AND ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND CMAKE_SYSTEM_VERSION VERSION_LESS "10.9" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" )
