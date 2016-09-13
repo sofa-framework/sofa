@@ -187,7 +187,7 @@ public:
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const {return m_size;}
 
-    size_t StateMask::getHash() const { return 0; }
+    size_t getHash() const { return 0; }
 
 protected:
 
