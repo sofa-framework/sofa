@@ -357,7 +357,7 @@ print-summary() {
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
-    echo "- $errors error(s)"
+    echo "- $(count-errors) error(s)"
     if [[ "$errors" != 0 ]]; then
         while read error; do
 			echo "  - $error"
@@ -365,7 +365,7 @@ print-summary() {
     fi
     
     local crashes='$(count-crashes)'
-    echo "- $crashes crash(es)"
+    echo "- $(count-crashes) crash(es)"
     if [[ "$crashes" != 0 ]]; then
         while read scene; do
             if [[ -e "$output_dir/$scene/status.txt" ]]; then
