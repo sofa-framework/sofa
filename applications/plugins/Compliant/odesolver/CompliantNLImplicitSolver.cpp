@@ -541,7 +541,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
         vec x(sys.size()); // unknown
         vec residual(sys.size()); // residual
-        boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
+        std::unique_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
         handleUnilateralConstraints();
 
@@ -741,7 +741,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 
     const unsigned n = sys.size();
 
-    boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
+    std::unique_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
     vec x(n), xold(n);
     sys.copyFromMultiVec( xold, newV );

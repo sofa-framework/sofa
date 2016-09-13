@@ -458,13 +458,13 @@ def setupUnits(myUnits):
     if printLog:
         Sofa.msg_info("SofaPython.sml",message)
 
-def getSolidRigidMassInfo(solid, density):
+def getSolidRigidMassInfo(solid, density, scale=1):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
         if solid.meshAttributes[mesh.id].simulation is True:
             # mesh mass info
             mmi = mass.RigidMassInfo()
-            mmi.setFromMesh(mesh.source, density=density)
+            mmi.setFromMesh(mesh.source, density=density, scale3d=[scale]*3)
             massInfo += mmi
     return massInfo
 

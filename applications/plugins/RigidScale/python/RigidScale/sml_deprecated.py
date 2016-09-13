@@ -20,8 +20,8 @@ import RigidScale.API
 
 # Recognized flag from the sml
 BoneType = ("flat", "irregular", "long", "short", "special")
-FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 5, "special": 20}
-IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 20, "special": 20}
+FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 3, "special": 20}
+IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 12, "special": 20}
 TransferMethod = ("minimal", "interpolation", "classic", "icp")
 ConstraintType = ("straight")
 ROIFlag = ("frameROI", "registrationROI")

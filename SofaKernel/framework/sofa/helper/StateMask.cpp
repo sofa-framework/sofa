@@ -25,9 +25,7 @@
 
 #include "StateMask.h"
 
-//#include <boost/functional/hash.hpp>
-
-
+#include <functional>
 
 namespace sofa
 {
@@ -36,8 +34,6 @@ namespace helper
 {
 
 #ifdef SOFA_USE_MASK
-
-//    static boost::hash<StateMask::InternalStorage> s_maskHash;
 
     void StateMask::resize( size_t size )
     {
@@ -63,10 +59,10 @@ namespace helper
         return t;
     }
 
-//    size_t StateMask::getHash() const
-//    {
-//        return s_maskHash(mask);
-//    }
+    size_t StateMask::getHash() const
+    {
+        return std::hash<std::vector<bool> >()(mask);
+    }
 
 
 #endif

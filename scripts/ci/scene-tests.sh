@@ -288,7 +288,7 @@ test-all-scenes() {
     while read scene; do
         echo "- $scene"
         local iterations=$(cat "$output_dir/$scene/iterations.txt")
-        local options="-g batch -s dag -n $iterations"
+        local options="-g batch -s dag -n $iterations" # -z test
         local runSofa_cmd="$runSofa $options $src_dir/$scene >> $output_dir/$scene/output.txt 2>&1"
         local timeout=$(cat "$output_dir/$scene/timeout.txt")
         echo "$runSofa_cmd" > "$output_dir/$scene/command.txt"
@@ -336,7 +336,7 @@ extract-crashes() {
 }
 
 count-tested-scenes() {
-    wc -l < "$output_dir/all-tested-scenes.txt" #| tr -d '   '
+    wc -l < "$output_dir/all-tested-scenes.txt" | tr -d '   '
 }
 
 count-warnings() {
@@ -348,7 +348,7 @@ count-errors() {
 }
 
 count-crashes() {
-    wc -l < "$output_dir/crashes.txt" #| tr -d '   '
+    wc -l < "$output_dir/crashes.txt" | tr -d '   '
 }
 
 print-summary() {
@@ -357,7 +357,7 @@ print-summary() {
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
-    echo "- $(count-errors) error(s):"
+    echo "- $(count-errors) error(s)"
     if [[ "$errors" != 0 ]]; then
         while read error; do
 			echo "  - $error"
@@ -365,7 +365,7 @@ print-summary() {
     fi
     
     local crashes='$(count-crashes)'
-    echo "- $(count-crashes) crash(es):"
+    echo "- $(count-crashes) crash(es)"
     if [[ "$crashes" != 0 ]]; then
         while read scene; do
             if [[ -e "$output_dir/$scene/status.txt" ]]; then
@@ -395,6 +395,7 @@ if [[ "$command" = run ]]; then
     test-all-scenes
     extract-warnings
     extract-errors
+    extract-crashes
 elif [[ "$command" = print-summary ]]; then
     print-summary
 elif [[ "$command" = count-warnings ]]; then

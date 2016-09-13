@@ -35,6 +35,10 @@ idxVisualModel = 0
 # @warning WIP, the API will change
 geometric_stiffness = 0
 
+def scaleOffset(scale, offset):
+    """ scale the translation part of an offset
+    """
+    return (scale*numpy.asarray(offset[0:3])).tolist() + offset[3:]
 
 class RigidBody:
     ## Generic Rigid Body

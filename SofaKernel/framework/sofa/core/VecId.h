@@ -27,7 +27,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <boost/static_assert.hpp>
 
 #include <sstream>
 #include <iostream>
@@ -263,7 +262,7 @@ public:
     template<VecAccess vaccess2>
     TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     TVecId(const TVecId<vtype, V_WRITE>& v) : BaseVecId(vtype, v.getIndex()) { }
@@ -271,7 +270,7 @@ public:
 	template<VecAccess vaccess2>
     explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-		BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
 #ifndef NDEBUG
         assert(v.getType() == vtype);
 #endif
@@ -316,7 +315,7 @@ public:
     template<VecType vtype2, VecAccess vaccess2>
     TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     template<VecType vtype2, VecAccess vaccess2>
@@ -361,7 +360,7 @@ typedef TVecId<V_DERIV, V_WRITE>     VecDerivId;
 typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
-BOOST_STATIC_ASSERT(sizeof(VecId) == sizeof(VecCoordId));
+static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
 
 } // namespace core
 

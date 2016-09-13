@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 # Check if Qt(4/5) is present
 set(SOFA_HAVE_QT_LIBRARIES 1)

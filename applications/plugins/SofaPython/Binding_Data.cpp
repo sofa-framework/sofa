@@ -402,7 +402,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
 
-        if( strlen(str)>0 && str[0]=='@' ) // DataLink
+        if( strlen(str)>0u && str[0]=='@' ) // DataLink
         {
             data->setParent(str);
             data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)

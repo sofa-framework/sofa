@@ -29,7 +29,6 @@
 
 #include <math.h>
 #include "fixed_array.h"
-#include <boost/static_assert.hpp>
 
 #include "type.h"
 
@@ -54,7 +53,7 @@ public:
 /*
   Vec(real r1)
   {
-    BOOST_STATIC_ASSERT(N == 1);
+    static_assert(N == 1, "");
     this->elems[0]=r1;
   }
 */
@@ -62,7 +61,7 @@ public:
   /// Specific constructor for 2-elements vectors.
   Vec(real r1, real r2)
   {
-    BOOST_STATIC_ASSERT(N == 2);
+    static_assert(N == 2, "");
     this->elems[0]=r1;
     this->elems[1]=r2;
   }
@@ -70,7 +69,7 @@ public:
   /// Specific constructor for 3-elements vectors.
   Vec(real r1, real r2, real r3)
   {
-    BOOST_STATIC_ASSERT(N == 3);
+    static_assert(N == 3, "");
     this->elems[0]=r1;
     this->elems[1]=r2;
     this->elems[2]=r3;
@@ -79,7 +78,7 @@ public:
   /// Specific constructor for 4-elements vectors.
   Vec(real r1, real r2, real r3, real r4)
   {
-    BOOST_STATIC_ASSERT(N == 4);
+    static_assert(N == 4, "");
     this->elems[0]=r1;
     this->elems[1]=r2;
     this->elems[2]=r3;
@@ -89,7 +88,7 @@ public:
   /// Specific constructor for 5-elements vectors.
   Vec(real r1, real r2, real r3, real r4, real r5)
   {
-    BOOST_STATIC_ASSERT(N == 5);
+    static_assert(N == 5, "");
     this->elems[0]=r1;
     this->elems[1]=r2;
     this->elems[2]=r3;
@@ -100,7 +99,7 @@ public:
   /// Specific constructor for 6-elements vectors (bounding-box).
   Vec(real r1, real r2, real r3, real r4, real r5, real r6)
   {
-    BOOST_STATIC_ASSERT(N == 6);
+    static_assert(N == 6, "");
     this->elems[0]=r1;
     this->elems[1]=r2;
     this->elems[2]=r3;
@@ -112,7 +111,7 @@ public:
   /// Constructor from an N-1 elements vector and an additional value (added at the end).
   Vec(const Vec<N-1,real>& v, real r1)
   {
-    BOOST_STATIC_ASSERT(N > 1);
+    static_assert(N > 1, "");
     for(int i=0;i<N-1;i++)
       this->elems[i] = v[i];
     this->elems[N-1]=r1;
@@ -132,22 +131,22 @@ public:
   }
 
   /// Special access to first element.
-  real& x() { BOOST_STATIC_ASSERT(N >= 1); return this->elems[0]; }
+  real& x() { static_assert(N >= 1, ""); return this->elems[0]; }
   /// Special access to second element.
-  real& y() { BOOST_STATIC_ASSERT(N >= 2); return this->elems[1]; }
+  real& y() { static_assert(N >= 2, ""); return this->elems[1]; }
   /// Special access to third element.
-  real& z() { BOOST_STATIC_ASSERT(N >= 3); return this->elems[2]; }
+  real& z() { static_assert(N >= 3, ""); return this->elems[2]; }
   /// Special access to fourth element.
-  real& w() { BOOST_STATIC_ASSERT(N >= 4); return this->elems[3]; }
+  real& w() { static_assert(N >= 4, ""); return this->elems[3]; }
 
   /// Special const access to first element.
-  const real& x() const { BOOST_STATIC_ASSERT(N >= 1); return this->elems[0]; }
+  const real& x() const { static_assert(N >= 1, ""); return this->elems[0]; }
   /// Special const access to second element.
-  const real& y() const { BOOST_STATIC_ASSERT(N >= 2); return this->elems[1]; }
+  const real& y() const { static_assert(N >= 2, ""); return this->elems[1]; }
   /// Special const access to third element.
-  const real& z() const { BOOST_STATIC_ASSERT(N >= 3); return this->elems[2]; }
+  const real& z() const { static_assert(N >= 3, ""); return this->elems[2]; }
   /// Special const access to fourth element.
-  const real& w() const { BOOST_STATIC_ASSERT(N >= 4); return this->elems[3]; }
+  const real& w() const { static_assert(N >= 4, ""); return this->elems[3]; }
   
   /// Assignment operator from an array of values.
   void operator=(const real* p)

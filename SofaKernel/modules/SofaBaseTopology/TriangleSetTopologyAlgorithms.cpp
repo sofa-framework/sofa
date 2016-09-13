@@ -69,6 +69,70 @@ template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec2fTypes>;
 template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
 #endif
 
+
+
+
+
+
+
+
+
+#ifndef SOFA_FLOAT
+
+
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
+                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
+                                                              sofa::helper::vector<EdgeID>& , double  , double )
+{
+    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
+}
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
+                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
+                                                              sofa::helper::vector<EdgeID>& , double  , double )
+{
+    serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
+}
+
+#endif
+
+
+#ifndef SOFA_DOUBLE
+
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
+                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
+                                                              sofa::helper::vector<EdgeID>& , double  , double )
+{
+    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
+}
+template<> SOFA_BASE_TOPOLOGY_API
+int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsigned int , Coord& , unsigned int , Coord& ,
+                                                              sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
+                                                              sofa::helper::vector<unsigned int>& ,
+                                                              sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& ,
+                                                              sofa::helper::vector<EdgeID>& , double  , double )
+{
+    sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath not implemented"<<sendl;
+    return 0;
+}
+
+
+#endif
+
+
+
+
 } // namespace topology
 
 } // namespace component
