@@ -474,8 +474,6 @@ void BaseCamera::computeZ()
     {
         double zNear = 1e10;
         double zFar = -1e10;
-        double zNearTemp = zNear;
-        double zFarTemp = zFar;
 
         const Vec3 & minBBox = p_minBBox.getValue();
         const Vec3 & maxBBox = p_maxBBox.getValue();
