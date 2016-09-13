@@ -96,11 +96,7 @@ public:
 
     Data<bool> p_activated;
 	Data<bool> p_fixedLookAtPoint;
-
-    Data<Mat3> p_intrinsicParameters;
-
-    //Data<Mat4> d_modelviewMatrix;
-    //Data<Mat4> d_projectionMatrix;
+    
     Data<helper::vector<float> > p_modelViewMatrix;
     Data<helper::vector<float> > p_projectionMatrix;
 
@@ -234,8 +230,8 @@ public:
     //be according to the gravity.
     void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
 
-    void getModelViewMatrix(double mat[16]);
-    void getProjectionMatrix(double mat[16]);
+    virtual void getModelViewMatrix(double mat[16]);
+    virtual void getProjectionMatrix(double mat[16]);
     void getOpenGLModelViewMatrix(double mat[16]);
     void getOpenGLProjectionMatrix(double mat[16]);
 
@@ -300,6 +296,7 @@ protected:
     Vec3 sceneCenter;
     SReal sceneRadius;
 
+    bool b_setDefaultParameters;
 
     //need to keep "internal" lookAt and distance for updating Data
     //better way to do that ?
