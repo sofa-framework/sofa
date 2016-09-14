@@ -19,7 +19,7 @@ set(SOURCE_FILES
 )
 
 find_package(SofaMisc REQUIRED)
-find_package(Boost QUIET COMPONENTS system thread)
+find_package(Boost QUIET COMPONENTS system thread date_time)
 
 if(Boost_FOUND)
     list(APPEND HEADER_FILES
