@@ -210,8 +210,9 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     else // add path to the specified file name
     {
         std::string tmp(headerFilename);
-        std::size_t pos=tmp.find_last_of('/');
-        if(pos==std::string::npos) pos=tmp.find_last_of('\\');
+        std::size_t posSlash=tmp.find_last_of('/');
+		std::size_t posAslash=tmp.find_last_of('\\');
+		std::size_t pos = std::max(posSlash, posAslash);
         if(pos!=std::string::npos) {tmp.erase(pos+1); imageFilename.insert(0,tmp);}
     }
 
