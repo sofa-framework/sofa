@@ -246,9 +246,9 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
 endif()
 
 
-if(UNIX)
-    target_link_libraries(${PROJECT_NAME} pthread)
-endif()
+#if(UNIX)
+#    target_link_libraries(${PROJECT_NAME} pthread)
+#endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -263,7 +263,7 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(Flexible ${FLEXIBLE_VERSION} Flexible Flexible)
+sofa_create_package(${PROJECT_NAME} ${FLEXIBLE_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
