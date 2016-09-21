@@ -295,9 +295,7 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSi
 {
     if(isFull(maxSize))
     {
-#ifdef SOFA_HAVE_BOOST
-        boost::thread::yield();
-#endif
+		std::this_thread::yield();
         return false;
     }
 
