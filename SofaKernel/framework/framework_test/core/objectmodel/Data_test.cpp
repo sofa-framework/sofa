@@ -137,7 +137,7 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    // fails because setValueAsString does not set but add, it should be called addValueFromString (creating 1 entry)
+    // fails because setValueAsString does not look for a vector
     dataFileNameVector.setValueAsString( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
