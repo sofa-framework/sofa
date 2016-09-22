@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <SofaBaseVisual/BaseCamera.h>
+#include <sofa/helper/gl/Trackball.h>
 
 namespace sofa
 {
