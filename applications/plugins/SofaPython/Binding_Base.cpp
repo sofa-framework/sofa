@@ -24,8 +24,6 @@
 ******************************************************************************/
 #include "Binding_Base.h"
 #include "Binding_Data.h"
-#include "Binding_DisplayFlagsData.h"
-#include "Binding_OptionsGroupData.h"
 #include "Binding_Link.h"
 
 #include <sofa/helper/vector.h>
