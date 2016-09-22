@@ -474,10 +474,10 @@ void NewOmniDriver::setForceFeedback(ForceFeedback* ff)
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void NewOmniDriver::init()
 {
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
     if(firstDevice)
     {
-        simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext()->getRootContext());
-        context->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
+        rootContext->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
         sout<<"Detected NewOmniDriver:"<<sendl;
         for(unsigned int i=0; i<autreOmniDriver.size(); i++)
         {
@@ -541,13 +541,7 @@ void NewOmniDriver::init()
         visualNode[i].mapping = NULL;
     }
 
-    parent = dynamic_cast<simulation::Node*>(this->getContext());
-
-    sofa::simulation::tree::GNode *parentRoot = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
-    if (parentRoot->parent())
-        parentRoot = parentRoot->parent();
-
-    nodePrincipal= parentRoot->createChild("omniVisu "+deviceName.getValue());
+    nodePrincipal = rootContext->createChild("omniVisu "+deviceName.getValue());
     nodePrincipal->updateContext();
 
     DOFs=NULL;
