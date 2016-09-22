@@ -345,6 +345,7 @@ public:
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
     void draw(const core::visual::VisualParams* vparams);
+    void computeBBox(const core::ExecParams*  params, bool /*onlyVisible*/);
 
     // -- Modifiers
 
