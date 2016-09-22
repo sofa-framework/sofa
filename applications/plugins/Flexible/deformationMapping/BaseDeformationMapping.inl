@@ -395,7 +395,7 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
     const VecVRef& indices = this->f_index.getValue();
     for (std::size_t i=0; i < indices.size(); ++i)
         if ( indices[i].empty() )
-            serr << "Particle " << i << " has no parent" << sendl;
+            serr << this->getPathName() << " Particle " << i << " has no parent" << sendl;
 }
 
 template <class JacobianBlockType>
