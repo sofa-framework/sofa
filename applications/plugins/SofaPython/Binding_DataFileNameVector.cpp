@@ -34,6 +34,17 @@ using namespace sofa::core::objectmodel;
 
 
 
+extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+{
+    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+
+    sofa::helper::vector<std::string>& val = *data->beginEdit();
+    val.clear();
+    data->endEdit();
+
+    Py_RETURN_NONE;
+}
+
 extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 {
     char *path;
@@ -55,6 +66,7 @@ SP_CLASS_ATTRS_END
 
 SP_CLASS_METHODS_BEGIN(DataFileNameVector)
 SP_CLASS_METHOD(DataFileNameVector,addPath)
+SP_CLASS_METHOD(DataFileNameVector,clear)
 SP_CLASS_METHODS_END
 
 
