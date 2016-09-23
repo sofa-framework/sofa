@@ -53,10 +53,17 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
-    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
+    typedef sofa::defaulttype::Vec<3,size_t> Vec3Int;
+	typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 	typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
+	typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+	typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef typename SeqTetrahedra::value_type Tetrahedron;
     typedef typename SeqHexahedra::value_type Hexahedron;
+    typedef typename SeqTriangles::value_type Triangle;
+    typedef typename SeqQuads::value_type Quad;
+	typedef sofa::core::topology::Topology::PointID PointID;
 
 public:
 
@@ -83,23 +90,23 @@ public:
 public:
     Data<VecCoord> f_outputX; ///< ouput position
     Data<SeqTetrahedra> f_tetrahedron; ///< output tetrahedra
-    Data<SeqHexahedra> f_hexahedron; ///< output hexahedron
-    Data<Real > f_length; /// length of each cube 
-    Data<Real > f_height; /// height of each cube
-    Data<Real > f_width; /// width of each cube
-    Data<Coord> f_origin; /// origin
-    Data<size_t> f_resolutionLength; /// number of cubes in the length direction
-    Data<size_t> f_resolutionWidth; /// number of cubes in the width direction
-    Data<size_t> f_resolutionHeight; /// number of cubes in the height direction
+    Data<SeqQuads> f_quad; ///< output quads
+    Data<SeqTriangles> f_triangle; ///< output triangles
+    Data<SeqHexahedra> f_hexahedron; ///< output hexahedra
+	Data<Vec3Int> f_resolution; /// the resolution in the 3 directions
+	Data<Vec3> f_minCorner; /// the position of the minimum corner 
+	Data<Vec3> f_maxCorner; ///the position of the maximum corner 
 };
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATEGRID_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3dTypes>;
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec3fTypes>;
+extern template class SOFA_GENERAL_ENGINE_API GenerateGrid<defaulttype::Vec2fTypes>;
 #endif
 #endif
 
