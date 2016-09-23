@@ -477,7 +477,7 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
 {
-    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+//    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
