@@ -12,6 +12,7 @@ set(SOURCE_FILES
     DepthMapToMeshEngine.cpp
     ImageAccumulator.cpp
     ImageContainer.cpp
+    GenerateImage.cpp
     ImageDataDisplay.cpp
     ImageExporter.cpp
     ImageFilter.cpp
@@ -38,6 +39,7 @@ set(HEADER_FILES
     ImageAccumulator.h
     ImageAlgorithms.h
     ImageContainer.h
+    GenerateImage.h
     ImageDataDisplay.h
     ImageExporter.h
     ImageFilter.h
