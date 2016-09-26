@@ -758,15 +758,14 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
 	if (!getShow(this,vparams)) return;
+
     const typename Out::VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const defaulttype::Vector3& sizes = defaulttype::Vector3(axisLength.getValue(), axisLength.getValue(), axisLength.getValue());
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), axisLength.getValue());
+        vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), sizes);
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace mapping

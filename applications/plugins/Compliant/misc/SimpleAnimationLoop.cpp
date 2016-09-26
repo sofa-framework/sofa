@@ -27,7 +27,7 @@ namespace simulation
 
 SOFA_DECL_CLASS(SimpleAnimationLoop)
 
-static int _ = core::RegisterObject("a truly simple animation loop")
+int _ = core::RegisterObject("a truly simple animation loop")
     .add< SimpleAnimationLoop >()
     ;
 

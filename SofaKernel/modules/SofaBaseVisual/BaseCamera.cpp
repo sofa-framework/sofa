@@ -57,9 +57,9 @@ BaseCamera::BaseCamera()
     ,p_type(initData(&p_type,"projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
 	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
-    ,p_intrinsicParameters(initData(&p_intrinsicParameters, Mat3(), "intrinsicParameters", "Intrinsic parameters (used to compute projection matrix"))
     ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
     ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
+    ,b_setDefaultParameters(false)
 {
     this->f_listening.setValue(true);
     this->p_projectionMatrix.setReadOnly(true);
@@ -131,7 +131,8 @@ void BaseCamera::bwdInit()
         }
         else
         {
-            serr << "Too many missing parameters ; taking default ..." << sendl;
+            sout << "Too many missing parameters ; taking default ..." << sendl;
+            b_setDefaultParameters = true;
         }
     }
     else
@@ -147,7 +148,8 @@ void BaseCamera::bwdInit()
         }
         else
         {
-            serr << "Too many missing parameters ; taking default ..." << sendl;
+            sout << "Too many missing parameters ; taking default ..." << sendl;
+            b_setDefaultParameters = true;
         }
     }
     currentDistance = p_distance.getValue();
@@ -223,30 +225,61 @@ BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
     return p_orientation.getValue().inverseRotate(v);
 }
 
+// TODO: move to helper
+// https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
+template<class Real>
+bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *projection, const core::visual::VisualParams::Viewport& viewport, Real *objectCoordinate)
+{
+    //Transformation matrices
+    sofa::defaulttype::Mat<4,4, Real> matModelview(modelview);
+    sofa::defaulttype::Mat<4, 4, Real> matProjection(projection);
+
+    sofa::defaulttype::Mat<4, 4, Real> m, A;
+    sofa::defaulttype::Vec<4, Real> in, out;
+
+    A = matProjection * matModelview ;
+    sofa::defaulttype::invertMatrix(m, A);
+
+    //Transformation of normalized coordinates between -1 and 1
+    in[0] = (winx - (Real)viewport[0]) / (Real)viewport[2] * 2.0 - 1.0;
+    in[1] = (winy - (Real)viewport[1]) / (Real)viewport[3] * 2.0 - 1.0;
+    in[2] = 2.0*winz - 1.0;
+    in[3] = 1.0;
+    //Objects coordinates
+    out = m * in;
+
+    if (out[3] == 0.0)
+        return false;
+    out[3] = 1.0 / out[3];
+    objectCoordinate[0] = out[0] * out[3];
+    objectCoordinate[1] = out[1] * out[3];
+    objectCoordinate[2] = out[2] * out[3];
+    return true;
+}
+
 BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 {
-#ifndef SOFA_NO_OPENGL
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    GLdouble posX, posY, posZ;
+    const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
+    const core::visual::VisualParams::Viewport viewport = vp->viewport();
 
-    winX = (float)x;
-    winY = (float)viewport[3] - (float)y;
-    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-    //winZ = 1.0;
+    double winX = (double)x;
+    double winY = (double)viewport[3] - (double)y;
 
-    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    double pos[3];
+    double modelview[16];
+    double projection[16];
 
-    return Vec3(posX, posY, posZ);
-#else
-	return Vec3(0,0,0);
-#endif /* SOFA_NO_OPENGL */
+    this->getModelViewMatrix(modelview);
+    this->getProjectionMatrix(projection);
+
+    float fwinZ = 0.0;
+    vp->drawTool()->readPixels(x, int(winY), 1, 1, NULL, &fwinZ);
+
+    double winZ = (double)fwinZ;
+    glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
+
+    return Vec3(pos[0], pos[1], pos[2]);
 }
 
 void BaseCamera::getModelViewMatrix(double mat[16])
@@ -286,44 +319,22 @@ void BaseCamera::getProjectionMatrix(double mat[16])
 
     computeZ();
 
+    std::fill(mat, mat + 16, 0);
+
     if (p_type.getValue().getSelectedId() == core::visual::VisualParams::PERSPECTIVE_TYPE)
     {
-        Mat3 intrinsicParameters = p_intrinsicParameters.getValue();
-
         double pm00, pm11;
-        if (p_intrinsicParameters.isSet())
-        {
-            pm00 = intrinsicParameters[0][0] / intrinsicParameters[0][2];
-            pm11 = intrinsicParameters[1][1] / intrinsicParameters[1][2];
-        }
-        else
-        {
-            double scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5);
-            double aspect = width / height;
+        double scale = 1.0 / tan(getFieldOfView() * M_PI / 180 * 0.5);
+        double aspect = width / height;
 
-            pm00 = scale / aspect;
-            pm11 = scale;
-        }
+        pm00 = scale / aspect;
+        pm11 = scale;
 
         mat[0] = pm00; // FocalX
-        mat[1] = 0.0;
-        mat[2] = 0.0;
-        mat[3] = 0.0;
-
-        mat[4] = 0.0;
         mat[5] = pm11; // FocalY
-        mat[6] = 0.0;
-        mat[7] = 0.0;
-
-        mat[8] = 0;
-        mat[9] = 0;
         mat[10] = -(currentZFar + currentZNear) / (currentZFar - currentZNear);
         mat[11] = -2.0 * currentZFar * currentZNear / (currentZFar - currentZNear);;
-
-        mat[12] = 0.0;
-        mat[13] = 0.0;
         mat[14] = -1.0;
-        mat[15] = 0.0;
     }
     else
     {
@@ -494,46 +505,30 @@ void BaseCamera::computeZ()
     {
         double zNear = 1e10;
         double zFar = -1e10;
-        double zNearTemp = zNear;
-        double zFarTemp = zFar;
-
-        const Vec3& currentPosition = getPosition();
-        Quat currentOrientation = this->getOrientation();
 
         const Vec3 & minBBox = p_minBBox.getValue();
         const Vec3 & maxBBox = p_maxBBox.getValue();
-
-        currentOrientation.normalize();
-        helper::gl::Transformation transform;
-
-        currentOrientation.buildRotationMatrix(transform.rotation);
-        for (unsigned int i=0 ; i< 3 ; ++i)
-            transform.translation[i] = -currentPosition[i];
-
-        for (int corner=0; corner<8; ++corner)
-        {
-            Vec3 p((corner&1)?minBBox[0]:maxBBox[0],
-                    (corner&2)?minBBox[1]:maxBBox[1],
-                    (corner&4)?minBBox[2]:maxBBox[2]);
-            //TODO: invert transform...
-            p = transform * p;
-            double z = -p[2];
-            if (z < zNearTemp) zNearTemp = z;
-            if (z > zFarTemp)  zFarTemp = z;
-        }
 
         //get the same zFar and zNear calculations as QGLViewer
         sceneCenter = (minBBox + maxBBox)*0.5;
         sceneRadius = 0.5*(maxBBox - minBBox).norm();
 
-        double distanceCamToCenter = (currentPosition - sceneCenter).norm();
-        double zClippingCoeff = 5;
-        double zNearCoeff = 0.001;
+        //modelview transform
+        defaulttype::SolidTypes<SReal>::Transform world_H_cam(p_position.getValue(), this->getOrientation());
 
-        zFar = distanceCamToCenter + zClippingCoeff*sceneRadius ;
-        zNear = distanceCamToCenter- zClippingCoeff*sceneRadius;
+        //double distanceCamToCenter = fabs((world_H_cam.inversed().projectPoint(sceneCenter))[2]);
+        double distanceCamToCenter = (p_position.getValue() - sceneCenter).norm();
+
+        double zClippingCoeff = 5;
+        double zNearCoeff = 0.01;
+
+
+        zNear = distanceCamToCenter - sceneRadius;
+        zFar = (zNear + 2 * sceneRadius) * 1.1;
+        zNear = zNear * zNearCoeff;
 
         double zMin = zNearCoeff * zClippingCoeff * sceneRadius;
+
         if (zNear < zMin)
             zNear = zMin;
 
@@ -599,40 +594,43 @@ void BaseCamera::setDefaultView(const Vec3 & gravity)
     const Vec3 & maxBBox = p_maxBBox.getValue();
     sceneCenter = (minBBox + maxBBox)*0.5;
 
-    //LookAt
-    p_lookAt.setValue(sceneCenter);
-    currentLookAt = p_lookAt.getValue();
-
-    //Orientation
-    Vec3 xAxis (1.0, 0.0, 0.0);
-    Vec3 yAxis = -gravity;
-    // If no gravity defined set the yAxis as 0 1 0;
-    if(gravity==Vec3(0.0, 0.0, 0.0))
+    if (b_setDefaultParameters)
     {
-        yAxis = Vec3(0.0,1.0,0.0);
+        //LookAt
+        p_lookAt.setValue(sceneCenter);
+        currentLookAt = p_lookAt.getValue();
+
+        //Orientation
+        Vec3 xAxis(1.0, 0.0, 0.0);
+        Vec3 yAxis = -gravity;
+        // If no gravity defined set the yAxis as 0 1 0;
+        if (gravity == Vec3(0.0, 0.0, 0.0))
+        {
+            yAxis = Vec3(0.0, 1.0, 0.0);
+        }
+        yAxis.normalize();
+
+        if (1.0 - fabs(dot(xAxis, yAxis)) < 0.001)
+            xAxis = Vec3(0.0, 1.0, 0.0);
+
+        Vec3 zAxis = xAxis.cross(yAxis);
+        zAxis.normalize();
+        xAxis = yAxis.cross(zAxis);
+        xAxis.normalize();
+        Quat q = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
+        q.normalize();
+        p_orientation.setValue(q);
+
+        //Distance
+        double coeff = 3.0;
+        double dist = (minBBox - sceneCenter).norm() * coeff;
+        p_distance.setValue(dist);
+        currentDistance = dist;
+
+        //Position
+        Vec3 pos = currentLookAt + zAxis*dist;
+        p_position.setValue(pos);
     }
-    yAxis.normalize();
-
-    if( 1.0 - fabs(dot(xAxis, yAxis)) < 0.001)
-        xAxis = Vec3(0.0,1.0,0.0);
-
-    Vec3 zAxis = xAxis.cross(yAxis);
-    zAxis.normalize();
-    xAxis = yAxis.cross(zAxis);
-    xAxis.normalize();
-    Quat q = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
-    q.normalize();
-    p_orientation.setValue(q);
-
-    //Distance
-    double coeff = 3.0;
-    double dist = (minBBox - sceneCenter).norm() * coeff;
-    p_distance.setValue(dist);
-    currentDistance = dist;
-
-    //Position
-    Vec3 pos = currentLookAt + zAxis*dist;
-    p_position.setValue(pos);
 
     computeZ();
 }
@@ -714,11 +712,13 @@ bool BaseCameraXMLImportSingleParameter(TiXmlElement* root, core::objectmodel::B
 
 bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 {
+    bool result = true;
+
     sout << "Reading " << viewFilename << " for view parameters." << sendl;
     TiXmlDocument doc(viewFilename.c_str());
     if (!doc.LoadFile())
     {
-        return false;
+        result = false;
     }
 
     TiXmlHandle hDoc(&doc);
@@ -727,21 +727,26 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     root = hDoc.FirstChildElement().ToElement();
 
     if (!root)
-        return false;
+        result = false;
 
     //std::string camVersion;
     //root->QueryStringAttribute ("version", &camVersion);
-
-    BaseCameraXMLImportSingleParameter(root, p_position, this);
-    BaseCameraXMLImportSingleParameter(root, p_orientation, this);
-    BaseCameraXMLImportSingleParameter(root, p_lookAt, this);
-    BaseCameraXMLImportSingleParameter(root, p_fieldOfView, this);
-    BaseCameraXMLImportSingleParameter(root, p_distance, this);
-    BaseCameraXMLImportSingleParameter(root, p_zNear, this);
-    BaseCameraXMLImportSingleParameter(root, p_zFar, this);
-    BaseCameraXMLImportSingleParameter(root, p_type, this);
-
-    return true;
+    if(result)
+    {
+        BaseCameraXMLImportSingleParameter(root, p_position, this);
+        BaseCameraXMLImportSingleParameter(root, p_orientation, this);
+        BaseCameraXMLImportSingleParameter(root, p_lookAt, this);
+        BaseCameraXMLImportSingleParameter(root, p_fieldOfView, this);
+        BaseCameraXMLImportSingleParameter(root, p_distance, this);
+        BaseCameraXMLImportSingleParameter(root, p_zNear, this);
+        BaseCameraXMLImportSingleParameter(root, p_zFar, this);
+        BaseCameraXMLImportSingleParameter(root, p_type, this);
+    }
+    else
+    {
+        sout << "Error while reading " << viewFilename << "." << sendl;
+    }
+    return result;
 }
 
 void BaseCamera::updateOutputData()

@@ -29,8 +29,7 @@
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/SVector.h>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <type_traits>
 
 namespace sofa
 {
@@ -106,7 +105,7 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
     template<class MyCoord>
-    void localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
+    void localToGlobal(typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
     void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
 
@@ -117,7 +116,7 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     template<class MyCoord>
-    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);
 
 protected:
 	// every nodes needed in the animation chain

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 message("Using miniBoost, to use an installed Boost, set BOOST_ROOT to the install directory")
 

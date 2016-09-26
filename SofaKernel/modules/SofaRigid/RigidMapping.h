@@ -38,8 +38,6 @@
 #include <vector>
 #include <memory>
 
-#include <boost/scoped_ptr.hpp>
-
 namespace sofa
 {
 
@@ -162,7 +160,7 @@ protected:
     const VecCoord& getPoints();
     void setJMatrixBlock(unsigned outIdx, unsigned inIdx);
 
-    boost::scoped_ptr<MatrixType> matrixJ;
+    std::unique_ptr<MatrixType> matrixJ;
     bool updateJ;
 
     typedef linearsolver::EigenSparseMatrix<In,Out> SparseMatrixEigen;

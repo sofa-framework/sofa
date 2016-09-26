@@ -26,7 +26,6 @@
 #define SOFA_DEFAULTTYPE_VEC_H
 
 #include <sofa/helper/fixed_array.h>
-#include <boost/static_assert.hpp>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
@@ -46,7 +45,7 @@ template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
 
-    BOOST_STATIC_ASSERT( N > 0 );
+    static_assert( N > 0, "" );
 
 public:
     // Type inconsistency workaround, see Mat.h
@@ -144,14 +143,14 @@ public:
     /// Specific set for 1-element vectors.
     void set(real r1)
     {
-        BOOST_STATIC_ASSERT(N==1);
+        static_assert(N==1, "");
         this->elems[0]=r1;
     }
 
     /// Specific set for 2-elements vectors.
     void set(real r1, real r2)
     {
-        BOOST_STATIC_ASSERT(N == 2);
+        static_assert(N == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
@@ -159,7 +158,7 @@ public:
     /// Specific set for 3-elements vectors.
     void set(real r1, real r2, real r3)
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -168,7 +167,7 @@ public:
     /// Specific set for 4-elements vectors.
     void set(real r1, real r2, real r3, real r4)
     {
-        BOOST_STATIC_ASSERT(N == 4);
+        static_assert(N == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -178,7 +177,7 @@ public:
     /// Specific set for 5-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5)
     {
-        BOOST_STATIC_ASSERT(N == 5);
+        static_assert(N == 5, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -189,7 +188,7 @@ public:
     /// Specific set for 6-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5, real r6)
     {
-        BOOST_STATIC_ASSERT(N == 6);
+        static_assert(N == 6, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -201,7 +200,7 @@ public:
     /// Specific constructor for 7-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7)
     {
-        BOOST_STATIC_ASSERT(N == 7);
+        static_assert(N == 7, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -214,7 +213,7 @@ public:
     /// Specific set for 8-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
-        BOOST_STATIC_ASSERT(N == 8);
+        static_assert(N == 8, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -228,7 +227,7 @@ public:
     /// Specific set for 9-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
-        BOOST_STATIC_ASSERT(N == 9);
+        static_assert(N == 9, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -243,7 +242,7 @@ public:
     /// Specific set for 12-elements vectors.
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
-        BOOST_STATIC_ASSERT(N == 12);
+        static_assert(N == 12, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -273,7 +272,7 @@ public:
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
     Vec(const Vec<N-1,real>& v, real r1)
     {
-        BOOST_STATIC_ASSERT(N > 1);
+        static_assert(N > 1, "");
         set( v, r1 );
     }
 
@@ -304,50 +303,50 @@ public:
     /// Special access to first element.
     real& x()
     {
-        BOOST_STATIC_ASSERT(N >= 1);
+        static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special access to second element.
     real& y()
     {
-        BOOST_STATIC_ASSERT(N >= 2);
+        static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special access to third element.
     real& z()
     {
-        BOOST_STATIC_ASSERT(N >= 3);
+        static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special access to fourth element.
     real& w()
     {
-        BOOST_STATIC_ASSERT(N >= 4);
+        static_assert(N >= 4, "");
         return this->elems[3];
     }
 
     /// Special const access to first element.
     const real& x() const
     {
-        BOOST_STATIC_ASSERT(N >= 1);
+        static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special const access to second element.
     const real& y() const
     {
-        BOOST_STATIC_ASSERT(N >= 2);
+        static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special const access to third element.
     const real& z() const
     {
-        BOOST_STATIC_ASSERT(N >= 3);
+        static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special const access to fourth element.
     const real& w() const
     {
-        BOOST_STATIC_ASSERT(N >= 4);
+        static_assert(N >= 4, "");
         return this->elems[3];
     }
 
@@ -445,7 +444,7 @@ public:
     template<class real2>
     Vec<N,real> mulscalar(real2 f) const
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
@@ -465,7 +464,7 @@ public:
     template<class real2>
     void eqmulscalar(real2 f)
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (int i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
@@ -483,7 +482,7 @@ public:
     template<class real2>
     Vec<N,real> divscalar(real2 f) const
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
@@ -503,7 +502,7 @@ public:
     template<class real2>
     void eqdivscalar(real2 f)
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (int i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
@@ -693,7 +692,7 @@ public:
     template<typename R>
     Vec cross( const Vec<3,R>& b ) const
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         return Vec(
                 (real)((*this)[1]*b[2] - (*this)[2]*b[1]),
                 (real)((*this)[2]*b[0] - (*this)[0]*b[2]),

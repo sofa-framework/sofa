@@ -64,6 +64,7 @@ OglTexture::OglTexture()
     ,cubemapFilenameNegX(initData(&cubemapFilenameNegX, (std::string) "", "cubemapFilenameNegX", "Texture filename of negative-X cubemap face"))
     ,cubemapFilenameNegY(initData(&cubemapFilenameNegY, (std::string) "", "cubemapFilenameNegY", "Texture filename of negative-Y cubemap face"))
     ,cubemapFilenameNegZ(initData(&cubemapFilenameNegZ, (std::string) "", "cubemapFilenameNegZ", "Texture filename of negative-Z cubemap face"))
+    ,texture(0)
     ,img(0)
 {
     this->addAlias(&textureFilename, "filename");
@@ -71,7 +72,8 @@ OglTexture::OglTexture()
 
 OglTexture::~OglTexture()
 {
-    if (!texture)delete texture;
+    if (texture) delete texture;
+//    if (img) delete img; // should be deleted by the texture (but what happens if the texture is never created ?) Why not use smart pointers for that kind of stuff?
 }
 
 void OglTexture::setActiveTexture(unsigned short unit)
@@ -99,6 +101,7 @@ void OglTexture::init()
             if (height > 0 && width > 0 && !textureData.empty() )
             {
                 //Init texture
+                if (img) { delete img; img=0; }
                 img = new helper::io::Image();
                 img->init(width, height, nbb);
 
@@ -187,6 +190,7 @@ void OglTexture::init()
         {
             serr << "OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
             //create dummy texture
+            if (img) { delete img; img=0; }
             img = new helper::io::Image();
             unsigned int dummyWidth = 128;
             unsigned int dummyHeight = 128;
@@ -224,6 +228,8 @@ void OglTexture::initVisual()
 //        return;
 //    }
 
+
+    if (texture) delete texture;
     texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
             generateMipmaps.getValue(), srgbColorspace.getValue(),
             minLod.getValue(), maxLod.getValue());

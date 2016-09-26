@@ -1,6 +1,6 @@
 add_subdirectory(extlibs/DiffusionSolver)
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(image)
 
 set(IMAGE_MAJOR_VERSION 0)
@@ -12,6 +12,7 @@ set(SOURCE_FILES
     DepthMapToMeshEngine.cpp
     ImageAccumulator.cpp
     ImageContainer.cpp
+    GenerateImage.cpp
     ImageDataDisplay.cpp
     ImageExporter.cpp
     ImageFilter.cpp
@@ -38,6 +39,7 @@ set(HEADER_FILES
     ImageAccumulator.h
     ImageAlgorithms.h
     ImageContainer.h
+    GenerateImage.h
     ImageDataDisplay.h
     ImageExporter.h
     ImageFilter.h

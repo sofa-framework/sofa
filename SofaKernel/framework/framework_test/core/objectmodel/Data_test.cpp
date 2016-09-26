@@ -24,10 +24,13 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <gtest/gtest.h>
 
 namespace sofa {
+
+using namespace core::objectmodel;
 
 /**  Test suite for data link.
 Create two datas and a link between them.
@@ -35,8 +38,8 @@ Set the value of data1 and check if the boolean is dirty of data2 is true and th
   */
 struct DataLink_test: public ::testing::Test
 {
-    core::objectmodel::Data<int> data1;
-    core::objectmodel::Data<int> data2;
+    Data<int> data1;
+    Data<int> data2;
 
     /// Create a link between the two datas
     void SetUp()
@@ -57,7 +60,10 @@ struct DataLink_test: public ::testing::Test
 
 };
 
-// Test
+
+/////////////////////////////////////
+
+
 TEST_F(DataLink_test , testDataLink )
 {
     this->testDataLink();
@@ -69,7 +75,7 @@ TEST_F(DataLink_test , testDataLink )
  */
 struct vectorData_test: public ::testing::Test
 {
-    core::objectmodel::Data<int> data1;
+    Data<int> data1;
     helper::vectorData<int> vDataInt;
 
     vectorData_test()
@@ -99,7 +105,6 @@ struct vectorData_test: public ::testing::Test
 
 };
 
-// Test
 TEST_F(vectorData_test , test_resize )
 {
     this->test_resize();
@@ -108,5 +113,41 @@ TEST_F(vectorData_test , test_link )
 {
     this->test_link();
 }
+
+
+/////////////////////////////////
+
+
+/** Test suite for DataFileNameVector
+ *
+ * @author M Nesme @date 2016
+ */
+struct DataFileNameVector_test: public ::testing::Test
+{
+    DataFileNameVector dataFileNameVector;
+
+    DataFileNameVector_test()
+        : dataFileNameVector()
+    { }
+
+    void SetUp()
+    {}
+
+};
+
+TEST_F(DataFileNameVector_test , setValueAsString_spaces )
+{
+    // fails because setValueAsString does not look for a vector
+    dataFileNameVector.setValueAsString( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
+
+TEST_F(DataFileNameVector_test , read_spaces )
+{
+    // fails because read is considering that path are separated with space, so path cannot contain spaces (creating 6 entries)
+    dataFileNameVector.read( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
+
 
 }// namespace sofa

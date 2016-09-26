@@ -123,7 +123,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
             PyObject *value = PyList_GetItem(values,i);
             if( !strcmp(PyString_AsString(key),"warning") )
             {
-                if( PyBool_Check(value) )
+                if PyBool_Check(value)
                     warning = (value==Py_True);
                 break;
             }
@@ -236,7 +236,7 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
             PyObject *value = PyList_GetItem(values,i);
             if( !strcmp(PyString_AsString(key),"warning") )
             {
-                if( PyBool_Check(value) )
+                if PyBool_Check(value)
                     warning = (value==Py_True);
                 break;
             }

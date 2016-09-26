@@ -31,10 +31,10 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
 
 
     PyObject* shape = PyTuple_New(4);
-    PyTuple_SetItem( shape, 0, PyLong_FromSsize_t( dim[0] ) ); // x
-    PyTuple_SetItem( shape, 1, PyLong_FromSsize_t( dim[1] ) ); // y
-    PyTuple_SetItem( shape, 2, PyLong_FromSsize_t( dim[2] ) ); // z
-    PyTuple_SetItem( shape, 3, PyLong_FromSsize_t( dim[3] ) ); // s
+    PyTuple_SetItem( shape, 0, PyLong_FromSsize_t( dim[3] ) ); // s
+    PyTuple_SetItem( shape, 1, PyLong_FromSsize_t( dim[2] ) ); // z
+    PyTuple_SetItem( shape, 2, PyLong_FromSsize_t( dim[1] ) ); // y
+    PyTuple_SetItem( shape, 3, PyLong_FromSsize_t( dim[0] ) ); // x
 
 
     // output = tuple( list(pointers), shape tuple, type name)

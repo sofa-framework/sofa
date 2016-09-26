@@ -95,6 +95,11 @@ void Hexa2QuadTopologicalMapping::init()
 
             toModel->setNbPoints(fromModel->getNbPoints());
 
+            for (int i=0; i<fromModel->getNbPoints(); i++)
+            {
+                toModel->addPoint(fromModel->getPX(i), fromModel->getPY(i), fromModel->getPZ(i));
+            }
+
             QuadSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 

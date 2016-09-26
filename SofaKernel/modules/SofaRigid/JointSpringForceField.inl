@@ -475,6 +475,39 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 }
 
 template <class DataTypes>
+void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
+{
+//    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+    
+    const Real max_real = std::numeric_limits<Real>::max();
+    const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
+    Real maxBBox[3] = { min_real,min_real,min_real };
+    Real minBBox[3] = { max_real,max_real,max_real };
+
+    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    const helper::vector<Spring>& springs = this->springs.getValue();
+
+    for (unsigned int i = 0, iend = springs.size(); i<iend; ++i)
+    {
+        const Spring& s = springs[i];
+
+        sofa::defaulttype::Vector3 v0 = p1[s.m1].getCenter();
+        sofa::defaulttype::Vector3 v1 = p2[s.m2].getCenter();
+
+        for (int c = 0; c<3; c++)
+        {
+            if (v0[c] > maxBBox[c]) maxBBox[c] = (Real)v0[c];
+            if (v0[c] < minBBox[c]) minBBox[c] = (Real)v0[c];
+            if (v1[c] > maxBBox[c]) maxBBox[c] = (Real)v1[c];
+            if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
+        }
+    }
+    this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
+}
+
+template <class DataTypes>
 void JointSpringForceField<DataTypes>::updateForceMask()
 {
     const helper::vector<Spring>& springs= this->springs.getValue();
