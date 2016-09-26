@@ -18,7 +18,7 @@ add_subdirectory(CImg)
 
 
 ## Optional ones
-if (SOFA_ENABLE_QWT)
+if (SOFAGUI_ENABLE_QWT)
     message("Qwt activated")
     add_subdirectory(qwt-6.1.2/src qwt)
 endif()
