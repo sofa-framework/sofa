@@ -25,6 +25,8 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
+#include <sofa/config.h>
+
 #include "PythonCommon.h"
 #include <boost/intrusive_ptr.hpp>
 
