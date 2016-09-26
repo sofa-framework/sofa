@@ -372,7 +372,10 @@ int NewOmniDriver::initDevice()
 
             if (HD_DEVICE_ERROR(error = hdGetError()))
             {
-                std::cout<<"[NewOmni] Failed to initialize the device "<<autreOmniDriver[i]->deviceName.getValue()<<std::endl;
+              std::string m = "[NewOmni] Failed to initialize the device " + autreOmniDriver[i]->deviceName.getValue();
+              printError(&error, m.c_str());
+              autreOmniDriver[i]->isInitialized = false;
+              return -1;
             }
             else
             {
@@ -666,7 +669,10 @@ void NewOmniDriver::bwdInit()
         }
         else
         {
-            autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
+          sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+          if (xfree.size() == 0)
+            xfree.resize(1);
+          autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
         }
 }
 
