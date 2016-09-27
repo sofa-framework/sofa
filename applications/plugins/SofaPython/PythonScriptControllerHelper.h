@@ -83,7 +83,6 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 
 } // namespase internal
 
-#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 /** A helper function to call \a funcName in \a pythonScriptControllerName.
  * The function returned value is stored in \a result.
  * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.
@@ -117,10 +116,6 @@ void PythonScriptController_call(std::nullptr_t /*result*/, sofa::simulation::No
     int* none=nullptr;
     PythonScriptController_call(none, root, pythonScriptControllerName, funcName, parameters...);
 }
-
-#else
-// implement a c++98 version if necessary
-#endif
 
 } // namespace helper
 } // namespace sofa
