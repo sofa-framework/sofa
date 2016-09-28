@@ -218,6 +218,52 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
         qpa.push_back(QuadraturePoint(v,c2));
     }
 	triangleNumericalIntegration.addQuadratureMethod(m,8,qpa);
+	/// integration with order 10 accuracy and 25 points from https://github.com/libMesh/libmesh/blob/master/src/quadrature/quadrature_gauss_2D.C
+	qpa.clear();
+	v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+	c1=(Real)4.5408995191376790047643297550014267e-02L;
+	qpa.push_back(QuadraturePoint(v,(Real)c1));
+	a=(Real)4.8557763338365737736750753220812615e-01L;
+	b=(Real)1-2*a;
+	c1=(Real)1.8362978878233352358503035945683300e-02L;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	}
+	a=(Real)1.0948157548503705479545863134052284e-01L;
+	b=(Real)1-2*a;
+	c1=(Real)2.2660529717763967391302822369298659e-02L;
+	for (i=0;i<3;++i) {
+		v=BarycentricCoordinatesType(a,a,a);
+		v[i]=b;
+		qpa.push_back(QuadraturePoint(v,c1));
+	}
+	aa[0]=(Real)3.0793983876412095016515502293063162e-01L;
+	aa[1]=(Real)5.5035294182099909507816172659300821e-01L;
+	aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)3.6378958422710054302157588309680344e-02L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+	aa[0]=(Real)2.4667256063990269391727646541117681e-01L;
+	aa[1]=(Real)7.2832390459741092000873505358107866e-01L;
+	aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)1.4163621265528742418368530791049552e-02L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+	aa[0]=(Real)6.6803251012200265773540212762024737e-02L;
+	aa[1]=(Real)9.2365593358750027664630697761508843e-01L;
+	aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)4.7108334818664117299637354834434138e-03L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+		qpa.push_back(QuadraturePoint(v,c2));
+	}
+	triangleNumericalIntegration.addQuadratureMethod(m,10,qpa);
 
 }
 
