@@ -171,7 +171,7 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          (int)scene.size()) ;
 
         root->init(ExecParams::defaultInstance()) ;
 
@@ -195,7 +195,7 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          (int)scene.size()) ;
 
         root->init(ExecParams::defaultInstance()) ;
 
@@ -219,7 +219,7 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
-                                                          scene.size()) ;
+                                                          (int)scene.size()) ;
 
         root->init(ExecParams::defaultInstance()) ;
 
@@ -264,7 +264,7 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
                 "   <UniformMass filename='valid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
-                                                          scene.c_str(), scene.size()) ;
+                                                          scene.c_str(), (int)scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
     }
 

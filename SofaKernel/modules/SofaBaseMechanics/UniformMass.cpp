@@ -76,7 +76,6 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 }
 
 
-
 #ifndef SOFA_FLOAT
 
 template<> SOFA_BASE_MECHANICS_API

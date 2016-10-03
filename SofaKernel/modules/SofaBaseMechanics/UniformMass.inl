@@ -145,7 +145,6 @@ void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
     d_mass.setValue ( m );
 }
 
-
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
@@ -230,7 +229,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
     {
         indices.clear();
         for(size_t i=0; i<mstate->getSize(); i++)
-            indices.push_back(i);
+            indices.push_back((int)i);
     }
 
     if ( meshTopology != 0 )
@@ -483,7 +482,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 {
     const MassType& m = d_mass.getValue();
 
-    const int N = DataTypeInfo<Deriv>::size();
+    const size_t N = DataTypeInfo<Deriv>::size();
 
     AddMToMatrixFunctor<Deriv,MassType> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
@@ -574,7 +573,7 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, axisSize, color);
+        vparams->drawTool()->drawCross(temp, (float)axisSize, color);
     }
 }
 
