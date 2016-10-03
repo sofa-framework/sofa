@@ -91,7 +91,19 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
-    if(mstate==NULL) return;
+
+    if(mstate==NULL){
+        msg_warning(this) << "Missing mechanical state. \n"
+                             "UniformMass need to be used with an object also having a MechanicalState. \n"
+                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
+                             " containing this <UniformMass/>";
+        return;
+    }
+
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+        loadRigidMass(d_filenameMass.getFullPath()) ;
+    }
+
 
     //If localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
@@ -492,7 +504,18 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
-    if(mstate==NULL) return;
+
+    if(mstate==NULL){
+        msg_warning(this) << "Missing mechanical state. \n"
+                             "UniformMass need to be used with an object also having a MechanicalState. \n"
+                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
+                             " containing this <UniformMass/>";
+        return;
+    }
+
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+        loadRigidMass(d_filenameMass.getFullPath()) ;
+    }
 
     //If localRange is set, update indices
     if (d_localRange.getValue()[0] >= 0
