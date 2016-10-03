@@ -174,11 +174,10 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,flo
 template<>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, sofa::defaulttype::RigidMass<3,float> >::accFromF(const core::MechanicalParams * /*mparams*/, DataVecDeriv &a, const DataVecDeriv &f)
 {
-
         VecDeriv& _a = *a.beginEdit();
         VecDeriv _f = f.getValue();
 
-        UniformMassCudaRigid3f_accFromF(_a.size(), d_mass.getValue().d_mass, _a.deviceWrite(), _f.deviceRead());
+        UniformMassCudaRigid3f_accFromF(_a.size(), mass.getValue().d_mass, _a.deviceWrite(), _f.deviceRead());
 
         a.endEdit();
 }
