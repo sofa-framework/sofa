@@ -82,8 +82,9 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
 {
+    d_filenameMass.setDisplayed(true) ;
     d_filenameMass.setReadOnly(false) ;
-    d_filenameMass.setValue("");
+    d_filenameMass.setValue("") ;
 }
 
 template<> SOFA_BASE_MECHANICS_API
@@ -482,8 +483,9 @@ Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const MechanicalPar
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::constructor_message()
 {
+    d_filenameMass.setDisplayed(true) ;
     d_filenameMass.setReadOnly(false) ;
-    d_filenameMass.setValue("");
+    d_filenameMass.setValue("") ;
 }
 
 template<> SOFA_BASE_MECHANICS_API

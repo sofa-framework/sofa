@@ -133,8 +133,10 @@ UniformMass<DataTypes, MassType>::~UniformMass()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::constructor_message()
 {
-    d_filenameMass.setReadOnly(false) ;
+    d_filenameMass.setDisplayed(true) ;
+    d_filenameMass.setReadOnly(true) ;
     d_filenameMass.setValue("unused") ;
+    d_filenameMass.setHelp("File storing the mass parameters [rigid objects only].");
 }
 
 template <class DataTypes, class MassType>

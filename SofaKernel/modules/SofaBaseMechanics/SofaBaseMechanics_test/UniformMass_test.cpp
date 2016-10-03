@@ -87,12 +87,12 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
     typedef typename TTemplateTypes::DataTypes DataTypes ;
     typedef typename TTemplateTypes::MassTypes MassTypes ;
 
-    Simulation* m_simu ;
+    Simulation* m_simu {nullptr} ;
     Node::SPtr m_root ;
     Node::SPtr m_node ;
     typename TheUniformMass::SPtr m_mass ;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
-    bool todo = true ;
+    bool todo {true} ;
 
     virtual void SetUp()
     {
@@ -267,8 +267,6 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
                                                           scene.c_str(), scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
     }
-
-
 
     void loadFromAnInvalidFile(){
         // TODO
