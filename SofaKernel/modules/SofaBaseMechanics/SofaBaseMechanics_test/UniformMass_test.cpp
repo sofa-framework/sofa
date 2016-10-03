@@ -87,15 +87,16 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
     typedef typename TTemplateTypes::DataTypes DataTypes ;
     typedef typename TTemplateTypes::MassTypes MassTypes ;
 
-    Simulation* m_simu {nullptr} ;
+    Simulation* m_simu ; // {nullptr} ;
     Node::SPtr m_root ;
     Node::SPtr m_node ;
     typename TheUniformMass::SPtr m_mass ;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
-    bool todo {true} ;
+    bool todo ; // {true} ;
 
     virtual void SetUp()
     {
+        todo = true ;
         initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
