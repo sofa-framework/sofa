@@ -150,7 +150,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
     UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
-    mass->mass.setValue( totalMass/(numX*numY*numZ) );
+    mass->d_mass.setValue( totalMass/(numX*numY*numZ) );
 
     HexahedronFEMForceField3::SPtr hexaFem = addNew<HexahedronFEMForceField3>(deformableGrid, "hexaFEM");
     hexaFem->f_youngModulus.setValue(1000);
@@ -274,7 +274,7 @@ int main(int argc, char** argv)
     sofa::gui::GUIManager::SetScene(groot);
 
 #ifdef PS3
-	groot->setAnimate(true);
+    groot->setAnimate(true);
 #endif
 
     // Run the main loop
