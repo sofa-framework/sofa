@@ -385,7 +385,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         MechanicalObject3::SPtr DOF = addNew<MechanicalObject3>(root);
         DOF->resize(1);
         UniformMass3::SPtr mass = addNew<UniformMass3>(root);
-        mass->totalMass.setValue(1);
+        mass->d_totalMass.setValue(1);
 
 
         Node::SPtr mappedComplianceNode = root->createChild("mappedComplianceNode");
