@@ -45,7 +45,8 @@ template <class DataTypes, class TMassType>
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType),
+               SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,26 +58,26 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
+    Data<MassType>                        d_mass;         ///< the mass of each particle
+    Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
+    sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<MassType>                        mass;         ///< the mass of each particle
-    Data<SReal>                           totalMass;    ///< if >0 : total mass of this body
-    sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
+    Data<bool>                            d_showCenterOfGravity; /// to display the center of gravity of the system
+    Data<float>                           d_showAxisSize;        /// to display the center of gravity of the system
 
-    Data<bool>                        showCenterOfGravity; /// to display the center of gravity of the system
-    Data<float>                       showAxisSize;        /// to display the center of gravity of the system
+    Data<bool>  d_computeMappingInertia;
+    Data<bool>  d_showInitialCenterOfGravity;
 
-    Data<bool>  computeMappingInertia;
-    Data<bool>  showInitialCenterOfGravity;
+    Data<bool>  d_showX0; /// to display the rest positions
 
-
-    Data<bool>  showX0; /// to display the rest positions
-
-    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    /// optional range of local DOF indices. Any computation involving only
+    /// indices outside of this range are discarded (useful for parallelization
+    /// using mesh partitionning)
+    Data< defaulttype::Vec<2,int> > d_localRange;
     Data< helper::vector<int> >     d_indices;
 
-    Data<bool> handleTopoChange;
-    Data<bool> preserveTotalMass;
+    Data<bool> d_handleTopoChange;
+    Data<bool> d_preserveTotalMass;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -95,18 +96,18 @@ protected:
 
     ~UniformMass();
 
-    /// @internal fonction called in the constructor that can be specialized (does nothing by default)
-    void constructor_message() {}
+    /// @internal fonction called in the constructor that can be specialized
+    void constructor_message() ;
 
 public:
-    void setMass(const MassType& mass);
-    const MassType& getMass() const { return mass.getValue(); }
+    void setMass(const MassType& d_mass);
+    const MassType& getMass() const { return d_mass.getValue(); }
 
-    SReal getTotalMass() const { return totalMass.getValue(); }
+    SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
 
-    void setFileMass(const std::string& file) {filenameMass.setValue(file);}
-    std::string getFileMass() const {return filenameMass.getFullPath();}
+    void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
+    std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
     void loadRigidMass(std::string filename);
     // -- Mass interface
