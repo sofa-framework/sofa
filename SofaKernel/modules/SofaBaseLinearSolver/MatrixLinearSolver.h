@@ -175,6 +175,7 @@ class MatrixLinearSolver<Matrix,Vector,NoThreadManager> : public BaseMatrixLinea
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE3(MatrixLinearSolver,Matrix,Vector,NoThreadManager), SOFA_TEMPLATE2(BaseMatrixLinearSolver,Matrix,Vector));
 
+    typedef BaseMatrixLinearSolver<Matrix, Vector> Inherit;
     typedef NoThreadManager ThreadManager;
     typedef std::list<int> ListIndex;
     typedef typename Vector::Real Real;
