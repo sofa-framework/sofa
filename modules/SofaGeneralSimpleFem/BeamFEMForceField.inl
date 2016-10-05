@@ -68,6 +68,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
     , _radiusInner(initData(&_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
+    , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
@@ -90,6 +91,7 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _radius(initData(&_radius,(Real)radius,"radius","radius of the section"))
     , _radiusInner(initData(&_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
+    , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
     , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
@@ -631,23 +633,55 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Index b = (*it)[1];
 
 
-                Displacement local_depl;
-                defaulttype::Vec3d u;
+                //Displacement local_depl;
+                //defaulttype::Vec3d u;
                 defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
                 q.normalize();
                 Transformation R,Rt;
                 q.toMatrix(R);
                 Rt.transpose(R);
-                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;                
                 StiffnessMatrix K;
-                for (int x1=0; x1<12; x1+=3)
-                    for (int y1=0; y1<12; y1+=3)
-                    {
-                        defaulttype::Mat<3,3,Real> m;
-                        K0.getsub(x1,y1, m);
-                        m = R*m*Rt;
-                        K.setsub(x1,y1, m);
+                bool exploitSymmetry = _useSymmetricAssembly.getValue();
+
+                if (exploitSymmetry) {
+                    for (int x1=0; x1<12; x1+=3) {
+                        for (int y1=x1; y1<12; y1+=3)
+                        {
+                            defaulttype::Mat<3,3,Real> m;
+                            K0.getsub(x1,y1, m);
+                            m = R*m*Rt;
+
+                            for (int i=0; i<3; i++)
+                                for (int j=0; j<3; j++) {
+                                    K.elems[i+x1][j+y1] += m[i][j];
+                                    K.elems[j+y1][i+x1] += m[i][j];
+                                }
+                            if (x1 == y1)
+                                for (int i=0; i<3; i++)
+                                    for (int j=0; j<3; j++)
+                                        K.elems[i+x1][j+y1] *= double(0.5);
+
+                        }
                     }
+                } else  {
+                    for (int x1=0; x1<12; x1+=3) {
+                        for (int y1=0; y1<12; y1+=3)
+                        {
+                            defaulttype::Mat<3,3,Real> m;
+                            K0.getsub(x1,y1, m);
+                            m = R*m*Rt;
+                            K.setsub(x1,y1, m);
+                        }
+                    }
+                }
+
+                /*double sumDiffTrans=0.0;
+                for (size_t ii = 0; ii < 12; ii++)
+                    for (size_t jj = ii+1; jj < 12; jj++)
+                        sumDiffTrans += fabs(K.elems[ii][jj] - K.elems[jj][ii]);
+                std::cout << "[" << this->getName() << "]: difference in symmetry: " << sumDiffTrans << std::endl;*/
+
                 int index[12];
                 for (int x1=0; x1<6; x1++)
                     index[x1] = offset+a*6+x1;
