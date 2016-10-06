@@ -10,6 +10,7 @@ set(SOURCE_FILES
         AverageCoord_test.cpp
         ClusteringEngine_test.cpp
         ComplementaryROI_test.cpp
+        DifferenceEngine_test.cpp
         TransformEngine_test.cpp
 
         )
