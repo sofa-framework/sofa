@@ -62,13 +62,13 @@ public:
     ~ComplementaryROI();
 
     /// Update
-    void update();
+    virtual void update();
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str );
+    virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
 
     virtual void init();
