@@ -36,6 +36,7 @@
 #include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 
 namespace sofa
@@ -1813,11 +1814,6 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
-    if (_computeVonMisesStress.getValue() > 0) {
-        if (updateVonMisesStress)
-            computeVonMisesStress();
-    }
-
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -1851,9 +1847,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMisesPerElement;
     helper::ReadAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
     if (_computeVonMisesStress.getValue() > 0) {
-        if (updateVonMisesStress)
-            computeVonMisesStress();
-
         for (size_t i = 0; i < vM.size(); i++) {
             minVM = (vM[i] < minVM) ? vM[i] : minVM;
             maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
@@ -2428,13 +2421,18 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
             }
         }
     }
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event)) {
+        if (_computeVonMisesStress.getValue() > 0) {
+            if (updateVonMisesStress)
+                computeVonMisesStress();
+        }
+    }
 
 }
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 {
-
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
     const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();

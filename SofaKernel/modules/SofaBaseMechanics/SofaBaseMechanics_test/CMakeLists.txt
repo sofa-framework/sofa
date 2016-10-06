@@ -6,6 +6,7 @@ set(SOURCE_FILES
     UniformMass_test.cpp
     DiagonalMass_test.cpp
     MechanicalObject_test.cpp
+    UniformMass_test.cpp
     )
 
 

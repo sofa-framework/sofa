@@ -220,6 +220,8 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             if (!line.empty())
             {
                 *outfile << "SCALARS" << " " << names[i] << " ";
+                *outfile << line << std::endl;
+                *outfile << "LOOKUP_TABLE default" << std::endl;
             }
             else
             {
@@ -235,10 +237,13 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
                     sizeSeg = 3;
                 }
                 *outfile << "VECTORS" << " " << names[i] << " ";
+                *outfile << line << std::endl;
             }
-            *outfile << line << std::endl;
+
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
             *outfile << std::endl;
+
+
         }
     }
 }
@@ -379,9 +384,35 @@ void VTKExporter::writeVTKSimple()
     std::string filename = vtkFilename.getFullPath();
 
     std::ostringstream oss;
-    oss << nbFiles;
+    oss << "_" << nbFiles;
 
-    if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
+    if (filename.size() > 3) {
+        std::string ext;
+        std::string baseName;
+        if (filename.substr(filename.size()-4)==".vtu") {
+            ext = ".vtu";
+            baseName = filename.substr(0, filename.size()-4);
+        }
+
+        if (filename.substr(filename.size()-4)==".vtk") {
+            ext = ".vtk";
+            baseName = filename.substr(0, filename.size()-4);
+        }
+
+        /// no extension given => default "vtu"
+        if (ext == "") {
+            ext = ".vtu";
+            baseName = filename;
+        }
+
+        if (overwrite.getValue())
+            filename = baseName + ext;
+        else
+            filename = baseName + oss.str() + ext;
+
+    }
+
+    /*if ( filename.size() > 3 && filename.substr(filename.size()-4)==".vtu")
     {
         if (!overwrite.getValue())
             filename = filename.substr(0,filename.size()-4) + oss.str() + ".vtu";
@@ -391,7 +422,7 @@ void VTKExporter::writeVTKSimple()
         if (!overwrite.getValue())
             filename += oss.str();
         filename += ".vtu";
-    }
+    }*/
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )

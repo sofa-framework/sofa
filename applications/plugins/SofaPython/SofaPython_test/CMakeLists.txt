@@ -22,10 +22,11 @@ set(PYTHON_FILES
     python/test_PythonFactory.py
 )
 
-if(SOFA_USE_C++11)
+#if(SOFA_USE_C++11)
+# C++11 is now mandatory
     list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
     list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
-endif()
+#endif()
 
 find_package(SofaTest)
 find_package(SofaPython)

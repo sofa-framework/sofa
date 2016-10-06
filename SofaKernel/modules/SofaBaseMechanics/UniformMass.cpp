@@ -31,6 +31,14 @@
 #include <sofa/helper/system/Locale.h>
 #include <sstream>
 
+using std::string ;
+using std::ostringstream ;
+
+using sofa::component::mass::Vec3d ;
+using sofa::helper::system::DataRepository ;
+
+using namespace sofa::defaulttype;
+
 namespace sofa
 {
 
@@ -40,18 +48,12 @@ namespace component
 namespace mass
 {
 
-
-
-using namespace sofa::defaulttype;
-
-
 static void skipToEOL(FILE* f)
 {
     int	ch;
     while ((ch = fgetc(f)) != EOF && ch != '\n')
         ;
 }
-
 
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
@@ -74,23 +76,42 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 }
 
 
-
 #ifndef SOFA_FLOAT
+
+template<> SOFA_BASE_MECHANICS_API
+void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
+{
+    d_filenameMass.setDisplayed(true) ;
+    d_filenameMass.setReadOnly(false) ;
+    d_filenameMass.setValue("") ;
+}
 
 template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
-    if(mstate==NULL) return;
+
+    if(mstate==NULL){
+        msg_warning(this) << "Missing mechanical state. \n"
+                             "UniformMass need to be used with an object also having a MechanicalState. \n"
+                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
+                             " containing this <UniformMass/>";
+        return;
+    }
+
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+        loadRigidMass(d_filenameMass.getFullPath()) ;
+    }
+
 
     //If localRange is set, update indices
-    if (localRange.getValue()[0] >= 0
-        && localRange.getValue()[1] > 0
-        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (d_localRange.getValue()[0] >= 0
+        && d_localRange.getValue()[1] > 0
+        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
+        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -104,28 +125,28 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
     }
 
     //Update mass and totalMass
-    if (totalMass.getValue() > 0)
+    if (d_totalMass.getValue() > 0)
     {
-        MassType *m = mass.beginEdit();
-        *m = ( (Real) totalMass.getValue() / indices.size() );
-        mass.endEdit();
+        MassType *m = d_mass.beginEdit();
+        *m = ( (Real) d_totalMass.getValue() / indices.size() );
+        d_mass.endEdit();
     }
     else
-        totalMass.setValue ( indices.size() * (Real)mass.getValue() );    
+        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
 
 
-    mass.beginEdit()->recalc();
-    mass.endEdit();
+    d_mass.beginEdit()->recalc();
+    d_mass.endEdit();
 }
 
 
 template<> SOFA_BASE_MECHANICS_API
-void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
+void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(string filename)
 {
     if (!filename.empty())
     {
         Rigid3dMass m = getMass();
-        if (!helper::system::DataRepository.findFile(filename))
+        if (!DataRepository.findFile(filename))
             serr << "ERROR: cannot find file '" << filename << "'." << sendl;
         else
         {
@@ -139,7 +160,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
             {
                 {
                     skipToEOL(file);
-                    std::ostringstream cmdScanFormat;
+                    ostringstream cmdScanFormat;
                     cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
                     while (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF)
                     {
@@ -164,7 +185,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                             double mass;
                             if( fscanf(file, "%lf", &mass) > 0 )
                             {
-                                if (!this->mass.isSet())
+                                if (!this->d_mass.isSet())
                                     m.mass = mass;
                             }
                             else
@@ -234,7 +255,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         setMass(m);
     }
-    else if (totalMass.getValue()>0 && mstate!=NULL) mass.setValue((Real)totalMass.getValue() / mstate->getSize());
+    else if (d_totalMass.getValue()>0 && mstate!=NULL) d_mass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
 
 }
 
@@ -257,36 +278,36 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const VisualParams* vparams)
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.getValue().inertiaMatrix[0][0];
-    double m11 = mass.getValue().inertiaMatrix[1][1];
-    double m22 = mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_mass.getValue().inertiaMatrix[0][0];
+    double m11 = d_mass.getValue().inertiaMatrix[1][1];
+    double m22 = d_mass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-		if (getContext()->isSleeping())
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
-		else
-            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue() );
+        if (getContext()->isSleeping())
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
+        else
+            vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
     }
 
-    if (showInitialCenterOfGravity.getValue())
+    if (d_showInitialCenterOfGravity.getValue())
     {
         const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (unsigned int i=0; i<indices.size(); i++)
-            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*showAxisSize.getValue());
+            vparams->drawTool()->drawFrame(x0[indices[i]].getCenter(), x0[indices[i]].getOrientation(), len*d_showAxisSize.getValue());
     }
 
-    if(showCenterOfGravity.getValue())
+    if(d_showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
     }
 }
 
@@ -301,7 +322,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const VisualParams* vparams)
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     defaulttype::Vec3d len;
 
-    len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
+    len[0] = len[1] = sqrt(d_mass.getValue().inertiaMatrix);
     len[2] = 0;
 
     for (unsigned int i=0; i<indices.size(); i++)
@@ -309,7 +330,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const VisualParams* vparams)
         Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
-        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
 }
 
@@ -323,7 +344,7 @@ SReal UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const Mechanica
 
     Vec3d g ( getContext()->getGravity() );
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*mass.getValue().mass*x[indices[i]].getCenter();
+        e -= g*d_mass.getValue().mass*x[indices[i]].getCenter();
 
     return e;
 }
@@ -339,7 +360,7 @@ SReal UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Mechanica
 
     Vec2d g; g = getContext()->getGravity();
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*mass.getValue().mass*x[indices[i]].getCenter();
+        e -= g*d_mass.getValue().mass*x[indices[i]].getCenter();
 
     return e;
 }
@@ -400,7 +421,7 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
                                                      unsigned int& offset)
 {
     unsigned int derivDim = (unsigned)Deriv::size();
-    double m = mass.getValue();
+    double m = d_mass.getValue();
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
@@ -425,7 +446,7 @@ Vector6 UniformMass<Vec3dTypes, double>::getMomentum ( const MechanicalParams*,
     helper::ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
 
     defaulttype::Vec6d momentum;
 
@@ -450,17 +471,17 @@ Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const MechanicalPar
     ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    Real m = mass.getValue().mass;
-    const Rigid3dMass::Mat3x3& I = mass.getValue().inertiaMassMatrix;
+    Real m = d_mass.getValue().mass;
+    const Rigid3dMass::Mat3x3& I = d_mass.getValue().inertiaMassMatrix;
 
     defaulttype::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
     {
-        Rigid3dTypes::Vec3 linearMomentum = m*v[indices[i]].getLinear();
+        Vec3d linearMomentum = m*v[indices[i]].getLinear();
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
 
-        Rigid3dTypes::Vec3 angularMomentum = cross( x[indices[i]].getCenter(), linearMomentum ) + ( I * v[indices[i]].getAngular() );
+        Vec3d angularMomentum = cross( x[indices[i]].getCenter(), linearMomentum ) + ( I * v[indices[i]].getAngular() );
         for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
     }
 
@@ -471,19 +492,38 @@ Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const MechanicalPar
 
 #ifndef SOFA_DOUBLE
 template<> SOFA_BASE_MECHANICS_API
+void UniformMass<Rigid3fTypes, Rigid3fMass>::constructor_message()
+{
+    d_filenameMass.setDisplayed(true) ;
+    d_filenameMass.setReadOnly(false) ;
+    d_filenameMass.setValue("") ;
+}
+
+template<> SOFA_BASE_MECHANICS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
-    if(mstate==NULL) return;
+
+    if(mstate==NULL){
+        msg_warning(this) << "Missing mechanical state. \n"
+                             "UniformMass need to be used with an object also having a MechanicalState. \n"
+                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
+                             " containing this <UniformMass/>";
+        return;
+    }
+
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+        loadRigidMass(d_filenameMass.getFullPath()) ;
+    }
 
     //If localRange is set, update indices
-    if (localRange.getValue()[0] >= 0
-        && localRange.getValue()[1] > 0
-        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (d_localRange.getValue()[0] >= 0
+        && d_localRange.getValue()[1] > 0
+        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
+        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -497,27 +537,27 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
     }
 
     //Update mass and totalMass
-    if (totalMass.getValue() > 0)
+    if (d_totalMass.getValue() > 0)
     {
-        MassType *m = mass.beginEdit();
-        *m = ( (Real) totalMass.getValue() / indices.size() );
-        mass.endEdit();
+        MassType *m = d_mass.beginEdit();
+        *m = ( (Real) d_totalMass.getValue() / indices.size() );
+        d_mass.endEdit();
     }
     else
-        totalMass.setValue ( indices.size() * (Real)mass.getValue() );
+        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
 
-    mass.beginEdit()->recalc();
-    mass.endEdit();
+    d_mass.beginEdit()->recalc();
+    d_mass.endEdit();
 }
 
 template<> SOFA_BASE_MECHANICS_API
-void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
+void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(string filename)
 {
-    totalMass.setDisplayed(false);
+    d_totalMass.setDisplayed(false);
     if (!filename.empty())
     {
         Rigid3fMass m = getMass();
-        if (!sofa::helper::system::DataRepository.findFile(filename))
+        if (!DataRepository.findFile(filename))
         {
             serr << "ERROR: cannot find file '" << filename << "'." << sendl;
         }
@@ -536,7 +576,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-                    std::ostringstream cmdScanFormat;
+                    ostringstream cmdScanFormat;
                     cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
                     while (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF)
                     {
@@ -562,7 +602,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                             float mass;
                             if( fscanf(file, "%f", &mass) > 0 )
                             {
-                                if (!this->mass.isSet())
+                                if (!this->d_mass.isSet())
                                     m.mass = mass;
                             }
                             else
@@ -630,8 +670,8 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
 
         setMass(m);
     }
-    else if (totalMass.getValue()>0 ) mass.setValue((Real)totalMass.getValue());
-    totalMass.setValue(0.0f);
+    else if (d_totalMass.getValue()>0 ) d_mass.setValue((Real)d_totalMass.getValue());
+    d_totalMass.setValue(0.0f);
 
 }
 
@@ -655,25 +695,25 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw(const VisualParams* vparams)
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.getValue().inertiaMatrix[0][0];
-    double m11 = mass.getValue().inertiaMatrix[1][1];
-    double m22 = mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_mass.getValue().inertiaMatrix[0][0];
+    double m11 = d_mass.getValue().inertiaMatrix[1][1];
+    double m22 = d_mass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
-        vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(x[indices[i]].getCenter(), x[indices[i]].getOrientation(), len*d_showAxisSize.getValue() );
         gravityCenter += (x[indices[i]].getCenter());
     }
 
-    if(showCenterOfGravity.getValue())
+    if(d_showCenterOfGravity.getValue())
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        vparams->drawTool()->drawCross(gravityCenter, showAxisSize.getValue(), color);
+        vparams->drawTool()->drawCross(gravityCenter, d_showAxisSize.getValue(), color);
     }
 }
 
@@ -687,7 +727,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const VisualParams* vparams)
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     Vec3d len;
 
-    len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
+    len[0] = len[1] = sqrt(d_mass.getValue().inertiaMatrix);
     len[2] = 0;
 
     for (unsigned int i=0; i<indices.size(); i++)
@@ -695,7 +735,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const VisualParams* vparams)
         Quat orient(Vec3d(0,0,1), x[indices[i]].getOrientation());
         Vec3d center; center = x[indices[i]].getCenter();
 
-        vparams->drawTool()->drawFrame(center, orient, len*showAxisSize.getValue() );
+        vparams->drawTool()->drawFrame(center, orient, len*d_showAxisSize.getValue() );
     }
 }
 
@@ -709,7 +749,7 @@ SReal UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Mechanica
 
     Vec3d g ( getContext()->getGravity() );
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*mass.getValue().mass*x[indices[i]].getCenter();
+        e -= g*d_mass.getValue().mass*x[indices[i]].getCenter();
 
     return e;
 }
@@ -724,7 +764,7 @@ SReal UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Mechanica
 
     Vec2d g; g = getContext()->getGravity();
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*mass.getValue().mass*x[indices[i]].getCenter();
+        e -= g*d_mass.getValue().mass*x[indices[i]].getCenter();
 
     return e;
 }
@@ -766,7 +806,7 @@ void UniformMass<Vec6fTypes, float>::draw(const VisualParams* vparams)
         for(unsigned int j=0 ; j<3 ; j++)
         {
             vertices.push_back(p);
-            vertices.push_back(p + R.col(j)*showAxisSize.getValue());
+            vertices.push_back(p + R.col(j)*d_showAxisSize.getValue());
             colors.push_back(colorSet[j]);
             colors.push_back(colorSet[j]);;
         }
@@ -780,9 +820,9 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(BaseVector *resVect,
                                                     const VecDeriv* dx,
                                                     SReal mFact,
                                                     unsigned int& offset)
-{   
+{
     unsigned int derivDim = (unsigned)Deriv::size();
-    double m = mass.getValue();
+    double m = d_mass.getValue();
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
@@ -808,7 +848,7 @@ Vector6 UniformMass<Vec3fTypes, float>::getMomentum ( const MechanicalParams*,
     ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
     defaulttype::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
@@ -833,8 +873,8 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPar
     ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    Real m = mass.getValue().mass;
-    const Rigid3fMass::Mat3x3& I = mass.getValue().inertiaMassMatrix;
+    Real m = d_mass.getValue().mass;
+    const Rigid3fMass::Mat3x3& I = d_mass.getValue().inertiaMassMatrix;
 
     defaulttype::Vec6d momentum;
 
@@ -854,6 +894,12 @@ Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const MechanicalPar
 #endif
 
 
+//////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
+/// Registering the component
+/// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
+/// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
+/// 2-RegisterObject("description") + .add<> : Register the component
+/// 3-.add<>(true) : Set default template
 SOFA_DECL_CLASS(UniformMass)
 
 // Register in the Factory
@@ -876,6 +922,16 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Rigid2fTypes,Rigid2fMass> >()
 #endif
         ;
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////// TEMPLATE INITIALIZATION /////////////////////////////////////////////////
+/// Force template specialization for the most common sofa type.
+/// This goes with the extern template declaration in the .h. Declaring extern template
+/// avoid the code generation of the template for each compilation unit.
+/// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 
 #ifndef SOFA_FLOAT
 template class SOFA_BASE_MECHANICS_API UniformMass<Vec3dTypes,double>;
@@ -893,6 +949,8 @@ template class SOFA_BASE_MECHANICS_API UniformMass<Vec6fTypes,float>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Rigid3fTypes,Rigid3fMass>;
 template class SOFA_BASE_MECHANICS_API UniformMass<Rigid2fTypes,Rigid2fMass>;
 #endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace mass
 

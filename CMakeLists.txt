@@ -162,6 +162,7 @@ if(MSVC)
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
+    set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "sofa windows dependency pack path")
     if(SOFA_DEPENDENCY_PACK_DIR)
         set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
     else()
