@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseMechanics/UniformMass.h>
-
+#if 0
 #include <string>
 using std::string ;
 
@@ -335,3 +335,4 @@ TYPED_TEST(UniformMassTest, reinitTest) {
     //ASSERT_NO_THROW(this->reinitTest()) ;
 }
 
+#endif //
