@@ -40,7 +40,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 //#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
 
 #include "SceneLoaderPY.h"
@@ -366,15 +365,6 @@ extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-// sometimes nodes created in Python are not initialized ASAP
-// e.g. when created in callbacks initGraph or bwdInitGraph
-// this function forces the initialization of every nodes created in python that are not yet initialized
-extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyObject * /*args*/)
-{
-    sofa::simulation::ScriptEnvironment::initScriptNodes();
-    Py_RETURN_NONE;
-}
-
 
 static const std::string s_emitter = "PythonScript";
 
@@ -646,7 +636,6 @@ SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHOD(Sofa,updateVisual)
-SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
 SP_MODULE_METHOD(Sofa,msg_info)
 SP_MODULE_METHOD(Sofa,msg_deprecated)
 SP_MODULE_METHOD(Sofa,msg_warning)
