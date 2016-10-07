@@ -5,6 +5,8 @@
 
 using sofa::helper::Quater;
 
+double errorThreshold = 1e-6;
+
 TEST(QuaterTest, EulerAngles)
 {
     // Try to tranform a quat (q0) to euler angles and then back to quat (q1)
@@ -49,4 +51,149 @@ TEST(QuaterTest, EulerAngles)
     }
 
     
+}
+
+TEST(QuaterTest, QuaterdSet)
+{
+    Quater<double> quat;
+    quat.set(0.0, 0.0, 0.0, 1.0);
+
+    EXPECT_DOUBLE_EQ(0.0, quat[0]);
+    EXPECT_DOUBLE_EQ(0.0, quat[1]);
+    EXPECT_DOUBLE_EQ(0.0, quat[2]);
+    EXPECT_DOUBLE_EQ(1.0, quat[3]);
+}
+
+TEST(QuaterTest, QuaterdIdentity)
+{
+    Quater<double> id;
+    id.set(0.0, 0.0, 0.0, 1.0);
+
+    Quater<double> quat = Quater<double>::identity();
+    EXPECT_DOUBLE_EQ(id[0], quat[0]);
+    EXPECT_DOUBLE_EQ(id[1], quat[1]);
+    EXPECT_DOUBLE_EQ(id[2], quat[2]);
+    EXPECT_DOUBLE_EQ(id[3], quat[3]);
+}
+
+TEST(QuaterTest, QuaterdConstPtr)
+{
+    Quater<double> quat;
+    quat.set(0.0, 0.0, 0.0, 1.0);
+
+    const double* quatptr = quat.ptr();
+
+    EXPECT_DOUBLE_EQ(0.0, quatptr[0]);
+    EXPECT_DOUBLE_EQ(0.0, quatptr[1]);
+    EXPECT_DOUBLE_EQ(0.0, quatptr[2]);
+    EXPECT_DOUBLE_EQ(1.0, quatptr[3]);
+}
+
+TEST(QuaterTest, QuaterdPtr)
+{
+    Quater<double> quat;
+    quat.set(0.0, 0.0, 0.0, 1.0);
+
+    double* quatptr = quat.ptr();
+
+    EXPECT_DOUBLE_EQ(0.0, quatptr[0]);
+    EXPECT_DOUBLE_EQ(0.0, quatptr[1]);
+    EXPECT_DOUBLE_EQ(0.0, quatptr[2]);
+    EXPECT_DOUBLE_EQ(1.0, quatptr[3]);
+
+    quatptr[0] = 1.0;
+    EXPECT_NE(0.0, quatptr[0]);
+    EXPECT_DOUBLE_EQ(1.0, quatptr[0]);
+}
+
+TEST(QuaterTest, QuaterdNormalize)
+{
+    Quater<double> quat;
+    quat.set(1.0, 0.0, 1.0, 0.0);
+
+    quat.normalize();
+    
+    EXPECT_NEAR(0.707106781186548, quat[0], errorThreshold);
+    EXPECT_NEAR(0.0  ,  quat[1], errorThreshold);
+    EXPECT_NEAR(0.707106781186548, quat[2], errorThreshold);
+    EXPECT_NEAR(0.0   , quat[3], errorThreshold);
+}
+
+TEST(QuaterTest, QuaterdClear)
+{
+    Quater<double> quat;
+    quat.set(1.0, 2.0, 3.0, 4.0);
+
+    quat.clear();
+    EXPECT_NE(1.0, quat[0]);
+    EXPECT_NE(2.0, quat[1]);
+    EXPECT_NE(3.0, quat[2]);
+    EXPECT_NE(4.0, quat[3]);
+    EXPECT_NEAR(0.0, quat[0], errorThreshold);
+    EXPECT_NEAR(0.0, quat[1], errorThreshold);
+    EXPECT_NEAR(0.0, quat[2], errorThreshold);
+    EXPECT_NEAR(1.0, quat[3], errorThreshold);
+}
+
+TEST(QuaterTest, QuaterdFromFrame)
+{
+    Quater<double> quat;
+    //90 deg around Z from Identity
+    sofa::defaulttype::Vec3d xAxis(1.0, 0.0, 0.0);
+    sofa::defaulttype::Vec3d yAxis(0.0, 0.0, -1.0);
+    sofa::defaulttype::Vec3d zAxis(0.0, 1.0, 0.0);
+    quat.fromFrame(xAxis, yAxis, zAxis);
+
+    EXPECT_NEAR(-0.707106781186548, quat[0], errorThreshold);
+    EXPECT_NEAR(0.0, quat[1], errorThreshold);
+    EXPECT_NEAR(0.0, quat[2], errorThreshold);
+    EXPECT_NEAR(0.707106781186548, quat[3], errorThreshold);
+}
+
+TEST(QuaterTest, QuaterdFromMatrix)
+{
+    Quater<double> quat;
+    //30deg X, 30deg Y and 30deg Z
+    double mat[9]  = { 0.750000000000000, -0.216506350946110, 0.625000000000000,
+                       0.433012701892219, 0.875000000000000, -0.216506350946110,
+                      -0.500000000000000, 0.433012701892219, 0.750000000000000 };
+    quat.fromMatrix(sofa::defaulttype::Matrix3(mat));
+
+    EXPECT_NEAR(0.176776695296637, quat[0], errorThreshold);
+    EXPECT_NEAR(0.306186217847897, quat[1], errorThreshold);
+    EXPECT_NEAR(0.176776695296637, quat[2], errorThreshold);
+    EXPECT_NEAR(0.918558653543692, quat[3], errorThreshold);
+}
+
+TEST(QuaterTest, QuaterdToMatrix)
+{
+    Quater<double> quat;
+    //60deg X, 30deg Y and 60deg Z
+    quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
+    sofa::defaulttype::Mat3x3d mat;
+    quat.toMatrix(mat);
+    
+    //matlab results
+    EXPECT_NEAR(0.433012701892219,  mat[0][0], errorThreshold);
+    EXPECT_NEAR(-0.216506350946110,  mat[0][1], errorThreshold);
+    EXPECT_NEAR(0.875000000000000, mat[0][2], errorThreshold);
+    EXPECT_NEAR(0.750000000000000,  mat[1][0], errorThreshold);
+    EXPECT_NEAR(0.625000000000000,  mat[1][1], errorThreshold);
+    EXPECT_NEAR(-0.216506350946110,  mat[1][2], errorThreshold);
+    EXPECT_NEAR(-0.500000000000000,  mat[2][0], errorThreshold);
+    EXPECT_NEAR(0.750000000000000, mat[2][1], errorThreshold);
+    EXPECT_NEAR(0.433012701892219, mat[2][2], errorThreshold);
+}
+
+TEST(QuaterTest, QuaterdRotateVec)
+{
+    Quater<double> quat;
+    //30deg X, 15deg Y and 30deg Z
+    quat.set(0.215229667288440, 0.188196807757208, 0.215229667288440, 0.933774245836654);
+    sofa::defaulttype::Vec3d p(3, 6, 9);
+    sofa::defaulttype::Vec3d rp = quat.rotate(p);
+
+    EXPECT_NEAR(3.077954984157941, rp[0], errorThreshold);
+    EXPECT_NEAR(8.272072482340949, rp[1], errorThreshold);
+    EXPECT_NEAR(6.935344977893669, rp[2], errorThreshold);
 }
