@@ -1,6 +1,7 @@
 import Sofa
 
 import sys
+print 'sys.path dump:'
 for p in sys.path:
     print p
 #for m in sys.modules:
@@ -65,20 +66,25 @@ class Fontain(Sofa.PythonScriptController):
         node = self.createCube(self.rootNode,'particle'+str(self.particleCount),0,0,0,random.uniform(-10,10),random.uniform(10,30),random.uniform(-10,10),color)
         self.particleCount+=1
         # add the controller script
+        print('creating new PythonScriptController...')
         node.createObject('PythonScriptController', filename='fontain.py', classname='Particle')
+        print('new PythonScriptController created!')
+        return node
      
     # optionnally, script can create a graph...
     def createGraph(self,node):
         print 'Fontain.createGraph called from node '+node.name    
         for i in range(1,100):
-            self.spawnParticle()
+            newNode = self.spawnParticle()
+            #newNode.init()
         return 0
     
     def onScriptEvent(self,senderNode,eventName,data):
         print 'onScriptEvent eventName='+eventName+' data='+str(data)+' sender='+senderNode.name
         if eventName=='below_floor':
             self.rootNode.removeChild(senderNode)
-            self.spawnParticle()
+            newNode = self.spawnParticle()
+            #newNode.init()
 
 
 
