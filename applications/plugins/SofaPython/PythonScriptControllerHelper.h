@@ -43,21 +43,21 @@ namespace helper {
 
 namespace internal {
 
-PyObject* PythonScriptController_valueToPyObject(bool param);
-PyObject* PythonScriptController_valueToPyObject(int param);
-PyObject* PythonScriptController_valueToPyObject(unsigned int param);
-PyObject* PythonScriptController_valueToPyObject(double param);
-PyObject* PythonScriptController_valueToPyObject(std::string const& param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(bool param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(int param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(unsigned int param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(double param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(std::string const& param);
 
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
-void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
+SOFA_SOFAPYTHON_API void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
