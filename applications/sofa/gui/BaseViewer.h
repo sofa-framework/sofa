@@ -25,6 +25,8 @@
 #ifndef SOFA_GUI_BASEVIEWER_H
 #define SOFA_GUI_BASEVIEWER_H
 
+#include "sofa/config.h"
+
 #include "SofaGUI.h"
 
 #include "ColourPickingVisitor.h"

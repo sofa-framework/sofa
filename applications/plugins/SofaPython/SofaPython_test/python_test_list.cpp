@@ -54,6 +54,7 @@ static struct SceneTests : public Python_test_list
         // TODO create more test with several (random?) arguments
 
         addTest( "dataVecResize.py", scenePath );
+        addTest( "automaticNodeInitialization.py", scenePath );
 
         // add python scene tests here
     }

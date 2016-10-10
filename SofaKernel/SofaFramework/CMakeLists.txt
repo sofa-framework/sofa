@@ -218,11 +218,6 @@ if(MSVC)
     endif()
 endif()
 
-# Eigen
-if(MSVC)
-    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
-endif()
-
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
 
 ## CMake package configurations files

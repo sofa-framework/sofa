@@ -104,7 +104,8 @@ void OBJExporter::writeOBJ()
     outfile.close();
     mtlfile.close();
 
-    sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
+    if( f_printLog.getValue() )
+        sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)

@@ -1,14 +1,15 @@
 #ifndef DEPTHIMAGETOOLBOXACTION_H
 #define DEPTHIMAGETOOLBOXACTION_H
 
+#include <image/image_gui/config.h>
+
 #include <QFormLayout>
 #include <QLineEdit>
+
 
 #include "../labelimagetoolboxaction.h"
 #include "../labelgrid/labelgridimagetoolbox.h"
 //#include "depthimagetoolbox.h"
-
-#include <image/image_gui/config.h>
 
 namespace sofa
 {
