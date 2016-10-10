@@ -831,7 +831,7 @@ void RigidMapping<TIn, TOut>::parse(core::objectmodel::BaseObjectDescription* ar
     const char* repartitionChar = arg->getAttribute("repartition");
     if( repartitionChar )
     {
-        serr<<"parse: You are using a deprecated Data 'repartition', please use the new structure data rigidIndexPerPoint"<<sendl;
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data 'repartition', please use the new structure data rigidIndexPerPoint"<<sendl;
 
         helper::vector< unsigned int > repartition;
         std::istringstream ss( repartitionChar );

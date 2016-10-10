@@ -8,6 +8,7 @@ set(SOURCE_FILES
     python_test_list.cpp
     memory.cpp
     PythonFactory_test.cpp
+    PythonScriptControllerHelper_test.cpp
 )
 
 set(PYTHON_FILES
@@ -20,13 +21,9 @@ set(PYTHON_FILES
     python/test_units.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
+    python/test_PythonScriptControllerHelper.py
 )
 
-#if(SOFA_USE_C++11)
-# C++11 is now mandatory
-    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
-    list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
-#endif()
 
 find_package(SofaTest)
 find_package(SofaPython)

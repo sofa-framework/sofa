@@ -28,7 +28,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/Locale.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sstream>
 #include <istream>
 
 namespace sofa
