@@ -127,6 +127,7 @@ public:
 
     /// Initialize the components
     void init(const sofa::core::ExecParams* params);
+    bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
     /// Do one step forward in time
@@ -489,6 +490,7 @@ public:
 
 protected:
     bool debug_;
+    bool initialized;
 
     virtual void doAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void doRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);

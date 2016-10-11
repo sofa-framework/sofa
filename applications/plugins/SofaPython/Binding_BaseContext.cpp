@@ -129,7 +129,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         PyErr_BadArgument();
         Py_RETURN_NONE;
     }
-/*
+
     if( warning )
     {
         Node *node = static_cast<Node*>(context);
@@ -140,7 +140,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
                 SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
         }
     }
-*/
+
     return sofa::PythonFactory::toPython(obj.get());
 }
 extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)

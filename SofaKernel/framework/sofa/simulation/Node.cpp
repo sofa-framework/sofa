@@ -104,6 +104,7 @@ Node::Node(const std::string& name)
     , unsorted(initLink("unsorted", "The remaining objects attached to this node"))
 
     , debug_(false)
+    , initialized(false)
     , depend(initData(&depend,"depend","Dependencies between the nodes.\nname 1 name 2 name3 name4 means that name1 must be initialized before name2 and name3 before name4"))
 {
     _context = this;
@@ -775,6 +776,7 @@ void Node::bwdInit()
 
 void Node::initialize()
 {
+    initialized = true;  // flag telling is the node is initialized
     //cerr<<"Node::initialize()"<<endl;
 
     initVisualContext();

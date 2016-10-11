@@ -251,8 +251,8 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
     }
     node->addObject(object);
 
-//    if (warning && node->isInitialized())
-//        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
+    if (warning && node->isInitialized())
+        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
 
     Py_RETURN_NONE;
 }
@@ -418,6 +418,12 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_isInitialized(PyObject *self, PyObject * /*args*/)
+{
+    Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+    return PyBool_FromLong( node->isInitialized() );
+}
+
 extern "C" PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -452,6 +458,7 @@ SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
 SP_CLASS_METHOD(Node,getMechanicalState)
 SP_CLASS_METHOD(Node,getMechanicalMapping)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
+SP_CLASS_METHOD(Node,isInitialized)
 SP_CLASS_METHOD(Node,printGraph)
 SP_CLASS_METHODS_END
 
