@@ -26,7 +26,7 @@
 #ifndef IMAGE_IMAGETYPES_H
 #define IMAGE_IMAGETYPES_H
 
-#include <Image/config.h>
+#include <image/config.h>
 
 #if  defined (SOFA_HAVE_FFMPEG)  || defined (SOFA_EXTLIBS_FFMPEG)
 #define cimg_use_ffmpeg
