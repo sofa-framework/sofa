@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseMechanics/UniformMass.h>
-#if 0
+
 #include <string>
 using std::string ;
 
@@ -75,7 +75,7 @@ struct TemplateTypes
 };
 
 template <typename TTemplateTypes>
-struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
+struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes::Real>
                                 //
 {
     typedef UniformMass<typename TTemplateTypes::DataTypes,
@@ -286,7 +286,9 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes>
 
 };
 
-typedef Types< TemplateTypes<Vec3dTypes, double> > DataTypes;
+typedef Types< 
+    TemplateTypes<Vec3Types, Vec3Types::Real>
+> DataTypes;
 
 TYPED_TEST_CASE(UniformMassTest, DataTypes);
 
@@ -335,4 +337,3 @@ TYPED_TEST(UniformMassTest, reinitTest) {
     //ASSERT_NO_THROW(this->reinitTest()) ;
 }
 
-#endif //
