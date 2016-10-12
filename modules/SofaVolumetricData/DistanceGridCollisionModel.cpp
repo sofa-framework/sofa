@@ -31,9 +31,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-//#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
-//#endif
 
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>

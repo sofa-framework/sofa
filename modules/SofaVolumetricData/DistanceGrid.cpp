@@ -28,9 +28,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 //#include <sofa/core/topology/BaseMeshTopology.h>
-//#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
-//#endif
 
 #include <fstream>
 #include <sstream>
@@ -148,7 +146,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
     {
         return loadVTKFile(filename, scale, sampling);
     }
-//#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -213,7 +210,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         //std::cout<< "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-//#endif
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
