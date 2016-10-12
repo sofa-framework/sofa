@@ -114,6 +114,7 @@ case $CI_JOB in
     *options*)
         append "-DSOFA_BUILD_METIS=ON"
         append "-DSOFA_BUILD_ARTRACK=ON"
+        append "-DSOFA_BUILD_MINIFLOWVR=ON"
 
         if [[ -n "$CI_QT_PATH" ]]; then
             append "-DQT_ROOT=$CI_QT_PATH"
