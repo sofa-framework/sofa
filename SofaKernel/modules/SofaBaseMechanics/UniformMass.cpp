@@ -29,6 +29,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
+using sofa::helper::system::TemporaryLocale ;
+
 #include <sstream>
 
 using std::string ;
@@ -100,8 +102,8 @@ void UniformMass<DataTypes, MassType>::reinitDefaultImpl()
 
     if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
         msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
-                             "Switching back to the default value, mass = 1.0 and totalmass = mass * num_position. \n"
-                             "To remove this warning you need to use positive values in totalmass and mass data field";
+                             "Thus we will use the default value  that are mass = 1.0 and totalmass = mass * num_position. \n"
+                             "To remove this warning you need to use positive values in 'totalmass' and 'mass' data field";
 
         d_totalMass.setValue(0.0) ;
         d_mass.setValue(1.0) ;
@@ -139,19 +141,21 @@ template <class RigidTypes, class MassType>
 template <class T>
 void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& filename)
 {
+    TemporaryLocale locale(LC_ALL, "C") ;
+
     if (!filename.empty())
     {
         MassType m = getMass();
         string unconstingFilenameQuirck = filename ;
         if (!DataRepository.findFile(unconstingFilenameQuirck))
-            serr << "ERROR: cannot find file '" << filename << "'." << sendl;
+            msg_error(this) << "cannot find file '" << filename << "'.\n"  ;
         else
         {
             char	cmd[64];
             FILE*	file;
             if ((file = fopen(filename.c_str(), "r")) == NULL)
             {
-                serr << "ERROR: cannot read file '" << filename << "'." << sendl;
+                msg_error(this) << "cannot open file '" << filename << "'.\n" ;
             }
             else
             {
@@ -163,21 +167,24 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
-                            for (int i = 0; i < 3; i++)
+                            for (int i = 0; i < 3; i++){
                                 for (int j = 0; j < 3; j++){
                                     double tmp = 0;
-                                    if( fscanf(file, "%lf", &(tmp)) < 1 )
-                                        serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                    if( fscanf(file, "%lf", &(tmp)) < 1 ){
+                                        msg_error(this) << "error while reading file '" << filename << "'.\n";
+                                    }
                                     m.inertiaMatrix[i][j]=tmp;
                                 }
+                            }
                         }
                         else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
                         {
                             Vec3d center;
                             for (int i = 0; i < 3; ++i)
                             {
-                                if( fscanf(file, "%lf", &(center[i])) < 1 )
-                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                if( fscanf(file, "%lf", &(center[i])) < 1 ){
+                                    msg_error(this) << "error reading file '" << filename << "'.\n";
+                                }
                             }
                         }
                         else if (!strcmp(cmd,"mass"))
@@ -189,13 +196,15 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                                     m.mass = mass;
                             }
                             else
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_error(this) << "error reading file '" << filename <<  "'."
+                                                "Unable to decode command 'mass'        \n";
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
                             double tmp;
                             if( fscanf(file, "%lf", &(tmp)) < 1 )
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_error(this) << "error reading file '" << filename << "'.\n"
+                                                   "Unable to decode command 'volm'.\n";
                             m.volume = tmp ;
                         }
                         else if (!strcmp(cmd,"frme"))
@@ -204,7 +213,8 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                             for (int i = 0; i < 4; ++i)
                             {
                                 if( fscanf(file, "%lf", &(orient[i])) < 1 )
-                                    serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                    msg_error(this) << "error reading file '" << filename << "'.\n"
+                                                       "Unable to decode command 'frme' at index " << i << "\n";
                             }
                             orient.normalize();
                         }
@@ -212,33 +222,38 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                         {
                             Vec3d gravity;
                             if( fscanf(file, "%lf %lf %lf\n", &(gravity.x()), &(gravity.y()), &(gravity.z())) < 3 )
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_warning(this) << "error reading file '" << filename << "'.\n"
+                                                  " Unable to decode command 'gravity'. \n";
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
                             double viscosity = 0;
                             if( fscanf(file, "%lf", &viscosity) < 1 )
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
-
+                                msg_warning(this) << "error reading file '" << filename << "'.\n"
+                                                     " Unable to decode command 'visc'. \n";
                         }
                         else if (!strcmp(cmd,"stck"))
                         {
                             double tmp;
                             if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_stick));
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_warning(this) << "error reading file '" << filename << "'.\n"
+                                                  << "Unable to decode command 'stck'. \n";
+
                         }
                         else if (!strcmp(cmd,"step"))
                         {
                             double tmp;
                             if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_dt));
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_warning(this) << "error reading file '" << filename << "'.\n"
+                                                  << "Unable to decode command 'step'. \n";
                         }
                         else if (!strcmp(cmd,"prec"))
                         {
                             double tmp;
                             if( fscanf(file, "%lf", &tmp) < 1 ) //&(MSparams.default_prec));
                             {
-                                serr << SOFA_CLASS_METHOD << "error reading file '" << filename << "'." << sendl;
+                                msg_warning(this) << "error reading file '" << filename << "'.\n"
+                                                  << "Unable to decode command 'prec'. \n" ;
                             }
                         }
                         else if (cmd[0] == '#')	// it's a comment
@@ -247,7 +262,8 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                         }
                         else		// it's an unknown keyword
                         {
-                            printf("%s: Unknown RigidMass keyword: %s\n", filename.c_str(), cmd);
+                            msg_warning(this) << "error reading file '" << filename << "'. \n"
+                                              << "Unable to decode an unknow command '"<< cmd << "'. \n" ;
                             skipToEOL(file);
                         }
                     }
