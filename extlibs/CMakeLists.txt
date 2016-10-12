@@ -12,7 +12,6 @@ add_subdirectory(csparse)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7 eigen)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/newmat newmat)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/tinyxml tinyxml)
-add_subdirectory(CImg)
 
 
 ## Optional ones
@@ -25,6 +24,11 @@ option(SOFA_BUILD_MINIFLOWVR "Build the miniFlowVR library distributed in the ex
 if (SOFA_BUILD_MINIFLOWVR)
     add_subdirectory(miniFlowVR)
     list(APPEND EXTLIBS_TARGETS miniFlowVR)
+endif()
+
+option(SOFA_BUILD_CIMG "Build the Cimg library distributed in the extlibs/ directory. Necessary for Image plugin" OFF)
+if(SOFA_BUILD_CIMG)
+    add_subdirectory(CImg)
 endif()
 
 option(SOFA_BUILD_ARTRACK
