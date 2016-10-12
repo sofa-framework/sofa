@@ -128,6 +128,76 @@ void DiagonalMass<RigidTypes, RigidMass>::drawRigid2dImpl(const core::visual::Vi
     }
 }
 
+template <class RigidTypes, class RigidMass>
+template <class T>
+void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
+{
+    _topology = this->getContext()->getMeshTopology();
+    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
+    Inherited::init();
+    initTopologyHandlers();
+
+    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    {
+        MassVector &masses= *f_mass.beginEdit();
+        size_t i = masses.size()-1;
+        size_t n = (size_t)this->mstate->getSize();
+        while (masses.size() < n)
+            masses.push_back(masses[i]);
+        f_mass.endEdit();
+    }
+}
+
+template <class RigidTypes, class RigidMass>
+template <class T>
+Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const core::MechanicalParams*,
+                                                                    const DataVecCoord& vx,
+                                                                    const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    defaulttype::Vec6d momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Rigid3dTypes::Vec3 linearMomentum = v[i].getLinear() * masses[i].mass;
+        for( int j=0 ; j<3 ; ++j ) momentum[j] += linearMomentum[j];
+
+        Rigid3dTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( masses[i].inertiaMassMatrix * v[i].getAngular() );
+        for( int j=0 ; j<3 ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
+template <class Vec3Types, class Vec3Mass>
+template <class T>
+Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const core::MechanicalParams*,
+                                                                const DataVecCoord& vx,
+                                                                const DataVecDeriv& vv ) const
+{
+    helper::ReadAccessor<DataVecDeriv> v = vv;
+    helper::ReadAccessor<DataVecCoord> x = vx;
+
+    const MassVector &masses = f_mass.getValue();
+
+    Vector6 momentum;
+
+    for ( unsigned int i=0 ; i<v.size() ; i++ )
+    {
+        Deriv linearMomentum = v[i] * masses[i];
+        for( int j=0 ; j<3 ; ++j ) momentum[j] += linearMomentum[j];
+
+        Deriv angularMomentum = cross( x[i], linearMomentum );
+        for( int j=0 ; j<3 ; ++j ) momentum[3+j] += angularMomentum[j];
+    }
+
+    return momentum;
+}
+
 
 #ifdef SOFA_WITH_DOUBLE
 template <>
@@ -165,39 +235,13 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::reinit()
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
-    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
-    Inherited::init();
-    initTopologyHandlers();
-
-    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
-    {
-        MassVector &masses= *f_mass.beginEdit();
-        size_t i = masses.size()-1;
-        size_t n = (size_t)this->mstate->getSize();
-        while (masses.size() < n)
-            masses.push_back(masses[i]);
-        f_mass.endEdit();
-    }
+    initRigidImpl<Rigid3dTypes>() ;
 }
 
 template <>
 void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
-    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
-    Inherited::init();
-    initTopologyHandlers();
-
-    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
-    {
-        MassVector &masses= *f_mass.beginEdit();
-        size_t i = masses.size()-1;
-        size_t n = (size_t)this->mstate->getSize();
-        while (masses.size() < n)
-            masses.push_back(masses[i]);
-        f_mass.endEdit();
-    }
+    initRigidImpl<Rigid2dTypes>() ;
 }
 
 template <>
@@ -208,51 +252,23 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPar
 
 
 template <>
-Vector6 DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams* mparams,
+                                                        const DataVecCoord& vx,
+                                                        const DataVecDeriv& vv ) const
 {
-    helper::ReadAccessor<DataVecDeriv> v = vv;
-    helper::ReadAccessor<DataVecCoord> x = vx;
-
-    const MassVector &masses = f_mass.getValue();
-
-    defaulttype::Vec6d momentum;
-
-    for ( unsigned int i=0 ; i<v.size() ; i++ )
-    {
-        Deriv linearMomentum = v[i] * masses[i];
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
-
-        Deriv angularMomentum = cross( x[i], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
-    }
-
-    return momentum;
+    return getMomentumVec3Impl<Vec3dTypes>(mparams, vx, vv) ;
 }
 
 template <>
-Vector6 DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams* mparams,
+                                                              const DataVecCoord& vx,
+                                                              const DataVecDeriv& vv ) const
 {
-    helper::ReadAccessor<DataVecDeriv> v = vv;
-    helper::ReadAccessor<DataVecCoord> x = vx;
-
-    const MassVector &masses = f_mass.getValue();
-
-    defaulttype::Vec6d momentum;
-
-    for ( unsigned int i=0 ; i<v.size() ; i++ )
-    {
-        Rigid3dTypes::Vec3 linearMomentum = v[i].getLinear() * masses[i].mass;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
-
-        Rigid3dTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( masses[i].inertiaMassMatrix * v[i].getAngular() );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
-    }
-
-    return momentum;
+    return getMomentumRigid3Impl<Rigid3dTypes>(mparams, vx, vv) ;
 }
 
-
 #endif
+
 
 #ifdef SOFA_WITH_FLOAT
 template <>
@@ -287,18 +303,23 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::reinit()
     Inherited::init();
 }
 
+// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
+// WARNING WARNING It is needed to clarify if this is a bug or a desired
+// implementation.
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
 {
     Inherited::init();
 }
 
+// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
+// WARNING WARNING It is needed to clarify if this is a bug or a desired
+// implementation.
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
 {
     Inherited::init();
 }
-
 
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualParams* vparams)
@@ -306,49 +327,20 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPar
     drawRigid2dImpl<Rigid2fTypes>(vparams) ;
 }
 
-
 template <>
-Vector6 DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams* mparams,
+                                                       const DataVecCoord& vx,
+                                                       const DataVecDeriv& vv ) const
 {
-    helper::ReadAccessor<DataVecDeriv> v = vv;
-    helper::ReadAccessor<DataVecCoord> x = vx;
-
-    const MassVector &masses = f_mass.getValue();
-
-    Vector6 momentum;
-
-    for ( unsigned int i=0 ; i<v.size() ; i++ )
-    {
-        Deriv linearMomentum = v[i] * masses[i];
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
-
-        Deriv angularMomentum = cross( x[i], linearMomentum );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
-    }
-
-    return momentum;
+    return getMomentumVec3Impl<Vec3fTypes>(mparams, vx, vv) ;
 }
 
 template <>
-Vector6 DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams* mparams,
+                                                              const DataVecCoord& vx,
+                                                              const DataVecDeriv& vv ) const
 {
-    helper::ReadAccessor<DataVecDeriv> v = vv;
-    helper::ReadAccessor<DataVecCoord> x = vx;
-
-    const MassVector &masses = f_mass.getValue();
-
-    Vector6 momentum;
-
-    for ( unsigned int i=0 ; i<v.size() ; i++ )
-    {
-        Rigid3fTypes::Vec3 linearMomentum = v[i].getLinear() * masses[i].mass;
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[j] += linearMomentum[j];
-
-        Rigid3fTypes::Vec3 angularMomentum = cross( x[i].getCenter(), linearMomentum ) + ( masses[i].inertiaMassMatrix * v[i].getAngular() );
-        for( int j=0 ; j<DataTypes::spatial_dimensions ; ++j ) momentum[3+j] += angularMomentum[j];
-    }
-
-    return momentum;
+    return getMomentumRigid3Impl<Rigid3fTypes>(mparams, vx, vv) ;
 }
 
 

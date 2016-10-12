@@ -302,6 +302,18 @@ private:
     template <class T>
     void drawRigid2dImpl(const core::visual::VisualParams* vparams) ;
 
+    template <class T>
+    void initRigidImpl() ;
+
+    template <class T>
+    defaulttype::Vector6 getMomentumRigid3Impl ( const core::MechanicalParams*,
+                                    const DataVecCoord& vx,
+                                    const DataVecDeriv& vv ) const ;
+
+    template <class T>
+    defaulttype::Vector6 getMomentumVec3Impl ( const core::MechanicalParams*,
+                                    const DataVecCoord& vx,
+                                    const DataVecDeriv& vv ) const ;
 };
 
 
