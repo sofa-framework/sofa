@@ -64,27 +64,6 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
     return m;
 }
 
-/*
-Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
-{
-    double cosX = cos(thetaX);
-    double sinX = sin(thetaX);
-    double cosY = cos(thetaY);
-    double sinY = sin(thetaY);
-    double cosZ = cos(thetaZ);
-    double sinZ = sin(thetaZ);
-    return
-        Mat3x3d(Vec3d( cosZ, -sinZ,     0),
-                Vec3d( sinZ,  cosZ,     0),
-                Vec3d(    0,     0,     1)) *
-        Mat3x3d(Vec3d( cosY,     0,  sinY),
-                Vec3d(    0,     1,     0),
-                Vec3d(-sinY,     0,  cosY)) *
-        Mat3x3d(Vec3d(    1,     0,     0),
-                Vec3d(    0,  cosX, -sinX),
-                Vec3d(    0,  sinX,  cosX)) ;
-}*/
-
 template <class DataTypes, class MassType>
 template<class T>
 void UniformMass<DataTypes, MassType>::reinitDefaultImpl()
