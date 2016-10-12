@@ -194,14 +194,21 @@ public:
     core::objectmodel::DataFileName fileMass;
 
 protected:
-    //VecMass masses;
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using core::behavior::ForceField<DataTypes>::mstate ;
+    using core::objectmodel::BaseObject::getContext;
+    ////////////////////////////////////////////////////////////////////////////
+
 
     class Loader;
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
 
 public:
-
     sofa::core::topology::BaseMeshTopology* _topology;
 
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
@@ -283,6 +290,18 @@ public:
     {
         return DataTypes::Name();
     }
+
+private:
+    template <class T>
+    SReal getPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
+                                       const DataVecCoord& x) const ;
+
+    template <class T>
+    void drawRigid3dImpl(const core::visual::VisualParams* vparams) ;
+
+    template <class T>
+    void drawRigid2dImpl(const core::visual::VisualParams* vparams) ;
+
 };
 
 
