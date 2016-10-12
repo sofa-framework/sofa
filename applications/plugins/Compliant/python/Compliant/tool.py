@@ -49,12 +49,12 @@ def load_dll():
 
     import platform
     system = platform.system()
-    
+
     if system == 'Windows':
         ext = 'dll'
     elif system == 'Darwin':
         ext = 'dylib'
-        
+
     dll_name = '{0}Compliant.{1}'.format(prefix, ext)
 
     global dll
@@ -64,24 +64,32 @@ def load_dll():
         # try debug
         dll_name = '{0}Compliant_d.{1}'.format(prefix, ext)
         dll = ctypes.CDLL(dll_name)
-        
-    dll.get_data_pointer.restype = DataPointer
-    dll.get_data_pointer.argtypes = (ctypes.c_void_p, )
+
+    # dll.get_data_pointer.restype = DataPointer
+    # dll.get_data_pointer.argtypes = (ctypes.c_void_p, )
 
     global py_callback_type
     py_callback_type = ctypes.CFUNCTYPE(None, ctypes.c_int)
 
     dll.set_py_callback.restype = None
     dll.set_py_callback.argtypes = (ctypes.c_void_p, py_callback_type)
-    
-    
-shapes = {
-    'vector<double>': (ctypes.c_double, 1),    
-    'vector<Vec1d>': (ctypes.c_double, 1),
-    'vector<Vec3d>': (ctypes.c_double, 3),
-    'vector<Vec6d>': (ctypes.c_double, 6),
-    'vector<Rigid3dTypes::Coord>': (ctypes.c_double, 7),
-    'vector<Rigid3dTypes::Deriv>': (ctypes.c_double, 6),    
+
+
+
+# TODO add more basic types
+# check that type sizes are equivalent with c++ sizes
+ctypeFromName = {
+    'double': ctypes.c_double,
+    'float': ctypes.c_float,
+    'bool': ctypes.c_bool,
+    'char': ctypes.c_char,
+    'uchar': ctypes.c_ubyte,
+    'short': ctypes.c_short,
+    'ushort': ctypes.c_ushort,
+    'int': ctypes.c_int,
+    'uint': ctypes.c_uint,
+    'long': ctypes.c_long,
+    'ulong': ctypes.c_ulong,
 }
 
 
@@ -90,25 +98,19 @@ from numpy import ctypeslib
 
 def as_numpy( data ):
     '''maps data content as a numpy array'''
-    try:
-        dll
-    except NameError:
-        load_dll()
 
-    # TODO check type(data)
-        
-    ts = data.getValueTypeString()
-    shape = shapes.get(ts, None)
-    if not shape: raise Exception("can't map data of type " + ts)
-    
-    t, cols = shape
-    
-    sp = sofa_pointer(data)
-    d = dll.get_data_pointer(sp)
-    rows = d.size
-    
-    array = ctypes.cast( ctypes.c_void_p(d.ptr), ctypes.POINTER(t))
-    return ctypeslib.as_array(array, (rows, cols))
+    ptr, shape, typename = data.getValueVoidPtr()
+
+    type = ctypeFromName.get(typename,None)
+    if not type: raise Exception("can't map data of type " + typename)
+
+    array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
+    return ctypeslib.as_array(array, shape )
+
+
+
+
+
 
 # convenience
 def numpy_data(obj, name):

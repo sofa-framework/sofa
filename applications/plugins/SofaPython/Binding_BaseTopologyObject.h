@@ -22,15 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonFactory.h"
+#ifndef BINDING_BASETOPOLOGYOBJECT_H
+#define BINDING_BASETOPOLOGYOBJECT_H
 
+#include "PythonMacros.h"
+#include <sofa/core/topology/BaseTopologyObject.h>
 
-namespace sofa
-{
+SP_DECLARE_CLASS_TYPE(BaseTopologyObject)
 
-    PyObject * PythonFactory::s_sofaPythonModule = NULL;
-
-    PythonFactory::PythonBoundTypes PythonFactory::s_boundTypes[PythonFactory::NB_LISTS];
-
-
-} // namespace sofa
+#endif // BINDING_BASETOPOLOGYOBJECT_H

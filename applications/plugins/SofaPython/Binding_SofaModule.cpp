@@ -45,6 +45,8 @@
 
 #include "SceneLoaderPY.h"
 
+#include <sofa/helper/system/PluginManager.h>
+
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -565,6 +567,46 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
 
 
 
+extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
+{
+    char *pluginName;
+    if (!PyArg_ParseTuple(args, "s",&pluginName))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    using sofa::helper::system::PluginManager;
+
+    PluginManager& pluginManager = PluginManager::getInstance();
+
+    const std::string path = pluginManager.findPlugin(pluginName);
+    if (path != "")
+    {
+        if (!PluginManager::getInstance().pluginIsLoaded(path))
+        {
+            if (PluginManager::getInstance().loadPlugin(path))
+            {
+                const std::string guiPath = pluginManager.findPlugin( std::string( pluginName ) + "_" + PluginManager::s_gui_postfix);
+                if (guiPath != "")
+                {
+                    PluginManager::getInstance().loadPlugin(guiPath);
+                }
+            }
+        }
+    }
+    else
+    {
+        SP_MESSAGE_WARNING( "Sofa_loadPlugin: cannot find plugin: " << pluginName );
+        PyErr_BadArgument();
+    }
+
+    Py_RETURN_NONE;
+}
+
+
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -589,6 +631,7 @@ SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
+SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHODS_END
 
 

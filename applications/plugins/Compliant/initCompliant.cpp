@@ -26,6 +26,13 @@
 #include "misc/CompliantSolverMerger.h"
 #include "contact/CompliantContact.h"
 
+#include <SofaPython/PythonCommon.h>
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonFactory.h>
+#include "misc/python.h"
+extern PyMethodDef SofaCompliantModuleMethods[]; // functions of the SofaCompliant python module
+
+
 namespace sofa
 {
 
@@ -55,6 +62,13 @@ void initExternalModule()
 
         // previous Eigen versions have a critical bug (v.noalias()+=w does not work in every situations)
         BOOST_STATIC_ASSERT( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5 );
+
+        // adding SofaCompliant python module
+        if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
+        {
+            static PyObject *s_sofaCompliantPythonModule = SP_INIT_MODULE(SofaCompliant);
+            (void)s_sofaCompliantPythonModule;
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 #include "python.h"
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <Compliant/mapping/PythonMultiMapping.h>
 
 python::map_type python::_argtypes;
 python::map_type python::_restype;
@@ -12,7 +11,9 @@ typedef sofa::core::objectmodel::BaseData* base_data_ptr;
 typedef sofa::core::objectmodel::Base* base_ptr;
 typedef sofa::core::BaseMapping* base_mapping_ptr;
 
-typedef sofa::component::mapping::with_py_callback::py_callback_type py_callback_type;
+
+typedef with_py_callback::py_callback_type py_callback_type;
+
 
 struct data_pointer {
     void* ptr;
@@ -178,7 +179,6 @@ extern "C" {
 
     void set_py_callback(base_ptr base, py_callback_type py_callback ) {
 
-        using namespace sofa::component::mapping;
         using namespace sofa::defaulttype;        
 
         with_py_callback* cast = dynamic_cast< with_py_callback* >( base );
@@ -194,4 +194,101 @@ extern "C" {
 
 
 
+with_py_callback::with_py_callback() : py_callback(0) { }
+with_py_callback::~with_py_callback() { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////
+//////////////// CREATING A NEW PYTHON MODULE: SofaCompliant ////
+/////////////////////////////////////////////////////////////////
+
+
+
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/Binding_SofaModule.h>
+
+
+
+#include <sofa/simulation/Simulation.h>
+#include "../assembly/AssemblyVisitor.h"
+#include "../assembly/AssembledSystem.h"
+
+/// args are node + factors m,b,k to return the linear combinaison mM+bB+kK
+extern "C" PyObject * SofaCompliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyNode;
+
+    float M,B,K;
+    if (!PyArg_ParseTuple(args, "Offf", &pyNode, &M, &B, &K))
+    {
+        SP_MESSAGE_ERROR( "SofaCompliant_getAssembledImplicitMatrix: wrong arguments" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    sofa::core::objectmodel::BaseNode* node=((PySPtr<sofa::core::objectmodel::Base>*)pyNode)->object->toBaseNode();
+    if (!node)
+    {
+        SP_MESSAGE_ERROR( "SofaCompliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+
+//    SP_MESSAGE_INFO( "SofaCompliant_getAssembledImplicitMatrix: "<<M<<" "<<B<<" "<<K );
+
+    sofa::core::MechanicalParams mparams = *sofa::core::MechanicalParams::defaultInstance();
+    mparams.setMFactor( M );
+    mparams.setBFactor( B );
+    mparams.setKFactor( K );
+    sofa::simulation::AssemblyVisitor assemblyVisitor(&mparams);
+    node->getContext()->executeVisitor( &assemblyVisitor );
+    sofa::component::linearsolver::AssembledSystem sys;
+    assemblyVisitor.assemble(sys); // assemble system
+
+
+//    SP_MESSAGE_INFO( "SofaCompliant_getAssembledImplicitMatrix: "<<sys.H );
+
+
+
+    // todo returns a sparse matrix
+
+    size_t size = sys.H.rows();
+
+    PyObject* H = PyList_New(size);
+    for( size_t row=0 ; row<size ; ++row )
+    {
+        PyObject* rowpython = PyList_New(size);
+
+        for( size_t col=0 ; col<size ; ++col )
+            PyList_SetItem( rowpython, col, PyFloat_FromDouble( sys.H.coeff(row,col) ) );
+
+        PyList_SetItem( H, row, rowpython );
+    }
+
+
+    return H;
+}
+
+
+// Methods of the module
+SP_MODULE_METHODS_BEGIN(SofaCompliant)
+SP_MODULE_METHOD(SofaCompliant,getAssembledImplicitMatrix)
+SP_MODULE_METHODS_END
 

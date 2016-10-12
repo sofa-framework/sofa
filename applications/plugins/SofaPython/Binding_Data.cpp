@@ -29,14 +29,13 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/core/visual/DisplayFlags.h>
 #include "Binding_DisplayFlagsData.h"
 
 #include <sofa/helper/OptionsGroup.h>
 #include "Binding_OptionsGroupData.h"
-
 #include <SofaDeformable/SpringForceField.h>
 
 using namespace sofa::core::objectmodel;
@@ -111,31 +110,34 @@ PyObject *GetDataValuePython(BaseData* data)
 
     }
 
-    if (!typeinfo->Container())
+    if (!typeinfo->Container() || typeinfo->ValidInfo())
     {
-        // this type is NOT a vector; return directly the proper native type
-        if (typeinfo->Text())
+
+        if (typeinfo->size(valueVoidPtr)==1 && typeinfo->FixedSize())
         {
-            // it's some text
-            return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
-        }
-        if (typeinfo->Scalar())
-        {
-            // it's a SReal
-            return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
-        }
-        if (typeinfo->Integer())
-        {
-            // it's some Integer...
-            return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
-        }
+            // this type is NOT a vector; return directly the proper native type
+            if (typeinfo->Text())
+            {
+                // it's some text
+                return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
+            }
+            if (typeinfo->Scalar())
+            {
+                // it's a SReal
+                return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
+            }
+            if (typeinfo->Integer())
+            {
+                // it's some Integer...
+                return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
+            }
 
         // this type is not yet supported
         SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
         return PyString_FromString(data->getValueString().c_str());
-    }
-    else
-    {
+        }
+    else if (typeinfo->ValidInfo())
+        {
         // this is a vector; return a python list of the corresponding type (ints, scalars or strings)
 
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
@@ -144,41 +146,40 @@ PyObject *GetDataValuePython(BaseData* data)
             return PyString_FromString(data->getValueString().c_str());
         }
 
-        PyObject *rows = PyList_New(nbRows);
-        for (int i=0; i<nbRows; i++)
-        {
-            PyObject *row = PyList_New(rowWidth);
-            for (int j=0; j<rowWidth; j++)
+            PyObject *rows = PyList_New(nbRows);
+            for (int i=0; i<nbRows; i++)
             {
-                // build each value of the list
-                if (typeinfo->Text())
+                PyObject *row = PyList_New(rowWidth);
+                for (int j=0; j<rowWidth; j++)
                 {
-                    // it's some text
-                    PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
-                }
-                else if (typeinfo->Scalar())
-                {
-                    // it's a Real
-                    PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
-                }
-                else if (typeinfo->Integer())
-                {
-                    // it's some Integer...
-                    PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
-                }
-                else
-                {
+                    // build each value of the list
+                    if (typeinfo->Text())
+                    {
+                        // it's some text
+                        PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
+                    }
+                    else if (typeinfo->Scalar())
+                    {
+                        // it's a SReal
+                        PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
+                    }
+                    else if (typeinfo->Integer())
+                    {
+                        // it's some Integer...
+                        PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
+                    }
+                    else
+                    {
                     // this type is not yet supported (should not happen)
                     SP_MESSAGE_ERROR( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
+                    }
                 }
+                PyList_SetItem(rows,i,row);
             }
-            PyList_SetItem(rows,i,row);
+
+            return rows;
         }
-
-        return rows;
     }
-
-    // default (should not happen)...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
     return PyString_FromString(data->getValueString().c_str());
 }
@@ -636,6 +637,26 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
 }
 
 
+SP_CLASS_ATTR_GET(Data, fullPath)(PyObject *self, void*)
+{
+    BaseData* data = ((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+
+    if (sofa::core::objectmodel::DataFileName* dataFilename = dynamic_cast<sofa::core::objectmodel::DataFileName*>(data))
+    {
+        return PyString_FromString(dataFilename->getFullPath().c_str());
+    }
+
+    Py_RETURN_NONE;
+}
+
+
+SP_CLASS_ATTR_SET(Data, fullPath)(PyObject */*self*/, PyObject * /*args*/, void*)
+{
+    SP_MESSAGE_ERROR("fullPath attribute is read only")
+        PyErr_BadArgument();
+    return -1;
+}
+
 
 SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
@@ -856,6 +877,58 @@ extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(data->getName().c_str());
 }
 
+
+
+
+// returns a pointer to the Data
+extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); // data->beginEditVoidPtr();  // warning a endedit should be necessary somewhere (when releasing the python variable?)
+    void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
+
+
+    // N-dimensional arrays
+    sofa::helper::vector<size_t> dimensions;
+    dimensions.push_back( typeinfo->size(dataValueVoidPtr) ); // total size to begin with
+    const AbstractTypeInfo* valuetypeinfo = typeinfo; // to go trough encapsulated types (at the end, it will correspond to the finest type)
+
+
+    while( valuetypeinfo->Container() )
+    {
+        size_t s = typeinfo->size(); // the current type size
+        dimensions.back() /= s; // to get the number of current type, the previous total size must be devided by the current type size
+        dimensions.push_back( s );
+        valuetypeinfo=valuetypeinfo->ValueType();
+    }
+
+    PyObject* shape = PyTuple_New(dimensions.size());
+    for( size_t i=0; i<dimensions.size() ; ++i )
+        PyTuple_SetItem( shape, i, PyLong_FromSsize_t( dimensions[i] ) );
+
+
+
+    // output = tuple( pointer, shape tuple, type name)
+    PyObject* res = PyTuple_New(3);
+
+    // the data pointer
+    PyTuple_SetItem( res, 0, PyLong_FromVoidPtr( valueVoidPtr ) );
+
+    // the shape
+    PyTuple_SetItem( res, 1, shape );
+
+    // the most basic type name
+    PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->name().c_str() ) );
+
+
+    return res;
+}
+
+
+
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
@@ -868,6 +941,7 @@ SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
+SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHODS_END
 
 
@@ -875,6 +949,7 @@ SP_CLASS_ATTRS_BEGIN(Data)
 SP_CLASS_ATTR(Data,name)
 //SP_CLASS_ATTR(BaseData,owner)
 SP_CLASS_ATTR(Data,value)
+SP_CLASS_ATTR(Data,fullPath)
 SP_CLASS_ATTRS_END
 
 SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData)

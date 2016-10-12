@@ -106,7 +106,9 @@ bool PythonScriptController::isDerivedFrom(const std::string& name, const std::s
 
 void PythonScriptController::loadScript()
 {
-    if(!PythonEnvironment::runFile(m_filename.getFullPath().c_str()))
+    // if the filename is empty, the controller is supposed to be in an already loaded file
+    // otherwise load the controller's file
+    if( m_filename.isSet() && !m_filename.getRelativePath().empty() && !PythonEnvironment::runFile(m_filename.getFullPath().c_str()) )
     {
         SP_MESSAGE_ERROR( getName() << " object - "<<m_filename.getFullPath().c_str()<<" script load error." )
                 return;
