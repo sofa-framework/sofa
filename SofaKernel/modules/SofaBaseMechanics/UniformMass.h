@@ -184,7 +184,7 @@ private:
 };
 
 //Specialization for rigids
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
 template <>
@@ -200,7 +200,7 @@ double UniformMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>::getPoten
 template <>
 void UniformMass<defaulttype::Vec6dTypes,double>::draw(const core::visual::VisualParams* vparams);
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template<>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
 template<>
@@ -218,7 +218,7 @@ void UniformMass<defaulttype::Vec6fTypes,float>::draw(const core::visual::Visual
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec3dTypes, double>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec2dTypes, double>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec1dTypes, double>;
@@ -226,7 +226,7 @@ extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec6dType
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>;
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec3fTypes, float>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec2fTypes, float>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec1fTypes, float>;

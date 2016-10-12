@@ -471,6 +471,10 @@ UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* pa
     SOFA_UNUSED(params);
     SOFA_UNUSED(d_x);
     SOFA_UNUSED(d_v);
+
+    msg_warning(this) << "You are using the getMomentum function that has not been implemented"
+                         "for the template '"<< this->getTemplateName() << "'.\n" ;
+
     return defaulttype::Vector6();
 }
 
