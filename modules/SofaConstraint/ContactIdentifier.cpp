@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/collision/ContactIdentifier.h>
+#include <SofaConstraint/ContactIdentifier.h>
 
 namespace sofa
 {
