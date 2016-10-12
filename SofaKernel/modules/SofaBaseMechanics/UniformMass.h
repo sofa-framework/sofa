@@ -109,7 +109,7 @@ public:
     void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
     std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
-    void loadRigidMass(std::string filename);
+    void loadRigidMass(const std::string& filename);
     // -- Mass interface
 
     void reinit();
@@ -140,6 +140,47 @@ public:
     bool isDiagonal() {return true;}
 
     void draw(const core::visual::VisualParams* vparams);
+
+private:
+    template<class T>
+    void reinitDefaultImpl() ;
+
+    template<class T>
+    void reinitRigidImpl() ;
+
+    template<class T>
+    void drawRigid3DImpl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    void drawRigid2DImpl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    void drawVec6Impl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    SReal getPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
+                                      const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+
+
+
+    template<class T>
+    defaulttype::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
+                                                const DataVecCoord& x,
+                                                const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    template<class T>
+    defaulttype::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
+                                              const DataVecCoord& x,
+                                              const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+
+    template <class T>
+    void loadFromFileRigidImpl(const std::string& filename) ;
+
+    template <class T>
+    void addMDxToVectorVecImpl(defaulttype::BaseVector *resVect,
+                               const VecDeriv* dx,
+                               SReal mFact,
+                               unsigned int& offset);
+
 };
 
 //Specialization for rigids
@@ -147,7 +188,7 @@ public:
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
 template <>
-void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( std::string );
+void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( const std::string&  );
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
 template <>
@@ -163,7 +204,7 @@ void UniformMass<defaulttype::Vec6dTypes,double>::draw(const core::visual::Visua
 template<>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
 template<>
-void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( std::string );
+void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( const std::string& );
 template <>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
