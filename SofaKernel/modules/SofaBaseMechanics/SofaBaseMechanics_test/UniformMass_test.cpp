@@ -28,11 +28,11 @@
 using std::string ;
 
 #include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
 using testing::Types;
 
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+using namespace sofa::defaulttype ;
 
 #include <SofaBaseMechanics/UniformMass.h>
 using sofa::component::mass::UniformMass ;
@@ -70,29 +70,28 @@ int messageInited = initMessage();
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes
 {
-  typedef TDataTypes DataTypes ;
-  typedef TMassTypes MassTypes ;
+    typedef TDataTypes DataTypes ;
+    typedef TMassTypes MassTypes ;
 };
 
 template <typename TTemplateTypes>
-struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes::Real>
-                                //
+struct UniformMassTest :  public ::testing::Test
 {
     typedef UniformMass<typename TTemplateTypes::DataTypes,
-                        typename TTemplateTypes::MassTypes> TheUniformMass ;
-
+    typename TTemplateTypes::MassTypes> TheUniformMass ;
+    typedef UniformMass<Rigid3Types, Rigid3Mass> UniformMassRigid;
 
     /// Bring parents members in the current lookup context.
     /// more info at: https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
     typedef typename TTemplateTypes::DataTypes DataTypes ;
     typedef typename TTemplateTypes::MassTypes MassTypes ;
 
-    Simulation* m_simu ; // {nullptr} ;
+    Simulation* m_simu  {nullptr} ;
     Node::SPtr m_root ;
     Node::SPtr m_node ;
     typename TheUniformMass::SPtr m_mass ;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
-    bool todo ; // {true} ;
+    bool todo  {true} ;
 
     virtual void SetUp()
     {
@@ -257,12 +256,32 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes::Re
         }
     }
 
+    void loadFromAFileForRigid(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
+                "</Node>                                                     " ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
+                                                          scene.c_str(), (int)scene.size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        UniformMassRigid* mass = root->getTreeObject<UniformMassRigid>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMass(), 40.0 ) ;
+            EXPECT_EQ( mass->getTotalMass(), 80.0 ) ;
+        }
+    }
+
     void loadFromAFileForNonRigid(){
         string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
                 "   <MechanicalObject position='0 0 0'/>                     "
-                "   <UniformMass filename='valid_uniformmatrix.txt'/>        "
+                "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
                 "</Node>                                                     " ;
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
@@ -270,13 +289,27 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes::Re
     }
 
     void loadFromAnInvalidFile(){
-        // TODO
-        EXPECT_TRUE(todo == false) ;
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
+                "</Node>                                                     " ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
+                                                          scene.c_str(), (int)scene.size()) ;
+        root->init(ExecParams::defaultInstance()) ;
     }
 
     void loadFromAnInvalidPathname(){
-        // TODO
-        EXPECT_TRUE(todo == false) ;
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0'/>                     "
+                "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
+                "</Node>                                                     " ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
+                                                          scene.c_str(), (int)scene.size()) ;
+        root->init(ExecParams::defaultInstance()) ;
     }
 
     void reinitTest(){
@@ -286,8 +319,25 @@ struct UniformMassTest : public Sofa_test<typename TTemplateTypes::DataTypes::Re
 
 };
 
-typedef Types< 
-    TemplateTypes<Vec3Types, Vec3Types::Real>
+
+typedef Types<
+TemplateTypes<Vec3Types, Vec3Types::Real>
+/*#ifdef SOFA_WITH_DOUBLE
+,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
+,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
+,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
+,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
+,TemplateTypes<Rigid3dTypes, Rigid3dMass>
+,TemplateTypes<Rigid2dTypes, Rigid2dMass>
+#endif
+#ifdef SOFA_WITH_FLOAT
+,TemplateTypes<Vec3dTypes, Vec3dTypes::Real>
+,TemplateTypes<Vec2dTypes, Vec2dTypes::Real>
+,TemplateTypes<Vec1dTypes, Vec1dTypes::Real>
+,TemplateTypes<Vec6dTypes, Vec6dTypes::Real>
+,TemplateTypes<Rigid3dTypes, Rigid3dMass>
+,TemplateTypes<Rigid2dTypes, Rigid2dMass>
+#endif*/
 > DataTypes;
 
 TYPED_TEST_CASE(UniformMassTest, DataTypes);
@@ -326,11 +376,15 @@ TYPED_TEST(UniformMassTest, loadFromAFileForNonRigid) {
 }
 
 TYPED_TEST(UniformMassTest, loadFromAnInvalidFile) {
-    //ASSERT_NO_THROW(this->loadFromAnInvalidFile()) ;
+    ASSERT_NO_THROW(this->loadFromAnInvalidFile()) ;
 }
 
 TYPED_TEST(UniformMassTest, loadFromAnInvalidPathname) {
-    //ASSERT_NO_THROW(this->loadFromAnInvalidPathname()) ;
+    ASSERT_NO_THROW(this->loadFromAnInvalidPathname()) ;
+}
+
+TYPED_TEST(UniformMassTest, loadFromAFileForRigid) {
+    ASSERT_NO_THROW(this->loadFromAFileForRigid()) ;
 }
 
 TYPED_TEST(UniformMassTest, reinitTest) {
