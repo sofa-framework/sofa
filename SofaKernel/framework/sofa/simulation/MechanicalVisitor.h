@@ -1873,7 +1873,7 @@ protected:
 
 /// Call each BaseConstraintSet to build the Jacobian matrices and accumulate it through the mappings up to the independant DOFs
 /// @deprecated use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv
-class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateConstraint(const sofa::core::ConstraintParams* _cparams,
@@ -1922,7 +1922,7 @@ protected:
 };
 
 /// Call each BaseConstraintSet to build the Jacobian matrices
-class SOFA_SIMULATION_COMMON_API MechanicalBuildConstraintMatrix : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalBuildConstraintMatrix : public BaseMechanicalVisitor
 {
 public:
     MechanicalBuildConstraintMatrix(const sofa::core::ConstraintParams* _cparams,
@@ -1969,7 +1969,7 @@ protected:
 };
 
 /// Accumulate Jacobian matrices through the mappings up to the independant DOFs
-class SOFA_SIMULATION_COMMON_API MechanicalAccumulateMatrixDeriv : public BaseMechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateMatrixDeriv : public BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateMatrixDeriv(const sofa::core::ConstraintParams* _cparams,
