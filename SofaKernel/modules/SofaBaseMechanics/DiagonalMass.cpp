@@ -136,12 +136,40 @@ template <class RigidTypes, class RigidMass>
 template <class T>
 void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
 {
+    if(this->getContext()==nullptr){
+        dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
+        m_cstate = ComponentState::Invalid ;
+
+        //return;
+    }
+
+    if(this->mstate == nullptr ){
+        msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
+                           "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
+        m_cstate = ComponentState::Invalid ;
+
+        //return;
+    }
+
     _topology = this->getContext()->getMeshTopology();
-    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
+
+    if(_topology){
+        msg_warning(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
+                             "The component cannot be initialized and thus is de-activated. \n "
+                             "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
+        m_cstate = ComponentState::Invalid ;
+        //return;
+    }
+
+    if (!fileMass.getValue().empty())
+        load(fileMass.getFullPath().c_str());
     Inherited::init();
     initTopologyHandlers();
 
-    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    // Initialize the f_mass vector. The f_mass vector is enlarged to contains
+    // as much as value as the 'mstate'. The new entries are initialized with the
+    // last value of f_mass.
+    if (!this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
         size_t i = masses.size()-1;
@@ -150,6 +178,8 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
             masses.push_back(masses[i]);
         f_mass.endEdit();
     }
+
+    m_cstate = ComponentState::Valid ;
 }
 
 template <class RigidTypes, class RigidMass>

@@ -56,7 +56,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , m_totalMass(initData(&m_totalMass, (Real)-1.0, "totalMass", "Total mass of the object (read only)"))
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
+    , fileMass( initData(&fileMass,  "fileMass", "an Xsp3.0 file to specify the mass parameters" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
     this->addAlias(&fileMass,"filename");
@@ -774,6 +774,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     Inherited::init();
     initTopologyHandlers();
 
+    // TODO(dmarchal): this code is duplicated with the one in RigidImpl
     if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *f_mass.beginEdit();
@@ -873,9 +874,12 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels())
+        return;
+
     const MassVector &masses= f_mass.getValue();
-    if (masses.empty()) return;
+    if (masses.empty())
+        return;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;

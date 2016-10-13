@@ -218,7 +218,39 @@ public:
 
         if(mass!=nullptr){
             // TODO(dmarchal): The totalmass shouldn't be at -1 because
+            // it indicate it has not been properly initialized in init or reinit.
+            // the source code should be fixed.
+            EXPECT_NE( mass->getTotalMass(), -1 ) ;
+        }
+
+        return ;
+    }
+
+    void checkAttributeLoadFromFile(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <DiagonalMass name='m_mass' filename='BehaviorModels/card.rigid'/>      "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            // The number of mass in card.rigid is one so this should be
+            // returned from the getMassCount()
+            EXPECT_EQ( mass->getMassCount(), 1 ) ;
+
+            // TODO(dmarchal): The totalmass shouldn't be at -1 because
             // it indicate it has not been properly initialized.
+            // the source code should be fixed.
             EXPECT_NE( mass->getTotalMass(), -1 ) ;
         }
 
@@ -361,5 +393,10 @@ TEST_F(DiagonalMass3_test, checkAttributeSemantics){
 TEST_F(DiagonalMass3_test, checkAttributeTotalMassValidity){
     checkAttributeTotalMassValidity(); ;
 }
+
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile){
+    checkAttributeLoadFromFile(); ;
+}
+
 
 } // namespace sofa
