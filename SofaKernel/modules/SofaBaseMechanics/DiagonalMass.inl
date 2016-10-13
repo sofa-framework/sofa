@@ -48,6 +48,31 @@ namespace mass
 {
 
 template <class DataTypes, class MassType>
+DiagonalMass<DataTypes, MassType>::DiagonalMass()
+    : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
+    , pointHandler(NULL)
+    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
+    , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
+    , m_totalMass(initData(&m_totalMass, (Real)-1.0, "totalMass", "Total mass of the object (read only)"))
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
+    , topologyType(TOPOLOGY_UNKNOWN)
+{
+    this->addAlias(&fileMass,"filename");
+
+    m_totalMass.setReadOnly(true);
+}
+
+template <class DataTypes, class MassType>
+DiagonalMass<DataTypes, MassType>::~DiagonalMass()
+{
+    if (pointHandler)
+        delete pointHandler;
+}
+
+
+template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyCreateFunction(unsigned int, MassType &m, const Point &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     m=0;
@@ -371,32 +396,7 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
     applyHexahedronDestruction(hexahedronRemoved);
 }
 
-template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
-    , pointHandler(NULL)
-    , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
-    , m_computeMassOnRest(initData(&m_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
-    , m_totalMass(initData(&m_totalMass, "totalMass", "Total mass of the object (read only)"))
-    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
-    , topologyType(TOPOLOGY_UNKNOWN)
-{
-    this->addAlias(&fileMass,"filename");
 
-    m_totalMass.setReadOnly(true);
-}
-
-
-
-
-template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::~DiagonalMass()
-{
-    if (pointHandler)
-        delete pointHandler;
-}
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()

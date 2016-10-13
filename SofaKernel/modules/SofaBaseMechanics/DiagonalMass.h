@@ -249,6 +249,7 @@ public:
         m_massDensity.setValue(m);
     }
 
+    SReal getTotalMass() const { return m_totalMass.getValue(); }
 
     void addMass(const MassType& mass);
 
