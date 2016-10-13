@@ -106,8 +106,7 @@ struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _DataTypes, class _ImageTypes>
 class MassFromDensity : public core::DataEngine
 {
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct MassFromDensitySpecialization<_ImageTypes::label>;
     typedef MassFromDensitySpecialization<_ImageTypes::label> MassFromDensitySpec;
 
 public:
