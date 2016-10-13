@@ -7,11 +7,13 @@
 #include <Compliant/config.h>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/OwnershipSPtr.h>
+
 
 namespace sofa {
 
 
-
+// TODO move this into SofaKernel as it can be useful to any plugin.
 
 // some helpers
 template<class Matrix>
@@ -188,111 +190,12 @@ static void convertDenseToSparse( mat& res, const densemat& m )
     res.finalize();
 }
 
-//// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-/// @warning this is performing a copy, even when the type is ok
-/// prefer to use convertSPtr
-//template<class mat>
-//mat convert( const defaulttype::BaseMatrix* m) {
-//    assert( m );
-
-//    {
-//    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-//    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-//    if ( smd ) return smd->compressedMatrix.cast<SReal>();
-//    }
-
-//    {
-//    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-//    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-//    if( smf ) return smf->compressedMatrix.cast<SReal>();
-//    }
-
-//    msg_warning("AssemblyHelper)"<<"very slow matrix conversion";
-
-//    mat res(m->rowSize(), m->colSize());
-
-//    res.reserve(res.rows() * res.cols());
-//    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
-//        res.startVec( i );
-//        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-//            SReal e = m->element(i, j);
-//            if( e ) res.insertBack(i, j) = e;
-//        }
-//    }
-
-//    return res;
-//}
 
 
 
-/// Smart pointer that can point to an existing data without taking ownership
-/// Or that can point to a new temporary Data that must be deleted when this
-/// smart pointer is deleted (taking ownership)
-// maybe an equivalent smart pointer exists in boost but I do not know
-template<class T>
-class MySPtr
-{
-    const T* t;
-    mutable bool ownership;
-public:
-    MySPtr() : t(NULL), ownership(false) {}
-    MySPtr( const T* t, bool ownership ) : t(t), ownership(ownership) {}
-    MySPtr( const MySPtr<T>& other ) : t(other.t), ownership(other.ownership) { other.ownership=false; }
-    ~MySPtr() { if( ownership ) delete t; }
-    void operator=(const MySPtr<T>& other) { t=other.t; ownership=other.ownership; other.ownership=false; }
-    const T& operator*() const { return *t; }
-    const T* operator->() const { return t; }
-};
-
-
-// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-template<class mat>
-MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
-    assert( m );
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
-    const matrixr* smr = dynamic_cast<const matrixr*> (m);
-    if ( smr ) return MySPtr<mat>(&smr->compressedMatrix, false);
-    }
-
-    msg_warning("AssemblyHelper")<<"slow matrix conversion (scalar type conversion)";
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-    if ( smd ) return MySPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
-    }
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-    if( smf ) return MySPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
-    }
-
-    msg_warning("AssemblyHelper")<<"very slow matrix conversion (from BaseMatrix)";
-
-    mat* res = new mat(m->rowSize(), m->colSize());
-
-    res->reserve(res->rows() * res->cols());
-    for(unsigned i = 0, n = res->rows(); i < n; ++i) {
-        res->startVec( i );
-        for(unsigned j = 0, k = res->cols(); j < k; ++j) {
-            SReal e = m->element(i, j);
-            if( e ) res->insertBack(i, j) = e;
-        }
-    }
-
-    return MySPtr<mat>(res, true);
-}
-
-
-
-
-
+// TODO move this in is own file
 namespace simulation
 {
-
 
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
