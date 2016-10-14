@@ -13,6 +13,7 @@ set(SOURCE_FILES
 
 set(PYTHON_FILES
     python/automaticNodeInitialization.py
+    python/sysPathDuplicate.py
     python/dataVecResize.py
     python/testController.py
     python/test_PySceneWithPyCtlr.py
