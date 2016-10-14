@@ -56,6 +56,7 @@ int AverageCoordClass = core::RegisterObject("Compute the average of coordinates
 #endif //SOFA_DOUBLE
         ;
 
+
 #ifndef SOFA_FLOAT
 template class SOFA_GENERAL_ENGINE_API AverageCoord<Vec2dTypes>;
 template class SOFA_GENERAL_ENGINE_API AverageCoord<Rigid2dTypes>;

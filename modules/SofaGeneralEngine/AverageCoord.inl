@@ -34,6 +34,7 @@
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -46,9 +47,10 @@ namespace engine
 
 template <class DataTypes>
 AverageCoord<DataTypes>::AverageCoord()
-    : f_indices( initData (&f_indices, "indices", "indices of the coordinates to average") )
-    , f_vecId(initData (&f_vecId, sofa::core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
-    , f_average( initData (&f_average, "average", "average of the values with the given indices in the given coordinate vector") )
+    : d_indices( initData (&d_indices, "indices", "indices of the coordinates to average") )
+    , d_vecId(initData (&d_vecId, sofa::core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
+    , d_average( initData (&d_average, "average", "average of the values with the given indices in the given coordinate vector \n"
+                                                   "(default value corresponds to the average coord of the mechanical context)") )
 {
 }
 
@@ -56,9 +58,9 @@ template <class DataTypes>
 void AverageCoord<DataTypes>::init()
 {
     mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    addInput(&f_indices);
-    addInput(&f_vecId);
-    addOutput(&f_average);
+    addInput(&d_indices);
+    addInput(&d_vecId);
+    addOutput(&d_average);
     setDirtyValue();
 }
 
@@ -71,8 +73,14 @@ void AverageCoord<DataTypes>::reinit()
 template <class DataTypes>
 void AverageCoord<DataTypes>::update()
 {
-    helper::ReadAccessor< Data<VecCoord> > coord = *mstate->read(core::VecCoordId(f_vecId.getValue()));
-    const VecIndex& indices = f_indices.getValue();
+    if(mstate==NULL)
+    {
+        msg_info(this) << "This component requires a mechanical state in its context.";
+        return;
+    }
+
+    helper::ReadAccessor< Data<VecCoord> > coord = *mstate->read(core::VecCoordId(d_vecId.getValue()));
+    const VecIndex& indices = d_indices.getValue();
 
     Coord c;
     unsigned int n = (indices.empty()) ? coord.size() : indices.size();
@@ -80,16 +88,12 @@ void AverageCoord<DataTypes>::update()
     for( unsigned i=0; i< n; ++i )
     {
         c += coord[ (indices.empty()) ? i : indices[i]];
-//        cerr<<"AverageCoord<DataTypes>::update, coord = "<< coord[indices[i]] << ", new average = " << c << endl;
     }
     c *= 1./n;
 
-//    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
-
-
     cleanDirty();
 
-    f_average.setValue(c);
+    d_average.setValue(c);
 }
 
 template<class DataTypes>
@@ -100,8 +104,9 @@ void AverageCoord<DataTypes>::handleEvent(core::objectmodel::Event *event)
 }
 
 template <class DataTypes>
-void AverageCoord<DataTypes>::onBeginAnimationStep(const double /*dt*/)
+void AverageCoord<DataTypes>::onBeginAnimationStep(const double dt)
 {
+    SOFA_UNUSED(dt);
     update();
 }
 

@@ -3,6 +3,7 @@
 
 
 #include "DifferenceEngine.h"
+#include <sofa/helper/logging/Messaging.h>
 
 
 namespace sofa
@@ -47,7 +48,11 @@ void DifferenceEngine<DataType>::update()
     helper::ReadAccessor<Data<VecData> > sub = d_substractor;
     helper::WriteAccessor<Data<VecData> > out = d_output;
 
-    assert( in.size() == sub.size() );
+    if(in.size() != sub.size())
+    {
+        msg_warning(this) << "Input vector and vector to substract should have same size. Abort.";
+        return;
+    }
 
     out.resize( in.size() );
 
