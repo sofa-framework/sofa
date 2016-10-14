@@ -27,7 +27,7 @@
 #include <string>
 using std::string ;
 
-#include <SofaTest/Sofa_test.h>
+#include <gtest/gtest.h>
 using testing::Types;
 
 #include <sofa/helper/BackTrace.h>
