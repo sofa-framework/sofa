@@ -137,11 +137,12 @@ protected:
 
             if( result.getTotalError() > epsilon )
             {
-                ADD_FAILURE() << "ERROR "<< testScene;
+//                ADD_FAILURE() << "ERROR "<< testScene;
+                msg_error(("Regression Test" )) << testScene
 
-//                << " " << result.getTotalError() << " ERRORBYDOF "
-//                                                             << static_cast<double>(result.getErrorByDof())
-//                                                             / result.getNumCompareState() << std::endl;
+                << "   || TOTALERROR: " << result.getTotalError() << "   || ERRORBYDOF: "
+                                                             << static_cast<double>(result.getErrorByDof())
+                                                             / result.getNumCompareState() ;
             }
 
         }
@@ -239,6 +240,9 @@ protected:
         if (helper::system::FileSystem::exists(devProjectsDir))
             testTestPath(devProjectsDir);
 
+        static const std::string modulesDir = std::string(SOFA_SRC_DIR) + "/modules";
+        if (helper::system::FileSystem::exists(modulesDir))
+            testTestPath(modulesDir);
     }
 
 };

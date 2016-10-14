@@ -1,0 +1,3 @@
+BilateralInteractionConstraint.scn 100 1e-7
+FixedConstraint.scn 100 1e-7
+FrictionContact.scn 100 1e-7

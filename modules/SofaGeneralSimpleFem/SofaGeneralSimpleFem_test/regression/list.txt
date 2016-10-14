@@ -1,0 +1,2 @@
+BeamFEMForceField.scn 100 1e-7
+TriangularFEMForceFieldOptim.scn 100 1e-7
