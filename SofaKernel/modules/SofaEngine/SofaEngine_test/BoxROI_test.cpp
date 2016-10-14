@@ -35,6 +35,7 @@ using testing::Types;
 
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+using sofa::core::objectmodel::ComponentState ;
 using namespace sofa::defaulttype ;
 
 #include <SofaEngine/BoxROI.h>
@@ -48,8 +49,9 @@ using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
-using sofa::core::objectmodel::New ;
+using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::New ;
 using sofa::core::ExecParams ;
 using sofa::component::container::MechanicalObject ;
 using sofa::defaulttype::Vec3dTypes ;
@@ -65,7 +67,7 @@ using sofa::helper::logging::ClangMessageHandler ;
 
 int initMessage(){
     MessageDispatcher::clearHandlers() ;
-    MessageDispatcher::addHandler(new ClangMessageHandler()) ;
+    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
     return 0;
 }
 int messageInited = initMessage();
@@ -130,11 +132,137 @@ struct BoxROITest :  public ::testing::Test
 
         return ;
     }
+
+    void checkGracefullHandlingOfInvalidUsage(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <Node name='Level 1'>                                    "
+                "       <BoxROI name='myBoxROI'/>                            "
+                "   </Node>                                                  "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI") ;
+        EXPECT_NE(boxroi, nullptr) ;
+
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "The component cannot be initialized because it is missing a MechanicalObject. "
+                                                                            "But it shouldn't crash or segfault. ";
+
+        boxroi->reinit() ;
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "Reinit shouln't crash or change the state because there is still no MechanicalObject. ";
+
+    }
+
+
+    void checkAutomaticSearchingOfMechanicalObject(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <Node name='Level 1'>     "
+                "       <TriangleSetTopologyContainer  name='Container' /> "
+                "       <MechanicalObject name='meca' position='0 0 0 1 1 1'/> "
+                "       <BoxROI name='myBoxROI'/>                            "
+                "   </Node>                                                  "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>() ;
+        EXPECT_NE(boxroi, nullptr) ;
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Valid ) << "The component should succeed in being initialized because there is a MechanicalObject in the current context. " ;
+    }
+
+
+    void checkAutomaticSearchingOfMechanicalObjectParent(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >   "
+                "   <MechanicalObject name='meca' position='0 0 0 1 1 1'/>     "
+                "   <Node name='Level 1'>                                      "
+                "       <TriangleSetTopologyContainer  name='Container' />     "
+                "       <BoxROI name='myBoxROI'/>                              "
+                "   </Node>                                                    "
+                "</Node>                                                       " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheBoxROI* boxroi = root->getTreeObject<TheBoxROI>() ;
+        EXPECT_NE(boxroi, nullptr) ;
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Valid ) << "The component should succeed in being initialized because there is a MechanicalObject in the current context. " ;
+    }
+
+    void checkAutomaticSearchingOfMeshLoader(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <Node name='Level 1'>                                      "
+                "       <TriangleSetTopologyContainer  name='Container' />     "
+                "       <MeshObjLoader filename='toto.obj'/>                   "
+                "       <BoxROI name='myBoxROI'/>                              "
+                "   </Node>                                                    "
+                "</Node>                                                       " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+        BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI") ;
+
+        EXPECT_NE(boxroi, nullptr) ;
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Valid ) << "The component should succeed in being initialized because there is a MeshLoader and a TopologyContainer in the current context. " ;
+    }
+
+    void checkMissingTopology(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <Node name='Level 1'>                                      "
+                "   <MeshObjLoader filename='toto.obj'/>                          "
+                "       <BoxROI name='myBoxROI'/>                              "
+                "   </Node>                                                    "
+                "</Node>                                                       " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+        BaseObject* boxroi = root->getTreeNode("Level 1")->getObject("myBoxROI") ;
+
+        EXPECT_NE(boxroi, nullptr) ;
+        EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "The component should fails to initialized because there is no topology in this context. " ;
+    }
+
 };
 
 
+//TODO(dmarchal): There is a problem of segfault with the test & Rigid3 types.
+//Please fix this either the tests or the BoxROI implementation
 typedef Types<
     Vec3Types
+#ifdef SOFA_WITH_DOUBLE
+    ,Vec3dTypes
+    //,Rigid3dTypes
+#endif
+#ifdef SOFA_WITH_FLOAT
+    //,Vec3fTypes
+    //,Rigid3fTypes
+#endif
 > DataTypes;
 
 TYPED_TEST_CASE(BoxROITest, DataTypes);
@@ -144,3 +272,22 @@ TYPED_TEST(BoxROITest, attributesTests) {
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
+TYPED_TEST(BoxROITest, checkGracefullHandlingOfInvalidUsage) {
+    ASSERT_NO_THROW(this->checkGracefullHandlingOfInvalidUsage()) ;
+}
+
+TYPED_TEST(BoxROITest, checkAutomaticSearchingOfMechanicalObject) {
+    ASSERT_NO_THROW(this->checkAutomaticSearchingOfMechanicalObject()) ;
+}
+
+TYPED_TEST(BoxROITest, checkAutomaticSearchingOfMechanicalObjectParent) {
+    ASSERT_NO_THROW(this->checkAutomaticSearchingOfMechanicalObject()) ;
+}
+
+TYPED_TEST(BoxROITest, checkAutomaticSearchingOfMeshLoader) {
+    ASSERT_NO_THROW(this->checkAutomaticSearchingOfMeshLoader()) ;
+}
+
+TYPED_TEST(BoxROITest, checkMissingTopology) {
+    ASSERT_NO_THROW(this->checkMissingTopology()) ;
+}

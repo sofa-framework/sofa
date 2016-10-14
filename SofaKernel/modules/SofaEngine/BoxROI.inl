@@ -219,6 +219,7 @@ void BoxROI<DataTypes>::init()
 
     if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet() || !f_hexahedra.isSet() || !f_quad.isSet() )
     {
+        msg_info(this) << "No topology given. Searching for a TopologyContainer and a BaseMeshTopology in the current context.\n";
 
         TopologyContainer* topologyContainer;
         this->getContext()->get(topologyContainer,BaseContext::Local);
@@ -273,6 +274,13 @@ void BoxROI<DataTypes>::init()
                     f_quad.setReadOnly(true);
                 }
             }
+        }else{
+            msg_warning(this) << "No primitives provided nor TopologyContainer and a BaseMeshTopology in the current context.\n"
+                                 "To remove this message you can either: \n"
+                                 "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
+                                 "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
+            m_componentstate = ComponentState::Invalid ;
+            return ;
         }
     }
 
@@ -298,7 +306,6 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_nbIndices);
     setDirtyValue();
 
-    reinit();
 
     //TODO(dmarchal): why this thing is not in reinit ?
     this->f_listening.setValue( p_doUpdate.getValue() );
@@ -308,14 +315,13 @@ void BoxROI<DataTypes>::init()
     //    this->f_listening.setValue(true);
 
     m_componentstate = ComponentState::Valid ;
+
+    reinit();
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
-    if(m_componentstate==ComponentState::Invalid)
-        return ;
-
     vector<Vec6>& vb = *(boxes.beginEdit());
     if (!vb.empty())
     {
