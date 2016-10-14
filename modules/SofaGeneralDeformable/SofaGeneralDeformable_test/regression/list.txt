@@ -1,1 +1,1 @@
-FastTriangularBendingSprings.scn 100 1e-7
+../../../../examples/Components/forcefield/FastTriangularBendingSprings.scn 100 1e-4

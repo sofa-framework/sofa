@@ -66,7 +66,7 @@ class Regression_test: public testing::Test
 
 protected:
 
-    void runRegressionScene( const std::string& testScene, unsigned nbsteps, double epsilon )
+    void runRegressionScene( const std::string& regressionFolderScene, const std::string& testScene, unsigned nbsteps, double epsilon )
     {
 
         std::cerr<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps<<std::endl;
@@ -88,7 +88,7 @@ protected:
         // TODO lancer visiteur pour dumper MO
         // comparer ce dump avec le fichier sceneName.regressionreference
 
-        std::string reference = testScene + ".reference";
+        std::string reference = regressionFolderScene + ".reference";
 
         bool initializing = false;
 
@@ -105,7 +105,7 @@ protected:
         }
         else // create reference
         {
-            std::cerr<<"REGRESSION TEST : WARNING a reference is not existing and is created now, \""<<testScene<<".reference*\" files should be added to the repository "<<std::endl;
+            std::cerr<<"REGRESSION TEST : WARNING a reference is not existing and is created now, \""<<regressionFolderScene<<".reference*\" files should be added to the repository "<<std::endl;
 
 
             // just to create an empty file to know it is already init
@@ -135,7 +135,7 @@ protected:
             sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
             result.execute(root.get());
 
-            if( result.getTotalError() > epsilon )
+            if( (static_cast<double>(result.getErrorByDof())/result.getNumCompareState()) > epsilon )
             {
 //                ADD_FAILURE() << "ERROR "<< testScene;
                 msg_error(("Regression Test" )) << testScene
@@ -172,6 +172,7 @@ protected:
             {
                 std::string line;
                 std::string currentScene;
+                std::string fileName;
                 unsigned int nbsteps;
                 double epsilon;
                 getline(iniFileStream, line);
@@ -179,12 +180,24 @@ protected:
                 lineStream >> currentScene;
                 lineStream >> nbsteps;
                 lineStream >> epsilon;
-//                DataRepository.findFile(currentScene);
+                fileName = getFileName(currentScene);
+                runRegressionScene( testDir + "/" + fileName, testDir + "/" + currentScene, nbsteps, epsilon );
 
-                runRegressionScene( testDir + "/" + currentScene, nbsteps, epsilon );
             }
 
         }
+    }
+
+    std::string getFileName(const std::string& s) {
+
+       char sep = '/';
+
+       size_t i = s.rfind(sep, s.length());
+       if (i != std::string::npos) {
+          return(s.substr(i+1, s.length() - i));
+       }
+
+       return s;
     }
 
 

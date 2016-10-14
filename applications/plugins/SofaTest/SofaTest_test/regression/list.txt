@@ -1,2 +1,2 @@
-caduceus.scn 100 1e-7
-gravity.scn 100 1e-7
+../../../../../examples/Demos/caduceus.scn 100 1e-4
+gravity.scn 100 1e-4

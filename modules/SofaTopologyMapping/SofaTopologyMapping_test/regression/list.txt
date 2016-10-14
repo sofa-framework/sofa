@@ -1,1 +1,1 @@
-Mesh2PointTopologicalMapping.scn 100 1e-7
+../../../../examples/Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4
