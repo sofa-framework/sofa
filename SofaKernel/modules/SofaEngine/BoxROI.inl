@@ -87,18 +87,22 @@ BoxROI<DataTypes>::BoxROI()
     /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
     /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
     /// he has to fix his scene.
+
+    /// Deprecated input attributes
+    , d_deprecatedX0( initData (&d_deprecatedX0, "rest_position", "(deprecated) Replaced with the attribute 'position'") )
+    , d_deprecatedIsVisible( initData(&d_deprecatedIsVisible, false, "isVisible","(deprecated)Replaced with the attribute 'drawBoxes'") )
 {
-    //Adding alias to handle old BoxROI input/output
+    //Adding alias to handle old BoxROI outputs
     addAlias(&f_pointsInROI,"pointsInBox");
     addAlias(&f_edgesInROI,"edgesInBox");
     addAlias(&f_trianglesInROI,"f_trianglesInBox");
     addAlias(&f_tetrahedraInROI,"f_tetrahedraInBox");
     addAlias(&f_hexahedraInROI,"f_tetrahedraInBox");
     addAlias(&f_quadInROI,"f_quadInBOX");
-    addAlias(&f_X0,"rest_position");
 
-    //Adding alias to handle TrianglesInBoxROI input/output
-    addAlias(&p_drawBoxes,"isVisible");
+    /// Display as few as possible the deprecated data.
+    d_deprecatedX0.setDisplayed(false);
+    d_deprecatedIsVisible.setDisplayed(false);
 
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();
@@ -110,6 +114,21 @@ BoxROI<DataTypes>::BoxROI()
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
+    if(d_deprecatedX0.isSet()){
+        msg_error(this) <<  "The field named 'rest_position' is now deprecated.\n"
+                              "Using deprecated attributes may results in invalid simulation as well as slow performances. \n"
+                              "To remove this error message you need to fix your sofa scene by changing the field's name from 'rest_position' to 'position'.\n" ;
+                               f_X0.copyValue(&d_deprecatedX0);
+    }
+
+    if(d_deprecatedIsVisible.isSet()){
+        msg_error(this) <<  "The field named 'isVisible' is now deprecated.\n"
+                              "Using deprecated attributes may results in invalid simulation as well as slow performances. \n"
+                              "To remove this error message you need to fix your sofa scene by changing the field's name from 'isVisible' to 'drawBoxes'.\n" ;
+                              p_drawBoxes.copyValue(&d_deprecatedIsVisible);
+    }
+
+
     //cerr<<"BoxROI<DataTypes>::init() is called "<<endl;
     if (!f_X0.isSet())
     {

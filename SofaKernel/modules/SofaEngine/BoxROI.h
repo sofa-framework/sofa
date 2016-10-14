@@ -159,7 +159,7 @@ public:
     Data<helper::vector<Tetra> > f_tetrahedraInROI;
     Data<helper::vector<Hexa> > f_hexahedraInROI;
     Data<helper::vector<Quad> > f_quadInROI;
-	Data< unsigned int > f_nbIndices;
+    Data< unsigned int > f_nbIndices;
 
     //Parameter
     Data<bool> p_drawBoxes;
@@ -171,6 +171,11 @@ public:
     Data<bool> p_drawQuads;
     Data<double> _drawSize;
     Data<bool> p_doUpdate;
+
+    /// Deprecated input parameters... should be kept until
+    /// the corresponding attribute is not supported any more.
+    Data<VecCoord> d_deprecatedX0;
+    Data<bool> d_deprecatedIsVisible;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
