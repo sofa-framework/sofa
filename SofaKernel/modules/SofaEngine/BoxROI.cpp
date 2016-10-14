@@ -36,6 +36,9 @@ namespace component
 namespace engine
 {
 
+namespace boxroi
+{
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(BoxROI)
@@ -64,6 +67,7 @@ template class SOFA_ENGINE_API BoxROI<Rigid3fTypes>;
 template class SOFA_ENGINE_API BoxROI<Vec6fTypes>;
 #endif //SOFA_DOUBLE
 
+} // namespace boxroi
 
 } // namespace constraint
 

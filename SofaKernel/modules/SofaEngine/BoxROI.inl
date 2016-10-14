@@ -47,6 +47,22 @@ namespace component
 namespace engine
 {
 
+namespace boxroi
+{
+
+using core::behavior::BaseMechanicalState ;
+using simulation::AnimateBeginEvent ;
+using core::objectmodel::BaseData ;
+using core::objectmodel::Event ;
+using core::ExecParams ;
+using defaulttype::TBoundingBox ;
+using defaulttype::Vector3 ;
+using defaulttype::Vec4f ;
+using helper::WriteOnlyAccessor ;
+using helper::ReadAccessor ;
+using helper::vector ;
+
+
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
@@ -56,11 +72,11 @@ BoxROI<DataTypes>::BoxROI()
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
     , f_hexahedra(initData (&f_hexahedra, "hexahedra", "Hexahedron Topology") )
     , f_quad(initData (&f_quad, "quad", "Quad Topology") )
-    , f_computeEdges( initData(&f_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI.") )
-    , f_computeTriangles( initData(&f_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI.") )
-    , f_computeTetrahedra( initData(&f_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI.") )
-    , f_computeHexahedra( initData(&f_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI.") )
-    , f_computeQuad( initData(&f_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI.") )
+    , f_computeEdges( initData(&f_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI. (default = true)") )
+    , f_computeTriangles( initData(&f_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI. (default = true)") )
+    , f_computeTetrahedra( initData(&f_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
+    , f_computeHexahedra( initData(&f_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
+    , f_computeQuad( initData(&f_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
     , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
@@ -74,15 +90,15 @@ BoxROI<DataTypes>::BoxROI()
     , f_hexahedraInROI( initData(&f_hexahedraInROI,"hexahedraInROI","Hexahedra contained in the ROI") )
     , f_quadInROI( initData(&f_quadInROI,"quadInROI","Quad contained in the ROI") )
     , f_nbIndices( initData(&f_nbIndices,"nbIndices", "Number of selected indices") )
-    , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
-    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
-    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
-    , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , p_drawHexahedra( initData(&p_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra") )
-    , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
+    , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Boxes. (default = false)") )
+    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points. (default = false)") )
+    , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges. (default = false)") )
+    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles. (default = false)") )
+    , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra. (default = false)") )
+    , p_drawHexahedra( initData(&p_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra. (default = false)") )
+    , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads. (default = false)") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
-    , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box") )
+    , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box. (default = false)") )
     /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
     /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
     /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
@@ -133,11 +149,11 @@ void BoxROI<DataTypes>::init()
     if (!f_X0.isSet())
     {
         //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
-        sofa::core::behavior::BaseMechanicalState* mstate = NULL;
-        this->getContext()->get(mstate,sofa::core::objectmodel::BaseContext::Local);
+        BaseMechanicalState* mstate = NULL;
+        this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
-            sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -147,10 +163,10 @@ void BoxROI<DataTypes>::init()
         else
         {
             sofa::core::loader::MeshLoader* loader = NULL;
-            this->getContext()->get(loader,sofa::core::objectmodel::BaseContext::Local);
+            this->getContext()->get(loader,BaseContext::Local);
             if (loader)
             {
-                sofa::core::objectmodel::BaseData* parent = loader->findData("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -159,9 +175,9 @@ void BoxROI<DataTypes>::init()
             }
             else   // no local state, no loader => find upward
             {
-                this->getContext()->get(mstate,sofa::core::objectmodel::BaseContext::SearchUp);
+                this->getContext()->get(mstate,BaseContext::SearchUp);
                 assert(mstate && "BoxROI needs a mstate");
-                sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
+                BaseData* parent = mstate->findData("rest_position");
                 assert(parent && "BoxROI needs a state with a rest_position Data");
                 f_X0.setParent(parent);
                 f_X0.setReadOnly(true);
@@ -172,16 +188,16 @@ void BoxROI<DataTypes>::init()
     {
 
         sofa::core::topology::TopologyContainer* topologyContainer;
-        this->getContext()->get(topologyContainer,sofa::core::objectmodel::BaseContext::Local);
+        this->getContext()->get(topologyContainer,BaseContext::Local);
 
         sofa::core::topology::BaseMeshTopology* topology;
-        this->getContext()->get(topology,sofa::core::objectmodel::BaseContext::Local);
+        this->getContext()->get(topology,BaseContext::Local);
 
         if (topologyContainer || topology)
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
             {
-                sofa::core::objectmodel::BaseData* eparent = topologyContainer?topologyContainer->findData("edges"):topology->findData("edges");
+                BaseData* eparent = topologyContainer?topologyContainer->findData("edges"):topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -190,7 +206,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_triangles.isSet() && f_computeTriangles.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("triangles"):topology->findData("triangles");
+                BaseData* tparent = topologyContainer?topologyContainer->findData("triangles"):topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -199,7 +215,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("tetrahedra"):topology->findData("tetrahedra");
+                BaseData* tparent = topologyContainer?topologyContainer->findData("tetrahedra"):topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);
@@ -208,7 +224,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_hexahedra.isSet() && f_computeHexahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("hexahedra"):topology->findData("hexahedra");
+                BaseData* tparent = topologyContainer?topologyContainer->findData("hexahedra"):topology->findData("hexahedra");
                 if (tparent)
                 {
                     f_hexahedra.setParent(tparent);
@@ -217,7 +233,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_quad.isSet() && f_computeQuad.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topologyContainer?topologyContainer->findData("quads"):topology->findData("quads");
+                BaseData* tparent = topologyContainer?topologyContainer->findData("quads"):topology->findData("quads");
                 if (tparent)
                 {
                     f_quad.setParent(tparent);
@@ -256,14 +272,15 @@ void BoxROI<DataTypes>::init()
 
     reinit();
 
-    if(p_doUpdate.getValue())
-        this->f_listening.setValue(true);
+    this->f_listening.setValue( p_doUpdate.getValue() );
+    //if(p_doUpdate.getValue())
+    //    this->f_listening.setValue(true);
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
-    helper::vector<Vec6>& vb = *(boxes.beginEdit());
+    vector<Vec6>& vb = *(boxes.beginEdit());
     if (!vb.empty())
     {
         for (unsigned int bi=0; bi<vb.size(); ++bi)
@@ -366,16 +383,16 @@ bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
-    const helper::vector<Vec6>& vb = boxes.getValue();
+    const vector<Vec6>& vb = boxes.getValue();
 
     if (vb.empty()) { cleanDirty(); return; }
 
     // Read accessor for input topology
-    helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-    helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
-    helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedra = f_hexahedra;
-    helper::ReadAccessor< Data<helper::vector<Quad> > > quad = f_quad;
+    ReadAccessor< Data<vector<Edge> > > edges = f_edges;
+    ReadAccessor< Data<vector<Triangle> > > triangles = f_triangles;
+    ReadAccessor< Data<vector<Tetra> > > tetrahedra = f_tetrahedra;
+    ReadAccessor< Data<vector<Hexa> > > hexahedra = f_hexahedra;
+    ReadAccessor< Data<vector<Quad> > > quad = f_quad;
 
     const VecCoord& x0 = f_X0.getValue();
 
@@ -392,12 +409,12 @@ void BoxROI<DataTypes>::update()
     SetIndex& quadIndices = *f_quadIndices.beginWriteOnly();
 
     // Write accessor for toplogical element in BOX
-    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
-    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadInROI = f_quadInROI;
+    WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = f_edgesInROI;
+    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    WriteOnlyAccessor< Data<vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+    WriteOnlyAccessor< Data<vector<Quad> > > quadInROI = f_quadInROI;
 
 
     // Clear lists
@@ -549,8 +566,8 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        const helper::vector<Vec6>& vb=boxes.getValue();
+        std::vector<Vector3> vertices;
+        const vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
@@ -560,30 +577,30 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             const Real& Ymax=b[4];
             const Real& Zmin=b[2];
             const Real& Zmax=b[5];
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmin,Ymax,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymin,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmin) );
-            vertices.push_back( sofa::defaulttype::Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmin,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmin,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmax,Ymin,Zmin) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmin) );
+            vertices.push_back( Vector3(Xmax,Ymax,Zmax) );
             vparams->drawTool()->drawLines(vertices, linesWidth , color );
         }
     }
@@ -595,12 +612,12 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         float pointsWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
             CPos p = DataTypes::getCPos(pointsInROI[i]);
-            sofa::defaulttype::Vector3 pv;
+            Vector3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -613,15 +630,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor< Data<vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             Edge e = edgesInROI[i];
             for (unsigned int j=0 ; j<2 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[e[j]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -634,15 +651,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if( p_drawTriangles.getValue())
     {
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor< Data<vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             Triangle t = trianglesInROI[i];
             for (unsigned int j=0 ; j<3 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                     pv[j] = p[j];
                 vertices.push_back( pv );
@@ -656,15 +673,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor< Data<vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
             for (unsigned int j=0 ; j<4 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -676,7 +693,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            sofa::defaulttype::Vector3 pv;
+            Vector3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -701,15 +718,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor< Data<vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
         for (unsigned int i=0; i<hexahedraInROI.size() ; ++i)
         {
             Hexa t = hexahedraInROI[i];
             for (unsigned int j=0 ; j<8 ; j++)
             {
                 CPos p = DataTypes::getCPos(x0[t[j]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for( unsigned int k=0 ; k<max_spatial_dimensions ; ++k )
                     pv[k] = p[k];
                 vertices.push_back( pv );
@@ -721,7 +738,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
 
             CPos p = DataTypes::getCPos(x0[t[0]]);
-            sofa::defaulttype::Vector3 pv;
+            Vector3 pv;
             for( unsigned int j=0 ; j<max_spatial_dimensions ; ++j )
                 pv[j] = p[j];
             vertices.push_back( pv );
@@ -762,15 +779,15 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->setLightingEnabled(false);
         float linesWidth = _drawSize.getValue() ? (float)_drawSize.getValue() : 1;
-        std::vector<sofa::defaulttype::Vector3> vertices;
-        helper::ReadAccessor<Data<helper::vector<Quad> > > quadsInROI = f_quadInROI;
+        std::vector<Vector3> vertices;
+        ReadAccessor<Data<vector<Quad> > > quadsInROI = f_quadInROI;
         for (unsigned i=0; i<quadsInROI.size(); ++i)
         {
             Quad q = quadsInROI[i];
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[j]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);
@@ -778,7 +795,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned j=0; j<4; j++)
             {
                 CPos p = DataTypes::getCPos(x0[q[(j+1)%4]]);
-                sofa::defaulttype::Vector3 pv;
+                Vector3 pv;
                 for (unsigned k=0; k<max_spatial_dimensions; k++)
                     pv[k] = p[k];
                 vertices.push_back(pv);
@@ -792,11 +809,11 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool onlyVisible)
+void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible)
 {
     if( onlyVisible && !p_drawBoxes.getValue() ) return;
 
-    const helper::vector<Vec6>& vb=boxes.getValue(params);
+    const vector<Vec6>& vb=boxes.getValue(params);
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::min();
     Real maxBBox[3] = {min_real,min_real,min_real};
@@ -812,20 +829,21 @@ void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool onlyV
         if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
         if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+    this->f_bbox.setValue(params,TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 
 template<class DataTypes>
-void BoxROI<DataTypes>::handleEvent(core::objectmodel::Event *event)
+void BoxROI<DataTypes>::handleEvent(Event *event)
 {
-    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
+    if (AnimateBeginEvent::checkEventType(event))
     {
         setDirtyValue();
         update();
     }
 }
 
+} // namespace boxroi
 
 } // namespace engine
 

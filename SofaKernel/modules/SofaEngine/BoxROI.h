@@ -48,27 +48,42 @@ namespace component
 namespace engine
 {
 
+/// This namespace is used to avoid the leaking of the 'using' on includes.
+namespace boxroi
+{
+    using core::objectmodel::BaseObjectDescription ;
+    using sofa::core::behavior::MechanicalState ;
+    using core::topology::BaseMeshTopology ;
+    using core::behavior::MechanicalState ;
+    using core::objectmodel::BaseContext ;
+    using core::objectmodel::BaseObject ;
+    using core::visual::VisualParams ;
+    using core::objectmodel::Event ;
+    using core::ExecParams ;
+    using core::DataEngine ;
+    using helper::vector ;
+
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given box.
  */
 template <class DataTypes>
-class BoxROI : public core::DataEngine
+class BoxROI : public DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BoxROI,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(BoxROI,DataTypes), DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
-    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
+    typedef BaseMeshTopology::SetIndex SetIndex;
     typedef typename DataTypes::CPos CPos;
 
     typedef unsigned int PointID;
-    typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef core::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::topology::BaseMeshTopology::Hexa Hexa;
-    typedef core::topology::BaseMeshTopology::Quad Quad;
+    typedef BaseMeshTopology::Edge Edge;
+    typedef BaseMeshTopology::Triangle Triangle;
+    typedef BaseMeshTopology::Tetra Tetra;
+    typedef BaseMeshTopology::Hexa Hexa;
+    typedef BaseMeshTopology::Quad Quad;
 
 protected:
 
@@ -82,22 +97,22 @@ public:
 
     void update();
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const VisualParams*);
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
+    virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false );
 
-    virtual void handleEvent(core::objectmodel::Event *event);
+    virtual void handleEvent(Event *event);
 
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static bool canCreate(T*& obj, BaseContext* context, BaseObjectDescription* arg)
     {
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
@@ -106,7 +121,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T* tObj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    static typename T::SPtr create(T* tObj, BaseContext* context, BaseObjectDescription* arg)
     {
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
@@ -133,13 +148,13 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec6> > boxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
+    Data<vector<Vec6> > boxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra;
-    Data<helper::vector<Hexa> > f_hexahedra;
-    Data<helper::vector<Quad> > f_quad;
+    Data<vector<Edge> > f_edges;
+    Data<vector<Triangle> > f_triangles;
+    Data<vector<Tetra> > f_tetrahedra;
+    Data<vector<Hexa> > f_hexahedra;
+    Data<vector<Quad> > f_quad;
     Data<bool> f_computeEdges;
     Data<bool> f_computeTriangles;
     Data<bool> f_computeTetrahedra;
@@ -154,11 +169,11 @@ public:
     Data<SetIndex> f_hexahedronIndices;
     Data<SetIndex> f_quadIndices;
     Data<VecCoord > f_pointsInROI;
-    Data<helper::vector<Edge> > f_edgesInROI;
-    Data<helper::vector<Triangle> > f_trianglesInROI;
-    Data<helper::vector<Tetra> > f_tetrahedraInROI;
-    Data<helper::vector<Hexa> > f_hexahedraInROI;
-    Data<helper::vector<Quad> > f_quadInROI;
+    Data<vector<Edge> > f_edgesInROI;
+    Data<vector<Triangle> > f_trianglesInROI;
+    Data<vector<Tetra> > f_tetrahedraInROI;
+    Data<vector<Hexa> > f_hexahedraInROI;
+    Data<vector<Quad> > f_quadInROI;
     Data< unsigned int > f_nbIndices;
 
     //Parameter
@@ -190,6 +205,11 @@ extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3fTypes>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>;
 #endif //SOFA_DOUBLE
 #endif
+
+} // namespace boxroi
+
+/// Import the BoxROI into the engine namespace without leaking the other 'using sofa::core::'
+using boxroi::BoxROI ;
 
 } // namespace engine
 
