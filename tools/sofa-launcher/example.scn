@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="$GRAVITYXML" time="0" animate="0"   >
+    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+	<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+	<PythonScriptController filename="example.py" classname="MyController" printLog="true"/>
+</Node>
