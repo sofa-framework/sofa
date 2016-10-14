@@ -201,6 +201,7 @@ protected:
     /// the "this->" approach.
     using core::behavior::ForceField<DataTypes>::mstate ;
     using core::objectmodel::BaseObject::getContext;
+    using core::objectmodel::BaseObject::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 
