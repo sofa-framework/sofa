@@ -49,11 +49,14 @@ namespace engine
 
 namespace boxroi
 {
-
-using core::behavior::BaseMechanicalState ;
 using simulation::AnimateBeginEvent ;
+using core::behavior::BaseMechanicalState ;
+using core::topology::TopologyContainer ;
+using core::topology::BaseMeshTopology ;
+using core::objectmodel::ComponentState ;
 using core::objectmodel::BaseData ;
 using core::objectmodel::Event ;
+using core::loader::MeshLoader ;
 using core::ExecParams ;
 using defaulttype::TBoundingBox ;
 using defaulttype::Vector3 ;
@@ -62,11 +65,12 @@ using helper::WriteOnlyAccessor ;
 using helper::ReadAccessor ;
 using helper::vector ;
 
-
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
+    , f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom. "
+                                         "If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context."
+                                         "If none are found the parent's context is searched for MechanicalObject." ) )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
@@ -99,6 +103,7 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads. (default = false)") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
     , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box. (default = false)") )
+
     /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
     /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
     /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
@@ -144,13 +149,17 @@ void BoxROI<DataTypes>::init()
                               p_drawBoxes.copyValue(&d_deprecatedIsVisible);
     }
 
-
-    //cerr<<"BoxROI<DataTypes>::init() is called "<<endl;
+    /// If the position attribute is not set we are trying to
+    /// automatically load the positions from the current context MechanicalState if any, then
+    /// in a MeshLoad if any and in case of failure it will finally search it in the parent's
+    /// context.
     if (!f_X0.isSet())
     {
-        //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
-        BaseMechanicalState* mstate = NULL;
-        this->getContext()->get(mstate,BaseContext::Local);
+        msg_info(this) << "No attribute 'position' set.\n"
+                          "Searching in the context for a MechanicalObject or MeshLoader.\n" ;
+
+        BaseMechanicalState* mstate = nullptr ;
+        this->getContext()->get(mstate, BaseContext::Local);
         if (mstate)
         {
             BaseData* parent = mstate->findData("rest_position");
@@ -158,11 +167,16 @@ void BoxROI<DataTypes>::init()
             {
                 f_X0.setParent(parent);
                 f_X0.setReadOnly(true);
+            }else{
+                msg_warning(this) << "No attribute 'rest_position' in component '" << getName() << "'.\n"
+                                  << "The BoxROI component thus have no input and is thus deactivated.\n" ;
+                m_componentstate = ComponentState::Invalid ;
+                return ;
             }
         }
         else
         {
-            sofa::core::loader::MeshLoader* loader = NULL;
+            MeshLoader* loader = nullptr ;
             this->getContext()->get(loader,BaseContext::Local);
             if (loader)
             {
@@ -171,26 +185,45 @@ void BoxROI<DataTypes>::init()
                 {
                     f_X0.setParent(parent);
                     f_X0.setReadOnly(true);
+                }else{
+                    msg_warning(this) << "No attribute 'position' in component '" << getName() << "'.\n"
+                                      << "The BoxROI component thus have no input and is thus deactivated.\n" ;
+                    m_componentstate = ComponentState::Invalid ;
+                    return ;
                 }
             }
             else   // no local state, no loader => find upward
             {
-                this->getContext()->get(mstate,BaseContext::SearchUp);
-                assert(mstate && "BoxROI needs a mstate");
+                this->getContext()->get(mstate, BaseContext::SearchUp);
+                if(!mstate){
+                    msg_error(this) <<  "Unable to find a MechanicalObject for this component. "
+                                        "To remove this error message you can either:\n"
+                                        "   - to specifiy the DOF where to apply the BoxROI with the 'position' attribute.\n"
+                                        "   - to add MechanicalObject or MeshLoader component before the BoxROI in the scene graph.\n";
+                    m_componentstate = ComponentState::Invalid ;
+                    return ;
+                }
+
                 BaseData* parent = mstate->findData("rest_position");
-                assert(parent && "BoxROI needs a state with a rest_position Data");
+                if(!parent){
+                    dmsg_error(this) <<  "Unable to find a rest_position attribute in the MechanicalObject '" << mstate->getName() << "'";
+                    m_componentstate = ComponentState::Invalid ;
+                    return ;
+                }
                 f_X0.setParent(parent);
                 f_X0.setReadOnly(true);
             }
         }
     }
+
+
     if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet() || !f_hexahedra.isSet() || !f_quad.isSet() )
     {
 
-        sofa::core::topology::TopologyContainer* topologyContainer;
+        TopologyContainer* topologyContainer;
         this->getContext()->get(topologyContainer,BaseContext::Local);
 
-        sofa::core::topology::BaseMeshTopology* topology;
+        BaseMeshTopology* topology;
         this->getContext()->get(topology,BaseContext::Local);
 
         if (topologyContainer || topology)
@@ -240,7 +273,6 @@ void BoxROI<DataTypes>::init()
                     f_quad.setReadOnly(true);
                 }
             }
-
         }
     }
 
@@ -266,20 +298,24 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_nbIndices);
     setDirtyValue();
 
-    //cerr<<"BoxROI<DataTypes>::init() -> f_X0 = "<<f_X0<<endl;
-    //cerr<<"BoxROI<DataTypes>::init() -> boxes = "<<boxes<<endl;
-    //cerr<<"BoxROI<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
-
     reinit();
 
+    //TODO(dmarchal): why this thing is not in reinit ?
     this->f_listening.setValue( p_doUpdate.getValue() );
+
+    // remove the following after 01/01/2017.
     //if(p_doUpdate.getValue())
     //    this->f_listening.setValue(true);
+
+    m_componentstate = ComponentState::Valid ;
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
+
     vector<Vec6>& vb = *(boxes.beginEdit());
     if (!vb.empty())
     {
@@ -306,9 +342,6 @@ bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 {
     const VecCoord& x0 = f_X0.getValue();
     CPos p =  DataTypes::getCPos(x0[pid]);
-//    cerr<<"BoxROI<DataTypes>::isPointInBox, p= "<<p<<endl;
-//    cerr<<"BoxROI<DataTypes>::isPointInBox, box= "<<b<<endl;
-//    if(isPointInBox(p,b)) cerr<<"BoxROI<DataTypes>::isPointInBox, point is in box"<< endl;
     return ( isPointInBox(p,b) );
 }
 
@@ -380,12 +413,18 @@ bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 
 }
 
+//TODO(dmarchal): Clarify here what the doUpdate date field means, currently when this field is "false"
+//the update methode is called. I'm not this is was what is expected by user of the BoxROI component.
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
+
     const vector<Vec6>& vb = boxes.getValue();
 
     if (vb.empty()) { cleanDirty(); return; }
+
 
     // Read accessor for input topology
     ReadAccessor< Data<vector<Edge> > > edges = f_edges;
@@ -396,9 +435,7 @@ void BoxROI<DataTypes>::update()
 
     const VecCoord& x0 = f_X0.getValue();
 
-
     cleanDirty();
-
 
     // Write accessor for topological element indices in BOX
     SetIndex& indices = *f_indices.beginWriteOnly();
@@ -554,11 +591,14 @@ void BoxROI<DataTypes>::update()
 template <class DataTypes>
 void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
+
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
         return;
 
     const VecCoord& x0 = f_X0.getValue();
-    sofa::defaulttype::Vec4f color = sofa::defaulttype::Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
+    Vec4f color = Vec4f(1.0f, 0.4f, 0.4f, 1.0f);
 
 
     ///draw the boxes
@@ -811,7 +851,11 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void BoxROI<DataTypes>::computeBBox(const ExecParams*  params , bool onlyVisible)
 {
-    if( onlyVisible && !p_drawBoxes.getValue() ) return;
+    if( onlyVisible && !p_drawBoxes.getValue() )
+        return;
+
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
 
     const vector<Vec6>& vb=boxes.getValue(params);
     const Real max_real = std::numeric_limits<Real>::max();

@@ -49,6 +49,9 @@ namespace engine
 {
 
 /// This namespace is used to avoid the leaking of the 'using' on includes.
+/// BoxROI is defined in namespace in sofa::component::engine::boxroi:BoxROI
+/// It is then import into sofa::component::engine::BoxROI to not break the
+/// API.
 namespace boxroi
 {
     using core::objectmodel::BaseObjectDescription ;
@@ -62,6 +65,7 @@ namespace boxroi
     using core::ExecParams ;
     using core::DataEngine ;
     using helper::vector ;
+    using std::string ;
 
 /**
  * This class find all the points/edges/triangles/tetrahedra located inside a given box.
@@ -85,24 +89,14 @@ public:
     typedef BaseMeshTopology::Hexa Hexa;
     typedef BaseMeshTopology::Quad Quad;
 
-protected:
-
-    BoxROI();
-
-    ~BoxROI() {}
 public:
     void init();
-
     void reinit();
-
     void update();
-
     void draw(const VisualParams*);
 
     virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false );
-
     virtual void handleEvent(Event *event);
-
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -123,28 +117,18 @@ public:
     template<class T>
     static typename T::SPtr create(T* tObj, BaseContext* context, BaseObjectDescription* arg)
     {
-        return core::objectmodel::BaseObject::create(tObj, context, arg);
+        return BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual string getTemplateName() const
     {
         return templateName(this);
     }
 
-    static std::string templateName(const BoxROI<DataTypes>* = NULL)
+    static string templateName(const BoxROI<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
-
-
-protected:
-    bool isPointInBox(const CPos& p, const Vec6& b);
-    bool isPointInBox(const PointID& pid, const Vec6& b);
-    bool isEdgeInBox(const Edge& e, const Vec6& b);
-    bool isTriangleInBox(const Triangle& t, const Vec6& b);
-    bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
-    bool isHexahedronInBox(const Hexa& t, const Vec6& b);
-    bool isQuadInBox(const Quad& q, const Vec6& b);
 
 public:
     //Input
@@ -191,6 +175,18 @@ public:
     /// the corresponding attribute is not supported any more.
     Data<VecCoord> d_deprecatedX0;
     Data<bool> d_deprecatedIsVisible;
+
+protected:
+    BoxROI();
+    ~BoxROI() {}
+
+    bool isPointInBox(const CPos& p, const Vec6& b);
+    bool isPointInBox(const PointID& pid, const Vec6& b);
+    bool isEdgeInBox(const Edge& e, const Vec6& b);
+    bool isTriangleInBox(const Triangle& t, const Vec6& b);
+    bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
+    bool isHexahedronInBox(const Hexa& t, const Vec6& b);
+    bool isQuadInBox(const Quad& q, const Vec6& b);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
@@ -208,7 +204,8 @@ extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec6fTypes>;
 
 } // namespace boxroi
 
-/// Import the BoxROI into the engine namespace without leaking the other 'using sofa::core::'
+/// Import sofa::component::engine::boxroi::BoxROI into
+/// into the sofa::component::engine namespace.
 using boxroi::BoxROI ;
 
 } // namespace engine
