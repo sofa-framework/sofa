@@ -26,7 +26,7 @@
 #ifndef IMAGE_IMAGETYPES_H
 #define IMAGE_IMAGETYPES_H
 
-#include <Image/config.h>
+#include <image/config.h>
 
 #if  defined (SOFA_HAVE_FFMPEG)  || defined (SOFA_EXTLIBS_FFMPEG)
 #define cimg_use_ffmpeg
@@ -47,7 +47,7 @@
 #include "VectorVis.h"
 #include <sofa/helper/rmath.h>
 
-
+#include <boost/preprocessor/slot/counter.hpp>
 
 namespace sofa
 {
@@ -56,9 +56,6 @@ namespace defaulttype
 {
 
 
-/// type identifier, must be unique
-static const int IMAGELABEL_IMAGE = 0;
-static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
 
 
@@ -71,6 +68,13 @@ struct BaseImage
     virtual ~BaseImage() {}
 };
 
+
+
+
+/// type identifier, must be unique
+static const int IMAGELABEL_IMAGE = BOOST_PP_COUNTER;
+
+
 //-----------------------------------------------------------------------------------------------//
 /// 5d-image structure on top of a shared memory CImgList
 //-----------------------------------------------------------------------------------------------//
@@ -82,7 +86,8 @@ struct Image : public BaseImage
     typedef _T T;
     typedef cimg_library::CImg<T> CImgT;
 
-    static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
+    static const int label = IMAGELABEL_IMAGE; // mandatory type identifier, must be unique
+
     /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
 

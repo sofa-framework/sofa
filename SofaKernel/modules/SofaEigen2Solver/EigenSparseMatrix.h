@@ -32,6 +32,7 @@
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
+#include <sofa/helper/OwnershipSPtr.h>
 
 namespace sofa
 {
@@ -599,6 +600,61 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
 } // namespace linearsolver
 
 } // namespace component
+
+
+
+    /// Converts a BaseMatrix to a eigen sparse matrix encapsulted in a OwnershipSPtr.
+    /// It the conversion needs to create a temporary matrix, it will be automatically deleted
+    /// by the OwnershipSPtr (with ownership).
+    /// It the conversion did not create a temporary data, and points to an existing matrix,
+    /// the OwnershipSPtr does not take the ownership and won't delete anything.
+    /// @TODO move this somewhere else?
+    /// @author Matthieu Nesme
+    template<class mat>
+    helper::OwnershipSPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
+        assert( m );
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
+        const matrixr* smr = dynamic_cast<const matrixr*> (m);
+        // no need to create temporary data, so the SPtr does not take this ownership
+        if ( smr ) return helper::OwnershipSPtr<mat>(&smr->compressedMatrix, false);
+        }
+
+        msg_warning("EigenSparseMatrix")<<"convertSPtr: slow matrix conversion (scalar type conversion)";
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+        const matrixd* smd = dynamic_cast<const matrixd*> (m);
+        // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
+        if ( smd ) return helper::OwnershipSPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
+        }
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+        const matrixf* smf = dynamic_cast<const matrixf*>(m);
+        // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
+        if( smf ) return helper::OwnershipSPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
+        }
+
+        msg_warning("EigenSparseMatrix")<<"convertSPtr: very slow matrix conversion (from BaseMatrix)";
+
+        mat* res = new mat(m->rowSize(), m->colSize());
+
+        res->reserve(res->rows() * res->cols());
+        for(unsigned i = 0, n = res->rows(); i < n; ++i) {
+            res->startVec( i );
+            for(unsigned j = 0, k = res->cols(); j < k; ++j) {
+                SReal e = m->element(i, j);
+                if( e ) res->insertBack(i, j) = e;
+            }
+        }
+
+        // a temporary matrix is created, the SPtr takes its ownership, so its deletion will be transparent
+        return helper::OwnershipSPtr<mat>(res, true);
+    }
+
+
 
 } // namespace sofa
 

@@ -49,7 +49,21 @@ elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
     set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
 endif()
 
-
+# If you really don't understand the negated logics of SOFA_DOUBLE and
+# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
+# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
+# float code and SOFA_WITH_DOUBLE indicates that you
+# nedd to generate the double related code.
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_WITH_FLOAT 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
+    set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
 
 ### Dependencies
 
@@ -124,7 +138,7 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 find_package(PNG)
 if(PNG_FOUND)
     sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
 
 
     sofa_install_get_libraries("${PNG_LIBRARY}/libpng")

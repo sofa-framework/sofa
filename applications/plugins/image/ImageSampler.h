@@ -436,8 +436,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageSampler : public core::DataEngine
 {
-    friend struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageSamplerSpecialization<_ImageTypes::label>;
 
 public:
 

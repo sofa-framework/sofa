@@ -145,8 +145,7 @@ struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE
 template <class _ImageTypes>
 class ImageCoordValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageCoordValuesFromPositionsSpecialization<_ImageTypes::label>;
 
 public:
     typedef core::DataEngine Inherited;

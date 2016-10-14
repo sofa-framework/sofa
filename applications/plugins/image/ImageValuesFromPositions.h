@@ -123,8 +123,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageValuesFromPositionsSpecialization<_ImageTypes::label>;
 
 public:
     typedef core::DataEngine Inherited;

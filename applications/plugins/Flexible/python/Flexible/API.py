@@ -547,6 +547,7 @@ class Behavior:
         self.sampler = None
         self.dofs = None
         self.mapping = None
+        self.strainDofs = None
         self.strainMapping = None
         self.relativeStrainMapping = None
         self.forcefield = None
@@ -649,7 +650,7 @@ class Behavior:
 
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, useOffset=False, assemble=True):
         eNode = self.node.createChild("E")
-        eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
+        self.strainDofs = eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         self.strainMapping = eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
         if useOffset:
             eOffNode = eNode.createChild("offsetE")

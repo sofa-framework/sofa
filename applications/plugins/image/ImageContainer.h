@@ -339,8 +339,7 @@ template<class _ImageTypes>
 class ImageContainer : public core::objectmodel::BaseObject
 {
 
-    friend struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageContainerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageContainerSpecialization<_ImageTypes::label>;
 
 public:
     typedef core::objectmodel::BaseObject Inherited;

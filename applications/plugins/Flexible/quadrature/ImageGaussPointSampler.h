@@ -453,8 +453,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ImageTypes_, class MaskTypes_>
 class ImageGaussPointSampler : public BaseGaussPointSampler
 {
-    friend struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageGaussPointSamplerSpecialization<ImageTypes_::label>;
     typedef ImageGaussPointSamplerSpecialization<ImageTypes_::label> ImageGaussPointSamplerSpec;
 
 public:

@@ -32,11 +32,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/BaseMapping.h>
 
-
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <Compliant/assembly/AssemblyHelper.h>
 
 namespace sofa
 {
@@ -108,8 +106,7 @@ struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _DataTypes, class _ImageTypes>
 class MassFromDensity : public core::DataEngine
 {
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct MassFromDensitySpecialization<_ImageTypes::label>;
     typedef MassFromDensitySpecialization<_ImageTypes::label> MassFromDensitySpec;
 
 public:
@@ -199,7 +196,7 @@ protected:
             const core::State< DataTypes >* compatible = dynamic_cast<const core::State< DataTypes >*> (deformationMapping->getFrom()[i]);
             if(compatible)
             {
-                MySPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
+                helper::OwnershipSPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
                 rmat JTMe=J->transpose()*Me;
                 MassMatrix& M = *massMatrix.beginWriteOnly();
                 M.compressedMatrix=JTMe*(*J);
