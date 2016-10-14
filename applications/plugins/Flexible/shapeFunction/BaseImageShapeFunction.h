@@ -170,8 +170,7 @@ abstract class for shape functions computed from a set of images (typically rast
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class BaseImageShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
-    friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct BaseImageShapeFunctionSpecialization<ImageTypes_::label>;
 
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));

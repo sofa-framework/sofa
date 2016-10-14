@@ -101,8 +101,8 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _InImageTypes,class _OutImageTypes>
 class TransferFunction : public core::DataEngine
 {
-    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    static_assert( _InImageTypes::label==_OutImageTypes::label, "TransferFunction is only between images of same types for now" );
+    friend struct TransferFunctionSpecialization<_InImageTypes::label>;
 
 public:
     typedef core::DataEngine Inherited;
