@@ -478,7 +478,7 @@ public:
     ComponentState getComponentState() const { return m_componentstate ; }
 
 protected:
-    ComponentState m_componentstate ;
+    ComponentState m_componentstate { ComponentState::Undefined } ;
 
     SingleLink<BaseObject, BaseContext, BaseLink::FLAG_DOUBLELINK> l_context;
     LinkSlaves l_slaves;
