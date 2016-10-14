@@ -39,6 +39,7 @@ public:
     Data<bool> f_computeHamiltonian;
     Data<double> f_hamiltonianEnergy;
     Data<bool> f_useIncrementalPotentialEnergy;
+    Data<bool> d_threadsafevisitor;
 
 	VariationalSymplecticSolver();
 

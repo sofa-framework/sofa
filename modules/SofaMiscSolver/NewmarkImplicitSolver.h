@@ -72,6 +72,7 @@ public:
 
     Data<double> f_gamma;
     Data<double> f_beta;
+    Data<bool> d_threadsafevisitor;
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
