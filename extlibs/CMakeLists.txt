@@ -26,11 +26,6 @@ if (SOFA_BUILD_MINIFLOWVR)
     list(APPEND EXTLIBS_TARGETS miniFlowVR)
 endif()
 
-option(SOFA_BUILD_CIMG "Build the Cimg library distributed in the extlibs/ directory. Necessary for Image plugin" OFF)
-if(SOFA_BUILD_CIMG)
-    add_subdirectory(CImg)
-endif()
-
 option(SOFA_BUILD_ARTRACK
 "Build the ARTrack library distributed in the extlibs/ directory.  This library
 is used only by the ARTrack plugin."  OFF)
