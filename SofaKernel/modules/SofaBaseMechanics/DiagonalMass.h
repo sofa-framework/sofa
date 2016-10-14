@@ -57,13 +57,6 @@ namespace component
 namespace mass
 {
 
-/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
-enum class ComponentState {
-    NotInitialized,
-    Valid,
-    Invalid
-};
-
 template<class DataTypes, class TMassType>
 class DiagonalMassInternalData
 {
@@ -215,7 +208,7 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
 
-    ComponentState m_cstate {ComponentState::NotInitialized} ;
+
 public:
     sofa::core::topology::BaseMeshTopology* _topology;
 
