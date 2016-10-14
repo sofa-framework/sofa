@@ -83,6 +83,10 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
     , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box") )
+    /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
+    /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
+    /// using msg_warning saying to the user of this component that the attribute is deprecated and solutions/replacement
+    /// he has to fix his scene.
 {
     //Adding alias to handle old BoxROI input/output
     addAlias(&f_pointsInROI,"pointsInBox");
@@ -224,7 +228,7 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_tetrahedraInROI);
     addOutput(&f_hexahedraInROI);
     addOutput(&f_quadInROI);
-	addOutput(&f_nbIndices);
+    addOutput(&f_nbIndices);
     setDirtyValue();
 
     //cerr<<"BoxROI<DataTypes>::init() -> f_X0 = "<<f_X0<<endl;
