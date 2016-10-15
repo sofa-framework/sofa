@@ -27,9 +27,13 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <iostream>
-//#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
 #include <cstdio>
 #include <sstream>
+
+//XML VTK Loader
+#define checkError(A) if (!A) { return false; }
+#define checkErrorPtr(A) if (!A) { return NULL; }
+#define checkErrorMsg(A, B) if (!A) { msg_error("MeshVTKLoader") << B << "\n" ; return false; }
 
 namespace sofa
 {
@@ -41,14 +45,354 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::BaseObject ;
+using sofa::defaulttype::Vector3 ;
+using sofa::defaulttype::Vec ;
+using std::istringstream;
+using std::istream;
+using std::ofstream;
+using std::string;
 
-SOFA_DECL_CLASS(MeshVTKLoader)
+//////////////////// PRIVATE CLASS FOR INTERNAL USE BY MeshVTKLoader ////////
+enum VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
+                        STRUCTURED_GRID, RECTILINEAR_GRID,
+                        POLYDATA, UNSTRUCTURED_GRID };
 
-int MeshVTKLoaderClass = core::RegisterObject("Specific mesh loader for VTK file format.")
-        .add< MeshVTKLoader >()
-        ;
+class BaseVTKReader : public BaseObject
+{
+public:
+    class BaseVTKDataIO : public BaseObject
+    {
+    public:
+        string name;
+        int dataSize;
+        int nestedDataSize;
+        BaseVTKDataIO() : dataSize(0), nestedDataSize(1) {}
+        virtual ~BaseVTKDataIO() {}
+        virtual void resize(int n) = 0;
+        virtual bool read(istream& f, int n, int binary) = 0;
+        virtual bool read(const string& s, int n, int binary) = 0;
+        virtual bool read(const string& s, int binary) = 0;
+        virtual bool write(ofstream& f, int n, int groups, int binary) = 0;
+        virtual const void* getData() = 0;
+        virtual void swap() = 0;
 
-//Base VTK Loader
+        virtual BaseData* createSofaData() = 0;
+    };
+
+    template<class T>
+    class VTKDataIO : public BaseVTKDataIO
+    {
+    public:
+        T* data;
+        VTKDataIO() : data(NULL) {}
+        ~VTKDataIO() { if (data) delete[] data; }
+        virtual const void* getData()
+        {
+            return data;
+        }
+
+        virtual void resize(int n)
+        {
+            if (dataSize != n)
+            {
+                if (data) delete[] data;
+                data = new T[n];
+            }
+
+            dataSize = n;
+        }
+        static T swapT(T t, int nestedDataSize)
+        {
+            T revT;
+            char* revB = (char*) &revT;
+            const char* tmpB = (char*) &t;
+
+            if (nestedDataSize < 2)
+            {
+                for (unsigned int c=0; c<sizeof(T); ++c)
+                    revB[c] = tmpB[sizeof(T)-1-c];
+            }
+            else
+            {
+                int singleSize = sizeof(T)/nestedDataSize;
+                for (int i=0; i<nestedDataSize; ++i)
+                {
+                    for (unsigned int c=0; c<sizeof(T); ++c)
+                        revB[c+i*singleSize] = tmpB[(sizeof(T)-1-c) + i*singleSize];
+                }
+
+            }
+            return revT;
+
+        }
+        void swap()
+        {
+            for (int i=0; i<dataSize; ++i)
+                data[i] = swapT(data[i], nestedDataSize);
+        }
+        virtual bool read(const string& s, int n, int binary)
+        {
+            istringstream iss(s);
+            return read(iss, n, binary);
+        }
+
+        virtual bool read(const string& s, int binary)
+        {
+            int n=0;
+            //compute size itself
+            if (binary == 0)
+            {
+
+                string::size_type begin = 0;
+                string::size_type end = s.find(' ', begin);
+                n=1;
+
+                while (end != string::npos)
+                {
+                    n++;
+                    begin = end + 1;
+                    end = s.find(' ', begin);
+                }
+            }
+            else
+            {
+                n = sizeof(s.c_str())/sizeof(T);
+            }
+            istringstream iss(s);
+
+            return read(iss, n, binary);
+        }
+
+        virtual bool read(istream& in, int n, int binary)
+        {
+            resize(n);
+            if (binary)
+            {
+                in.read((char*)data, n *sizeof(T));
+                if (in.eof() || in.bad())
+                {
+                    resize(0);
+                    return false;
+                }
+                if (binary == 2) // swap bytes
+                {
+                    for (int i=0; i<n; ++i)
+                    {
+                        data[i] = swapT(data[i], nestedDataSize);
+                    }
+                }
+            }
+            else
+            {
+                int i = 0;
+                string line;
+                while(i < dataSize && !in.eof() && !in.bad())
+                {
+                    std::getline(in, line);
+                    istringstream ln(line);
+                    while (i < n && ln >> data[i])
+                        ++i;
+                }
+                if (i < n)
+                {
+                    resize(0);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        virtual bool write(ofstream& out, int n, int groups, int binary)
+        {
+            if (n > dataSize && !data) return false;
+            if (binary)
+            {
+                out.write((char*)data, n * sizeof(T));
+            }
+            else
+            {
+                if (groups <= 0 || groups > n) groups = n;
+                for (int i = 0; i < n; ++i)
+                {
+                    if ((i % groups) > 0)
+                        out << ' ';
+                    out << data[i];
+                    if ((i % groups) == groups-1)
+                        out << '\n';
+                }
+            }
+            if (out.bad())
+                return false;
+            return true;
+        }
+
+        virtual BaseData* createSofaData()
+        {
+            Data<helper::vector<T> >* sdata = new Data<helper::vector<T> >(name.c_str(), true, false);
+            sdata->setName(name);
+            helper::vector<T>& sofaData = *sdata->beginEdit();
+
+            for (int i=0 ; i<dataSize ; i++)
+                sofaData.push_back(data[i]);
+            sdata->endEdit();
+
+            return sdata;
+        }
+    };
+
+    BaseVTKDataIO* newVTKDataIO(const string& typestr)
+    {
+        if  (!strcasecmp(typestr.c_str(), "char") || !strcasecmp(typestr.c_str(), "Int8"))
+            return new VTKDataIO<char>;
+        else if (!strcasecmp(typestr.c_str(), "unsigned_char") || !strcasecmp(typestr.c_str(), "UInt8"))
+            return new VTKDataIO<unsigned char>;
+        else if (!strcasecmp(typestr.c_str(), "short") || !strcasecmp(typestr.c_str(), "Int16"))
+            return new VTKDataIO<short>;
+        else if (!strcasecmp(typestr.c_str(), "unsigned_short") || !strcasecmp(typestr.c_str(), "UInt16"))
+            return new VTKDataIO<unsigned short>;
+        else if (!strcasecmp(typestr.c_str(), "int") || !strcasecmp(typestr.c_str(), "Int32"))
+            return new VTKDataIO<int>;
+        else if (!strcasecmp(typestr.c_str(), "unsigned_int") || !strcasecmp(typestr.c_str(), "UInt32"))
+            return new VTKDataIO<unsigned int>;
+        //else if (!strcasecmp(typestr.c_str(), "long") || !strcasecmp(typestr.c_str(), "Int64"))
+        //	return new VTKDataIO<long long>;
+        //else if (!strcasecmp(typestr.c_str(), "unsigned_long") || !strcasecmp(typestr.c_str(), "UInt64"))
+        // 	return new VTKDataIO<unsigned long long>;
+        else if (!strcasecmp(typestr.c_str(), "float") || !strcasecmp(typestr.c_str(), "Float32"))
+            return new VTKDataIO<float>;
+        else if (!strcasecmp(typestr.c_str(), "double") || !strcasecmp(typestr.c_str(), "Float64"))
+            return new VTKDataIO<double>;
+        else return NULL;
+    }
+
+    BaseVTKDataIO* newVTKDataIO(const string& typestr, int num)
+    {
+        BaseVTKDataIO* result = NULL;
+
+        if (num == 1)
+            result = newVTKDataIO(typestr);
+        else
+        {
+            if (!strcasecmp(typestr.c_str(), "char") || !strcasecmp(typestr.c_str(), "Int8") ||
+                !strcasecmp(typestr.c_str(), "short") || !strcasecmp(typestr.c_str(), "Int32") ||
+                !strcasecmp(typestr.c_str(), "int") || !strcasecmp(typestr.c_str(), "Int32"))
+            {
+                switch (num)
+                {
+                case 2:
+                    result = new VTKDataIO<Vec<2, int> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, int> >;
+                    break;
+                default:
+                    return NULL;
+                }
+            }
+
+            if (!strcasecmp(typestr.c_str(), "unsigned char") || !strcasecmp(typestr.c_str(), "UInt8") ||
+                !strcasecmp(typestr.c_str(), "unsigned short") || !strcasecmp(typestr.c_str(), "UInt32") ||
+                !strcasecmp(typestr.c_str(), "unsigned int") || !strcasecmp(typestr.c_str(), "UInt32"))
+            {
+                switch (num)
+                {
+                case 2:
+                    result = new VTKDataIO<Vec<2, unsigned int> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, unsigned int> >;
+                    break;
+                default:
+                    return NULL;
+                }
+            }
+            if (!strcasecmp(typestr.c_str(), "float") || !strcasecmp(typestr.c_str(), "Float32"))
+            {
+                switch (num)
+                {
+                case 2:
+                    result = new VTKDataIO<Vec<2, float> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, float> >;
+                    break;
+                default:
+                    return NULL;
+                }
+            }
+            if (!strcasecmp(typestr.c_str(), "double") || !strcasecmp(typestr.c_str(), "Float64"))
+            {
+                switch (num)
+                {
+                case 2:
+                    result = new VTKDataIO<Vec<2, double> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, double> >;
+                    break;
+                default:
+                    return NULL;
+                }
+            }
+        }
+        result->nestedDataSize = num;
+        return result;
+    }
+
+public:
+    BaseVTKDataIO* inputPoints;
+    BaseVTKDataIO* inputPolygons;
+    BaseVTKDataIO* inputCells;
+    BaseVTKDataIO* inputCellOffsets;
+    BaseVTKDataIO* inputCellTypes;
+    helper::vector<BaseVTKDataIO*> inputPointDataVector;
+    helper::vector<BaseVTKDataIO*> inputCellDataVector;
+    bool isLittleEndian;
+
+    int numberOfPoints, numberOfCells, numberOfLines;
+
+
+    BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL), inputCellOffsets(NULL), inputCellTypes(NULL),
+        numberOfPoints(0),numberOfCells(0)
+    {}
+
+    bool readVTK(const char* filename)
+    {
+        bool state = readFile(filename);
+        return state;
+    }
+
+    virtual bool readFile(const char* filename) = 0;
+};
+
+class LegacyVTKReader : public BaseVTKReader
+{
+public:
+    bool readFile(const char* filename);
+};
+
+class XMLVTKReader : public BaseVTKReader
+{
+public:
+    bool readFile(const char* filename);
+protected:
+    bool loadUnstructuredGrid(TiXmlHandle datasetFormatHandle);
+    bool loadPolydata(TiXmlHandle datasetFormatHandle);
+    bool loadRectilinearGrid(TiXmlHandle datasetFormatHandle);
+    bool loadStructuredGrid(TiXmlHandle datasetFormatHandle);
+    bool loadStructuredPoints(TiXmlHandle datasetFormatHandle);
+    bool loadImageData(TiXmlHandle datasetFormatHandle);
+    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement, int size, string type);
+    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement, int size);
+    BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement);
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////// MeshVTKLoader IMPLEMENTATION //////////////////////////////////
 MeshVTKLoader::MeshVTKLoader() : MeshLoader()
     , reader(NULL)
 {
@@ -61,21 +405,21 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
     if( !inVTKFile.is_open() )
         return MeshVTKLoader::NONE;
 
-    std::string line;
+    string line;
     std::getline(inVTKFile, line);
 
-    if (line.find("<?xml") != std::string::npos)
+    if (line.find("<?xml") != string::npos)
     {
         std::getline(inVTKFile, line);
 
-        if (line.find("<VTKFile") != std::string::npos)
+        if (line.find("<VTKFile") != string::npos)
             return MeshVTKLoader::XML;
         else
             return MeshVTKLoader::NONE;
     }
-    else if (line.find("<VTKFile") != std::string::npos) //... not xml-compliant
+    else if (line.find("<VTKFile") != string::npos) //... not xml-compliant
         return MeshVTKLoader::XML;
-    else if (line.find("# vtk DataFile") != std::string::npos)
+    else if (line.find("# vtk DataFile") != string::npos)
         return MeshVTKLoader::LEGACY;
     else //default behavior if the first line is not correct ?
         return MeshVTKLoader::NONE;
@@ -122,7 +466,7 @@ bool MeshVTKLoader::load()
 
 bool MeshVTKLoader::setInputsMesh()
 {
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<Vector3>& my_positions = *(positions.beginEdit());
     if (reader->inputPoints)
     {
         BaseVTKReader::VTKDataIO<double>* vtkpd =  dynamic_cast<BaseVTKReader::VTKDataIO<double>* > (reader->inputPoints);
@@ -132,7 +476,7 @@ bool MeshVTKLoader::setInputsMesh()
             const double* inPoints = (vtkpd->data);
             if (inPoints)
                 for (int i=0; i < vtkpd->dataSize; i+=3)
-                    my_positions.push_back(sofa::defaulttype::Vector3 ((double)inPoints[i+0], (double)inPoints[i+1], (double)inPoints[i+2]));
+                    my_positions.push_back(Vector3 ((double)inPoints[i+0], (double)inPoints[i+1], (double)inPoints[i+2]));
             else return false;
         }
         else if (vtkpf)
@@ -140,7 +484,7 @@ bool MeshVTKLoader::setInputsMesh()
             const float* inPoints = (vtkpf->data);
             if (inPoints)
                 for (int i=0; i < vtkpf->dataSize; i+=3)
-                    my_positions.push_back(sofa::defaulttype::Vector3 ((float)inPoints[i+0], (float)inPoints[i+1], (float)inPoints[i+2]));
+                    my_positions.push_back(Vector3 ((float)inPoints[i+0], (float)inPoints[i+1], (float)inPoints[i+2]));
             else return false;
         }
         else
@@ -200,15 +544,6 @@ bool MeshVTKLoader::setInputsMesh()
             ++poly;
         }
     }
-    /*else if (reader->inputLines) {
-        const int* inFP = (const int*) reader->inputLines->getData();
-
-        std::cout << "DS: " << reader->inputLines->dataSize << " NDS: " << reader->inputLines->nestedDataSize << std::endl;
-
-        int nbf = reader->numberOfLines;
-
-
-    }*/
     else if (reader->inputCells && reader->inputCellTypes)
     {
         const int* inFP = (const int*) reader->inputCells->getData();
@@ -327,7 +662,7 @@ bool MeshVTKLoader::setInputsMesh()
 
 bool MeshVTKLoader::setInputsData()
 {
-    //std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = this->getFields();
+    //std::vector< std::pair<string, BaseData*> > f = this->getFields();
     //std::cout << "Number of Fields before :" << f.size() << std::endl;
 
     ///Point Data
@@ -335,7 +670,7 @@ bool MeshVTKLoader::setInputsData()
     {
         const char* dataname = reader->inputPointDataVector[i]->name.c_str();
 
-        core::objectmodel::BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
+        BaseData* basedata = reader->inputPointDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
     }
 
@@ -343,7 +678,7 @@ bool MeshVTKLoader::setInputsData()
     for (size_t i=0 ; i<reader->inputCellDataVector.size() ; i++)
     {
         const char* dataname = reader->inputCellDataVector[i]->name.c_str();
-        core::objectmodel::BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
+        BaseData* basedata = reader->inputCellDataVector[i]->createSofaData();
         this->addData(basedata, dataname);
     }
 
@@ -354,27 +689,27 @@ bool MeshVTKLoader::setInputsData()
 
 
 //Legacy VTK Loader
-bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
+bool LegacyVTKReader::readFile(const char* filename)
 {
     std::ifstream inVTKFile(filename, std::ifstream::in | std::ifstream::binary);
     if( !inVTKFile.is_open() )
     {
         return false;
     }
-    std::string line;
+    string line;
 
     // Part 1
     std::getline(inVTKFile, line);
-    if (std::string(line,0,23) != "# vtk DataFile Version ")
+    if (string(line,0,23) != "# vtk DataFile Version ")
     {
         serr << "Error: Unrecognized header in file '" << filename << "'." << sendl;
         inVTKFile.close();
         return false;
     }
-    std::string version(line,23);
+    string version(line,23);
 
     // Part 2
-    std::string header;
+    string header;
     std::getline(inVTKFile, header);
 
     // Part 3
@@ -423,13 +758,13 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     {
         std::getline(inVTKFile, line);
         if (line.empty()) continue;
-        std::istringstream ln(line);
-        std::string kw;
+        istringstream ln(line);
+        string kw;
         ln >> kw;
         if (kw == "POINTS")
         {
             int n;
-            std::string typestr;
+            string typestr;
             ln >> n >> typestr;
             sout << "Found " << n << " " << typestr << " points" << sendl;
             inputPoints = newVTKDataIO(typestr);
@@ -488,8 +823,8 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             std::getline(inVTKFile, line);
             if (line.empty()) continue;
             /// line defines the type and name such as SCALAR dataset
-            std::istringstream lnData(line);
-            std::string dataStructure, dataName, dataType;
+            istringstream lnData(line);
+            string dataStructure, dataName, dataType;
             lnData >> dataStructure;
 
             sout << "Data structure: " << dataStructure << sendl;
@@ -514,8 +849,8 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                 std::getline(inVTKFile,line);
                 if (line.empty()) continue;
                 /// line defines the type and name such as SCALAR dataset
-                std::istringstream lnData(line);
-                std::string dataStructure;
+                istringstream lnData(line);
+                string dataStructure;
                 lnData >> dataStructure;
 
 //                if (dataStructure == "Topology") {
@@ -573,12 +908,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     return true;
 }
 
-//XML VTK Loader
-#define checkError(A) if (!A) { return false; }
-#define checkErrorPtr(A) if (!A) { return NULL; }
-#define checkErrorMsg(A, B) if (!A) { serr << B << sendl ; return false; }
-
-bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
+bool XMLVTKReader::readFile(const char* filename)
 {
     TiXmlDocument vtkDoc(filename);
     //quick check
@@ -596,12 +926,12 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
 
     //Endianness
     const char* endiannessStrTemp = pElem->Attribute("byte_order");
-    isLittleEndian = (std::string(endiannessStrTemp).compare("LittleEndian") == 0) ;
+    isLittleEndian = (string(endiannessStrTemp).compare("LittleEndian") == 0) ;
 
     //read VTK data format type
     const char* datasetFormatStrTemp = pElem->Attribute("type");
     checkErrorMsg(datasetFormatStrTemp, "Dataset format not defined")
-    std::string datasetFormatStr = std::string(datasetFormatStrTemp);
+    string datasetFormatStr = string(datasetFormatStrTemp);
     VTKDatasetFormat datasetFormat;
 
     if (datasetFormatStr.compare("UnstructuredGrid") == 0)
@@ -649,17 +979,18 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
 
     return true;
 }
-MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement)
+
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement)
 {
     return loadDataArray(dataArrayElement,0);
 }
 
-MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size)
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size)
 {
     return loadDataArray(dataArrayElement, size, "");
 }
 
-MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size, std::string type)
+BaseVTKReader::BaseVTKDataIO* XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size, string type)
 {
     //Type
     const char* typeStrTemp;
@@ -679,7 +1010,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     checkErrorPtr(formatStrTemp);
 
     int binary = 0;
-    if (std::string(formatStrTemp).compare("ascii") == 0)
+    if (string(formatStrTemp).compare("ascii") == 0)
         binary = 0;
     else if (isLittleEndian)
         binary = 1;
@@ -697,36 +1028,30 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
     bool state = false;
 
     if (!listValuesStrTemp) return NULL;
-    if (std::string(listValuesStrTemp).size() < 1) return NULL;
+    if (string(listValuesStrTemp).size() < 1) return NULL;
 
-    BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(std::string(typeStrTemp));
+    BaseVTKDataIO* d = BaseVTKReader::newVTKDataIO(string(typeStrTemp));
 
     if (!d) return NULL;
 
     if (size > 0)
-        state = (d->read(std::string(listValuesStrTemp), numberOfComponents*size, binary));
+        state = (d->read(string(listValuesStrTemp), numberOfComponents*size, binary));
     else
-        state = (d->read(std::string(listValuesStrTemp), binary));
+        state = (d->read(string(listValuesStrTemp), binary));
     checkErrorPtr(state);
-
-
 
     return d;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
+bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
 {
     TiXmlElement* pieceElem = datasetFormatHandle.FirstChild( "Piece" ).ToElement();
 
     checkError(pieceElem);
-    //for each "Piece" Node
     for( ; pieceElem; pieceElem=pieceElem->NextSiblingElement())
     {
         pieceElem->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
         pieceElem->QueryIntAttribute("NumberOfCells", &numberOfCells);
-
-        //std::cout << "Number Of Points " << numberOfPoints << std::endl;
-        //std::cout << "Number Of Cells " << numberOfCells << std::endl;
 
         TiXmlNode* dataArrayNode;
         TiXmlElement* dataArrayElement;
@@ -734,9 +1059,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
 
         for ( ; node ; node = node->NextSibling())
         {
-            std::string currentNodeName = std::string(node->Value());
-
-            //std::cout << currentNodeName << std::endl;
+            string currentNodeName = string(node->Value());
 
             if (currentNodeName.compare("Points") == 0)
             {
@@ -758,7 +1081,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
-                    std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
+                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
                     ///DA - connectivity
                     if (currentDataArrayName.compare("connectivity") == 0)
                     {
@@ -789,7 +1112,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
 
-                    std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
+                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
 
                     BaseVTKDataIO* pointdata = loadDataArray(dataArrayElement, numberOfPoints);
                     checkError(pointdata);
@@ -804,7 +1127,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
-                    std::string currentDataArrayName = std::string(dataArrayElement->Attribute("Name"));
+                    string currentDataArrayName = string(dataArrayElement->Attribute("Name"));
                     BaseVTKDataIO* celldata = loadDataArray(dataArrayElement, numberOfCells);
                     checkError(celldata);
                     celldata->name = currentDataArrayName;
@@ -817,36 +1140,48 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
     return true;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadPolydata(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadPolydata(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "Polydata dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadRectilinearGrid(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadRectilinearGrid(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "RectilinearGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadStructuredGrid(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadStructuredGrid(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "StructuredGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadStructuredPoints(TiXmlHandle /*datasetFormatHandle */)
+bool XMLVTKReader::loadStructuredPoints(TiXmlHandle /*datasetFormatHandle */)
 {
     serr << "StructuredPoints dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadImageData(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadImageData(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "ImageData dataset not implemented yet" << sendl;
     return false;
 }
 
+
+//////////////////////////////////////////// REGISTERING TO FACTORY /////////////////////////////////////////
+/// Registering the component
+/// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
+/// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
+/// 2-RegisterObject("description") + .add<> : Register the component
+/// 3-.add<>(true) : Set default template
+SOFA_DECL_CLASS(MeshVTKLoader)
+
+int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK file format.")
+        .add< MeshVTKLoader >()
+        ;
 
 
 } // namespace loader
