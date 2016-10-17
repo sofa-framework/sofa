@@ -66,10 +66,9 @@ class Regression_test: public testing::Test
 
 protected:
 
-    void runRegressionScene( const std::string& regressionFolderScene, const std::string& testScene, unsigned nbsteps, double epsilon )
+    void runRegressionScene( std::string& reference, const std::string& scene, unsigned int steps, double epsilon )
     {
-
-        std::cerr<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps<<std::endl;
+        std::cout << "[ INFO     ] " << "  Testing " << scene << std::endl;
 
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
@@ -79,22 +78,19 @@ protected:
 
         simulation::Simulation* simulation = simulation::getSimulation();
 
-        //Load the scene
-        sofa::simulation::Node::SPtr root = simulation->load(testScene.c_str());
+        // Load the scene
+        sofa::simulation::Node::SPtr root = simulation->load(scene.c_str());
 
         simulation->init(root.get());
 
-
         // TODO lancer visiteur pour dumper MO
         // comparer ce dump avec le fichier sceneName.regressionreference
-
-        std::string reference = regressionFolderScene + ".reference";
 
         bool initializing = false;
 
         if (helper::system::FileSystem::exists(reference) && !helper::system::FileSystem::isDirectory(reference))
         {
-            //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
+            // Add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
             sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
 //            compareVisitor.setCreateInMapping(true);
             compareVisitor.setSceneName(reference);
@@ -105,8 +101,7 @@ protected:
         }
         else // create reference
         {
-            std::cerr<<"REGRESSION TEST : WARNING a reference is not existing and is created now, \""<<regressionFolderScene<<".reference*\" files should be added to the repository "<<std::endl;
-
+            std::cerr << "[ WARNING  ] Non existing reference created: " << reference << std::endl;
 
             // just to create an empty file to know it is already init
             std::ofstream filestream(reference.c_str());
@@ -122,32 +117,27 @@ protected:
             v_write.execute(root.get());
         }
 
-        for( unsigned int i=0 ; i<nbsteps ; ++i )
+        for( unsigned int i=0 ; i<steps ; ++i )
         {
             simulation->animate( root.get(), root->getDt() );
         }
 
-
-
         if( !initializing )
         {
-            //We read the final error: the summation of all the error made at each time step
+            // Read the final error: the summation of all the error made at each time step
             sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
             result.execute(root.get());
 
-            if( (static_cast<double>(result.getErrorByDof())/result.getNumCompareState()) > epsilon )
+            double errorByDof = result.getErrorByDof() / double(result.getNumCompareState());
+            if( errorByDof > epsilon )
             {
-//                ADD_FAILURE() << "ERROR "<< testScene;
-                msg_error(("Regression Test" )) << testScene
-
-                << "   || TOTALERROR: " << result.getTotalError() << "   || ERRORBYDOF: "
-                                                             << static_cast<double>(result.getErrorByDof())
-                                                             / result.getNumCompareState() ;
+                ADD_FAILURE() << scene
+                << ", TOTALERROR: " << result.getTotalError()
+                << ", ERRORBYDOF: " << errorByDof;
             }
-
         }
 
-        //Clear and prepare for next scene
+        // Clear and prepare for next scene
         simulation->unload(root.get());
         root.reset();
     }
@@ -164,36 +154,51 @@ protected:
 
         if (helper::system::FileSystem::exists(regression_scene_list) && !helper::system::FileSystem::isDirectory(regression_scene_list))
         {
-            std::cerr<<"Regression_test : testing list "<<regression_scene_list<<std::endl;
+            std::cout << "[ INFO     ] " << "Parsing " << regression_scene_list << std::endl;
 
             // parser le fichier -> (file,nb time steps,epsilon)
             std::ifstream iniFileStream(regression_scene_list.c_str());
             while (!iniFileStream.eof())
             {
                 std::string line;
-                std::string currentScene;
-                std::string fileName;
-                unsigned int nbsteps;
+                std::string scene;
+                unsigned int steps;
                 double epsilon;
+
                 getline(iniFileStream, line);
                 std::istringstream lineStream(line);
-                lineStream >> currentScene;
-                lineStream >> nbsteps;
+                lineStream >> scene;
+                lineStream >> steps;
                 lineStream >> epsilon;
-                fileName = getFileName(currentScene);
-                runRegressionScene( testDir + "/" + fileName, testDir + "/" + currentScene, nbsteps, epsilon );
 
+                scene = testDir + "/" + scene;
+                std::string reference = testDir + "/" + getFileName(scene) + ".reference";
+
+#ifdef WIN32
+                // Minimize absolute scene path to avoid MAX_PATH problem
+                if(scene.length() > MAX_PATH)
+                {
+                    ADD_FAILURE() << scene << ": path is longer than " << MAX_PATH;
+                    continue;
+                }
+                char buffer[MAX_PATH];
+                GetFullPathNameA(scene.c_str(), MAX_PATH, buffer, nullptr);
+                scene = std::string(buffer);
+                std::replace( scene.begin(), scene.end(), '\\', '/');
+#endif // WIN32
+
+                runRegressionScene( reference, scene, steps, epsilon );
             }
-
         }
     }
 
-    std::string getFileName(const std::string& s) {
-
+    std::string getFileName(const std::string& s)
+    {
        char sep = '/';
 
        size_t i = s.rfind(sep, s.length());
-       if (i != std::string::npos) {
+       if (i != std::string::npos)
+       {
           return(s.substr(i+1, s.length() - i));
        }
 
@@ -208,12 +213,15 @@ protected:
         std::vector<std::string> dir;
         helper::system::FileSystem::listDirectory(pluginsDirectory, dir);
 
+//        std::cerr << "Regression_test : plugins directory: " << pluginsDirectory << std::endl;
+
         for (std::vector<std::string>::iterator i = dir.begin(); i != dir.end(); ++i)
         {
             const std::string pluginPath = pluginsDirectory + "/" + *i;
+
             if (helper::system::FileSystem::isDirectory(pluginPath))
             {
-//                std::cerr<<"Regression_test : testing plugin/project "<<pluginPath<<std::endl;
+//                std::cerr << "Regression_test : testing plugin/project " << pluginPath << std::endl;
 
                 const std::string testDir = pluginPath + "/" + *i + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
