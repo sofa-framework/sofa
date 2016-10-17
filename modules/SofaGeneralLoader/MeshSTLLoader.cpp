@@ -65,6 +65,7 @@ bool MeshSTLLoader::load()
     std::ifstream file(filename);
     if (!file.good())
     {
+        file.close();
         serr << "Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
@@ -114,7 +115,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     my_positions.reserve( nbrFacet * 3 ); // max size
 
 #ifndef NDEBUG
-    // checking that the file is large enough to countain the given nb of facets
+    // checking that the file is large enough to contain the given nb of facets
     // get length of file
     dataFile.seekg(0, std::ios::end);
     std::streampos length = dataFile.tellg();

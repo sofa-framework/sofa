@@ -38,10 +38,6 @@ namespace component
 namespace loader
 {
 
-#ifdef WIN32
-#define strcasecmp stricmp
-#endif
-
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
 class SOFA_GENERAL_LOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
