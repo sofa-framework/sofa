@@ -82,6 +82,7 @@ public:
 
     virtual std::streambuf* streambuf() const = 0;
     virtual std::string readAll() = 0;
+    virtual void write(const std::string& data) = 0;
 
 private:
     static BaseFileAccessCreator* OurCreator;

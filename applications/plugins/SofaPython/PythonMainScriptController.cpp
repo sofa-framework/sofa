@@ -32,8 +32,6 @@ using sofa::helper::ScopedAdvancedTimer;
 
 using sofa::core::visual::VisualParams;
 
-#include "ScriptEnvironment.h"
-using sofa::simulation::ScriptEnvironment;
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
@@ -227,7 +225,6 @@ void PythonMainScriptController::handleEvent(Event *event)
     if (PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
-        ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }

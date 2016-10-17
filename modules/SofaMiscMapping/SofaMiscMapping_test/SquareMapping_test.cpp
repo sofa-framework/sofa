@@ -24,25 +24,25 @@
 ******************************************************************************/
 
 #include <SofaTest/Mapping_test.h>
-#include <SofaMiscMapping/SquareDistanceMapping.h>
+#include <SofaMiscMapping/SquareMapping.h>
 
 
 namespace sofa {
 namespace {
 
 
-/**  Test suite for SquareDistanceMapping.
+/**  Test suite for SquareMapping.
  *
  * @author Matthieu Nesme
   */
-template <typename SquareDistanceMapping>
-struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
+template <typename SquareMapping>
+struct SquareMappingTest : public Mapping_test<SquareMapping>
 {
-    typedef typename SquareDistanceMapping::In InDataTypes;
+    typedef typename SquareMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
     typedef typename InDataTypes::Coord InCoord;
 
-    typedef typename SquareDistanceMapping::Out OutDataTypes;
+    typedef typename SquareMapping::Out OutDataTypes;
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::Coord OutCoord;
 
@@ -51,58 +51,24 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
     {
         this->errorMax *= 10;
 
-        SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
-//        map->f_computeDistance.setValue(true);
-        map->d_geometricStiffness.setValue(1);
-
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
-        edges->addEdge( 0, 1 );
-        edges->addEdge( 2, 1 );
+//        SquareMapping* map = static_cast<SquareMapping*>( this->mapping );
 
         // parent positions
-        InVecCoord incoord(3);
-        InDataTypes::set( incoord[0], 0,0,0 );
-        InDataTypes::set( incoord[1], 1,1,1 );
-        InDataTypes::set( incoord[2], 6,3,-1 );
+        InVecCoord incoord(4);
+        incoord[0]= 1;
+        incoord[1]= -1;
+        incoord[2]= 7;
+        incoord[3]= -10;
 
         // expected child positions
-        OutVecCoord expectedoutcoord;
-        expectedoutcoord.push_back( defaulttype::Vector1( 3 ) );
-        expectedoutcoord.push_back( defaulttype::Vector1( 33 ) );
+        OutVecCoord expectedoutcoord(4);
+        expectedoutcoord[0]= 1;
+        expectedoutcoord[1]= 1;
+        expectedoutcoord[2]= 49;
+        expectedoutcoord[3]= 100;
 
         return this->runTest( incoord, expectedoutcoord );
     }
-
-//    bool test_restLength()
-//    {
-//        this->errorMax *= 10;
-
-//        SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
-////        map->f_computeDistance.setValue(true);
-//        map->d_geometricStiffness.setValue(1);
-
-//        helper::vector< SReal > restLength(2);
-//        restLength[0] = .5;
-//        restLength[1] = 2;
-//        map->f_restLengths.setValue( restLength );
-
-//        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
-//        edges->addEdge( 0, 1 );
-//        edges->addEdge( 2, 1 );
-
-//        // parent positions
-//        InVecCoord incoord(3);
-//        InDataTypes::set( incoord[0], 0,0,0 );
-//        InDataTypes::set( incoord[1], 1,1,1 );
-//        InDataTypes::set( incoord[2], 6,3,-1 );
-
-//        // expected child positions
-//        OutVecCoord expectedoutcoord;
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
-//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
-
-//        return this->runTest( incoord, expectedoutcoord );
-//    }
 
 };
 
@@ -110,23 +76,18 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 // Define the list of types to instanciate.
 using testing::Types;
 typedef Types<
-component::mapping::SquareDistanceMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>
-, component::mapping::SquareDistanceMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
+component::mapping::SquareMapping<defaulttype::Vec1Types,defaulttype::Vec1Types>
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE( SquareDistanceMappingTest, DataTypes );
+TYPED_TEST_CASE( SquareMappingTest, DataTypes );
 
 // test case
-TYPED_TEST( SquareDistanceMappingTest , test )
+TYPED_TEST( SquareMappingTest , test )
 {
     ASSERT_TRUE(this->test());
 }
 
-//TYPED_TEST( SquareDistanceMappingTest , test_restLength )
-//{
-//    ASSERT_TRUE(this->test_restLength());
-//}
 
 
 } // namespace

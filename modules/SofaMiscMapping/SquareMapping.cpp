@@ -16,40 +16,57 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SCRIPTENVIRONMENT_H
-#define SCRIPTENVIRONMENT_H
+#define SOFA_COMPONENT_MAPPING_SquareMapping_CPP
 
-#include <sofa/simulation/Node.h>
+#include "SquareMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
-
-class ScriptEnvironment
+namespace mapping
 {
-public:
-    // nodes initialization stuff
-    static void     nodeCreatedByScript(Node* node);        // to be called each time a new node is created by a script.
-    static void     initScriptNodes();                      // to be called after each call to a script function.
-    static bool     isNodeCreatedByScript(Node* node);
 
-    static void     enableNodeQueuedInit(bool enable);
-};
+SOFA_DECL_CLASS(SquareMapping)
 
 
-} // namespace core
+using namespace defaulttype;
+
+
+// Register in the Factory
+int SquareMappingClass = core::RegisterObject("Compute the square")
+#ifndef SOFA_FLOAT
+        .add< SquareMapping< Vec1dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SquareMapping< Vec1fTypes, Vec1fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API SquareMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API SquareMapping< Rigid3dTypes, Vec1dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API SquareMapping< Vec1fTypes, Vec1fTypes >;
+#endif
+
+
+
+
+} // namespace mapping
+
+} // namespace component
 
 } // namespace sofa
 
-
-
-#endif // SCRIPTENVIRONMENT_H

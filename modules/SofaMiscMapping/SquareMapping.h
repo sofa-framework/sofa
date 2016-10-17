@@ -22,16 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_SquareDistanceMapping_H
-#define SOFA_COMPONENT_MAPPING_SquareDistanceMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_SquareMapping_H
+#define SOFA_COMPONENT_MAPPING_SquareMapping_H
 #include "config.h"
 
 #include <sofa/core/Mapping.h>
-#include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Vec.h>
 
 
 namespace sofa
@@ -45,27 +41,18 @@ namespace mapping
 
 
 
-/** Maps point positions to square distances.
-  Type TOut corresponds to a scalar value.
-  The pairs are given in an EdgeSetTopologyContainer in the same node.
+/**
+    x -> x²
 
-    In: parent point positions
-    Out: square distance between point pairs, minus a square rest distance.
+    @author Matthieu Nesme
+    @date 2016
 
-    No restLength (imposed null rest length) for now
-    TODO: compute Jacobians for non null restLength
-
-@author Matthieu Nesme
-  */
-
-
-// If the rest lengths are not defined, they are set using the initial values.
-// If computeDistance is set to true, the rest lengths are set to 0.
+*/
 template <class TIn, class TOut>
-class SquareDistanceMapping : public core::Mapping<TIn, TOut>
+class SquareMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(SquareDistanceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SquareMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -89,16 +76,10 @@ public:
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
-    enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
 
-//    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-//    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::Vec4f > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data< unsigned > d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS)
 
     virtual void init();
 
@@ -120,34 +101,27 @@ public:
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
 
-    virtual void draw(const core::visual::VisualParams* vparams);
-
     virtual void updateForceMask();
 
 protected:
-    SquareDistanceMapping();
-    virtual ~SquareDistanceMapping();
+    SquareMapping();
+    virtual ~SquareMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
-    SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
+    SparseMatrixEigen jacobian;                             ///< Jacobian of the mapping
+    helper::vector<defaulttype::BaseMatrix*> baseMatrices;  ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen K;                                   ///< Assembled geometric stiffness matrix
 
-    /// r=b-a only for position (eventual rotation, affine transform... remains null)
-    void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 };
 
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SquareDistanceMapping_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SquareMapping_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
-extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Rigid3dTypes, defaulttype::Vec1dTypes >;
+extern template class SOFA_MISC_MAPPING_API SquareMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
-extern template class SOFA_MISC_MAPPING_API SquareDistanceMapping< defaulttype::Rigid3fTypes, defaulttype::Vec1fTypes >;
+extern template class SOFA_MISC_MAPPING_API SquareMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
 #endif
 
 #endif

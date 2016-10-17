@@ -79,6 +79,11 @@ std::string FileAccess::readAll()
     return data;
 }
 
+void FileAccess::write(const std::string& data)
+{
+    myFile.write(data.data(), data.size());
+}
+
 } // namespace io
 
 } // namespace helper

@@ -15,19 +15,19 @@ class VerifController(SofaTest.Controller):
         Sofa.msg_info("initGraph ENTER")
 
         child = node.createChild("temporary_node")
-        # FROM HERE, 'child' is added to the node to init in ScriptEnvironment
+        # FROM HERE, 'child' was added to the nodes to init in ScriptEnvironment, but it is not anymore
 
         node.removeChild( child )
-        # 'child' is no longer in the scene graph but it is still in ScriptEnvironment
+        # 'child' is no longer in the scene graph but still was in ScriptEnvironment, but it is not anymore
 
         Sofa.msg_info("initGraph EXIT")
 
         # Coming back to SofaPython:
         # Nobody is no longer pointing to 'child', it will be deleted (smart pointer).
-        # ScriptEnvironment try to call 'init' to an invalid pointer or
-        # at least to a node detached from the scene graph.
-        # This can bring tons of potential troubles.
-        # ==> CRASH
+        # ScriptEnvironment was calling 'init' to an invalid pointer or
+        # at least to a node detached from the scene graph,
+        # but it does not anymore.
+        # This could bring tons of potential troubles (including crashes).
 
 
     def onEndAnimationStep(self, dt):
