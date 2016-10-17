@@ -27,7 +27,6 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
-#include "ScriptEnvironment.h"
 #include "PythonFactory.h"
 
 #include <sofa/defaulttype/Vec3Types.h>
@@ -139,8 +138,6 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
             if (node->isInitialized())
                 SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
-    //        if (!ScriptEnvironment::isNodeCreatedByScript(node))
-    //            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is not created by the script" )
         }
     }
 
