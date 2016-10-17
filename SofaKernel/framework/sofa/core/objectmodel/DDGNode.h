@@ -73,6 +73,13 @@ public:
     /// Constructor
     DDGNode();
 
+private :
+
+    /// Constructor of copy
+    DDGNode(DDGNode const &other);
+
+public :
+
     /// Destructor. Automatically remove remaining links
     virtual ~DDGNode();
 

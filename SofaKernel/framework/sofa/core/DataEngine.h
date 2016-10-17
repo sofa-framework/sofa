@@ -222,7 +222,7 @@ protected:
     bool isTrackedDataDirty( const objectmodel::BaseData& data );
 
     /// map a tracked Data to a DataTracker
-    typedef std::map<const objectmodel::BaseData*,DataTracker> DataTrackers;
+    typedef std::map<const objectmodel::BaseData*,DataTracker*> DataTrackers;
     DataTrackers m_dataTrackers;
 
     /// @}
