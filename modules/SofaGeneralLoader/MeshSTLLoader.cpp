@@ -42,6 +42,8 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
+using std::string;
+using std::stringstream;
 
 SOFA_DECL_CLASS(MeshSTLLoader)
 
@@ -66,21 +68,16 @@ bool MeshSTLLoader::load()
     const char* filename = m_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
-
-    if (!file.good())
-    {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+    if (!canLoad())
         return false;
-    }
 
-    std::string test;
+    string test;
     file >> test;
 
     if (test == "solid" && !_forceBinary.getValue())
         fileRead = this->readSTL(filename);
     else
         fileRead = this->readBinarySTL(filename); // -- Reading binary file
-
 
     file.close();
     return fileRead;
@@ -93,9 +90,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         sout << "Reading binary STL file..." << sendl;
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     // get length of file
     dataFile.seekg(0, std::ios::end);
@@ -106,7 +103,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
-//    sout << "Header binary file: "<< buffer << sendl;
 
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
@@ -160,9 +156,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
             break;
     }
 
-    positions.endEdit();
-    triangles.endEdit();
-    normals.endEdit();
+    d_positions.endEdit();
+    d_triangles.endEdit();
+    d_normals.endEdit();
 
     if( this->f_printLog.getValue() )
         sout << "done!" << sendl;
@@ -178,12 +174,12 @@ bool MeshSTLLoader::readSTL(const char *filename)
 
     // Init
     std::ifstream dataFile (filename);
-    std::string buffer;
-    std::string name; // name of the solid, needed?
+    string buffer;
+    string name; // name of the solid, needed?
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
 
     // get length of file:
@@ -204,10 +200,10 @@ bool MeshSTLLoader::readSTL(const char *filename)
         sofa::defaulttype::Vector3 normal, vertex;
 
         std::getline(dataFile, buffer);
-        std::stringstream line;
+        stringstream line;
         line << buffer;
 
-        std::string bufferWord;
+        string bufferWord;
         line >> bufferWord;
 
         if (bufferWord == "facet")
@@ -248,9 +244,9 @@ bool MeshSTLLoader::readSTL(const char *filename)
         position = dataFile.tellg();
     }
 
-    positions.endEdit();
-    triangles.endEdit();
-    normals.endEdit();
+    d_positions.endEdit();
+    d_triangles.endEdit();
+    d_normals.endEdit();
 
     if( this->f_printLog.getValue() )
         sout << "done!" << sendl;

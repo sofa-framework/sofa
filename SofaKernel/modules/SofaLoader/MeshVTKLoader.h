@@ -50,6 +50,7 @@ class BaseVTKReader ;
 /// http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
 class SOFA_LOADER_API MeshVTKLoader : public sofa::core::loader::MeshLoader
 {
+
 public:
     SOFA_CLASS(MeshVTKLoader,sofa::core::loader::MeshLoader);
 

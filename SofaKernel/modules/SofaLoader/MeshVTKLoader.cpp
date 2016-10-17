@@ -53,6 +53,7 @@ using std::istringstream;
 using std::istream;
 using std::ofstream;
 using std::string;
+using helper::vector;
 
 //////////////////// PRIVATE CLASS FOR INTERNAL USE BY MeshVTKLoader ////////
 enum VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
@@ -389,8 +390,6 @@ protected:
     BaseVTKDataIO* loadDataArray(TiXmlElement* dataArrayElement);
 };
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// MeshVTKLoader IMPLEMENTATION //////////////////////////////////
 MeshVTKLoader::MeshVTKLoader() : MeshLoader()
@@ -455,6 +454,9 @@ bool MeshVTKLoader::load()
         return false;
 
     // -- Reading file
+    if(!canLoad())
+        return false;
+
     fileRead = reader->readVTK (filename);
     this->setInputsMesh();
     this->setInputsData();
@@ -466,7 +468,7 @@ bool MeshVTKLoader::load()
 
 bool MeshVTKLoader::setInputsMesh()
 {
-    helper::vector<Vector3>& my_positions = *(positions.beginEdit());
+    vector<Vector3>& my_positions = *(d_positions.beginEdit());
     if (reader->inputPoints)
     {
         BaseVTKReader::VTKDataIO<double>* vtkpd =  dynamic_cast<BaseVTKReader::VTKDataIO<double>* > (reader->inputPoints);
@@ -496,13 +498,13 @@ bool MeshVTKLoader::setInputsMesh()
     else
         return false;
 
-    positions.endEdit();
+    d_positions.endEdit();
 
-    helper::vector<Edge >& my_edges = *(edges.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
-    helper::vector<Quad >& my_quads = *(quads.beginEdit());
-    helper::vector<Tetrahedron >& my_tetrahedra = *(tetrahedra.beginEdit());
-    helper::vector<Hexahedron >& my_hexahedra = *(hexahedra.beginEdit());
+    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
+    helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
+    helper::vector<Tetrahedron >& my_tetrahedra = *(d_tetrahedra.beginEdit());
+    helper::vector<Hexahedron >& my_hexahedra = *(d_hexahedra.beginEdit());
 
     if (reader->inputPolygons)
     {
@@ -651,20 +653,17 @@ bool MeshVTKLoader::setInputsMesh()
     if (reader->inputCells) delete reader->inputCells;
     if (reader->inputCellTypes) delete reader->inputCellTypes;
 
-    edges.endEdit();
-    triangles.endEdit();
-    quads.endEdit();
-    tetrahedra.endEdit();
-    hexahedra.endEdit();
+    d_edges.endEdit();
+    d_triangles.endEdit();
+    d_quads.endEdit();
+    d_tetrahedra.endEdit();
+    d_hexahedra.endEdit();
 
     return true;
 }
 
 bool MeshVTKLoader::setInputsData()
 {
-    //std::vector< std::pair<string, BaseData*> > f = this->getFields();
-    //std::cout << "Number of Fields before :" << f.size() << std::endl;
-
     ///Point Data
     for (size_t i=0 ; i<reader->inputPointDataVector.size() ; i++)
     {
@@ -682,8 +681,6 @@ bool MeshVTKLoader::setInputsData()
         this->addData(basedata, dataname);
     }
 
-    //f = this->getFields();
-    //std::cout << "Number of Fields after :" << f.size() << std::endl;
     return true;
 }
 
@@ -748,7 +745,6 @@ bool LegacyVTKReader::readFile(const char* filename)
     }
 
     sout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << sendl;
-    //VTKDataIO<double>* inputPointsDouble = NULL;
     VTKDataIO<int>* inputPolygonsInt = NULL;
     VTKDataIO<int>* inputCellsInt = NULL;
     VTKDataIO<int>* inputCellTypesInt = NULL;
@@ -768,7 +764,6 @@ bool LegacyVTKReader::readFile(const char* filename)
             ln >> n >> typestr;
             sout << "Found " << n << " " << typestr << " points" << sendl;
             inputPoints = newVTKDataIO(typestr);
-            //inputPoints = new VTKDataIO<double>;
             if (inputPoints == NULL) return false;
             if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
             //nbp = n;
@@ -1140,32 +1135,37 @@ bool XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormatHandle)
     return true;
 }
 
-bool XMLVTKReader::loadPolydata(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadPolydata(TiXmlHandle datasetFormatHandle)
 {
+    SOFA_UNUSED(datasetFormatHandle);
     serr << "Polydata dataset not implemented yet" << sendl;
     return false;
 }
 
-bool XMLVTKReader::loadRectilinearGrid(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadRectilinearGrid(TiXmlHandle datasetFormatHandle)
 {
+    SOFA_UNUSED(datasetFormatHandle);
     serr << "RectilinearGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool XMLVTKReader::loadStructuredGrid(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadStructuredGrid(TiXmlHandle datasetFormatHandle)
 {
+    SOFA_UNUSED(datasetFormatHandle);
     serr << "StructuredGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool XMLVTKReader::loadStructuredPoints(TiXmlHandle /*datasetFormatHandle */)
+bool XMLVTKReader::loadStructuredPoints(TiXmlHandle datasetFormatHandle)
 {
+    SOFA_UNUSED(datasetFormatHandle);
     serr << "StructuredPoints dataset not implemented yet" << sendl;
     return false;
 }
 
-bool XMLVTKReader::loadImageData(TiXmlHandle /* datasetFormatHandle */)
+bool XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
 {
+    SOFA_UNUSED(datasetFormatHandle);
     serr << "ImageData dataset not implemented yet" << sendl;
     return false;
 }
@@ -1176,7 +1176,6 @@ bool XMLVTKReader::loadImageData(TiXmlHandle /* datasetFormatHandle */)
 /// see: https://www.sofa-framework.org/community/doc/programming-with-sofa/components-api/the-objectfactory/
 /// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
 /// 2-RegisterObject("description") + .add<> : Register the component
-/// 3-.add<>(true) : Set default template
 SOFA_DECL_CLASS(MeshVTKLoader)
 
 int MeshVTKLoaderClass = core::RegisterObject("Mesh loader for the VTK file format.")

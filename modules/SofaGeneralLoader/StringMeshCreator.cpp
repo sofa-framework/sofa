@@ -56,7 +56,7 @@ StringMeshCreator::StringMeshCreator(): MeshLoader()
 
 bool StringMeshCreator::load()
 {
-    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (positions);
+    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue();
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -65,12 +65,12 @@ bool StringMeshCreator::load()
         my_positions.push_back( Vector3(x * 1./(numX-1), 0, 0) );
         //            cerr<<"StringMeshCreator::load, add point " << Vector3(i * 1./(numX-1), j * 1./(numY-1), 0) << endl;
     }
-    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
     for( unsigned e=1; e<numX; e++ )
     {
         my_edges.push_back( Edge(e-1,e) );
     }
-    edges.endEdit();
+    d_edges.endEdit();
 
     return true;
 
