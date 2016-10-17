@@ -119,7 +119,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     dataFile.seekg(0, std::ios::end);
     std::streampos length = dataFile.tellg();
     dataFile.seekg(0, std::ios::beg);
-    std::streampos position = 0;
     assert( length >= _headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
 #endif
 
