@@ -43,7 +43,7 @@ extern "C" PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 {
     DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
-    engine->update();
+    engine->requestUpdate();
 
     Py_RETURN_NONE;
 }
