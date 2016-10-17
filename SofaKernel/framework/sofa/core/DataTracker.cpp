@@ -7,47 +7,52 @@ namespace sofa
 namespace core
 {
 
-void DataTracker::setData(objectmodel::BaseData *data, bool dirtyAtBeginning )
+
+
+
+
+void DataTracker::trackData( const objectmodel::BaseData& data )
 {
-    this->addInput( (objectmodel::DDGNode*)data );
-    if( !dirtyAtBeginning ) this->cleanDirty();
+    m_dataTrackers[&data] = data.getCounter();
 }
 
-const std::string DataTracker::emptyString = "";
-
-
-
-//////////////////////
-
-
-void TrackerDDGNode::updateAllInputsIfDirty()
+bool DataTracker::isDirty( const objectmodel::BaseData& data )
 {
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
-    {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
+    return m_dataTrackers[&data] != data.getCounter();
 }
 
-void TrackerDDGNode::cleanDirty(const core::ExecParams* params)
+bool DataTracker::isDirty()
+{
+    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+        if( it->second != it->first->getCounter() ) return true;
+    return false;
+}
+
+void DataTracker::clean( const objectmodel::BaseData& data )
+{
+    m_dataTrackers[&data] = data.getCounter();
+}
+
+void DataTracker::clean()
+{
+    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+        it->second = it->first->getCounter();
+}
+
+
+
+////////////////////
+
+
+
+void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
 {
     core::objectmodel::DDGNode::cleanDirty(params);
 
     // it is also time to clean the tracked Data
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second.cleanDirty();
-}
+    m_dataTracker.clean();
 
-void TrackerDDGNode::trackData( objectmodel::BaseData* data )
-{
-    m_dataTrackers[data].setData( data );
 }
-
-bool TrackerDDGNode::isTrackedDataDirty( const objectmodel::BaseData& data )
-{
-    return m_dataTrackers[&data].isDirty();
-}
-
 
 }
 

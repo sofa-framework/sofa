@@ -75,7 +75,7 @@ namespace core
  * }
  *
  */
-class SOFA_CORE_API DataEngine : public core::TrackerDDGNode, public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
@@ -86,6 +86,12 @@ protected:
 
     /// Destructor. Do nothing
     virtual ~DataEngine();
+
+
+    /// utility fonction to ensure all inputs are up-to-date
+    /// can be useful for particulary complex DataEngine
+    /// with a lot input/output imbricated access
+    void updateAllInputsIfDirty();
 
 
 private:

@@ -9,41 +9,51 @@ namespace sofa
 namespace core
 {
 
-    /// An empty DDGNode to track if a Data changed.
-    /// Each time the corresponding Data changes, the DataTracker will be dirty.
-    class DataTracker : public objectmodel::DDGNode
+    /// Tracking Data mechanism
+    struct DataTracker
     {
-    public:
-        /// set the Data to track
-        void setData( objectmodel::BaseData* data, bool dirtyAtBeginning=false );
-    private:
-        static const std::string emptyString;
-        virtual void update() { cleanDirty(); }
-        virtual const std::string& getName() const { return emptyString; }
-        virtual objectmodel::Base* getOwner() const { return NULL; }
-        virtual objectmodel::BaseData* getData() const { return NULL; }
-    };
+        /// select a Data to track to be able to check
+        /// if it was dirtied since the previous clean.
+        /// @see isTrackedDataDirty
+        void trackData( const objectmodel::BaseData& data );
 
+        /// Was the tracked Data dirtied since last update?
+        /// @warning data must be a tracked Data @see trackData
+        bool isDirty( const objectmodel::BaseData& data );
 
+        /// Was one of the tracked Data dirtied since last update?
+        bool isDirty();
 
+        /// comparison point is cleaned for the specified tracked Data
+        /// @warning data must be a tracked Data @see trackData
+        void clean( const objectmodel::BaseData& data );
 
-    /// A DDGNode with trackable input Data
-    class TrackerDDGNode : public core::objectmodel::DDGNode
-    {
-    public:
+        /// comparison point is cleaned for all tracked Data
+        void clean();
 
-        TrackerDDGNode() : core::objectmodel::DDGNode() {}
 
     protected:
 
-        /// utility fonction to ensure all inputs are up-to-date
-        /// can be useful for particulary complex DataEngine
-        /// with a lot input/output imbricated access
-        void updateAllInputsIfDirty();
+        /// map a tracked Data to a DataTracker
+        typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
+        DataTrackers m_dataTrackers;
+
+    };
+
+
+//////////////////////////////
+
+
+    /// A DDGNode with trackable input Data
+    class DataTrackerDDGNode : public core::objectmodel::DDGNode
+    {
+    public:
+
+        DataTrackerDDGNode() : core::objectmodel::DDGNode() {}
 
     private:
-        TrackerDDGNode(const TrackerDDGNode& n) ;
-        TrackerDDGNode& operator=(const TrackerDDGNode& n) ;
+        DataTrackerDDGNode(const DataTrackerDDGNode& n) ;
+        DataTrackerDDGNode& operator=(const DataTrackerDDGNode& n) ;
 
     public:
 
@@ -53,28 +63,33 @@ namespace core
 
     protected:
 
-
         /// @name Tracking Data mechanism
-        /// each tracked Data is connected to a DataTracker
-        /// that is dirtied with the tracked Data
-        /// but cleaned only in the DataEngine::cleanDirty()
+        /// each Data added to the DataTracker
+        /// is tracked to be able to check if its value changed
+        /// since their last clean, called by default
+        /// in DataEngine::cleanDirty().
         /// @{
 
-        /// select a Data to track to be able to check
-        /// if it was dirtied since the previous update.
-        /// @see isTrackedDataDirty
-        void trackData( objectmodel::BaseData* data );
+        DataTracker m_dataTracker;
 
-        /// Was the tracked Data dirtied since last update?
-        /// @warning data must be a tracked Data @see trackData
-        bool isTrackedDataDirty( const objectmodel::BaseData& data );
+        ///@}
 
-        /// map a tracked Data to a DataTracker
-        typedef std::map<const objectmodel::BaseData*,DataTracker> DataTrackers;
-        DataTrackers m_dataTrackers;
+    };
 
-        /// @}
 
+ ///////////////////
+
+
+    class DataTrackerEngine : DataTrackerDDGNode
+    {
+    public:
+
+        DataTrackerEngine( const objectmodel::Base* base );
+
+        virtual void updateData() = 0;
+
+    protected:
+        const objectmodel::Base* m_base;
     };
 
 } // namespace core
