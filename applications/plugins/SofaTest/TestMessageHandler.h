@@ -160,8 +160,8 @@ public:
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
-    int m_lastCount ;
-    Message::Type m_type ;
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
     ScopedDeactivatedTestMessageHandler m_scopeddeac ;
 
     ExpectMessage(const Message::Type t) {
