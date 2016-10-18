@@ -76,13 +76,9 @@ sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
     if (!canLoadFileName(filename))
         return 0;
 
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromFile ( filename );
-
     root = processXML(xml, filename);
 
-    // 				std::cout << "load done."<<std::endl;
     delete xml;
 
     return root;
@@ -115,20 +111,20 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
     if( nodeElt==NULL )
     {
-        std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
+        msg_fatal_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "XML Root Node is not an Element. \n" ;
         loadSucceed = false;
         std::exit(EXIT_FAILURE);
     }
     else if( !(nodeElt->init()) )
     {
-        std::cerr << "LOAD ERROR: Node initialization failed."<<std::endl;
+        msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Node initialization failed. \n" ;
         loadSucceed = false;
     }
 
     core::objectmodel::BaseNode* baseroot = xml->getObject()->toBaseNode();
     if ( baseroot == NULL )
     {
-        std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
+        msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Objects initialization failed." ;
         loadSucceed = false;
         return NULL;
     }
@@ -147,15 +143,11 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 /// Load from a string in memory
 Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
     Node::SPtr root = processXML(xml, filename);
 
-    // 				std::cout << "load done."<<std::endl;
     delete xml;
-
     return root;
 }
 
