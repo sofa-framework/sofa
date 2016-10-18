@@ -115,20 +115,24 @@ msg_info("MeshSTL") <<  "Reading binary STL file : " << name;
 
 }
 
-static const std::vector<int> nullIndices = {0,0,0};
 
 void MeshSTL::readSTL(std::ifstream &file)
 {
     /* http://www.ennex.com/~fabbers/StL.asp */
 
-    vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices;//, nIndices, tIndices;
     Vec3f result;
 
     std::string line;
     std::map< defaulttype::Vec3f, unsigned > map;
-    unsigned positionCounter = 0u;
+    unsigned positionCounter = 0u, vertexCounter=0u;
 
+    // there must be a way to perform it at compile time with initializer_list
+    vector< vector<int> > vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
+    {
+        vector<int> nullIndices(3);
+        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
+        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
+    }
 
     while( std::getline(file,line) )
     {
@@ -150,31 +154,20 @@ void MeshSTL::readSTL(std::ifstream &file)
             auto it = map.find( result );
             if( it == map.end() )
             {
-                vIndices.push_back(positionCounter);
+                vertNormTexIndices[0][vertexCounter++] = positionCounter;
                 map[result] = positionCounter++;
                 vertices.push_back(result);
             }
             else
             {
-                vIndices.push_back(it->second);
+                vertNormTexIndices[0][vertexCounter++] = it->second;
             }
 
-            // Useless but necessary to work -- need to be fixed properly
-//            tIndices.push_back(0);
-//            nIndices.push_back(0);
         }
         else if (token == "endfacet")
         {
-            vertNormTexIndices.push_back (vIndices);
-//            vertNormTexIndices.push_back (nIndices);
-//            vertNormTexIndices.push_back (tIndices);
-            vertNormTexIndices.push_back (nullIndices); // nIndices, ugly
-            vertNormTexIndices.push_back (nullIndices); // tIndices, ugly
             facets.push_back(vertNormTexIndices);
-//            nIndices.clear();
-//            tIndices.clear();
-            vIndices.clear();
-            vertNormTexIndices.clear();
+            vertexCounter=0;
         }
         else if (token == "endsolid" || token == "end")
             break;
@@ -196,8 +189,10 @@ void MeshSTL::readBinarySTL (const std::string &filename)
 
     std::ifstream dataFile(filename.c_str(), std::ios::in | std::ios::binary);
 
-    vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices; //, nIndices, tIndices;
+
+
+
+
     Vec3f result;
     unsigned int attributeCount;
 
@@ -212,6 +207,17 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     // Get number of facets
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
+
+    // preallocating facets
+    // there must be a way to perform part of it at compile time with initializer_list
+    {
+        vector<int> nullIndices(3);
+        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
+        vector<vector<int>> vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
+        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
+        facets.resize(nbrFacet);
+        std::fill( facets.begin(), facets.end(), vertNormTexIndices );
+    }
 
 
 #ifndef NDEBUG
@@ -233,6 +239,8 @@ void MeshSTL::readBinarySTL (const std::string &filename)
         dataFile.read((char*)&result[2], 4);
         //normals.push_back(result);
 
+        vector< vector<int> >& facet = facets[i];
+
         // Get vertex
         for (unsigned int j = 0; j<3; ++j)
         {
@@ -243,34 +251,20 @@ void MeshSTL::readBinarySTL (const std::string &filename)
             auto it = map.find( result );
             if( it == map.end() )
             {
-                vIndices.push_back(positionCounter);
+                facet[0][j] = positionCounter;
                 map[result] = positionCounter++;
                 vertices.push_back(result);
             }
             else
             {
-                vIndices.push_back(it->second);
+                facet[0][j] = it->second;
             }
-
-            // Useless but necessary to work -- need to be fixed properly
-//            tIndices.push_back(0);
-//            nIndices.push_back(0);
         }
 
 
         // Attribute byte count
         dataFile.read((char*)&attributeCount, 2);
 
-        vertNormTexIndices.push_back (vIndices);
-//        vertNormTexIndices.push_back (nIndices);
-//        vertNormTexIndices.push_back (tIndices);
-        vertNormTexIndices.push_back (nullIndices); // nIndices, ugly
-        vertNormTexIndices.push_back (nullIndices); // tIndices, ugly
-        facets.push_back(vertNormTexIndices);
-        vIndices.clear();
-//        nIndices.clear();
-//        tIndices.clear();
-        vertNormTexIndices.clear();
 
 //        // Security -- End of file ?
 //        position = dataFile.tellg();

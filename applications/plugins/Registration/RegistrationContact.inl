@@ -180,7 +180,7 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-	typename DataTypes1::Real r1 = 0.0;
+        typename DataTypes1::Real r1 = 0.0;
         typename DataTypes2::Real r2 = 0.0;
         // Create mapping for first point
         index1 = mapper1.addPoint(o->point[0], index1, r1);
@@ -189,7 +189,7 @@ void RegistrationContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::s
 
         double distance = d0 + r1 + r2;
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness());
-	if (distance != 0.0) stiffness /= distance;
+        if (distance != 0.0) stiffness /= distance;
 
         double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
         ff->addContact(index1, index2, elem1.getIndex(), elem2.getIndex(), o->normal, distance, stiffness, mu_v/* *distance */, mu_v, index);
