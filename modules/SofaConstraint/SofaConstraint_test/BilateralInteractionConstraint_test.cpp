@@ -75,6 +75,10 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         std::string fileName  = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
 
+        //TODO(dmarchal): I'm very surprised that scene.loadSucceed could contain
+        // a state about the load results that happens "before" maybe a side effect
+        // of the static variable.
+
         // Test if load has succeeded
         sofa::simulation::SceneLoaderXML scene;
 
@@ -105,13 +109,13 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
         for(int i=0; i<10; i++)
             sofa::simulation::getSimulation()->animate(root.get(),(double)0.001);
-        
+
         if(meca.size()==2)
         {
             for(unsigned int i=0; i<meca.size(); i++)
                 points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
         }
-            
+
         if(points[0] == points[1]) return true;
         else
         {
@@ -121,6 +125,24 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         return false;
     }
 
+    /// It is important to freeze what are the available Data field
+    /// of a component and rise warning/errors when some are removed.
+    /// If you remove/renamed a data field please add a deprecation
+    /// message as well as update this test.
+    void attributesTests(){
+
+        BilateralInteractionConstraint* constraint = root->getTreeObject<BilateralInteractionConstraint>() ;
+        EXPECT_TRUE( constraint != nullptr ) ;
+
+        EXPECT_TRUE( constraint->findData("first_point") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("second_point") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("rest_vector") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("activeAtIteration") != nullptr ) ;
+
+        EXPECT_TRUE( constraint->findData("merge") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("derivative") != nullptr ) ;
+        return ;
+    }
 
  };
 
@@ -136,6 +158,13 @@ TYPED_TEST( BilateralInteractionConstraint_test , constrainedPositions )
     this->init_Setup();
     ASSERT_TRUE(  this->test_constrainedPositions() );
 }
+
+
+TYPED_TEST( BilateralInteractionConstraint_test , attributesTests )
+{
+    ASSERT_NO_THROW(  this->attributesTests() );
+}
+
 
 }
 

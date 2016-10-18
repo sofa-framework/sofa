@@ -259,6 +259,8 @@ protected:
         , m2(initData(&m2, "second_point","index of the constraint on the second model"))
         , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
+
+        //TODO(dmarchal): what do TEST means in the following should be renamed (EXPERIMENTAL FEATURE) ?
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
         , activated(true), iteration(0)
