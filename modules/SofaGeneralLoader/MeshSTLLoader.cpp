@@ -115,12 +115,18 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     my_positions.reserve( nbrFacet * 3 ); // max size
 
 #ifndef NDEBUG
+    {
     // checking that the file is large enough to contain the given nb of facets
+    // store current pos in file
+    std::streampos pos = dataFile.tellg();
     // get length of file
     dataFile.seekg(0, std::ios::end);
     std::streampos length = dataFile.tellg();
-    dataFile.seekg(0, std::ios::beg);
+    // restore pos in file
+    dataFile.seekg(pos);
+    // check for length
     assert( length >= _headerSize.getValue() + 4 + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) );
+    }
 #endif
 
     // temporaries
