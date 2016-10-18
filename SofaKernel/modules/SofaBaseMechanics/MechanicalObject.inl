@@ -297,10 +297,9 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("scale") != NULL)
     {
-        msg_error(this) <<  "The field named 'scale' is now deprecated.\n"
+        msg_warning(this) <<  "The field named 'scale' is now deprecated.\n"
                             "Using deprecated attributes may results in invalid simulation as well as slow performances. \n"
-                            "To remove this error message you need to fix your sofa scene by using a TransformEngine to this MechanicalObject.\n" ;
-
+                            "To remove this error message you need to fix your sofa scene by using a TransformEngine to '"<< this->getPathName() << "'\n" ;
         SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
         scale.setValue(Vector3(s, s, s));
     }
