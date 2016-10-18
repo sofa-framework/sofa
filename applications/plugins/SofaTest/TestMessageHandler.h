@@ -167,7 +167,7 @@ struct SOFA_TestPlugin_API ExpectMessage
     ~ExpectMessage() {
         if(m_lastCount == unique::CountingMessageHandler::getMessageCountFor(m_type) )
         {
-            ADD_FAILURE() << std::endl
+            ADD_FAILURE() << std::endl ;
         }
     }
 };
