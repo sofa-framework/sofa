@@ -34,7 +34,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
-
+#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/logging/Message.h>
 
 namespace sofa {
 
@@ -52,6 +53,8 @@ using sofa::simulation::SceneLoaderXML ;
 using namespace component;
 using namespace defaulttype;
 
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
 
 template <typename _DataTypes>
 struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataTypes::Real>
@@ -152,6 +155,8 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
     /// This component requires to be used in conjonction with MechanicalObjects.
     void checkMstateRequiredAssumption(){
+        ExpectMessage e(Message::Error) ;
+
         std::string scene =
                 "<?xml version='1.0'?>"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-20ll6 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,12 @@ public:
     {
         assert(m.type()<m_failsOn.size() & "If this happens this means that the code initializing m_failsOn is broken.") ;
 
-        if( active && m_failsOn[m.type()] )
-            ADD_FAILURE() << std::endl;
+        if( active && m_failsOn[m.type()] ){
+            ADD_FAILURE() << "An error message was emitted and is interpreted as a test failure. "
+                          <<  "src: " << std::string(m.fileInfo().filename) << ":" << m.fileInfo().line
+                          << "message: " << m.message().str() << std::endl;
+
+        }
     }
 
     // singleton
@@ -108,18 +112,19 @@ public:
     virtual void process(Message& m)
     {
         assert(m.type()<m_countMatching.size() & "If this happens this means that the code initializing m_countMatching is broken.") ;
+
         m_countMatching[m.type()]++ ;
     }
 
     void reset(){
-        for(int i=0;i<m_countMatching.size();i++){
+        for(unsigned int i=0;i<m_countMatching.size();i++){
             m_countMatching[i] = 0 ;
         }
     }
 
     CountingMessageHandler() {
         for(unsigned int i=Message::Info;i<Message::TypeCount;i++){
-            m_countMatching.push_back(false) ;
+            m_countMatching.push_back(0) ;
         }
     }
 
@@ -132,42 +137,42 @@ private:
     sofa::helper::vector<int> m_countMatching ;
 } ;
 
-/// A singleton version forwarding façade to the CountingMessageHandler
-namespace unique
+class MainCountingMessageHandler
 {
-    class CountingMessageHandler : sofa::helper::logging::CountingMessageHandler
+public:
+    // singleton
+    static sofa::helper::logging::CountingMessageHandler& getInstance()
     {
-    public:
-        // singleton
-        static CountingMessageHandler& getInstance()
-        {
-            static CountingMessageHandler s_instance;
-            return s_instance;
-        }
+        static sofa::helper::logging::CountingMessageHandler s_instance;
+        return s_instance;
+    }
 
-        static void reset(){
-            getInstance().reset() ;
-        }
+    static void reset(){
+        getInstance().reset() ;
+    }
 
-        static int getMessageCountFor(const Message::Type &type)
-        {
-            return getInstance().getMessageCountFor(type) ;
-        }
-    };
-}
+    static int getMessageCountFor(const Message::Type &type)
+    {
+        return getInstance().getMessageCountFor(type) ;
+    }
+};
+
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
     int m_lastCount ;
     Message::Type m_type ;
+    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
+
     ExpectMessage(const Message::Type t) {
-        m_lastCount = unique::CountingMessageHandler::getMessageCountFor(t) ;
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
 
     ~ExpectMessage() {
-        if(m_lastCount == unique::CountingMessageHandler::getMessageCountFor(m_type) )
+        if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
         {
-            ADD_FAILURE() << std::endl ;
+            ADD_FAILURE() << "A message of type '" << m_type << "' was expected. None was received." << std::endl ;
         }
     }
 };
