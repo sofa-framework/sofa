@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <sofa/helper/helper.h>
 #include <sstream>
 
@@ -51,6 +52,9 @@ namespace logging
 static const char * s_unknownFile = "unknown-file";
 
 /// To keep a trace (file,line) from where the message have been created
+/// The filename must be a valid pointer throughoug the message processing
+/// If this cannot be guaranteed then use the FileInfoOwningFilename class
+/// instead.
 struct FileInfo
 {
     const char *filename;
@@ -59,7 +63,31 @@ struct FileInfo
     FileInfo(): filename(s_unknownFile), line(0) {}
 };
 
+/// To keep a trace (file,line) from where the message have been created
+struct FileInfoOwningFilename : public FileInfo
+{
+    FileInfoOwningFilename(const char *f, int l) {
+        char *tmp  = new char[strlen(f)+1] ;
+        strcpy(tmp, f) ;
+        filename = tmp ;
+        line = l ;
+    }
+
+    FileInfoOwningFilename(const std::string& f, int l) {
+        char *tmp  = new char[f.size()+1] ;
+        strcpy(tmp, f.c_str()) ;
+        filename = tmp ;
+        line = l ;
+    }
+
+    ~FileInfoOwningFilename(){
+        if(filename)
+            delete filename ;
+    }
+};
+
 #define SOFA_FILE_INFO sofa::helper::logging::FileInfo(__FILE__, __LINE__)
+#define SOFA_FILE_INFO2(file,line) sofa::helper::logging::FileInfoOwningFilename(file,line)
 
 
 class SOFA_HELPER_API Message
