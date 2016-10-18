@@ -46,6 +46,8 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::init()
 {
     Inherit1::init();
+
+    // TODO(dmarchal): assert is not a valid way to check that data are not nullptr
     assert(this->mstate1);
     assert(this->mstate2);
     prevForces.clear();
@@ -66,7 +68,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
 {
     if (!activated)
         return;
-    
+
     unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
     if (minp == 0)
         return;
@@ -153,7 +155,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
         }
 
         dfree.resize(minp);
-        
+
         const DataVecCoord &d_x1free = *this->mstate1->read(core::ConstVecCoordId::freePosition());
         const DataVecCoord &d_x2free = *this->mstate2->read(core::ConstVecCoordId::freePosition());
 

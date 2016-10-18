@@ -44,6 +44,11 @@ namespace {
 using std::cout;
 using std::cerr;
 using std::endl;
+
+using sofa::simulation::Node ;
+using sofa::core::ExecParams ;
+using sofa::simulation::SceneLoaderXML ;
+
 using namespace component;
 using namespace defaulttype;
 
@@ -137,10 +142,27 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         EXPECT_TRUE( constraint->findData("first_point") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("second_point") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("rest_vector") != nullptr ) ;
-        EXPECT_TRUE( constraint->findData("activeAtIteration") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("activateAtIteration") != nullptr ) ;
 
         EXPECT_TRUE( constraint->findData("merge") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("derivative") != nullptr ) ;
+        return ;
+    }
+
+
+    /// This component requires to be used in conjonction with MechanicalObjects.
+    void checkMstateRequiredAssumption(){
+        std::string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <BilateralConstraintCorrection/>                         "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
         return ;
     }
 
@@ -165,6 +187,10 @@ TYPED_TEST( BilateralInteractionConstraint_test , attributesTests )
     ASSERT_NO_THROW(  this->attributesTests() );
 }
 
+TYPED_TEST( BilateralInteractionConstraint_test , checkMstateRequiredAssumption )
+{
+    ASSERT_NO_THROW(  this->checkMstateRequiredAssumption() );
+}
 
 }
 
