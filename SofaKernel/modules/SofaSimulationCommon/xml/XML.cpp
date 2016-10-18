@@ -310,7 +310,7 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
         msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() ;
         return NULL;
     }
-    return processXMLLoading(filename, doc);
+    return processXMLLoading(filename, doc, true);
 }
 
 BaseElement* loadFromFile(const char *filename)
