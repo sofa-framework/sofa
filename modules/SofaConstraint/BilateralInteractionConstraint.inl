@@ -46,8 +46,6 @@ template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::init()
 {
     Inherit1::init();
-
-    // TODO(dmarchal): assert is not a valid way to check that data are not nullptr
     assert(this->mstate1);
     assert(this->mstate2);
     prevForces.clear();
@@ -397,6 +395,9 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const co
         offset +=3;
     }
 }
+
+//TODO(dmarchal): Is this really a good idea to implement keyboard interaction behavior directly in a component
+// this should be moved to a new class in GUI or in Interaction
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)

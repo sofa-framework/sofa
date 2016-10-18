@@ -157,13 +157,15 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
     void checkMstateRequiredAssumption(){
         ExpectMessage e(Message::Error) ;
 
+        /// I'm using '\n' so that the XML parser correctly report the line number
+        /// in case of problems.
         std::string scene =
-                "<?xml version='1.0'?>"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <BilateralConstraintCorrection/>                         "
-                "</Node>                                                     " ;
+                "<?xml version='1.0'?>                                       \n"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > \n"
+                "   <BilateralConstraintCorrection/>                         \n"
+                "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
                                                           scene.c_str(),
                                                           scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;

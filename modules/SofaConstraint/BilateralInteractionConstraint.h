@@ -260,7 +260,7 @@ protected:
         , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
         , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
 
-        //TODO(dmarchal): what do TEST means in the following should be renamed (EXPERIMENTAL FEATURE) ?
+        //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
         , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
         , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
         , activated(true), iteration(0)
