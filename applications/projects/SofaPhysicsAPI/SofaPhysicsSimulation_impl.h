@@ -3,7 +3,6 @@
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
-#include "SofaPhysicsOutputMesh_Tetrahedron_impl.h"
 #include "SofaPhysicsDataMonitor_impl.h"
 #include "SofaPhysicsDataController_impl.h"
 
@@ -14,6 +13,11 @@
 #include <sofa/helper/gl/Texture.h>
 
 #include <map>
+
+#ifdef USE_OGL_TETRA_MODEL
+#include "SofaPhysicsOutputMesh_Tetrahedron_impl.h"
+#endif
+
 
 class SofaPhysicsSimulation::Impl
 {
@@ -31,9 +35,12 @@ public:
     void drawGL();
 
     unsigned int getNbOutputMeshes();
-    unsigned int getNbOutputMeshTetrahedrons();
     SofaPhysicsOutputMesh** getOutputMeshes();
+
+#ifdef USE_OGL_TETRA_MODEL
+    unsigned int getNbOutputMeshTetrahedrons();
     SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
+#endif
 
     bool isAnimated() const;
     void setAnimated(bool val);
@@ -53,8 +60,10 @@ public:
     typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
+#ifdef USE_OGL_TETRA_MODEL
     typedef SofaPhysicsOutputMeshTetrahedron::Impl::SofaOutputMeshTetrahedron SofaOutputMeshTetrahedron;
     //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
+#endif
 
 protected:
 
@@ -64,11 +73,17 @@ protected:
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
-    std::map<SofaOutputMeshTetrahedron*, SofaPhysicsOutputMeshTetrahedron*> outputMeshMapTetrahedron;
+
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
-    std::vector<SofaOutputMeshTetrahedron*> sofaOutputMeshTetrahedrons;
+
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
+
+
+#ifdef USE_OGL_TETRA_MODEL
+    std::map<SofaOutputMeshTetrahedron*, SofaPhysicsOutputMeshTetrahedron*> outputMeshMapTetrahedron;
+    std::vector<SofaOutputMeshTetrahedron*> sofaOutputMeshTetrahedrons;
     std::vector<SofaPhysicsOutputMeshTetrahedron*> outputMeshTetrahedrons;
+#endif
 
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;

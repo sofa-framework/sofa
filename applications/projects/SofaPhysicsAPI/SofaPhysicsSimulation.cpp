@@ -81,20 +81,23 @@ unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
     return impl->getNbOutputMeshes();
 }
 
-unsigned int SofaPhysicsSimulation::getNbOutputMeshTetrahedrons()
-{
-    return impl->getNbOutputMeshTetrahedrons();
-}
 
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 {
     return impl->getOutputMeshes();
 }
 
+#ifdef USE_OGL_TETRA_MODEL
 SofaPhysicsOutputMeshTetrahedron** SofaPhysicsSimulation::getOutputMeshTetrahedrons()
 {
     return impl->getOutputMeshTetrahedrons();
 }
+
+unsigned int SofaPhysicsSimulation::getNbOutputMeshTetrahedrons()
+{
+    return impl->getNbOutputMeshTetrahedrons();
+}
+#endif
 
 bool SofaPhysicsSimulation::isAnimated() const
 {
@@ -443,19 +446,22 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
     {
         sofaOutputMeshes.clear();
         outputMeshes.clear();
+
+#ifdef USE_OGL_TETRA_MODEL
         outputMeshTetrahedrons.clear();
+#endif
         return;
     }
-    sofaOutputMeshes.clear();
-    sofaOutputMeshTetrahedrons.clear();
-
+    sofaOutputMeshes.clear();    
     groot->get<SofaOutputMesh>(&sofaOutputMeshes, sofa::core::objectmodel::BaseContext::SearchDown);
+
+#ifdef USE_OGL_TETRA_MODEL
+    sofaOutputMeshTetrahedrons.clear();
     groot->get<SofaOutputMeshTetrahedron>(&sofaOutputMeshTetrahedrons, sofa::core::objectmodel::BaseContext::SearchDown);
-   
+#endif
     
     outputMeshes.resize(sofaOutputMeshes.size());
-    outputMeshTetrahedrons.resize(sofaOutputMeshTetrahedrons.size());
-    
+
     for (unsigned int i=0; i<sofaOutputMeshes.size(); ++i)
     {
         SofaOutputMesh* sMesh = sofaOutputMeshes[i];
@@ -467,6 +473,10 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
         }
         outputMeshes[i] = oMesh;
     }
+
+#ifdef USE_OGL_TETRA_MODEL
+    outputMeshTetrahedrons.resize(sofaOutputMeshTetrahedrons.size());
+
     for( unsigned int i = 0; i<sofaOutputMeshTetrahedrons.size();++i ) {
         SofaOutputMeshTetrahedron* sMeshTetra = sofaOutputMeshTetrahedrons.at(i);
         SofaPhysicsOutputMeshTetrahedron*& oMeshTetra = outputMeshMapTetrahedron[sMeshTetra];
@@ -476,16 +486,12 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
         }
         outputMeshTetrahedrons[i] = oMeshTetra;
     }
+#endif
 }
 
 unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshes()
 {
     return outputMeshes.size();
-}
-
-unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshTetrahedrons()
-{
-    return outputMeshTetrahedrons.size();
 }
 
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
@@ -496,6 +502,12 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
         return &(outputMeshes[0]);
 }
 
+#ifdef USE_OGL_TETRA_MODEL
+unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshTetrahedrons()
+{
+    return outputMeshTetrahedrons.size();
+}
+
 SofaPhysicsOutputMeshTetrahedron** SofaPhysicsSimulation::Impl::getOutputMeshTetrahedrons()
 {
     if( outputMeshTetrahedrons.empty() ) 
@@ -503,6 +515,7 @@ SofaPhysicsOutputMeshTetrahedron** SofaPhysicsSimulation::Impl::getOutputMeshTet
     else
         return &(outputMeshTetrahedrons[0]);
 }
+#endif
 
 unsigned int SofaPhysicsSimulation::Impl::getNbDataMonitors()
 {
@@ -718,7 +731,10 @@ void SofaPhysicsSimulation::Impl::drawGL()
                 currentCamera->setViewport(vWidth, vHeight);
             calcProjection();
         }
-        currentCamera->getOpenGLMatrix(lastModelviewMatrix);
+
+        // \todo {epernod this is not possible anymore}
+//        currentCamera->getOpenGLMatrix(lastModelviewMatrix);
+
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixd(lastProjectionMatrix);
         glMatrixMode(GL_MODELVIEW);

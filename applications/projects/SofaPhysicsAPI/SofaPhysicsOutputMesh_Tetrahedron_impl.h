@@ -3,10 +3,11 @@
 
 #include "SofaPhysicsAPI.h"
 
-//#include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaOpenglVisual/OglTetrahedralModel.h>
 #include <sofa/core/visual/Shader.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/topology/Topology.h>
 
 class SofaPhysicsOutputMeshTetrahedron::Impl
 {
@@ -53,24 +54,29 @@ public:
     
     typedef sofa::defaulttype::Vec3fTypes Vec3f;
 
-    typedef sofa::component::visualmodel::OglTetrahedralModel<Vec3f> SofaOutputMeshTetrahedron;
+  //  typedef sofa::component::visualmodel::OglTetrahedralModel<Vec3f> SofaOutputMeshTetrahedron;
+    typedef sofa::core::visual::VisualModel SofaVisualOutputMesh;
+    typedef sofa::component::visualmodel::VisualModelImpl SofaOutputMesh;
 
-    typedef SofaOutputMeshTetrahedron::Coord Coord;
+    typedef typename SofaVisualOutputMesh::Coord Coord;
 
-    typedef SofaOutputMeshTetrahedron::Tetrahedron Tetrahedron;
+    //typedef SofaOutputMeshTetrahedron::Tetrahedron Tetrahedron;
+    //typedef SofaVisualOutputMesh::Tetrahedron Tetrahedron;
+
+
     typedef sofa::core::visual::ShaderElement SofaVAttribute;
-
-    
-
 
 
 protected:
-    SofaOutputMeshTetrahedron::SPtr sObj;
+    //SofaOutputMeshTetrahedron::SPtr sObj;
+    SofaOutputMesh::SPtr sObj;
     sofa::helper::vector<SofaVAttribute::SPtr> sVA;
 
 public:
-    SofaOutputMeshTetrahedron* getObject(){return sObj.get();}
-    void setObject(SofaOutputMeshTetrahedron* o);
+    //SofaOutputMeshTetrahedron* getObject(){return sObj.get();}
+    //void setObject(SofaOutputMeshTetrahedron* o);
+    SofaOutputMesh* getObject(){return sObj.get();}
+    void setObject(SofaOutputMesh* o);
 };
 
 #endif // SOFAPHYSICSOUTPUTMESH_TETRAHEDRAL_IMPL_H
