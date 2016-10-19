@@ -1,0 +1,1 @@
+../../../../examples/Components/interactionforcefield/InteractionEllipsoidForceField.scn 100 1e-4
