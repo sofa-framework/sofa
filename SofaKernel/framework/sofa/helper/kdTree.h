@@ -75,6 +75,13 @@ public:
     unsigned int getClosest(const Coord &x, const VecCoord& positions); ///< get the index of the closest point between positions and x
     bool getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
 
+
+    /// @name To be Data-zable
+    /// @{
+        inline friend std::ostream& operator<< ( std::ostream& os, const kdTree<Coord>& ) {return os;}
+        inline friend std::istream& operator>> ( std::istream& is, kdTree<Coord>& ) {return is;}
+    /// @}
+
 protected :
     void print(const unsigned int index);
 
