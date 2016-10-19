@@ -247,7 +247,7 @@ public:
 };
 
 /** Apply projective constaints of the whole scene */
-class SOFA_SIMULATION_COMMON_API MechanicalAddProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalAddProjectiveConstraint_ToMatrixVisitor : public MechanicalVisitor
 {
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
