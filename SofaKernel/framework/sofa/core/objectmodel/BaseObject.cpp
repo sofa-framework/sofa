@@ -110,7 +110,10 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
         if (valueString[0] != '@')
         {
-            serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            if(!valueString.empty())
+            {
+                serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            }
         }
         else
         {
