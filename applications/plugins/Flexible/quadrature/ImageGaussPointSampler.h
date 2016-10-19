@@ -52,20 +52,24 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageTypes, class MaskTypes>
 struct ImageGaussPointSamplerSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageTypes, class MaskTypes> class ImageGaussPointSampler;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class ImageT, class MaskT>
+struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaulttype::Image<MaskT>>
 {
+    typedef ImageGaussPointSampler<defaulttype::Image<ImageT>,defaulttype::Image<MaskT>> ImageGaussPointSampler;
+
     typedef unsigned int IndT;
     typedef defaulttype::Image<IndT> IndTypes;
 
-    template<class ImageGaussPointSampler>
     static void init(ImageGaussPointSampler* This)
     {
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
@@ -97,8 +101,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     /// midpoint integration : put samples uniformly and weight them by their volume
-
-    template<class ImageGaussPointSampler>
     static void midpoint(ImageGaussPointSampler* This)
     {
         typedef typename ImageGaussPointSampler::IndTypes IndTypes;
@@ -234,7 +236,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     /// returns true if (x,y,z) in the region of interest
-    template<class ImageGaussPointSampler>
     static bool isInMask(ImageGaussPointSampler* This,unsigned x,unsigned y, unsigned z)
     {
         typename ImageGaussPointSampler::raMask rmask(This->f_mask);
@@ -247,7 +248,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
     /// Identify regions sharing similar parents
     /// returns a list of region containing the parents, the number of voxels and center; and fill the voronoi image
-    template<class ImageGaussPointSampler>
     static void Cluster_SimilarIndices(ImageGaussPointSampler* This)
     {
         typedef typename ImageGaussPointSampler::Real Real;
@@ -306,7 +306,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     /// subdivide region[index] in two regions
-    template<class ImageGaussPointSampler>
     static void subdivideRegion(ImageGaussPointSampler* This,const unsigned int index)
     {
         typedef typename ImageGaussPointSampler::Real Real;
@@ -384,7 +383,6 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     /// update Polynomial Factors from the voxel map
-    template<class ImageGaussPointSampler>
     static void fillPolynomialFactors(ImageGaussPointSampler* This,const unsigned int factIndex, const bool writeErrorImg=false)
     {
         typedef typename ImageGaussPointSampler::Real Real;
@@ -453,8 +451,8 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ImageTypes_, class MaskTypes_>
 class ImageGaussPointSampler : public BaseGaussPointSampler
 {
-    friend struct ImageGaussPointSamplerSpecialization<ImageTypes_::label>;
-    typedef ImageGaussPointSamplerSpecialization<ImageTypes_::label> ImageGaussPointSamplerSpec;
+    friend struct ImageGaussPointSamplerSpecialization<ImageTypes_,MaskTypes_>;
+    typedef ImageGaussPointSamplerSpecialization<ImageTypes_,MaskTypes_> ImageGaussPointSamplerSpec;
 
 public:
     typedef BaseGaussPointSampler Inherit;

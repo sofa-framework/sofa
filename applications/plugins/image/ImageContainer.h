@@ -56,23 +56,24 @@ namespace container
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageContainerSpecialization
 {
 };
 
+/// forward declaration
+template<class ImageTypes> class ImageContainer;
 
-/// Specialization for regular Image
-template <>
-struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageContainerSpecialization< defaulttype::Image<T> >
 {
-    template<class ImageContainer>
+    typedef ImageContainer<defaulttype::Image<T>> ImageContainer;
+
     static void constructor( ImageContainer* container )
     {
         container->f_listening.setValue(true);  // to update camera during animate
     }
 
-    template<class ImageContainer>
     static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
     {
         if( container->image.isSet() ) return; // image is set from data link
@@ -84,13 +85,11 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 container->loadCamera();
     }
 
-    template<class ImageContainer>
     static void init( ImageContainer* container )
     {
         // if the image is not set from data link
         // and was not loaded from a file during parsing
         // try to load it now (maybe the loading was data-dependant, like the filename)
-        typedef typename ImageContainer::T T;
 
         typename ImageContainer::waImage wimage(container->image);
         if( wimage->isEmpty() )
@@ -102,10 +101,8 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 }
     }
 
-    template<class ImageContainer>
     static bool load( ImageContainer* container, std::string fname )
     {
-        typedef typename ImageContainer::T T;
         typedef typename ImageContainer::Real Real;
 
         typename ImageContainer::waImage wimage(container->image);
@@ -209,10 +206,8 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         return true;
     }
 
-    //    template<class ImageContainer>
     //    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
     //    {
-    //        typedef typename ImageContainer::T T;
     //        typedef typename ImageContainer::Real Real;
 
     //        typename ImageContainer::waImage wimage(container->image);
@@ -243,11 +238,8 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     //        return true;
     //    }
 
-    template<class ImageContainer>
     static bool loadCamera( ImageContainer* container )
     {
-        //        typedef typename ImageContainer::T T;
-
         if( container->m_filename.isSet() ) return false;
         if( container->name.getValue().find("CAMERA") == std::string::npos ) return false;
 
@@ -265,7 +257,6 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
      * CImg only allows to get the voxel size of a nifti image, whereas this function
      * gives access to the whole structure of the header to get rotation and translation.
      */
-    template<class ImageContainer>
     static void readNiftiHeader(ImageContainer* container, std::string fname)
     {
         typedef typename ImageContainer::Real Real;
@@ -339,7 +330,7 @@ template<class _ImageTypes>
 class ImageContainer : public core::objectmodel::BaseObject
 {
 
-    friend struct ImageContainerSpecialization<_ImageTypes::label>;
+    friend struct ImageContainerSpecialization<_ImageTypes>;
 
 public:
     typedef core::objectmodel::BaseObject Inherited;
@@ -393,7 +384,7 @@ public:
         this->transform.setGroup("Transform");
         this->transform.unset();
 
-        ImageContainerSpecialization<ImageTypes::label>::constructor( this );
+        ImageContainerSpecialization<ImageTypes>::constructor( this );
     }
 
 
@@ -420,12 +411,12 @@ public:
         else
             sout << "Transform is NOT set" << sendl;
 
-        ImageContainerSpecialization<ImageTypes::label>::parse( this, arg );
+        ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
 
     virtual void init()
     {
-        ImageContainerSpecialization<ImageTypes::label>::init( this );
+        ImageContainerSpecialization<ImageTypes>::init( this );
 
         raImage wimage(this->image);
         waTransform wtransform(this->transform);
@@ -503,17 +494,17 @@ protected:
 
     bool load(std::string fname)
     {
-        return ImageContainerSpecialization<ImageTypes::label>::load( this, fname );
+        return ImageContainerSpecialization<ImageTypes>::load( this, fname );
     }
 
     //    bool load(std::FILE* const file, std::string fname)
     //    {
-    //       return ImageContainerSpecialization<ImageTypes::label>::load( this, file, fname );
+    //       return ImageContainerSpecialization<ImageTypes>::load( this, file, fname );
     //    }
 
     bool loadCamera()
     {
-        return ImageContainerSpecialization<ImageTypes::label>::loadCamera( this );
+        return ImageContainerSpecialization<ImageTypes>::loadCamera( this );
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
