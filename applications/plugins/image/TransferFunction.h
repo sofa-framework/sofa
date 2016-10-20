@@ -62,17 +62,17 @@ template <class InImageType, class OutImageType> class TransferFunction;
 template <class Ti, class To>
 struct TransferFunctionSpecialization<defaulttype::Image<Ti>,defaulttype::Image<To>>
 {
-    typedef TransferFunction<defaulttype::Image<Ti>,defaulttype::Image<To>> TransferFunction;
+    typedef TransferFunction<defaulttype::Image<Ti>,defaulttype::Image<To>> TransferFunctionT;
 
-    static void update(TransferFunction& This)
+    static void update(TransferFunctionT& This)
     {
-        typename TransferFunction::raParam p(This.param);
-        typename TransferFunction::raImagei in(This.inputImage);
+        typename TransferFunctionT::raParam p(This.param);
+        typename TransferFunctionT::raImagei in(This.inputImage);
         if(in->isEmpty()) return;
         const cimg_library::CImgList<Ti>& inimg = in->getCImgList();
 
-        typename TransferFunction::waImageo out(This.outputImage);
-        typename TransferFunction::imCoord dim=in->getDimensions();
+        typename TransferFunctionT::waImageo out(This.outputImage);
+        typename TransferFunctionT::imCoord dim=in->getDimensions();
         out->setDimensions(dim);
         cimg_library::CImgList<To>& img = out->getCImgList();
 
@@ -80,7 +80,7 @@ struct TransferFunctionSpecialization<defaulttype::Image<Ti>,defaulttype::Image<
         {
         case LINEAR:
         {
-            typename TransferFunction::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
+            typename TransferFunctionT::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
             cimglist_for(inimg,l) cimg_forXYZC(inimg(l),x,y,z,c) img(l)(x,y,z,c)=This.Linear_TransferFunction(inimg(l)(x,y,z,c),mp);
         }
             break;
