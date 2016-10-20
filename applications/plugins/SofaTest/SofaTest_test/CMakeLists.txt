@@ -19,7 +19,7 @@ if(SofaPython_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
-add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../../..\"")
+add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 
 if(SofaPython_FOUND)
