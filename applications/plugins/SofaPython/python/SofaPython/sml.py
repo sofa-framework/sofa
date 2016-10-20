@@ -143,6 +143,7 @@ class Model:
             self.com = None # x,y,z
             self.inertia = None # Ixx, Ixy, Ixz, Iyy, Iyz, Izz or Ixx, Iyy, Izz
             self.inertia_rotation = None # only useful for diagonal (3 values) inertia
+            self.massInfo = None # store the SofaPython.mass.RigidMassInfo() once computed
 
             self.skinnings=list()
             if not solidXml is None:
