@@ -48,8 +48,7 @@ namespace engine
 {
 
 /**
- * This class dilates the positions of one DataFields into new positions after applying a dilateation
-This dilateation can be either translation, rotation, scale
+ * This class dilates a given mesh by moving vertices along their normal.
  */
 template <class DataTypes>
 class DilateEngine : public core::DataEngine
@@ -68,13 +67,12 @@ public:
 
     DilateEngine();
 
-    ~DilateEngine() {}
+    virtual ~DilateEngine() {}
 
-    void init();
-
-    void reinit();
-
-    void update();
+    virtual void init();
+    virtual void bwdInit();
+    virtual void reinit();
+    virtual void update();
 
     virtual std::string getTemplateName() const
     {
@@ -87,25 +85,19 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX; ///< input position
-    Data<VecCoord> f_outputX; ///< ouput position
-    Data<SeqTriangles> f_triangles; ///< input triangles
-    Data<SeqQuads> f_quads; ///< input quads
-    Data<VecCoord> f_normals; ///< ouput normals
-    Data<helper::vector<Real> > f_thickness;
-    Data<Real> f_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
-    Data<Real> f_minThickness; ///< minimal thickness to enforce
+    Data<VecCoord> d_inputX; ///< input position
+    Data<VecCoord> d_outputX; ///< ouput position
+    Data<SeqTriangles> d_triangles; ///< input triangles
+    Data<SeqQuads> d_quads; ///< input quads
+    Data<VecCoord> d_normals; ///< ouput normals
+    Data<helper::vector<Real> > d_thickness;
+    Data<Real> d_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
+    Data<Real> d_minThickness; ///< minimal thickness to enforce
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
 
-//#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-//#endif //SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-//#endif //SOFA_DOUBLE
-//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
 #endif
 
 } // namespace engine
