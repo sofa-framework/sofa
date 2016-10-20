@@ -60,16 +60,18 @@ set(HEADER_FILES
     VoronoiToMeshEngine.h
 )
 
-set(PYTHON_FILES
-    python/SofaImage/API.py
-    python/SofaImage/__init__.py
-)
 
 set(README_FILES image.txt)
 
 
 find_package(SofaPython QUIET)
 if( SofaPython_FOUND )
+
+    set(PYTHON_FILES
+        python/SofaImage/API.py
+        python/SofaImage/__init__.py
+    )
+
     list(APPEND SOURCE_FILES python/Binding_ImageData.cpp)
     list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
 endif()
