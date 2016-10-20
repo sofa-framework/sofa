@@ -78,7 +78,7 @@ SetDirectory::SetDirectory(const std::string& filename)
 
 SetDirectory::~SetDirectory()
 {
-    if (!directory.empty()) // && !previousDir.empty())
+    if (!directory.empty())
     {
         sofaCurrentDirectory.pop();
     }

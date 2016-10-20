@@ -42,7 +42,6 @@ namespace system
 class SOFA_HELPER_API SetDirectory
 {
 public:
-    std::string previousDir;
     std::string directory;
 
     SetDirectory(const char* filename);

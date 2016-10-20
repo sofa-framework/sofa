@@ -33,6 +33,7 @@
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 #include <sstream>
+#include <unistd.h>
 
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
@@ -98,7 +99,8 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
+    std::string directory = helper::system::SetDirectory::GetParentDir(filename);
+    if (chdir(directory.c_str()) != 0) msg_error("SetDirectory") << "can't get current directory.";
 
     if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
     {
