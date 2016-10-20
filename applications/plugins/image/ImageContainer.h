@@ -67,31 +67,31 @@ template<class ImageTypes> class ImageContainer;
 template <class T>
 struct ImageContainerSpecialization< defaulttype::Image<T> >
 {
-    typedef ImageContainer<defaulttype::Image<T>> ImageContainer;
+    typedef ImageContainer<defaulttype::Image<T>> ImageContainerT;
 
-    static void constructor( ImageContainer* container )
+    static void constructor( ImageContainerT* container )
     {
         container->f_listening.setValue(true);  // to update camera during animate
     }
 
-    static void parse( ImageContainer* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
+    static void parse( ImageContainerT* container, sofa::core::objectmodel::BaseObjectDescription* /* arg */ = NULL )
     {
         if( container->image.isSet() ) return; // image is set from data link
 
         // otherwise try to load it from a file
-        typename ImageContainer::waImage wimage(container->image);
+        typename ImageContainerT::waImage wimage(container->image);
         if( wimage->isEmpty() )
             if( !container->load() )
                 container->loadCamera();
     }
 
-    static void init( ImageContainer* container )
+    static void init( ImageContainerT* container )
     {
         // if the image is not set from data link
         // and was not loaded from a file during parsing
         // try to load it now (maybe the loading was data-dependant, like the filename)
 
-        typename ImageContainer::waImage wimage(container->image);
+        typename ImageContainerT::waImage wimage(container->image);
         if( wimage->isEmpty() )
             if( !container->load() )
                 if( !container->loadCamera() )
@@ -101,12 +101,12 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
                 }
     }
 
-    static bool load( ImageContainer* container, std::string fname )
+    static bool load( ImageContainerT* container, std::string fname )
     {
-        typedef typename ImageContainer::Real Real;
+        typedef typename ImageContainerT::Real Real;
 
-        typename ImageContainer::waImage wimage(container->image);
-        typename ImageContainer::waTransform wtransform(container->transform);
+        typename ImageContainerT::waImage wimage(container->image);
+        typename ImageContainerT::waTransform wtransform(container->transform);
 
         // read image
 #ifndef __PS3__
@@ -206,12 +206,12 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         return true;
     }
 
-    //    static bool load( ImageContainer* container, std::FILE* const file, std::string fname)
+    //    static bool load( ImageContainerT* container, std::FILE* const file, std::string fname)
     //    {
-    //        typedef typename ImageContainer::Real Real;
+    //        typedef typename ImageContainerT::Real Real;
 
-    //        typename ImageContainer::waImage wimage(container->image);
-    //        typename ImageContainer::waTransform wtransform(container->transform);
+    //        typename ImageContainerT::waImage wimage(container->image);
+    //        typename ImageContainerT::waTransform wtransform(container->transform);
 
     //        if(fname.find(".cimg")!=std::string::npos || fname.find(".CIMG")!=std::string::npos || fname.find(".Cimg")!=std::string::npos || fname.find(".CImg")!=std::string::npos)
     //            wimage->getCImgList().load_cimg(file);
@@ -238,13 +238,13 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
     //        return true;
     //    }
 
-    static bool loadCamera( ImageContainer* container )
+    static bool loadCamera( ImageContainerT* container )
     {
         if( container->m_filename.isSet() ) return false;
         if( container->name.getValue().find("CAMERA") == std::string::npos ) return false;
 
 #ifdef cimg_use_opencv
-        typename ImageContainer::waImage wimage(container->image);
+        typename ImageContainerT::waImage wimage(container->image);
         if(wimage->isEmpty() wimage->getCImgList().push_back(CImg<T>().load_camera());
                 else wimage->getCImgList()[0].load_camera();
                 if(!wimage->isEmpty())  return true;  else return false;
@@ -257,10 +257,10 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
      * CImg only allows to get the voxel size of a nifti image, whereas this function
      * gives access to the whole structure of the header to get rotation and translation.
      */
-    static void readNiftiHeader(ImageContainer* container, std::string fname)
+    static void readNiftiHeader(ImageContainerT* container, std::string fname)
     {
-        typedef typename ImageContainer::Real Real;
-        typename ImageContainer::waTransform wtransform(container->transform);
+        typedef typename ImageContainerT::Real Real;
+        typename ImageContainerT::waTransform wtransform(container->transform);
 
         struct transformData{
             float b;

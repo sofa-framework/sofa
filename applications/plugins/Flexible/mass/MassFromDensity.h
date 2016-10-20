@@ -63,25 +63,25 @@ template <class DataTypes, class ImageTypes> class MassFromDensity;
 template <class DataTypes, class T>
 struct MassFromDensitySpecialization<DataTypes, defaulttype::Image<T>>
 {
-    typedef MassFromDensity<DataTypes, defaulttype::Image<T>> MassFromDensity;
+    typedef MassFromDensity<DataTypes, defaulttype::Image<T>> MassFromDensityT;
 
-    static void update(MassFromDensity* This)
+    static void update(MassFromDensityT* This)
     {
-        typedef typename MassFromDensity::Real Real;
-        typedef typename MassFromDensity::VecCoord VecCoord;
-        typedef typename MassFromDensity::Coord Coord;
+        typedef typename MassFromDensityT::Real Real;
+        typedef typename MassFromDensityT::VecCoord VecCoord;
+        typedef typename MassFromDensityT::Coord Coord;
 
-        typename MassFromDensity::raImage in(This->image);
-        typename MassFromDensity::raTransform inT(This->transform);
+        typename MassFromDensityT::raImage in(This->image);
+        typename MassFromDensityT::raTransform inT(This->transform);
         if(in->isEmpty()) return;
-        const cimg_library::CImg<typename MassFromDensity::T>& img = in->getCImg(This->time);
+        const cimg_library::CImg<T>& img = in->getCImg(This->time);
 
         // count non zero voxels
         unsigned int nb=0;
         cimg_forXYZ(img,x,y,z) if(img(x,y,z)) nb++;
 
         // build mass and mapped dofs
-        This->Me=typename MassFromDensity::rmat(3*nb,3*nb);
+        This->Me=typename MassFromDensityT::rmat(3*nb,3*nb);
         This->Me.reserve(3*nb);
         This->dofs->resize(nb);
         helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( This->dofs->writeOnlyRestPositions() );
