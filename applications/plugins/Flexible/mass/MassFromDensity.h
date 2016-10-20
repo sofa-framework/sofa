@@ -51,17 +51,20 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class DataTypes, class ImageTypes>
 struct MassFromDensitySpecialization
 {
 };
 
-/// Specialization for regular Image
-template <>
-struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
-{
+/// forward declaration
+template <class DataTypes, class ImageTypes> class MassFromDensity;
 
-    template<class MassFromDensity>
+/// Specialization for regular Image
+template <class DataTypes, class T>
+struct MassFromDensitySpecialization<DataTypes, defaulttype::Image<T>>
+{
+    typedef MassFromDensity<DataTypes, defaulttype::Image<T>> MassFromDensity;
+
     static void update(MassFromDensity* This)
     {
         typedef typename MassFromDensity::Real Real;
@@ -106,8 +109,8 @@ struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _DataTypes, class _ImageTypes>
 class MassFromDensity : public core::DataEngine
 {
-    friend struct MassFromDensitySpecialization<_ImageTypes::label>;
-    typedef MassFromDensitySpecialization<_ImageTypes::label> MassFromDensitySpec;
+    friend struct MassFromDensitySpecialization<_DataTypes,_ImageTypes>;
+    typedef MassFromDensitySpecialization<_DataTypes,_ImageTypes> MassFromDensitySpec;
 
 public:
     typedef core::DataEngine Inherited;

@@ -48,23 +48,25 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageValuesFromPositionsSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageValuesFromPositions;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageValuesFromPositions<defaulttype::Image<T>> ImageValuesFromPositions;
 
-    template<class ImageValuesFromPositions>
     static void update(ImageValuesFromPositions& This)
     {
         typedef typename ImageValuesFromPositions::Real Real;
         typedef typename ImageValuesFromPositions::Coord Coord;
-        typedef typename ImageValuesFromPositions::T T;
 
         typename ImageValuesFromPositions::raTransform inT(This.transform);
         typename ImageValuesFromPositions::raPositions pos(This.position);
@@ -123,7 +125,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageValuesFromPositionsSpecialization<_ImageTypes::label>;
+    friend struct ImageValuesFromPositionsSpecialization<_ImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -192,7 +194,7 @@ protected:
 
     virtual void update()
     {
-        ImageValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        ImageValuesFromPositionsSpecialization<ImageTypes>::update( *this );
         cleanDirty();
     }
 

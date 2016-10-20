@@ -23,6 +23,7 @@ int RigidCylinderModelClass = core::RegisterObject("Collision model which repres
 #ifndef SOFA_DOUBLE
         .add < TCylinderModel<defaulttype::Rigid3fTypes> >()
 #endif
+        //TODO(dmarchal): Fix deprecated management...
         .addAlias("Cylinder")
         .addAlias("CylinderModel")
 //.addAlias("CylinderMesh")
@@ -37,6 +38,7 @@ template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3dTypes>
 template class SOFA_BASE_COLLISION_API TCylinder<defaulttype::Rigid3fTypes>;
 template class SOFA_BASE_COLLISION_API TCylinderModel<defaulttype::Rigid3fTypes>;
 #endif
+
 
 
 

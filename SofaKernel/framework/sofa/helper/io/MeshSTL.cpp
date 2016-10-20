@@ -190,9 +190,6 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     std::ifstream dataFile(filename.c_str(), std::ios::in | std::ios::binary);
 
 
-
-
-
     Vec3f result;
     unsigned int attributeCount;
 
@@ -221,12 +218,18 @@ void MeshSTL::readBinarySTL (const std::string &filename)
 
 
 #ifndef NDEBUG
+    {
     // checking that the file is large enough to contain the given nb of facets
+    // store current position in file
+    std::streampos pos = dataFile.tellg();
     // get length of file
     dataFile.seekg(0, std::ios::end);
     std::streampos length = dataFile.tellg();
-    dataFile.seekg(0, std::ios::beg);
+    // restore pos
+    dataFile.seekg(pos);
+    // check length
     assert( length >= (std::streampos)( 80 /*header*/ + 4 /*nb facets*/ + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) ) );
+    }
 #endif
 
 

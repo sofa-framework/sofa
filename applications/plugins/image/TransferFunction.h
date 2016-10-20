@@ -50,23 +50,22 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class InImageType, class OutImageType>
 struct TransferFunctionSpecialization
 {
 };
 
+/// forward declaration
+template <class InImageType, class OutImageType> class TransferFunction;
 
 /// Specialization for regular Image
-template <>
-struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class Ti, class To>
+struct TransferFunctionSpecialization<defaulttype::Image<Ti>,defaulttype::Image<To>>
 {
+    typedef TransferFunction<defaulttype::Image<Ti>,defaulttype::Image<To>> TransferFunction;
 
-    template<class TransferFunction>
     static void update(TransferFunction& This)
     {
-        typedef typename TransferFunction::Ti Ti;
-        typedef typename TransferFunction::To To;
-
         typename TransferFunction::raParam p(This.param);
         typename TransferFunction::raImagei in(This.inputImage);
         if(in->isEmpty()) return;
@@ -101,8 +100,7 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _InImageTypes,class _OutImageTypes>
 class TransferFunction : public core::DataEngine
 {
-    static_assert( _InImageTypes::label==_OutImageTypes::label, "TransferFunction is only between images of same types for now" );
-    friend struct TransferFunctionSpecialization<_InImageTypes::label>;
+    friend struct TransferFunctionSpecialization<_InImageTypes,_OutImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -164,7 +162,7 @@ protected:
 
     virtual void update()
     {
-        TransferFunctionSpecialization<InImageTypes::label>::update( *this );
+        TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
         cleanDirty();
     }
 

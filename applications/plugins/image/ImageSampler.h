@@ -58,32 +58,34 @@ namespace engine
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageSamplerSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageSampler;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageSamplerSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageSampler<defaulttype::Image<T>> ImageSampler;
+
     typedef defaulttype::Image<SReal> DistTypes;
     typedef defaulttype::Image<unsigned int> VorTypes;
 
-    template<class ImageSampler>
     static void init( ImageSampler* )
     {
     }
 
-    template<class ImageSampler>
     static void regularSampling( ImageSampler* sampler, const bool atcorners=false, const bool recursive=false )
     {
 //        typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
         typedef typename ImageSampler::Hexa Hexa;
-        typedef typename ImageSampler::T T;
 
 
         // get tranform and image at time t
@@ -149,14 +151,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
 
-    template<class ImageSampler>
     static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter = std::numeric_limits<unsigned int>::max(), const SReal pmmTol = 10 )
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
 //        typedef typename ImageSampler::Edge Edge;
 //        typedef typename ImageSampler::Hexa Hexa;
-        typedef typename ImageSampler::T T;
 
         clock_t timer = clock();
 
@@ -269,14 +269,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
 
-    template<class ImageSampler>
     static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING,  const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
 //        typedef typename ImageSampler::Hexa Hexa;
-        typedef typename ImageSampler::T T;
 
         clock_t timer = clock();
 
@@ -436,7 +434,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageSampler : public core::DataEngine
 {
-    friend struct ImageSamplerSpecialization<_ImageTypes::label>;
+    friend struct ImageSamplerSpecialization<_ImageTypes>;
 
 public:
 
@@ -495,14 +493,14 @@ public:
 
     //@name distances (may be used for shape function computation)
     /**@{*/
-    typedef typename ImageSamplerSpecialization<ImageTypes::label>::DistTypes DistTypes;
+    typedef typename ImageSamplerSpecialization<ImageTypes>::DistTypes DistTypes;
     typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > distances;
     /**@}*/
 
     //@name voronoi
     /**@{*/
-    typedef typename ImageSamplerSpecialization<ImageTypes::label>::VorTypes VorTypes;
+    typedef typename ImageSamplerSpecialization<ImageTypes>::VorTypes VorTypes;
     typedef helper::WriteOnlyAccessor<Data< VorTypes > > waVor;
     Data< VorTypes > voronoi;
     /**@}*/
@@ -551,7 +549,7 @@ public:
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
 
-        ImageSamplerSpecialization<ImageTypes::label>::init( this );
+        ImageSamplerSpecialization<ImageTypes>::init( this );
     }
 
     virtual void init()
@@ -763,7 +761,7 @@ protected:
     */
     void regularSampling ( const bool atcorners=false , const bool recursive=false )
     {
-        ImageSamplerSpecialization<ImageTypes::label>::regularSampling( this, atcorners, recursive );
+        ImageSamplerSpecialization<ImageTypes>::regularSampling( this, atcorners, recursive );
     }
 
 
@@ -880,7 +878,7 @@ protected:
 
     void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
-        ImageSamplerSpecialization<ImageTypes::label>::uniformSampling( this, nb, bias, lloydIt, method, pmmIter, pmmTol );
+        ImageSamplerSpecialization<ImageTypes>::uniformSampling( this, nb, bias, lloydIt, method, pmmIter, pmmTol );
     }
 
 
@@ -892,7 +890,7 @@ protected:
 
     void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=false, const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
-        ImageSamplerSpecialization<ImageTypes::label>::recursiveUniformSampling( this, nb, bias, lloydIt, method, N, pmmIter, pmmTol );
+        ImageSamplerSpecialization<ImageTypes>::recursiveUniformSampling( this, nb, bias, lloydIt, method, N, pmmIter, pmmTol );
     }
 
 
