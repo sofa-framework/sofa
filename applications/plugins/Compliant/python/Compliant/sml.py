@@ -52,10 +52,8 @@ def insertRigid(parentNode, rigidModel, density, scale=1, param=None):
                                     rigidModel.inertia[5] ) # Izz
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position, inertia_forces = False )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 :
-        if rigidModel.massInfo is None:
-            # get inertia from meshes and density
-            rigidModel.massInfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density, scale)
-        rigid.setFromRigidInfo(rigidModel.massInfo, offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
+        # get inertia from meshes and density
+        rigid.setFromRigidInfo(rigidModel.getRigidMassInfo(density, scale), offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
             ## no density but a mesh let's normalise computed mass with specified mass

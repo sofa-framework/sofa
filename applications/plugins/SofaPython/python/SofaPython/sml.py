@@ -149,6 +149,11 @@ class Model:
             if not solidXml is None:
                 self.parseXml(solidXml)
 
+        def getRigidMassInfo(self, density, scale=1):
+            if self.massInfo is None:
+                self.massInfo = computeRigidMassInfo(self, density, scale)
+            return self.massInfo
+
         def addMesh(self, mesh, attr=None):
             self.mesh.append(mesh)
             if not attr is None:
@@ -459,7 +464,7 @@ def setupUnits(myUnits):
     if printLog:
         Sofa.msg_info("SofaPython.sml",message)
 
-def getSolidRigidMassInfo(solid, density, scale=1):
+def computeRigidMassInfo(solid, density, scale=1):
     massInfo = mass.RigidMassInfo()
     for mesh in solid.mesh:
         if solid.meshAttributes[mesh.id].simulation is True:
