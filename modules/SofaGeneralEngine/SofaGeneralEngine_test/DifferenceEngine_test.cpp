@@ -27,26 +27,32 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
     typedef DifferenceEngine<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
 
+    Simulation* m_simu;
+    Node::SPtr m_node;
+    typename ThisClass::SPtr m_thisObject;
+
+    void SetUp()
+    {
+        setSimulation(m_simu = new DAGSimulation());
+        m_node = m_simu->createNewGraph("root");
+        m_thisObject = New<ThisClass >() ;
+        m_node->addObject(m_thisObject) ;
+    }
 
     // Basic tests (data and init).
     void normalTests(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_thisObject->setName("myname") ;
+        EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        thisObject->setName("myname") ;
-        EXPECT_TRUE(thisObject->getName() == "myname") ;
+        EXPECT_TRUE( m_thisObject->findData("input") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("substractor") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("output") != NULL ) ;
 
-        EXPECT_TRUE( thisObject->findData("input") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("substractor") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("output") != NULL ) ;
-
-        EXPECT_NO_THROW( thisObject->init() ) ;
-        EXPECT_NO_THROW( thisObject->bwdInit() ) ;
-        EXPECT_NO_THROW( thisObject->reinit() ) ;
-        EXPECT_NO_THROW( thisObject->reset() ) ;
+        EXPECT_NO_THROW( m_thisObject->init() ) ;
+        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reinit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reset() ) ;
 
         return ;
     }
@@ -54,31 +60,21 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
 
     // Test computation on a simple example
     void updateTest(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_thisObject->findData("input")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
+        m_thisObject->findData("substractor")->read("0. 0. 0.5  0. 1. 1.  0. 1. 2.");
+        m_thisObject->update();
 
-        thisObject->findData("input")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
-        thisObject->findData("substractor")->read("0. 0. 0.5  0. 1. 1.  0. 1. 2.");
-        thisObject->update();
-
-        EXPECT_TRUE(thisObject->findData("output")->getValueString() == "0 0.5 0 0 -1 0 0 -2 1");
+        EXPECT_TRUE(m_thisObject->findData("output")->getValueString() == "0 0.5 0 0 -1 0 0 -2 1");
     }
 
 
     // Shouldn't crash if input and substractor have different size
     void dataTest(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
-
-        thisObject->findData("input")->read("0. 0. 0.");
-        thisObject->findData("substractor")->read("0. 0. 0. 0. 0. 0.");
-        EXPECT_NO_THROW(thisObject->update());
+        m_thisObject->findData("input")->read("0. 0. 0.");
+        m_thisObject->findData("substractor")->read("0. 0. 0. 0. 0. 0.");
+        EXPECT_NO_THROW(m_thisObject->update());
     }
 
 };
