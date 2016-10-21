@@ -35,26 +35,27 @@ namespace component
 namespace engine
 {
 
+using namespace defaulttype;
+
 SOFA_DECL_CLASS(DilateEngine)
 
-int DilateEngineClass = core::RegisterObject("Move mesh vertices along their normal")
-#ifndef SOFA_FLOAT
-//  .add< DilateEngine<defaulttype::Vec3fTypes> >(true) // default template
-        .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//.add< DilateEngine<defaulttype::Vec3fTypes> >()
-//  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
+int DilateEngineClass = core::RegisterObject("Dilates a given mesh by moving vertices along their normal.")
+// TriangleOctree implemented with double only
+//#ifdef SOFA_WITH_FLOAT
+//.add< DilateEngine<Vec3fTypes>>(true)
+//#endif //SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
+.add< DilateEngine<Vec3dTypes>>(true) // default template
 #endif //SOFA_DOUBLE
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-//template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+// TriangleOctree implemented with double only
+//#ifdef SOFA_WITH_FLOAT
+//template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3fTypes>;
+//#endif //SOFA_WITH_FLOAT
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_GENERAL_ENGINE_API DilateEngine<Vec3dTypes>;
+#endif //SOFA_WITH_DOUBLE
 
 } // namespace engine
 
