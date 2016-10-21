@@ -13,6 +13,7 @@ set(SOURCE_FILES
         DifferenceEngine_test.cpp
         DilateEngine_test.cpp
         ExtrudeEdgesAndGenerateQuads_test.cpp
+        MeshROI_test.cpp
         TransformEngine_test.cpp
 
         )
