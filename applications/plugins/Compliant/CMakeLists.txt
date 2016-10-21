@@ -268,6 +268,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
 
+# linking explicitly with rt looks necessary on some posix (e.g. CentOS)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} rt)
+endif()
+
+
 set(COMPLIANT_COMPILER_FLAGS "-DSOFA_BUILD_Compliant")
 
 if( SofaPython_FOUND )
