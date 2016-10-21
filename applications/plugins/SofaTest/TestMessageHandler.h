@@ -56,7 +56,7 @@ public:
     /// iff the handler is active (see setActive)
     virtual void process(Message &m)
     {
-        assert(m.type()<m_failsOn.size() & "If this happens this means that the code initializing m_failsOn is broken.") ;
+        assert(m.type()<m_failsOn.size() && "If this happens this means that the code initializing m_failsOn is broken.") ;
 
         if( active && m_failsOn[m.type()] ){
             ADD_FAILURE() << "An error message was emitted and is interpreted as a test failure. "
@@ -111,7 +111,7 @@ class CountingMessageHandler : public MessageHandler
 public:
     virtual void process(Message& m)
     {
-        assert(m.type()<m_countMatching.size() & "If this happens this means that the code initializing m_countMatching is broken.") ;
+        assert(m.type()<m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
 
         m_countMatching[m.type()]++ ;
     }
@@ -129,7 +129,7 @@ public:
     }
 
     int getMessageCountFor(const Message::Type& type) const {
-        assert(type < m_countMatching.size() & "If this happens this means that the code initializing m_countMatching is broken.") ;
+        assert(type < m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
         return m_countMatching[type] ;
     }
 
