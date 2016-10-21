@@ -118,8 +118,8 @@ void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &
             if(cl.size()>N) {it=cl.end(); it--; cl.erase(it);}
         }
     }
-    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions);
-    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions);
+    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions,N);
+    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions,N);
 }
 
 

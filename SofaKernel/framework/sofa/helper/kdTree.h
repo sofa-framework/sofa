@@ -88,7 +88,7 @@ protected :
     vector< TREENODE > tree; unsigned int firstNode;
 
     unsigned int build(UIlist &list, unsigned char direction, const VecCoord& positions); // recursive function to build the kdtree
-    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N=1) const;     // recursive function to get closest points
+    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const;     // recursive function to get closest points
     void closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions) const;  // recursive function to get closest point
 };
 
