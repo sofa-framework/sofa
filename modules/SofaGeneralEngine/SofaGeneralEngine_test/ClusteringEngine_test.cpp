@@ -78,7 +78,7 @@ struct ClusteringEngine_test : public Sofa_test<typename _DataTypes::Real>,
 
         this->init();
 
-        VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+        VisualParams* vparams = VisualParams::defaultInstance();
         vparams->displayFlags().setShowBehaviorModels(true);
 
         EXPECT_NO_THROW(this->draw(vparams));
