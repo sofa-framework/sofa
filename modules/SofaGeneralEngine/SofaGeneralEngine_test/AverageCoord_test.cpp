@@ -28,31 +28,39 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
     typedef _DataTypes DataTypes;
 
 
+    Simulation* m_simu;
+    Node::SPtr m_node;
+    typename ThisClass::SPtr m_thisObject;
+    typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
+
+
+    void SetUp()
+    {
+        setSimulation(m_simu = new DAGSimulation());
+        m_node = m_simu->createNewGraph("root");
+        m_thisObject = New<ThisClass>() ;
+        m_mecaobject = New<MechanicalObject<DataTypes>>() ;
+        m_mecaobject->init() ;
+
+        m_node->addObject(m_mecaobject) ;
+        m_node->addObject(m_thisObject) ;
+    }
+
+
     // Basic tests (data and init).
     void normalTests(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_thisObject->setName("myname") ;
+        EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        node->addObject(mecaobject) ;
-        mecaobject->init();
+        EXPECT_TRUE( m_thisObject->findData("indices") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("vecId") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("average") != NULL ) ;
 
-        node->addObject(thisObject) ;
-
-        thisObject->setName("myname") ;
-        EXPECT_TRUE(thisObject->getName() == "myname") ;
-
-        EXPECT_TRUE( thisObject->findData("indices") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("vecId") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("average") != NULL ) ;
-
-        EXPECT_NO_THROW( thisObject->init() ) ;
-        EXPECT_NO_THROW( thisObject->bwdInit() ) ;
-        EXPECT_NO_THROW( thisObject->reinit() ) ;
-        EXPECT_NO_THROW( thisObject->reset() ) ;
+        EXPECT_NO_THROW( m_thisObject->init() ) ;
+        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reinit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reset() ) ;
 
         this->mstate = NULL;
         EXPECT_NO_THROW(this->update()) ;
@@ -63,23 +71,15 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
 
     // Test computation on a simple example
     void updateTest(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename MechanicalObject<DataTypes>::SPtr mecaobject = New<MechanicalObject<DataTypes> >() ;
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_mecaobject->findData("position")->read("0. 0. 0.   1. 0. 0.   2. 4. 0.   3. 0. 0.");
+        m_mecaobject->init();
 
-        node->addObject(mecaobject) ;
-        mecaobject->findData("position")->read("0. 0. 0.   1. 0. 0.   2. 4. 0.   3. 0. 0.");
-        mecaobject->init();
+        m_thisObject->findData("indices")->read("0 1 2 3");
+        m_thisObject->init();
+        m_thisObject->update();
 
-        node->addObject(thisObject) ;
-        thisObject->findData("indices")->read("0 1 2 3");
-        thisObject->init();
-        thisObject->update();
-
-        EXPECT_TRUE(thisObject->findData("average")->getValueString()=="1.5 1 0");
+        EXPECT_TRUE(m_thisObject->findData("average")->getValueString()=="1.5 1 0");
     }
 
 };

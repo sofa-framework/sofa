@@ -12,6 +12,7 @@ set(SOURCE_FILES
         ComplementaryROI_test.cpp
         DifferenceEngine_test.cpp
         DilateEngine_test.cpp
+        ExtrudeEdgesAndGenerateQuads_test.cpp
         TransformEngine_test.cpp
 
         )

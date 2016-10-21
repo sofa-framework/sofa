@@ -27,34 +27,42 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
     typedef ComplementaryROI<_DataTypes> ThisClass ;
     typedef _DataTypes DataTypes;
 
+    Simulation* m_simu;
+    Node::SPtr m_node;
+    typename ThisClass::SPtr m_thisObject;
+
+
+    void SetUp()
+    {
+        setSimulation(m_simu = new DAGSimulation());
+        m_node = m_simu->createNewGraph("root");
+        m_thisObject = New<ThisClass >() ;
+        m_node->addObject(m_thisObject) ;
+    }
+
 
     // Basic tests (data and init).
     void normalTests(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_thisObject->setName("myname") ;
+        EXPECT_TRUE(m_thisObject->getName() == "myname") ;
 
-        thisObject->setName("myname") ;
-        EXPECT_TRUE(thisObject->getName() == "myname") ;
+        EXPECT_TRUE( m_thisObject->findData("position") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("nbSet") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("indices") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("pointsInROI") != NULL ) ;
 
-        EXPECT_TRUE( thisObject->findData("position") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("nbSet") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("indices") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("pointsInROI") != NULL ) ;
+        EXPECT_NO_THROW( m_thisObject->init() ) ;
+        EXPECT_NO_THROW( m_thisObject->bwdInit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reinit() ) ;
+        EXPECT_NO_THROW( m_thisObject->reset() ) ;
 
-        EXPECT_NO_THROW( thisObject->init() ) ;
-        EXPECT_NO_THROW( thisObject->bwdInit() ) ;
-        EXPECT_NO_THROW( thisObject->reinit() ) ;
-        EXPECT_NO_THROW( thisObject->reset() ) ;
+        m_thisObject->findData("nbSet")->read("3");
+        m_thisObject->init();
 
-        thisObject->findData("nbSet")->read("3");
-        thisObject->init();
-
-        EXPECT_TRUE( thisObject->findData("setIndices1") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("setIndices2") != NULL ) ;
-        EXPECT_TRUE( thisObject->findData("setIndices3") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices1") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices2") != NULL ) ;
+        EXPECT_TRUE( m_thisObject->findData("setIndices3") != NULL ) ;
 
         return ;
     }
@@ -62,21 +70,16 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
 
     // Test computation on a simple example
     void updateTest(){
-        Simulation* simu;
-        setSimulation(simu = new DAGSimulation());
 
-        Node::SPtr node = simu->createNewGraph("root");
-        typename ThisClass::SPtr thisObject = New<ThisClass >() ;
+        m_thisObject->findData("position")->read("0. 0. 0.  0. 0. 1.  0. 0. 2.  0. 0. 3.  0. 0. 4.  0. 0. 5.  0. 0. 6.");
+        m_thisObject->findData("nbSet")->read("2");
+        m_thisObject->init();
+        m_thisObject->findData("setIndices1")->read("0 1");
+        m_thisObject->findData("setIndices2")->read("5 6");
+        m_thisObject->update();
 
-        thisObject->findData("position")->read("0. 0. 0.  0. 0. 1.  0. 0. 2.  0. 0. 3.  0. 0. 4.  0. 0. 5.  0. 0. 6.");
-        thisObject->findData("nbSet")->read("2");
-        thisObject->init();
-        thisObject->findData("setIndices1")->read("0 1");
-        thisObject->findData("setIndices2")->read("5 6");
-        thisObject->update();
-
-        EXPECT_TRUE(thisObject->findData("indices")->getValueString() == "2 3 4");
-        EXPECT_TRUE(thisObject->findData("pointsInROI")->getValueString() == "0 0 2 0 0 3 0 0 4");
+        EXPECT_TRUE(m_thisObject->findData("indices")->getValueString() == "2 3 4");
+        EXPECT_TRUE(m_thisObject->findData("pointsInROI")->getValueString() == "0 0 2 0 0 3 0 0 4");
     }
 
 
