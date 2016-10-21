@@ -42,6 +42,9 @@ namespace component
 namespace constraintset
 {
 
+namespace bilateralinteractionconstraint
+{
+
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::init()
 {
@@ -466,6 +469,8 @@ void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualP
     glPointSize(1);
 #endif /* SOFA_NO_OPENGL */
 }
+
+} // namespace bilateralinteractionconstraint
 
 } // namespace constraintset
 

@@ -51,6 +51,11 @@ namespace component
 namespace constraintset
 {
 
+namespace bilateralinteractionconstraint
+{
+
+using sofa::core::behavior::ConstraintResolution ;
+
 inline double sign(double &toto)
 {
     if (toto<0.0)
@@ -64,7 +69,7 @@ inline float sign(float &toto)
     return 1.0f;
 }
 
-class BilateralConstraintResolution : public core::behavior::ConstraintResolution
+class BilateralConstraintResolution : public ConstraintResolution
 {
 public:
     BilateralConstraintResolution(double* initF=NULL) : _f(initF) {}
@@ -93,7 +98,7 @@ protected:
     double* _f;
 };
 
-class BilateralConstraintResolution3Dof : public core::behavior::ConstraintResolution
+class BilateralConstraintResolution3Dof : public ConstraintResolution
 {
 public:
 
@@ -154,7 +159,7 @@ protected:
 };
 
 template <int N>
-class BilateralConstraintResolutionNDof : public core::behavior::ConstraintResolution
+class BilateralConstraintResolutionNDof : public ConstraintResolution
 {
 public:
     BilateralConstraintResolutionNDof(sofa::defaulttype::Vec<N, double>* vec=NULL) : _f(vec) { nbLines=N; }
@@ -206,11 +211,20 @@ protected:
     sofa::defaulttype::Vec<N, double>* _f;
 };
 
+
+template<class T>
+class BilateralInteractionConstraintSpecialization {};
+
+
 template<class DataTypes>
 class BilateralInteractionConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::PairInteractionConstraint,DataTypes));
+
+    /// That any templates variation of BilateralInteractionConstraintSpecialization are friend.
+    template<typename>
+    friend class BilateralInteractionConstraintSpecialization ;
 
     typedef typename core::behavior::PairInteractionConstraint<DataTypes> Inherit;
 
@@ -315,7 +329,7 @@ public:
 
     void getVelocityViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2, const DataVecDeriv &v1, const DataVecDeriv &v2);
 
-    virtual void getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(const core::ConstraintParams* cParams, std::vector<ConstraintResolution*>& resTab, unsigned int& offset);
 
     void handleEvent(sofa::core::objectmodel::Event *event);
 
@@ -363,7 +377,7 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template<>
 void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1, const DataVecCoord &x2);
@@ -377,7 +391,7 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
 
 #endif
 
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template<>
 void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1_d, const DataVecCoord &x2_d);
@@ -391,15 +405,23 @@ void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3dTypes >;
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3dTypes >;
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3fTypes >;
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3fTypes >;
 #endif
 #endif
+
+} // namespace bilateralinteractionconstraint
+
+/// Import the following into the constraintset namespace to preserve
+/// compatibility with the existing sofa source code.
+using bilateralinteractionconstraint::BilateralInteractionConstraint ;
+using bilateralinteractionconstraint::BilateralConstraintResolution ;
+using bilateralinteractionconstraint::BilateralInteractionConstraintSpecialization ;
 
 } // namespace constraintset
 
