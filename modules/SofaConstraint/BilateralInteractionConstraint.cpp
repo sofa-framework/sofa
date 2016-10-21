@@ -42,12 +42,6 @@ namespace constraintset
 namespace bilateralinteractionconstraint
 {
 
-using sofa::core::behavior::ConstraintResolution ;
-using sofa::core::ConstraintParams ;
-using sofa::defaulttype::BaseVector ;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
 
 class RigidImpl {};
 
@@ -185,6 +179,25 @@ public:
         }
     }
 
+
+    template <class T, typename MyClass = BilateralInteractionConstraint<T> >
+    static void addContact(BilateralInteractionConstraint<T>& self, typename MyClass::Deriv /*norm*/,
+                           typename MyClass::Coord P, typename MyClass::Coord Q,
+                           typename MyClass::Real /*contactDistance*/, int m1, int m2,
+                           typename MyClass::Coord /*Pfree*/, typename MyClass::Coord /*Qfree*/, long /*id*/, typename MyClass::PersistentID /*localid*/)
+    {
+        helper::WriteAccessor<Data<helper::vector<int> > > wm1 = self.m1;
+        helper::WriteAccessor<Data<helper::vector<int> > > wm2 = self.m2;
+        helper::WriteAccessor<Data<typename MyClass::VecDeriv > > wrest = self.restVector;
+        wm1.push_back(m1);
+        wm2.push_back(m2);
+
+        typename MyClass::Deriv diff;
+        getVCenter(diff) = Q.getCenter() - P.getCenter();
+        getVOrientation(diff) =  P.rotate(self.q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
+        wrest.push_back(diff);
+    }
+
 };
 
 
@@ -235,21 +248,15 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getVelocityViolation(BaseVect
 }
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv /*norm*/,
-                                                                           Coord P, Coord Q, Real /*contactDistance*/,
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv norm,
+                                                                           Coord P, Coord Q, Real contactDistance,
                                                                            int m1, int m2,
-                                                                           Coord /*Pfree*/, Coord /*Qfree*/,
-                                                                           long /*id*/, PersistentID /*localid*/)
+                                                                           Coord Pfree, Coord Qfree,
+                                                                           long id, PersistentID localid)
 {
-    helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
-    helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
-    helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
-    wm1.push_back(m1);
-    wm2.push_back(m2);
-    Deriv diff;
-    getVCenter(diff) = Q.getCenter() - P.getCenter();
-    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
-    wrest.push_back(diff);
+    BilateralInteractionConstraintSpecialization<RigidImpl>::addContact(*this,
+                                                                        norm, P, Q, contactDistance, m1, m2, Pfree, Qfree,
+                                                                        id, localid) ;
 }
 #endif
 
@@ -300,20 +307,17 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(BaseVect
 
 }
 
-
-
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/)
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::addContact(Deriv norm,
+                                                                           Coord P, Coord Q,
+                                                                           Real contactDistance,
+                                                                           int m1, int m2, Coord Pfree,
+                                                                           Coord Qfree,
+                                                                           long id, PersistentID localid)
 {
-    helper::WriteAccessor<Data<helper::vector<int> > > wm1 = this->m1;
-    helper::WriteAccessor<Data<helper::vector<int> > > wm2 = this->m2;
-    helper::WriteAccessor<Data<VecDeriv > > wrest = this->restVector;
-    wm1.push_back(m1);
-    wm2.push_back(m2);
-    Deriv diff;
-    getVCenter(diff) = Q.getCenter() - P.getCenter();
-    getVOrientation(diff) =  P.rotate(q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
-    wrest.push_back(diff);
+    BilateralInteractionConstraintSpecialization<RigidImpl>::addContact(*this,
+                                                                        norm, P, Q, contactDistance, m1, m2, Pfree, Qfree,
+                                                                        id, localid) ;
 }
 
 #endif
