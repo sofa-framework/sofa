@@ -13,6 +13,7 @@ set(SOURCE_FILES
     helper/Utils_test.cpp
     helper/Quater_test.cpp
     helper/io/MeshOBJ_test.cpp
+    helper/io/ImagePNG_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
