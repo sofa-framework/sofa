@@ -76,12 +76,12 @@ struct ClusteringEngine_test : public Sofa_test<typename _DataTypes::Real>,
     // The draw() function shouldn't crash if no mechanical context
     void drawTest(){
 
-        m_thisObject->init();
+        this->init();
 
         VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
         vparams->displayFlags().setShowBehaviorModels(true);
 
-        EXPECT_NO_THROW(m_thisObject->draw(vparams));
+        EXPECT_NO_THROW(this->draw(vparams));
     }
 
 
