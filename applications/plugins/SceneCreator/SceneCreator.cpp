@@ -41,6 +41,7 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaSparseSolver/SparseLDLSolver.h>
 #include <SofaLoader/MeshObjLoader.h>
 
 //Including components for collision detection
@@ -135,6 +136,11 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
     simulation::Node::SPtr  node = parent->createChild(name.c_str());
 
     typedef sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector> CGLinearSolverGraph;
+    typedef defaulttype::Mat<3,3,double> Block33_double;
+    typedef sofa::component::linearsolver::CompressedRowSparseMatrix< Block33_double > CompressedRowSparseMatrix_33;
+    typedef sofa::component::linearsolver::FullVector<double> FullVectorDouble;
+    typedef sofa::component::linearsolver::SparseLDLSolver< CompressedRowSparseMatrix_33 , FullVectorDouble > SparseLDLSolver_33;
+
 
     if (scheme == "Implicit")
     {
@@ -144,7 +150,7 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
         solver->f_rayleighStiffness.setValue(0.01);
         solver->f_rayleighMass.setValue(1);
 
-        solver->setName("Conjugate Gradient");
+        linear->setName("Conjugate Gradient");
         linear->f_maxIter.setValue(25); //iteration maxi for the CG
         linear->f_smallDenominatorThreshold.setValue(1e-05);
         linear->f_tolerance.setValue(1e-05);
@@ -158,6 +164,21 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
         solver->setName("Euler Explicit");
         node->addObject(solver);
     }
+
+    else if (scheme == "Implicit_SparseLDL")
+    {
+        component::odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<component::odesolver::EulerImplicitSolver>();
+        SparseLDLSolver_33::SPtr linear = sofa::core::objectmodel::New<SparseLDLSolver_33>();
+        solver->setName("Euler Implicit");
+        solver->f_rayleighStiffness.setValue(0.01);
+        solver->f_rayleighMass.setValue(1);
+
+        linear->setName("Sparse LDL Solver");
+        node->addObject(solver);
+        node->addObject(linear);
+
+    }
+
     else
     {
         std::cerr << "Error: " << scheme << " Integration Scheme not recognized" << std::endl;

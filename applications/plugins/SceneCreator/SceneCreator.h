@@ -34,7 +34,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-
+#include <SofaSparseSolver/SparseLDLSolver.h>
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)
