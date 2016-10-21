@@ -51,7 +51,7 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaGeneralTopology/CubeTopology.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>

@@ -165,7 +165,11 @@ create-directories() {
         list-scenes "$src_dir/$path" > "$output_dir/$path/scenes.txt"
         while read scene; do
             mkdir -p "$output_dir/$path/$scene"
-            echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+            if [[ "$CI_BUILD_TYPE" == "Debug" ]]; then
+                echo 60 > "$output_dir/$path/$scene/timeout.txt" # Default debug timeout, in seconds
+            else
+                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default release timeout, in seconds
+            fi
             echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
             echo "$path/$scene" >> "$output_dir/all-scenes.txt"
         done < "$output_dir/$path/scenes.txt"
@@ -193,7 +197,11 @@ parse-options-files() {
                                 scene="$(get-arg "$args" 1)"
                                 echo $scene >> "$output_dir/$path/add-patterns.txt"
                                 mkdir -p "$output_dir/$path/$scene"
-                                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+                                if [[ "$CI_BUILD_TYPE" == "Debug" ]]; then
+                                    echo 60 > "$output_dir/$path/$scene/timeout.txt" # Default debug timeout, in seconds
+                                else
+                                    echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default release timeout, in seconds
+                                fi
                                 echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
                             else
                                 echo "$path/.scene-tests: warning: 'add' expects one argument: add <pattern>" | log
@@ -268,7 +276,7 @@ initialize-scene-testing() {
     rm -rf "$output_dir"
     mkdir -p "$output_dir"
 
-    runSofa="$(ls "$build_dir/bin/runSofa"{,d} 2> /dev/null || true)"
+    runSofa="$(ls "$build_dir/bin/runSofa"{,d,_d} 2> /dev/null || true)"
     if [[ -x "$runSofa" ]]; then
         echo "Found runSofa: $runSofa" | log
     else
@@ -288,7 +296,7 @@ test-all-scenes() {
     while read scene; do
         echo "- $scene"
         local iterations=$(cat "$output_dir/$scene/iterations.txt")
-        local options="-g batch -s dag -n $iterations"
+        local options="-g batch -s dag -n $iterations" # -z test
         local runSofa_cmd="$runSofa $options $src_dir/$scene >> $output_dir/$scene/output.txt 2>&1"
         local timeout=$(cat "$output_dir/$scene/timeout.txt")
         echo "$runSofa_cmd" > "$output_dir/$scene/command.txt"
@@ -336,7 +344,7 @@ extract-crashes() {
 }
 
 count-tested-scenes() {
-    wc -l < "$output_dir/all-tested-scenes.txt" #| tr -d '   '
+    wc -l < "$output_dir/all-tested-scenes.txt" | tr -d '   '
 }
 
 count-warnings() {
@@ -348,7 +356,7 @@ count-errors() {
 }
 
 count-crashes() {
-    wc -l < "$output_dir/crashes.txt" #| tr -d '   '
+    wc -l < "$output_dir/crashes.txt" | tr -d '   '
 }
 
 print-summary() {
@@ -357,7 +365,7 @@ print-summary() {
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
-    echo "- $(count-errors) error(s):"
+    echo "- $(count-errors) error(s)"
     if [[ "$errors" != 0 ]]; then
         while read error; do
 			echo "  - $error"
@@ -365,7 +373,7 @@ print-summary() {
     fi
     
     local crashes='$(count-crashes)'
-    echo "- $(count-crashes) crash(es):"
+    echo "- $(count-crashes) crash(es)"
     if [[ "$crashes" != 0 ]]; then
         while read scene; do
             if [[ -e "$output_dir/$scene/status.txt" ]]; then
