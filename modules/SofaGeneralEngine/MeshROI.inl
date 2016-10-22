@@ -102,9 +102,6 @@ MeshROI<DataTypes>::MeshROI()
 template <class DataTypes>
 void MeshROI<DataTypes>::init()
 {
-    checkInputData();
-    computeBoundingBox();
-
     addInput(&d_X0);
     addInput(&d_edges);
     addInput(&d_triangles);
@@ -135,6 +132,8 @@ void MeshROI<DataTypes>::init()
 
     setDirtyValue();
 
+    checkInputData();
+    computeBoundingBox();
     compute();
 }
 
@@ -144,7 +143,8 @@ void MeshROI<DataTypes>::checkInputData()
 {
     if (!d_X0.isSet())
     {
-        msg_warning(this) << "Data 'position' is not set. Get rest position of local mechanical state.";
+        msg_warning(this) << "Data 'position' is not set. Get rest position of local mechanical state "
+                          << "or mesh loader (if no mechanical)";
 
         BaseMechanicalState* mstate;
         this->getContext()->get(mstate,BaseContext::Local);
@@ -383,6 +383,18 @@ bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
 }
 
 template <class DataTypes>
+bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
+{
+    ReadAccessor<Data<SetIndex>> indices = d_indices;
+
+    for (unsigned int i=0; i<indices.size(); i++)
+        if(indices[i]==pointId)
+            return true;
+
+    return false;
+}
+
+template <class DataTypes>
 bool MeshROI<DataTypes>::isPointInBoundingBox(const typename DataTypes::CPos& p)
 {
     const Vec6 b = d_box.getValue();
@@ -394,37 +406,55 @@ bool MeshROI<DataTypes>::isPointInBoundingBox(const typename DataTypes::CPos& p)
 template <class DataTypes>
 bool MeshROI<DataTypes>::isEdgeInMesh(const Edge& e)
 {
-    const VecCoord* x0 = &d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
-    CPos c = (p1+p0)*0.5;
+    for (int i=0; i<2; i++)
+        if(!isPointInIndices(e[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
+            CPos c = (p1+p0)*0.5;
 
-    return (isPointInMesh(c));
+            return (isPointInMesh(c));
+        }
+
+    return true;
 }
 
 template <class DataTypes>
 bool MeshROI<DataTypes>::isTriangleInMesh(const Triangle& t)
 {
-    const VecCoord* x0 = &d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos c = (p2+p1+p0)/3.0;
+    for (int i=0; i<3; i++)
+        if(!isPointInIndices(t[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+            CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+            CPos c = (p2+p1+p0)/3.0;
 
-    return (isPointInMesh(c));
+            return (isPointInMesh(c));
+        }
+
+    return true;
 }
 
 template <class DataTypes>
 bool MeshROI<DataTypes>::isTetrahedronInMesh(const Tetra &t)
 {
-    const VecCoord* x0 = &d_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
-    CPos c = (p3+p2+p1+p0)/4.0;
+    for (int i=0; i<4; i++)
+        if(!isPointInIndices(t[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+            CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+            CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
+            CPos c = (p3+p2+p1+p0)/4.0;
 
-    return (isPointInMesh(c));
+            return (isPointInMesh(c));
+        }
+
+    return true;
 }
 
 template <class DataTypes>
