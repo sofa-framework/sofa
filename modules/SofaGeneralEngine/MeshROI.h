@@ -115,6 +115,7 @@ public:
 protected:
     bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
     bool isPointInMesh(const CPos& p);
+    bool isPointInIndices(const unsigned int& i);
     bool isPointInBoundingBox(const CPos& p);
     bool isEdgeInMesh(const Edge& e);
     bool isTriangleInMesh(const Triangle& t);

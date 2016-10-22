@@ -12,6 +12,9 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/MeshROI.h>
 using sofa::component::engine::MeshROI ;
 
+#include <SofaLoader/MeshObjLoader.h>
+using sofa::component::loader::MeshObjLoader ;
+
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
 
@@ -35,20 +38,55 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
 
     Simulation* m_simu;
-    Node::SPtr m_node;
+    Node::SPtr m_node1, m_node2, m_node3;
     typename ThisClass::SPtr m_thisObject;
+    typename MeshObjLoader::SPtr m_loader;
 
     void SetUp()
     {
+        // SetUp1
         setSimulation(m_simu = new DAGSimulation());
-        m_node = m_simu->createNewGraph("root");
-        m_thisObject = New<ThisClass >() ;
-        m_node->addObject(m_thisObject) ;
+        m_thisObject = New<ThisClass >();
+        m_loader = New<MeshObjLoader >();
+        m_node1 = m_simu->createNewGraph("root");
+        m_node1->addObject(m_loader);
+        m_node1->addObject(m_thisObject);
+
+        // SetUp2
+        string scene1 =
+        "<?xml version='1.0'?>"
+        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
+        "   <Node name='node'>                                          "
+        "       <MeshObjLoader name='loader' filename='mesh/dragon.obj'/>  "
+        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
+        "   </Node>                                                        "
+        "</Node>                                                           " ;
+
+        m_node2 = SceneLoaderXML::loadFromMemory ("testscene",
+                                                  scene1.c_str(),
+                                                  scene1.size()) ;
+
+        // SetUp3
+        string scene2 =
+        "<?xml version='1.0'?>"
+        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
+        "   <Node name='node'>                                          "
+        "       <MeshObjLoader name='loader' filename='mesh/cube.obj'/>    "
+        "       <Mesh name='topology' src='@loader'/>                      "
+        "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
+        "   </Node>                                                        "
+        "</Node>                                                           " ;
+
+        m_node3 = SceneLoaderXML::loadFromMemory ("testscene",
+                                                  scene2.c_str(),
+                                                  scene2.size()) ;
     }
 
 
-    // It is important to freeze what are the available Data field
-    // of a component and rise warning/errors when some one removed.
+
+    /// It is important to freeze what are the available Data field
+    /// of a component and rise warning/errors when some one removed.
     void attributesTests()
     {
         m_thisObject->setName("myname") ;
@@ -62,6 +100,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
             "ROIposition", "ROIedges", "ROItriangles",
             "computeEdges", "computeTriangles", "computeTetrahedra",
             "indices", "edgeIndices", "triangleIndices", "tetrahedronIndices",
+            "indicesOut", "edgeOutIndices", "triangleOutIndices", "tetrahedronOutIndices",
             "pointsInROI", "edgesInROI", "trianglesInROI", "tetrahedraInROI",
             "pointsOutROI", "edgesOutROI", "trianglesOutROI", "tetrahedraOutROI",
             "drawBox", "drawPoints", "drawEdges", "drawTriangles", "drawTetrahedra",
@@ -76,6 +115,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     }
 
 
+    /// Shouldn't crash without input data
     void initTests()
     {
         EXPECT_NO_THROW(m_thisObject->init());
@@ -88,26 +128,66 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     }
 
 
+    /// Test bounding box computation against meshlab result
     void computeBoundingBoxTest()
     {
-        string scene =
-                "<?xml version='1.0'?>"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       "
-                "   <Node name='Level 1'>                                          "
-                "       <MeshObjLoader name='loader' filename='mesh/dragon.obj'/>  "
-                "       <MeshROI template='Vec3d' name='MeshROI'/>                 "
-                "   </Node>                                                        "
-                "</Node>                                                           " ;
+        m_node2->getChild("node")->getObject("MeshROI")->init();
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-
-        root->getChild("Level 1")->getObject("MeshROI")->init();
-        //Bounding box from Meshlab
-        EXPECT_EQ(root->getChild("Level 1")->getObject("MeshROI")->findData("box")->getValueString(),"-11.4529 -7.38909 -5.04461 11.4121 8.31288 5.01514");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("MeshROI")->findData("box")->getValueString(),"-11.4529 -7.38909 -5.04461 11.4121 8.31288 5.01514");
     }
 
+
+    /// Test isPointInMesh computation with a simple example
+    void isPointInMeshTest()
+    {
+        m_node3->getChild("node")->getObject("MeshROI")->findData("position")->read("0. 0. 0. 2. 0. 0.");
+        m_node3->getChild("node")->getObject("MeshROI")->init();
+
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("indices")->getValueString(),"0");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("indicesOut")->getValueString(),"1");
+    }
+
+
+    /// Test isEdgeInMesh computation with a simple example
+    void isEdgeInMeshTest()
+    {
+        m_node3->getChild("node")->getObject("MeshROI")->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
+        m_node3->getChild("node")->getObject("MeshROI")->findData("edges")->read("0 1 1 2");
+        m_node3->getChild("node")->getObject("MeshROI")->init();
+
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"0");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"1");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"1 2 ");
+    }
+
+
+    /// Test isTriangleInMesh computation with a simple example
+    void isTriangleInMeshTest()
+    {
+        m_node3->getChild("node")->getObject("MeshROI")->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 2. 0. 0.");
+        m_node3->getChild("node")->getObject("MeshROI")->findData("triangles")->read("0 1 2 1 3 2");
+        m_node3->getChild("node")->getObject("MeshROI")->init();
+
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("triangleIndices")->getValueString(),"0");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("triangleOutIndices")->getValueString(),"1");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesOutROI")->getValueString(),"1 3 2 ");
+    }
+
+
+    /// Test isTetrahedraInMesh computation with a simple example
+    void isTetrahedraInMeshTest()
+    {
+        m_node3->getChild("node")->getObject("MeshROI")->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 1. 0. 1. 2. 0. 0.");
+        m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedra")->read("0 1 2 3 1 2 4 3");
+        m_node3->getChild("node")->getObject("MeshROI")->init();
+
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedronIndices")->getValueString(),"0");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedronOutIndices")->getValueString(),"1");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraOutROI")->getValueString(),"1 2 4 3 ");
+    }
 };
 
 using testing::Types;
@@ -125,6 +205,22 @@ TYPED_TEST(MeshROI_test, initTests) {
 
 TYPED_TEST(MeshROI_test, computeBoundingBoxTest) {
     ASSERT_NO_THROW(this->computeBoundingBoxTest()) ;
+}
+
+TYPED_TEST(MeshROI_test, isPointInMeshTest) {
+    ASSERT_NO_THROW(this->isPointInMeshTest()) ;
+}
+
+TYPED_TEST(MeshROI_test, isEdgeInMeshTest) {
+    ASSERT_NO_THROW(this->isEdgeInMeshTest()) ;
+}
+
+TYPED_TEST(MeshROI_test, isTriangleInMeshTest) {
+    ASSERT_NO_THROW(this->isTriangleInMeshTest()) ;
+}
+
+TYPED_TEST(MeshROI_test, isTetrahedraInMeshTest) {
+    ASSERT_NO_THROW(this->isTetrahedraInMeshTest()) ;
 }
 
 }
