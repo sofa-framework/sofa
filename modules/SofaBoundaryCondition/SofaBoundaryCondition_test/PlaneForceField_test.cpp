@@ -99,7 +99,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         mechanicalObj->x0.setValue(points);
 
         std::string name = DataTypeInfo<DataTypes>::name();
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
         if(name=="Rigid")
         {
             typename mass::UniformMass<Rigid3dTypes,Rigid3dMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3dTypes,Rigid3dMass> >();
@@ -132,7 +132,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         }
         else
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         if(name=="Rigid3f")
         {
             typename mass::UniformMass<Rigid3fTypes,Rigid3fMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3fTypes,Rigid3fMass> >();
@@ -204,7 +204,12 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
 // Define the list of DataTypes to instanciate
 using testing::Types;
-typedef Types<defaulttype::Vec1Types, defaulttype::Vec2Types, defaulttype::Vec3Types, defaulttype::Vec6Types, defaulttype::Rigid3Types> DataTypes;// the types to instanciate.
+typedef Types<Vec1Types,
+              Vec2Types,
+              Vec3Types,
+              Vec6Types,
+              Rigid3Types> DataTypes;
+
 // Test suite for all the instanciations
 TYPED_TEST_CASE(PlaneForceField_test, DataTypes);// first test case
 TYPED_TEST( PlaneForceField_test , testForceField )

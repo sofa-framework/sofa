@@ -48,13 +48,48 @@ namespace forcefield
 {
 
 template<class DataTypes>
+PlaneForceField<DataTypes>::PlaneForceField() :
+     planeNormal(initData(&planeNormal, "normal", "plane normal. (default=[0,1,0])"))
+    // TODO(dmarchal): d coef is "jargon" that is not very helpfull if you ignore how is defined the model.
+    , planeD(initData(&planeD, (Real)0, "d", "plane d coef. (default=0)"))
+    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
+    , damping(initData(&damping, (Real)5, "damping", "force damping. (default=5)"))
+    , maxForce(initData(&maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
+
+    , bilateral( initData(&bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
+
+    , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+
+    // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
+    , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
+    // TODO(dmarchal): color is a bad name.
+    , d_drawColor(initData(&d_drawColor, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color. (default=[0.0,0.5,0.2])"))
+    , d_drawSize(initData(&d_drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled. (default=10)"))
+{
+    Deriv n;
+    DataTypes::set(n, 0, 1, 0);
+    planeNormal.setValue(DataTypes::getDPos(n));
+}
+
+
+template<class DataTypes>
 void PlaneForceField<DataTypes>::setPlane(const Deriv& normal, Real d)
 {
-	DPos tmpN = DataTypes::getDPos(normal);
-	Real n = tmpN.norm();
-	planeNormal.setValue( tmpN / n);
-	planeD.setValue( d / n );
+    DPos tmpN = DataTypes::getDPos(normal);
+    Real n = tmpN.norm();
+    planeNormal.setValue( tmpN / n);
+    planeD.setValue( d / n );
 }
+
+template<class DataTypes>
+SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
+                                                     const DataVecCoord&  /* x */) const
+{
+    msg_error(this) << "Function potentialEnergy is not implemented. To remove this errore message       \n"
+                       "you need to implement a proper calculus of the plane force field potential energy.";
+    return 0.0;
+}
+
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
@@ -63,7 +98,6 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
 
-    //this->dfdd.resize(p1.size());
     this->contacts.clear();
     f1.resize(p1.size());
 
@@ -76,33 +110,29 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
-	Real limit = this->maxForce.getValue();
-	limit *= limit; // squared
+    Real limit = this->maxForce.getValue();
+    limit *= limit; // squared
 
-	Real stiff = this->stiffness.getValue();
-	Real damp = this->damping.getValue();
-	DPos planeN = planeNormal.getValue();
+    Real stiff = this->stiffness.getValue();
+    Real damp = this->damping.getValue();
+    DPos planeN = planeNormal.getValue();
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*planeN-planeD.getValue();
         if (bilateral.getValue() || d<0 )
         {
-            //serr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<sendl;
             Real forceIntensity = -stiff*d;
-            //serr<<"PlaneForceField<DataTypes>::addForce, stiffness = "<<stiffness.getValue()<<sendl;
             Real dampingIntensity = -damp*d;
-            //serr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<sendl;
-            DPos force = planeN*forceIntensity - DataTypes::getDPos(v1[i])*dampingIntensity; 
+            DPos force = planeN*forceIntensity - DataTypes::getDPos(v1[i])*dampingIntensity;
 
-			Real amplitude = force.norm2();
-			if(limit && amplitude > limit)
-				force *= sqrt(limit / amplitude);
-            //serr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<sendl;
-			Deriv tmpF;
-			DataTypes::setDPos(tmpF, force);
+            Real amplitude = force.norm2();
+            if(limit && amplitude > limit)
+                force *= sqrt(limit / amplitude);
+
+            Deriv tmpF;
+            DataTypes::setDPos(tmpF, force);
             f1[i] += tmpF;
-            //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
         }
     }
@@ -116,7 +146,7 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 
     df1.resize(dx1.size());
     const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
-	DPos planeN = planeNormal.getValue();
+    DPos planeN = planeNormal.getValue();
 
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
@@ -131,7 +161,7 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
 {
     const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     Deriv normal;
-	DataTypes::setDPos(normal, planeNormal.getValue());
+    DataTypes::setDPos(normal, planeNormal.getValue());
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
@@ -191,16 +221,19 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields()) return;
-	//if (!vparams->isSupported(core::visual::API_OpenGL)) return;
-    if (bDraw.getValue()) drawPlane(vparams);
+    if (!vparams->displayFlags().getShowForceFields())
+        return;
+
+    if (d_drawIsEnabled.getValue())
+        drawPlane(vparams);
 }
 
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vparams,float size)
 {
-    if (size == 0.0f) size = (float)drawSize.getValue();
+    if (size == 0.0f)
+        size = (float)d_drawSize.getValue();
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -212,6 +245,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
     else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
+
     // find a second vector inside the plane and orthogonal to the first
     defaulttype::Vec3d v2;
     v2 = v1.cross(normal);
@@ -236,12 +270,12 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     vparams->drawTool()->setPolygonMode(2,false); //Cull Front face
 
-    vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(color.getValue()[0],color.getValue()[1],color.getValue()[2],0.5));
+    vparams->drawTool()->drawTriangles(points, defaulttype::Vec<4,float>(d_drawColor.getValue()[0],d_drawColor.getValue()[1],d_drawColor.getValue()[2],0.5));
     vparams->drawTool()->setPolygonMode(0,false); //No Culling
 
     std::vector< defaulttype::Vector3 > pointsLine;
-    // lines for points penetrating the plane
 
+    // lines for points penetrating the plane
     unsigned int ibegin = 0;
     unsigned int iend = p1.size();
 
@@ -251,7 +285,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
         iend = localRange.getValue()[1]+1;
 
-	defaulttype::Vector3 point1,point2;
+    defaulttype::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
         Real d = DataTypes::getCPos(p1[i])*planeNormal.getValue()-planeD.getValue();
@@ -261,8 +295,8 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
         {
             point1 = DataTypes::getCPos(p1[i]);
             point2 = p2;
-			pointsLine.push_back(point1);
-			pointsLine.push_back(point2);
+            pointsLine.push_back(point1);
+            pointsLine.push_back(point2);
         }
     }
     vparams->drawTool()->drawLines(pointsLine, 1, defaulttype::Vec<4,float>(1,0,0,1));
@@ -271,7 +305,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 template <class DataTypes>
 void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
-    if (onlyVisible && !bDraw.getValue()) return;
+    if (onlyVisible && !d_drawIsEnabled.getValue()) return;
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::min();
@@ -279,7 +313,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real minBBox[3] = {max_real,max_real,max_real};
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue(params);
-    SReal size=drawSize.getValue();
+    SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;
@@ -287,6 +321,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, -normal[0]/normal[1],0.0);
     else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 0.0, -normal[0]/normal[2]);
     v1.normalize();
+
     // find a second vector inside the plane and orthogonal to the first
     defaulttype::Vec3d v2;
     v2 = v1.cross(normal);
