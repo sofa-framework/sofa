@@ -50,4 +50,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 ## Install rules and CMake package configurations files
-sofa_create_package(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} ${PROJECT_NAME} include/SofaPhysicsAPI)
+sofa_create_package(SofaPhysicsAPI ${SOFAPHYSICSAPI_VERSION} ${PROJECT_NAME} SofaPhysicsAPI)
