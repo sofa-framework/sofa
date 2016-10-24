@@ -39,6 +39,9 @@
 #if defined(__GNUC__) && !defined(PS3)
 #include <cxxabi.h>
 #endif
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <iostream>
 #include <string>
