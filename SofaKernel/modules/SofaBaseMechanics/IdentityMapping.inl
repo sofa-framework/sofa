@@ -90,11 +90,6 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
     helper::WriteOnlyAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
-    if(out.size() != in.size()) // true if topological changes
-    {
-        out.resize(in.size());
-    }
-
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
         if( !this->maskTo->isActivated() || this->maskTo->getEntry(i) )
@@ -107,11 +102,6 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
 {
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
-
-    if(out.size() != in.size()) // true if topological changes
-    {
-        out.resize(in.size());
-    }
 
     for( size_t i=0 ; i<this->maskTo->size() ; ++i)
     {
