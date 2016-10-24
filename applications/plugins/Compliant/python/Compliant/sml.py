@@ -268,7 +268,7 @@ class SceneSkinning(SceneArticulatedRigid) :
         SceneArticulatedRigid.createScene(self)
         
         # insert node containing all bones of the armature
-        self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
+        self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tags={"armature"}, rigidIndexById=self.skinningArmatureBoneIndexById)
         for solidModel in self.model.solids.values():
             print solidModel.name, len(solidModel.skinnings)
             if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
