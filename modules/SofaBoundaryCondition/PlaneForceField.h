@@ -40,13 +40,19 @@ namespace component
 namespace forcefield
 {
 
-/// This class can be overridden if needed for additionnal storage within template specializations.
+/// This class can be overridden if needed for additionnal storage within
+/// template specializations.
 template<class DataTypes>
 class PlaneForceFieldInternalData
 {
 public:
 };
 
+///
+/// @class PlaneForceField
+/// A plane is cutting the space in two half spaces. This component generate a force preventing the
+/// object to cross the plane. The plane is defined by its normal and by the amount of displacement
+/// along this normal.
 template<class DataTypes>
 class PlaneForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -66,24 +72,23 @@ public:
     typedef typename DataTypes::DPos DPos;
 
 protected:
-    sofa::helper::vector<unsigned int> contacts;
+    sofa::helper::vector<unsigned int> m_contacts;
 
-    PlaneForceFieldInternalData<DataTypes> data;
+    PlaneForceFieldInternalData<DataTypes> m_data;
 
 public:
-
-    Data<DPos> planeNormal;
-    Data<Real> planeD;
-    Data<Real> stiffness;
-    Data<Real> damping;
-    Data<Real> maxForce;
+    Data<DPos> d_planeNormal;
+    Data<Real> d_planeD;
+    Data<Real> d_stiffness;
+    Data<Real> d_damping;
+    Data<Real> d_maxForce;
 
     /// option bilateral : if true, the force field is applied on both side of the plane
-    Data<bool> bilateral;
+    Data<bool> d_bilateral;
 
     /// optional range of local DOF indices. Any computation involving indices outside of this
     /// range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    Data< defaulttype::Vec<2,int> > d_localRange;
 
     Data<bool>               d_drawIsEnabled;
     Data<defaulttype::Vec3f> d_drawColor;
@@ -97,13 +102,16 @@ public:
 
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
-    void setStiffness(Real stiff) { stiffness.setValue( stiff ); }
+    void setStiffness(Real stiff) { d_stiffness.setValue( stiff ); }
+    Real getStiffness() const { return d_stiffness.getValue(); }
 
-    void setDamping(Real damp){ damping.setValue( damp ); }
+    void setDamping(Real damp){ d_damping.setValue( damp ); }
+    Real getDamping() const { return d_damping.getValue(); }
 
     void setDrawColor(const defaulttype::Vec3f& newvalue){ d_drawColor.setValue(newvalue); }
     const defaulttype::Vec3f& getDrawColor() const { return d_drawColor.getValue(); }
 
+    //TODO(dmarchal): do we really need a rotate operation into a plan class ?
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
     virtual void addForce(const core::MechanicalParams* mparams,

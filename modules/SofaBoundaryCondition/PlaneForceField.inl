@@ -49,16 +49,16 @@ namespace forcefield
 
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
-     planeNormal(initData(&planeNormal, "normal", "plane normal. (default=[0,1,0])"))
+     d_planeNormal(initData(&d_planeNormal, "normal", "plane normal. (default=[0,1,0])"))
     // TODO(dmarchal): d coef is "jargon" that is not very helpfull if you ignore how is defined the model.
-    , planeD(initData(&planeD, (Real)0, "d", "plane d coef. (default=0)"))
-    , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
-    , damping(initData(&damping, (Real)5, "damping", "force damping. (default=5)"))
-    , maxForce(initData(&maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
+    , d_planeD(initData(&d_planeD, (Real)0, "d", "plane d coef. (default=0)"))
+    , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
+    , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
+    , d_maxForce(initData(&d_maxForce, (Real)0, "maxForce", "if non-null , the max force that can be applied to the object. (default=0)"))
 
-    , bilateral( initData(&bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
+    , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
 
-    , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
 
     // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
@@ -68,7 +68,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 {
     Deriv n;
     DataTypes::set(n, 0, 1, 0);
-    planeNormal.setValue(DataTypes::getDPos(n));
+    d_planeNormal.setValue(DataTypes::getDPos(n));
 }
 
 
@@ -77,9 +77,11 @@ void PlaneForceField<DataTypes>::setPlane(const Deriv& normal, Real d)
 {
     DPos tmpN = DataTypes::getDPos(normal);
     Real n = tmpN.norm();
-    planeNormal.setValue( tmpN / n);
-    planeD.setValue( d / n );
+    d_planeNormal.setValue( tmpN / n);
+    d_planeD.setValue( d / n );
 }
+
+
 
 template<class DataTypes>
 SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
@@ -98,29 +100,29 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
 
-    this->contacts.clear();
+    this->m_contacts.clear();
     f1.resize(p1.size());
 
     unsigned int ibegin = 0;
     unsigned int iend = p1.size();
 
-    if (localRange.getValue()[0] >= 0)
-        ibegin = localRange.getValue()[0];
+    if (d_localRange.getValue()[0] >= 0)
+        ibegin = d_localRange.getValue()[0];
 
-    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-        iend = localRange.getValue()[1]+1;
+    if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
+        iend = d_localRange.getValue()[1]+1;
 
-    Real limit = this->maxForce.getValue();
+    Real limit = this->d_maxForce.getValue();
     limit *= limit; // squared
 
-    Real stiff = this->stiffness.getValue();
-    Real damp = this->damping.getValue();
-    DPos planeN = planeNormal.getValue();
+    Real stiff = this->d_stiffness.getValue();
+    Real damp = this->d_damping.getValue();
+    DPos planeN = d_planeNormal.getValue();
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = DataTypes::getCPos(p1[i])*planeN-planeD.getValue();
-        if (bilateral.getValue() || d<0 )
+        Real d = DataTypes::getCPos(p1[i])*planeN-d_planeD.getValue();
+        if (d_bilateral.getValue() || d<0 )
         {
             Real forceIntensity = -stiff*d;
             Real dampingIntensity = -damp*d;
@@ -133,7 +135,7 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
             Deriv tmpF;
             DataTypes::setDPos(tmpF, force);
             f1[i] += tmpF;
-            this->contacts.push_back(i);
+            this->m_contacts.push_back(i);
         }
     }
 }
@@ -145,12 +147,12 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
 
     df1.resize(dx1.size());
-    const Real fact = (Real)(-this->stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
-    DPos planeN = planeNormal.getValue();
+    const Real fact = (Real)(-this->d_stiffness.getValue() * mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    DPos planeN = d_planeNormal.getValue();
 
-    for (unsigned int i=0; i<this->contacts.size(); i++)
+    for (unsigned int i=0; i<this->m_contacts.size(); i++)
     {
-        unsigned int p = this->contacts[i];
+        unsigned int p = this->m_contacts[i];
         assert(p<dx1.size());
         DataTypes::setDPos(df1[p], DataTypes::getDPos(df1[p]) + planeN * (fact * (DataTypes::getDPos(dx1[p]) * planeN)));
     }
@@ -159,16 +161,16 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-    const Real fact = (Real)(-this->stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
+    const Real fact = (Real)(-this->d_stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     Deriv normal;
-    DataTypes::setDPos(normal, planeNormal.getValue());
+    DataTypes::setDPos(normal, d_planeNormal.getValue());
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
 
-    for (unsigned int i=0; i<this->contacts.size(); i++)
+    for (unsigned int i=0; i<this->m_contacts.size(); i++)
     {
-        unsigned int p = this->contacts[i];
+        unsigned int p = this->m_contacts[i];
         for (int l=0; l<Deriv::total_size; ++l)
             for (int c=0; c<Deriv::total_size; ++c)
             {
@@ -183,22 +185,22 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
     helper::ReadAccessor<VecCoord> x = vx;
 
-    this->contacts.clear();
+    this->m_contacts.clear();
 
     unsigned int ibegin = 0;
     unsigned int iend = x.size();
 
-    if (localRange.getValue()[0] >= 0)
-        ibegin = localRange.getValue()[0];
+    if (d_localRange.getValue()[0] >= 0)
+        ibegin = d_localRange.getValue()[0];
 
-    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-        iend = localRange.getValue()[1]+1;
+    if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
+        iend = d_localRange.getValue()[1]+1;
 
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = DataTypes::getCPos(x[i])*planeNormal.getValue()-planeD.getValue();
+        Real d = DataTypes::getCPos(x[i])*d_planeNormal.getValue()-d_planeD.getValue();
         if (d<0)
-            this->contacts.push_back(i);
+            this->m_contacts.push_back(i);
     }
 }
 
@@ -208,13 +210,13 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
     defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
-    defaulttype::Vec3d normal3d; normal3d = planeNormal.getValue();
+    defaulttype::Vec3d normal3d; normal3d = d_planeNormal.getValue();
     defaulttype::Vec3d v = normal3d.cross(axe3d);
     if (v.norm2() < 1.0e-10) return;
     v.normalize();
     v = normal3d * cos ( angle ) + v * sin ( angle );
-    *planeNormal.beginEdit() = v;
-    planeNormal.endEdit();
+    *d_planeNormal.beginEdit() = v;
+    d_planeNormal.endEdit();
 }
 
 
@@ -237,7 +239,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 
     helper::ReadAccessor<VecCoord> p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    defaulttype::Vec3d normal; normal = planeNormal.getValue();
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue();
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;
@@ -251,7 +253,7 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     v2 = v1.cross(normal);
     v2.normalize();
 
-    defaulttype::Vec3d center = normal*planeD.getValue();
+    defaulttype::Vec3d center = normal*d_planeD.getValue();
     defaulttype::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
@@ -279,18 +281,18 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
     unsigned int ibegin = 0;
     unsigned int iend = p1.size();
 
-    if (localRange.getValue()[0] >= 0)
-        ibegin = localRange.getValue()[0];
+    if (d_localRange.getValue()[0] >= 0)
+        ibegin = d_localRange.getValue()[0];
 
-    if (localRange.getValue()[1] >= 0 && (unsigned int)localRange.getValue()[1]+1 < iend)
-        iend = localRange.getValue()[1]+1;
+    if (d_localRange.getValue()[1] >= 0 && (unsigned int)d_localRange.getValue()[1]+1 < iend)
+        iend = d_localRange.getValue()[1]+1;
 
     defaulttype::Vector3 point1,point2;
     for (unsigned int i=ibegin; i<iend; i++)
     {
-        Real d = DataTypes::getCPos(p1[i])*planeNormal.getValue()-planeD.getValue();
+        Real d = DataTypes::getCPos(p1[i])*d_planeNormal.getValue()-d_planeD.getValue();
         CPos p2 = DataTypes::getCPos(p1[i]);
-        p2 += planeNormal.getValue()*(-d);
+        p2 += d_planeNormal.getValue()*(-d);
         if (d<0)
         {
             point1 = DataTypes::getCPos(p1[i]);
@@ -312,7 +314,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
-    defaulttype::Vec3d normal; normal = planeNormal.getValue(params);
+    defaulttype::Vec3d normal; normal = d_planeNormal.getValue(params);
     SReal size=d_drawSize.getValue();
 
     // find a first vector inside the plane
@@ -327,7 +329,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     v2 = v1.cross(normal);
     v2.normalize();
 
-    defaulttype::Vec3d center = normal*planeD.getValue();
+    defaulttype::Vec3d center = normal*d_planeD.getValue();
     defaulttype::Vec3d corners[4];
     corners[0] = center-v1*size-v2*size;
     corners[1] = center+v1*size-v2*size;
