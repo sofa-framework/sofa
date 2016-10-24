@@ -118,13 +118,13 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Shouldn't crash without input data
     void initTests()
     {
-        EXPECT_NO_THROW(m_thisObject->init());
+        EXPECT_NO_THROW(m_thisObject->init()) << "The component should succeed in being initialized.";
 
         VisualParams* vparams = VisualParams::defaultInstance();
         vparams->displayFlags().setShowBehaviorModels(true);
         m_thisObject->d_drawSize.setValue(1);
 
-        EXPECT_NO_THROW(m_thisObject->draw(vparams));
+        EXPECT_NO_THROW(m_thisObject->draw(vparams)) << "The component draw function should succeed after being initialized.";
     }
 
 
