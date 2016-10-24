@@ -33,7 +33,15 @@
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 #include <sstream>
+
+#ifdef WIN32
+#include <windows.h>
+#include <direct.h>
+#elif defined(_XBOX)
+#include <xtl.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
@@ -46,6 +54,14 @@ namespace sofa
 
 namespace simulation
 {
+
+#if defined(WIN32)
+    #define chdir _chdir
+#elif defined(_XBOX)
+    int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
+#elif defined(PS3)
+    int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
+#endif
 
 std::string SceneLoaderPY::OurHeader;
 
