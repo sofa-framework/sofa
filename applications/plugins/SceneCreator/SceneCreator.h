@@ -34,7 +34,10 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
+
+#ifdef SOFA_HAVE_METIS
 #include <SofaSparseSolver/SparseLDLSolver.h>
+#endif
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)
@@ -138,7 +141,7 @@ SOFA_SceneCreator_API void initScene(simulation::Node::SPtr root);
 /// Clear the scene graph and return a pointer to the new root
 SOFA_SceneCreator_API simulation::Node::SPtr clearScene();
 
-/// Create a link from source to target.  
+/// Create a link from source to target.
 SOFA_SceneCreator_API void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target);
 
 

@@ -41,7 +41,11 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
+
+#ifdef SOFA_HAVE_METIS
 #include <SofaSparseSolver/SparseLDLSolver.h>
+#endif
+
 #include <SofaLoader/MeshObjLoader.h>
 
 //Including components for collision detection
@@ -136,11 +140,6 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
     simulation::Node::SPtr  node = parent->createChild(name.c_str());
 
     typedef sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector> CGLinearSolverGraph;
-    typedef defaulttype::Mat<3,3,double> Block33_double;
-    typedef sofa::component::linearsolver::CompressedRowSparseMatrix< Block33_double > CompressedRowSparseMatrix_33;
-    typedef sofa::component::linearsolver::FullVector<double> FullVectorDouble;
-    typedef sofa::component::linearsolver::SparseLDLSolver< CompressedRowSparseMatrix_33 , FullVectorDouble > SparseLDLSolver_33;
-
 
     if (scheme == "Implicit")
     {
@@ -167,6 +166,13 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
 
     else if (scheme == "Implicit_SparseLDL")
     {
+#ifdef SOFA_HAVE_THIS
+        typedef defaulttype::Mat<3,3,double> Block33_double;
+
+        typedef sofa::component::linearsolver::SparseLDLSolver< CompressedRowSparseMatrix_33 , FullVectorDouble > SparseLDLSolver_33;
+        typedef sofa::component::linearsolver::CompressedRowSparseMatrix< Block33_double > CompressedRowSparseMatrix_33;
+        typedef sofa::component::linearsolver::FullVector<double> FullVectorDouble;
+
         component::odesolver::EulerImplicitSolver::SPtr solver = sofa::core::objectmodel::New<component::odesolver::EulerImplicitSolver>();
         SparseLDLSolver_33::SPtr linear = sofa::core::objectmodel::New<SparseLDLSolver_33>();
         solver->setName("Euler Implicit");
@@ -176,7 +182,9 @@ simulation::Node::SPtr  createEulerSolverNode(simulation::Node::SPtr parent, con
         linear->setName("Sparse LDL Solver");
         node->addObject(solver);
         node->addObject(linear);
-
+#else
+        msg_error("SceneCreator") << "Unable to create a scene because this verson of sofa has not been compiled with SparseLDLSolver. " ;
+#endif
     }
 
     else
