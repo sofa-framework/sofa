@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/ImagePNG.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <cstring>
 
 #include <gtest/gtest.h>
 
@@ -49,11 +50,12 @@ protected:
         std::string filename;
         unsigned int width;
         unsigned int height;
+        unsigned int bpp;
         const unsigned char* data;
 
         ImagePNGTestData(const std::string& filename, unsigned int width, unsigned int height
             , unsigned int bpp, const unsigned char* data)
-            : filename(filename), width(width), height(height), data(data)
+            : filename(filename), width(width), height(height), bpp(bpp), data(data)
         {
             
         }
@@ -66,10 +68,11 @@ protected:
             EXPECT_EQ(width, img.getWidth());
             EXPECT_EQ(height, img.getHeight());
             EXPECT_EQ(width*height, img.getPixelCount());
+            EXPECT_EQ(bpp, img.getBytesPerPixel());
 
             const unsigned char* testdata = img.getPixels();
 
-            EXPECT_TRUE(0 == std::memcmp(data, testdata, sizeof(data)));
+            EXPECT_TRUE(0 == std::memcmp(data, testdata, width*height*bpp));
         }
     };
             
