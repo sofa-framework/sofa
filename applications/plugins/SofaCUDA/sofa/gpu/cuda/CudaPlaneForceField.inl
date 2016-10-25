@@ -148,10 +148,11 @@ void PlaneForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechanical
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    m_data.plane.normal = planeNormal.getValue();
-    m_data.plane.d = planeD.getValue();
-    m_data.plane.stiffness = stiffness.getValue();
-    m_data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
+
     f.resize(x.size());
     m_data.penetration.resize(x.size());
     PlaneForceFieldCuda3d_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
@@ -183,10 +184,11 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addForce(const core::Mechanica
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    m_data.plane.normal = planeNormal.getValue();
-    m_data.plane.d = planeD.getValue();
-    m_data.plane.stiffness = stiffness.getValue();
-    m_data.plane.damping = damping.getValue();
+    m_data.plane.normal = d_planeNormal.getValue();
+    m_data.plane.d = d_planeD.getValue();
+    m_data.plane.stiffness = d_stiffness.getValue();
+    m_data.plane.damping = d_damping.getValue();
+
     f.resize(x.size());
     m_data.penetration.resize(x.size());
     PlaneForceFieldCuda3d1_addForce(x.size(), &m_data.plane, m_data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
