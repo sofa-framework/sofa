@@ -112,7 +112,7 @@ void BackTrace::dump()
             backtrace_symbols_fd(array, size, STDERR_FILENO);
         }
     }
-#else #if !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(_XBOX) && !defined(PS3)
 	unsigned int   i;
 	void         * stack[100];
 	unsigned short frames;
