@@ -12,9 +12,6 @@ using sofa::simulation::graph::DAGSimulation;
 #include <SofaGeneralEngine/MeshROI.h>
 using sofa::component::engine::MeshROI ;
 
-#include <SofaLoader/MeshObjLoader.h>
-using sofa::component::loader::MeshObjLoader ;
-
 #include <sofa/core/visual/VisualParams.h>
 using sofa::core::visual::VisualParams;
 
@@ -40,17 +37,15 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     Simulation* m_simu;
     Node::SPtr m_node1, m_node2, m_node3;
     typename ThisClass::SPtr m_thisObject;
-    typename MeshObjLoader::SPtr m_loader;
 
     void SetUp()
     {
         // SetUp1
         setSimulation(m_simu = new DAGSimulation());
         m_thisObject = New<ThisClass >();
-        m_loader = New<MeshObjLoader >();
         m_node1 = m_simu->createNewGraph("root");
-        m_node1->addObject(m_loader);
         m_node1->addObject(m_thisObject);
+
 
         // SetUp2
         string scene1 =
