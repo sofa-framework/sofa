@@ -26,6 +26,7 @@
 #define SOFA_SIMPLEOBJECTCREATOR_CPP
 
 #include "SceneCreator.h"
+#include <SofaGeneral/config.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 
@@ -188,12 +189,16 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     else if (scheme == "Implicit_SparseLDL")
     {
-#ifdef SOFA_HAVE_THIS
+#ifdef SOFA_HAVE_METIS
         typedef Mat<3,3,double> Block33_double;
 
-        typedef SparseLDLSolver< CompressedRowSparseMatrix_33 , FullVectorDouble > SparseLDLSolver_33;
-        typedef CompressedRowSparseMatrix< Block33_double > CompressedRowSparseMatrix_33;
+        using sofa::component::linearsolver::FullVector;
+        using sofa::component::linearsolver::SparseLDLSolver;
+        using sofa::component::linearsolver::CompressedRowSparseMatrix;
+
         typedef FullVector<double> FullVectorDouble;
+        typedef CompressedRowSparseMatrix< Block33_double > CompressedRowSparseMatrix_33;
+        typedef SparseLDLSolver< CompressedRowSparseMatrix_33 , FullVectorDouble > SparseLDLSolver_33;
 
         EulerImplicitSolver::SPtr solver = New<EulerImplicitSolver>();
         SparseLDLSolver_33::SPtr linear = New<SparseLDLSolver_33>();

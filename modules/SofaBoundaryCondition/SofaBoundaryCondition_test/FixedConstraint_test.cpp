@@ -144,10 +144,12 @@ TYPED_TEST( FixedConstraint_test , testValueExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
+#ifdef SOFA_HAVE_METIS
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
 }
+#endif
 
 
 }// namespace
