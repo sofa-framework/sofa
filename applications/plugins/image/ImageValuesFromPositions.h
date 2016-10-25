@@ -48,32 +48,34 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageValuesFromPositionsSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageValuesFromPositions;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageValuesFromPositions<defaulttype::Image<T>> ImageValuesFromPositionsT;
 
-    template<class ImageValuesFromPositions>
-    static void update(ImageValuesFromPositions& This)
+    static void update(ImageValuesFromPositionsT& This)
     {
-        typedef typename ImageValuesFromPositions::Real Real;
-        typedef typename ImageValuesFromPositions::Coord Coord;
-        typedef typename ImageValuesFromPositions::T T;
+        typedef typename ImageValuesFromPositionsT::Real Real;
+        typedef typename ImageValuesFromPositionsT::Coord Coord;
 
-        typename ImageValuesFromPositions::raTransform inT(This.transform);
-        typename ImageValuesFromPositions::raPositions pos(This.position);
+        typename ImageValuesFromPositionsT::raTransform inT(This.transform);
+        typename ImageValuesFromPositionsT::raPositions pos(This.position);
 
-        typename ImageValuesFromPositions::raImage in(This.image);
+        typename ImageValuesFromPositionsT::raImage in(This.image);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
-        typename ImageValuesFromPositions::waValues val(This.values);
+        typename ImageValuesFromPositionsT::waValues val(This.values);
         Real outval=This.outValue.getValue();
         val.resize(pos.size());
 
@@ -123,8 +125,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageValuesFromPositionsSpecialization<_ImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -193,7 +194,7 @@ protected:
 
     virtual void update()
     {
-        ImageValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        ImageValuesFromPositionsSpecialization<ImageTypes>::update( *this );
         cleanDirty();
     }
 

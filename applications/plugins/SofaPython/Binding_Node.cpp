@@ -29,7 +29,6 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
@@ -214,7 +213,6 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&nodeName))
         Py_RETURN_NONE;
     Node* child = obj->createChild(nodeName).get();
-    ScriptEnvironment::nodeCreatedByScript(child);
     return sofa::PythonFactory::toPython(child);
 }
 
@@ -255,11 +253,6 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
 
     if (warning && node->isInitialized())
         SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
-//    if (!ScriptEnvironment::isNodeCreatedByScript(node))
-//        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
-
-    //object->init();
-    // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
 }

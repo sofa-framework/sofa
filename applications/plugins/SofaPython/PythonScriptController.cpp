@@ -33,7 +33,6 @@ using sofa::core::objectmodel::Base;
 using sofa::simulation::Node;
 
 #include "Binding_PythonScriptController.h"
-#include "ScriptEnvironment.h"
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
@@ -278,7 +277,6 @@ void PythonScriptController::handleEvent(core::objectmodel::Event *event)
     if (PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
-        simulation::ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }

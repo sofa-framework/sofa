@@ -35,26 +35,28 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(DifferenceEngine)
 
 int DifferenceEngineClass = core::RegisterObject("Computing the difference between two vector of dofs")
 #ifndef SOFA_FLOAT
-        .add< DifferenceEngine<defaulttype::Vec1d> >()
-        .add< DifferenceEngine<defaulttype::Vec3d> >(true) // default template
+        .add< DifferenceEngine<Vec1d> >()
+        .add< DifferenceEngine<Vec3d> >(true) // default template
 #endif
 #ifndef SOFA_DOUBLE
-        .add< DifferenceEngine<defaulttype::Vec1f> >()
-        .add< DifferenceEngine<defaulttype::Vec3f> >()
+        .add< DifferenceEngine<Vec1f> >()
+        .add< DifferenceEngine<Vec3f> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1d>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3d>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
-template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1f>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3f>;
 #endif
 
 } // namespace engine

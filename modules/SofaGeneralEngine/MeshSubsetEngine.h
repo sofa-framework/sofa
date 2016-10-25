@@ -55,6 +55,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef VecCoord SeqPositions;
+    typedef typename core::topology::BaseMeshTopology::Edge Edge;
+    typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef typename core::topology::BaseMeshTopology::Quad Quad;
@@ -64,12 +66,14 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
+    Data< SeqEdges > inputEdges;
     Data< SeqTriangles > inputTriangles;
     Data< SeqQuads > inputQuads;
     Data< SetIndices > indices;
 
     /// outputs
     Data< SeqPositions > position;
+    Data< SeqEdges > edges;
     Data< SeqTriangles > triangles;
     Data< SeqQuads > quads;
 
@@ -80,10 +84,12 @@ protected:
 
     MeshSubsetEngine()    : Inherited()
       , inputPosition(initData(&inputPosition,"inputPosition","input vertices"))
+      , inputEdges(initData(&inputEdges,"inputEdges","input edges"))
       , inputTriangles(initData(&inputTriangles,"inputTriangles","input triangles"))
       , inputQuads(initData(&inputQuads,"inputQuads","input quads"))
       , indices(initData(&indices,"indices","Index lists of the selected vertices"))
       , position(initData(&position,"position","Vertices of mesh subset"))
+      , edges(initData(&edges,"edges","edges of mesh subset"))
       , triangles(initData(&triangles,"triangles","Triangles of mesh subset"))
       , quads(initData(&quads,"quads","Quads of mesh subset"))
     {
@@ -95,10 +101,12 @@ public:
     virtual void init()
     {
         addInput(&inputPosition);
+        addInput(&inputEdges);
         addInput(&inputTriangles);
         addInput(&inputQuads);
         addInput(&indices);
         addOutput(&position);
+        addOutput(&edges);
         addOutput(&triangles);
         addOutput(&quads);
         setDirtyValue();

@@ -48,32 +48,34 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageCoordValuesFromPositionsSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageCoordValuesFromPositions;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageCoordValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageCoordValuesFromPositions<defaulttype::Image<T>> ImageCoordValuesFromPositionsT;
 
-    template<class ImageCoordValuesFromPositions>
-    static void update(ImageCoordValuesFromPositions& This)
+    static void update(ImageCoordValuesFromPositionsT& This)
     {
-        typedef typename ImageCoordValuesFromPositions::Real Real;
-        typedef typename ImageCoordValuesFromPositions::Coord Coord;
-        typedef typename ImageCoordValuesFromPositions::T T;
+        typedef typename ImageCoordValuesFromPositionsT::Real Real;
+        typedef typename ImageCoordValuesFromPositionsT::Coord Coord;
 
-        typename ImageCoordValuesFromPositions::raTransform inT(This.transform);
-        typename ImageCoordValuesFromPositions::raPositions pos(This.position);
+        typename ImageCoordValuesFromPositionsT::raTransform inT(This.transform);
+        typename ImageCoordValuesFromPositionsT::raPositions pos(This.position);
 
-        typename ImageCoordValuesFromPositions::raImage in(This.image);
+        typename ImageCoordValuesFromPositionsT::raImage in(This.image);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
-        typename ImageCoordValuesFromPositions::waValues val(This.values);
+        typename ImageCoordValuesFromPositionsT::waValues val(This.values);
         Coord outval (This.outValue.getValue(),This.outValue.getValue(),This.outValue.getValue());
         val.resize(pos.size());
 
@@ -145,8 +147,7 @@ struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE
 template <class _ImageTypes>
 class ImageCoordValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageCoordValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageCoordValuesFromPositionsSpecialization<_ImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -217,7 +218,7 @@ protected:
 
     virtual void update()
     {
-        ImageCoordValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        ImageCoordValuesFromPositionsSpecialization<ImageTypes>::update( *this );
         cleanDirty();
     }
 

@@ -135,15 +135,7 @@ void Restitution::filterConstraints( helper::vector<bool>*& activateMask, const 
     for( unsigned block=0 ; block<n ; ++block )
     {
         unsigned line = block*dim; // first contraint line
-        if( violation[line]<0 ) // violated constraint
-        {
-            mask[block]=true;
-        }
-        else
-        {
-            mask[block]=false;
-        }
-
+        mask[block] = ( violation[line]<0 ); // violated constraint
     }
 
     activateMask = &mask;

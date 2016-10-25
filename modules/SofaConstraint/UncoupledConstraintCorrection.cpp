@@ -305,13 +305,13 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     /*
     for (unsigned int l=0;l<s;++l)
     {
-    	for (unsigned int c=0;c<s;++c)
-    	{
-    		if (l==c)
-    			m->set(l,c,comp[l]);
-    		else
-    			m->set(l,c,0);
-    	}
+        for (unsigned int c=0;c<s;++c)
+        {
+            if (l==c)
+                m->set(l,c,comp[l]);
+            else
+                m->set(l,c,0);
+        }
     }
     */
 }
@@ -542,6 +542,9 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
         .add< UncoupledConstraintCorrection< Vec1fTypes > >()
         .add< UncoupledConstraintCorrection< Vec3fTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
+        //TODO(dmarchal) There is no Rigid3fTypes template specizaliation while there is one for Rigid3d...
+        //this look sucipicious.
+
 #endif
         ;
 

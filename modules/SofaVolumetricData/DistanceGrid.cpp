@@ -27,10 +27,10 @@
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-//#include <sofa/core/topology/BaseMeshTopology.h>
-//#ifdef SOFA_HAVE_FLOWVR
+
+#ifdef SOFA_HAVE_MINIFLOWVR
 #include <flowvr/render/mesh.h>
-//#endif
+#endif //
 
 #include <fstream>
 #include <sstream>
@@ -148,7 +148,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
     {
         return loadVTKFile(filename, scale, sampling);
     }
-//#ifdef SOFA_HAVE_FLOWVR
+#ifdef SOFA_HAVE_MINIFLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
         flowvr::render::Mesh mesh;
@@ -213,7 +213,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         //std::cout<< "Distance grid creation DONE."<<std::endl;
         return grid;
     }
-//#endif
+#endif
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
@@ -1118,7 +1118,6 @@ void DistanceGrid::fmm_push(int index)
     std::cout << std::endl;
 #endif
 }
-
 
 /// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
 void DistanceGrid::sampleSurface(double sampling)

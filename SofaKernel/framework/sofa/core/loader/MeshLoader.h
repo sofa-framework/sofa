@@ -88,55 +88,55 @@ public:
 
     /// @name Initial transformations accessors.
     /// @{
-    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTranslation(SReal dx, SReal dy, SReal dz) {d_translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(SReal rx, SReal ry, SReal rz) {d_rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(SReal sx, SReal sy, SReal sz) {d_scale.setValue(Vector3(sx,sy,sz));}
     void setTransformation(const sofa::defaulttype::Matrix4& t) {d_transformation.setValue(t);}
 
-    virtual Vector3 getTranslation() const {return translation.getValue();}
-    virtual Vector3 getRotation() const {return rotation.getValue();}
-    virtual Vector3 getScale() const {return scale.getValue();}
+    virtual Vector3 getTranslation() const {return d_translation.getValue();}
+    virtual Vector3 getRotation() const {return d_rotation.getValue();}
+    virtual Vector3 getScale() const {return d_scale.getValue();}
     virtual sofa::defaulttype::Matrix4 getTransformation() const {return d_transformation.getValue();}
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions;
 
     // Tab of 2D elements composition
-    Data< helper::vector< Edge > > edges;
-    Data< helper::vector< Triangle > > triangles;
-    Data< helper::vector< Quad > > quads;
-    Data< helper::vector< helper::vector <unsigned int> > > polygons;
+    Data< helper::vector< Edge > > d_edges;
+    Data< helper::vector< Triangle > > d_triangles;
+    Data< helper::vector< Quad > > d_quads;
+    Data< helper::vector< helper::vector <unsigned int> > > d_polygons;
 
     // Tab of 3D elements composition
-    Data< helper::vector< Tetrahedron > > tetrahedra;
-    Data< helper::vector< Hexahedron > > hexahedra;
-    Data< helper::vector< Pentahedron > > pentahedra;
-    Data< helper::vector< Pyramid > > pyramids;
+    Data< helper::vector< Tetrahedron > > d_tetrahedra;
+    Data< helper::vector< Hexahedron > > d_hexahedra;
+    Data< helper::vector< Pentahedron > > d_pentahedra;
+    Data< helper::vector< Pyramid > > d_pyramids;
 
     // polygons in 3D ?
 
     //Misc
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > normals; /// Normals per vertex
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; /// Normals per vertex
 
     // Groups
-    Data< helper::vector< PrimitiveGroup > > edgesGroups;
-    Data< helper::vector< PrimitiveGroup > > trianglesGroups;
-    Data< helper::vector< PrimitiveGroup > > quadsGroups;
-    Data< helper::vector< PrimitiveGroup > > polygonsGroups;
-    Data< helper::vector< PrimitiveGroup > > tetrahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > hexahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > pentahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > pyramidsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_edgesGroups;
+    Data< helper::vector< PrimitiveGroup > > d_trianglesGroups;
+    Data< helper::vector< PrimitiveGroup > > d_quadsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_polygonsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_tetrahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_hexahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_pentahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_pyramidsGroups;
 
-    Data< bool > flipNormals;
-    Data< bool > triangulate;
-    Data< bool > createSubelements;
-    Data< bool > onlyAttachedPoints;
+    Data< bool > d_flipNormals;
+    Data< bool > d_triangulate;
+    Data< bool > d_createSubelements;
+    Data< bool > d_onlyAttachedPoints;
 
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
-    Data< Vector3 > scale;
+    Data< Vector3 > d_translation;
+    Data< Vector3 > d_rotation;
+    Data< Vector3 > d_scale;
     Data< sofa::defaulttype::Matrix4 > d_transformation;
 
 

@@ -57,32 +57,35 @@ namespace misc
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageExporterSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageExporter;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageExporterSpecialization<defaulttype::Image<T>>
 {
-    template<class ImageExporter>
-    static void init( ImageExporter& /*exporter*/ )
+    typedef ImageExporter<defaulttype::Image<T>> ImageExporterT;
+
+
+    static void init( ImageExporterT& /*exporter*/ )
     {
     }
 
-    template<class ImageExporter>
-    static bool write( ImageExporter& exporter )
+    static bool write( ImageExporterT& exporter )
     {
-        typedef typename ImageExporter::Real Real;
-        typedef typename ImageExporter::T T;
+        typedef typename ImageExporterT::Real Real;
 
         if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
         std::string fname(exporter.m_filename.getFullPath());
 
-        typename ImageExporter::raImage rimage(exporter.image);
-        typename ImageExporter::raTransform rtransform(exporter.transform);
+        typename ImageExporterT::raImage rimage(exporter.image);
+        typename ImageExporterT::raTransform rtransform(exporter.transform);
         if (rimage->isEmpty()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
@@ -213,8 +216,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageExporter : public core::objectmodel::BaseObject
 {
-    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageExporterSpecialization<_ImageTypes>;
 
 public:
     typedef core::objectmodel::BaseObject Inherited;
@@ -261,7 +263,7 @@ public:
         transform.setReadOnly(true);
         f_listening.setValue(true);
 
-        ImageExporterSpecialization<ImageTypes::label>::init( *this );
+        ImageExporterSpecialization<ImageTypes>::init( *this );
     }
 
     virtual ~ImageExporter() {}
@@ -275,7 +277,7 @@ protected:
 
     bool write()
     {
-        return ImageExporterSpecialization<ImageTypes::label>::write( *this );
+        return ImageExporterSpecialization<ImageTypes>::write( *this );
     }
 
 

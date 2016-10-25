@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(ComplementaryROI)
 
-int ComplementaryROIClass = core::RegisterObject("Find the points NOT in the input sets")
+int ComplementaryROIClass = core::RegisterObject("Find the points that are NOT in the input sets")
 #ifndef SOFA_FLOAT
         .add<ComplementaryROI<Vec3dTypes> >()
 #endif //SOFA_FLOAT

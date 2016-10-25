@@ -32,11 +32,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/BaseMapping.h>
 
-
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <Compliant/assembly/AssemblyHelper.h>
 
 namespace sofa
 {
@@ -53,34 +51,37 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class DataTypes, class ImageTypes>
 struct MassFromDensitySpecialization
 {
 };
 
+/// forward declaration
+template <class DataTypes, class ImageTypes> class MassFromDensity;
+
 /// Specialization for regular Image
-template <>
-struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class DataTypes, class T>
+struct MassFromDensitySpecialization<DataTypes, defaulttype::Image<T>>
 {
+    typedef MassFromDensity<DataTypes, defaulttype::Image<T>> MassFromDensityT;
 
-    template<class MassFromDensity>
-    static void update(MassFromDensity* This)
+    static void update(MassFromDensityT* This)
     {
-        typedef typename MassFromDensity::Real Real;
-        typedef typename MassFromDensity::VecCoord VecCoord;
-        typedef typename MassFromDensity::Coord Coord;
+        typedef typename MassFromDensityT::Real Real;
+        typedef typename MassFromDensityT::VecCoord VecCoord;
+        typedef typename MassFromDensityT::Coord Coord;
 
-        typename MassFromDensity::raImage in(This->image);
-        typename MassFromDensity::raTransform inT(This->transform);
+        typename MassFromDensityT::raImage in(This->image);
+        typename MassFromDensityT::raTransform inT(This->transform);
         if(in->isEmpty()) return;
-        const cimg_library::CImg<typename MassFromDensity::T>& img = in->getCImg(This->time);
+        const cimg_library::CImg<T>& img = in->getCImg(This->time);
 
         // count non zero voxels
         unsigned int nb=0;
         cimg_forXYZ(img,x,y,z) if(img(x,y,z)) nb++;
 
         // build mass and mapped dofs
-        This->Me=typename MassFromDensity::rmat(3*nb,3*nb);
+        This->Me=typename MassFromDensityT::rmat(3*nb,3*nb);
         This->Me.reserve(3*nb);
         This->dofs->resize(nb);
         helper::WriteOnlyAccessor<Data<VecCoord> > rpos ( This->dofs->writeOnlyRestPositions() );
@@ -108,9 +109,8 @@ struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _DataTypes, class _ImageTypes>
 class MassFromDensity : public core::DataEngine
 {
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct MassFromDensitySpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
-    typedef MassFromDensitySpecialization<_ImageTypes::label> MassFromDensitySpec;
+    friend struct MassFromDensitySpecialization<_DataTypes,_ImageTypes>;
+    typedef MassFromDensitySpecialization<_DataTypes,_ImageTypes> MassFromDensitySpec;
 
 public:
     typedef core::DataEngine Inherited;
@@ -199,7 +199,7 @@ protected:
             const core::State< DataTypes >* compatible = dynamic_cast<const core::State< DataTypes >*> (deformationMapping->getFrom()[i]);
             if(compatible)
             {
-                MySPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
+                helper::OwnershipSPtr<rmat> J( convertSPtr<rmat>( (*js)[i] ) );
                 rmat JTMe=J->transpose()*Me;
                 MassMatrix& M = *massMatrix.beginWriteOnly();
                 M.compressedMatrix=JTMe*(*J);

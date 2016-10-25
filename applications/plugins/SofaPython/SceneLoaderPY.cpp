@@ -25,7 +25,6 @@
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "SceneLoaderPY.h"
-#include "ScriptEnvironment.h"
 
 
 #include <sofa/simulation/Simulation.h>
@@ -114,9 +113,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");
-        ScriptEnvironment::enableNodeQueuedInit(false);
         SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-        ScriptEnvironment::enableNodeQueuedInit(true);
 
         return rootNode;
     }
@@ -126,9 +123,7 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         if (PyCallable_Check(pFunc))
         {
             Node::SPtr rootNode = Node::create("root");
-            ScriptEnvironment::enableNodeQueuedInit(false);
             SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-            ScriptEnvironment::enableNodeQueuedInit(true);
 
             rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
 
@@ -168,8 +163,6 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
     PyObject *pFunc = PyDict_GetItemString(pDict, "run");
     if (PyCallable_Check(pFunc))
     {
-        ScriptEnvironment::enableNodeQueuedInit(false);
-
         PyObject *res = PyObject_CallObject(pFunc,0);
         printPythonExceptions();
 
@@ -188,8 +181,6 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         bool result = ( res == Py_True );
         Py_DECREF(res);
 
-
-        ScriptEnvironment::enableNodeQueuedInit(true);
         return result;
     }
     else

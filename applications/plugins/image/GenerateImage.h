@@ -16,40 +16,89 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SCRIPTENVIRONMENT_H
-#define SCRIPTENVIRONMENT_H
+#ifndef SOFA_IMAGE_GenerateImage_H
+#define SOFA_IMAGE_GenerateImage_H
 
-#include <sofa/simulation/Node.h>
+#include <image/config.h>
+#include "ImageTypes.h"
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Vec.h>
+
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
+{
+
+namespace engine
 {
 
 
-class ScriptEnvironment
+/**
+ * Create an image with custom dimensions
+ */
+
+
+template <class _ImageTypes>
+class GenerateImage : public core::DataEngine
 {
 public:
-    // nodes initialization stuff
-    static void     nodeCreatedByScript(Node* node);        // to be called each time a new node is created by a script.
-    static void     initScriptNodes();                      // to be called after each call to a script function.
-    static bool     isNodeCreatedByScript(Node* node);
+    typedef core::DataEngine Inherited;
+    SOFA_CLASS(SOFA_TEMPLATE(GenerateImage,_ImageTypes),Inherited);
 
-    static void     enableNodeQueuedInit(bool enable);
+    typedef _ImageTypes ImageTypes;
+    typedef typename ImageTypes::T T;
+    typedef typename ImageTypes::imCoord imCoord;
+
+    Data< imCoord > dimxyzct;
+    Data< ImageTypes > image;
+
+    virtual std::string getTemplateName() const    { return templateName(this);    }
+    static std::string templateName(const GenerateImage<ImageTypes>* = NULL) { return ImageTypes::Name(); }
+
+    GenerateImage()    :   Inherited()
+      , dimxyzct(initData(&dimxyzct,"dim","dimensions (x,y,z,c,t)",""))
+      , image(initData(&image,ImageTypes(),"image",""))
+    {
+        this->addAlias(&dimxyzct, "dimensions");
+    }
+
+    virtual ~GenerateImage() {}
+
+    virtual void init()
+    {
+        addInput(&dimxyzct);
+        addOutput(&image);
+        setDirtyValue();
+    }
+
+    virtual void reinit() { update(); }
+
+protected:
+
+    virtual void update()
+    {
+        const imCoord& dim = this->dimxyzct.getValue();
+        helper::WriteOnlyAccessor<Data< ImageTypes > > out(this->image);
+        cleanDirty();
+        out->setDimensions(dim);
+    }
+
 };
 
 
-} // namespace core
+} // namespace engine
+
+} // namespace component
 
 } // namespace sofa
 
-
-
-#endif // SCRIPTENVIRONMENT_H
+#endif // SOFA_IMAGE_GenerateImage_H

@@ -42,6 +42,7 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(UnilateralInteractionConstraint)
 
+//TODO(dmarchal) What does this TODO mean ?
 int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-UnilateralInteractionConstraint")
 #ifndef SOFA_FLOAT
         .add< UnilateralInteractionConstraint<Vec3dTypes> >()
@@ -102,10 +103,10 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
 
     normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
 
-	double fN = _mu*force[line];
+    double fN = _mu*force[line];
     if(normFt > fN)
     {
-		double factor = fN / normFt;
+        double factor = fN / normFt;
         force[line+1] *= factor;
         force[line+2] *= factor;
     }

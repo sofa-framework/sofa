@@ -199,7 +199,8 @@ class Deformable:
         if self.dofs is None:
             Sofa.msg_error("Flexible.API.Deformable","addMass : no dofs for "+ self.name)
             return
-        self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
+        if totalMass!=0:
+            self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, useIndexLabelPairs=False, assemble=True, isMechanical=True):
         cell = ''
@@ -445,7 +446,8 @@ class FEMDof:
         self.dof = self.node.createObject("MechanicalObject", template="Vec3", name="dofs", position=position, **kwargs)
 
     def addUniformMass(self, totalMass):
-        self.mass=self.node.createObject("UniformMass", template="Vec3", name="mass", totalMass=totalMass)
+        if totalMass!=0:
+            self.mass=self.node.createObject("UniformMass", template="Vec3", name="mass", totalMass=totalMass)
 
     def addShapeFunction(self):
         self.shapeFunction=self.node.createObject("BarycentricShapeFunction", name="shapeFunction")
@@ -547,6 +549,7 @@ class Behavior:
         self.sampler = None
         self.dofs = None
         self.mapping = None
+        self.strainDofs = None
         self.strainMapping = None
         self.relativeStrainMapping = None
         self.forcefield = None
@@ -646,10 +649,18 @@ class Behavior:
             if printLog:
                 Sofa.msg_info("Flexible.API.Behavior",'Exported Gauss Points as a mesh: '+filename)
 
+    def writeStrains(self, filenamePrefix=None, directory=""):
+        if not self.strainDofs is None:
+            filename = self.getFilename(filenamePrefix,directory).replace(".json","_E.json")
+            data = {'type': self.type,'position': SofaPython.Tools.listListToStr(self.strainDofs.position) }
+            with open(filename, 'w') as f:
+                json.dump(data, f)
+                if printLog:
+                    Sofa.msg_info("Flexible.API.Behavior",'Exported Strains in: '+filename)
 
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, useOffset=False, assemble=True):
         eNode = self.node.createChild("E")
-        eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
+        self.strainDofs = eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         self.strainMapping = eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
         if useOffset:
             eOffNode = eNode.createChild("offsetE")

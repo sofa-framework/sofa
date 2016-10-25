@@ -40,11 +40,13 @@ template <class DataTypes>
 void MeshSubsetEngine<DataTypes>::update()
 {
     helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
+    helper::ReadAccessor<Data< SeqEdges > > edg(this->inputEdges);
     helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
     helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
     helper::ReadAccessor<Data< SetIndices > >  ind(this->indices);
 
     helper::WriteOnlyAccessor<Data< SeqPositions > > opos(this->position);
+    helper::WriteOnlyAccessor<Data< SeqEdges > >  oedg(this->edges);
     helper::WriteOnlyAccessor<Data< SeqTriangles > >  otri(this->triangles);
     helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
 
@@ -54,6 +56,14 @@ void MeshSubsetEngine<DataTypes>::update()
     {
         opos[i]=pos[ind[i]];
         FtoS[ind[i]]=i;
+    }
+    oedg.clear();
+    for(size_t i=0; i<edg.size(); i++)
+    {
+        bool inside=true;
+        Edge cell;
+        for(size_t j=0; j<2; j++) if(FtoS.find(edg[i][j])==FtoS.end()) { inside=false; break; } else cell[j]=FtoS[edg[i][j]];
+        if(inside) oedg.push_back(cell);
     }
     otri.clear();
     for(size_t i=0; i<tri.size(); i++)

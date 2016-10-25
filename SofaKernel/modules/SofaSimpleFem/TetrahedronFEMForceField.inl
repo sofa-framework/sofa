@@ -36,6 +36,7 @@
 #include <set>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 
 namespace sofa
@@ -1599,12 +1600,6 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         helper::WriteAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
         vMN.resize(this->mstate->getSize());
 
-//#ifdef SIMPLEFEM_COLORMAP
-//#ifndef SOFA_NO_OPENGL
-//        _showStressColorMapReal->initOld(_showStressColorMap.getValue());
-//#endif
-//#endif
-
         prevMaxStress = -1.0;
         updateVonMisesStress = true;
     }
@@ -1819,11 +1814,6 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 
-    if (_computeVonMisesStress.getValue() > 0) {
-        if (updateVonMisesStress)
-            computeVonMisesStress();
-    }
-
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
@@ -1857,9 +1847,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     helper::ReadAccessor<Data<helper::vector<Real> > > vM =  _vonMisesPerElement;
     helper::ReadAccessor<Data<helper::vector<Real> > > vMN =  _vonMisesPerNode;
     if (_computeVonMisesStress.getValue() > 0) {
-        if (updateVonMisesStress)
-            computeVonMisesStress();
-
         for (size_t i = 0; i < vM.size(); i++) {
             minVM = (vM[i] < minVM) ? vM[i] : minVM;
             maxVM = (vM[i] > maxVM) ? vM[i] : maxVM;
@@ -2037,7 +2024,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 #ifdef SIMPLEFEM_COLORMAP
                 if (_computeVonMisesStress.getValue() > 0) {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
-                    defaulttype::Vec4f col = evalColor(vM[i]); //*vM[i]);
+                    defaulttype::Vec4f col = evalColor(vM[i]); 
 
                     col[3] = 1.0f;
                     vparams->drawTool()->drawTriangles(points[0],col);
@@ -2046,16 +2033,6 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
                     vparams->drawTool()->drawTriangles(points[3],col);
 
                     for(unsigned int i=0 ; i<4 ; i++) points[i].clear();
-
-                    /*visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVMN, maxVMN);
-                    std::vector<Vec4f> col(3);
-                    std::vector< defaulttype::Vector3 > normals;
-                    normals.clear();
-                    col[0] = evalColor(vMN[a]);
-                    col[1] = evalColor(vMN[b]);
-                    col[2] = evalColor(vMN[c]);
-
-                    vparams->drawTool()->drawTriangles(points[0],normals, col);*/
                 }
 #endif
             }
@@ -2444,24 +2421,23 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
             }
         }
     }
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event)) {
+        if (_computeVonMisesStress.getValue() > 0) {
+            if (updateVonMisesStress)
+                computeVonMisesStress();
+        }
+    }
 
 }
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 {
-
     typename core::behavior::MechanicalState<DataTypes>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
     const VecCoord& X = mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
     helper::ReadAccessor<Data<VecCoord> > X0 =  _initialPoints;
-
-#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-#ifndef SOFA_NO_OPENGL
-//    _showStressColorMapReal->entries.clear();
-#endif
-#endif
 
     VecCoord U;
     U.resize(X.size());
@@ -2655,7 +2631,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
-#ifndef SOFA_NO_OPENGL
+
     unsigned int i = 0;
     for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
@@ -2677,8 +2653,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vonMisesStressColors[i] /= vonMisesStressColorsCoeff[i];
         }
     }
-#endif
-#endif
+#endif // SIMPLEFEM_COLORMAP
 }
 
 

@@ -66,7 +66,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
 {
     if (!activated)
         return;
-    
+
     unsigned minp = std::min(m1.getValue().size(), m2.getValue().size());
     if (minp == 0)
         return;
@@ -153,7 +153,7 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const core
         }
 
         dfree.resize(minp);
-        
+
         const DataVecCoord &d_x1free = *this->mstate1->read(core::ConstVecCoordId::freePosition());
         const DataVecCoord &d_x2free = *this->mstate2->read(core::ConstVecCoordId::freePosition());
 
@@ -395,6 +395,9 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const co
         offset +=3;
     }
 }
+
+//TODO(dmarchal): Is this really a good idea to implement keyboard interaction behavior directly in a component
+// this should be moved to a new class in GUI or in Interaction
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)

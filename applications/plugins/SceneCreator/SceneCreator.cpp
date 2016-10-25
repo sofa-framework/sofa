@@ -410,7 +410,7 @@ simulation::Node::SPtr massSpringString
     UniformMass3::SPtr mass = New<UniformMass3>();
     string_node->addObject(mass);
     mass->setName(oss.str()+"_mass");
-    mass->mass.setValue( totalMass/numParticles );
+    mass->d_mass.setValue( totalMass/numParticles );
 
     StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
     string_node->addObject(spring);

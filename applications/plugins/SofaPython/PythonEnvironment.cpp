@@ -269,7 +269,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     // TODO: check if the path is already set to this directory...
 
     // append current path to Python module search path...
-    std::string commandString = "sys.path.append(\""+dir+"\")";
+    addPythonModulePath(dir);
 
 //    SP_MESSAGE_INFO( commandString.c_str() )
 
@@ -298,7 +298,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     //  Py_BEGIN_ALLOW_THREADS
 
     PyRun_SimpleString("import sys");
-    PyRun_SimpleString(commandString.c_str());
 
     // Load the scene script
 	char* pythonFilename = strdup(filename);

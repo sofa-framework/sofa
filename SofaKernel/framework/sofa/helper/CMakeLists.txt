@@ -22,6 +22,7 @@ set(HEADER_FILES
     MatEigen.h
     MemoryManager.h
     OptionsGroup.h
+    OwnershipSPtr.h
     StateMask.h
     Polynomial_LD.h
     Polynomial_LD.inl
@@ -321,7 +322,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER -DUNICODE")
+set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
     set(SOFAHELPER_COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS} -DSOFA_LIBSUFFIX=_d")
 endif()

@@ -25,6 +25,7 @@
 #include <sofa/helper/io/MeshSTL.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/logging/Messaging.h>
 using std::cout;
 using std::endl;
 
@@ -53,64 +54,85 @@ void MeshSTL::init (std::string filename)
     }
     loaderType = "stl";
     std::ifstream file(filename.c_str());
-    std::string token;
-    if (file.good())
-    {
-        file >> token;
-        if (token == "solid")
-            readSTL(filename);
-        else
-            readBinarySTL(filename);
 
-        // announce the model statistics
+    if (!file.good())
+    {
+       file.close();
+       msg_error("MeshSTL") << "Cannot read file '" << filename << "'.";
+       return;
+    }
+
 #ifndef NDEBUG
-        std::cout << " Vertices: " << vertices.size() << std::endl;
-        std::cout << " Normals: " << normals.size() << std::endl;
-        std::cout << " Texcoords: " << texCoords.size() << std::endl;
-        std::cout << " Triangles: " << facets.size() << std::endl;
+std::size_t namepos = filename.find_last_of("/");
+std::string name = filename.substr(namepos+1);
 #endif
-        if (vertices.size()>0)
-        {
-            // compute bbox
-            Vector3 minBB = vertices[0];
-            Vector3 maxBB = vertices[0];
-            for (unsigned int i=1; i<vertices.size(); i++)
-            {
-                Vector3 p = vertices[i];
-                for (int c=0; c<3; c++)
-                {
-                    if (minBB[c] > p[c])
-                        minBB[c] = p[c];
-                    if (maxBB[c] < p[c])
-                        maxBB[c] = p[c];
-                }
-            }
-            #ifndef NDEBUG
-            std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
-            #endif
-        }
+
+    std::string token;
+    file >> token;
+    if (token == "solid")
+    {
+#ifndef NDEBUG
+msg_info("MeshSTL") << "Reading STL file : " << name;
+#endif
+        readSTL(file);
     }
     else
-        std::cerr << "Error: MeshSTL: Cannot read file '" << filename << "'." << std::endl;
+    {
+#ifndef NDEBUG
+msg_info("MeshSTL") <<  "Reading binary STL file : " << name;
+#endif
+        file.close();
+        readBinarySTL(filename);
+    }
 
-    file.close();
+    // announce the model statistics
+#ifndef NDEBUG
+    std::cout << " Vertices: " << vertices.size() << std::endl;
+    std::cout << " Normals: " << normals.size() << std::endl;
+    std::cout << " Texcoords: " << texCoords.size() << std::endl;
+    std::cout << " Triangles: " << facets.size() << std::endl;
+#endif
+    if (vertices.size()>0)
+    {
+        // compute bbox
+        Vector3 minBB = vertices[0];
+        Vector3 maxBB = vertices[0];
+        for (unsigned int i=1; i<vertices.size(); i++)
+        {
+            Vector3 p = vertices[i];
+            for (int c=0; c<3; c++)
+            {
+                if (minBB[c] > p[c])
+                    minBB[c] = p[c];
+                if (maxBB[c] < p[c])
+                    maxBB[c] = p[c];
+            }
+        }
+#ifndef NDEBUG
+    msg_info("MeshSTL") << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">";
+#endif
+    }
+
 }
 
-void MeshSTL::readSTL (const std::string &filename)
+
+void MeshSTL::readSTL(std::ifstream &file)
 {
     /* http://www.ennex.com/~fabbers/StL.asp */
-    #ifndef NDEBUG
-    std::size_t namepos = filename.find_last_of("/");
-    std::string name = filename.substr(namepos+1);
-    cout << "Reading STL file : " << name << endl;
-    #endif
 
-    vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices, nIndices, tIndices;
-    Vec3d result;
+    Vec3f result;
 
-    std::ifstream file(filename.c_str());
     std::string line;
+    std::map< defaulttype::Vec3f, unsigned > map;
+    unsigned positionCounter = 0u, vertexCounter=0u;
+
+    // there must be a way to perform it at compile time with initializer_list
+    vector< vector<int> > vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
+    {
+        vector<int> nullIndices(3);
+        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
+        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
+    }
 
     while( std::getline(file,line) )
     {
@@ -128,35 +150,24 @@ void MeshSTL::readSTL (const std::string &filename)
         {
             /* vertex */
             values >> result[0] >> result[1] >> result[2];
-            bool find = false;
-            for (unsigned int i=0; i<vertices.size(); ++i)
-                if ( (result[0] == vertices[i][0]) && (result[1] == vertices[i][1])  && (result[2] == vertices[i][2]))
-                {
-                    find = true;
-                    vIndices.push_back(i);
-                    break;
-                }
 
-            if (!find)
+            auto it = map.find( result );
+            if( it == map.end() )
             {
+                vertNormTexIndices[0][vertexCounter++] = positionCounter;
+                map[result] = positionCounter++;
                 vertices.push_back(result);
-                vIndices.push_back((int)vertices.size()-1);
+            }
+            else
+            {
+                vertNormTexIndices[0][vertexCounter++] = it->second;
             }
 
-            // Useless but necessary to work -- need to be fixed properly
-            tIndices.push_back(0);
-            nIndices.push_back(0);
         }
         else if (token == "endfacet")
         {
-            vertNormTexIndices.push_back (vIndices);
-            vertNormTexIndices.push_back (nIndices);
-            vertNormTexIndices.push_back (tIndices);
             facets.push_back(vertNormTexIndices);
-            nIndices.clear();
-            tIndices.clear();
-            vIndices.clear();
-            vertNormTexIndices.clear();
+            vertexCounter=0;
         }
         else if (token == "endsolid" || token == "end")
             break;
@@ -167,37 +178,60 @@ void MeshSTL::readSTL (const std::string &filename)
         }
     }
 
+    file.close();
+
 }
 
 void MeshSTL::readBinarySTL (const std::string &filename)
 {
     /* Based on MeshSTLLoader */
     /* http://www.ennex.com/~fabbers/StL.asp */
-    #ifndef NDEBUG
-    std::size_t namepos = filename.find_last_of("/");
-    std::string name = filename.substr(namepos+1);
-    std::cout << "Reading binary STL file : " << name << std::endl;
-    #endif
 
     std::ifstream dataFile(filename.c_str(), std::ios::in | std::ios::binary);
-    std::streampos position = 0;
-    std::streampos length;
-    unsigned long int nbrFacet;
-    vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices, nIndices, tIndices;
-    Vec3f result;
 
-    // Get length of file
-    dataFile.seekg(0, std::ios::end);
-    length = dataFile.tellg();
-    dataFile.seekg(0, std::ios::beg);
+
+    Vec3f result;
+    unsigned int attributeCount;
+
+    std::map< defaulttype::Vec3f, unsigned > map;
+    unsigned positionCounter = 0u;
+
 
     // Skipping header file
-    char buffer[256];
+    char buffer[80];
     dataFile.read(buffer, 80);
 
     // Get number of facets
+    uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
+
+    // preallocating facets
+    // there must be a way to perform part of it at compile time with initializer_list
+    {
+        vector<int> nullIndices(3);
+        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
+        vector<vector<int>> vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
+        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
+        facets.resize(nbrFacet);
+        std::fill( facets.begin(), facets.end(), vertNormTexIndices );
+    }
+
+
+#ifndef NDEBUG
+    {
+    // checking that the file is large enough to contain the given nb of facets
+    // store current position in file
+    std::streampos pos = dataFile.tellg();
+    // get length of file
+    dataFile.seekg(0, std::ios::end);
+    std::streampos length = dataFile.tellg();
+    // restore pos
+    dataFile.seekg(pos);
+    // check length
+    assert( length >= (std::streampos)( 80 /*header*/ + 4 /*nb facets*/ + nbrFacet * (12 /*normal*/ + 3 * 12 /*points*/ + 2 /*attribute*/ ) ) );
+    }
+#endif
+
 
     // Parsing facets
     for (unsigned int i = 0; i<nbrFacet; ++i)
@@ -208,6 +242,8 @@ void MeshSTL::readBinarySTL (const std::string &filename)
         dataFile.read((char*)&result[2], 4);
         //normals.push_back(result);
 
+        vector< vector<int> >& facet = facets[i];
+
         // Get vertex
         for (unsigned int j = 0; j<3; ++j)
         {
@@ -215,44 +251,28 @@ void MeshSTL::readBinarySTL (const std::string &filename)
             dataFile.read((char*)&result[1], 4);
             dataFile.read((char*)&result[2], 4);
 
-            bool find = false;
-            for (unsigned int k=0; k<vertices.size(); ++k)
-                if ( (result[0] == vertices[k][0]) && (result[1] == vertices[k][1])  && (result[2] == vertices[k][2]))
-                {
-                    find = true;
-                    vIndices.push_back(k);
-                    break;
-                }
-
-            if (!find)
+            auto it = map.find( result );
+            if( it == map.end() )
             {
+                facet[0][j] = positionCounter;
+                map[result] = positionCounter++;
                 vertices.push_back(result);
-                vIndices.push_back((int)vertices.size()-1);
             }
-
-            // Useless but necessary to work -- need to be fixed properly
-            tIndices.push_back(0);
-            nIndices.push_back(0);
+            else
+            {
+                facet[0][j] = it->second;
+            }
         }
 
 
         // Attribute byte count
-        unsigned int count;
-        dataFile.read((char*)&count, 2);
+        dataFile.read((char*)&attributeCount, 2);
 
-        vertNormTexIndices.push_back (vIndices);
-        vertNormTexIndices.push_back (nIndices);
-        vertNormTexIndices.push_back (tIndices);
-        facets.push_back(vertNormTexIndices);
-        vIndices.clear();
-        nIndices.clear();
-        tIndices.clear();
-        vertNormTexIndices.clear();
 
-        // Security -- End of file ?
-        position = dataFile.tellg();
-        if (position == length)
-            break;
+//        // Security -- End of file ?
+//        position = dataFile.tellg();
+//        if (position == length)
+//            break;
     }
 }
 

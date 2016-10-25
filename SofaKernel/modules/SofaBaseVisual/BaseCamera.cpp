@@ -225,30 +225,61 @@ BaseCamera::Vec3 BaseCamera::worldToCameraTransform(const Vec3& v)
     return p_orientation.getValue().inverseRotate(v);
 }
 
+// TODO: move to helper
+// https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
+template<class Real>
+bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *projection, const core::visual::VisualParams::Viewport& viewport, Real *objectCoordinate)
+{
+    //Transformation matrices
+    sofa::defaulttype::Mat<4,4, Real> matModelview(modelview);
+    sofa::defaulttype::Mat<4, 4, Real> matProjection(projection);
+
+    sofa::defaulttype::Mat<4, 4, Real> m, A;
+    sofa::defaulttype::Vec<4, Real> in, out;
+
+    A = matProjection * matModelview ;
+    sofa::defaulttype::invertMatrix(m, A);
+
+    //Transformation of normalized coordinates between -1 and 1
+    in[0] = (winx - (Real)viewport[0]) / (Real)viewport[2] * 2.0 - 1.0;
+    in[1] = (winy - (Real)viewport[1]) / (Real)viewport[3] * 2.0 - 1.0;
+    in[2] = 2.0*winz - 1.0;
+    in[3] = 1.0;
+    //Objects coordinates
+    out = m * in;
+
+    if (out[3] == 0.0)
+        return false;
+    out[3] = 1.0 / out[3];
+    objectCoordinate[0] = out[0] * out[3];
+    objectCoordinate[1] = out[1] * out[3];
+    objectCoordinate[2] = out[2] * out[3];
+    return true;
+}
+
 BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)
 {
-#ifndef SOFA_NO_OPENGL
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    GLdouble posX, posY, posZ;
+    const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
+    const core::visual::VisualParams::Viewport viewport = vp->viewport();
 
-    winX = (float)x;
-    winY = (float)viewport[3] - (float)y;
-    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-    //winZ = 1.0;
+    double winX = (double)x;
+    double winY = (double)viewport[3] - (double)y;
 
-    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    double pos[3];
+    double modelview[16];
+    double projection[16];
 
-    return Vec3(posX, posY, posZ);
-#else
-	return Vec3(0,0,0);
-#endif /* SOFA_NO_OPENGL */
+    this->getModelViewMatrix(modelview);
+    this->getProjectionMatrix(projection);
+
+    float fwinZ = 0.0;
+    vp->drawTool()->readPixels(x, int(winY), 1, 1, NULL, &fwinZ);
+
+    double winZ = (double)fwinZ;
+    glhUnProjectf<double>(winX, winY, winZ, modelview, projection, viewport, pos);
+
+    return Vec3(pos[0], pos[1], pos[2]);
 }
 
 void BaseCamera::getModelViewMatrix(double mat[16])

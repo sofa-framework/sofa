@@ -62,38 +62,21 @@ public:
     enum { spatial_dimensions = TStrain::spatial_dimensions };
 
     static const bool constant = true;
-    InCoord offset;
     Real multfactor;
 
     /**
-    Mapping:   ADDITION -> \f$ E_elastic = E_total - E_offset \f$;
-               MULTIPLICATION -> \f$ S_elastic = S_total * S_offset^-1 , E_elastic = S_elastic - I \f$
+    Mapping:    \f$ E_elastic = E_total - E_offset \f$;
     Jacobian:    \f$  dE = Id \f$
     */
 
-
-//    void addapply_multiplication( OutCoord& result, const InCoord& data, const InCoord& offset)
-//    {
-//        StrainMat plasticStrainMat = StrainVoigtToMat( offset.getStrain() ) + StrainMat::s_identity;
-//        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
-
-//        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::s_identity ) * plasticStrainMatInverse;
-//        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::s_identity );
-
-//        result.getStrain() += elasticStrainVec;
-//    }
-
-//    void addapply_addition( OutCoord& result, const InCoord& data, const InCoord& offset)
-//    {
-//        result.getStrain() += (data.getStrain() - offset.getStrain());
-//    }
-    void init( const InCoord& off, const bool& inverted)
+    void init(  const bool& inverted)
     {
-        offset=off;
-        multfactor=inverted?(Real)-1.:(Real)1.;
+            multfactor=inverted?(Real)-1.:(Real)1.;
     }
 
-    void addapply( OutCoord& result, const InCoord& data)
+    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
+
+    void addapply_diff( OutCoord& result, const InCoord& data, const InCoord& offset)
     {
         result.getStrain() += (data.getStrain() - offset.getStrain())*multfactor;
     }

@@ -104,31 +104,31 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         {
             typename mass::UniformMass<Rigid3dTypes,Rigid3dMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3dTypes,Rigid3dMass> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec1d" )
         {
             typename mass::UniformMass<Vec1dTypes,double>::SPtr uniformMass = New<mass::UniformMass<Vec1dTypes,double> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec2d" )
         {
             typename mass::UniformMass<Vec2dTypes,double>::SPtr uniformMass = New<mass::UniformMass<Vec2dTypes,double> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec3d" )
         {
             typename mass::UniformMass<Vec3dTypes,double>::SPtr uniformMass = New<mass::UniformMass<Vec3dTypes,double> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec6d")
         {
             typename mass::UniformMass<Vec6dTypes,double>::SPtr uniformMass = New<mass::UniformMass<Vec6dTypes,double> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else
 #endif
@@ -137,31 +137,31 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         {
             typename mass::UniformMass<Rigid3fTypes,Rigid3fMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3fTypes,Rigid3fMass> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec1f" )
         {
             typename mass::UniformMass<Vec1fTypes,float>::SPtr uniformMass = New<mass::UniformMass<Vec1fTypes,float> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec2f" )
         {
             typename mass::UniformMass<Vec2fTypes,float>::SPtr uniformMass = New<mass::UniformMass<Vec2fTypes,float> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec3f" )
         {
             typename mass::UniformMass<Vec3fTypes,float>::SPtr uniformMass = New<mass::UniformMass<Vec3fTypes,float> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else if(name=="Vec6f")
         {
             typename mass::UniformMass<Vec6fTypes,float>::SPtr uniformMass = New<mass::UniformMass<Vec6fTypes,float> >();
             root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
+            uniformMass->d_totalMass.setValue(1);
         }
         else
 #endif

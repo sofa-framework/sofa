@@ -25,6 +25,7 @@
 #ifndef ADDOBJECT_H
 #define ADDOBJECT_H
 
+#include "SofaGUIQt.h"
 
 #include <ui_DialogAddObject.h>
 #include <vector>

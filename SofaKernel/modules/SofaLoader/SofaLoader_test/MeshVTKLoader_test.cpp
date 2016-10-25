@@ -38,14 +38,14 @@ struct MeshVTKLoader_test : public Sofa_test<>, public component::loader::MeshVT
     void test_load(std::string const& filename, unsigned nbPoints, unsigned nbEdges, unsigned nbTriangles, unsigned nbQuads, unsigned nbPolygons, unsigned nbTetrahedra, unsigned nbHexahedra)
     {
         setFilename(filename);
-        load();
-        EXPECT_EQ(nbPoints, positions.getValue().size());
-        EXPECT_EQ(nbEdges, edges.getValue().size());
-        EXPECT_EQ(nbTriangles, triangles.getValue().size());
-        EXPECT_EQ(nbQuads, quads.getValue().size());
-        EXPECT_EQ(nbPolygons, polygons.getValue().size());
-        EXPECT_EQ(nbTetrahedra, tetrahedra.getValue().size());
-        EXPECT_EQ(nbHexahedra, hexahedra.getValue().size());
+        EXPECT_TRUE(load());
+        EXPECT_EQ(nbPoints, d_positions.getValue().size());
+        EXPECT_EQ(nbEdges, d_edges.getValue().size());
+        EXPECT_EQ(nbTriangles, d_triangles.getValue().size());
+        EXPECT_EQ(nbQuads, d_quads.getValue().size());
+        EXPECT_EQ(nbPolygons, d_polygons.getValue().size());
+        EXPECT_EQ(nbTetrahedra, d_tetrahedra.getValue().size());
+        EXPECT_EQ(nbHexahedra, d_hexahedra.getValue().size());
     }
 
 };
@@ -64,6 +64,12 @@ TEST_F(MeshVTKLoader_test, loadLegacy)
 TEST_F(MeshVTKLoader_test, loadXML)
 {
     test_load(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu"), 1446, 0, 0, 0, 0, 4406, 0);
+}
+
+TEST_F(MeshVTKLoader_test, load)
+{
+    setFilename("");
+    EXPECT_FALSE(load());
 }
 
 }// namespace sofa

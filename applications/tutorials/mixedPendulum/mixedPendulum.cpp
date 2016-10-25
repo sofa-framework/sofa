@@ -129,7 +129,7 @@ int main(int, char** argv)
     UniformMassRigid3::SPtr rigidMass = sofa::core::objectmodel::New<UniformMassRigid3>();
     rigidBody->addObject(rigidMass);
     rigidMass->setName("M2");
-    UniformMassRigid3::MassType* m = rigidMass->mass.beginEdit();
+    UniformMassRigid3::MassType* m = rigidMass->d_mass.beginEdit();
     m->mass=0.3;
     UniformMassRigid3::MassType::Mat3x3 inertia;
     inertia.fill(0.0);
@@ -139,7 +139,7 @@ int main(int, char** argv)
     inertia[2][2] = in;
     m->inertiaMatrix = inertia;
     m->recalc();
-    rigidMass->mass.endEdit();
+    rigidMass->d_mass.endEdit();
 
 
     //-------------------- the particles attached to the rigid body
@@ -157,12 +157,12 @@ int main(int, char** argv)
     RigidMappingRigid3_to_3::SPtr rigidMapping = sofa::core::objectmodel::New<RigidMappingRigid3_to_3>();
     rigidMapping->setModels(rigidDOF.get(),rigidParticleDOF.get());
 
-    // Setting paths is redundant with previous line 
+    // Setting paths is redundant with previous line
     // std::string pathobject1("@"+rigidBody->getName()+"/"+rigidDOF->getName());
     // std::string pathobject2("@"+rigidParticles->getName()+"/"+rigidParticleDOF->getName());
     // rigidMapping->setPathInputObject(pathobject1);
     // rigidMapping->setPathOutputObject(pathobject2);
-    
+
     rigidParticles->addObject( rigidMapping );
     rigidMapping->setName("Map23");
 
@@ -199,7 +199,7 @@ int main(int, char** argv)
     */
 
 #ifdef PS3
-	groot->setAnimate(true);
+    groot->setAnimate(true);
 #endif
 
 

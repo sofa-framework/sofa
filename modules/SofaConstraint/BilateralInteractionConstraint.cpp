@@ -42,6 +42,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
+//TODO(dmarchal) Yet again this ugly code duplication between float and double.
 #ifndef SOFA_FLOAT
 
 template<>
