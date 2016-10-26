@@ -356,7 +356,6 @@ void QuadSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
     // Draw Quads indices
     if (showQuadIndices.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();

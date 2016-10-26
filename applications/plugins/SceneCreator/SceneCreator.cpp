@@ -59,7 +59,11 @@
 
 //Including Visual Models
 #include <SofaBaseVisual/VisualStyle.h>
+#ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
+#else
+#include <SofaBaseVisual/VisualModelImpl.h>
+#endif
 
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -90,6 +94,12 @@ typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::
 typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
+
+#ifndef SOFA_NO_OPENGL
+typedef component::visualmodel::OglModel VisualModelType;
+#else
+typedef component::visualmodel::VisualModelImpl VisualModelType;
+#endif
 
 static sofa::simulation::Node::SPtr root = NULL;
 
@@ -200,7 +210,7 @@ simulation::Node::SPtr createObstacle(simulation::Node::SPtr  parent, const std:
     PointFixed->setMoving(false);    //No extern events
     nodeFixed->addObject(PointFixed);
 
-    component::visualmodel::OglModel::SPtr visualFixed = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
+    VisualModelType::SPtr visualFixed = sofa::core::objectmodel::New<VisualModelType>();
     visualFixed->setName("visual");
     visualFixed->setFilename(sofa::helper::system::DataRepository.getFile(filenameVisual));
     visualFixed->setColor(color);
@@ -252,7 +262,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, Mech
     const std::string nameVisual="Visual";
     const std::string refVisual = "@" + nameVisual;
     const std::string refDof = "@..";// + dof->getName();
-    component::visualmodel::OglModel::SPtr visual = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
+    VisualModelType::SPtr visual = sofa::core::objectmodel::New<VisualModelType>();
     visual->setName(nameVisual);
     visual->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visual->setColor(color.c_str());
@@ -317,7 +327,7 @@ simulation::Node::SPtr createVisualNodeRigid(simulation::Node::SPtr  parent, Mec
     const std::string nameVisual="Visual";
     const std::string refVisual="@"+nameVisual;
     const std::string refdofRigid="@../"+dofRigid->getName();
-    component::visualmodel::OglModel::SPtr visualRigid = sofa::core::objectmodel::New<component::visualmodel::OglModel>();
+    VisualModelType::SPtr visualRigid = sofa::core::objectmodel::New<VisualModelType>();
     visualRigid->setName(nameVisual);
     visualRigid->setFilename(sofa::helper::system::DataRepository.getFile(filename));
     visualRigid->setColor(color);
