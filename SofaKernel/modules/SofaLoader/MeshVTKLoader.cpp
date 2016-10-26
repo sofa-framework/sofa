@@ -326,7 +326,7 @@ bool MeshVTKLoader::setInputsMesh()
                 break;
             // more types are defined in vtkCellType.h in libvtk
             default:
-                serr << "ERROR: unsupported cell type " << t << sendl;
+                msg_error(this) << "ERROR: unsupported cell type " << t << sendl;
             }
 
             if (!offsets)
