@@ -27,6 +27,9 @@
 #include <SofaLoader/BaseVTKReader.h>
 #include <SofaLoader/BaseVTKReader.inl>
 
+#if defined(WIN32) || defined(_XBOX)
+#define strcasecmp stricmp
+#endif
 
 namespace sofa
 {
