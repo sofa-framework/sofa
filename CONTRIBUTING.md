@@ -45,7 +45,6 @@ Exceptions:  mathematical objects like `Matrix M`, local iterators variables lik
 - Special characters like TAB and page break must be avoided.
 - Indentation must use **4 spaces** everywhere (C++ and Python), but there must be no indentation for namespaces
 - Braces use the **Allman style**: the opening brace associated with a control statement is on the next line, indented to the same level as the control statement, and statements within the braces are indented to the next level.
-
     ```cpp
     while (x == y)
     {
@@ -85,6 +84,68 @@ Exceptions:  mathematical objects like `Matrix M`, local iterators variables lik
 - You must avoid the `using` directive in header files (.h and .inl): ~~`using namespace foo;`~~
 - You should declare automatic variables only when you need them (not before).
 - You must always initialize pointers, either to the address of something, or to `NULL`
+
+### Commenting
+Code must be commented in a Doxygen compliant way.  
+Most used commands are `///` or `/**` before blocks and `///<` after member declarations.  
+Please DO NOT use `//` or `///` after member declarations.  
+Example  
+```cpp
+/**
+ * @brief MechanicalObject class
+ */
+template <class DataTypes>
+class MechanicalObject : public sofa::core::behavior::MechanicalState<DataTypes>
+{
+    Data< bool >  showObject; ///< Show objects. (default=false)
+    Data< float > showObjectScale; ///< Scale for object display. (default=0.1)
+    Data< float > showVectorsScale; ///< Scale for vectors display. (default=0.0001)
+    Data< defaulttype::Vec4f > d_color;  ///< drawing color
+    Data< bool > isToPrint; ///< ignore some Data for file export
+
+    /// @name New vectors access API based on VecId
+    /// @{
+    virtual Data< VecCoord >* write(core::VecCoordId v);
+    virtual const Data< VecCoord >* read(core::ConstVecCoordId v) const;
+
+    virtual Data< VecDeriv >* write(core::VecDerivId v);
+    virtual const Data< VecDeriv >* read(core::ConstVecDerivId v) const;
+    /// @}
+
+    /** \brief Reorder values according to parameter.
+     *
+     * Result of this method is :
+     * newValue[ i ] = oldValue[ index[i] ];
+     */
+    void renumberValues( const sofa::helper::vector<unsigned int> &index );
+
+    /** \brief Replace the value at index by the sum of the ancestors values weithed by the coefs.
+     *
+     * Sum of the coefs should usually equal to 1.0
+     */
+    void computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs);
+
+    /// Force the position of a point (and force its velocity to zero value)
+    void forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x);
+
+    /// @name Initial transformations application methods.
+    /// @{
+    /// Apply translation vector to the position.
+    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
+
+    /// Rotation using Euler Angles in degree.
+    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
+    
+    virtual void applyRotation (const defaulttype::Quat q);
+    /// @}
+    
+    /// src and dest must have the same size.
+    /// Performs: dest[i][j] += src[offset + i][j] 0<= i < src_entries  0<= j < 3 (for 3D objects) 0 <= j < 2 (for 2D objects)
+    /// @param offset the offset in the BaseVector where the scalar values will be used. It will be updated to the first scalar value after the ones used by this operation when this method returns
+    virtual void addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset);
+}
+```      
+More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index.html 
 
 
 ## SOFA specific rules
