@@ -8,7 +8,7 @@ import SofaPython.sml
 from Compliant import Tools
 from Compliant.Tools import cat as concat
 
-import RigidScale.sml
+import RigidScale.sml as sml
 
 __file = __file__.replace('\\', '/') # windows
 
@@ -37,7 +37,7 @@ def createScene(root):
 class MyClass(Sofa.PythonScriptController):
 
     def createGraph(self, root):
-
+        print 'createGraph called (python side)'
         # Variable
         self.t = 0
         self.root_node = root
@@ -59,7 +59,7 @@ class MyClass(Sofa.PythonScriptController):
 
         # sml scene
         self.model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__), "./data/main.sml"))
-        self.scene = RigidScale.sml.SceneArticulatedRigidScale(root, self.model)
+        self.scene = sml.SceneArticulatedRigidScale(root, self.model)
 
         # settings
         self.scene.param.elasticity = 1E5
@@ -79,10 +79,10 @@ class MyClass(Sofa.PythonScriptController):
 
         boneToFixed = ['s_humerus']
         # Add of fixed constraint
-        for b in boneToFixed:
-            if b in self.scene.bones.keys():
-                self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
-                self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
+        # for b in boneToFixed:
+            # if b in self.scene.bones.keys():
+                # self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
+                # self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
 
     # To remove warning
     def onBeginAnimationStep(self, dt):
