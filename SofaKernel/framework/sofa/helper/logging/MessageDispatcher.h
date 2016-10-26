@@ -135,6 +135,9 @@ public:
         static LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
         static LoggerStream fatal(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
         static LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
+        static LoggerStream advice(Message::Class mclass, const std::string& sender = "", FileInfo fileInfo = FileInfo()) ;
+        static LoggerStream advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo()) ;
+
         static const NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
         static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const std::string& sender = "", FileInfo fileInfo = FileInfo());
         static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo = FileInfo());

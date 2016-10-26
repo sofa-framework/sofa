@@ -95,7 +95,7 @@ class SOFA_HELPER_API Message
 public:
 
     /// possible levels of messages (ordered)
-    enum Type {Info=0, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
+    enum Type {Info=0, Advice, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
 
     /// class of messages
     enum Class {Dev, Runtime, CEmpty, ClassCount};

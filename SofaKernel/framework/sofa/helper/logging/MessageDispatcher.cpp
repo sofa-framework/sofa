@@ -151,6 +151,15 @@ MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, 
     return log(mclass, Message::Fatal, sender, fileInfo);
 }
 
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+    return log(mclass, Message::Advice, sender, fileInfo);
+}
+
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+    return log(mclass, Message::Advice, sender, fileInfo);
+}
+
+
 
 
 

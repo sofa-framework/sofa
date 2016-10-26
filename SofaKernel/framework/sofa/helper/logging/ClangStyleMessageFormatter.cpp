@@ -49,6 +49,7 @@ ClangStyleMessageFormatter ClangStyleMessageFormatter::s_instance;
 
 ClangStyleMessageFormatter::ClangStyleMessageFormatter()
 {
+    s_messageTypeStrings[Message::Advice]       = "suggestion";
     s_messageTypeStrings[Message::Info]       = "info";
     s_messageTypeStrings[Message::Deprecated] = "deprecated";
     s_messageTypeStrings[Message::Warning]    = "warning";
