@@ -24,6 +24,9 @@
 ******************************************************************************/
 
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::Message ;
+using sofa::helper::logging::ExpectMessage ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -50,6 +53,8 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 
+#include <map>
+
 namespace sofa {
 
 namespace {
@@ -59,6 +64,8 @@ using namespace core::objectmodel;
 
 using std::vector ;
 using std::string ;
+using std::map ;
+using std::pair;
 
 using sofa::linearsolver::GraphScatteredMatrix ;
 using sofa::linearsolver::GraphScatteredVector ;
@@ -113,6 +120,8 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
     */
     void SetUp()
     {
+        //TODO(dmarchal): there is no memory handling of the simulation...this is really weird and
+        //must be fixed.
         sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene
@@ -140,7 +149,6 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
         m_mechanicalObj->x.setValue(points);
 
-        //std::string name = DataTypes::Name() ;
         typename TypedUniformMass::SPtr uniformMass = New<TypedUniformMass>();
         m_root->addObject(uniformMass);
         uniformMass->d_totalMass.setValue(1);
@@ -209,43 +217,81 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         return true;
     }
 
+    /// This kind of test is important as it enforce the developper to take a wider range of
+    /// input values and check that they are gracefully handled.
+    bool testMonkeyValuesForAttributes()
+    {
+
+        map<string, vector< pair<string, string> >> values ={
+             {"damping",   {{"","5"}, {"-1.0","5"}, {"0.0","0"}, {"1.0", "1"}}},
+             {"stiffness", {{"", "500"}, {"-1.0", "500"}, {"0.0", "0"}, {"1.0", "1"}}},
+             {"maxForce",  {{"", "0"}, {"-1.0","0"}, {"0.5","0.5"}, {"1.5","1.5"}}},
+             {"bilateral", {{"", "0"}, {"0","0"}, {"1","1"}, {"2","1"}, {"-1","1"}}},
+             {"localRange", {{"","-1 -1"}, {"-2 -1", "-1 -1"}, {"-2 1", "-1 -1"}, {"0 0","0 0"}, {"1 -5","-1 -1"},
+                             {"4 7","4 7"}, {"7 4","-1 -1"} }}
+        };
+
+        for(auto& kv : values){
+            for(auto& v : kv.second){
+            std::stringstream scene ;
+            scene << "<?xml version='1.0'?>"
+                 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "  <Node name='Level 1'>                                                        \n"
+                 "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "' position='1 2 3 4 5 6 7 8 9'/>    \n"
+                 "   <PlaneForceField name='myPlaneForceField' "<< kv.first << "='"<< v.first << "' />\n"
+                 "  </Node>                                                                      \n"
+                 "</Node>                                                                        \n" ;
+
+            Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                              scene.str().c_str(),
+                                                              scene.str().size()) ;
+            EXPECT_NE(root.get(), nullptr) ;
+            root->init(ExecParams::defaultInstance()) ;
+
+            BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
+            EXPECT_NE(planeff, nullptr) ;
+
+            EXPECT_STREQ( planeff->findData(kv.first)->getValueString().c_str(), v.second.c_str() )
+                  << "When the attribute '"<<kv.first<< "' is set to the value '" << v.first.c_str()
+                  << "' it should be corrected during the component init to the valid value '" << v.second.c_str() << "'."
+                  << " If this is not the case this means that the init function is not working properly (or the default "
+                  << "value have changed and thus the test need to be fixed)";
+            }
+        }
+        return true;
+    }
+
+
     ///
     /// In this test we are verifying that a plane that have been reinited has the same
     /// value as one that have been inited.
     ///
     bool testInitReinitBehavior()
     {
-#if 0
-        typename PlaneForceFieldType::SPtr plane1 = New<PlaneForceFieldType>();
-        typename PlaneForceFieldType::SPtr plane2 = New<PlaneForceFieldType>();
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+                 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "  <Node name='Level 1'>                                                        \n"
+                 "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
+                 "   <PlaneForceField name='myPlaneForceField'/>                                 \n"
+                 "  </Node>                                                                      \n"
+                 "</Node>                                                                        \n" ;
 
-        plane1->init() ;
-        plane2->init() ;
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
 
-        //TODO(dmarchal): three line to set a value...something has to be improved.
-        DPos normal;
-        normal[0]=1;
-        plane1->d_planeNormal.setValue(normal);
-        plane1->d_planeD.setValue(0);
+        BaseObject* planeff = root->getTreeNode("Level 1")->getObject("myPlaneForceField") ;
+        EXPECT_NE(planeff, nullptr) ;
 
-        plane1->reinit() ;
-
-        /// List of the supported attributes the user expect to find
-        /// This list needs to be updated if you add an attribute.
-        vector<string> attrnames = {
-            "normal", "d", "stiffness", "damping", "maxForce", "bilateral", "localRange",
-            "draw", "color", "drawSize"
-        };
-
-        for(auto& attrname : attrnames){
-            EXPECT_EQ( plane1->findData(attrname)->getValueString(),
-                       plane2->findData(attrname)->getValueString() ) << "Attribute with name '" << attrname << "' has changed between init and reinit." ;
+        {
+            ExpectMessage msg(Message::Warning) ;
+            planeff->init() ;
         }
-#endif //
         return true;
     }
-
-
 
     bool testPlaneForceField()
     {
@@ -302,11 +348,19 @@ TYPED_TEST( PlaneForceField_test , testBasicAttributes )
     ASSERT_TRUE (this->testBasicAttributes());
 }
 
+TYPED_TEST( PlaneForceField_test , testMonkeyValuesForAttributes )
+{
+    this->initSetup();
+    ASSERT_TRUE (this->testMonkeyValuesForAttributes());
+}
+
+
 TYPED_TEST( PlaneForceField_test , testInitReinitBehavior )
 {
     this->initSetup();
     ASSERT_TRUE (this->testInitReinitBehavior());
 }
+
 
 TYPED_TEST( PlaneForceField_test , testDefaultPlane )
 {

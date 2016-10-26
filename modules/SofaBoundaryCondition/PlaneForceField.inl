@@ -47,6 +47,9 @@ namespace component
 namespace forcefield
 {
 
+using sofa::core::objectmodel::ComponentState ;
+using sofa::defaulttype::Vec ;
+
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
      d_planeNormal(initData(&d_planeNormal, "normal", "plane normal. (default=[0,1,0])"))
@@ -58,7 +61,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
 
     , d_bilateral( initData(&d_bilateral, false, "bilateral", "if true the plane force field is applied on both sides. (default=false)"))
 
-    , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , d_localRange( initData(&d_localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
 
     // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
@@ -71,6 +74,46 @@ PlaneForceField<DataTypes>::PlaneForceField() :
     d_planeNormal.setValue(DataTypes::getDPos(n));
 }
 
+template<class DataTypes>
+void PlaneForceField<DataTypes>::init(){
+    if(this->m_componentstate == ComponentState::Valid){
+        msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
+    }
+
+    Inherit::init() ;
+    if( this->mstate == nullptr ){
+        msg_error(this) << "Missing mechanical object. This component will be considered as not valid and will do nothing. \n"
+                        << "To remove this error message you need to set a <MechanicalObject> in the context of this component.\n"  ;
+    }
+
+    if( d_stiffness.getValue() < 0.0 ){
+        msg_warning(this) << "The 'stiffness="<< d_stiffness.getValueString() << "' parameters is outside the validity range of [0, +INF[. \n Continuing with the default value=500.0 .\n"
+                             "To remove this warning message you need to set the 'stiffness' attribute between [0, +INF[." ;
+        d_stiffness.setValue(500) ;
+    }
+    if( d_damping.getValue() < 0.0 ){
+        msg_warning(this) << "The 'damping="<< d_damping.getValueString() <<"' parameters is outside the validity range of [0, +INF[. \n Continuing with the default value=5.0 .\n"
+                             "To remove this warning message you need to set the 'damping' attribute between [0, +INF[." ;
+        d_damping.setValue(5) ;
+    }
+    if( d_maxForce.getValue() < 0.0 ){
+        msg_warning(this) << "The 'maxForce="<< d_maxForce.getValueString() << "' parameters is outside the validity range of [0, +INF[. \n Continuing with the default value=0.0 (no max force) .\n"
+                             "To remove this warning message you need to set the 'maxForce' attribute between [0, +INF[." ;
+        d_maxForce.setValue(0) ;
+    }
+
+    Vec<2,int> tmp = d_localRange.getValue() ;
+    if( d_localRange.isSet() && (tmp.x() < 0 || tmp.y() < 0 || tmp.x() > tmp.y()) ){
+        msg_warning(this) << "The 'localRange="<< d_localRange.getValueString() << "' parameteri is not valid as it needs two indices in numerical order.\n Continuing with the default value=[0, 0] (no local range).\n"
+                             "To remove this warning message you need to set the 'localRange' to correct value." ;
+        tmp.set(-1,-1);
+        d_localRange.setValue(tmp) ;
+    }
+
+
+
+    this->m_componentstate = ComponentState::Valid ;
+}
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::setPlane(const Deriv& normal, Real d)
@@ -80,7 +123,6 @@ void PlaneForceField<DataTypes>::setPlane(const Deriv& normal, Real d)
     d_planeNormal.setValue( tmpN / n);
     d_planeD.setValue( d / n );
 }
-
 
 
 template<class DataTypes>
@@ -96,6 +138,9 @@ SReal PlaneForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParam
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f1 = f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > p1 = x;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > v1 = v;
@@ -129,7 +174,7 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
             DPos force = planeN*forceIntensity - DataTypes::getDPos(v1[i])*dampingIntensity;
 
             Real amplitude = force.norm2();
-            if(limit && amplitude > limit)
+            if(limit>0 && amplitude > limit)
                 force *= sqrt(limit / amplitude);
 
             Deriv tmpF;
@@ -143,6 +188,9 @@ void PlaneForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpara
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df1 = df;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecDeriv > > dx1 = dx;
 
@@ -161,6 +209,9 @@ void PlaneForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams
 template<class DataTypes>
 void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     const Real fact = (Real)(-this->d_stiffness.getValue()*mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()));
     Deriv normal;
     DataTypes::setDPos(normal, d_planeNormal.getValue());
@@ -183,6 +234,9 @@ void PlaneForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mpar
 template<class DataTypes>
 void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     helper::ReadAccessor<VecCoord> x = vx;
 
     this->m_contacts.clear();
@@ -209,6 +263,9 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     defaulttype::Vec3d axe3d(1,1,1); axe3d = DataTypes::getDPos(axe);
     defaulttype::Vec3d normal3d; normal3d = d_planeNormal.getValue();
     defaulttype::Vec3d v = normal3d.cross(axe3d);
@@ -223,6 +280,9 @@ void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(this->m_componentstate != ComponentState::Valid)
+        return ;
+
     if (!vparams->displayFlags().getShowForceFields())
         return;
 

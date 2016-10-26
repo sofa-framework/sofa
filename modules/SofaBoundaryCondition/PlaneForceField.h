@@ -99,7 +99,6 @@ protected:
 
 public:
     void setPlane(const Deriv& normal, Real d);
-
     void setMState(  core::behavior::MechanicalState<DataTypes>* mstate ) { this->mstate = mstate; }
 
     void setStiffness(Real stiff) { d_stiffness.setValue( stiff ); }
@@ -114,16 +113,15 @@ public:
     //TODO(dmarchal): do we really need a rotate operation into a plan class ?
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
+    /// Inherited from ForceField.
+    virtual void init();
     virtual void addForce(const core::MechanicalParams* mparams,
                           DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams,
                            DataVecDeriv& df, const DataVecDeriv& dx);
-
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
                                      const DataVecCoord&  /* x */) const;
-
     virtual void updateStiffness( const VecCoord& x );
-
     virtual void addKToMatrix(const core::MechanicalParams*
                               mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
