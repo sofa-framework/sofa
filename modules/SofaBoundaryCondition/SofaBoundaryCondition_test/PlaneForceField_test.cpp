@@ -64,6 +64,8 @@ using sofa::linearsolver::GraphScatteredMatrix ;
 using sofa::linearsolver::GraphScatteredVector ;
 using sofa::linearsolver::CGLinearSolver ;
 
+using sofa::simulation::graph::DAGSimulation ;
+
 using sofa::component::mass::UniformMass ;
 using sofa::component::forcefield::PlaneForceField ;
 
@@ -71,11 +73,19 @@ using sofa::container::MechanicalObject ;
 
 using sofa::odesolver::EulerImplicitSolver ;
 
-
-template <typename _DataTypes>
-struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
+template <typename TDataType, typename TMassType>
+struct TypeTuple
 {
-    typedef _DataTypes DataTypes;
+    typedef TDataType DataType ;
+    typedef TMassType MassType ;
+} ;
+
+
+template <typename TTypeTuple>
+struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Real>
+{
+    typedef typename TTypeTuple::DataType DataTypes ;
+    typedef typename TTypeTuple::MassType MassType ;
 
     typedef typename DataTypes::VecCoord                                VecCoord;
     typedef typename DataTypes::Coord                                   Coord;
@@ -88,7 +98,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
     typedef PlaneForceField<DataTypes>                                  PlaneForceFieldType;
     typedef MechanicalObject<DataTypes>                                 MechanicalObjectType;
     typedef EulerImplicitSolver                                         EulerImplicitSolverType;
-
+    typedef UniformMass<DataTypes,MassType>                             TypedUniformMass;
 
     /// Root of the scene graph, created by the constructor and re-used in the tests
     simulation::Simulation*               m_simulation;
@@ -107,6 +117,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");
+        m_root->setGravity(Vec3d(0, -9.8,0));
 
         typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
         m_root->addObject(eulerImplicitSolver);
@@ -119,97 +130,32 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
         m_mechanicalObj = New<MechanicalObjectType>();
         m_root->addObject(m_mechanicalObj);
+
+        //TODO(dmarchal): too much lines to just set a point... find a more concise way to do that
         Coord point;
-        point[0]=1;
+        point[1]=1;
         VecCoord points;
         points.clear();
         points.push_back(point);
 
-        m_mechanicalObj->x0.setValue(points);
+        m_mechanicalObj->x.setValue(points);
 
-        std::string name = DataTypeInfo<DataTypes>::name();
-#ifdef SOFA_WITH_DOUBLE
-        if(name=="Rigid")
-        {
-            typename UniformMass<Rigid3dTypes,Rigid3dMass>::SPtr uniformMass = New<UniformMass<Rigid3dTypes,Rigid3dMass> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec1d" )
-        {
-            typename UniformMass<Vec1dTypes,double>::SPtr uniformMass = New<UniformMass<Vec1dTypes,double> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec2d" )
-        {
-            typename UniformMass<Vec2dTypes,double>::SPtr uniformMass = New<UniformMass<Vec2dTypes,double> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec3d" )
-        {
-            typename UniformMass<Vec3dTypes,double>::SPtr uniformMass = New<UniformMass<Vec3dTypes,double> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec6d")
-        {
-            typename UniformMass<Vec6dTypes,double>::SPtr uniformMass = New<UniformMass<Vec6dTypes,double> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else
-#endif
-#ifdef SOFA_WITH_FLOAT
-        if(name=="Rigid3f")
-        {
-            typename UniformMass<Rigid3fTypes,Rigid3fMass>::SPtr uniformMass = New<UniformMass<Rigid3fTypes,Rigid3fMass> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec1f" )
-        {
-            typename UniformMass<Vec1fTypes,float>::SPtr uniformMass = New<UniformMass<Vec1fTypes,float> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec2f" )
-        {
-            typename UniformMass<Vec2fTypes,float>::SPtr uniformMass = New<UniformMass<Vec2fTypes,float> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec3f" )
-        {
-            typename UniformMass<Vec3fTypes,float>::SPtr uniformMass = New<UniformMass<Vec3fTypes,float> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else if(name=="Vec6f")
-        {
-            typename UniformMass<Vec6fTypes,float>::SPtr uniformMass = New<UniformMass<Vec6fTypes,float> >();
-            m_root->addObject(uniformMass);
-            uniformMass->d_totalMass.setValue(1);
-        }
-        else
-#endif
-        //TODO(dmarchal): This is really weird and need proper investigation.
-        // Why do the test succeed while there is no gravity to this scene and no
-        // plane force field ?
-        m_root->setGravity(Vec3d(0, -9.8,0));
-
-        return;
+        //std::string name = DataTypes::Name() ;
+        typename TypedUniformMass::SPtr uniformMass = New<TypedUniformMass>();
+        m_root->addObject(uniformMass);
+        uniformMass->d_totalMass.setValue(1);
 
         /*Create the plane force field*/
         m_planeForceFieldSPtr = New<PlaneForceFieldType>();
         m_planeForceFieldSPtr->d_planeD.setValue(0);
 
         DPos normal;
-        normal[0]=1;
+        normal[1]=1;
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
-    }
+        m_root->addObject(m_planeForceFieldSPtr) ;
+        m_root->init(ExecParams::defaultInstance());
+     }
 
     void initSetup()
     {
@@ -246,7 +192,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                  "  <Node name='Level 1'>                                                        \n"
-                 "   <MechanicalObject name='mstate' template='"<<  DataTypeInfo<DataTypes>::name() << "'/>                  \n"
+                 "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
                  "   <PlaneForceField name='myPlaneForceField'/>                                 \n"
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
@@ -262,7 +208,6 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
         return true;
     }
-
 
     ///
     /// In this test we are verifying that a plane that have been reinited has the same
@@ -304,14 +249,17 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
     bool testPlaneForceField()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<100; i++){
             m_simulation->animate(m_root.get(),(double)0.01);
 
-        Real x = m_mechanicalObj->x.getValue()[0][0];
+        }
+        Real x = m_mechanicalObj->x.getValue()[0][1];
 
-        if(x<0)//The point passed through the plane
+        /// The point passed through the plane but is still too low.
+        /// The value depend on the repulsion force generated and the mass of the point.
+        if(x<-0.1)
         {
-            ADD_FAILURE() << "Error while testing planeForceField"<< std::endl;
+            ADD_FAILURE() << "Error while testing planeForceField. The mechnical point passed across the plane force field.";
             return false;
         }
         else
@@ -322,11 +270,23 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 
 // Define the list of DataTypes to instanciate
 using testing::Types;
-typedef Types<Vec1Types,
-              Vec2Types,
-              Vec3Types,
-              Vec6Types,
-              Rigid3Types> DataTypes;
+typedef Types<
+              TypeTuple<Rigid3Types, Rigid3Mass>
+#ifdef SOFA_WITH_DOUBLE
+              ,TypeTuple<Vec1dTypes, double>
+              ,TypeTuple<Vec2dTypes, double>
+              ,TypeTuple<Vec3dTypes, double>
+              ,TypeTuple<Vec6dTypes, double>
+              ,TypeTuple<Rigid3dTypes, Rigid3dMass>
+#endif
+#ifdef SOFA_WITH_FLOAT
+             ,TypeTuple<Vec1fTypes, float>
+             ,TypeTuple<Vec2fTypes, float>
+             ,TypeTuple<Vec3fTypes, float>
+             ,TypeTuple<Vec6fTypes, float>
+             ,TypeTuple<Rigid3fTypes, Rigid3fMass>
+#endif
+> DataTypes;
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(PlaneForceField_test, DataTypes);// first test case
