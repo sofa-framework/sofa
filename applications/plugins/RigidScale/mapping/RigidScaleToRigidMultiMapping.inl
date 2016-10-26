@@ -317,13 +317,9 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::computeRigidFromRigidAndScale(con
     // Variables
     Matrix3 scale;
     // Conversion of the scale into a 3x3 matrix
-    std::cout << "in1 " << in1 << std::endl;
-    std::cout << "in2 " << in2 << std::endl;
-    std::cout << "rOut " << rOut << std::endl;
     for (unsigned int i = 0; i < 3; ++i) scale[i][i] = in2[i];
     // Final position
     out = se3::prod(in1, OutCoord(scale*rOut.getCenter(), rOut.getOrientation()));
-    std::cout << "Out " << out << std::endl<< std::endl;
 	return;
 }
 
