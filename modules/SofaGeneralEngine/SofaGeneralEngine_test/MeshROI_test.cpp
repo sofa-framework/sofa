@@ -116,16 +116,6 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
         EXPECT_NO_THROW(m_thisObject->init()) << "The component should succeed in being initialized.";
     }
 
-    /// Shouldn't crash without input data
-    void drawTest()
-    {
-        VisualParams* vparams = VisualParams::defaultInstance();
-        vparams->displayFlags().setShowBehaviorModels(true);
-        m_thisObject->d_drawSize.setValue(1);
-
-        EXPECT_NO_THROW(m_thisObject->draw(vparams)) << "The component draw function should succeed after being initialized.";
-    }
-
 
     /// Test bounding box computation against meshlab result
     void computeBoundingBoxTest()
@@ -200,10 +190,6 @@ TYPED_TEST(MeshROI_test, attributesTests) {
 
 TYPED_TEST(MeshROI_test, initTest) {
     ASSERT_NO_THROW(this->initTest()) ;
-}
-
-TYPED_TEST(MeshROI_test, drawTest) {
-    ASSERT_NO_THROW(this->drawTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, computeBoundingBoxTest) {
