@@ -111,10 +111,14 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
 
     /// Shouldn't crash without input data
-    void initTests()
+    void initTest()
     {
         EXPECT_NO_THROW(m_thisObject->init()) << "The component should succeed in being initialized.";
+    }
 
+    /// Shouldn't crash without input data
+    void drawTest()
+    {
         VisualParams* vparams = VisualParams::defaultInstance();
         vparams->displayFlags().setShowBehaviorModels(true);
         m_thisObject->d_drawSize.setValue(1);
@@ -194,8 +198,12 @@ TYPED_TEST(MeshROI_test, attributesTests) {
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
-TYPED_TEST(MeshROI_test, initTests) {
-    ASSERT_NO_THROW(this->initTests()) ;
+TYPED_TEST(MeshROI_test, initTest) {
+    ASSERT_NO_THROW(this->initTest()) ;
+}
+
+TYPED_TEST(MeshROI_test, drawTest) {
+    ASSERT_NO_THROW(this->drawTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, computeBoundingBoxTest) {
