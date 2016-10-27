@@ -91,8 +91,10 @@ class Bone():
         self.frame = []
         # --- short bone
         if self.type == "short" and not len(model.mesh[0].group):
-            if model.com: self.frame.append(model.com)
-            if model.inertia: self.inertia.append(model.inertia)
+            if model.com:
+                self.frame.append(model.com)
+            if model.inertia:
+                self.inertia.append(model.inertia)
         # --- long bone, flat bone, irregular bone
         else:
             for mesh in model.mesh:
@@ -106,7 +108,7 @@ class Bone():
                                 v_index.append(v[i])
                             # lets add it to the frame
                             frame = numpy.mean(numpy.array(v_index), 0).tolist() # position
-                            frame.extend([0,0,0,1]) # orientation
+                            frame.extend([0, 0, 0, 1]) # orientation
                             self.frame.append(frame)
                             self.inertia.append([1,0,0, 0,1,0, 0,0,1])
         # return the output
@@ -116,29 +118,31 @@ class Bone():
     def setup(self, parentNode, density=2000, param=None, generatedDir = None ):
 
         # Computation the offset according to the attribute self.transform
-        offset = [0,0,0,0,0,0,1]
+        offset = [0, 0, 0, 0, 0, 0, 1]
         offset[:3] = self.transform[:3]
         offset[3:] = Quaternion.from_euler(self.transform[3:6])
         scale3d = self.transform[6:]
+
         if self.type not in BoneType:
-            self.type = "short" # --> to set 1 frame on bone which not have a type
+            self.type = "short"  # --> to set 1 frame on bone which not have a type
 
         # Creation of the shearless affine body
         self.body = RigidScale.API.ShearlessAffineBody(parentNode, self.name)
 
         # Depending on the frame set in the constructor, let decide how the body will be initialized
-        if (self.frame == None) or (len(self.frame) < FramePerBoneType[self.type]):
+        if (self.frame is None) or (len(self.frame) < FramePerBoneType[self.type]):
             self.body.setFromMesh(self.filepath, density, offset, scale3d, self.voxelSize, FramePerBoneType[self.type], generatedDir=generatedDir)
-            for p in self.body.frame: self.frame.append(p.offset())
+            for p in self.body.frame:
+                self.frame.append(p.offset())
         else:
-            scale3dList = []
+            scale3dList = list()
             for i in range(len(self.frame)):
                 scale3dList.append(scale3d)
             self.body.setManually(self.filepath, self.frame, self.voxelSize, density=1000, generatedDir=generatedDir)
 
         # Add of the behavior model, the collision model and the visual model
         localGeneratedDir = None if generatedDir is None else generatedDir+self.name
-        self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir )
+        self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir)
         self.collision = self.body.addCollisionMesh(self.filepath, scale3d, offset, generatedDir=localGeneratedDir)
         self.visual = self.collision.addVisualModel()
         self.visual.filename = self.collision.loader.filename
