@@ -118,7 +118,7 @@ class ShearlessAffineBody:
             p.extend([0,0,0,1])
             self.frame.append(Frame.Frame(p))
 
-    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, generatedDir=None):
+    def setManually(self, filepath=None, offset=[[0,0,0,0,0,0,1]], voxelSize=0.01, density=1000, mass=1, inertia=[1,1,1], inertia_forces=False, generatedDir=None):
 
         if len(offset) == 0:
             Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
@@ -177,12 +177,16 @@ class ShearlessAffineBody:
             self.framecom.rotation = massInfo.inertia_rotation
             self.framecom.translation = massInfo.com
         else:
-            print "You need a mesh to create an articulated system"
+            if (mass and inertia) and inertia != [0,0,0]:
+                Sofa.msg_info("RigidScale", "A RigidMass and a UniformMass are created for respectively the rigid and the scale since there is no mesh which can be used to compute the model mass.")
+                self.mass = self.rigidNode.createObject('RigidMass', name='mass', mass=mass, inertia=concat(inertia[:3]), inertia_forces=inertia_forces)
+                self.scaleNode.createObject('UniformMass', name='mass', mass=mass)
+
         self.frame = []
         for o in offset:
             self.frame.append(Frame.Frame(o))
 
-    def setMeshLess(self, param, offset=[[0,0,0,0,0,0,1]], generatedDir=None, mass=1, rayleigh=0.1):
+    def setMeshLess(self, offset=[[0,0,0,0,0,0,1]], mass=1, rayleigh=0.1, generatedDir=None):
         if len(offset) == 0:
             Sofa.msg_error("RigidScale.API","ShearlessAffineBody should have at least 1 ShearLessAffine")
             return
@@ -213,7 +217,7 @@ class ShearlessAffineBody:
         #positiveNode.createObject('Stabilization', name='Stabilization')
 
         # affine dofs
-        self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='parent', showObject=param.showAffine, showObjectScale = param.showAffineScale)
+        self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='parent')
         self.affineNode.createObject('RigidScaleToAffineMultiMapping', template='Rigid,Vec3,Affine', input1=path_affine_rigid, input2=path_affine_scale, output='@.', autoInit='1', printLog='0')
         
         self.frame = []
@@ -245,16 +249,12 @@ class ShearlessAffineBody:
             ind = 0
             min_dist = sys.float_info.max
             for i, p in enumerate(self.frame):
-                #print offset_abs
-                #print p
                 dist = numpy.linalg.norm(offset_abs.translation - numpy.array(p.translation), 2)
                 if(dist < min_dist):
                     min_dist = dist
                     ind = i
             # add of the offset according to this position
-
             offset_computed = (self.frame[ind]*offset_abs).offset()
-            print "relative offset: ",offset_computed, ind
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind)
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
@@ -274,7 +274,6 @@ class ShearlessAffineBody:
                     index_computed = i
             # add of the offset according to this position
             offset_computed = frameOffset.offset()
-            print "absolute offset: ",offset_computed, index_computed
             return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):

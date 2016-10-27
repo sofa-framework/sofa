@@ -88,7 +88,7 @@ class MyClass(Sofa.PythonScriptController):
     def bwdInitGraph(self, rootNode):
         for bone in self.scene.bones.values():
             for node in bone.affineNode.getChildren():
-                if node.getName() == "Mass":
+                if node.getName() == "mass":
                     bone.affineNode.removeChild(node)
                     # node.active = False
 
