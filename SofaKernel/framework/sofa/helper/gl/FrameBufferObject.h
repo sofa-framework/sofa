@@ -76,14 +76,15 @@ private:
     bool depthTexture;
     bool enableDepth;
     bool enableColor;
+    bool enableMipMap;
 
     static GLint getCurrentFramebufferID();
 
 public:
-    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID());
+    FrameBufferObject(bool depthTexture = false, bool enableDepth = true, bool enableColor = true, bool enableMipMap = false, GLint defaultWindowFramebuffer = getCurrentFramebufferID());
     virtual ~FrameBufferObject();
 
-    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true, GLint defaultWindowFramebuffer = getCurrentFramebufferID() );
+    FrameBufferObject(const fboParameters& FboFormat, bool depthTexture = false, bool enableDepth = true, bool enableColor = true, bool enableMipMap = false, GLint defaultWindowFramebuffer = getCurrentFramebufferID() );
     void setFormat(const fboParameters& fboParams) { _fboParams = fboParams; }
 
     void init(unsigned int width, unsigned height);

@@ -24,12 +24,17 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+#if !defined(_XBOX) && !defined(PS3)
 #include <signal.h>
 #endif
 #if !defined(WIN32) && !defined(_XBOX) && !defined(__APPLE__) && !defined(PS3)
 #include <execinfo.h>
 #include <unistd.h>
+#endif
+#if defined(WIN32)
+#include "windows.h"
+#include "DbgHelp.h"
+#pragma comment(lib, "Dbghelp.lib")
 #endif
 #if defined(__GNUC__) && !defined(PS3)
 #include <cxxabi.h>
@@ -37,6 +42,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+#include <iostream>
+#include <string>
 
 namespace sofa
 {
@@ -104,6 +112,29 @@ void BackTrace::dump()
             backtrace_symbols_fd(array, size, STDERR_FILENO);
         }
     }
+#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+	unsigned int   i;
+	void         * stack[100];
+	unsigned short frames;
+	SYMBOL_INFO  * symbol;
+	HANDLE         process;
+
+	process = GetCurrentProcess();
+
+	SymInitialize(process, NULL, TRUE);
+
+	frames = CaptureStackBackTrace(0, 100, stack, NULL);
+	symbol = (SYMBOL_INFO *)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+	symbol->MaxNameLen = 255;
+	symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+
+	for (i = 0; i < frames; i++)
+	{
+		SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
+		std::cerr << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec << std::endl;
+	}
+
+	free(symbol);
 #endif
 }
 
@@ -112,25 +143,56 @@ void BackTrace::dump()
 /// Currently only works on Linux. NOOP on other architectures
 void BackTrace::autodump()
 {
-#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+#if !defined(_XBOX) && !defined(PS3)
+	signal(SIGABRT, BackTrace::sig);
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
     signal(SIGFPE, BackTrace::sig);
-    signal(SIGPIPE, BackTrace::sig);
     signal(SIGINT, BackTrace::sig);
     signal(SIGTERM, BackTrace::sig);
+#if !defined(WIN32)
+	signal(SIGPIPE, BackTrace::sig);
 #endif
+#endif
+}
+
+static std::string SigDescription(int sig)
+{
+	switch (sig)
+	{
+	case SIGABRT:
+		return "SIGABRT: usually caused by an abort() or assert()";
+		break;
+	case SIGFPE:
+		return "SIGFPE: arithmetic exception, such as divide by zero";
+		break;
+	case SIGILL:
+		return "SIGILL: illegal instruction";
+		break;
+	case SIGINT:
+		return "SIGINT: interactive attention signal, probably a ctrl+c";
+		break;
+	case SIGSEGV:
+		return "SIGSEGV: segfault";
+		break;
+	case SIGTERM:
+	default:
+		return "SIGTERM: a termination request was sent to the program";
+		break;
+	}
+
+	return "Unknown signal";
 }
 
 void BackTrace::sig(int sig)
 {
-#if !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
-    fprintf(stderr,"\n########## SIG %d ##########\n",sig);
+#if !defined(_XBOX) && !defined(PS3)
+	std::cerr << std::endl << "########## SIG " << sig << " - " << SigDescription(sig) << " ##########" << std::endl;
     dump();
     signal(sig,SIG_DFL);
     raise(sig);
 #else
-    fprintf(stderr,"\nERROR: BackTrace::sig(%d) not supported.\n",sig);
+	std::cerr << std::endl << "ERROR: BackTrace::sig(" << sig << " - " << SigDescription(sig) << ") not supported." << std::endl;
 #endif
 }
 

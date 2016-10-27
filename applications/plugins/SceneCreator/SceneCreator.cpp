@@ -65,7 +65,11 @@
 
 //Including Visual Models
 #include <SofaBaseVisual/VisualStyle.h>
+#ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
+#else
+#include <SofaBaseVisual/VisualModelImpl.h>
+#endif
 
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -120,6 +124,12 @@ typedef BarycentricMapping<Vec3Types, ExtVec3fTypes>    BarycentricMapping3_to_E
 typedef RigidMapping<Rigid3Types, Vec3Types >           RigidMappingRigid3_to_3;
 typedef RigidMapping<Rigid3Types, ExtVec3fTypes >       RigidMappingRigid3_to_Ext3;
 
+
+#ifndef SOFA_NO_OPENGL
+typedef component::visualmodel::OglModel VisualModelType;
+#else
+typedef component::visualmodel::VisualModelImpl VisualModelType;
+#endif
 
 static sofa::simulation::Node::SPtr root = NULL;
 
@@ -256,7 +266,7 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
     PointFixed->setMoving(false);    //No extern events
     nodeFixed->addObject(PointFixed);
 
-    OglModel::SPtr visualFixed = New<OglModel>();
+    VisualModelType::SPtr visualFixed = sofa::core::objectmodel::New<VisualModelType>();
     visualFixed->setName("visual");
     visualFixed->setFilename(DataRepository.getFile(filenameVisual));
     visualFixed->setColor(color);
@@ -308,7 +318,7 @@ Node::SPtr createVisualNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  dof
     const std::string nameVisual="Visual";
     const std::string refVisual = "@" + nameVisual;
     const std::string refDof = "@..";// + dof->getName();
-    OglModel::SPtr visual = New<OglModel>();
+    VisualModelType::SPtr visual = sofa::core::objectmodel::New<VisualModelType>();
     visual->setName(nameVisual);
     visual->setFilename(DataRepository.getFile(filename));
     visual->setColor(color.c_str());
@@ -373,7 +383,7 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, MechanicalObjectRigid3::SPt
     const std::string nameVisual="Visual";
     const std::string refVisual="@"+nameVisual;
     const std::string refdofRigid="@../"+dofRigid->getName();
-    OglModel::SPtr visualRigid = New<OglModel>();
+    VisualModelType::SPtr visualRigid = sofa::core::objectmodel::New<VisualModelType>();
     visualRigid->setName(nameVisual);
     visualRigid->setFilename(DataRepository.getFile(filename));
     visualRigid->setColor(color);
