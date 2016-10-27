@@ -25,6 +25,7 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
     typedef ExtrudeEdgesAndGenerateQuads<_DataTypes> ThisClass;
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
+    typedef unsigned int unint;
 
 
     Simulation* m_simu;
@@ -76,29 +77,29 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
 
         m_thisObject->findData("numberOfSections")->read("1.");
         m_thisObject->update();
-        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (uint)4);
-        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (uint)4);
-        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (uint)1);
+        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (unint)4);
+        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (unint)4);
+        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (unint)1);
 
         m_thisObject->findData("numberOfSections")->read("3.");
         m_thisObject->update();
-        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (uint)8);
-        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (uint)10);
-        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (uint)3);
+        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (unint)8);
+        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (unint)10);
+        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (unint)3);
 
         m_thisObject->findData("numberOfSections")->read("0.");
         m_thisObject->update();
-        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (uint)2);
-        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (uint)1);
-        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (uint)0);
+        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (unint)2);
+        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (unint)1);
+        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (unint)0);
 
 
         m_thisObject->findData("numberOfSections")->read("-1.");
         m_thisObject->reinit();
         m_thisObject->update();
-        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (uint)4);
-        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (uint)4);
-        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (uint)1);
+        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (unint)4);
+        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (unint)4);
+        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (unint)1);
 
 
         // Closed curve
@@ -108,9 +109,9 @@ struct ExtrudeEdgesAndGenerateQuads_test : public Sofa_test<typename _DataTypes:
 
         m_thisObject->findData("numberOfSections")->read("1.");
         m_thisObject->update();
-        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (uint)6);
-        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (uint)9);
-        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (uint)3);
+        EXPECT_EQ(m_thisObject->d_extrudedVertices.getValue().size(), (unint)6);
+        EXPECT_EQ(m_thisObject->d_extrudedEdges.getValue().size(), (unint)9);
+        EXPECT_EQ(m_thisObject->d_extrudedQuads.getValue().size(), (unint)3);
     }
 
 
