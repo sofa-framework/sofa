@@ -44,7 +44,6 @@ using namespace helper;
 
 
 
-
 #ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& )
@@ -57,6 +56,7 @@ Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( cons
     return center();
 }
 #endif
+
 #ifndef SOFA_DOUBLE
 template <> SOFA_BASE_COLLISION_API
 Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& )
@@ -85,8 +85,6 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
 #endif
         .addAlias("Sphere")
         .addAlias("SphereModel")
-//.addAlias("SphereMesh")
-//.addAlias("SphereSet")
         ;
 
 #ifndef SOFA_FLOAT
