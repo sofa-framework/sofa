@@ -71,7 +71,7 @@ void VisualManagerSecondaryPass::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);
-    fbo = new FrameBufferObject(true, true, true);
+    fbo = new FrameBufferObject(true, true, true, true);
 }
 
 void VisualManagerSecondaryPass::initVisual()
@@ -242,6 +242,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                 glActiveTexture(GL_TEXTURE0+nbFbo);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO()->getColorTexture());
+                glGenerateMipmap(GL_TEXTURE_2D);
 
                 ++nbFbo;
             }
@@ -263,6 +264,7 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getColorTexture());
+                    glGenerateMipmap(GL_TEXTURE_2D);
                     ++nbFbo;
 
                     //std::cout<<"***"<< this->getName() <<"*** GL_TEXTURE"<<nbFbo<<" depth from "<<currentPass->getName()<<std::endl;

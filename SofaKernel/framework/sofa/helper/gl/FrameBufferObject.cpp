@@ -41,7 +41,7 @@ namespace helper
 namespace gl
 {
     
-FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool enableColor, bool enableMipMap, GLint defaultWindowFramebuffer)
     :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
     ,width(0)
     ,height(0)
@@ -51,10 +51,11 @@ FrameBufferObject::FrameBufferObject(bool depthTexture, bool enableDepth, bool e
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
+    ,enableMipMap(enableMipMap)
 {
 }
 
-FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, GLint defaultWindowFramebuffer)
+FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthTexture, bool enableDepth, bool enableColor, bool enableMipMap, GLint defaultWindowFramebuffer)
     :m_defaultWindowFramebufferID(defaultWindowFramebuffer)
     ,width(0)
     ,height(0)
@@ -65,6 +66,7 @@ FrameBufferObject::FrameBufferObject(const fboParameters& fboParams, bool depthT
     ,depthTexture(depthTexture)
     ,enableDepth(enableDepth)
     ,enableColor(enableColor)
+    ,enableMipMap(enableMipMap)
 {
 }
 
@@ -311,12 +313,17 @@ void FrameBufferObject::initDepthBuffer()
 void FrameBufferObject::initColorBuffer()
 {
     glBindTexture(GL_TEXTURE_2D, colorTextureID);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    if(enableMipMap)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    else
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     glTexImage2D(GL_TEXTURE_2D, 0, _fboParams.colorInternalformat,  width, height, 0, _fboParams.colorFormat, _fboParams.colorType, NULL);
+    if(enableMipMap)
+        glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }
