@@ -22,18 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: LightManager
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #ifndef SOFA_COMPONENT_LIGHTMANAGER_H
 #define SOFA_COMPONENT_LIGHTMANAGER_H
 #include "config.h"
@@ -88,6 +76,7 @@ public:
     enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 2 };
 #endif
 
+    //TODO(dmarchal): sofa guidelines.
     Data<bool> shadowsEnabled;
     Data<bool> softShadowsEnabled;
     Data<defaulttype::Vec4f> ambient;

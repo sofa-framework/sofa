@@ -22,17 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: LightManager
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #include <SofaOpenglVisual/LightManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
@@ -60,6 +49,7 @@ using namespace simulation;
 using namespace core::visual;
 
 SOFA_DECL_CLASS(LightManager)
+
 //Register LightManager in the Object Factory
 int LightManagerClass = core::RegisterObject("LightManager")
         .add< LightManager >()
@@ -195,7 +185,8 @@ void LightManager::makeShadowMatrix(unsigned int i)
     glTranslatef(0.5f, 0.5f, 0.5f +( -0.006f) );
     glScalef(0.5f, 0.5f, 0.5f);
 
-    glMultMatrixf(lp); // now multiply by the matrices we have retrieved before
+    // now multiply by the matrices we have retrieved before
+    glMultMatrixf(lp);
     glMultMatrixf(lmv);
     sofa::defaulttype::Mat<4,4,float> model2;
     glGetFloatv(GL_MODELVIEW_MATRIX,model2.ptr());
@@ -215,8 +206,6 @@ void LightManager::makeShadowMatrix(unsigned int i)
         lightModelViewMatrix[i] = lmv;
         lightProjectionMatrix[i] = lp;
     }
-    //std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
-    //std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
 
     glMatrixMode(GL_MODELVIEW);
 }
@@ -237,7 +226,6 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
     const core::visual::VisualParams::Pass pass = vp->pass();
     GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
     GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
-    //GLfloat lightModelViewProjectionMatrices[MAX_NUMBER_OF_LIGHTS*16];
     GLfloat zNears[MAX_NUMBER_OF_LIGHTS];
     GLfloat zFars[MAX_NUMBER_OF_LIGHTS];
 
@@ -255,7 +243,6 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 if (softShadowsEnabled.getValue())
                     glBindTexture(GL_TEXTURE_2D, lights[i]->getColorTexture());
                 else
-                    //glBindTexture(GL_TEXTURE_2D, lights[i]->getDepthTexture());
                     glBindTexture(GL_TEXTURE_2D, lights[i]->getColorTexture());
 
                 lightFlag[i] = 1;
@@ -283,10 +270,6 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
             {
                 lightFlag[i] = 0;
                 shadowTextureID[i] = 0;
-
-                /*for(unsigned int j=0 ; j<4; j++)
-                    for(unsigned int k=0 ; k<4; k++)
-                        lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;*/
             }
 
             for(unsigned int i=0 ; i<shadowShaders.size() ; ++i)
@@ -297,10 +280,6 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "shadowTextureUnit" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
                 shadowShaders[i]->setFloatVector(shadowShaders[i]->getCurrentIndex() , "zNear" , MAX_NUMBER_OF_LIGHTS, zNears);
                 shadowShaders[i]->setFloatVector(shadowShaders[i]->getCurrentIndex() , "zFar" , MAX_NUMBER_OF_LIGHTS, zFars);
-                //shadowShaders[i]->setFloatVector4(shadowShaders[i]->getCurrentIndex() , "lightPosition" , MAX_NUMBER_OF_LIGHTS,  &(lightPosition[0][0]));
-                //shadowShaders[i]->setMatrix4(shadowShaders[i]->getCurrentIndex() , "lightModelViewMatrix" , MAX_NUMBER_OF_LIGHTS, false, (lightModelViewMatrix[0].ptr()));
-                //shadowShaders[i]->setMatrix4(shadowShaders[i]->getCurrentIndex() , "lightProjectionMatrix" , MAX_NUMBER_OF_LIGHTS, false, (lightModelViewMatrix[0].ptr()));
-                //shadowShader->start();
             }
 
         }
@@ -399,22 +378,22 @@ void LightManager::reinit()
 void LightManager::preDrawScene(VisualParams* vp)
 {
 #ifdef SOFA_HAVE_GLEW
-	if(shadowsEnabled.getValue())
-	{
+    if(shadowsEnabled.getValue())
+    {
         for (std::vector<Light::SPtr>::iterator itl = lights.begin(); itl != lights.end() ; ++itl)
-		{
-			(*itl)->preDrawShadow(vp);
-			vp->pass() = core::visual::VisualParams::Shadow;
-			simulation::VisualDrawVisitor vdv(vp);
+        {
+            (*itl)->preDrawShadow(vp);
+            vp->pass() = core::visual::VisualParams::Shadow;
+            simulation::VisualDrawVisitor vdv(vp);
 
-			vdv.execute ( getContext() );
+            vdv.execute ( getContext() );
 
-			(*itl)->postDrawShadow();
-		}
-		const core::visual::VisualParams::Viewport& viewport = vp->viewport();
-		//restore viewport
-		glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
-	}
+            (*itl)->postDrawShadow();
+        }
+        const core::visual::VisualParams::Viewport& viewport = vp->viewport();
+        //restore viewport
+        glViewport(viewport[0], viewport[1], viewport[2] , viewport[3]);
+    }
 #endif
 }
 
@@ -458,7 +437,7 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
 
     // Setup 'light 0'
     // It crashes here in batch mode on Mac... probably the lack of GL context ?
-
+    //TODO(dmarchal) don't make it crash :)
     if (vp->isSupported(core::visual::API_OpenGL))
     {
         glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -471,6 +450,12 @@ void LightManager::restoreDefaultLight(VisualParams* vp)
     }
 }
 
+//TODO(dmarchal): Hard-coding keyboard behavior in a component is a bad idea as for several reasons:
+// the scene can be executed without a keyboard ...why the component has "knowledge" of that
+// what will happens if multiple lighmanager are in the same scene ...
+// what will hapen if other component use the same key...
+// The correct implement consist in separatng the event code into a different class & component in
+// the SofaInteracton module.
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
