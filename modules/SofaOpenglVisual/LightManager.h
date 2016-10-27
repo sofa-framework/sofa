@@ -52,20 +52,20 @@ namespace visualmodel
  *  It centralizes all the Lights and managed them.
  *
  */
-
 class SOFA_OPENGL_VISUAL_API LightManager : public core::visual::VisualManager
 {
 public:
     SOFA_CLASS(LightManager, core::visual::VisualManager);
 
 private:
-    std::vector<Light::SPtr> lights;
-    std::vector<defaulttype::Mat4x4f> lightModelViewMatrix;
-    std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
-    std::vector<unsigned short> m_mapShadowTextureUnit;
+    std::vector<Light::SPtr>          m_lights;
+    std::vector<defaulttype::Mat4x4f> m_lightModelViewMatrix;
+    std::vector<defaulttype::Mat4x4f> m_lightProjectionMatrix;
+    std::vector<unsigned short>       m_mapShadowTextureUnit;
+
 #ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
-    helper::vector<OglShadowShader::SPtr> shadowShaders;
+    helper::vector<OglShadowShader::SPtr> m_shadowShaders;
 #endif
     void makeShadowMatrix(unsigned int i);
 
@@ -77,13 +77,15 @@ public:
 #endif
 
     //TODO(dmarchal): sofa guidelines.
-    Data<bool> shadowsEnabled;
-    Data<bool> softShadowsEnabled;
-    Data<defaulttype::Vec4f> ambient;
+    Data<bool>                  d_shadowsEnabled;
+    Data<bool>                  d_softShadowsEnabled;
+    Data<defaulttype::Vec4f>    d_ambient;
+    Data<bool>                  d_drawIsEnabled;
 
 protected:
     LightManager();
     virtual ~LightManager();
+
 public:
     void init();
     void bwdInit();
@@ -94,7 +96,6 @@ public:
     bool drawScene(core::visual::VisualParams* vp);
     void postDrawScene(core::visual::VisualParams* vp);
 
-
     void draw(const core::visual::VisualParams* vparams);
     void fwdDraw(core::visual::VisualParams*);
     void bwdDraw(core::visual::VisualParams*);
@@ -103,7 +104,7 @@ public:
     void putLight(Light::SPtr light);
 
     ///Register a vector of lights into the LightManager
-    void putLights(std::vector<Light::SPtr> lights);
+    void putLights(std::vector<Light::SPtr> m_lights);
 
     ///Remove all lights of the LightManager
     void clear();
@@ -111,7 +112,6 @@ public:
     void restoreDefaultLight(core::visual::VisualParams* vparams);
 
     void handleEvent(sofa::core::objectmodel::Event* event);
-
 };
 
 }//namespace visualmodel

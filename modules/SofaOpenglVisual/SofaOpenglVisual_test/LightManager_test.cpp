@@ -67,7 +67,7 @@ void TestLightManager::checkAttributes()
     /// List of the supported attributes the user expect to find
     /// This list needs to be updated if you add an attribute.
     vector<string> attrnames = {
-        "shadows", "softShadows", "ambient"
+        "shadows", "softShadows", "ambient", "debugDraw"
     };
 
     for(auto& attrname : attrnames)
