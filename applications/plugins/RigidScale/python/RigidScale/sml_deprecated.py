@@ -323,7 +323,6 @@ class Constraint(Joint):
         constraintNode.createObject('MechanicalObject', template='Vec1'+StructuralAPI.template_suffix, name='dofs')
         constraintNode.createObject('MaskMapping', template='Vec6'+StructuralAPI.template_suffix+',Vec1'+StructuralAPI.template_suffix, dofs=listToStr(self.mask))
         constraintNode.createObject('UniformCompliance', template='Vec1'+StructuralAPI.template_suffix, name='compliance', isCompliance='0', compliance=_compliance)
-        constraintNode.createObject('Stabilization', name='Stabilization')
 
 ## ==============================================================================
 ## @Description: Create the differents bones and register them onto a repository
@@ -385,7 +384,7 @@ class SceneRigidScale(SofaPython.sml.BaseScene):
             self.bones[b.name].affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
 
 ## ==============================================================================
-## @Description: Create a sofa scene containning the articulated systeme
+## @Description: Create a sofa scene containing the articulated system
 """
 - @param: parentNode: the node which will contains the articulated system
 - @param: model: sml model

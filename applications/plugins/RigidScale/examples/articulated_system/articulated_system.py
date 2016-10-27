@@ -54,7 +54,7 @@ class MyClass(Sofa.PythonScriptController):
         # solver
         #root.createObject('CompliantPseudoStaticSolver', iterations="10", threshold="1e-5", velocityFactor="0", printLog=False, stabilization=1, neglecting_compliance_forces_in_geometric_stiffness=False)
         root.createObject('CompliantImplicitSolver', stabilization=1)
-        root.createObject('SequentialSolver', iterations=50, precision=1E-15, iterateOnBilaterals=1)
+        root.createObject('SequentialSolver', iterations=50, precision=1E-15, iterateOnBilaterals=0)
         root.createObject('LDLTResponse', schur=0)
 
         # sml scene
@@ -81,8 +81,8 @@ class MyClass(Sofa.PythonScriptController):
         # Add of fixed constraint
         for b in boneToFixed:
             if b in self.scene.bones.keys():
-                self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
-                self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
+                self.scene.bones[b].rigidNode.createObject('PartialFixedConstraint', indices='1', fixedDirections="1 1 1 0 0 0" )
+                # self.scene.bones[b].scaleNode.createObject('FixedConstraint', indices='1')
 
     # Init completion
     def bwdInitGraph(self, rootNode):
