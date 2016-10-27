@@ -108,7 +108,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
     typedef UniformMass<DataTypes,MassType>                             TypedUniformMass;
 
     /// Root of the scene graph, created by the constructor and re-used in the tests
-    simulation::Simulation*               m_simulation;
+    simulation::Simulation*               m_simulation {nullptr};
     simulation::Node::SPtr                m_root;
 
     typename PlaneForceFieldType::SPtr      m_planeForceFieldSPtr;
@@ -118,11 +118,13 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
      * by the plane force field.
      * In the special case where : stiffness = 500, damping = 5 and maxForce = 0 (default values)
     */
-    void SetUp()
+    void SetUp() {}
+    void TearDown(){}
+
+    void setupDefaultScene()
     {
-        //TODO(dmarchal): there is no memory handling of the simulation...this is really weird and
-        //must be fixed.
-        sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
+        if(m_simulation==nullptr)
+            sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");
@@ -162,13 +164,12 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
-        m_root->init(ExecParams::defaultInstance());
-     }
+        simulation::getSimulation()->init(m_root.get());
+    }
 
-    void initSetup()
+    void tearDownDefaultScene()
     {
-        // Init
-        sofa::simulation::getSimulation()->init(m_root.get());
+        m_simulation->unload( m_root );
     }
 
     bool testBasicAttributes()
@@ -290,8 +291,37 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
             ExpectMessage msg(Message::Warning) ;
             planeff->init() ;
         }
+
         return true;
     }
+
+    ///
+    /// In this test we are verifying that a plane without a MechanicalObject is handled
+    /// gracefully
+    ///
+    bool testBehaviorWhenMissingMechanicalObject()
+    {
+        ExpectMessage msg(Message::Error) ;
+
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+                 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "  <Node name='Level 1'>                                                        \n"
+                 "   <PlaneForceField name='myPlaneForceField'/>                                 \n"
+                 "  </Node>                                                                      \n"
+                 "</Node>                                                                        \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+
+
+        EXPECT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        return true;
+    }
+
 
     bool testPlaneForceField()
     {
@@ -336,31 +366,34 @@ typedef Types<
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(PlaneForceField_test, DataTypes);// first test case
-TYPED_TEST( PlaneForceField_test , testForceField )
+TYPED_TEST( PlaneForceField_test , testPlaneForceField )
 {
-    this->initSetup();
+    this->setupDefaultScene();
     ASSERT_TRUE (this->testPlaneForceField());
+    this->tearDownDefaultScene();
 }
 
 TYPED_TEST( PlaneForceField_test , testBasicAttributes )
 {
-    this->initSetup();
     ASSERT_TRUE (this->testBasicAttributes());
 }
 
 TYPED_TEST( PlaneForceField_test , testMonkeyValuesForAttributes )
 {
-    this->initSetup();
     ASSERT_TRUE (this->testMonkeyValuesForAttributes());
 }
 
 
 TYPED_TEST( PlaneForceField_test , testInitReinitBehavior )
 {
-    this->initSetup();
     ASSERT_TRUE (this->testInitReinitBehavior());
 }
 
+
+TYPED_TEST( PlaneForceField_test , testBehaviorWhenMissingMechanicalObject )
+{
+    ASSERT_TRUE (this->testBehaviorWhenMissingMechanicalObject());
+}
 
 TYPED_TEST( PlaneForceField_test , testDefaultPlane )
 {
