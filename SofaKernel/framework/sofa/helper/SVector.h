@@ -150,6 +150,16 @@ public:
 
 };
 
+/// reading specialization for std::string
+/// SVector begins by [, ends by ] and separates elements with ,
+/// string elements must be delimited by ' or " (like a list of strings in python).
+/// example: ['string1' ,  "string 2 ",'etc...' ]
+template<>
+std::istream& SVector<std::string>::read( std::istream& in );
+template<>
+std::ostream& SVector<std::string>::write( std::ostream& os ) const;
+
+
 } // namespace helper
 
 } // namespace sofa
