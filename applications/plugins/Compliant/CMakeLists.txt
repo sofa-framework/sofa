@@ -12,6 +12,8 @@ set(HEADER_FILES
     compliance/DampingCompliance.h
     compliance/DiagonalCompliance.h
     compliance/DiagonalCompliance.inl
+    compliance/LinearDiagonalCompliance.h
+    compliance/LinearDiagonalCompliance.inl
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
     compliance/FullCompliance.h
@@ -136,6 +138,7 @@ set(SOURCE_FILES
     assembly/AssemblyVisitor.cpp
     compliance/DampingCompliance.cpp
     compliance/DiagonalCompliance.cpp
+    compliance/LinearDiagonalCompliance.cpp
     compliance/UniformCompliance.cpp
     compliance/FullCompliance.cpp
     constraint/ClosureConstraint.cpp
