@@ -1,3 +1,6 @@
+#include <sofa/config.h>
+#include <cmath>
+
 #include <vector>
 using std::vector;
 
