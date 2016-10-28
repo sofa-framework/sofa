@@ -9,6 +9,8 @@ namespace helper
 /// reading specialization for std::string
 /// SVector begins by [, ends by ] and separates elements with ,
 /// string elements must be delimited by ' or " (like a list of strings in python).
+///
+/// Note this is a quick&dirty implementation and it could be improved
 template<>
 std::istream& SVector<std::string>::read( std::istream& in )
 {
@@ -20,7 +22,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
     if( f == std::string::npos )
     {
         // a '[' must be present
-        msg_error("Svector") << "read : a '[' is expected as beginning marker.";
+        msg_error("SVector") << "read : a '[' is expected as beginning marker.";
         return in;
     }
     else
@@ -29,7 +31,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
         if( f2!=std::string::npos && f2 < f )
         {
             // the '[' must be the first character
-            msg_error("Svector") << "read : Bad begin character, expected [";
+            msg_error("SVector") << "read : Bad begin character, expected [";
             return in;
         }
     }
@@ -38,7 +40,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
     if( e == std::string::npos )
     {
         // a ']' must be present
-        msg_error("Svector") << "read : a ']' is expected as ending marker.";
+        msg_error("SVector") << "read : a ']' is expected as ending marker.";
         return in;
     }
     else
@@ -47,7 +49,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
         std::size_t e2 = s.find_last_not_of(' ');
         if( e2!=std::string::npos && e2 > e )
         {
-            msg_error("Svector") << "read : Bad end character, expected ]";
+            msg_error("SVector") << "read : Bad end character, expected ]";
             return in;
         }
     }
@@ -65,7 +67,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
         std::size_t f2 = s.find_first_of("\"'",f+1);
         if( f2==std::string::npos )
         {
-            msg_error("Svector") << "read : Bad begin string character, expected \" or '";
+            msg_error("SVector") << "read : Bad begin string character, expected \" or '";
             this->clear();
             return in;
         }
@@ -73,7 +75,7 @@ std::istream& SVector<std::string>::read( std::istream& in )
         std::size_t i2 = s.find_last_of(s[f2],i-1);
         if( i2==std::string::npos )
         {
-            msg_error("Svector") << "read : Bad end string character, expected "<<s[f2];
+            msg_error("SVector") << "read : Bad end string character, expected "<<s[f2];
             this->clear();
             return in;
         }
