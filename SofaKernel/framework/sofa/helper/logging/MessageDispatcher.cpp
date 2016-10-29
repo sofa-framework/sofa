@@ -160,14 +160,16 @@ MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass,
 }
 
 
-
-
-
 MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Type type,
              const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
     : m_message( mclass
                  , type
-                 , sender->getClassName() // temporary, until Base object reference kept in the message itself -> (mattn) not sure it is a good idea, the Message could be kept after the Base is deleted
+                 , sender->getClassName()
+                 // temporary, until Base object reference kept in the message itself ->
+                 // (mattn) not sure it is a good idea, the Message could be kept after the Base is deleted
+                 // TODO(dmarchal): by converting this to a string we are not able anymore to
+                 // display rich information like the component name or location in the scene tree while these
+                 // information are really usefull.
                  , fileInfo )
 {
 }

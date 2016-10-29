@@ -117,6 +117,7 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
+    logging/RichConsoleStyleMessageFormatter.h
 )
 
 set(SOURCE_FILES
@@ -187,6 +188,7 @@ set(SOURCE_FILES
     logging/FileMessageHandler.cpp
 #    logging/LoggerMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
+    logging/RichConsoleStyleMessageFormatter.cpp
 )
 
 if(SOFA_HAVE_PNG)

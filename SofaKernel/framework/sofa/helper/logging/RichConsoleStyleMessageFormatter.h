@@ -20,7 +20,8 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Damien Marchal                                                     *
+* Contributors:                                                               *
+*    - damien.marchal@univ-lille1.fr                                          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,11 +29,13 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-
+#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
+#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
+#include <sstream>
+#include <string>
 #include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
-#include "RichConsoleStyleMessageFormatter.h"
+#include "MessageFormatter.h"
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -43,22 +46,39 @@ namespace helper
 namespace logging
 {
 
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
+namespace richconsolestylemessageformater
 {
-    //m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
-    m_formatter = (formatter==0?&RichConsoleStyleMessageFormatter::getInstance():formatter);
-}
 
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
-}
-
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+///
+/// \brief The RichConsoleStyleMessageFormatter class
+///
+///  The class implement a message formatter dedicated to console pretty printing on a console
+///  Among other thing it feature:
+///     - color rendering and 'italics'
+///     - formatting using a markdown like syntax
+///     - alignement and wrapping for long message that are then much easier to read.
+///
+///
+class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
-    m_formatter = formatter;
-}
+public:
+    static MessageFormatter& getInstance() { return s_instance; }
+    virtual void formatMessage(const Message& m,std::ostream& out);
+
+private:
+        // singleton API
+        RichConsoleStyleMessageFormatter();
+        RichConsoleStyleMessageFormatter(const RichConsoleStyleMessageFormatter&);
+        void operator=(const RichConsoleStyleMessageFormatter&);
+        static RichConsoleStyleMessageFormatter s_instance;
+};
+
+} // richconsolestylemessageformater
+
+using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
 
 } // logging
 } // helper
 } // sofa
 
+#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
