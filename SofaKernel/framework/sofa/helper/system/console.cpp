@@ -92,8 +92,10 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType(15);
     const Console::ColorType Console::DEFAULT_COLOR = getDefaultColor();
 
-    const Console::CodeType Console::ITALIC = getDefaultColor();
-    const Console::CodeType Console::DEFAULT_CODE = getDefaultColor();
+    //TODO(dmarchal): Implement the rich text on windows...
+    const Console::CodeType Console::ITALIC = getDefaultCode();
+    const Console::CodeType Console::UNDERLINE = getDefaultCode();
+    const Console::CodeType Console::DEFAULT_CODE = getDefaultCode();
 
     void Console::setColorsStatus(ColorsStatus status)
     {
@@ -141,6 +143,7 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType("\033[1;37m");
     const Console::ColorType Console::DEFAULT_COLOR = Console::ColorType("\033[0m");
 
+    const Console::CodeType Console::UNDERLINE = Console::CodeType("\033[4m");
     const Console::CodeType Console::ITALIC = Console::CodeType("\033[3m");
     const Console::CodeType Console::DEFAULT_CODE = Console::CodeType("\033[0m");
 

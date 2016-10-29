@@ -78,6 +78,7 @@ public:
     static const ColorType DEFAULT_COLOR;
 
     static const CodeType ITALIC;
+    static const CodeType UNDERLINE;
     static const CodeType DEFAULT_CODE;
 
     enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
