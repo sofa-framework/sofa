@@ -51,6 +51,9 @@ using std::remove ;
 
 #include <sofa/core/objectmodel/Base.h>
 
+#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+using sofa::helper::logging::RichConsoleStyleMessageFormatter;
+
 
 namespace sofa
 {
@@ -64,7 +67,7 @@ namespace logging
 static std::vector<MessageHandler*> setDefaultMessageHandler()
 {
     std::vector<MessageHandler*> messageHandlers;
-    static ConsoleMessageHandler s_consoleMessageHandler;
+    static ConsoleMessageHandler s_consoleMessageHandler(new RichConsoleStyleMessageFormatter());
     messageHandlers.push_back(&s_consoleMessageHandler);
     return messageHandlers;
 }
@@ -169,7 +172,8 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
                  // (mattn) not sure it is a good idea, the Message could be kept after the Base is deleted
                  // TODO(dmarchal): by converting this to a string we are not able anymore to
                  // display rich information like the component name or location in the scene tree while these
-                 // information are really usefull.
+                 // information are really usefull. I have to make small experiment to see what could be a nice
+                 // approach without too much overhead.
                  , fileInfo )
 {
 }
