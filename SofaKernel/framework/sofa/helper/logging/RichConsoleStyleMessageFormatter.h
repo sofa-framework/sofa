@@ -53,24 +53,20 @@ namespace richconsolestylemessageformater
 /// \brief The RichConsoleStyleMessageFormatter class
 ///
 ///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature:
-///     - color rendering and 'italics'
-///     - formatting using a markdown like syntax
+///  Among other thing it feature formatting using a markdown like syntax:
+///     - color rendering, 'italics' or *italics*
 ///     - alignement and wrapping for long message that are then much easier to read.
+///     - automatic reading of the console number of column for prettier display.
 ///
 ///
 class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static MessageFormatter& getInstance() { return s_instance; }
     virtual void formatMessage(const Message& m,std::ostream& out);
 
-private:
-        // singleton API
-        RichConsoleStyleMessageFormatter();
-        RichConsoleStyleMessageFormatter(const RichConsoleStyleMessageFormatter&);
-        void operator=(const RichConsoleStyleMessageFormatter&);
-        static RichConsoleStyleMessageFormatter s_instance;
+    RichConsoleStyleMessageFormatter();
+    //RichConsoleStyleMessageFormatter(const RichConsoleStyleMessageFormatter&);
+    //void operator=(const RichConsoleStyleMessageFormatter&);
 };
 
 } // richconsolestylemessageformater

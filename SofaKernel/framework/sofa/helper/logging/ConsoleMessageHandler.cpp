@@ -45,8 +45,7 @@ namespace logging
 
 ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
 {
-    //m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
-    m_formatter = (formatter==0?&RichConsoleStyleMessageFormatter::getInstance():formatter);
+    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
 }
 
 void ConsoleMessageHandler::process(Message &m) {

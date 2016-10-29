@@ -52,13 +52,12 @@ namespace logging
 
 namespace richconsolestylemessageformater
 {
-
+/////////////////////////////// STATIC ELEMENT SPECIFIC TO RichConsoleStyleMessage /////////////////
+typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
 helper::fixed_array<std::string,Message::TypeCount> s_messageTypePrefixes;
 helper::fixed_array<Console::ColorType,Message::TypeCount> s_messageTypeColors;
-RichConsoleStyleMessageFormatter RichConsoleStyleMessageFormatter::s_instance;
 
-RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter()
-{
+int initColors(){
     s_messageTypePrefixes[Message::Advice]      = "[SUGGESTION] ";
     s_messageTypePrefixes[Message::Info]        = "[INFO]    ";
     s_messageTypePrefixes[Message::Deprecated]  = "[DEPRECATED] ";
@@ -74,20 +73,27 @@ RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter()
     s_messageTypeColors[Message::Error]      = Console::BRIGHT_RED;
     s_messageTypeColors[Message::Fatal]      = Console::BRIGHT_PURPLE;
     s_messageTypeColors[Message::TEmpty]     = Console::DEFAULT_COLOR;
+    return 1;
 }
 
-typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+int s_isInited = initColors();
 
-
-
+///
+/// \brief simpleFormat a text containing our markdown 'tags'
+/// \param jsize size of the line prefix to fill with space (for left side alignment)
+/// \param text  the text to format
+/// \param line_length number of column to render to to
+/// \param wrapped the destination stream where to write the formatted text.
+///
 void simpleFormat(int jsize, const std::string& text, size_t line_length,
                   std::ostream& wrapped)
 {
+    //TODO(dmarchal): All that code is a mess...need to be done for real.
+
     /// space and * are separator that are returned in the token flow
     /// while "\n" is a 'hidden' separator.
     static boost::char_separator<char> sep("\n", "* '");
 
-    std::istringstream words(text) ;
     std::string emptyspace(jsize, ' ') ;
 
     tokenizer tokens(text, sep) ;
@@ -100,20 +106,35 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
     for (tokenizer::iterator tok_iter = tokens.begin();tok_iter != tokens.end(); ++tok_iter)
     {
         const std::string& word = *tok_iter;
-        if(word=="'")
+        if(word=="'" || word=="*")
         {
             if(isInItalic)
             {
                 isInItalic=false;
                 wrapped << Console::DEFAULT_CODE ;
+                wrapped << "'";
+                continue;
             }
             else
             {
                 isInItalic=true;
+
+                if(numspaces==1){
+                    if(!beginOfLine){
+                        wrapped << " ";
+                        numspaces = 0;
+                        space_left--;
+                    }else{
+                        wrapped << emptyspace ;
+                    }
+                }
+
+                wrapped << "'";
                 wrapped << Console::ITALIC ;
+                wrapped << Console::UNDERLINE ;
+                continue;
             }
-        }
-        if(word==" ")
+        }else if(word==" ")
         {
             if(numspaces==1)
             {
@@ -188,22 +209,29 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
     }
 }
 
+
+
+////////////////////////////// RichConsoleStyleMessageFormatter Implementation /////////////////////
+RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){}
+
 void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostream& out)
 {
-    std::stringstream tmp ;
-    std::ostringstream formatted;
     int psize = s_messageTypePrefixes[m.type()].size() ;
 
     out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
 
     if (!m.sender().empty()){
-        ///The +3 is for the extra '[', and '] '
         psize +=m.sender().size()+3 ;
         out << Console::BLUE << "[" << m.sender() << "] ";
     }
-
     out << Console::DEFAULT_COLOR;
+
+    /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
+
+    ///Restore the console rendering attribute.
+    out << Console::DEFAULT_COLOR;
+    out << Console::DEFAULT_CODE;
     out << std::endl ;
 }
 
