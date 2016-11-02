@@ -132,7 +132,8 @@ public:
 
 public:
     /// Data storing min and max 3D position of the grid bounding box
-    Data< Vector3 > d_min, d_max;
+    Data< Vector3 > d_min;
+    Data< Vector3 > d_max;
 
     /// Data storing Position of point 0
     Data< Vector3 > d_p0;

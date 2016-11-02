@@ -83,10 +83,13 @@ public:
     Data<double> p_distance;
 
     Data<double> p_fieldOfView;
-    Data<double> p_zNear, p_zFar;
+    Data<double> p_zNear;
+    Data<double> p_zFar;
     Data<bool> p_computeZClip;
-    Data<Vec3> p_minBBox, p_maxBBox;
-    Data<unsigned int> p_widthViewport, p_heightViewport;
+    Data<Vec3> p_minBBox;
+    Data<Vec3> p_maxBBox;
+    Data<unsigned int> p_widthViewport;
+    Data<unsigned int> p_heightViewport;
     Data<sofa::helper::OptionsGroup> p_type;
 
     Data<bool> p_activated;
