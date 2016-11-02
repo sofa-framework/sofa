@@ -236,6 +236,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, c
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if (showPointIndices.getValue())
     {
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -257,6 +258,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
         }
         vparams->drawTool()->draw3DText_Indices(positions, scale, color4);
     }
+#endif //SOFA_NO_OPENGL
 }
 
 
