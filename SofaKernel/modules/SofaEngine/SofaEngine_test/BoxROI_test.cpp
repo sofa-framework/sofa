@@ -227,6 +227,7 @@ struct BoxROITest :  public ::testing::Test
         EXPECT_EQ(boxroi->getComponentState(), ComponentState::Valid ) << "The component should succeed in being initialized because there is a MeshLoader and a TopologyContainer in the current context. " ;
     }
 
+    //TODO(dmarchal): deprecated test...remove it after 01/01/2017
     void checkMissingTopology(){
         string scene =
                 "<?xml version='1.0'?>"
@@ -288,6 +289,6 @@ TYPED_TEST(BoxROITest, checkAutomaticSearchingOfMeshLoader) {
     ASSERT_NO_THROW(this->checkAutomaticSearchingOfMeshLoader()) ;
 }
 
-TYPED_TEST(BoxROITest, checkMissingTopology) {
-    ASSERT_NO_THROW(this->checkMissingTopology()) ;
-}
+//TYPED_TEST(BoxROITest, checkMissingTopology) {
+//    ASSERT_NO_THROW(this->checkMissingTopology()) ;
+//}
