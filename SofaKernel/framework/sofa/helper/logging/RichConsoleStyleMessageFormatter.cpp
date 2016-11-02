@@ -220,14 +220,30 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
 
-    if (!m.sender().empty()){
-        psize +=m.sender().size()+3 ;
-        out << Console::BLUE << "[" << m.sender() << "] ";
+    if (!m.sender().empty())
+    {
+        if( m.componentInfo() )
+        {
+            psize +=m.sender().size()+m.componentInfo()->m_name.size()+5 ;
+            out << Console::BLUE << "[" << m.sender()<< "(" << m.componentInfo()->m_name << ")] ";
+        }
+        else
+        {
+            psize +=m.sender().size()+3 ;
+            out << Console::BLUE << "[" << m.sender()<< "] ";
+        }
     }
     out << Console::DEFAULT_COLOR;
 
     /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
+
+    std::stringstream buf;
+    std::string emptyspace(psize, ' ') ;
+
+    buf << "Emitted from '" << m.fileInfo().filename << "' line " << m.fileInfo().line ;
+    out << "\n" << emptyspace ;
+    simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
 
     ///Restore the console rendering attribute.
     out << Console::DEFAULT_COLOR;
@@ -239,3 +255,4 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 } // logging
 } // helper
 } // sofa
+

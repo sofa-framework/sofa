@@ -29,7 +29,7 @@
 * User of this library should read the documentation
 * in the TextMessaging.h file.
 ******************************************************************************/
-
+#define SOFA_MESSAGE_CPP
 #include "Message.h"
 
 using std::endl ;
@@ -44,12 +44,23 @@ namespace helper
 namespace logging
 {
 
+template<>
+SOFA_HELPER_API
+Message& Message::operator<<(const ComponentInfo::SPtr& componentinfo){
+    m_componentinfo = componentinfo ;
+    return *this;
+}
+
 Message Message::emptyMsg(CEmpty, TEmpty, "", FileInfo()) ;
 
 Message::Message(Class mclass, Type type,
-                 const string& sender, const FileInfo& fileInfo):
+                 const string& sender,
+                 const FileInfo& fileInfo,
+                 const ComponentInfo::SPtr& componentInfo
+                 ):
     m_sender(sender),
     m_fileInfo(fileInfo),
+    m_componentinfo(componentInfo),
     m_class(mclass),
     m_type(type),
     m_id(-1)
@@ -59,9 +70,9 @@ Message::Message(Class mclass, Type type,
 Message::Message( const Message& msg )
     : m_sender(msg.sender())
     , m_fileInfo(msg.fileInfo())
+    , m_componentinfo(msg.componentInfo())
     , m_class(msg.context())
     , m_type(msg.type())
-//    , m_id(msg.id())
 {
     m_stream << msg.message().str();
 }
@@ -70,9 +81,9 @@ Message& Message::operator=( const Message& msg )
 {
     m_sender = msg.sender();
     m_fileInfo = msg.fileInfo();
+    m_componentinfo = msg.componentInfo();
     m_class = msg.context();
     m_type = msg.type();
-//    m_id = msg.id();
     m_stream << msg.message().str();
     return *this;
 }
@@ -80,17 +91,17 @@ Message& Message::operator=( const Message& msg )
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
-//    s << "         Message id: " << m.id() << endl ;
     s << "    Message type   : " << m.type() << endl ;
     s << "    Message content: " << m.message().str() << endl ;
     s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
+    if(m.componentInfo())
+        s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
     return s;
 }
 
 bool Message::empty() const
 {
     // getting the size without creating a copy like m_stream.str().size()
-
     std::streambuf* buf = m_stream.rdbuf();
 
     // the current position to restore it after

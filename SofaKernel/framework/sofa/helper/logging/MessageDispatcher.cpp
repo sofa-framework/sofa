@@ -54,6 +54,9 @@ using std::remove ;
 #include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter;
 
+#include <mutex>
+using std::lock_guard ;
+using std::mutex;
 
 namespace sofa
 {
@@ -64,8 +67,14 @@ namespace helper
 namespace logging
 {
 
+mutex s_dispatchermutex ;
+
 static std::vector<MessageHandler*> setDefaultMessageHandler()
 {
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     std::vector<MessageHandler*> messageHandlers;
     static ConsoleMessageHandler s_consoleMessageHandler(new RichConsoleStyleMessageFormatter());
     messageHandlers.push_back(&s_consoleMessageHandler);
@@ -75,11 +84,19 @@ static std::vector<MessageHandler*> setDefaultMessageHandler()
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     static std::vector<MessageHandler*> s_handlers = setDefaultMessageHandler();
     return s_handlers;
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     std::vector<MessageHandler*>& handlers = getHandlers();
     if( std::find(handlers.begin(), handlers.end(), o) == handlers.end()){
         handlers.push_back(o) ;
@@ -89,17 +106,29 @@ int MessageDispatcher::addHandler(MessageHandler* o){
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     std::vector<MessageHandler*>& handlers = getHandlers();
     handlers.erase(remove(handlers.begin(), handlers.end(), o), handlers.end());
     return (int)(handlers.size()-1);
 }
 
 void MessageDispatcher::clearHandlers(){
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     std::vector<MessageHandler*>& handlers = getHandlers();
     handlers.clear() ;
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
+    /// This static function of the dispatcher has to be protected against concurent access
+    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
+    //lock_guard<mutex> guard(s_dispatchermutex) ;
+
     std::vector<MessageHandler*>& handlers = getHandlers();
     for( size_t i=0 ; i<handlers.size() ; i++ )
         handlers[i]->process(m) ;
@@ -174,7 +203,8 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
                  // display rich information like the component name or location in the scene tree while these
                  // information are really usefull. I have to make small experiment to see what could be a nice
                  // approach without too much overhead.
-                 , fileInfo )
+                 , fileInfo
+                 , ComponentInfo::SPtr(new ComponentInfo(sender->getName(), "")) )
 {
 }
 
