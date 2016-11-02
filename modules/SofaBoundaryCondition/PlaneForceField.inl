@@ -107,8 +107,7 @@ void PlaneForceField<DataTypes>::init(){
     if( d_localRange.isSet() && (tmp.x() < 0 || tmp.y() < 0 || tmp.x() > tmp.y()) ){
         msg_warning(this) << "The 'localRange="<< d_localRange.getValueString() << "' parameter is not valid as it needs two indices in numerical order.  "
                              "Continuing with the default value=[0, 0] (no local range).  "
-                             "To remove this warning message you need to set the 'localRange' to correct value."
-                          << sofa::helper::logging::ComponentInfo::SPtr(new sofa::helper::logging::ComponentInfo(this->getName(), this->getPathName())) ;
+                             "To remove this warning message you need to set the 'localRange' to correct value." ;
 
         tmp.set(-1,-1);
         d_localRange.setValue(tmp) ;

@@ -44,13 +44,6 @@ namespace helper
 namespace logging
 {
 
-template<>
-SOFA_HELPER_API
-Message& Message::operator<<(const ComponentInfo::SPtr& componentinfo){
-    m_componentinfo = componentinfo ;
-    return *this;
-}
-
 Message Message::emptyMsg(CEmpty, TEmpty, "", FileInfo()) ;
 
 Message::Message(Class mclass, Type type,

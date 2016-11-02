@@ -159,10 +159,6 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_MESSAGE_CPP)
-extern template SOFA_HELPER_API Message&  Message::operator <<(const ComponentInfo::SPtr&) ;
-#endif //
-
 SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 
 } // logging
