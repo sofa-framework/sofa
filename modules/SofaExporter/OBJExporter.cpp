@@ -137,7 +137,7 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         }
     }
 
-    if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
+    if ( simulation::AnimateEndEvent::checkEventType(event))
     {
         if (maxStep == 0 || !activateExport) return;
 
