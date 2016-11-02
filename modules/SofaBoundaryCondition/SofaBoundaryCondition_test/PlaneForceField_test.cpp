@@ -55,6 +55,9 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <map>
 
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace;
+
 namespace sofa {
 
 namespace {
@@ -123,12 +126,13 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
     void setupDefaultScene()
     {
-        if(m_simulation==nullptr)
+        if(m_simulation==nullptr){
+            BackTrace::autodump() ;
             sofa::simulation::setSimulation(m_simulation = new sofa::simulation::graph::DAGSimulation());
-
+        }
         /// Create the scene
         m_root = m_simulation->createNewGraph("root");
-        m_root->setGravity(Vec3d(0, -9.8,0));
+        m_root->setGravity(Vec3d(-9.8, 0.0,0.0));
 
         typename EulerImplicitSolverType::SPtr eulerImplicitSolver = New<EulerImplicitSolverType>();
         m_root->addObject(eulerImplicitSolver);
@@ -144,7 +148,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
         //TODO(dmarchal): too much lines to just set a point... find a more concise way to do that
         Coord point;
-        point[1]=1;
+        point[0]=1;
         VecCoord points;
         points.clear();
         points.push_back(point);
@@ -160,7 +164,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         m_planeForceFieldSPtr->d_planeD.setValue(0);
 
         DPos normal;
-        normal[1]=1;
+        normal[0]=1;
         m_planeForceFieldSPtr->d_planeNormal.setValue(normal);
 
         m_root->addObject(m_planeForceFieldSPtr) ;
@@ -233,7 +237,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         };
 
         for(auto& kv : values){
-            for(auto& v : kv.second){
+          for(auto& v : kv.second){
             std::stringstream scene ;
             scene << "<?xml version='1.0'?>"
                  "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -315,7 +319,6 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 
-
         EXPECT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
@@ -329,7 +332,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
             m_simulation->animate(m_root.get(),(double)0.01);
 
         }
-        Real x = m_mechanicalObj->x.getValue()[0][1];
+        Real x = m_mechanicalObj->x.getValue()[0][0];
 
         /// The point passed through the plane but is still too low.
         /// The value depend on the repulsion force generated and the mass of the point.
