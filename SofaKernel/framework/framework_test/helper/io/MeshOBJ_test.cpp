@@ -26,6 +26,11 @@
 
 #include <gtest/gtest.h>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::ExpectMessage;
+using sofa::helper::logging::Message;
+
+
 namespace sofa {
 
 using namespace core::loader;
@@ -65,7 +70,7 @@ protected:
             , nbLines(nbLines), nbTriangles(nbTriangles), nbQuads(nbQuads), nbFacets(nbFacets)
             , nbTexcoords(nbTexcoords), nbNormals(nbNormals)
         {
-            
+
         }
 
         void testBench()
@@ -105,11 +110,14 @@ protected:
             EXPECT_EQ(nbNormals, mesh.getNormals().size());
         }
     };
-            
+
 };
 
 TEST_F(MeshOBJ_test, MeshOBJ_NoFile)
 {
+    /// This generate a test failure if no message is generated.
+    ExpectMessage raii(Message::Error);
+
     MeshOBJTestData meshNoFile("mesh/randomnamewhichdoesnotexist.obj", 0, 0, 0, 0, 0, 0, 0);
     meshNoFile.testBench();
 }
