@@ -274,14 +274,14 @@ void BoxROI<DataTypes>::init()
                     f_quad.setReadOnly(true);
                 }
             }
-        }else{
+        }/*else{
             msg_warning(this) << "No primitives provided nor TopologyContainer and a BaseMeshTopology in the current context.\n"
                                  "To remove this message you can either: \n"
                                  "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
                                  "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
             m_componentstate = ComponentState::Invalid ;
             return ;
-        }
+        }*/
     }
 
     addInput(&f_X0);

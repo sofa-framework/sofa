@@ -74,7 +74,11 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
     
     virtual void apply(typename self::out_pos_type& out, 
                        const helper::vector<typename self::in_pos_type>& /*in*/ );
-	
+
+
+  private:
+    std::vector<in_vec> at;
+    std::vector<out_csr_matrix*> js;
 };
 
 

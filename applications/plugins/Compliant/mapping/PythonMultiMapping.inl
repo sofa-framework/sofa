@@ -29,7 +29,7 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<type
     gs_type& dJ = this->geometric.compressedMatrix;
     out_vec f = out_vec::map(out.ref());
     
-    in_vec at[in.size()];
+    at.resize(in.size());
     int size = 0;
     for(unsigned i = 0, n = in.size(); i < n; ++i) {
         at[i] = in_vec::map(in[i].ref());
@@ -37,7 +37,7 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<type
     }
 
     dJ.resize( size, size );
-    gs_callback.getValue().data(&dJ, at, in.size(), f);
+    gs_callback.getValue().data(&dJ, at.data(), in.size(), f);
     
 }
     
@@ -50,8 +50,8 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
     }
 
 
-    in_vec at[in.size()];
-    out_csr_matrix* js[in.size()];
+    at.resize(in.size());
+    js.resize(in.size());
     
 
     for(unsigned i = 0, n = in.size(); i < n; ++i) {
@@ -63,7 +63,7 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
         js[i] = &this->jacobian(i).compressedMatrix;
     }
     
-    jacobian_callback.getValue().data(js, at, in.size());
+    jacobian_callback.getValue().data(js.data(), at.data(), in.size());
 
 }
 
@@ -78,13 +78,13 @@ void PythonMultiMapping<TIn, TOut>::apply(typename self::out_pos_type& out,
     }
 
     
-    in_vec at[in.size()];
+    at.resize(in.size());
     for(unsigned i = 0, n = in.size(); i < n; ++i) {
         at[i] = in_vec::map(in[i].ref());
     }
     
     out_vec to = out_vec::map(out.ref());
-    apply_callback.getValue().data(to, at, in.size());
+    apply_callback.getValue().data(to, at.data(), in.size());
     
 }
 

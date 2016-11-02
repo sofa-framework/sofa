@@ -8,7 +8,7 @@ import SofaPython.sml
 from Compliant import Tools
 from Compliant.Tools import cat as concat
 
-import RigidScale.sml as sml
+import RigidScale.sml_deprecated as sml
 
 __file = __file__.replace('\\', '/') # windows
 
@@ -68,26 +68,40 @@ class MyClass(Sofa.PythonScriptController):
         self.scene.param.constraintCompliance = 1E-6
 
         # visual settings
-        self.scene.param.showRigid=True
-        self.scene.param.showRigidScale=0.025
-        self.scene.param.showOffset=True
-        self.scene.param.showOffsetScale=0.020
-        self.scene.param.showRigidDOFasSphere=False
+        self.scene.param.showRigid = True
+        self.scene.param.showRigidScale = 0.025
+        self.scene.param.showOffset = True
+        self.scene.param.showOffsetScale = 0.020
+        self.scene.param.showRigidDOFasSphere = False
 
         # scene creation
         self.scene.createScene()
 
         boneToFixed = ['s_humerus']
         # Add of fixed constraint
-        # for b in boneToFixed:
-            # if b in self.scene.bones.keys():
-                # self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
-                # self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
+        for b in boneToFixed:
+            if b in self.scene.bones.keys():
+                self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
+                self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
 
-    # To remove warning
-    def onBeginAnimationStep(self, dt):
-        if self.t==0:
-            for bone in self.scene.bones.values():
-                bone.affineMassNode.active = False
-        self.t = self.t+dt
+    # Init completion
+    def bwdInitGraph(self, rootNode):
+        for bone in self.scene.bones.values():
+            for node in bone.affineNode.getChildren():
+                if node.getName() == "mass":
+                    bone.affineNode.removeChild(node)
+                    # node.active = False
+
+        # removal animation loop
+        visitor = SofaPython.Tools.SceneDataIO.SofaVisitor('SceneIOVisitor')
+        self.scene.node.executeVisitor(visitor)
+        componentList = visitor.componentList
+
+        # process the scene to load each component data
+        classNameList = ['DefaultAnimationLoop', 'DefaultVisualManagerLoop', 'MeshObjLoader', 'TransferFunction',
+                         'ImageContainer', 'MeshToImageEngine', 'ImageSampler', 'VoronoiShapeFunction',
+                         'RequiredPlugin']
+        for component in componentList:
+            if component.getClassName() in classNameList:
+                component.getContext().removeObject(component)
 
