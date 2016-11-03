@@ -177,6 +177,26 @@ struct SOFA_TestPlugin_API ExpectMessage
     }
 };
 
+struct SOFA_TestPlugin_API MessageAsTestFailure
+{
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
+    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
+
+    MessageAsTestFailure(const Message::Type t)
+    {
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+    }
+
+    ~MessageAsTestFailure()
+    {
+        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
+        }
+    }
+};
 
 
 } // logging
