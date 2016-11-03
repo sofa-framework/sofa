@@ -155,7 +155,13 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                     numspaces = 0;
                     space_left--;
                 }else{
+                    wrapped << Console::DEFAULT_CODE;
+                    wrapped << Console::DEFAULT_COLOR;
                     wrapped << emptyspace ;
+                    if(isInItalic){
+                        wrapped << Console::ITALIC;
+                        wrapped << Console::UNDERLINE;
+                    }
                 }
             }
         }
@@ -166,24 +172,30 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             {
                 std::string first;
                 size_t curidx=0;
-                size_t endidx=std::min(word.length(), space_left);
+                size_t endidx=std::min(word.length(), space_left-1);
 
                 while(curidx < word.length())
                 {
                     first=word.substr(curidx,endidx);
 
-                    if(beginOfLine)
+                    if(beginOfLine){
+                        wrapped << Console::DEFAULT_CODE;
+                        wrapped << Console::DEFAULT_COLOR;
                         wrapped << emptyspace ;
-
+                        if(isInItalic){
+                            wrapped << Console::ITALIC;
+                            wrapped << Console::UNDERLINE;
+                        }
+                    }
                     beginOfLine=false;
                     wrapped << first ;
 
                     curidx+=endidx;
-                    endidx=std::min(word.length()-curidx, line_length);
+                    endidx=std::min(word.length()-curidx, line_length-1);
 
                     if(curidx < word.length())
                     {
-                        wrapped << '\n' ;
+                        wrapped << "\n" ;
                         beginOfLine=true;
                     }
                 }
@@ -192,16 +204,28 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             else
             {
                 wrapped << "\n";
+                wrapped << Console::DEFAULT_CODE;
+                wrapped << Console::DEFAULT_COLOR;
                 wrapped << emptyspace ;
+                if(isInItalic){
+                    wrapped << Console::ITALIC;
+                    wrapped << Console::UNDERLINE;
+                }
                 wrapped << word ;
                 space_left = line_length-word.length();
             }
         }
         else
         {
-            if(beginOfLine)
+            if(beginOfLine){
+                wrapped << Console::DEFAULT_CODE;
+                wrapped << Console::DEFAULT_COLOR;
                 wrapped << emptyspace ;
-
+                if(isInItalic){
+                    wrapped << Console::ITALIC;
+                    wrapped << Console::UNDERLINE;
+                }
+            }
             beginOfLine=false;
             wrapped << word;
             space_left -= word.length() ;
