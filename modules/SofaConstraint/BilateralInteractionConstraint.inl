@@ -65,13 +65,21 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
 
+    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance",
+                                    "a real value specifying the tolerance during the constraint solving. (optional, default=0.0001)") )
+
     //TODO(dmarchal): Such kind of behavior shouldn't be implemented in the component but externalized in a second component or in a python script controlling the scene.
     , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0=disable)"))
 
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+
     , activated(true), iteration(0)
+
+    //0.0001) ;
+
+
 {
     this->f_listening.setValue(true);
 }
@@ -82,7 +90,10 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     , m1(initData(&m1, "first_point","index of the constraint on the first model"))
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
+    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance", "a real value specifying the tolerance during the constraint solving. (default=0.0001") )
+
     , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
+
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     , activated(true), iteration(0)
@@ -95,7 +106,10 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint()
     : m1(initData(&m1, "first_point","index of the constraint on the first model"))
     , m2(initData(&m2, "second_point","index of the constraint on the second model"))
     , restVector(initData(&restVector, "rest_vector","Relative position to maintain between attached points (optional)"))
+    , d_numericalTolerance(initData(&d_numericalTolerance, 0.0001, "numericalTolerance", "a real value specifying the tolerance during the constraint solving. (default=0.0001") )
+
     , activateAtIteration( initData(&activateAtIteration, 0, "activateAtIteration", "activate constraint at specified interation (0 = always enabled, -1=disabled)"))
+
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
     , activated(true), iteration(0)
@@ -105,7 +119,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint()
 
 
 template<class DataTypes>
-void BilateralInteractionConstraint<DataTypes>::init()
+void BilateralInteractionConstraint<DataTypes>::unspecializedInit()
 {
     /// Do general check of validity for inputs
     Inherit1::init();
@@ -117,6 +131,12 @@ void BilateralInteractionConstraint<DataTypes>::init()
     prevForces.clear();
     iteration = 0;
     activated = (activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration);
+}
+
+template<class DataTypes>
+void BilateralInteractionConstraint<DataTypes>::init()
+{
+    unspecializedInit();
 }
 
 template<class DataTypes>

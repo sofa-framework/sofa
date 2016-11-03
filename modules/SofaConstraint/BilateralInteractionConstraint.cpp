@@ -45,6 +45,7 @@ namespace bilateralinteractionconstraint
 
 class RigidImpl {};
 
+
 template<>
 class BilateralInteractionConstraintSpecialization<RigidImpl>
 {
@@ -203,13 +204,18 @@ public:
 
 #ifdef SOFA_WITH_DOUBLE
 template<>
+void BilateralInteractionConstraint<Rigid3dTypes>::init(){
+    unspecializedInit() ;
+}
+
+template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(const ConstraintParams* cParams,
                                                                            std::vector<ConstraintResolution*>& resTab,
                                                                            unsigned int& offset)
 {
     BilateralInteractionConstraintSpecialization<RigidImpl>::getConstraintResolution(*this,
                                                                                      cParams, resTab, offset,
-                                                                                     0.01) ;
+                                                                                     d_numericalTolerance.getValue()) ;
 }
 
 template <>
@@ -262,6 +268,20 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
 
 #ifdef SOFA_WITH_FLOAT
 template<>
+void BilateralInteractionConstraint<Rigid3fTypes>::init()
+{
+    unspecializedInit() ;
+
+    if(!d_numericalTolerance.isSet()){
+        msg_warning(this) << "The numericalTolerance attribute is not set. The default value is now 0.0001.  "
+                             "This value is different to the one used in SOFA 1.0 if you are experiencing problems "
+                             "in your scene you can set the attribute to the old value of 0.01.  "
+                             "To remove this warning message you need to explicitely specify the desired tolerance in"
+                             "your scene.  ";
+    }
+}
+
+template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const ConstraintParams* cParams,
                                                                            std::vector<ConstraintResolution*>& resTab,
                                                                            unsigned int& offset)
@@ -269,7 +289,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const
 
     BilateralInteractionConstraintSpecialization<RigidImpl>::getConstraintResolution(*this,
                                                                                      cParams, resTab, offset,
-                                                                                     0.0001) ;
+                                                                                     d_numericalTolerance.getValue());
 }
 
 template <>

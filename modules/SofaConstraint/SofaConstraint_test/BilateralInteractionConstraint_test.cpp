@@ -146,6 +146,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         EXPECT_TRUE( constraint->findData("second_point") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("rest_vector") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("activateAtIteration") != nullptr ) ;
+        EXPECT_TRUE( constraint->findData("numericalTolerance") != nullptr ) ;
 
         EXPECT_TRUE( constraint->findData("merge") != nullptr ) ;
         EXPECT_TRUE( constraint->findData("derivative") != nullptr ) ;
@@ -159,21 +160,42 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
         /// I'm using '\n' so that the XML parser correctly report the line number
         /// in case of problems.
-        std::string scene =
-                "<?xml version='1.0'?>                                       \n"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > \n"
-                "   <BilateralConstraintCorrection/>                         \n"
-                "</Node>                                                     \n" ;
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>                                       \n"
+                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > \n"
+                 "   <BilateralConstraintCorrection template='"<< DataTypes::Name() << "'/>     \n"
+                 "</Node>                                                     \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
-                                                          scene.c_str(),
-                                                          scene.size()) ;
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
 
         return ;
     }
 
+    void checkRigid3fFixForBackwardCompatibility(){}
  };
+
+template<>
+void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwardCompatibility(){
+    ExpectMessage e(Message::Warning) ;
+
+    /// I'm using '\n' so that the XML parser correctly report the line number
+    /// in case of problems.
+    std::stringstream scene;
+    scene << "<?xml version='1.0'?>                                       \n"
+             "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > \n"
+             "   <BilateralConstraintCorrection template=' " << Rigid3fTypes::Name() << " '/>  \n"
+             "</Node>                                                     \n" ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+                                                      scene.str().c_str(),
+                                                      scene.str().size()) ;
+    root->init(ExecParams::defaultInstance()) ;
+
+    return ;
+}
 
 
 // Define the list of DataTypes to instanciate
@@ -198,6 +220,12 @@ TYPED_TEST( BilateralInteractionConstraint_test , checkMstateRequiredAssumption 
 {
     ASSERT_NO_THROW(  this->checkMstateRequiredAssumption() );
 }
+
+TYPED_TEST( BilateralInteractionConstraint_test ,  checkRigid3fFixForBackwardCompatibility)
+{
+    ASSERT_NO_THROW(  this->checkRigid3fFixForBackwardCompatibility() );
+}
+
 
 }
 
