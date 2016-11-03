@@ -135,11 +135,11 @@ public:
     /// Add an alias name for an already registered class
     ///
     /// \param name     name of the new alias
-    /// \param result   class pointed to by the new alias
+    /// \param target   class pointed to by the new alias
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
-    bool addAlias(std::string name, std::string result, bool force=false,
-		  ClassEntry::SPtr* previous = NULL);
+    bool addAlias(std::string name, std::string target, bool force=false,
+          ClassEntry::SPtr* previous = NULL);
 
     /// Reset an alias to a previous state
     ///
