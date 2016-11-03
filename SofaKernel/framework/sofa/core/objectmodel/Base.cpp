@@ -218,11 +218,6 @@ std::string Base::getTypeName() const
         return c + std::string("<") + t + std::string(">");
 }
 
-const std::string& Base::getName() const
-{
-    return name.getValue();
-}
-
 /// Get the class name of this object
 std::string Base::getClassName() const
 {

@@ -181,7 +181,10 @@ public:
 
 
     /// Accessor to the object name
-    const std::string& getName() const ;
+    const std::string& getName() const
+    {
+        return name.getValue();
+    }
 
     /// Set the name of this object
     void setName(const std::string& n);
