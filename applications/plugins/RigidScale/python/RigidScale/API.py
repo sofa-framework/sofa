@@ -89,11 +89,11 @@ class ShearlessAffineBody:
 
         # scale dofs
         self.scaleDofs = self.scaleNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='dofs', position=concat([1,1,1]*numberOfPoints))
-        positiveNode = self.scaleNode.createChild('positive')
-        positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
-        positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
-        positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
-        positiveNode.createObject('UnilateralConstraint')
+        #positiveNode = self.scaleNode.createChild('positive')
+        #positiveNode.createObject('MechanicalObject', template='Vec3'+template_suffix, name='positivescaleDOFs')
+        #positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
+        #positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
+        #positiveNode.createObject('UnilateralConstraint')
 
         # affine dofs
         self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')

@@ -34,10 +34,12 @@ def insertRigidScale(parentNode, rigidModel, param):
                      voxelSize = SofaPython.units.length_from_SI(param.voxelSize),
                      density = SofaPython.units.massDensity_from_SI(1000.),
                      offset = rigidModel.position)
+        cm = body.addCollisionMesh(rigidModel.mesh[0].source)
+        cm.addVisualModel()
     else:
         body.setManually(offset=rigidModel.position);
 
-    #body.addBehavior(youngModulus=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), numberOfGaussPoint=8)
+    body.addBehavior(youngModulus=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), numberOfGaussPoint=8)
     #cm = body.addCollisionMesh(rigidModel.mesh[0].source)
     #cm.addVisualModel()
 
@@ -106,7 +108,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
             self.rigidScales[solidModel.id] = insertRigidScale(self.node, solidModel, self.param)
         # joints
         for jointModel in self.model.genericJoints.values():
-            self.joints[jointModel.id] = Compliant.sml.insertJoint(jointModel, self.rigidScales, self.param)
+            self.joints[jointModel.id] = Compliant.sml.insertJoint(jointModel, self.rigidScales, param=self.param)
 
 
 class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
@@ -114,10 +116,6 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
     [tag] solid tagged with rigidScale are simulated as ShearlessAffineBody, more tags can be added to param.rigidScaleTags
     [tag] mesh group tagged with rigidScalePosition are used to compute (barycenter) the positions of a rigidScale
     Compliant joints are setup between the bones """
-    def addSkinning(self, node, armatureNode, indices, weights, assemble=True, isMechanical=True):
-        """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
-        """
-        self.mapping = node.createObject("LinearMapping", template="Affine,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
     def insertMergeAffine(self, mergeNodeName="dofAffine", tags=None, affineIndexById=None):
         """ Merge all the affine in a single MechanicalObject using a SubsetMultiMapping
@@ -164,6 +162,7 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # the set of tags simulated as rigids
         # simulation
         self.param.rigidScaleStiffness = 10e3 # SI unit
+        self.param.mass = 1;
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
         self.param.jointIsComplianceByTag=dict()
         self.param.jointIsComplianceByTag["default"]=False
@@ -177,10 +176,10 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # visual
         self.param.showRigid = False
         self.param.showRigidScale = 0.02  # SI unit (m)
-        self.param.showAffine = False
-        self.param.showAffineScale = 0.02  # SI unit (m)
-        self.param.showOffset = False
-        self.param.showOffsetScale = 0.01  # SI unit (m)
+        self.param.showAffine = True
+        self.param.showAffineScale = 1  # SI unit (m)
+        self.param.showOffset = True
+        self.param.showOffsetScale = 0.5  # SI unit (m)
 
     def createScene(self):
 
@@ -192,7 +191,7 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # rigidScale
         for rigidModel in self.model.getSolidsByTags({"armature"}):
             body = RigidScale.API.ShearlessAffineBody(self.node, rigidModel.name)
-            body.setManually(offset=[rigidModel.position], mass=1)
+            body.setManually(offset=[rigidModel.position], mass=0, inertia=[0,0,0])
             body.affineDofs.showObject = self.param.showAffine
             body.affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showAffineScale)
             body.rigidDofs.showObject = self.param.showRigid
@@ -216,8 +215,9 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
                         deformable.loadMesh(mesh.source)
                         deformable.addMechanicalObject()
                         (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
-                        self.addSkinning(deformable.node,self.nodes["armature"], indices.values(), weights.values())
+                        deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
                         deformable.addVisual()
+                        deformable.addMass(self.param.mass)
                         self.deformables[mesh.id] = deformable
 
 
