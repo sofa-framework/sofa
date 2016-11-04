@@ -54,6 +54,8 @@ int main(int /*argc*/, char** argv)
     std::cout << "Before" << std::endl ;
     std::vector<ObjectFactory::ClassEntry::SPtr> result;
 
+    //ObjectFactory::getInstance()->dump() ;
+    /*
     ObjectFactory::getInstance()->getAllEntries(result);
 
     std::cout << "End" << std::endl ;
@@ -67,6 +69,6 @@ int main(int /*argc*/, char** argv)
             }
         }
     }
-
+*/
     return 0;
 }
