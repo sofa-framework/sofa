@@ -45,13 +45,13 @@ int main(int /*argc*/, char** argv)
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
-    std::vector<ObjectFactory::ClassEntry> result;
-    ObjectFactory::getAllEntries(result);
+    std::vector<ObjectFactory::ClassEntry::SPtr> result;
+    ObjectFactory::getInstance()->getAllEntries(result);
 
-    for(ObjectFactory::ClassEntry& entry : result)
+    for(ObjectFactory::ClassEntry::SPtr& entry : result)
     {
-        for(std::string& aliasname : entry.aliases){
-            std::cout << "./renameAliases.sh " << aliasname << " " << entry.m_componentName << std::endl ;
+        for(std::string& aliasname : entry->aliases){
+            std::cout << "./renameAliases.sh " << aliasname << " " << entry->m_componentName << std::endl ;
         }
     }
 
