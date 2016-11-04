@@ -30,6 +30,12 @@ The base rules are in Google C++ Style Guide: https://google.github.io/styleguid
 All rules below **replace** the corresponding base rules.  
 For any subject not mentionned below, please refer to the base.
 
+### Commit message
+A correct commit message must therefore be structured as:  
+`[NAME_OF_MODULE_OR_PLUGIN] ACTION message`  
+where ACTION includes ADD, REMOVE, FIX, CLEAN, REVERT.  
+Example: `[SofaKernel] ADD test for the mass conservation in UniformMass` 
+
 ### Naming
 Identifiers must respect the following conventions
 - Class names are in UpperCamelCase
