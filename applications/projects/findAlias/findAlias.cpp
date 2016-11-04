@@ -30,6 +30,9 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace;
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
@@ -38,20 +41,30 @@ using sofa::core::ObjectFactory ;
 // ---------------------------------------------------------------------
 int main(int /*argc*/, char** argv)
 {
-    sofa::simulation::tree::init();
+    BackTrace::autodump();
+
+    std::cout << "Before A" << std::endl ;
+
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
+    std::cout << "Before" << std::endl ;
     std::vector<ObjectFactory::ClassEntry::SPtr> result;
+
     ObjectFactory::getInstance()->getAllEntries(result);
+
+    std::cout << "End" << std::endl ;
 
     for(ObjectFactory::ClassEntry::SPtr& entry : result)
     {
-        for(std::string& aliasname : entry->aliases){
-            std::cout << "./renameAliases.sh " << aliasname << " " << entry->m_componentName << std::endl ;
+        if(entry){
+            std::cout << "Processing: " << entry->m_componentName << std::endl ;
+            for(auto& aliasname : entry->aliases){
+                std::cout << aliasname << " " << entry->m_componentName << std::endl ;
+            }
         }
     }
 
