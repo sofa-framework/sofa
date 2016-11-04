@@ -265,11 +265,8 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 //    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
 
-    // temp: directory always added to environment;
-    // TODO: check if the path is already set to this directory...
-
-    // append current path to Python module search path...
-    addPythonModulePath(dir);
+    // current path is always added to environment (if it is not empty)
+    if( !dir.empty() ) addPythonModulePath(dir);
 
 //    SP_MESSAGE_INFO( commandString.c_str() )
 

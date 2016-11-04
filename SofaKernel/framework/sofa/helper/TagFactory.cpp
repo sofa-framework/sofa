@@ -38,7 +38,7 @@ TagFactory::TagFactory()
     tagsList.push_back(std::string("Visual"));
 }
 
-/*SOFA_HELPER_API*/ unsigned int TagFactory::getID(std::string name)
+unsigned int TagFactory::getID(std::string name)
 {
     if (name.empty()) return 0;
     TagFactory * tagfac = TagFactory::getInstance();
@@ -63,7 +63,7 @@ TagFactory::TagFactory()
     }
 }
 
-/*SOFA_HELPER_API*/ std::string TagFactory::getName(unsigned int id)
+std::string TagFactory::getName(unsigned int id)
 {
     if( id < getInstance()->tagsList.size() )
         return getInstance()->tagsList[id];
@@ -71,7 +71,7 @@ TagFactory::TagFactory()
         return "";
 }
 
-/*SOFA_HELPER_API*/ TagFactory* TagFactory::getInstance()
+TagFactory* TagFactory::getInstance()
 {
     static TagFactory instance;
     return &instance;

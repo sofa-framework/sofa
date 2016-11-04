@@ -60,16 +60,16 @@ int OglShaderClass = core::RegisterObject("OglShader")
 OglShader::OglShader():
     turnOn(initData(&turnOn, (bool) true, "turnOn", "Turn On the shader?")),
     passive(initData(&passive, (bool) false, "passive", "Will this shader be activated manually or automatically?")),
-    vertFilename(initData(&vertFilename, helper::vector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShader", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, helper::vector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShader", "Set the fragment shader filename to load")),
+    vertFilename(initData(&vertFilename, helper::SVector<std::string>(1,"shaders/toonShading.vert"), "fileVertexShaders", "Set the vertex shader filename to load")),
+    fragFilename(initData(&fragFilename, helper::SVector<std::string>(1,"shaders/toonShading.frag"), "fileFragmentShaders", "Set the fragment shader filename to load")),
 #ifdef GL_GEOMETRY_SHADER_EXT
-    geoFilename(initData(&geoFilename, "fileGeometryShader", "Set the geometry shader filename to load")),
+    geoFilename(initData(&geoFilename, "fileGeometryShaders", "Set the geometry shader filename to load")),
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
-    tessellationControlFilename(initData(&tessellationControlFilename, "fileTessellationControlShader", "Set the tessellation control filename to load")),
+    tessellationControlFilename(initData(&tessellationControlFilename, "fileTessellationControlShaders", "Set the tessellation control filename to load")),
 #endif
 #ifdef GL_TESS_EVALUATION_SHADER
-    tessellationEvaluationFilename(initData(&tessellationEvaluationFilename, "fileTessellationEvaluationShader", "Set the tessellation evaluation filename to load")),
+    tessellationEvaluationFilename(initData(&tessellationEvaluationFilename, "fileTessellationEvaluationShaders", "Set the tessellation evaluation filename to load")),
 #endif
 #ifdef GL_GEOMETRY_SHADER_EXT
     geometryInputType(initData(&geometryInputType, (int) -1, "geometryInputType", "Set input types for the geometry shader")),
@@ -85,11 +85,6 @@ OglShader::OglShader():
     backfaceWriting( initData(&backfaceWriting, (bool) false, "backfaceWriting", "it enables writing to gl_BackColor inside a GLSL vertex shader" ) ),
     clampVertexColor( initData(&clampVertexColor, (bool) true, "clampVertexColor", "clamp the vertex color between 0 and 1" ) )
 {
-    addAlias(&vertFilename,"vertFilename");
-    addAlias(&fragFilename,"fragFilename");
-#ifdef GL_GEOMETRY_SHADER_EXT
-    addAlias(&geoFilename,"geoFilename");
-#endif
 #ifdef GL_TESS_CONTROL_SHADER
     addAlias(&tessellationOuterLevel,"tessellationLevel");
     addAlias(&tessellationInnerLevel,"tessellationLevel");
@@ -173,7 +168,7 @@ void OglShader::initVisual()
 
     if (!sofa::helper::gl::GLSLShader::InitGLSL())
     {
-        serr << "OglShader : InitGLSL failed" << sendl;
+        serr << "InitGLSL failed" << sendl;
         return;
     }
     unsigned int nshaders = (unsigned int)shaderVector.size();
@@ -207,6 +202,65 @@ void OglShader::initVisual()
     {
         shaderVector[i]->InitShaders();
     }
+}
+
+
+
+void OglShader::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit1::parse(arg);
+
+
+    // BACKWARD COMPATIBILITY oct 2016
+    const char* fileVertexShader = arg->getAttribute("fileVertexShader");
+    const char* fileVertexShaderAlias = arg->getAttribute("vertFilename");
+    if( fileVertexShader || fileVertexShaderAlias )
+    {
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data<vector<string>> 'fileVertexShader' or 'vertFilename', please use the new Data<SVector<string>>'fileVertexShaders'"<<sendl;
+        helper::vector<std::string> simplevector;
+        std::istringstream( fileVertexShader ? fileVertexShader : fileVertexShaderAlias ) >> simplevector;
+        vertFilename.setValue( simplevector );
+    }
+    const char* fileFragmentShader = arg->getAttribute("fileFragmentShader");
+    const char* fileFragmentShaderAlias = arg->getAttribute("fragFilename");
+    if( fileFragmentShader || fileFragmentShaderAlias )
+    {
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data<vector<string>> 'fileFragmentShader' or 'fragFilename', please use the new Data<SVector<string>>'fileFragmentShaders'"<<sendl;
+        helper::vector<std::string> simplevector;
+        std::istringstream( fileFragmentShader ? fileFragmentShader : fileFragmentShaderAlias ) >> simplevector;
+        fragFilename.setValue( simplevector );
+    }
+#ifdef GL_GEOMETRY_SHADER_EXT
+    const char* fileGeometryShader = arg->getAttribute("fileGeometryShader");
+    const char* fileGeometryShaderAlias = arg->getAttribute("geoFilename");
+    if( fileGeometryShader || fileGeometryShaderAlias )
+    {
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data<vector<string>> 'fileGeometryShader' or 'geoFilename', please use the new Data<SVector<string>>'fileGeometryShaders'"<<sendl;
+        helper::vector<std::string> simplevector;
+        std::istringstream( fileGeometryShader ? fileGeometryShader : fileGeometryShaderAlias ) >> simplevector;
+        geoFilename.setValue( simplevector );
+    }
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
+    const char* fileTessellationControlShader = arg->getAttribute("fileTessellationControlShader");
+    if( fileTessellationControlShader )
+    {
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data<vector<string>> 'fileTessellationControlShader', please use the new Data<SVector<string>>'fileTessellationControlShaders'"<<sendl;
+        helper::vector<std::string> simplevector;
+        std::istringstream( fileTessellationControlShader ) >> simplevector;
+        tessellationControlFilename.setValue( simplevector );
+    }
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
+    const char* fileTessellationEvaluationShader = arg->getAttribute("fileTessellationEvaluationShader");
+    if( fileTessellationEvaluationShader )
+    {
+        serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data<vector<string>> 'fileTessellationEvaluationShader', please use the new Data<SVector<string>>'fileTessellationEvaluationShaders'"<<sendl;
+        helper::vector<std::string> simplevector;
+        std::istringstream( fileTessellationEvaluationShader ) >> simplevector;
+        tessellationEvaluationFilename.setValue( simplevector );
+    }
+#endif
 }
 
 void OglShader::drawVisual(const core::visual::VisualParams* )

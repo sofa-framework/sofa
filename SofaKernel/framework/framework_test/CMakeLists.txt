@@ -12,6 +12,7 @@ set(SOURCE_FILES
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp
+    helper/SVector_test.cpp
     helper/io/MeshOBJ_test.cpp
     helper/io/ImagePNG_test.cpp
     helper/system/FileRepository_test.cpp

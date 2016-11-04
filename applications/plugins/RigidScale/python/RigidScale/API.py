@@ -94,7 +94,6 @@ class ShearlessAffineBody:
         positiveNode.createObject('DifferenceFromTargetMapping', template='Vec3d,Vec3'+template_suffix, applyRestPosition=1, targets=concat(target_scale))
         positiveNode.createObject('UniformCompliance', isCompliance=1, compliance=0)
         positiveNode.createObject('UnilateralConstraint')
-        positiveNode.createObject('Stabilization', name='Stabilization')
 
         # affine dofs
         self.affineDofs = self.affineNode.createObject('MechanicalObject', template='Affine', name='dofs')
