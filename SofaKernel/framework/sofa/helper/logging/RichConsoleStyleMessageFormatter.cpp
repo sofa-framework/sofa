@@ -125,7 +125,7 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                         numspaces = 0;
                         space_left--;
                     }else{
-                        wrapped << emptyspace ;
+                        wrapped << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
                     }
                 }
 
@@ -266,7 +266,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     std::string emptyspace(psize, ' ') ;
 
     buf << "Emitted from '" << m.fileInfo().filename << "' line " << m.fileInfo().line ;
-    out << "\n" << emptyspace ;
+    out << "\n" << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
     simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
 
     ///Restore the console rendering attribute.
