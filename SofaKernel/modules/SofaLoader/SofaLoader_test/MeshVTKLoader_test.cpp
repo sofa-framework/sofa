@@ -31,7 +31,21 @@ using sofa::component::loader::MeshVTKLoader ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-namespace sofa {
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
+namespace sofa
+{
+namespace meshvtkloader_test
+{
+
+int initTestEnvironment()
+{
+    BackTrace::autodump() ;
+    return 0;
+}
+int s_autodump = initTestEnvironment() ;
+
 
 struct MeshVTKLoaderTest : public ::testing::Test,
                             public MeshVTKLoader
@@ -86,16 +100,17 @@ TEST_F(MeshVTKLoaderTest, loadInvalidFilenames)
     EXPECT_FALSE(load());
 }
 
-TEST_F(MeshVTKLoaderTest, loadBrokenVtkFile)
+TEST_F(MeshVTKLoaderTest, loadBrokenVtkFile_OpenIssue)
 {
     setFilename(DataRepository.getFile("mesh/liver_for_test_broken.vtk"));
     EXPECT_FALSE(load());
 }
 
-TEST_F(MeshVTKLoaderTest, loadBrokenVtuFile)
+TEST_F(MeshVTKLoaderTest, loadBrokenVtuFile_OpenIssue)
 {
     setFilename(DataRepository.getFile("mesh/Armadillo_Tetra_4406_for_test_broken.vtu"));
     EXPECT_FALSE(load());
 }
 
+}// namespace meshvtkloader_test
 }// namespace sofa
