@@ -39,7 +39,7 @@ using sofa::core::ObjectFactory ;
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
-int main(int /*argc*/, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     BackTrace::autodump();
 
