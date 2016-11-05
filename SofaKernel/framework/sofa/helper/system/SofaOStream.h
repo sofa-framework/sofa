@@ -85,7 +85,7 @@ public:
 
     // operator std::ostream&() const { return m_ostream; }
 
-    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
@@ -124,6 +124,7 @@ public:
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
     void clear()
     {
+        str("");
         m_fileInfo = helper::logging::EmptyFileInfo;
         m_messageType = (logging::Message::Type)DefaultMessageType;
         m_messageClass = logging::Message::Runtime;
