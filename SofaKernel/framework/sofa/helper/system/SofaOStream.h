@@ -135,7 +135,7 @@ protected:
     std::ostringstream& m_ostream;
 
     /// the current FileInfo
-    logging::FileInfo::SPtr m_fileInfo;
+    logging::FileInfo::SPtr m_fileInfo {helper::logging::EmptyFileInfo};
     /// the current Message type
     logging::Message::Type m_messageType;
     /// the current Message class
