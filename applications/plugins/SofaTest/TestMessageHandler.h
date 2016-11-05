@@ -32,6 +32,7 @@
 #define TESTMESSAGEHANDLER_H
 
 #include <sofa/helper/vector.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
@@ -60,7 +61,7 @@ public:
 
         if( active && m_failsOn[m.type()] ){
             ADD_FAILURE() << "An error message was emitted and is interpreted as a test failure. "
-                          <<  "src: " << std::string(m.fileInfo().filename) << ":" << m.fileInfo().line
+                          <<  "src: " << std::string(m.fileInfo()->filename) << ":" << m.fileInfo()->line
                           << "message: " << m.message().str() << std::endl;
 
         }
@@ -106,58 +107,6 @@ struct SOFA_TestPlugin_API ScopedDeactivatedTestMessageHandler
     ~ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(true); }
 };
 
-class CountingMessageHandler : public MessageHandler
-{
-public:
-    virtual void process(Message& m)
-    {
-        assert(m.type()<m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
-
-        m_countMatching[m.type()]++ ;
-    }
-
-    void reset(){
-        for(unsigned int i=0;i<m_countMatching.size();i++){
-            m_countMatching[i] = 0 ;
-        }
-    }
-
-    CountingMessageHandler() {
-        for(unsigned int i=Message::Info;i<Message::TypeCount;i++){
-            m_countMatching.push_back(0) ;
-        }
-    }
-
-    int getMessageCountFor(const Message::Type& type) const {
-        assert(type < m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
-        return m_countMatching[type] ;
-    }
-
-private:
-    sofa::helper::vector<int> m_countMatching ;
-} ;
-
-class MainCountingMessageHandler
-{
-public:
-    // singleton
-    static sofa::helper::logging::CountingMessageHandler& getInstance()
-    {
-        static sofa::helper::logging::CountingMessageHandler s_instance;
-        return s_instance;
-    }
-
-    static void reset(){
-        getInstance().reset() ;
-    }
-
-    static int getMessageCountFor(const Message::Type &type)
-    {
-        return getInstance().getMessageCountFor(type) ;
-    }
-};
-
-
 struct SOFA_TestPlugin_API ExpectMessage
 {
     int m_lastCount      {0} ;
@@ -173,27 +122,6 @@ struct SOFA_TestPlugin_API ExpectMessage
         if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
         {
             ADD_FAILURE() << "A message of type '" << m_type << "' was expected. None was received." << std::endl ;
-        }
-    }
-};
-
-struct SOFA_TestPlugin_API MessageAsTestFailure
-{
-    int m_lastCount      {0} ;
-    Message::Type m_type {Message::TEmpty} ;
-    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
-
-    MessageAsTestFailure(const Message::Type t)
-    {
-        m_type = t ;
-        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
-    }
-
-    ~MessageAsTestFailure()
-    {
-        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
-        {
-            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
         }
     }
 };

@@ -44,11 +44,11 @@ namespace helper
 namespace logging
 {
 
-Message Message::emptyMsg(CEmpty, TEmpty, "", FileInfo()) ;
+Message Message::emptyMsg(CEmpty, TEmpty, "", EmptyFileInfo) ;
 
 Message::Message(Class mclass, Type type,
                  const string& sender,
-                 const FileInfo& fileInfo,
+                 const FileInfo::SPtr& fileInfo,
                  const ComponentInfo::SPtr& componentInfo
                  ):
     m_sender(sender),
@@ -86,9 +86,12 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
     s << "    Message type   : " << m.type() << endl ;
     s << "    Message content: " << m.message().str() << endl ;
-    s << "    source code loc: " << m.fileInfo().filename << ":" << m.fileInfo().line << endl ;
+
+    if(m.fileInfo())
+        s << "    source code loc: " << m.fileInfo()->filename << ":" << m.fileInfo()->line << endl ;
     if(m.componentInfo())
         s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
+
     return s;
 }
 

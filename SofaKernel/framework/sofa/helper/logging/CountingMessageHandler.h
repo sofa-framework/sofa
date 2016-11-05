@@ -21,7 +21,7 @@
 * This component is open-source                                               *
 *                                                                             *
 * Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+*          - damien.marchal@univ-lille1.fr                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,63 +29,77 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sstream>
-#include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
-#include <sofa/helper/helper.h>
+#ifndef COUNTINGMESSAGEHANDLER_H
+#define COUNTINGMESSAGEHANDLER_H
+
+#include <sofa/helper/logging/MessageHandler.h>
+#include <sofa/helper/logging/Message.h>
+#include <vector>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace logging
 {
 
-namespace richconsolestylemessageformater
+/// I use a per-file namespace so that I can employ the 'using' keywords without
+/// fearing it will leack names into the global namespace.
+/// When closing this namespace selected objects from this per-file namespace
+/// are then imported into their parent namespace for ease of use.
+namespace countingmessagehandler
 {
 
 ///
-/// \brief The RichConsoleStyleMessageFormatter class
+/// \brief The CountingMessageHandler class count the messages by types
 ///
-///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature formatting using a markdown like syntax:
-///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
-///     - automatic reading of the console number of column for prettier display.
+/// This class is a MessageHandler that can be added to in a MessageDispatcher.
+/// Once set the class will start counting the messages passing through
+/// the MessageDispatcher according to their each Message::Type.
 ///
+/// It is possible to query the number of a specific Message::Type
+/// using the getMessageCountFor function.
 ///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
-{
-public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
-
-    RichConsoleStyleMessageFormatter();
-};
-
-/// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
+/// User interested in having a singleton of this class should have a look
+/// at \see MainCountingMessageHandler.
+///
+class SOFA_HELPER_API CountingMessageHandler : public MessageHandler
 {
 public:
-    static void formatMessage(const Message& m,std::ostream& out)
-    {
-        static RichConsoleStyleMessageFormatter formatter ;
-        formatter.formatMessage(m, out) ;
-    }
+    CountingMessageHandler() ;
+    virtual ~CountingMessageHandler(){}
+
+    void reset() ;
+    int getMessageCountFor(const Message::Type& type) const ;
+
+    /// Inherited from MessageHandler
+    virtual void process(Message& m) ;
+private:
+    std::vector<int> m_countMatching ;
+} ;
+
+///
+/// \brief The MainCountingMessageHandler class contains a singleton to CountingMessageHandler
+/// and offer static version of CountingMessageHandler API
+///
+/// \see CountingMessageHandler
+///
+class SOFA_HELPER_API MainCountingMessageHandler
+{
+public:
+    static CountingMessageHandler& getInstance() ;
+    static void reset() ;
+    static int getMessageCountFor(const Message::Type &type) ;
 };
 
+} /// namespace countingmessagehandler
 
-} // richconsolestylemessageformater
+/// Importing the per-file names into the 'library namespace'
+using countingmessagehandler::MainCountingMessageHandler ;
+using countingmessagehandler::CountingMessageHandler ;
 
-using richconsolestylemessageformater::MainRichConsoleStyleMessageFormatter ;
-using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
+} /// namespace logging
+} /// namespace helper
+} /// namespace sofa
 
-} // logging
-} // helper
-} // sofa
-
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
+#endif // COUNTINGMESSAGEHANDLER_H

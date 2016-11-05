@@ -21,7 +21,7 @@
 * This component is open-source                                               *
 *                                                                             *
 * Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+*          - damien.marchal@univ-lille1.fr                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,63 +29,60 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sstream>
-#include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
-#include <sofa/helper/helper.h>
+#include <cassert>
+#include <sofa/helper/logging/CountingMessageHandler.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace logging
 {
-
-namespace richconsolestylemessageformater
+namespace countingmessagehandler
 {
 
-///
-/// \brief The RichConsoleStyleMessageFormatter class
-///
-///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature formatting using a markdown like syntax:
-///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
-///     - automatic reading of the console number of column for prettier display.
-///
-///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+void CountingMessageHandler::process(Message& m)
 {
-public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
+    assert(m.type()<m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
 
-    RichConsoleStyleMessageFormatter();
-};
+    m_countMatching[m.type()]++ ;
+}
 
-/// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
-{
-public:
-    static void formatMessage(const Message& m,std::ostream& out)
-    {
-        static RichConsoleStyleMessageFormatter formatter ;
-        formatter.formatMessage(m, out) ;
+void CountingMessageHandler::reset(){
+    for(unsigned int i=0;i<m_countMatching.size();i++){
+        m_countMatching[i] = 0 ;
     }
-};
+}
+
+CountingMessageHandler::CountingMessageHandler() {
+    for(unsigned int i=Message::Info;i<Message::TypeCount;i++){
+        m_countMatching.push_back(0) ;
+    }
+}
+
+int CountingMessageHandler::getMessageCountFor(const Message::Type& type) const {
+    assert(type < m_countMatching.size() && "If this happens this means that the code initializing m_countMatching is broken.") ;
+    return m_countMatching[type] ;
+}
 
 
-} // richconsolestylemessageformater
+sofa::helper::logging::CountingMessageHandler& MainCountingMessageHandler::getInstance()
+{
+    static sofa::helper::logging::CountingMessageHandler s_instance;
+    return s_instance;
+}
 
-using richconsolestylemessageformater::MainRichConsoleStyleMessageFormatter ;
-using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
+void MainCountingMessageHandler::reset(){
+    getInstance().reset() ;
+}
 
-} // logging
-} // helper
-} // sofa
+int MainCountingMessageHandler::getMessageCountFor(const Message::Type &type)
+{
+    return getInstance().getMessageCountFor(type) ;
+}
 
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
+
+} /// namespace countingmessagehandler
+} /// namespace logging
+} /// namespace helper
+} /// namespace sofa

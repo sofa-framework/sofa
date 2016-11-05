@@ -49,8 +49,6 @@ namespace helper
 namespace logging
 {
 
-
-
 static const char * s_unknownFile = "unknown-file";
 
 /// To keep a trace (file,line) from where the message have been created
@@ -59,9 +57,13 @@ static const char * s_unknownFile = "unknown-file";
 /// instead.
 struct FileInfo
 {
-    const char *filename;
-    int line;
+    typedef boost::shared_ptr<FileInfo> SPtr;
+
+    const char *filename {nullptr};
+    int line             {0};
     FileInfo(const char *f, int l): filename(f), line(l) {}
+
+protected:
     FileInfo(): filename(s_unknownFile), line(0) {}
 };
 
@@ -106,10 +108,10 @@ public:
 
 };
 
+static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
 
-#define SOFA_FILE_INFO sofa::helper::logging::FileInfo(__FILE__, __LINE__)
-#define SOFA_FILE_INFO2(file,line) sofa::helper::logging::FileInfoOwningFilename(file,line)
-
+#define SOFA_FILE_INFO sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfo(__FILE__, __LINE__))
+#define SOFA_FILE_INFO2(file,line) sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfoOwningFilename(file,line))
 
 class SOFA_HELPER_API Message
 {
@@ -125,12 +127,12 @@ public:
     Message( const Message& msg );
     Message(Class mclass, Type type,
             const std::string& sender = "",
-            const FileInfo& fileInfo = FileInfo(),
+            const FileInfo::SPtr& fileInfo = EmptyFileInfo,
             const ComponentInfo::SPtr& = ComponentInfo::SPtr());
 
     Message& operator=( const Message& msg );
 
-    const FileInfo&             fileInfo() const { return m_fileInfo; }
+    const FileInfo::SPtr&       fileInfo() const { return m_fileInfo; }
     const ComponentInfo::SPtr&  componentInfo() const { return m_componentinfo ; }
     const std::stringstream& message() const  { return m_stream; }
     Class                    context() const  { return m_class; }
@@ -149,13 +151,13 @@ public:
     static Message emptyMsg ;
 
 protected:
-    std::string       m_sender; ///< who send the message (component or module)
-    FileInfo            m_fileInfo; ///< a trace (file,line) from where the message have been created
+    std::string         m_sender; ///< who send the message (component or module)
+    FileInfo::SPtr      m_fileInfo; ///< a trace (file,line) from where the message have been created
     ComponentInfo::SPtr m_componentinfo; /// a trace (name, path) from whom has emitted this message.
-    std::stringstream m_stream; ///< the actual message
-    Class             m_class; ///< who is the attender of the message (developers or users)?
-    Type              m_type; ///< the message level
-    int               m_id; ///< should it be stored here or in the handler that needs it?
+    std::stringstream   m_stream; ///< the actual message
+    Class               m_class; ///< who is the attender of the message (developers or users)?
+    Type                m_type; ///< the message level
+    int                 m_id; ///< should it be stored here or in the handler that needs it?
 
 };
 

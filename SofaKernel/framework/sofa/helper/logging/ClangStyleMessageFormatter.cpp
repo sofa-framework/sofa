@@ -61,11 +61,19 @@ ClangStyleMessageFormatter::ClangStyleMessageFormatter()
 
 void ClangStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
 {
-    if(m.sender()!="")
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
-    else
-        out << m.fileInfo().filename << ":" << m.fileInfo().line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
-//    out << " message id: " << m.id() << std::endl ;
+    if(m.fileInfo()){
+        if(m.sender()!="")
+            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
+        else
+            out << m.fileInfo()->filename << ":" << m.fileInfo()->line << ":1: " << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
+    }else{
+        if(m.sender()!="")
+            out << s_messageTypeStrings[m.type()] << ": " << m.message().str() << std::endl ;
+        else
+            out << s_messageTypeStrings[m.type()] << ": ["<< m.sender() <<"] " << m.message().str() << std::endl ;
+
+    }
+        //    out << " message id: " << m.id() << std::endl ;
 }
 
 

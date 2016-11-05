@@ -110,7 +110,8 @@ set(HEADER_FILES
     logging/ConsoleMessageHandler.h
     logging/SilentMessageHandler.h
     logging/FileMessageHandler.h
-#    logging/LoggerMessageHandler.h
+    logging/CountingMessageHandler.h
+    logging/LoggingMessageHandler.h
     logging/MessageHandler.h
     logging/MessageFormatter.h
     logging/ClangMessageHandler.h
@@ -118,6 +119,7 @@ set(HEADER_FILES
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
     logging/RichConsoleStyleMessageFormatter.h
+
 )
 
 set(SOURCE_FILES
@@ -187,7 +189,8 @@ set(SOURCE_FILES
     logging/ConsoleMessageHandler.cpp
     logging/SilentMessageHandler.cpp
     logging/FileMessageHandler.cpp
-#    logging/LoggerMessageHandler.cpp
+    logging/CountingMessageHandler.cpp
+    logging/LoggingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
     logging/RichConsoleStyleMessageFormatter.cpp
 )

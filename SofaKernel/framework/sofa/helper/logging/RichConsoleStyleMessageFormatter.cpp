@@ -262,12 +262,13 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
 
-    std::stringstream buf;
-    std::string emptyspace(psize, ' ') ;
-
-    buf << "Emitted from '" << m.fileInfo().filename << "' line " << m.fileInfo().line ;
-    out << "\n" << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
-    simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
+    if(m.fileInfo()){
+        std::stringstream buf;
+        std::string emptyspace(psize, ' ') ;
+        buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;
+        out << "\n" << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
+        simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
+    }
 
     ///Restore the console rendering attribute.
     out << Console::DEFAULT_COLOR;

@@ -135,65 +135,65 @@ void MessageDispatcher::process(sofa::helper::logging::Message& m){
 }
 
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return MessageDispatcher::LoggerStream( mclass, type, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, const  FileInfo::SPtr& fileInfo) {
     return MessageDispatcher::LoggerStream(mclass, type, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Info, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Info, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Deprecated, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Deprecated, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Warning, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Warning, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Error, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Error, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Fatal, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Fatal, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const std::string& sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Advice, sender, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, FileInfo fileInfo) {
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
     return log(mclass, Message::Advice, sender, fileInfo);
 }
 
 
 MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Type type,
-             const sofa::core::objectmodel::Base* sender, FileInfo fileInfo)
+             const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo)
     : m_message( mclass
                  , type
                  , sender->getClassName()

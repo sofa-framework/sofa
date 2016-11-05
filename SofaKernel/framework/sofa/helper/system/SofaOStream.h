@@ -117,15 +117,14 @@ public:
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
     std::ostringstream& ostringstream() const { return m_ostream; }
-    const logging::FileInfo& fileInfo() const { return m_fileInfo; }
+    const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
     const logging::Message::Type& messageType() const { return m_messageType; }
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
     /// clearing the SofaOStream (set empty string, empty FileInfo, default Message type)
     void clear()
     {
-        str("");
-        m_fileInfo = helper::logging::FileInfo();
+        m_fileInfo = helper::logging::EmptyFileInfo;
         m_messageType = (logging::Message::Type)DefaultMessageType;
         m_messageClass = logging::Message::Runtime;
     }
@@ -136,7 +135,7 @@ protected:
     std::ostringstream& m_ostream;
 
     /// the current FileInfo
-    logging::FileInfo m_fileInfo;
+    logging::FileInfo::SPtr m_fileInfo;
     /// the current Message type
     logging::Message::Type m_messageType;
     /// the current Message class

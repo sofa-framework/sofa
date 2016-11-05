@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-20ll6 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,7 @@
 * This component is open-source                                               *
 *                                                                             *
 * Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+*       - damien.marchal@univ-lille1.fr                                       *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,63 +29,81 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sstream>
-#include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
-#include <sofa/helper/helper.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace logging
 {
-
-namespace richconsolestylemessageformater
+namespace loggingmessagehandler
 {
 
-///
-/// \brief The RichConsoleStyleMessageFormatter class
-///
-///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature formatting using a markdown like syntax:
-///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
-///     - automatic reading of the console number of column for prettier display.
-///
-///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+void LoggingMessageHandler::process(Message& m)
 {
-public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
-
-    RichConsoleStyleMessageFormatter();
-};
-
-/// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
-{
-public:
-    static void formatMessage(const Message& m,std::ostream& out)
-    {
-        static RichConsoleStyleMessageFormatter formatter ;
-        formatter.formatMessage(m, out) ;
+    if(m_activationCount>0){
+        m_messages.push_back(m) ;
     }
-};
+}
 
+void LoggingMessageHandler::reset()
+{
+    m_messages.clear() ;
+}
 
-} // richconsolestylemessageformater
+int LoggingMessageHandler::activate()
+{
+    assert(m_activationCount>=0) ;
+    m_activationCount++;
+    return m_messages.size() ;
+}
 
-using richconsolestylemessageformater::MainRichConsoleStyleMessageFormatter ;
-using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
+int LoggingMessageHandler::deactivate()
+{
+    assert(m_activationCount>0) ;
+    m_activationCount--;
 
+    int size = m_messages.size();
+
+    if(m_activationCount<=0)
+        m_messages.clear() ;
+
+    return size;
+}
+
+LoggingMessageHandler::LoggingMessageHandler()
+{
+}
+
+const vector<Message>& LoggingMessageHandler::getMessages() const
+{
+    return m_messages ;
+}
+
+LoggingMessageHandler& MainLoggingMessageHandler::getInstance()
+{
+    static LoggingMessageHandler s_instance;
+    return s_instance;
+}
+
+int MainLoggingMessageHandler::activate()
+{
+    return getInstance().activate() ;
+}
+
+int MainLoggingMessageHandler::deactivate()
+{
+    return getInstance().deactivate() ;
+}
+
+vector<Message> MainLoggingMessageHandler::getMessages()
+{
+    return getInstance().getMessages() ;
+}
+
+} // loggingmessagehandler
 } // logging
 } // helper
 } // sofa
 
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
