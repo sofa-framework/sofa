@@ -44,41 +44,40 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaComponentBase/initComponentBase.h>
 
-#include <SofaComponentBase/MakeAliasComponent.h>
-using sofa::component::MakeAliasComponent ;
+#include <SofaComponentBase/MakeDataAliasComponent.h>
+using sofa::component::MakeDataAliasComponent ;
 
 //TODO(dmarchal): all these lines are ugly...this is too much for simple initialization stuff.
+#include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
 using sofa::helper::logging::MessageHandler;
 using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
 
-#include <SofaTest/TestMessageHandler.h>
 #include <SofaTest/LogMessage.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::MainLogginMessageHandler ;
+using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::MessageAsTestFailure ;
+using sofa::helper::logging::LogMessage ;
 
 #include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
 
-//TODO(dmarchal): handle properly the memory cycle of the simulation objects.
-// now it is soo ugly...
-
-namespace makealiascomponent_test
+namespace makedataaliascomponent_test
 {
 
-MessageHandler* defaultHandler=nullptr;
+MessageHandler* defaultHandler=nullptr ;
 Simulation* theSimulation = nullptr ;
 
 bool doInit(){
     sofa::component::initComponentBase();
     return true;
 }
+
 bool inited = doInit();
 
 void perTestInit()
@@ -96,8 +95,7 @@ void perTestInit()
     MessageDispatcher::addHandler( &MainLogginMessageHandler::getInstance() ) ;
 }
 
-
-TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
+TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
 {
     perTestInit();
     ExpectMessage e(Message::Error) ;
@@ -105,7 +103,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
     string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
-        "       <MakeAlias/>                                                 "
+        "       <MakeDataAlias/>                                             "
         "</Node>                                                             " ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
@@ -113,16 +111,43 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
 
-    MakeAliasComponent* component = nullptr;
+    MakeDataAliasComponent* component = nullptr;
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
 
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+
     theSimulation->unload(root) ;
 }
 
-TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
+TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
+{
+    perTestInit();
+    ExpectMessage e(Message::Error) ;
+    LogMessage logger;
+
+    string scene =
+        "<?xml version='1.0'?>                                               "
+        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
+        "       <MakeDataAlias                             alias='NewName'/>      "
+        "</Node>                                                             " ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+                                                       scene.c_str(),
+                                                       scene.size() ) ;
+    EXPECT_TRUE(root!=nullptr) ;
+
+    MakeDataAliasComponent* component = nullptr;
+
+    root->getTreeObject(component) ;
+    EXPECT_TRUE(component!=nullptr) ;
+    EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+
+    theSimulation->unload(root) ;
+}
+
+TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
 {
     perTestInit();
     ExpectMessage e(Message::Error) ;
@@ -130,7 +155,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
     string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
-        "       <MakeAlias                            alias='NewName'/>      "
+        "       <MakeDataAlias targetcomponent='MakeAlias'/>                     "
         "</Node>                                                             " ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
@@ -138,39 +163,16 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
 
-    MakeAliasComponent* component = nullptr;
+    MakeDataAliasComponent* component = nullptr;
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+
     theSimulation->unload(root) ;
 }
 
-TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
-{
-    perTestInit();
-    ExpectMessage e(Message::Error) ;
-
-    string scene =
-        "<?xml version='1.0'?>                                               "
-        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
-        "       <MakeAlias targetcomponent='MakeAlias'/>                     "
-        "</Node>                                                             " ;
-
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
-    EXPECT_TRUE(root!=nullptr) ;
-
-    MakeAliasComponent* component = nullptr;
-
-    root->getTreeObject(component) ;
-    EXPECT_TRUE(component!=nullptr) ;
-    EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
-    theSimulation->unload(root) ;
-}
-
-TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
+TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 {
     perTestInit();
     ExpectMessage e(Message::Error) ;
@@ -178,32 +180,56 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
     string scene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
-        "       <MakeAlias targetcomponent='InvalidComponentName' alias='Something'/> \n"
+        "       <MakeDataAlias componentname='InvalidComponentName' dataname='position' alias='rest_position'/> \n"
         "</Node>                                                             \n" ;
-
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
 
-    MakeAliasComponent* component = nullptr;
+    MakeDataAliasComponent* component = nullptr;
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+
     theSimulation->unload(root) ;
 }
 
-TEST(MakeAliasComponent, checkValidBehavior)
+TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
+{
+    perTestInit();
+    ExpectMessage e(Message::Error) ;
+
+    string scene =
+        "<?xml version='1.0'?>                                               \n"
+        "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
+        "       <MakeDataAlias componentname='MechanicalObject' dataname='invalidname' alias='myrest_position'/> \n"
+        "</Node>                                                             \n" ;
+
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+                                                       scene.c_str(),
+                                                       scene.size() ) ;
+    EXPECT_TRUE(root!=nullptr) ;
+    MakeDataAliasComponent* component = nullptr;
+
+    root->getTreeObject(component) ;
+    EXPECT_TRUE(component!=nullptr) ;
+    EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+
+    theSimulation->unload(root) ;
+}
+
+TEST(MakeDataAliasComponent, checkValidBehavior)
 {
     MessageAsTestFailure check(Message::Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
-        "       <MakeAlias targetcomponent='MakeAlias' alias='MyAlias'/>     \n"
-        "       <MyAlias targetcomponent='MakeAlias' alias='ThirdName'/>     \n"
+        "       <MakeDataAlias componentname='MechanicalObject' dataname='position' alias='myrest_position'/> \n"
+        "       <MechanicalObject myrest_position='1 2 3 4'/>                                                 \n"
         "</Node>                                                             \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
@@ -211,11 +237,12 @@ TEST(MakeAliasComponent, checkValidBehavior)
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
 
-    MakeAliasComponent* component = nullptr;
+    MakeDataAliasComponent* component = nullptr;
     root->getTreeObject(component) ;
 
     EXPECT_TRUE(component!=nullptr) ;
     EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
+
     theSimulation->unload(root) ;
 }
 
