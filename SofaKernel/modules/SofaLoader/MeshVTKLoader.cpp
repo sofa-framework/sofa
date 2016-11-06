@@ -213,18 +213,25 @@ bool MeshVTKLoader::setInputsMesh()
             if (reader->inputPoints)
             {
                 for (int j=0; j<nv; ++j)
+                {
                     if ((unsigned)inFP[i+j] >= (unsigned)(reader->inputPoints->dataSize/3))
                     {
                         /// More user friendly error message to avoid flooding him
                         /// in case of severely broken file.
                         errorcount++;
-                        if(errorcount < 20)
-                            msg_error(this) << "invalid point " << inFP[i+j] << " in polygon " << poly ;
-                        if(errorcount == 20)
-                            msg_error(this) << "too much invalid points in polygon '"<< poly <<"' ...now hiding others error message." ;
 
+                        if(errorcount < 20)
+                        {
+
+                            msg_error(this) << "invalid point at " << i+j << " in polygon " << poly ;
+                        }
+                        if(errorcount == 20)
+                        {
+                            msg_error(this) << "too much invalid points in polygon '"<< poly <<"' ...now hiding others error message." ;
+                        }
                         valid = false;
                     }
+                }
             }
             if (valid)
             {

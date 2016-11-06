@@ -34,6 +34,10 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
+
 namespace sofa
 {
 namespace meshvtkloader_test
@@ -87,6 +91,8 @@ TEST_F(MeshVTKLoaderTest, loadXML)
 
 TEST_F(MeshVTKLoaderTest, loadInvalidFilenames)
 {
+    ExpectMessage errmsg(Message::Error) ;
+
     setFilename("");
     EXPECT_FALSE(load());
 
