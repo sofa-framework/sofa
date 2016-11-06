@@ -73,7 +73,7 @@ public:
         return "MakeDataAlias" ;
     }
 
-    virtual std::string getClassName()
+    virtual std::string getClassName() const
     {
         return "MakeDataAlias" ;
     }
