@@ -209,7 +209,7 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
 //time. More fundamentally this function should'nt be in the message dispatcher class that is supposed
 //to have no link to sofa::core::objectmodel::Base
 #ifdef WIN32
-                 , ComponentInfo::SPtr("", ""))
+                 , ComponentInfo::SPtr( new ComponentInfo("", "")) )
 #else
                  , ComponentInfo::SPtr( new ComponentInfo(sender->getName(), "")) )
 #endif //WIN32
