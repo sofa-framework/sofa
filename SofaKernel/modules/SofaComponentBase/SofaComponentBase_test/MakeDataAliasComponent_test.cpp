@@ -230,7 +230,7 @@ TEST(MakeDataAliasComponent, checkValidBehavior)
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='MechanicalObject' dataname='position' alias='myrest_position'/> \n"
-        "       <MechanicalObject myrest_position='1 2 3 4'/>                                                 \n"
+        "       <MechanicalObject myrest_position='1 2 3 '/>                                                 \n"
         "</Node>                                                             \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test",
