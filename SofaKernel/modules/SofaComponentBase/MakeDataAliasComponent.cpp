@@ -57,7 +57,7 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     const char* component=arg->getAttribute("componentname") ;
     if(component==nullptr)
     {
-        msg_error(this) << "The mandatory 'targetcomponent' attribute is missing.  "
+        msg_error(this) << "The mandatory 'componentname' attribute is missing.  "
                            "The component is disabled.  "
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
@@ -68,7 +68,7 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     const char* dataname=arg->getAttribute("dataname") ;
     if(dataname==nullptr)
     {
-        msg_error(this) << "The mandatory 'targetcomponent' attribute is missing.  "
+        msg_error(this) << "The mandatory 'dataname' attribute is missing.  "
                            "The component is disabled.  "
                            "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
         return ;
@@ -86,6 +86,18 @@ void MakeDataAliasComponent::parse ( core::objectmodel::BaseObjectDescription* a
     }
     string salias(alias);
 
+    if(!ObjectFactory::getInstance()->hasCreator(scomponent)){
+        msg_error(this) << "The value '"<< scomponent << "' for 'componentname' does not correspond to a valid name.  "
+                           "The component is disabled.  "
+                           "To remove this error message you need to add a targetcomponent attribute pointing to a valid component's ClassName.";
+        return ;
+    }
+
+    ObjectFactory::ClassEntry& creatorentry = ObjectFactory::getInstance()->getEntry(scomponent);
+    if(creatorentry.m_dataAlias.find(dataname) != creatorentry.m_dataAlias.end()){
+        creatorentry.m_dataAlias[dataname] = std::vector<std::string>();
+    }
+    creatorentry.m_dataAlias[dataname].push_back(salias) ;
 
     m_componentstate = ComponentState::Valid ;
 }

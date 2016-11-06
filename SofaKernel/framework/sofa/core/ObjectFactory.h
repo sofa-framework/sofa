@@ -102,6 +102,7 @@ public:
         std::string license;
         std::string defaultTemplate;
         CreatorMap creatorMap;
+        std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 

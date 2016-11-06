@@ -118,11 +118,12 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     std::string usertemplatename = arg->getAttribute( "template", "");
     std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
     std::string userresolved = templatename; // Copy in case we change for the default one
+    ClassEntry::SPtr entry ;
 
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
-        ClassEntry::SPtr entry = it->second;
+        entry = it->second;
         // If no template has been given or if the template does not exist, first try with the default one
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
             templatename = entry->defaultTemplate;
@@ -170,11 +171,51 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             object->serr << w << object->sendl;
         }
         //TODO(dmarchal): Improve the error message & update the URL.
-        if(classname != object->getClassName()){
-            msg_info("ObjectFactory") << "The object '"<< object->getClassName() <<"' was created using the alias '"<< classname <<"'.  \n"
-                                                                                                                                   "You can find more informations about aliasing in sofa at this address: 'http://www.sofa-framework.org/wiki/alias'  \n"
-                                                                                                                                   "To remove this message you can replace <" << classname <<"/> with <'" << object->getClassName() << "' in your scene./>";
+        //TODO(dmarchal): This code may be used to inform users that the Component has
+        //been created with an Alias and thus
+        // that it should be removed.
+        /*if(classname != object->getClassName()){
+            msg_info("ObjectFactory") <<  "The object '"<< object->getClassName()
+                                      << "' was created using the alias '" << classname << "'.  \n"
+                                      << "You can find more informations about aliasing in sofa at this address: 'http://www.sofa-framework.org/wiki/alias'  \n"
+                                      << "To remove this message you can replace <" << classname <<"/> with <'" << object->getClassName() << "'/> in your scene.";
+        }*/
+
+        ///////////////////////// All this code is just there to implement the MakeDataAlias component.
+        // TODO(dmarchal): I'm not sure it should stay there but I cannot find a better way with a
+        // minimal number of change.
+        std::vector<std::string> todelete;
+        for(auto& kv : entry->m_dataAlias)
+        {
+            if(object->findData(kv.first)==nullptr)
+            {
+                msg_warning("ObjectFactoy") << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
+                                            << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
+
+                todelete.push_back(kv.first);
+            }
         }
+
+        for(auto& todeletename : todelete)
+        {
+            entry->m_dataAlias.erase( entry->m_dataAlias.find(todeletename) ) ;
+        }
+
+        for(auto& kv : entry->m_dataAlias)
+        {
+            objectmodel::BaseObjectDescription newdesc;
+            for(std::string& alias : kv.second){
+                object->addAlias(object->findData(kv.first), alias.c_str()) ;
+
+                /// The Alias is used in the argument
+                const char* val = arg->getAttribute(alias) ;
+                if( val ){
+                    newdesc.setAttribute( alias, val );
+                }
+            }
+            object->parse(&newdesc);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
     }
 

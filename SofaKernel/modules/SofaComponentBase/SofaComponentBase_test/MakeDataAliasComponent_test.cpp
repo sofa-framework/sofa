@@ -91,6 +91,7 @@ void perTestInit()
         defaultHandler=new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter) ;
 
     MessageDispatcher::clearHandlers() ;
+//    MessageDispatcher::addHandler( defaultHandler ) ;
     MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
     MessageDispatcher::addHandler( &MainLogginMessageHandler::getInstance() ) ;
 }
@@ -125,7 +126,6 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
 {
     perTestInit();
     ExpectMessage e(Message::Error) ;
-    LogMessage logger;
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -200,12 +200,13 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    ExpectMessage e(Message::Warning) ;
 
     string scene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='MechanicalObject' dataname='invalidname' alias='myrest_position'/> \n"
+        "       <MechanicalObject position='1 2 3 4'/>                                                           \n"
         "</Node>                                                             \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
@@ -216,7 +217,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
 
     root->getTreeObject(component) ;
     EXPECT_TRUE(component!=nullptr) ;
-    EXPECT_EQ(component->getComponentState(), ComponentState::Invalid) ;
+    EXPECT_EQ(component->getComponentState(), ComponentState::Valid) ;
 
     theSimulation->unload(root) ;
 }
@@ -225,16 +226,16 @@ TEST(MakeDataAliasComponent, checkValidBehavior)
 {
     MessageAsTestFailure check(Message::Error) ;
 
-    string scene =
+    string ascene =
         "<?xml version='1.0'?>                                               \n"
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         \n"
         "       <MakeDataAlias componentname='MechanicalObject' dataname='position' alias='myrest_position'/> \n"
         "       <MechanicalObject myrest_position='1 2 3 4'/>                                                 \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
-                                                       scene.c_str(),
-                                                       scene.size() ) ;
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test",
+                                                       ascene.c_str(),
+                                                       ascene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
 
     MakeDataAliasComponent* component = nullptr;
