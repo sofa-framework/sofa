@@ -55,8 +55,7 @@ using sofa::helper::logging::MessageHandler;
 using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
 
-#include <SofaTest/LogMessage.h>
-using sofa::helper::logging::MainLogginMessageHandler ;
+using sofa::helper::logging::MainLoggingMessageHandler ;
 using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::MessageAsTestFailure ;
@@ -93,7 +92,7 @@ void perTestInit()
     MessageDispatcher::clearHandlers() ;
 //    MessageDispatcher::addHandler( defaultHandler ) ;
     MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-    MessageDispatcher::addHandler( &MainLogginMessageHandler::getInstance() ) ;
+    MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)

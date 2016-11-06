@@ -33,6 +33,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
@@ -46,7 +47,6 @@ namespace helper
 
 namespace logging
 {
-
 
 /// each ERROR and FATAL message raises a gtest error
 class SOFA_TestPlugin_API TestMessageHandler : public MessageHandler
@@ -126,6 +126,33 @@ struct SOFA_TestPlugin_API ExpectMessage
     }
 };
 
+struct SOFA_TestPlugin_API MessageAsTestFailure
+{
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
+    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
+    LogMessage m_log;
+
+    MessageAsTestFailure(const Message::Type t)
+    {
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+    }
+
+    ~MessageAsTestFailure()
+    {
+        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
+            std::cout << "====================== Messages Backlog =======================" << std::endl ;
+            for(auto& message : m_log)
+            {
+                std::cout << message << std::endl ;
+            }
+            std::cout << "===============================================================" << std::endl ;
+        }
+    }
+};
 
 } // logging
 } // helper
