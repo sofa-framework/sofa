@@ -17,8 +17,13 @@ using sofa::helper::logging::MessageHandler ;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::Message ;
 
+#include <sofa/helper/logging/LoggingMessageHandler.h>
+using sofa::helper::logging::MainLoggingMessageHandler ;
+using sofa::helper::logging::LogMessage ;
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
+
 
 
 //TODO(dmarchal): replace that with the LoggingMessageHandler
@@ -29,8 +34,8 @@ public:
     virtual void process(Message& m){
         m_messages.push_back(m);
 
-//        if( !m.sender().empty() )
-//            std::cerr<<m<<std::endl;
+        //        if( !m.sender().empty() )
+        //            std::cerr<<m<<std::endl;
     }
 
     size_t numMessages(){
@@ -275,4 +280,33 @@ TEST(LoggingTest, withDevMode)
     dmsg_error("") << " debug error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h.numMessages() == 6u ) ;
+}
+
+
+
+TEST(LoggingTest, checkLoggingMessageHandler)
+{
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() );
+    LogMessage loggingFrame;
+
+    msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+    msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+    msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+
+    nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+    nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+    nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
+
+    if( loggingFrame.size() != 3 )
+    {
+        EXPECT_EQ( loggingFrame.size(), 3) ;
+        for(auto& message : loggingFrame)
+        {
+            std::cout << message << std::endl ;
+        }
+
+    }
+
+
 }
