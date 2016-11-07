@@ -67,12 +67,15 @@ namespace helper
 namespace logging
 {
 
-static ConsoleMessageHandler s_consoleMessageHandler(new RichConsoleStyleMessageFormatter());
+MessageHandler* getDefaultMessageHandler(){
+    static ConsoleMessageHandler s_consoleMessageHandler(new RichConsoleStyleMessageFormatter());
+    return &s_consoleMessageHandler ;
+}
 
 class MessageDispatcherImpl
 {
 public:
-    std::vector<MessageHandler*> m_messageHandlers { &s_consoleMessageHandler } ;
+    std::vector<MessageHandler*> m_messageHandlers { getDefaultMessageHandler() } ;
 
     std::vector<MessageHandler*>& getHandlers()
     {

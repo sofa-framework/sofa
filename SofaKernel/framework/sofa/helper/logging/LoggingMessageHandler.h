@@ -72,7 +72,7 @@ class SOFA_HELPER_API LoggingMessageHandler : public MessageHandler
 {
 public:
     LoggingMessageHandler() ;
-    virtual ~LoggingMessageHandler() {} ;
+    virtual ~LoggingMessageHandler() {}
 
     //TODO(dmarchal): there is several defect in the design of this class:
     //   - no maximum buffer size (we should implement a circular buffer approach)

@@ -21,10 +21,12 @@ using sofa::helper::logging::Message ;
 using sofa::helper::logging::MainLoggingMessageHandler ;
 using sofa::helper::logging::LogMessage ;
 
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::MainCountingMessageHandler ;
+using sofa::helper::logging::CountingMessageHandler ;
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
-
-
 
 //TODO(dmarchal): replace that with the LoggingMessageHandler
 class MyMessageHandler : public MessageHandler
@@ -305,8 +307,44 @@ TEST(LoggingTest, checkLoggingMessageHandler)
         {
             std::cout << message << std::endl ;
         }
-
     }
 
+}
+
+TEST(LoggingTest, checkCountingMessageHandler)
+{
+    CountingMessageHandler& m = MainCountingMessageHandler::getInstance() ;
+
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler( &m );
+
+    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+
+    for(auto& type : errortypes)
+    {
+        EXPECT_EQ(m.getMessageCountFor(type), 0) ;
+    }
+
+    int i = 0 ;
+    for(auto& type : errortypes)
+    {
+        i++;
+        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+        msg_fatal("") << " fatal message with conversion" << 1.5 << "\n" ;
+        msg_deprecated("") << " deprecated message with conversion "<< 1.5 << "\n" ;
+        msg_advice("") << " advice message with conversion" << 1.5 << "\n" ;
+
+        nmsg_info("") << " null info message with conversion" << 1.5 << "\n" ;
+        nmsg_warning("") << " null warning message with conversion "<< 1.5 << "\n" ;
+        nmsg_error("") << " null error message with conversion" << 1.5 << "\n" ;
+        nmsg_fatal("") << " fatal message with conversion" << 1.5 << "\n" ;
+        nmsg_deprecated("") << " deprecated message with conversion "<< 1.5 << "\n" ;
+        nmsg_advice("") << " advice message with conversion" << 1.5 << "\n" ;
+
+        EXPECT_EQ(m.getMessageCountFor(type), i) ;
+    }
 
 }
