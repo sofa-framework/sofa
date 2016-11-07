@@ -10,6 +10,7 @@ We also recommend you to check this [more detailed documentation on issues and p
 For any **question** (help needed, problem of understanding SOFA, announcements), create a topic on [the SOFA forum](https://www.sofa-framework.org/community/forum/) and benefit from the feedback of the community.
 
 When creating a new topic, pay attention to some tips:
+
 - **Check existing topics** using the Search bar. Your question may have been answered already.
 - **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem. 
 - **Additional infos**: link to demos, screenshots or code showing the problem. 
@@ -23,6 +24,7 @@ Issues labeled "discussion" are also used for larger topics: architecture, futur
 Please DO NOT create an issue for questions or support. Use [the SOFA forum](https://www.sofa-framework.org/community/forum/) instead.
 
 When creating an issue, pay attention to the following tips:
+
 - **Check existing issues**. What you are running into may have been addressed already.
 - **Set the right label** to your issue among our label list.
 - Be clear about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
@@ -36,7 +38,8 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 Be sure you have read any documents on contributing and you understand [the SOFA license](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt).  
 Once you have submitted a pull request the maintainer(s) can compare your branch to the existing one and decide whether or not to incorporate (pull in) your changes.
 
-Reminder: How to pull request (from GitHub documentation)
+Reminder - How to pull request (from GitHub documentation):
+
 - **Fork** the repository and clone it locally.
 - [Connect your clone](https://help.github.com/articles/configuring-a-remote-for-a-fork/) to [the original **upstream** repository](https://github.com/sofa-framework/sofa/) by adding it as a remote.
 - **Create a branch** for your changes.
@@ -45,6 +48,7 @@ Reminder: How to pull request (from GitHub documentation)
 - [**Create a pull-request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
 
 Here are some rules for SOFA pull requests:
+
 - Description must explain the **issue solved** or the **feature added**
 - Code must follow [our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)
 - Commit must build **successfully** on Jenkins for all steps (compilation + tests + examples)

@@ -14,12 +14,12 @@ where ACTION includes ADD, REMOVE, FIX, CLEAN, REVERT.
 Example: `[SofaKernel] ADD test for the mass conservation in UniformMass` 
 
 ### Naming
-Identifiers must respect the following conventions
+Identifiers must respect the following conventions:
+
 - Class names are in UpperCamelCase
 - Function names are in lowerCamelCase()
 - Namespaces names are in lowercase
-- Variables names are in lowerCamelCase and must express their use more than their type.  
-Exceptions:  mathematical objects like `Matrix M`, local iterators variables like `i`, `j`, `k`  and usual symbols like `x` for positions or `v` for velocities.
+- Variables names are in lowerCamelCase and must express their use more than their type. **Exceptions**:  mathematical objects like `Matrix M`, local iterators variables like `i`, `j`, `k`  and usual symbols like `x` for positions or `v` for velocities.
 - Data member variables names must begin with `d_`
 - Link member variables names (e.g. SingleLink) must begin with `l_`
 - Other member variables names must begin with `m_ `(exception: this is not mandatory for PODs as well as public attributes)
