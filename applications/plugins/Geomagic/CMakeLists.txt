@@ -12,7 +12,7 @@ set(SOURCE_FILES
 )
 
 set(SCENES_FILES
-      scenes/DemoGeomagic.scn
+      scenes/Geomagic-Demo.scn
 )
 
 
