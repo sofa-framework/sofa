@@ -83,8 +83,7 @@ class ExampleController(Sofa.PythonScriptController):
 		
 	def onRecompile(self):
 		print("The source ["+__file__+"] has changed and is reloaded.")
-		print("DIR: "+str(dir(self)))
-
+		
 	# called on each animation step
 	total_time = 0
 	def onBeginAnimationStep(self,dt):
