@@ -97,7 +97,7 @@ int MainLoggingMessageHandler::deactivate()
     return getInstance().deactivate() ;
 }
 
-vector<Message> MainLoggingMessageHandler::getMessages()
+const vector<Message>& MainLoggingMessageHandler::getMessages()
 {
     return getInstance().getMessages() ;
 }

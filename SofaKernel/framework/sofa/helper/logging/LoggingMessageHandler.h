@@ -105,7 +105,7 @@ public:
     static LoggingMessageHandler& getInstance() ;
     static int activate() ;
     static int deactivate() ;
-    static vector<Message> getMessages() ;
+    static const vector<Message>& getMessages() ;
 };
 
 class SOFA_HELPER_API LogMessage
@@ -117,11 +117,12 @@ public:
 
     ~LogMessage() {}
 
+    //TODO(dmarchal): Thread safetines issue !!
     std::vector<Message>::const_iterator begin()
     {
         const std::vector<Message>& messages = MainLoggingMessageHandler::getMessages() ;
 
-        assert(m_firstMessage<messages.size()) ;
+        assert(m_firstMessage<=messages.size()) ;
         return messages.begin()+m_firstMessage ;
     }
 
@@ -129,6 +130,13 @@ public:
     {
         const std::vector<Message>& messages = MainLoggingMessageHandler::getMessages() ;
         return messages.end() ;
+    }
+
+    int size()
+    {
+        const std::vector<Message>& messages = MainLoggingMessageHandler::getMessages() ;
+
+        return messages.size() ;
     }
 
 private:
