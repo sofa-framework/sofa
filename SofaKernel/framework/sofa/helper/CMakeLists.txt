@@ -98,6 +98,7 @@ set(HEADER_FILES
     system/thread/CircularQueue.inl
     system/thread/debug.h
     system/thread/thread_specific_ptr.h
+    system/FileMonitor.h
     vector.h
     vectorData.h
     vectorLinks.h
@@ -194,6 +195,19 @@ set(SOURCE_FILES
     logging/ExceptionMessageHandler.cpp
     logging/RichConsoleStyleMessageFormatter.cpp
 )
+
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    list(APPEND SOURCE_FILES  system/FileMonitor_linux.cpp)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    list(APPEND SOURCE_FILES  system/FileMonitor_macosx.cpp)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
+endif()
+
 
 if(SOFA_HAVE_PNG)
     list(APPEND HEADER_FILES  io/ImagePNG.h)

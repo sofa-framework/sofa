@@ -15,6 +15,7 @@ set(SOURCE_FILES
     helper/SVector_test.cpp
     helper/io/MeshOBJ_test.cpp
     helper/io/ImagePNG_test.cpp
+    helper/system/FileMonitor_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
