@@ -60,7 +60,6 @@ void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 void RequiredPlugin::loadPlugin()
 {
     if(pluginName.getValue().empty()) pluginName.setValue( name.getValue() );
-    else name.setValue( pluginName.getValue() );
 
     PluginManager& pluginManager = PluginManager::getInstance();
 
