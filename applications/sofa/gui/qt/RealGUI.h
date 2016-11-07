@@ -202,7 +202,7 @@ protected:
     // simulation hasn't run yet).
     clock_t m_clockBeforeLastStep;
 
-	// Component Properties
+    // Component Properties
     QDisplayPropertyWidget* propertyWidget;
 
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
@@ -212,6 +212,7 @@ protected:
     QWidget* currentTab;
     QSofaStatWidget* statWidget;
     QTimer* timerStep;
+    QTimer* timerHeartBeat;
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
     SofaPluginManager* pluginManager_dialog;
@@ -220,7 +221,7 @@ protected:
     std::string simulation_name;
     std::string gnuplot_directory;
     std::string pathDumpVisitor;
-    
+
     /// Keep track of log files that have been modified since the GUI started
     std::set<std::string>   m_modifiedLogFiles;
 
@@ -342,7 +343,7 @@ private:
 
     void createBackgroundGUIInfos();
     void createSimulationGraph();
-	void createPropertyWidget();
+    void createPropertyWidget();
     void createWindowVisitor();
     void createSceneDescription();
 //----------------- METHODS------------------------}
@@ -353,13 +354,14 @@ private:
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
-	virtual void setSleepingNode(sofa::simulation::Node*, bool);
+    virtual void setSleepingNode(sofa::simulation::Node*, bool);
     virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void LockAnimation(bool);
     virtual void fileRecentlyOpened(QAction * action);
     virtual void playpauseGUI(bool value);
     virtual void interactionGUI(bool value);
     virtual void step();
+    virtual void emitHeartBeat();
     // virtual void setDt(double);
     virtual void setDt(const QString&);
     // Disable dtEdit when realTimeCheckBox is checked

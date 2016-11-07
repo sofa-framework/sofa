@@ -31,6 +31,10 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
+
+#include <sofa/core/objectmodel/HeartBeatEvent.h>
+using sofa::core::objectmodel::HeartBeatEvent ;
+
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
@@ -159,8 +163,8 @@ void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * 
 void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
 {
     script_onGUIEvent(event->getControlID().c_str(),
-            event->getValueName().c_str(),
-            event->getValue().c_str());
+                      event->getValueName().c_str(),
+                      event->getValue().c_str());
 }
 
 
@@ -170,7 +174,11 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
     }
-    else Controller::handleEvent(event);
+    else if (dynamic_cast<HeartBeatEvent *>(event))
+    {
+        script_onHeartBeatEvent(static_cast<HeartBeatEvent *> (event));
+    }else
+        Controller::handleEvent(event);
 }
 
 void ScriptController::draw(const core::visual::VisualParams* vis)

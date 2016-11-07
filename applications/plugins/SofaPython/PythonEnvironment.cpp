@@ -131,6 +131,8 @@ except:\n\
                 SP_MESSAGE_WARNING("no such directory: '" + path + "'");
         }
     }
+
+    PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
 }
 
 void PythonEnvironment::Release()
@@ -209,7 +211,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 
 // some basic RAII stuff to handle init/termination cleanly
   namespace {
-	
+
     struct raii {
       raii() {
           // initialization is done when loading the plugin
@@ -221,7 +223,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
       ~raii() {
         PythonEnvironment::Release();
       }
-	  
+
     };
 
     static raii singleton;
@@ -297,9 +299,9 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyRun_SimpleString("import sys");
 
     // Load the scene script
-	char* pythonFilename = strdup(filename);
+    char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-	free(pythonFilename);
+    free(pythonFilename);
 
     if( !scriptPyFile )
     {
@@ -310,10 +312,10 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-	std::string backupFileName;
+    std::string backupFileName;
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-	if(backupFileObject)
-		backupFileName = PyString_AsString(backupFileObject);
+    if(backupFileObject)
+        backupFileName = PyString_AsString(backupFileObject);
 
     PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);
