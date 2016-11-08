@@ -225,6 +225,7 @@ protected:
     /// Keep track of log files that have been modified since the GUI started
     std::set<std::string>   m_modifiedLogFiles;
 
+    bool m_enableInteraction {false};
 private:
     //currently unused: scale is experimental
     float object_Scale[2];

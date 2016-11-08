@@ -251,7 +251,7 @@ int FileMonitor::updates(int timeout)
     } else {
         cout << "filemonitorUpdates:: \n" ;
         cout << "\t message to developer(to implement one day) \n" ;
-        cout << "\t message to user(please contact your software reseller to complain that academic project are real unfinished crap)." <<endl ;
+        cout << "\t message to user(please tells the feature is import to you)." <<endl ;
     }
     return 0 ;
 }

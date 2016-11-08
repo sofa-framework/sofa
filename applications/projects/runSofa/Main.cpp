@@ -202,6 +202,7 @@ int main(int argc, char** argv)
 #endif
     string colorsStatus = "auto";
     string messageHandler = "auto";
+    bool enableInteraction = false ;
 
     string gui_help = "choose the UI (";
     gui_help += GUIManager::ListSupportedGUI('|');
@@ -223,6 +224,7 @@ int main(int argc, char** argv)
     .option(&verif,'v',"verification","load verification data for the scene")
     .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
     .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
+    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes heart beats and mouse events (EXPERIMENTAL)")
 
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
@@ -349,6 +351,12 @@ int main(int argc, char** argv)
         oss << "nbIterations=";
         oss << nbIterations;
         GUIManager::AddGUIOption(oss.str().c_str());
+    }
+
+    if(enableInteraction){
+        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
+                               "that may change or be removed in the future. " ;
+        GUIManager::AddGUIOption("enableInteraction");
     }
 
     if(nbMSSASamples > 1)

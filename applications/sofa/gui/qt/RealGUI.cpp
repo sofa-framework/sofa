@@ -96,6 +96,9 @@
 #include <sofa/core/objectmodel/HeartBeatEvent.h>
 using sofa::core::objectmodel::HeartBeatEvent ;
 
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::helper::system::FileMonitor ;
+
 namespace sofa
 {
 
@@ -308,9 +311,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
     connect ( tabs, SIGNAL ( currentChanged ( int ) ), this, SLOT ( currentTabChanged ( int ) ) );
 
-    timerHeartBeat = new QTimer(this);
-    connect ( timerHeartBeat, SIGNAL ( timeout() ), this, SLOT ( emitHeartBeat() ) );
-    timerHeartBeat->start(50) ;
+    /// We activate this timer only if the interactive mode is enabled (ie livecoding+mouse mouve event).
+    if(m_enableInteraction){
+        timerHeartBeat = new QTimer(this);
+        connect ( timerHeartBeat, SIGNAL ( timeout() ), this, SLOT ( emitHeartBeat() ) );
+        timerHeartBeat->start(50) ;
+    }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
     //dockWidget=new QDockWidget(tr(""), this);
@@ -767,6 +773,9 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
 void RealGUI::emitHeartBeat()
 {
+    // Update all the registered monitor.
+    FileMonitor::updates(0) ;
+
     HeartBeatEvent hb;
     Node* groot = mViewer->getScene();
     if (groot)
@@ -1676,6 +1685,8 @@ void RealGUI::parseOptions(const std::vector<std::string>& options)
 {
     for (unsigned int i=0; i<options.size(); ++i)
     {
+        if (options[i] == "enableInteraction")
+            m_enableInteraction = true;
         if (options[i] == "noViewers")
             mCreateViewersOpt = false;
         if (options[i].substr(0,4).compare("msaa") == 0)
