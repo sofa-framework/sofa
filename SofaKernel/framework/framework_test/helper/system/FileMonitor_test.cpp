@@ -88,7 +88,7 @@ TEST(FileMonitor, addFileTwice_test)
     FileMonitor::updates(0) ;
 
     // The listener should be notified 1 times with the same event.
-    EXPECT_EQ( listener.m_files.size(), 1) ;
+    EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -99,7 +99,7 @@ TEST(FileMonitor, noUpdate_test)
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    EXPECT_EQ( listener.m_files.size(), 0) ;
+    EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -110,7 +110,7 @@ TEST(FileMonitor, updateNoChange_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 0) ;
+    EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -125,7 +125,7 @@ TEST(FileMonitor, fileChange_test)
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 1) ;
+    EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -143,7 +143,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 200) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 1) ;
+    EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -165,8 +165,8 @@ TEST(FileMonitor, fileListenerRemoved_test)
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener1.m_files.size(), 0) ;
-    EXPECT_EQ( listener2.m_files.size(), 1) ;
+    EXPECT_EQ( listener1.m_files.size(), 0u) ;
+    EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
@@ -189,8 +189,8 @@ TEST(FileMonitor, listenerRemoved_test)
     FileMonitor::removeListener(&listener1) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener1.m_files.size(), 0) ;
-    EXPECT_EQ( listener2.m_files.size(), 1) ;
+    EXPECT_EQ( listener1.m_files.size(), 0u) ;
+    EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;

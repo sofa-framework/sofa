@@ -335,15 +335,12 @@ Expected output: RABCDEEDCBAR
         E->addObject(dummyE);
 
 
-        void* foundObj = nullptr;
-        Dummy* dummyObj = nullptr;
-
-
 
         // by path
-
-        foundObj = A->getObject(classid(Dummy), "/inexisting");
+        {
+        void* foundObj = A->getObject(classid(Dummy), "/inexisting");
         ASSERT_TRUE( foundObj==nullptr );
+        }
 
         getObjectByPath( A, "/obj", "/obj" );
         getObjectByPath( A, "obj", "/obj" );
