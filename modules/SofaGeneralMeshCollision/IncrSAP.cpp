@@ -939,7 +939,6 @@ using namespace collision;
 SOFA_DECL_CLASS(IncrSAP)
 
 int IncrSAPClassSofaVector = core::RegisterObject("Collision detection using incremental sweep and prune")
-        .addAlias( "IncrSAP" )
         .addAlias( "IncrementalSAP" )
         .addAlias( "IncrementalSweepAndPrune" )
         .add< IncrSAP >( true )
