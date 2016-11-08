@@ -260,6 +260,7 @@ TEST(LoggingTest, BaseObject)
 #undef dmsg_error
 #undef dmsg_warning
 #undef dmsg_fatal
+#undef dmsg_advice
 #include <sofa/helper/logging/Messaging.h>
 
 TEST(LoggingTest, withDevMode)
@@ -288,6 +289,9 @@ TEST(LoggingTest, withDevMode)
 
 TEST(LoggingTest, checkLoggingMessageHandler)
 {
+    CountingMessageHandler& m = MainCountingMessageHandler::getInstance() ;
+    m.reset();
+
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() );
     LogMessage loggingFrame;
@@ -314,6 +318,7 @@ TEST(LoggingTest, checkLoggingMessageHandler)
 TEST(LoggingTest, checkCountingMessageHandler)
 {
     CountingMessageHandler& m = MainCountingMessageHandler::getInstance() ;
+    m.reset();
 
     MessageDispatcher::clearHandlers() ;
     MessageDispatcher::addHandler( &m );
