@@ -23,19 +23,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaTest/Sofa_test.h>
+#include <gtest/gtest.h>
 
 #include "SofaLoader/MeshVTKLoader.h"
+using sofa::component::loader::MeshVTKLoader ;
 
-namespace sofa {
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository ;
 
-struct MeshVTKLoader_test : public Sofa_test<>, public component::loader::MeshVTKLoader
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
+
+namespace sofa
+{
+namespace meshvtkloader_test
 {
 
-    MeshVTKLoader_test()
+int initTestEnvironment()
+{
+    BackTrace::autodump() ;
+    return 0;
+}
+int s_autodump = initTestEnvironment() ;
+
+
+struct MeshVTKLoaderTest : public ::testing::Test,
+                            public MeshVTKLoader
+{
+
+    MeshVTKLoaderTest()
     {}
 
-    void test_load(std::string const& filename, unsigned nbPoints, unsigned nbEdges, unsigned nbTriangles, unsigned nbQuads, unsigned nbPolygons, unsigned nbTetrahedra, unsigned nbHexahedra)
+    void testLoad(std::string const& filename, unsigned nbPoints, unsigned nbEdges, unsigned nbTriangles, unsigned nbQuads, unsigned nbPolygons, unsigned nbTetrahedra, unsigned nbHexahedra)
     {
         setFilename(filename);
         EXPECT_TRUE(load());
@@ -50,26 +73,53 @@ struct MeshVTKLoader_test : public Sofa_test<>, public component::loader::MeshVT
 
 };
 
-TEST_F(MeshVTKLoader_test, detectFileType)
+TEST_F(MeshVTKLoaderTest, detectFileType)
 {
-    ASSERT_EQ(component::loader::MeshVTKLoader::LEGACY, detectFileType(sofa::helper::system::DataRepository.getFile("mesh/liver.vtk").c_str()));
-    ASSERT_EQ(component::loader::MeshVTKLoader::XML, detectFileType(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu").c_str()));
+    ASSERT_EQ(MeshVTKLoader::LEGACY, detectFileType(DataRepository.getFile("mesh/liver.vtk").c_str()));
+    ASSERT_EQ(MeshVTKLoader::XML, detectFileType(DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu").c_str()));
 }
 
-TEST_F(MeshVTKLoader_test, loadLegacy)
+TEST_F(MeshVTKLoaderTest, loadLegacy)
 {
-    test_load(sofa::helper::system::DataRepository.getFile("mesh/liver.vtk"), 5008, 0, 10000, 0, 0, 0, 0);
+    testLoad(DataRepository.getFile("mesh/liver.vtk"), 5008, 0, 10000, 0, 0, 0, 0);
 }
 
-TEST_F(MeshVTKLoader_test, loadXML)
+TEST_F(MeshVTKLoaderTest, loadXML)
 {
-    test_load(sofa::helper::system::DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu"), 1446, 0, 0, 0, 0, 4406, 0);
+    testLoad(DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu"), 1446, 0, 0, 0, 0, 4406, 0);
 }
 
-TEST_F(MeshVTKLoader_test, load)
+TEST_F(MeshVTKLoaderTest, loadInvalidFilenames)
 {
+    ExpectMessage errmsg(Message::Error) ;
+
     setFilename("");
+    EXPECT_FALSE(load());
+
+    setFilename("/home/test/thisisnotavalidpath");
+    EXPECT_FALSE(load());
+
+    setFilename(DataRepository.getFile("test.vtu"));
+    EXPECT_FALSE(load());
+
+    setFilename(DataRepository.getFile("test.vtk"));
     EXPECT_FALSE(load());
 }
 
+//TODO(dmarchal): Remove this tests until we can fix them.
+#if 0
+TEST_F(MeshVTKLoaderTest, loadBrokenVtkFile_OpenIssue)
+{
+    setFilename(DataRepository.getFile("mesh/liver_for_test_broken.vtk"));
+    EXPECT_FALSE(load());
+}
+
+TEST_F(MeshVTKLoaderTest, loadBrokenVtuFile_OpenIssue)
+{
+    setFilename(DataRepository.getFile("mesh/Armadillo_Tetra_4406_for_test_broken.vtu"));
+    EXPECT_FALSE(load());
+}
+#endif
+
+}// namespace meshvtkloader_test
 }// namespace sofa

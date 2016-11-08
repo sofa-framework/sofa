@@ -11,9 +11,11 @@ if(NOT Qt5Core_FOUND)
 endif()
 
 if(SOFA_HAVE_QT_LIBRARIES)
-	sofa_add_application(Modeler Modeler ON)
+        sofa_add_application(Modeler Modeler ON)
 endif()
 
 sofa_add_application(GenerateRigid GenerateRigid)
 sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(runSofa runSofa ON)
+sofa_add_application(sofaInfo sofaInfo ON)
+sofa_add_application(findAlias findAlias ON)

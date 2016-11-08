@@ -34,6 +34,12 @@
 using sofa::component::logging::MessageHandlerComponent ;
 using sofa::component::logging::FileMessageHandlerComponent ;
 
+#include "MakeAliasComponent.h"
+using sofa::component::MakeAliasComponent ;
+
+#include "MakeDataAliasComponent.h"
+using sofa::component::MakeAliasComponent ;
+
 namespace sofa
 {
 
@@ -55,6 +61,8 @@ void initComponentBase()
     }
 }
 
+SOFA_LINK_CLASS(MakeAliasComponent)
+SOFA_LINK_CLASS(MakeDataAliasComponent)
 SOFA_LINK_CLASS(MessageHandlerComponent)
 SOFA_LINK_CLASS(FileMessageHandlerComponent)
 

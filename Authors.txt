@@ -75,3 +75,7 @@
 
     + GPU support using OpenCL
         Jeremie Allard, Vincent Majorczyk
+
+    + Geomagic Interface
+        Hadrien Courtecuisse
+        Raffaela Trivisonne

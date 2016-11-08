@@ -26,7 +26,7 @@ namespace mapping
  (ie conversion to a holonomic constraint)
 */
 template <class TIn, class TOut >
-class SOFA_Compliant_API DifferenceFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
+class DifferenceFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DifferenceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
@@ -38,8 +38,9 @@ public:
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
     Data< InVecCoord > targets;
+    Data< helper::vector<unsigned> > d_targetIndices;
 
-    Data< bool > inverted;
+    Data< bool > d_inverted;
     Data< SReal > d_showObjectScale; ///< drawing size
     Data< defaulttype::Vec4f > d_color; ///< drawing color
 
@@ -47,7 +48,8 @@ public:
     DifferenceFromTargetMapping()
         : indices( initData(&indices, "indices", "indices of the parent points") )
         , targets( initData(&targets, "targets", "target positions which who computes deltas") )
-        , inverted( initData(&inverted, false, "inverted", "target-p (rather than p-target)") )
+        , d_targetIndices( initData(&d_targetIndices, "targetIndices", "target indices in target positions which who computes deltas") )
+        , d_inverted( initData(&d_inverted, false, "inverted", "target-p (rather than p-target)") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
         , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {
@@ -95,35 +97,41 @@ public:
     {
         const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
+        bool inverted = d_inverted.getValue();
+        const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
         if( ind.empty() )
         {
             if( out.size()!=in.size() ) this->toModel->resize( this->fromModel->getSize() );
-            if( inverted.getValue() )
+            if( inverted )
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
-                    out[j] = t[std::min(t.size()-1,j)] - in[j];
+                    unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
+                    out[j] = t[targetIndex] - in[j];
                 }
             else
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
-                    out[j] = in[j] - t[std::min(t.size()-1,j)];
+                    unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
+                    out[j] = in[j] - t[targetIndex];
                 }
         }
         else
         {
             if( out.size()!=in.size() ) this->toModel->resize( ind.size() );
-            if( inverted.getValue() )
+            if( inverted )
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
-                    out[j] = t[std::min(t.size()-1,j)] - in[k];
+                    unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
+                    out[j] = t[targetIndex] - in[k];
                 }
             else
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
-                    out[j] = in[k] - t[std::min(t.size()-1,j)];
+                    unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
+                    out[j] = in[k] - t[targetIndex];
                 }
         }
     }
@@ -134,19 +142,20 @@ public:
 
         const helper::vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+        bool inverted = d_inverted.getValue();
 
         if( ind.empty() )
         {
             J.resize( Nout * in.size(), Nin * in.size());
             J.setIdentity();
-            if( inverted.getValue() ) J *= -1;
+            if( inverted ) J *= -1;
         }
         else
         {
             J.resize( Nout * ind.size(), Nin * in.size());
             J.reserve( Nout * ind.size() );
 
-            const int value = inverted.getValue() ? -1 : 1;
+            const int value = inverted ? -1 : 1;
 
             for( size_t j = 0 ; j < ind.size() ; ++j )
             {
@@ -170,6 +179,7 @@ public:
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const InVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
+        const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
         helper::vector< sofa::defaulttype::Vector3 > points;
         if( ind.empty() )
@@ -177,7 +187,8 @@ public:
             points.resize(2*pos.size());
             for( size_t j = 0 ; j < pos.size() ; ++j )
             {
-                points[2*j] = t[std::min(t.size()-1,j)];
+                unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
+                points[2*j] = t[targetIndex];
                 points[2*j+1] = pos[j];
             }
         }
@@ -186,18 +197,20 @@ public:
             points.resize(2*ind.size());
             for( size_t j = 0 ; j < ind.size() ; ++j )
             {
+                unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
                 const unsigned k = ind[j];
-                points[2*j] = t[std::min(t.size()-1,j)];
+                points[2*j] = t[targetIndex];
                 points[2*j+1] = pos[k];
             }
         }
 
         SReal scale = d_showObjectScale.getValue();
+        const defaulttype::Vec4f& color = d_color.getValue();
         if( scale == 0 )
-            vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
+            vparams->drawTool()->drawLines ( points, 1, color );
         else
             for (unsigned int i=0; i<points.size()/2; ++i)
-                vparams->drawTool()->drawCylinder( points[2*i+1], points[2*i], scale, d_color.getValue() );
+                vparams->drawTool()->drawCylinder( points[2*i+1], points[2*i], scale, color );
     }
 
 

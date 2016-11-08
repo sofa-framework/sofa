@@ -33,6 +33,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -43,29 +44,33 @@ namespace component
 namespace engine
 {
 
+using helper::vector;
+using sofa::core::topology::BaseMeshTopology;
+
 template <class DataTypes>
 ExtrudeEdgesAndGenerateQuads<DataTypes>::ExtrudeEdgesAndGenerateQuads()
     : initialized(false)
-    , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
-    , f_direction( initData (&f_direction, Coord(1.0f,0.0f,0.0f), "extrudeDirection", "Direction along which to extrude the curve") )
-    , f_thicknessIn( initData (&f_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
-    , f_thicknessOut( initData (&f_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
-    , f_numberOfSections( initData (&f_numberOfSections, int (1), "numberOfSections", "Number of sections / steps in the extrusion") )
-    , f_curveVertices( initData (&f_curveVertices, "curveVertices", "Position coordinates along the initial curve") )
-    , f_curveEdges( initData (&f_curveEdges, "curveEdges", "Indices of the edges of the curve to extrude") )
-    , f_extrudedVertices( initData (&f_extrudedVertices, "extrudedVertices", "Coordinates of the extruded vertices") )
-    , f_extrudedQuads( initData (&f_extrudedQuads, "extrudedQuads", "List of all quads generated during the extrusion") )
+    , d_direction( initData (&d_direction, Coord(1.0f,0.0f,0.0f), "extrudeDirection", "Direction along which to extrude the curve") )
+    , d_thicknessIn( initData (&d_thicknessIn, Real (0.0), "thicknessIn", "Thickness of the extruded volume in the opposite direction of the normals") )
+    , d_thicknessOut( initData (&d_thicknessOut, Real (1.0), "thicknessOut", "Thickness of the extruded volume in the direction of the normals") )
+    , d_nbSections( initData (&d_nbSections, int (1), "numberOfSections", "Number of sections / steps in the extrusion") )
+    , d_curveVertices( initData (&d_curveVertices, "curveVertices", "Position coordinates along the initial curve") )
+    , d_curveEdges( initData (&d_curveEdges, "curveEdges", "Indices of the edges of the curve to extrude") )
+    , d_extrudedVertices( initData (&d_extrudedVertices, "extrudedVertices", "Coordinates of the extruded vertices") )
+    , d_extrudedEdges( initData (&d_extrudedEdges, "extrudedEdges", "List of all edges generated during the extrusion") )
+    , d_extrudedQuads( initData (&d_extrudedQuads, "extrudedQuads", "List of all quads generated during the extrusion") )
 {
 }
 
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::init()
 {
-    addInput(&f_curveVertices);
-    addInput(&f_curveEdges);
+    addInput(&d_curveVertices);
+    addInput(&d_curveEdges);
 
-    addOutput(&f_extrudedVertices);
-    addOutput(&f_extrudedQuads);
+    addOutput(&d_extrudedVertices);
+    addOutput(&d_extrudedEdges);
+    addOutput(&d_extrudedQuads);
 
     setDirtyValue();
 }
@@ -73,43 +78,65 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::init()
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::reinit()
 {
+    checkInput();
     update();
+}
+
+template <class DataTypes>
+void ExtrudeEdgesAndGenerateQuads<DataTypes>::bwdInit()
+{
+    checkInput();
+}
+
+template <class DataTypes>
+void ExtrudeEdgesAndGenerateQuads<DataTypes>::checkInput()
+{
+    if (d_curveEdges.getValue().size() < 1 || d_curveVertices.getValue().size() < 1)
+        msg_warning(this) << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
+
+    if (d_nbSections.getValue() < 0 )
+    {
+        msg_warning(this) << "The number of sections should be positive. Set default equal to 1.";
+        d_nbSections.setValue(1);
+    }
 }
 
 template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
 {
-    const helper::vector<sofa::core::topology::BaseMeshTopology::Edge>& curveEdges = f_curveEdges.getValue();
-    const VecCoord& curveVertices = f_curveVertices.getValue();
+    const vector<BaseMeshTopology::Edge>& curveEdges = d_curveEdges.getValue();
+    const VecCoord& curveVertices = d_curveVertices.getValue();
 
     if (curveEdges.size() < 1 || curveVertices.size() < 1)
     {
-        std::cout << "WARNING: initial mesh does not contain vertices or edges... No extruded mesh will be generated" << std::endl;
+        if(f_printLog.getValue())
+            msg_warning(this) << "Initial mesh does not contain vertices or edges... No extruded mesh will be generated";
+
         return;
     }
 
     cleanDirty();
 
-    VecCoord* extrudedVertices = f_extrudedVertices.beginWriteOnly();
+    VecCoord* extrudedVertices = d_extrudedVertices.beginWriteOnly();
     extrudedVertices->clear();
-    helper::vector<sofa::core::topology::BaseMeshTopology::Edge>* extrudedEdges = f_extrudedEdges.beginWriteOnly();
+    vector<BaseMeshTopology::Edge>* extrudedEdges = d_extrudedEdges.beginWriteOnly();
     extrudedEdges->clear();
-    helper::vector<sofa::core::topology::BaseMeshTopology::Quad>* extrudedQuads = f_extrudedQuads.beginWriteOnly();
+    vector<BaseMeshTopology::Quad>* extrudedQuads = d_extrudedQuads.beginWriteOnly();
     extrudedQuads->clear();
 
-    int nSlices = f_numberOfSections.getValue();
-    int nVertices = curveVertices.size();
+    int nbSections = d_nbSections.getValue();
+    int nbVertices = curveVertices.size();
 
     // compute coordinates of extruded vertices (including initial vertices)
-    Real scale = (f_thicknessIn.getValue() + f_thicknessOut.getValue())/(Real)f_numberOfSections.getValue();
-    for (int n=0; n<nSlices+1; n++)
+    Real scale = (d_thicknessIn.getValue() + d_thicknessOut.getValue())/(Real)nbSections;
+    for (int n=0; n<nbSections+1; n++)
     {
-        Coord step = f_direction.getValue();
+        Coord step = d_direction.getValue();
         step.normalize();
         step = step * scale;
         for (unsigned int i=0; i<curveVertices.size(); i++)
         {
-            Coord disp = -f_direction.getValue() * f_thicknessIn.getValue() + step * (Real)n;
+            Coord disp = -d_direction.getValue() * d_thicknessIn.getValue() + step * (Real)n;
             Coord newVertexPos(curveVertices[i][0], curveVertices[i][1], curveVertices[i][2]);
             extrudedVertices->push_back(newVertexPos + disp);
         }
@@ -118,18 +145,18 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
     // compute indices of extruded edges (including initial edges)
     for (unsigned int e=0; e<curveEdges.size(); e++)
     {
-        sofa::core::topology::BaseMeshTopology::Edge edge;
+        BaseMeshTopology::Edge edge;
 
         // edges parallel to the initial curve
-        for (int n=0; n<nSlices+1; n++)
+        for (int n=0; n<nbSections+1; n++)
         {
-            edge = sofa::core::topology::BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices);
+            edge = BaseMeshTopology::Edge(curveEdges[e][0]+n*nbVertices, curveEdges[e][1]+n*nbVertices);
             extrudedEdges->push_back(edge);
         }
         // edges orthogonal to the initial curve
-        for (int n=0; n<nSlices; n++)
+        for (int n=0; n<nbSections; n++)
         {
-            edge = sofa::core::topology::BaseMeshTopology::Edge(curveEdges[e][0]+n*nVertices, curveEdges[e][0]+(n+1)*nVertices);
+            edge = BaseMeshTopology::Edge(curveEdges[e][0]+n*nbVertices, curveEdges[e][0]+(n+1)*nbVertices);
             extrudedEdges->push_back(edge);
         }
     }
@@ -137,20 +164,29 @@ void ExtrudeEdgesAndGenerateQuads<DataTypes>::update()
     // compute indices of extruded quads
     for (unsigned int e=0; e<curveEdges.size(); e++)
     {
-        sofa::core::topology::BaseMeshTopology::Quad quad;
+        BaseMeshTopology::Quad quad;
 
-        for (int n=0; n<nSlices; n++)
+        for (int n=0; n<nbSections; n++)
         {
-            quad = sofa::core::topology::BaseMeshTopology::Quad(curveEdges[e][0]+n*nVertices, curveEdges[e][1]+n*nVertices, curveEdges[e][1]+(n+1)*nVertices, curveEdges[e][0]+(n+1)*nVertices);
+            quad = BaseMeshTopology::Quad(curveEdges[e][0]+n*nbVertices, curveEdges[e][1]+n*nbVertices, curveEdges[e][1]+(n+1)*nbVertices, curveEdges[e][0]+(n+1)*nbVertices);
             extrudedQuads->push_back(quad);
         }
     }
 
-    // std::cout << "============= DONE ==========" << std::endl;
+    // curve not closed
+    if(curveEdges.size() < curveVertices.size())
+    {
+        int e = curveEdges.size()-1;
+        for (int n=0; n<nbSections; n++)
+        {
+            BaseMeshTopology::Edge edge = BaseMeshTopology::Edge(curveEdges[e][1]+n*nbVertices, curveEdges[e][1]+(n+1)*nbVertices);
+            extrudedEdges->push_back(edge);
+        }
+    }
 
-    f_extrudedQuads.endEdit();
-    f_extrudedEdges.endEdit();
-    f_extrudedVertices.endEdit();
+    d_extrudedQuads.endEdit();
+    d_extrudedEdges.endEdit();
+    d_extrudedVertices.endEdit();
 }
 
 

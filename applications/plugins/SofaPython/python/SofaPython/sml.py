@@ -3,7 +3,7 @@ import Sofa
 import sys
 import os.path
 import math
-import xml.etree.ElementTree as etree 
+import xml.etree.ElementTree as etree
 
 import Quaternion
 import Tools
@@ -15,7 +15,7 @@ import SofaPython.MeshLoader
 
 printLog = True
 
-def parseIdName(obj,objXml):
+def parseIdName(obj, objXml):
     """ set id and name of obj
     """
     obj.id = objXml.attrib["id"]
@@ -74,7 +74,7 @@ class Model:
             parseIdName(self,meshXml)
             self.format = meshXml.find("source").attrib["format"]
             self.source = meshXml.find("source").text
-        
+
             for g in meshXml.findall("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
 
@@ -112,8 +112,6 @@ class Model:
                 self.visual = False if objXml.attrib["visual"] in {'False','0','false'} else True
             parseTag(self, objXml)
 
-
-
     class Image:
         def __init__(self, imageXml=None):
             self.format=None
@@ -125,7 +123,6 @@ class Model:
             parseIdName(self,imageXml)
             self.format = imageXml.find("source").attrib["format"]
             self.source = imageXml.find("source").text
-
 
     class Solid:
         def __init__(self, solidXml=None):
@@ -179,7 +176,6 @@ class Model:
             for o in objXml.findall("offset"):
                 self.offsets.append( Model.Offset(o) )
 
-
     class Offset:
         def __init__(self, offsetXml=None):
             self.name = "offset"
@@ -196,7 +192,7 @@ class Model:
 
         def isAbsolute(self):
             return self.type == "absolute"
-            
+
     class Dof:
         def __init__(self, dofXml=None, dof=None, min=None, max=None):
             self.index = None
@@ -226,10 +222,10 @@ class Model:
             self.tags = set() # user-defined tags
             if not jointXml is None:
                 self.parseXml(jointXml)
-        
+
         def parseXml(self, jointXml):
-            parseIdName(self,jointXml)
-            parseTag(self,jointXml)
+            parseIdName(self, jointXml)
+            parseTag(self, jointXml)
             solidsRef = jointXml.findall("jointSolidRef")
             for i in range(0,2):
                 if not solidsRef[i].find("offset") is None:
@@ -242,16 +238,16 @@ class Model:
         """ Skinning definition, vertices index influenced by bone with weight
         """
         def __init__(self):
-            self.solid=None    # id of the parent bone
-            self.mesh=None     # the target mesh
-            self.index=list()  # indices of target mesh
-            self.weight=list() # weights for these vertices with respect with this bone
+            self.solid = None    # id of the parent bone
+            self.mesh = None     # the target mesh
+            self.index = list()  # indices of target mesh
+            self.weight = list() # weights for these vertices with respect with this bone
 
     class Surface:
         def __init__(self):
-            self.solid=None # a Model.Solid object
-            self.mesh=None  # a Model.Mesh object
-            self.group=None # the vertex indices of the group
+            self.solid = None # a Model.Solid object
+            self.mesh = None  # a Model.Mesh object
+            self.group = None # the vertex indices of the group
 
     class SurfaceLink:
         def __init__(self,objXml=None):
@@ -269,17 +265,17 @@ class Model:
             if objXml.find("distance"):
                 self.distance=float(objXml.findText("distance"))
 
-    dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
-    
+    dofIndex={"x": 0, "y": 1, "z": 2, "rx": 3, "ry": 4, "rz": 5}
+
     def __init__(self, filename=None, name=None):
-        self.name=name
+        self.name = name
         self.modelDir = None
-        self.units=dict()
-        self.meshes=dict()
-        self.images=dict()
-        self.solids=dict()
-        self.genericJoints=dict()
-        self.surfaceLinks=dict()
+        self.units = dict()
+        self.meshes = dict()
+        self.images = dict()
+        self.solids = dict()
+        self.genericJoints = dict()
+        self.surfaceLinks = dict()
 
         if not filename is None:
             self.open(filename)
@@ -296,7 +292,7 @@ class Model:
 
             # units
             self.parseUnits(modelXml)
-            
+
             # meshes
             for m in modelXml.iter("mesh"):
                 if not m.find("source") is None:
@@ -322,7 +318,6 @@ class Model:
                     else:
                         Sofa.msg_warning("SofaPython.sml","Model: image not found: "+image.source )
                     self.images[m.attrib["id"]] = image
-
 
             # solids
             for objXml in modelXml.findall("solid"):
@@ -359,11 +354,9 @@ class Model:
                     skinning.weight = skinning.mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
                     solid.skinnings.append(skinning)
 
-
-
             # joints
             self.parseJointGenerics(modelXml)
-                
+
             # contacts
             for c in modelXml.findall("surfaceLink"):
                 if c.attrib["id"] in self.surfaceLinks:
@@ -384,10 +377,10 @@ class Model:
                     if "group" in s.attrib: # optional
                         if len(s.attrib["group"]): # discard empty string
                             surfaceLink.surfaces[i].group = s.attrib["group"]
-#                    if "image" in s.attrib: # optional
-#                        if len(s.attrib["image"]): # discard empty string
-#                            if s.attrib["image"] in self.images:
-#                               reg.surfaces[i].image = self.images[s.attrib["image"]]
+                    #if "image" in s.attrib: # optional
+                    #    if len(s.attrib["image"]): # discard empty string
+                    #        if s.attrib["image"] in self.images:
+                    #           reg.surfaces[i].image = self.images[s.attrib["image"]]
                 self.surfaceLinks[surfaceLink.id]=surfaceLink
 
     def parseUnits(self, modelXml):
@@ -395,7 +388,7 @@ class Model:
         if not xmlUnits is None:
             for u in xmlUnits.attrib:
                 self.units[u]=xmlUnits.attrib[u]
-                
+
     def parseMeshes(self, obj, objXml):
         meshes=objXml.findall("mesh")
         for i,m in enumerate(meshes):
@@ -406,7 +399,6 @@ class Model:
             else:
                 Sofa.msg_error("SofaPython.sml","Model: solid {0} references undefined mesh {1}".format(obj.name, meshId))
 
-
     def parseImages(self, obj, objXml):
         images=objXml.findall("image")
         for i,m in enumerate(images):
@@ -416,16 +408,15 @@ class Model:
             else:
                 Sofa.msg_error("SofaPython.sml","Model: solid {0} references undefined image {1}".format(obj.name, imageId))
 
-
     def parseJointGenerics(self,modelXml):
         for j in modelXml.findall("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
                 Sofa.msg_error("SofaPython.sml","Model: jointGeneric defined twice, id:", j.attrib["id"])
                 continue
 
-            joint=Model.JointGeneric(j)
-            solids=j.findall("jointSolidRef")
-            for i,o in enumerate(solids):
+            joint = Model.JointGeneric(j)
+            solids = j.findall("jointSolidRef")
+            for i, o in enumerate(solids):
                 if o.attrib["id"] in self.solids:
                     joint.solids[i] = self.solids[o.attrib["id"]]
                 else:
@@ -449,7 +440,7 @@ def insertVisual(parentNode, solid, color):
     for m in solid.mesh:
         Tools.meshLoader(node, m.source, name="loader_"+m.id)
         node.createObject("OglModel",src="@loader_"+m.id, translation=concat(translation),rotation=concat(rotation), color=color)
-    
+
 def setupUnits(myUnits):
     message = "units:"
     for quantity,unit in myUnits.iteritems():
@@ -503,18 +494,18 @@ class BaseScene:
             childNode = parent.createChild(childName)
         self.nodes[childName] = childNode
         return childNode
-        
+
     def setMaterial(self, solid, material):
         """ assign material to solid
         """
         self.solidMaterial[solid]=material
-    
+
     def setMaterialByTag(self, tag, material):
         """ assign material to all solids with tag
         """
         for solid in self.model.getSolidsByTags({tag}):
             self.solidMaterial[solid.id] = material
-    
+
     def getMaterial(self, solid):
         """ return the solid material, "default" if none is defined
         """

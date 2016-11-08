@@ -28,6 +28,10 @@
 
 #include <gtest/gtest.h>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
+
 namespace sofa {
 
 
@@ -57,7 +61,7 @@ protected:
             , unsigned int bpp, const unsigned char* data)
             : filename(filename), width(width), height(height), bpp(bpp), data(data)
         {
-            
+
         }
 
         void testBench()
@@ -75,11 +79,14 @@ protected:
             EXPECT_TRUE(0 == std::memcmp(data, testdata, width*height*bpp));
         }
     };
-            
+
 };
 
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
 {
+    /// This generate a test failure if no error message is generated.
+    ExpectMessage raii(Message::Error) ;
+
     sofa::helper::io::ImagePNG imgNoFile;
     EXPECT_FALSE(imgNoFile.load("image/randomnamewhichdoesnotexist.png"));
 }

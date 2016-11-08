@@ -56,7 +56,10 @@ void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsig
 template <class T, class MemoryManager = CPUMemoryManager<T> >
 class vector;
 
-//classic vector (using CPUMemoryManager, same behavior as std::helper)
+/// Regular vector
+/// Using CPUMemoryManager, it has the same behavior as std::helper with extra conveniences:
+///  - string serialization (making it usable in Data)
+///  - operator[] is checking if the index is within the bounds in debug
 template <class T>
 class vector<T, CPUMemoryManager<T> > : public std::vector<T, std::allocator<T> >
 {

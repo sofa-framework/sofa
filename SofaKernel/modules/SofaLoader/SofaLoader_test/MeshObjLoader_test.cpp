@@ -27,9 +27,23 @@
 
 #include <SofaLoader/MeshObjLoader.h>
 
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
 using namespace sofa::component::loader;
 
-namespace sofa {
+namespace sofa
+{
+namespace meshobjloader_test
+{
+
+int initTestEnvironment()
+{
+    BackTrace::autodump() ;
+    return 0;
+}
+int s_autodump = initTestEnvironment() ;
+
 
 class MeshObjLoader_test  : public ::testing::Test, public MeshObjLoader
 {
@@ -85,4 +99,5 @@ TEST_F(MeshObjLoader_test, LoadCall)
     loadTest("mesh/torus.obj", 800, 0, 1600,  0, 0, 0, 0, 0, 0, 861, 0);
 }
 
+} // namespace meshobjloader_test
 } // namespace sofa

@@ -34,6 +34,8 @@
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa
 {
 
@@ -43,128 +45,107 @@ namespace component
 namespace engine
 {
 
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::BaseContext;
+using sofa::core::topology::BaseMeshTopology;
+using sofa::core::behavior::BaseMechanicalState;
+using core::loader::MeshLoader;
+using sofa::helper::ReadAccessor;
+using sofa::helper::WriteOnlyAccessor;
+using sofa::helper::vector;
+using core::visual::VisualParams;
+
 template <class DataTypes>
 MeshROI<DataTypes>::MeshROI()
-    : f_X0( initData (&f_X0, "position", "Rest position coordinates of the degrees of freedom") )
-    , f_edges(initData (&f_edges, "edges", "Edge Topology") )
-    , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
-    , f_tetrahedra(initData (&f_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
-    , f_X0_i( initData (&f_X0_i, "ROIposition", "ROI position coordinates of the degrees of freedom") )
-    , f_edges_i(initData (&f_edges_i, "ROIedges", "ROI Edge Topology") )
-    , f_triangles_i(initData (&f_triangles_i, "ROItriangles", "ROI Triangle Topology") )
-    , f_computeEdges( initData(&f_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI.") )
-    , f_computeTriangles( initData(&f_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI.") )
-    , f_computeTetrahedra( initData(&f_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI.") )
-    , f_computeTemplateTriangles( initData(&f_computeTemplateTriangles,true,"computeMeshROI","Compute with the mesh (not only bounding box)") )
-    , f_box( initData(&f_box, "box", "Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
-    , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
-    , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
-    , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
-    , f_pointsInROI( initData(&f_pointsInROI,"pointsInROI","Points contained in the ROI") )
-    , f_edgesInROI( initData(&f_edgesInROI,"edgesInROI","Edges contained in the ROI") )
-    , f_trianglesInROI( initData(&f_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
-    , f_tetrahedraInROI( initData(&f_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
-    , f_pointsOutROI( initData(&f_pointsOutROI,"pointsOutROI","Points not contained in the ROI") )
-    , f_edgesOutROI( initData(&f_edgesOutROI,"edgesOutROI","Edges not contained in the ROI") )
-    , f_trianglesOutROI( initData(&f_trianglesOutROI,"trianglesOutROI","Triangles not contained in the ROI") )
-    , f_tetrahedraOutROI( initData(&f_tetrahedraOutROI,"tetrahedraOutROI","Tetrahedra not contained in the ROI") )
-    , f_indicesOut( initData(&f_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
-    , f_edgeOutIndices( initData(&f_edgeOutIndices,"edgeOutIndices","Indices of the edges not contained in the ROI") )
-    , f_triangleOutIndices( initData(&f_triangleOutIndices,"triangleOutIndices","Indices of the triangles not contained in the ROI") )
-    , f_tetrahedronOutIndices( initData(&f_tetrahedronOutIndices,"tetrahedronOutIndices","Indices of the tetrahedra not contained in the ROI") )
-    , p_drawOut( initData(&p_drawOut,false,"drawOut","Draw the data not contained in the ROI") )
-    , p_drawMesh( initData(&p_drawMesh,false,"drawMesh","Draw Mesh used for the ROI") )
-    , p_drawBox( initData(&p_drawBox,false,"drawBox","Draw the Bounding box around the mesh used for the ROI") )
-    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
-    , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
-    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangles","Draw Triangles") )
-    , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for mesh and topological elements") )
-    , p_doUpdate( initData(&p_doUpdate,false,"doUpdate","Update the computation (not only at the init") )
+    : d_X0( initData (&d_X0, "position", "Rest position coordinates of the degrees of freedom") )
+    , d_edges(initData (&d_edges, "edges", "Edge Topology") )
+    , d_triangles(initData (&d_triangles, "triangles", "Triangle Topology") )
+    , d_tetrahedra(initData (&d_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
+    , d_X0_i( initData (&d_X0_i, "ROIposition", "ROI position coordinates of the degrees of freedom") )
+    , d_edges_i(initData (&d_edges_i, "ROIedges", "ROI Edge Topology") )
+    , d_triangles_i(initData (&d_triangles_i, "ROItriangles", "ROI Triangle Topology") )
+    , d_computeEdges( initData(&d_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI.") )
+    , d_computeTriangles( initData(&d_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI.") )
+    , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI.") )
+    , d_computeTemplateTriangles( initData(&d_computeTemplateTriangles,true,"computeMeshROI","Compute with the mesh (not only bounding box)") )
+    , d_box( initData(&d_box, "box", "Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , d_indices( initData(&d_indices,"indices","Indices of the points contained in the ROI") )
+    , d_edgeIndices( initData(&d_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
+    , d_triangleIndices( initData(&d_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
+    , d_tetrahedronIndices( initData(&d_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
+    , d_pointsInROI( initData(&d_pointsInROI,"pointsInROI","Points contained in the ROI") )
+    , d_edgesInROI( initData(&d_edgesInROI,"edgesInROI","Edges contained in the ROI") )
+    , d_trianglesInROI( initData(&d_trianglesInROI,"trianglesInROI","Triangles contained in the ROI") )
+    , d_tetrahedraInROI( initData(&d_tetrahedraInROI,"tetrahedraInROI","Tetrahedra contained in the ROI") )
+    , d_pointsOutROI( initData(&d_pointsOutROI,"pointsOutROI","Points not contained in the ROI") )
+    , d_edgesOutROI( initData(&d_edgesOutROI,"edgesOutROI","Edges not contained in the ROI") )
+    , d_trianglesOutROI( initData(&d_trianglesOutROI,"trianglesOutROI","Triangles not contained in the ROI") )
+    , d_tetrahedraOutROI( initData(&d_tetrahedraOutROI,"tetrahedraOutROI","Tetrahedra not contained in the ROI") )
+    , d_indicesOut( initData(&d_indicesOut,"indicesOut","Indices of the points not contained in the ROI") )
+    , d_edgeOutIndices( initData(&d_edgeOutIndices,"edgeOutIndices","Indices of the edges not contained in the ROI") )
+    , d_triangleOutIndices( initData(&d_triangleOutIndices,"triangleOutIndices","Indices of the triangles not contained in the ROI") )
+    , d_tetrahedronOutIndices( initData(&d_tetrahedronOutIndices,"tetrahedronOutIndices","Indices of the tetrahedra not contained in the ROI") )
+    , d_drawOut( initData(&d_drawOut,false,"drawOut","Draw the data not contained in the ROI") )
+    , d_drawMesh( initData(&d_drawMesh,false,"drawMesh","Draw Mesh used for the ROI") )
+    , d_drawBox( initData(&d_drawBox,false,"drawBox","Draw the Bounding box around the mesh used for the ROI") )
+    , d_drawPoints( initData(&d_drawPoints,false,"drawPoints","Draw Points") )
+    , d_drawEdges( initData(&d_drawEdges,false,"drawEdges","Draw Edges") )
+    , d_drawTriangles( initData(&d_drawTriangles,false,"drawTriangles","Draw Triangles") )
+    , d_drawTetrahedra( initData(&d_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
+    , d_drawSize( initData(&d_drawSize,0.0,"drawSize","rendering size for mesh and topological elements") )
+    , d_doUpdate( initData(&d_doUpdate,false,"doUpdate","Update the computation (not only at the init)") )
 {
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void MeshROI<DataTypes>::init()
 {
-    using sofa::core::objectmodel::BaseData;
-    using sofa::core::objectmodel::BaseContext;
-    using sofa::core::topology::BaseMeshTopology;
-    using sofa::core::behavior::BaseMechanicalState;
+    addInput(&d_X0);
+    addInput(&d_edges);
+    addInput(&d_triangles);
+    addInput(&d_tetrahedra);
 
-    //cerr<<"MeshROI<DataTypes>::init() is called "<<endl;
-    if (!f_X0.isSet())
-    {
-        //cerr<<"MeshROI<DataTypes>::init() f_X0 is not set "<<endl;
-        sofa::core::behavior::BaseMechanicalState* mstate;
-        this->getContext()->get(mstate,BaseContext::Local);
-        if (mstate)
-        {
-            BaseData* parent = mstate->findData("rest_position");
-            if (parent)
-            {
-                f_X0.setParent(parent);
-                f_X0.setReadOnly(true);
-            }
-        }
-        else
-        {
-            core::loader::MeshLoader* loader = NULL;
-            this->getContext()->get(loader,BaseContext::Local); // perso
-            if (loader)
-            {
-                BaseData* parent = loader->findData("position");
-                if (parent)
-                {
-                    f_X0.setParent(parent);
-                    f_X0.setReadOnly(true);
-                }
-            }
-        }
-    }
-    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
-    {
-        BaseMeshTopology* topology;
-        this->getContext()->get(topology,BaseContext::Local); // perso
-        if (topology)
-        {
-            if (!f_edges.isSet() && f_computeEdges.getValue())
-            {
-                BaseData* eparent = topology->findData("edges");
-                if (eparent)
-                {
-                    f_edges.setParent(eparent);
-                    f_edges.setReadOnly(true);
-                }
-            }
-            if (!f_triangles.isSet() && f_computeTriangles.getValue())
-            {
-                BaseData* tparent = topology->findData("triangles");
-                if (tparent)
-                {
-                    f_triangles.setParent(tparent);
-                    f_triangles.setReadOnly(true);
-                }
-            }
-            if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
-            {
-                BaseData* tparent = topology->findData("tetrahedra");
-                if (tparent)
-                {
-                    f_tetrahedra.setParent(tparent);
-                    f_tetrahedra.setReadOnly(true);
-                }
-            }
-        }
-    }
+    addInput(&d_X0_i);
+    addInput(&d_edges_i);
+    addInput(&d_triangles_i);
 
-    // ROI Mesh init
-    if (!f_X0_i.isSet())
+    addOutput(&d_box);
+    addOutput(&d_indices);
+    addOutput(&d_edgeIndices);
+    addOutput(&d_triangleIndices);
+    addOutput(&d_tetrahedronIndices);
+    addOutput(&d_pointsInROI);
+    addOutput(&d_edgesInROI);
+    addOutput(&d_trianglesInROI);
+    addOutput(&d_tetrahedraInROI);
+
+    addOutput(&d_pointsOutROI);
+    addOutput(&d_edgesOutROI);
+    addOutput(&d_trianglesOutROI);
+    addOutput(&d_tetrahedraOutROI);
+    addOutput(&d_indicesOut);
+    addOutput(&d_edgeOutIndices);
+    addOutput(&d_triangleOutIndices);
+    addOutput(&d_tetrahedronOutIndices);
+
+    setDirtyValue();
+
+    checkInputData();
+    computeBoundingBox();
+    compute();
+}
+
+
+template <class DataTypes>
+void MeshROI<DataTypes>::checkInputData()
+{
+    if (!d_X0.isSet())
     {
-        serr<<"f_X0_i is not set"<<sendl;
+        msg_warning(this) << "Data 'position' is not set. Get rest position of local mechanical state "
+                          << "or mesh loader (if no mechanical)";
+
         BaseMechanicalState* mstate;
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
@@ -172,54 +153,130 @@ void MeshROI<DataTypes>::init()
             BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
-                f_X0_i.setParent(parent);
-                f_X0_i.setReadOnly(true);
+                d_X0.setParent(parent);
+                d_X0.setReadOnly(true);
             }
         }
         else
         {
-            core::loader::MeshLoader* loader = NULL;
+            MeshLoader* loader = NULL;
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
                 BaseData* parent = loader->findData("position");
                 if (parent)
                 {
-                    f_X0_i.setParent(parent);
-                    f_X0_i.setReadOnly(true);
+                    d_X0.setParent(parent);
+                    d_X0.setReadOnly(true);
                 }
             }
         }
     }
-    if (!f_edges_i.isSet() || !f_triangles_i.isSet() )
+
+    if (!d_edges.isSet() || !d_triangles.isSet() || !d_tetrahedra.isSet())
     {
         BaseMeshTopology* topology;
         this->getContext()->get(topology,BaseContext::Local); // perso
         if (topology)
         {
-            if (!f_edges_i.isSet() && f_computeEdges.getValue())
+            if (!d_edges.isSet() && d_computeEdges.getValue())
             {
                 BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
-                    f_edges_i.setParent(eparent);
-                    f_edges_i.setReadOnly(true);
+                    d_edges.setParent(eparent);
+                    d_edges.setReadOnly(true);
                 }
             }
-            if (!f_triangles_i.isSet() && f_computeTriangles.getValue())
+            if (!d_triangles.isSet() && d_computeTriangles.getValue())
             {
                 BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
-                    f_triangles_i.setParent(tparent);
-                    f_triangles_i.setReadOnly(true);
+                    d_triangles.setParent(tparent);
+                    d_triangles.setReadOnly(true);
+                }
+            }
+            if (!d_tetrahedra.isSet() && d_computeTetrahedra.getValue())
+            {
+                BaseData* tparent = topology->findData("tetrahedra");
+                if (tparent)
+                {
+                    d_tetrahedra.setParent(tparent);
+                    d_tetrahedra.setReadOnly(true);
                 }
             }
         }
     }
+
+    // ROI Mesh init
+    if (!d_X0_i.isSet())
+    {
+        msg_warning(this) << "Data 'ROIposition' is not set. Get rest position of local mechanical state "
+                          << "or mesh loader (if no mechanical)";
+
+        BaseMechanicalState* mstate;
+        this->getContext()->get(mstate,BaseContext::Local);
+        if (mstate)
+        {
+            BaseData* parent = mstate->findData("rest_position");
+            if (parent)
+            {
+                d_X0_i.setParent(parent);
+                d_X0_i.setReadOnly(true);
+            }
+        }
+        else
+        {
+            MeshLoader* loader = NULL;
+            this->getContext()->get(loader,BaseContext::Local); // perso
+            if (loader)
+            {
+                BaseData* parent = loader->findData("position");
+                if (parent)
+                {
+                    d_X0_i.setParent(parent);
+                    d_X0_i.setReadOnly(true);
+                }
+            }
+        }
+    }
+
+    if (!d_edges_i.isSet() || !d_triangles_i.isSet() )
+    {
+        BaseMeshTopology* topology;
+        this->getContext()->get(topology,BaseContext::Local); // perso
+        if (topology)
+        {
+            if (!d_edges_i.isSet() && d_computeEdges.getValue())
+            {
+                BaseData* eparent = topology->findData("edges");
+                if (eparent)
+                {
+                    d_edges_i.setParent(eparent);
+                    d_edges_i.setReadOnly(true);
+                }
+            }
+            if (!d_triangles_i.isSet() && d_computeTriangles.getValue())
+            {
+                BaseData* tparent = topology->findData("triangles");
+                if (tparent)
+                {
+                    d_triangles_i.setParent(tparent);
+                    d_triangles_i.setReadOnly(true);
+                }
+            }
+        }
+    }
+}
+
+
+template <class DataTypes>
+void MeshROI<DataTypes>::computeBoundingBox()
+{
     // Bounding Box computation
-    Vec6 b=f_box.getValue();
-    helper::ReadAccessor< Data<VecCoord > > points_i = f_X0_i;
+    Vec6 b=d_box.getValue();
+    ReadAccessor<Data<VecCoord>> points_i = d_X0_i;
     if(points_i.size()>0)
     {
         CPos p = DataTypes::getCPos(points_i[0]);
@@ -239,46 +296,11 @@ void MeshROI<DataTypes>::init()
     if (b[0] > b[3]) std::swap(b[0],b[3]);
     if (b[1] > b[4]) std::swap(b[1],b[4]);
     if (b[2] > b[5]) std::swap(b[2],b[5]);
-    f_box.setValue(b);
-    sout << "Bounding Box " << b << sendl;
+    d_box.setValue(b);
 
-    // fin perso : init de la mesh template
-    first.setValue(1); // perso
-
-    addInput(&f_X0);
-    addInput(&f_edges);
-    addInput(&f_triangles);
-    addInput(&f_tetrahedra);
-
-    addInput(&f_X0_i);
-    addInput(&f_edges_i);
-    addInput(&f_triangles_i);
-
-    addOutput(&f_box);
-    addOutput(&f_indices);
-    addOutput(&f_edgeIndices);
-    addOutput(&f_triangleIndices);
-    addOutput(&f_tetrahedronIndices);
-    addOutput(&f_pointsInROI);
-    addOutput(&f_edgesInROI);
-    addOutput(&f_trianglesInROI);
-    addOutput(&f_tetrahedraInROI);
-
-    addOutput(&f_pointsOutROI);
-    addOutput(&f_edgesOutROI);
-    addOutput(&f_trianglesOutROI);
-    addOutput(&f_tetrahedraOutROI);
-    addOutput(&f_indicesOut);
-    addOutput(&f_edgeOutIndices);
-    addOutput(&f_triangleOutIndices);
-    addOutput(&f_tetrahedronOutIndices);
-
-    setDirtyValue();
-
-    // cerr<<"MeshROI<DataTypes>::init() -> f_X0 = "<<f_X0_i<<endl;
-    // cerr<<"MeshROI<DataTypes>::init() -> meshes = "<<meshes<<endl;
-    // cerr<<"MeshROI<DataTypes>::init() -> f_indices = "<<f_indices<<endl;
+    msg_info(this) << "Bounding Box " << b;
 }
+
 
 template <class DataTypes>
 void MeshROI<DataTypes>::reinit()
@@ -287,7 +309,7 @@ void MeshROI<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-bool MeshROI<DataTypes>::CheckSameOrder(const typename DataTypes::CPos& A, const typename DataTypes::CPos& B, const typename DataTypes::CPos& pt, const typename DataTypes::CPos& N)
+bool MeshROI<DataTypes>::checkSameOrder(const typename DataTypes::CPos& A, const typename DataTypes::CPos& B, const typename DataTypes::CPos& pt, const typename DataTypes::CPos& N)
 {
     typename DataTypes::CPos vectorial;
     vectorial[0] = (((B[1] - A[1])*(pt[2] - A[2])) - ((pt[1] - A[1])*(B[2] - A[2])));
@@ -297,287 +319,315 @@ bool MeshROI<DataTypes>::CheckSameOrder(const typename DataTypes::CPos& A, const
     else return true;
 }
 
+
 template <class DataTypes>
 bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p)
 {
-    if(!f_computeTemplateTriangles.getValue()) return true;
-// Compute the reference point outside the bounding box
-    const Vec6 b = f_box.getValue();
-    typename DataTypes::CPos Vec;
-    if (( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < ( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
-    {Vec[0] = (b[0]-100.0f)-p[0] ; Vec[1]= (b[1]-100.0f)-p[1]; Vec[2]= (b[2]-100.0f)-p[2];}
-    else
-    {Vec[0] = (b[3]+100.0f)-p[0] ; Vec[1]= (b[4]+100.0f)-p[1]; Vec[2]= (b[5]+100.0f)-p[2];}
-    helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
-    const VecCoord* x0 = &f_X0_i.getValue();
-    int Through=0;
-    double d=0.0;
-    for (unsigned int i=0; i<triangles_i.size() ; ++i)
+    if(!d_computeTemplateTriangles.getValue()) return true;
+
+    if(isPointInBoundingBox(p))
     {
-        Triangle t = triangles_i[i];
-        CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-        CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-        CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-        // Normal N compuation of the ROI mesh triangle
-        typename DataTypes::CPos N;
-        N[0] = (p1[1]-p0[1])*(p2[2]-p1[2]) - (p1[2]-p0[2])*(p2[1]-p1[1]);
-        N[1] = (p1[2]-p0[2])*(p2[0]-p1[0]) - (p1[0]-p0[0])*(p2[2]-p1[2]);
-        N[2] = (p1[0]-p0[0])*(p2[1]-p1[1]) - (p1[1]-p0[1])*(p2[0]-p1[0]);
-        // DotProd computation
-        double DotProd = double (N[0]*Vec[0] + N[1]*Vec[1] + N[2]*Vec[2]);
-        //std::cout << "Dot Prod " << DotProd << "\t" ;
-        if(DotProd !=0)
+        // Compute the reference point outside the bounding box
+        const Vec6 b = d_box.getValue();
+        typename DataTypes::CPos Vec;
+        if (( (b[0]-p[0])*(b[0]-p[0]) + (b[1]-p[1])*(b[1]-p[1]) + (b[2]-p[2])*(b[2]-p[2]) ) < ( (b[3]-p[0])*(b[3]-p[0]) + (b[4]-p[1])*(b[4]-p[1]) + (b[5]-p[2])*(b[5]-p[2]) ) )
         {
-            // Intersect point with triangle and distance
-            d = (N[0]*(p0[0]-p[0])+N[1]*(p0[1]-p[1])+N[2]*(p0[2]-p[2])) / (N[0]*Vec[0]+N[1]*Vec[1]+N[2]*Vec[2]);
-            // d negative means that line comes beind the triangle ...
-            if(d>=0)
+            Vec[0]= (b[0]-100.0f)-p[0] ;
+            Vec[1]= (b[1]-100.0f)-p[1];
+            Vec[2]= (b[2]-100.0f)-p[2];
+        }
+        else
+        {
+            Vec[0]= (b[3]+100.0f)-p[0] ;
+            Vec[1]= (b[4]+100.0f)-p[1];
+            Vec[2]= (b[5]+100.0f)-p[2];
+        }
+
+        ReadAccessor< Data<vector<Triangle> > > triangles_i = d_triangles_i;
+        const VecCoord* x0 = &d_X0_i.getValue();
+        int Through=0;
+        double d=0.0;
+        for (unsigned int i=0; i<triangles_i.size() ; ++i)
+        {
+            Triangle t = triangles_i[i];
+            CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+            CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+            // Normal N compuation of the ROI mesh triangle
+            typename DataTypes::CPos N;
+            N[0] = (p1[1]-p0[1])*(p2[2]-p1[2]) - (p1[2]-p0[2])*(p2[1]-p1[1]);
+            N[1] = (p1[2]-p0[2])*(p2[0]-p1[0]) - (p1[0]-p0[0])*(p2[2]-p1[2]);
+            N[2] = (p1[0]-p0[0])*(p2[1]-p1[1]) - (p1[1]-p0[1])*(p2[0]-p1[0]);
+            // DotProd computation
+            double DotProd = double (N[0]*Vec[0] + N[1]*Vec[1] + N[2]*Vec[2]);
+            if(DotProd !=0)
             {
-                typename DataTypes::CPos ptIN ;
-                ptIN[0] = (Real)(p[0] + d*Vec[0]);
-                ptIN[1] = (Real)(p[1] + d*Vec[1]);
-                ptIN[2] = (Real)(p[2] + d*Vec[2]);
-                if(CheckSameOrder(p0,p1,ptIN,N)) { if(CheckSameOrder(p1,p2,ptIN,N)) { if(CheckSameOrder(p2,p0,ptIN,N)) { Through++; } } }
+                // Intersect point with triangle and distance
+                d = (N[0]*(p0[0]-p[0])+N[1]*(p0[1]-p[1])+N[2]*(p0[2]-p[2])) / (N[0]*Vec[0]+N[1]*Vec[1]+N[2]*Vec[2]);
+                // d negative means that line comes beind the triangle ...
+                if(d>=0)
+                {
+                    typename DataTypes::CPos ptIN ;
+                    ptIN[0] = (Real)(p[0] + d*Vec[0]);
+                    ptIN[1] = (Real)(p[1] + d*Vec[1]);
+                    ptIN[2] = (Real)(p[2] + d*Vec[2]);
+                    if(checkSameOrder(p0,p1,ptIN,N)) { if(checkSameOrder(p1,p2,ptIN,N)) { if(checkSameOrder(p2,p0,ptIN,N)) { Through++; } } }
+                }
+            }
+        }
+        if(Through%2!=0)
+            return true;
+    }
+
+    return false;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isPointInIndices(const unsigned int &pointId)
+{
+    ReadAccessor<Data<SetIndex>> indices = d_indices;
+
+    for (unsigned int i=0; i<indices.size(); i++)
+        if(indices[i]==pointId)
+            return true;
+
+    return false;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isPointInBoundingBox(const typename DataTypes::CPos& p)
+{
+    const Vec6 b = d_box.getValue();
+    if( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] )
+        return true;
+    return false;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isEdgeInMesh(const Edge& e)
+{
+    for (int i=0; i<2; i++)
+        if(!isPointInIndices(e[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
+            CPos c = (p1+p0)*0.5;
+
+            return (isPointInMesh(c));
+        }
+
+    return true;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isTriangleInMesh(const Triangle& t)
+{
+    for (int i=0; i<3; i++)
+        if(!isPointInIndices(t[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+            CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+            CPos c = (p2+p1+p0)/3.0;
+
+            return (isPointInMesh(c));
+        }
+
+    return true;
+}
+
+template <class DataTypes>
+bool MeshROI<DataTypes>::isTetrahedronInMesh(const Tetra &t)
+{
+    for (int i=0; i<4; i++)
+        if(!isPointInIndices(t[i]))
+        {
+            const VecCoord* x0 = &d_X0.getValue();
+            CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+            CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+            CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+            CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
+            CPos c = (p3+p2+p1+p0)/4.0;
+
+            return (isPointInMesh(c));
+        }
+
+    return true;
+}
+
+template <class DataTypes>
+void MeshROI<DataTypes>::compute()
+{
+    // Read accessor for input topology
+    ReadAccessor< Data<vector<Edge> > > edges = d_edges;
+    ReadAccessor< Data<vector<Triangle> > > triangles = d_triangles;
+    ReadAccessor< Data<vector<Tetra> > > tetrahedra = d_tetrahedra;
+
+    updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
+
+    cleanDirty();
+
+    // Write accessor for topological element indices in MESH
+    SetIndex& indices = *d_indices.beginWriteOnly();
+    SetIndex& edgeIndices = *d_edgeIndices.beginWriteOnly();
+    SetIndex& triangleIndices = *d_triangleIndices.beginWriteOnly();
+    SetIndex& tetrahedronIndices = *d_tetrahedronIndices.beginWriteOnly();
+    SetIndex& indicesOut = *d_indicesOut.beginWriteOnly();
+    SetIndex& edgeOutIndices = *d_edgeOutIndices.beginWriteOnly();
+    SetIndex& triangleOutIndices = *d_triangleOutIndices.beginWriteOnly();
+    SetIndex& tetrahedronOutIndices = *d_tetrahedronOutIndices.beginWriteOnly();
+
+    // Write accessor for toplogical element in MESH
+    WriteOnlyAccessor< Data<VecCoord > > pointsInROI = d_pointsInROI;
+    WriteOnlyAccessor< Data<vector<Edge> > > edgesInROI = d_edgesInROI;
+    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesInROI = d_trianglesInROI;
+    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraInROI = d_tetrahedraInROI;
+    WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = d_pointsOutROI;
+    WriteOnlyAccessor< Data<vector<Edge> > > edgesOutROI = d_edgesOutROI;
+    WriteOnlyAccessor< Data<vector<Triangle> > > trianglesOutROI = d_trianglesOutROI;
+    WriteOnlyAccessor< Data<vector<Tetra> > > tetrahedraOutROI = d_tetrahedraOutROI;
+
+    // Clear lists
+    indices.clear();
+    edgeIndices.clear();
+    triangleIndices.clear();
+    tetrahedronIndices.clear();
+
+    pointsInROI.clear();
+    edgesInROI.clear();
+    trianglesInROI.clear();
+    tetrahedraInROI.clear();
+    indicesOut.clear();
+    edgeOutIndices.clear();
+    triangleOutIndices.clear();
+    tetrahedronOutIndices.clear();
+
+    pointsOutROI.clear();
+    edgesOutROI.clear();
+    trianglesOutROI.clear();
+    tetrahedraOutROI.clear();
+
+
+    const VecCoord* x0 = &d_X0.getValue();
+    //Points
+    for( unsigned i=0; i<x0->size(); ++i )
+    {
+        CPos p =  DataTypes::getCPos((*x0)[i]);
+        if (isPointInMesh(p))
+        {
+            indices.push_back(i);
+            pointsInROI.push_back((*x0)[i]);
+        }
+        else
+        {
+            indicesOut.push_back(i);
+            pointsOutROI.push_back((*x0)[i]);
+        }
+    }
+
+    //Edges
+    if (d_computeEdges.getValue())
+    {
+        for(unsigned int i=0 ; i<edges.size() ; i++)
+        {
+            Edge e = edges[i];
+            if (isEdgeInMesh(e))
+            {
+                edgeIndices.push_back(i);
+                edgesInROI.push_back(e);
+            }
+            else
+            {
+                edgeOutIndices.push_back(i);
+                edgesOutROI.push_back(e);
             }
         }
     }
-    if(Through%2!=0)
+
+    //Triangles
+    if (d_computeTriangles.getValue())
     {
-        // std::cout << "pt ("<<p<<") is INSIDE the MESH!! "<<Through<< std::endl;
-        return true;
+        for(unsigned int i=0 ; i<triangles.size() ; i++)
+        {
+            Triangle t = triangles[i];
+            if (isTriangleInMesh(t))
+            {
+                triangleIndices.push_back(i);
+                trianglesInROI.push_back(t);
+            }
+            else
+            {
+                triangleOutIndices.push_back(i);
+                trianglesOutROI.push_back(t);
+            }
+        }
     }
-    // std::cout << "pt ("<<p<<") is outside the MESH!! "<<Through<<" d "<<d<<  std::endl;
-    return false;
+
+    //Tetrahedra
+    if (d_computeTetrahedra.getValue())
+    {
+        for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        {
+            Tetra t = tetrahedra[i];
+            if (isTetrahedronInMesh(t))
+            {
+                tetrahedronIndices.push_back(i);
+                tetrahedraInROI.push_back(t);
+            }
+            else
+            {
+                tetrahedronOutIndices.push_back(i);
+                tetrahedraOutROI.push_back(t);
+            }
+        }
+    }
+    d_indices.endEdit();
+    d_edgeIndices.endEdit();
+    d_triangleIndices.endEdit();
+    d_tetrahedronIndices.endEdit();
+
+    d_indicesOut.endEdit();
+    d_edgeOutIndices.endEdit();
+    d_triangleOutIndices.endEdit();
+    d_tetrahedronOutIndices.endEdit();
 }
 
-template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInMesh(const typename DataTypes::CPos& p, const Vec6& b)
-{
-    if( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] ) return( isPointInMesh(p) );
-    return false;
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isPointInMesh(const PointID& pid, const Vec6& b)
-{
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p =  DataTypes::getCPos((*x0)[pid]);
-    return ( isPointInMesh(p,b) );
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isEdgeInMesh(const Edge& e, const Vec6& b)
-{
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
-    CPos c = (p1+p0)*0.5;
-
-    return isPointInMesh(c,b);
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isTriangleInMesh(const Triangle& t, const Vec6& b)
-{
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos c = (p2+p1+p0)/3.0;
-
-    return (isPointInMesh(c,b));
-}
-
-template <class DataTypes>
-bool MeshROI<DataTypes>::isTetrahedronInMesh(const Tetra &t, const Vec6 &b)
-{
-    const VecCoord* x0 = &f_X0.getValue();
-    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
-    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
-    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
-    CPos p3 =  DataTypes::getCPos((*x0)[t[3]]);
-    CPos c = (p3+p2+p1+p0)/4.0;
-
-    return (isPointInMesh(c,b));
-}
 
 template <class DataTypes>
 void MeshROI<DataTypes>::update()
 {
-
-
-    if(first.getValue() || p_doUpdate.getValue() )
-    {
-        first.setValue(false);
-
-
-        // Read accessor for input topology
-        helper::ReadAccessor< Data<helper::vector<Edge> > > edges = f_edges;
-        helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles = f_triangles;
-        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedra = f_tetrahedra;
-//        helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = f_edges_i;
-//        helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
-
-        updateAllInputsIfDirty(); // the easy way to make sure every inputs are up-to-date
-
-        cleanDirty();
-
-        // Write accessor for topological element indices in MESH
-        SetIndex& indices = *f_indices.beginWriteOnly();
-        SetIndex& edgeIndices = *f_edgeIndices.beginWriteOnly();
-        SetIndex& triangleIndices = *f_triangleIndices.beginWriteOnly();
-        SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginWriteOnly();
-        SetIndex& indicesOut = *f_indicesOut.beginWriteOnly();
-        SetIndex& edgeOutIndices = *f_edgeOutIndices.beginWriteOnly();
-        SetIndex& triangleOutIndices = *f_triangleOutIndices.beginWriteOnly();
-        SetIndex& tetrahedronOutIndices = *f_tetrahedronOutIndices.beginWriteOnly();
-
-        // Write accessor for toplogical element in MESH
-        helper::WriteOnlyAccessor< Data<Vec6> > box = f_box;
-        helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-        helper::WriteOnlyAccessor< Data<VecCoord > > pointsOutROI = f_pointsOutROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesOutROI = f_edgesOutROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesOutROI = f_trianglesOutROI;
-        helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraOutROI = f_tetrahedraOutROI;
-
-        // Clear lists
-        indices.clear();
-        edgeIndices.clear();
-        triangleIndices.clear();
-        tetrahedronIndices.clear();
-
-        pointsInROI.clear();
-        edgesInROI.clear();
-        trianglesInROI.clear();
-        tetrahedraInROI.clear();
-        indicesOut.clear();
-        edgeOutIndices.clear();
-        triangleOutIndices.clear();
-        tetrahedronOutIndices.clear();
-
-        pointsOutROI.clear();
-        edgesOutROI.clear();
-        trianglesOutROI.clear();
-        tetrahedraOutROI.clear();
-
-
-        const VecCoord* x0 = &f_X0.getValue();
-        const Vec6 b=f_box.getValue();
-        //Points
-        for( unsigned i=0; i<x0->size(); ++i )
-        {
-            if (isPointInMesh(i, b))
-            {
-                indices.push_back(i);
-                pointsInROI.push_back((*x0)[i]);
-//         sout<<"\nMeshROI<DataTypes>::update, add index "<< i << sendl;
-            }
-            else
-            {
-                indicesOut.push_back(i);
-                pointsOutROI.push_back((*x0)[i]);
-//         sout<<"\nMeshROI<DataTypes>::update, add index "<< i << sendl;
-            }
-        }
-
-        //Edges
-        if (f_computeEdges.getValue())
-        {
-            for(unsigned int i=0 ; i<edges.size() ; i++)
-            {
-                Edge e = edges[i];
-                if (isEdgeInMesh(e, b))
-                {
-                    edgeIndices.push_back(i);
-                    edgesInROI.push_back(e);
-                }
-                else
-                {
-                    edgeOutIndices.push_back(i);
-                    edgesOutROI.push_back(e);
-                }
-            }
-        }
-
-        //Triangles
-        if (f_computeTriangles.getValue())
-        {
-            for(unsigned int i=0 ; i<triangles.size() ; i++)
-            {
-                Triangle t = triangles[i];
-                if (isTriangleInMesh(t, b))
-                {
-                    triangleIndices.push_back(i);
-                    trianglesInROI.push_back(t);
-                }
-                else
-                {
-                    triangleOutIndices.push_back(i);
-                    trianglesOutROI.push_back(t);
-                }
-            }
-        }
-
-        //Tetrahedra
-        if (f_computeTetrahedra.getValue())
-        {
-            for(unsigned int i=0 ; i<tetrahedra.size() ; i++)
-            {
-                Tetra t = tetrahedra[i];
-                if (isTetrahedronInMesh(t, b))
-                {
-                    tetrahedronIndices.push_back(i);
-                    tetrahedraInROI.push_back(t);
-                }
-                else
-                {
-                    tetrahedronOutIndices.push_back(i);
-                    tetrahedraOutROI.push_back(t);
-                }
-            }
-        }
-        f_indices.endEdit();
-        f_edgeIndices.endEdit();
-        f_triangleIndices.endEdit();
-        f_tetrahedronIndices.endEdit();
-
-        f_indicesOut.endEdit();
-        f_edgeOutIndices.endEdit();
-        f_triangleOutIndices.endEdit();
-        f_tetrahedronOutIndices.endEdit();
-
-    }
+    if(d_doUpdate.getValue())
+        compute();
 }
 
 
 template <class DataTypes>
-void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void MeshROI<DataTypes>::draw(const VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowBehaviorModels() && !this->_drawSize.getValue())
+    if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
         return;
 
-    const VecCoord* x0 = &f_X0.getValue();
+    const VecCoord* x0 = &d_X0.getValue();
 
     glColor3f(1.0f, 0.4f, 0.4f);
 
     // draw the ROI mesh
-    if( p_drawMesh.getValue())
+    if( d_drawMesh.getValue())
     {
         glColor3f(0.4f, 0.4f, 1.0f);
-        const VecCoord* x0_i = &f_X0_i.getValue();
+        const VecCoord* x0_i = &d_X0_i.getValue();
         ///draw ROI points
-        if(p_drawPoints.getValue())
+        if(d_drawPoints.getValue())
         {
-            if (_drawSize.getValue())
-                glPointSize((GLfloat)_drawSize.getValue());
+            if (d_drawSize.getValue())
+                glPointSize((GLfloat)d_drawSize.getValue());
             glDisable(GL_LIGHTING);
             glBegin(GL_POINTS);
             glPointSize(5.0);
-            helper::ReadAccessor< Data<VecCoord > > points_i = f_X0_i;
+            helper::ReadAccessor< Data<VecCoord > > points_i = d_X0_i;
             for (unsigned int i=0; i<points_i.size() ; ++i)
             {
                 CPos p = DataTypes::getCPos(points_i[i]);
@@ -586,13 +636,13 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             glEnd();
             glPointSize(1);
         }
-        /// draw ROI edges
-        if(p_drawEdges.getValue())
+        // draw ROI edges
+        if(d_drawEdges.getValue())
         {
             glDisable(GL_LIGHTING);
-            glLineWidth((GLfloat)_drawSize.getValue());
+            glLineWidth((GLfloat)d_drawSize.getValue());
             glBegin(GL_LINES);
-            helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = f_edges_i;
+            helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = d_edges_i;
             for (unsigned int i=0; i<edges_i.size() ; ++i)
             {
                 Edge e = edges_i[i];
@@ -606,11 +656,11 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
             glPointSize(1);
         }
         // draw ROI triangles
-        if(p_drawTriangles.getValue())
+        if(d_drawTriangles.getValue())
         {
             glDisable(GL_LIGHTING);
             glBegin(GL_TRIANGLES);
-            helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = f_triangles_i;
+            helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = d_triangles_i;
             for (unsigned int i=0; i<triangles_i.size() ; ++i)
             {
                 Triangle t = triangles_i[i];
@@ -625,13 +675,13 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glColor3f(1.0f, 0.4f, 0.4f);
     }
     // draw the bounding box
-    if( p_drawBox.getValue())
+    if( d_drawBox.getValue())
     {
         glDisable(GL_LIGHTING);
-        if (_drawSize.getValue())
-            glLineWidth((GLfloat)_drawSize.getValue());
+        if (d_drawSize.getValue())
+            glLineWidth((GLfloat)d_drawSize.getValue());
         glBegin(GL_LINES);
-        const Vec6& b=f_box.getValue();
+        const Vec6& b=d_box.getValue();
         const Real& Xmin=b[0];
         const Real& Xmax=b[3];
         const Real& Ymin=b[1];
@@ -665,17 +715,17 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glEnd();
         glLineWidth(1);
     }
-    ///draw points in ROI
-    if( p_drawPoints.getValue())
+    // draw points in ROI
+    if( d_drawPoints.getValue())
     {
-        if (_drawSize.getValue())
-            glPointSize((GLfloat)_drawSize.getValue());
+        if (d_drawSize.getValue())
+            glPointSize((GLfloat)d_drawSize.getValue());
         glDisable(GL_LIGHTING);
         glBegin(GL_POINTS);
         glPointSize(5.0);
-        if(p_drawOut.getValue())
+        if(d_drawOut.getValue())
         {
-            helper::ReadAccessor< Data<VecCoord > > pointsROI = f_pointsOutROI;
+            helper::ReadAccessor< Data<VecCoord > > pointsROI = d_pointsOutROI;
             for (unsigned int i=0; i<pointsROI.size() ; ++i)
             {
                 CPos p = DataTypes::getCPos(pointsROI[i]);
@@ -684,7 +734,7 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         else
         {
-            helper::ReadAccessor< Data<VecCoord > > pointsROI = f_pointsInROI;
+            helper::ReadAccessor< Data<VecCoord > > pointsROI = d_pointsInROI;
             for (unsigned int i=0; i<pointsROI.size() ; ++i)
             {
                 CPos p = DataTypes::getCPos(pointsROI[i]);
@@ -694,15 +744,15 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glEnd();
         glPointSize(1);
     }
-    ///draw edges in ROI
-    if( p_drawEdges.getValue())
+    // draw edges in ROI
+    if( d_drawEdges.getValue())
     {
         glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
+        glLineWidth((GLfloat)d_drawSize.getValue());
         glBegin(GL_LINES);
-        if(p_drawOut.getValue())
+        if(d_drawOut.getValue())
         {
-            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = f_edgesOutROI;
+            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = d_edgesOutROI;
             for (unsigned int i=0; i<edgesROI.size() ; ++i)
             {
                 Edge e = edgesROI[i];
@@ -715,7 +765,7 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         else
         {
-            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = f_edgesInROI;
+            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = d_edgesInROI;
             for (unsigned int i=0; i<edgesROI.size() ; ++i)
             {
                 Edge e = edgesROI[i];
@@ -729,14 +779,14 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         glEnd();
         glLineWidth(1);
     }
-    ///draw triangles in ROI
-    if( p_drawTriangles.getValue())
+    // draw triangles in ROI
+    if( d_drawTriangles.getValue())
     {
         glDisable(GL_LIGHTING);
         glBegin(GL_TRIANGLES);
-        if(p_drawOut.getValue())
+        if(d_drawOut.getValue())
         {
-            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = f_trianglesOutROI;
+            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = d_trianglesOutROI;
             for (unsigned int i=0; i<trianglesROI.size() ; ++i)
             {
                 Triangle t = trianglesROI[i];
@@ -749,7 +799,7 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         else
         {
-            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = f_trianglesInROI;
+            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = d_trianglesInROI;
             for (unsigned int i=0; i<trianglesROI.size() ; ++i)
             {
                 Triangle t = trianglesROI[i];
@@ -762,15 +812,15 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         glEnd();
     }
-    ///draw tetrahedra in ROI
-    if( p_drawTetrahedra.getValue())
+    // draw tetrahedra in ROI
+    if( d_drawTetrahedra.getValue())
     {
         glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
+        glLineWidth((GLfloat)d_drawSize.getValue());
         glBegin(GL_LINES);
-        if(p_drawOut.getValue())
+        if(d_drawOut.getValue())
         {
-            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = f_tetrahedraOutROI;
+            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = d_tetrahedraOutROI;
             for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
             {
                 Tetra t = tetrahedraROI[i];
@@ -794,7 +844,7 @@ void MeshROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         else
         {
-            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = f_tetrahedraInROI;
+            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = d_tetrahedraInROI;
             for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
             {
                 Tetra t = tetrahedraROI[i];

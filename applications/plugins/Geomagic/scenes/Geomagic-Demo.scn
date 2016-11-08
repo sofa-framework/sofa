@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="0.01" >
+
+    <RequiredPlugin pluginName="Geomagic"/>
+
+	<VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideMappings hideMechanicalMappings hideForceFields hideInteractionForceFields hideWireframe hideNormals" />
+
+    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" orientationBase="0 0 0 1"  />
+
+	<MechanicalObject template="Rigid" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
+
+    <!-- Example of an instrument controlled with the Geomagic device -->
+    <Node name="mapping">
+        <OglModel name="Visual" fileMesh="mesh/dental_instrument.obj" color="red"  />
+        <RigidMapping input="@.." output="@Visual" />
+    </Node>
+    
+
+</Node>

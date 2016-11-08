@@ -386,15 +386,15 @@ TEST_F(DiagonalMass3_test, checkAttributes){
     checkAttributes() ;
 }
 
-TEST_F(DiagonalMass3_test, checkAttributeSemantics){
+TEST_F(DiagonalMass3_test, checkAttributeSemantics_OpenIssue){
     checkAttributeSemantics() ;
 }
 
-TEST_F(DiagonalMass3_test, checkAttributeTotalMassValidity){
+TEST_F(DiagonalMass3_test, checkAttributeTotalMassValidity_OpenIssue){
     checkAttributeTotalMassValidity(); ;
 }
 
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile){
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile_OpenIssue){
     checkAttributeLoadFromFile(); ;
 }
 
