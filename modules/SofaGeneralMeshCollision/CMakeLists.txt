@@ -3,9 +3,7 @@ project(SofaGeneralMeshCollision)
 
 set(HEADER_FILES
     DirectSAP.h
-    DirectSAP.inl
     IncrSAP.h
-    IncrSAP.inl
     # IntrTriangleOBB.h
     # IntrTriangleOBB.inl
     MeshDiscreteIntersection.h
