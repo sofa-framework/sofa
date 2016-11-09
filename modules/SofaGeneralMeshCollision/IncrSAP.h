@@ -158,7 +158,7 @@ public:
   *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
   *the collision detection compared to the DirectSAP.
   */
-class IncrSAP :
+class SOFA_GENERAL_MESH_COLLISION_API IncrSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
