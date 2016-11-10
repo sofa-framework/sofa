@@ -64,7 +64,7 @@ DefaultStyleMessageFormatter::DefaultStyleMessageFormatter()
     s_messageTypePrefixes[Message::Fatal]       = "[FATAL]   ";
     s_messageTypePrefixes[Message::TEmpty]      = "[EMPTY]   ";
 
-    s_messageTypeColors[Message::Advice]       = Console::BRIGHT_GREEN;
+    s_messageTypeColors[Message::Advice]     = Console::BRIGHT_GREEN;
     s_messageTypeColors[Message::Info]       = Console::BRIGHT_GREEN;
     s_messageTypeColors[Message::Deprecated] = Console::BRIGHT_YELLOW;
     s_messageTypeColors[Message::Warning]    = Console::BRIGHT_CYAN;
