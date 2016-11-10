@@ -42,6 +42,9 @@ template <class DataType>
 void NormEngine<DataType>::update()
 {
     helper::ReadAccessor<Data<VecData> > in = d_input;
+
+    cleanDirty();
+
     helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
     int l = d_normType.getValue();
 
@@ -50,7 +53,6 @@ void NormEngine<DataType>::update()
     for( size_t i=0 ; i<in.size() ; ++i )
         out[i] = in[i].lNorm(l);
 
-    cleanDirty();
 
 }
 
