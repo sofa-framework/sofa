@@ -316,8 +316,8 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // 1- no lambda propagation -> force must be null
         Vector f1 = modeling::getVector( core::VecId::force() );
         ASSERT_TRUE( f1.sum() == 0 );
-        // 2- with lambda propagation -> force must be NOT null
-        odeSolver->propagate_lambdas.setValue(true);
+        // 2- with constraint force export (after cleaning) -> force must be NOT null
+        odeSolver->constraint_forces.beginWriteOnly()->setSelectedItem(3); odeSolver->constraint_forces.endEdit();
         {
         MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
         x[1] = Vec3(2,0,0);

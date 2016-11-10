@@ -291,23 +291,30 @@ public:
 
 
 
-/// propagate constraint *forces* (lambdas/dt) toward independent dofs
+/// add/propagate constraint *forces* (lambdas/dt) toward independent dofs
 class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
 
     core::MultiVecDerivId force, lambda;
-    SReal invdt;
+    SReal factor;
+    bool clear, propagate;
 
 public:
 
     propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
                       const core::MultiVecDerivId& out,
                       const core::MultiVecDerivId& in,
-                      SReal dt)
+                      SReal factor, /*depending on the system formulation, constraint forces are deduced from lagrange multipliers  f=lamba for acc/dv,  f=lambda/dt for vel */
+                      bool clear, /*clear existing forces*/
+                      bool propagate /*propagating toward independent dofs*/)
         : simulation::MechanicalVisitor(mparams)
         , force( out )
         , lambda( in )
-        , invdt( 1.0/dt )
-    {}
+        , factor( factor )
+        , clear(clear)
+        , propagate(propagate)
+    {
+        assert(!propagate || clear ); // existing forces must be cleared if propagating
+    }
 
 
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
@@ -316,8 +323,8 @@ public:
 
         if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() ) // TODO handle interactionFF
             // compliance should be alone in the node
-            state->vOp( mparams, force.getId(state), core::ConstVecId::null(), lambda.getId(state), invdt ); // constraint force = lambda / dt
-        else
+            state->vOp( mparams, force.getId(state), clear?core::ConstVecId::null():force.getId(state), lambda.getId(state), factor ); // constraint force = lambda / dt
+        else if( propagate )
             state->resetForce(mparams, force.getId(state));
 
         return RESULT_CONTINUE;
@@ -326,18 +333,21 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
     {
         // compliance cannot be present at independent dof level
-        state->resetForce(mparams, force.getId(state));
+        if( propagate )
+            state->resetForce(mparams, force.getId(state));
         return RESULT_CONTINUE;
     }
 
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
     {
-        map->applyJT(mparams, force, force);
+        if( propagate )
+            map->applyJT(mparams, force, force);
     }
 
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
     {
-        c->projectResponse( mparams, force );
+        if( propagate )
+            c->projectResponse( mparams, force );
     }
 
 
