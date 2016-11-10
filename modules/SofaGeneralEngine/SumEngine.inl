@@ -4,6 +4,7 @@
 
 #include "SumEngine.h"
 #include <sofa/helper/logging/Messaging.h>
+#include <numeric>
 
 
 namespace sofa
