@@ -42,11 +42,11 @@ template <class DataType>
 void NormEngine<DataType>::update()
 {
     helper::ReadAccessor<Data<VecData> > in = d_input;
+    int l = d_normType.getValue();
 
     cleanDirty();
 
     helper::WriteOnlyAccessor<Data<VecReal> > out = d_output;
-    int l = d_normType.getValue();
 
     out.resize( in.size() );
 
