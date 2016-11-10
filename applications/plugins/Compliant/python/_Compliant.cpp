@@ -6,11 +6,14 @@
 
 
 #include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonFactory.h>
+#include <SofaPython/Binding_Data.h>
 #include "Binding_AssembledSystem.h"
 
 #include <sofa/helper/cast.h>
 #include <sofa/simulation/Simulation.h>
 #include "../assembly/AssemblyVisitor.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 
 
 
@@ -18,6 +21,8 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using namespace sofa::component::linearsolver;
+using namespace sofa::component::odesolver;
+using namespace sofa::core::behavior;
 
 
 
@@ -116,9 +121,47 @@ extern "C" PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/,
 }
 
 
+// takes a CompliantImplicitSolver and a BaseMechanicalState
+// returns the lambdas contained in the BaseMechanicalState
+// (the corresponding multivecid is in the CompliantImplicitSolver)
+// @warning you have to look at the CompliantImplicitSolver's formulation (vel,dv,acc) to deduce constraint forces from lambdas
+extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pySolver, *pyState;
+    if (!PyArg_ParseTuple(args, "OO", &pySolver, &pyState))
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    if (!solver)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseMechanicalState* mstate = ((PySPtr<Base>*)pyState)->object->toBaseMechanicalState();
+    if (!mstate)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    const VecId& vecid = solver->lagrange.id().getId(mstate);
+    objectmodel::BaseData* data = mstate->baseWrite(vecid);
+
+    return SP_BUILD_PYPTR(Data,BaseData,data,false);
+}
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(_Compliant)
 SP_MODULE_METHOD(_Compliant,getAssembledImplicitMatrix)
 SP_MODULE_METHOD(_Compliant,getImplicitAssembledSystem)
+SP_MODULE_METHOD(_Compliant,getLambda)
 SP_MODULE_METHODS_END
 
