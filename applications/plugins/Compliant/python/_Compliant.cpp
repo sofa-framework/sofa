@@ -157,11 +157,44 @@ extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
 
+/// takes a Context and a CompliantImplicitSolver
+extern "C" PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyNode, *pySolver;
+    if (!PyArg_ParseTuple(args, "OO", &pyNode, &pySolver))
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    BaseContext* context = ((PySPtr<Base>*)pyNode)->object->toBaseContext();
+    if (!context)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    if (!solver)
+    {
+        SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    propagate_lambdas_visitor vis( MechanicalParams::defaultInstance(), solver->lagrange );
+    context->executeVisitor( &vis );
+
+    Py_RETURN_NONE;
+}
 
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(_Compliant)
 SP_MODULE_METHOD(_Compliant,getAssembledImplicitMatrix)
 SP_MODULE_METHOD(_Compliant,getImplicitAssembledSystem)
 SP_MODULE_METHOD(_Compliant,getLambda)
+SP_MODULE_METHOD(_Compliant,propagateLambdas)
 SP_MODULE_METHODS_END
 

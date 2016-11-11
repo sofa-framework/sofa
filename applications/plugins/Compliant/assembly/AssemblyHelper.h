@@ -354,6 +354,53 @@ public:
 };
 
 
+/// TOOO move this somewhere else
+/// propagate lambdas in lambda vectors
+class SOFA_Compliant_API propagate_lambdas_visitor : public simulation::MechanicalVisitor {
+
+    core::MultiVecDerivId lambda;
+
+public:
+
+    propagate_lambdas_visitor(const core::MechanicalParams* mparams,
+                      const core::MultiVecDerivId& lambda)
+        : simulation::MechanicalVisitor(mparams)
+        , lambda( lambda )
+    {
+    }
+
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
+    {
+        if( node->forceField.empty() || !node->forceField[0]->isCompliance.getValue() )
+        {
+            const core::VecDerivId& id = lambda.getId(state);
+            if( !id.isNull() )
+                state->resetForce( mparams, id );
+        }
+
+        return RESULT_CONTINUE;
+    }
+
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
+    {
+        // compliance cannot be present at independent dof level
+        const core::VecDerivId& id = lambda.getId(state);
+        if( !id.isNull() )
+            state->resetForce( mparams, id );
+        return RESULT_CONTINUE;
+    }
+
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    {
+        map->applyJT(mparams, lambda, lambda);
+    }
+
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    {
+        c->projectResponse( mparams, lambda );
+    }
+
+};
 
 
 } // namespace simulation
