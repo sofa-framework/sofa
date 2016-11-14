@@ -246,13 +246,13 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
     glDisable(GL_TEXTURE_1D);
 
     // Restore model view matrix
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    glPopMatrix(); // GL_MODELVIEW
 
     // Restore projection matrix
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
+    glMatrixMode(GL_MODELVIEW);
 
     // Maximum & minimum
     std::ostringstream smin, smax;
