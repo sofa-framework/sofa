@@ -114,10 +114,10 @@ void GlText::textureDraw_Overlay(const char* text, const double scale)
         GlText::initTexture();
         s_asciiTexture->init();
     }
-    const unsigned int nb_char_width = 16;
-    const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0f;
-    const float worldWidth = 0.50f;
+    static const unsigned int nb_char_width = 16;
+    static const unsigned int nb_char_height = 16;
+    static const float worldHeight = 1.0f;
+    static const float worldWidth = 0.50f;
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> UVs;
@@ -192,10 +192,10 @@ void GlText::textureDraw_Indices(const helper::vector<defaulttype::Vector3>& pos
     }
     defaulttype::Mat<4, 4, GLfloat> modelviewM;
 
-    const unsigned int nb_char_width = 16;
-    const unsigned int nb_char_height = 16;
-    const float worldHeight = 1.0;
-    const float worldWidth = 0.5;
+    static const unsigned int nb_char_width = 16;
+    static const unsigned int nb_char_height = 16;
+    static const float worldHeight = 1.0;
+    static const float worldWidth = 0.5;
 
     glPushAttrib(GL_TEXTURE_BIT);
     glEnable(GL_TEXTURE_2D);

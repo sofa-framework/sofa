@@ -254,17 +254,12 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
 
     glMatrixMode(GL_MODELVIEW);
 
-    // Maximum & minimum
-    std::ostringstream smin, smax;
-    smin << d_min.getValue() * d_legendRangeScale.getValue();
-    smax << d_max.getValue() * d_legendRangeScale.getValue();
-
     // Adjust the text color according to the background luminance
     GLfloat bgcol[4];
     glGetFloatv(GL_COLOR_CLEAR_VALUE,bgcol);
 
     Color textcolor(1.0f, 1.0f, 1.0f, 1.0f);
-    sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
+    static const sofa::defaulttype::Vec3f luminanceMatrix(0.212f, 0.715f, 0.072f);
     float backgroundLuminance = sofa::defaulttype::Vec3f(bgcol[0], bgcol[1], bgcol[2]) * luminanceMatrix;
     if(backgroundLuminance > 0.5f)
         textcolor = Color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -277,6 +272,13 @@ void OglColorMap::drawVisual(const core::visual::VisualParams* vparams)
                                               textcolor,
                                               legendTitle.c_str());
     }
+
+
+
+    // Maximum & minimum
+    std::ostringstream smin, smax;
+    smin << d_min.getValue() * d_legendRangeScale.getValue();
+    smax << d_max.getValue() * d_legendRangeScale.getValue();
 
 
 
