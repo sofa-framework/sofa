@@ -117,7 +117,7 @@ set(HEADER_FILES
     objectmodel/JoystickEvent.h
     objectmodel/KeypressedEvent.h
     objectmodel/KeyreleasedEvent.h
-    objectmodel/HeartBeatEvent.h
+    objectmodel/IdleEvent.h
     objectmodel/Link.h
     objectmodel/MouseEvent.h
     objectmodel/SPtr.h
@@ -217,7 +217,7 @@ set(SOURCE_FILES
     objectmodel/KeypressedEvent.cpp
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
-    objectmodel/HeartBeatEvent.cpp
+    objectmodel/IdleEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
     topology/BaseTopology.cpp

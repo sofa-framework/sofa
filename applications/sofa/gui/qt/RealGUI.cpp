@@ -94,7 +94,7 @@
 #include <ctime>
 
 #include <sofa/core/objectmodel/HeartBeatEvent.h>
-using sofa::core::objectmodel::HeartBeatEvent ;
+using sofa::core::objectmodel::IdleEvent ;
 
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor ;
@@ -776,7 +776,7 @@ void RealGUI::emitHeartBeat()
     // Update all the registered monitor.
     FileMonitor::updates(0) ;
 
-    HeartBeatEvent hb;
+    IdleEvent hb;
     Node* groot = mViewer->getScene();
     if (groot)
     {
