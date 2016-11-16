@@ -782,6 +782,9 @@ void RealGUI::emitIdle()
     {
         groot->propagateEvent(core::ExecParams::defaultInstance(), &hb);
     }
+
+    if(isEmbeddedViewer())
+        getQtViewer()->getQWidget()->update();;
 }
 
 //------------------------------------
