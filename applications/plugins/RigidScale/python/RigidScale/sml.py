@@ -172,14 +172,15 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         self.param.rigidScaleNbDofByTag["default"]=1
         self.skinningArmatureBoneIndexById = dict()
         self.deformables = dict()
+        self.skins = dict()
 
         # visual
-        self.param.showRigid = False
-        self.param.showRigidScale = 0.02  # SI unit (m)
-        self.param.showAffine = True
-        self.param.showAffineScale = 1  # SI unit (m)
-        self.param.showOffset = True
-        self.param.showOffsetScale = 0.5  # SI unit (m)
+        self.param.showRigid = True
+        self.param.showRigidScale = 0.05  # SI unit (m)
+        self.param.showAffine = False
+        self.param.showAffineScale = 0.3  # SI unit (m)
+        self.param.showOffset = False
+        self.param.showOffsetScale = 0.1  # SI unit (m)
 
     def createScene(self):
 
@@ -216,7 +217,7 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
                         deformable.addMechanicalObject()
                         (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
                         deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
-                        deformable.addVisual()
+                        self.skins[mesh.id] = (deformable.addVisual()).visual
                         deformable.addMass(self.param.mass)
                         self.deformables[mesh.id] = deformable
 
