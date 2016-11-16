@@ -88,7 +88,7 @@ public:
   *it sorts all the primitives along an axis (not checking the moving ones) and computes overlaping pairs without
   *saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
   */
-class DirectSAP :
+class SOFA_GENERAL_MESH_COLLISION_API DirectSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
