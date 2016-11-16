@@ -151,8 +151,23 @@ extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
+    objectmodel::BaseData* data;
+
     const VecId& vecid = solver->lagrange.id().getId(mstate);
-    objectmodel::BaseData* data = mstate->baseWrite(vecid);
+    if( vecid.isNull() )
+    {
+        SP_MESSAGE_WARNING( "_Compliant_getConstraintForce: allocating lambda vector for mstate "<<mstate->getPathName() )
+
+        VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
+        mstate->vAvail( ExecParams::defaultInstance(), id );
+        solver->lagrange.id().setId(mstate, id);
+
+        mstate->vAlloc(ExecParams::defaultInstance(),id);
+
+        data = mstate->baseWrite(id);
+    }
+    else
+        data = mstate->baseWrite(vecid);
 
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
