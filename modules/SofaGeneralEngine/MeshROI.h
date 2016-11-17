@@ -72,15 +72,13 @@ protected:
 
     MeshROI();
 
-    ~MeshROI() {}
+    virtual ~MeshROI() {}
 public:
-    void init();
 
-    void reinit();
-
-    void update();
-
-    void draw(const core::visual::VisualParams*);
+    virtual void init();
+    virtual void reinit();
+    virtual void update();
+    virtual void draw(const core::visual::VisualParams*);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -115,62 +113,66 @@ public:
     }
 
 protected:
-    bool CheckSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
+    bool checkSameOrder(const CPos& A, const CPos& B, const CPos& pt, const CPos& norm);
     bool isPointInMesh(const CPos& p);
-    bool isPointInMesh(const CPos& p, const Vec6& b);
-    bool isPointInMesh(const PointID& pid, const Vec6& b);
-    bool isEdgeInMesh(const Edge& e, const Vec6& b);
-    bool isTriangleInMesh(const Triangle& t, const Vec6& b);
-    bool isTetrahedronInMesh(const Tetra& t, const Vec6& b);
+    bool isPointInIndices(const unsigned int& i);
+    bool isPointInBoundingBox(const CPos& p);
+    bool isEdgeInMesh(const Edge& e);
+    bool isTriangleInMesh(const Triangle& t);
+    bool isTetrahedronInMesh(const Tetra& t);
+
+
+    void compute();
+    void checkInputData();
+    void computeBoundingBox();
 
 public:
     //Input
     // Global mesh
-    Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra;
+    Data<VecCoord> d_X0;
+    Data<helper::vector<Edge> > d_edges;
+    Data<helper::vector<Triangle> > d_triangles;
+    Data<helper::vector<Tetra> > d_tetrahedra;
     // ROI mesh
-    Data<VecCoord> f_X0_i;
-    Data<helper::vector<Edge> > f_edges_i;
-    Data<helper::vector<Triangle> > f_triangles_i;
+    Data<VecCoord> d_X0_i;
+    Data<helper::vector<Edge> > d_edges_i;
+    Data<helper::vector<Triangle> > d_triangles_i;
 
-    Data<bool> f_computeEdges;
-    Data<bool> f_computeTriangles;
-    Data<bool> f_computeTetrahedra;
-    Data<bool> f_computeTemplateTriangles;
+    Data<bool> d_computeEdges;
+    Data<bool> d_computeTriangles;
+    Data<bool> d_computeTetrahedra;
+    Data<bool> d_computeTemplateTriangles;
 
     //Output
-    Data<Vec6> f_box;
-    Data<SetIndex> f_indices;
-    Data<SetIndex> f_edgeIndices;
-    Data<SetIndex> f_triangleIndices;
-    Data<SetIndex> f_tetrahedronIndices;
-    Data<VecCoord > f_pointsInROI;
-    Data<helper::vector<Edge> > f_edgesInROI;
-    Data<helper::vector<Triangle> > f_trianglesInROI;
-    Data<helper::vector<Tetra> > f_tetrahedraInROI;
+    Data<Vec6> d_box;
+    Data<SetIndex> d_indices;
+    Data<SetIndex> d_edgeIndices;
+    Data<SetIndex> d_triangleIndices;
+    Data<SetIndex> d_tetrahedronIndices;
+    Data<VecCoord > d_pointsInROI;
+    Data<helper::vector<Edge> > d_edgesInROI;
+    Data<helper::vector<Triangle> > d_trianglesInROI;
+    Data<helper::vector<Tetra> > d_tetrahedraInROI;
 
-    Data<VecCoord > f_pointsOutROI;
-    Data<helper::vector<Edge> > f_edgesOutROI;
-    Data<helper::vector<Triangle> > f_trianglesOutROI;
-    Data<helper::vector<Tetra> > f_tetrahedraOutROI;
-    Data<SetIndex> f_indicesOut;
-    Data<SetIndex> f_edgeOutIndices;
-    Data<SetIndex> f_triangleOutIndices;
-    Data<SetIndex> f_tetrahedronOutIndices;
+    Data<VecCoord > d_pointsOutROI;
+    Data<helper::vector<Edge> > d_edgesOutROI;
+    Data<helper::vector<Triangle> > d_trianglesOutROI;
+    Data<helper::vector<Tetra> > d_tetrahedraOutROI;
+    Data<SetIndex> d_indicesOut;
+    Data<SetIndex> d_edgeOutIndices;
+    Data<SetIndex> d_triangleOutIndices;
+    Data<SetIndex> d_tetrahedronOutIndices;
 
     //Parameter
-    Data<bool> p_drawOut;
-    Data<bool> p_drawMesh;
-    Data<bool> p_drawBox;
-    Data<bool> p_drawPoints;
-    Data<bool> p_drawEdges;
-    Data<bool> p_drawTriangles;
-    Data<bool> p_drawTetrahedra;
-    Data<double> _drawSize;
-    Data<bool> p_doUpdate;
-    Data<bool> first;
+    Data<bool> d_drawOut;
+    Data<bool> d_drawMesh;
+    Data<bool> d_drawBox;
+    Data<bool> d_drawPoints;
+    Data<bool> d_drawEdges;
+    Data<bool> d_drawTriangles;
+    Data<bool> d_drawTetrahedra;
+    Data<double> d_drawSize;
+    Data<bool> d_doUpdate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)

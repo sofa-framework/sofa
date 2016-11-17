@@ -83,16 +83,16 @@ void VisualManagerSecondaryPass::initVisual()
     else
     {
         m_shaderPostproc = sofa::core::objectmodel::New<OglShader>();
-        m_shaderPostproc->vertFilename.setValueAsString("shaders/compositing.vert");
+        m_shaderPostproc->vertFilename.addPath("shaders/compositing.vert");
 
 
         if(fragFilename.getValue().empty())
         {
             std::cerr << "fragFilename attribute shall not be null. Using compositing.frag instead" << std::endl;
-            m_shaderPostproc->fragFilename.setValueAsString("shaders/compositing.frag");
+            m_shaderPostproc->fragFilename.addPath("shaders/compositing.frag");
         }
         else
-            m_shaderPostproc->fragFilename.setValueAsString(fragFilename.getFullPath());
+            m_shaderPostproc->fragFilename.addPath(fragFilename.getFullPath(),true);
 
         m_shaderPostproc->init();
         m_shaderPostproc->initVisual();

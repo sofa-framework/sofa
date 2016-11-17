@@ -244,6 +244,8 @@ TEST_F(Engine_test , check_propagation )
 #include <SofaGeneralEngine/MeshClosingEngine.h>
 #include <SofaGeneralEngine/MeshSubsetEngine.h>
 #include <SofaGeneralEngine/MeshSampler.h>
+#include <SofaGeneralEngine/SumEngine.h>
+#include <SofaGeneralEngine/DifferenceEngine.h>
 
 namespace sofa {
 
@@ -299,8 +301,10 @@ TestDataEngine< component::engine::ProximityROI<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::HausdorffDistance<defaulttype::Vec3Types> >, // ???
 TestDataEngine< component::engine::NormEngine<defaulttype::Vector3> >,
 TestDataEngine< component::engine::MeshClosingEngine<defaulttype::Vec3Types> >,
-TestDataEngine< component::engine::MeshSubsetEngine<defaulttype::Vec3Types> >
+TestDataEngine< component::engine::MeshSubsetEngine<defaulttype::Vec3Types> >,
 //TestDataEngine< component::engine::MeshSampler<defaulttype::Vec3Types> > // ???
+TestDataEngine< component::engine::SumEngine<defaulttype::Vector3> >,
+TestDataEngine< component::engine::DifferenceEngine<defaulttype::Vector3> >
 > TestTypes; // the types to instanciate.
 
 

@@ -26,10 +26,10 @@
 #define SOFA_COMPONENT_LOADER_MeshVTKLoader_H
 #include "config.h"
 
-#include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/loader/MeshLoader.h>
 
-#include <tinyxml.h>
+//#include <tinyxml.h>
 
 namespace sofa
 {
@@ -40,11 +40,13 @@ namespace component
 namespace loader
 {
 
-#if defined(WIN32) || defined(_XBOX)
-#define strcasecmp stricmp
-#endif
 
-class BaseVTKReader ;
+
+namespace basevtkreader{
+    class BaseVTKReader ;
+}
+
+using basevtkreader::BaseVTKReader ;
 
 /// Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
 /// http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
@@ -61,7 +63,6 @@ public:
     core::objectmodel::BaseData* quadsData;
     core::objectmodel::BaseData* tetrasData;
     core::objectmodel::BaseData* hexasData;
-    //Add Data here
 
     virtual bool load();
 

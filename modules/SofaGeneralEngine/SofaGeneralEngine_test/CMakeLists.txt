@@ -11,6 +11,9 @@ set(SOURCE_FILES
         ClusteringEngine_test.cpp
         ComplementaryROI_test.cpp
         DifferenceEngine_test.cpp
+        DilateEngine_test.cpp
+        ExtrudeEdgesAndGenerateQuads_test.cpp
+        MeshROI_test.cpp
         TransformEngine_test.cpp
 
         )

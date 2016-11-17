@@ -158,16 +158,15 @@ public:
   *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
   *the collision detection compared to the DirectSAP.
   */
-template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
-class TIncrSAP :
+class SOFA_GENERAL_MESH_COLLISION_API IncrSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(TIncrSAP,List,Allocator), core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(IncrSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
     typedef ISAPBox SAPBox;
-    typedef List<EndPointID*,Allocator<EndPointID*> > EndPointList;
+    typedef std::vector<EndPointID*> EndPointList;
 
 private:
     /**
@@ -259,9 +258,9 @@ private:
 
     std::set<core::CollisionModel*> collisionModels;
 protected:
-    TIncrSAP();
+    IncrSAP();
 
-    virtual ~TIncrSAP();
+    virtual ~IncrSAP();
 
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
@@ -290,12 +289,6 @@ public:
     void showBoxes()const;
 };
 
-typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INCRSAP_CPP)
-extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
-#endif
 
 } // namespace collision
 

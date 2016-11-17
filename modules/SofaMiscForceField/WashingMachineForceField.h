@@ -123,12 +123,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->color.setValue( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->color.setValue( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->color.setValue( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->color.setValue( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->color.setValue( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->color.setValue( Coord( 0.4f,0.5f,0.5f ) );
+        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
+        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
+        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
+        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
+        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
+        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
 
     }
 
@@ -153,12 +153,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->color.setValue( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->color.setValue( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->color.setValue( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->color.setValue( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->color.setValue( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->color.setValue( Coord( 0.4f,0.5f,0.5f ) );
+        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
+        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
+        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
+        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
+        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
+        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
 
     }
 

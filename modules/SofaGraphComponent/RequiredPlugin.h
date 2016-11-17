@@ -44,7 +44,7 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<std::string> pluginName;
+    sofa::core::objectmodel::Data<helper::vector<std::string>> d_pluginName;
 protected:
     RequiredPlugin();
     virtual ~RequiredPlugin() {}
@@ -53,7 +53,7 @@ public:
 
     virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg);
 
-    void loadPlugin();
+    static void loadPlugin( const std::string& pluginName );
 
 };
 

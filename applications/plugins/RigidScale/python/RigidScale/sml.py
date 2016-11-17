@@ -11,7 +11,8 @@ printLog = True
 
 
 def insertRigidScale(parentNode, rigidModel, param):
-    """ create a RigidScale.API.ShearlessAffineBody from the solidModel
+    """
+    Create a RigidScale.API.ShearlessAffineBody from the solidModel
     """
     if printLog:
         Sofa.msg_info("RigidScale.sml", "insertRigidScale "+rigidModel.name)
@@ -22,10 +23,7 @@ def insertRigidScale(parentNode, rigidModel, param):
         Sofa.msg_warning("RigidScale.sml", "insertRigidScale support only single mesh solid (nb meshes={0}) - solid {1} ignored".format(len(rigidModel.mesh), rigidModel.name))
         return None
 
-
-
     # TODO support multi meshes
-
     meshFormatSupported = True
     for mesh in rigidModel.mesh :
         meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
@@ -39,16 +37,18 @@ def insertRigidScale(parentNode, rigidModel, param):
     else:
         body.setManually(offset=rigidModel.position);
 
-    
-
-
-    
     #body.addBehavior(youngModulus=SofaPython.units.elasticity_from_SI(param.rigidScaleStiffness), numberOfGaussPoint=8)
     #cm = body.addCollisionMesh(rigidModel.mesh[0].source)
     #cm.addVisualModel()
 
-    body.affineDofs.showObject=param.showAffine
-    body.affineDofs.showObjectScale=SofaPython.units.length_from_SI(param.showAffineScale)
+    body.affineDofs.showObject = param.showAffine
+    body.affineDofs.showObjectScale = SofaPython.units.length_from_SI(param.showAffineScale)
+    body.rigidDofs.showObject = param.showRigid
+    body.rigidDofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
+
+    print "affines:", body.affineDofs.showObject, body.affineDofs.showObjectScale
+    print "rigids: ", body.rigidDofs.showObject, body.rigidDofs.showObjectScale
+
     if param.showImage:
         body.image.addViewer()
 
@@ -76,18 +76,23 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # simulation
         self.param.rigidScaleStiffness = 10e3 # SI unit
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
-        self.param.jointIsComplianceByTag=dict()
-        self.param.jointIsComplianceByTag["default"]=False
-        self.param.jointComplianceByTag=dict()
-        self.param.jointComplianceByTag["default"]=1e-6
-        self.param.rigidScaleNbDofByTag=dict()
-        self.param.rigidScaleNbDofByTag["default"]=1
+        self.param.jointIsComplianceByTag = dict()
+        self.param.jointIsComplianceByTag["default"] = False
+        self.param.jointComplianceByTag = dict()
+        self.param.jointComplianceByTag["default"] = 1e-6
+        self.param.rigidScaleNbDofByTag = dict()
+        self.param.rigidScaleNbDofByTag["default"] = 1
 
         # visual
-        self.param.showAffine=False
-        self.param.showAffineScale=0.05 # SI unit (m)
-        self.param.showOffset=False
-        self.param.showOffsetScale=0.01 # SI unit (m)
+        self.param.showRigid = False
+        self.param.showRigidScale = 0.05  # SI unit (m)
+
+        self.param.showAffine = False
+        self.param.showAffineScale = 0.05  # SI unit (m)
+
+        self.param.showOffset = False
+        self.param.showOffsetScale = 0.01  # SI unit (m)
+
         self.param.showImage = False
 
     def createScene(self):
@@ -103,26 +108,26 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         for jointModel in self.model.genericJoints.values():
             self.joints[jointModel.id] = Compliant.sml.insertJoint(jointModel, self.rigidScales, self.param)
 
+
 class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
     [tag] solid tagged with rigidScale are simulated as ShearlessAffineBody, more tags can be added to param.rigidScaleTags
     [tag] mesh group tagged with rigidScalePosition are used to compute (barycenter) the positions of a rigidScale
     Compliant joints are setup between the bones """
-
     def addSkinning(self, node, armatureNode, indices, weights, assemble=True, isMechanical=True):
         """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
         """
         self.mapping = node.createObject("LinearMapping", template="Affine,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
-
-    def insertMergeAffine(self, mergeNodeName="dofAffine", tags=None, affineIndexById=None ):
+    def insertMergeAffine(self, mergeNodeName="dofAffine", tags=None, affineIndexById=None):
         """ Merge all the affine in a single MechanicalObject using a SubsetMultiMapping
         optionnaly give a list of tags to select the rigids which are merged
         return the created node"""
         mergeNode = None
-        currentRigidIndex=0
-        input=""
-        indexPairs=""
+        currentRigidIndex = 0
+        input = ""
+        indexPairs = ""
+
         if tags is None:
             _tags = self.param.rigidTags
         else:
@@ -141,15 +146,13 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
             indexPairs += str(currentRigidIndex) + " 0 "
             if not affineIndexById is None:
                 affineIndexById[solid.id]=currentRigidIndex
-            currentRigidIndex+=1
+            currentRigidIndex += 1
         if input:
             mergeNode.createObject("MechanicalObject", template = "Affine", name="dofs")
             mergeNode.createObject('SubsetMultiMapping', template = "Affine,Affine", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         else:
             Sofa.msg_warning("Compliant.sml", "insertMergeRigid: no rigid merged")
         return mergeNode
-
-
 
     def __init__(self, parentNode, model):
         SofaPython.sml.BaseScene.__init__(self, parentNode, model)
@@ -158,7 +161,6 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         self.joints = dict()
 
         ## params
-
         # the set of tags simulated as rigids
         # simulation
         self.param.rigidScaleStiffness = 10e3 # SI unit
@@ -173,12 +175,15 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         self.deformables = dict()
 
         # visual
-        self.param.showAffine=False
-        self.param.showAffineScale=0.2 # SI unit (m)
-        self.param.showOffset=False
-        self.param.showOffsetScale=0.1 # SI unit (m)
+        self.param.showRigid = False
+        self.param.showRigidScale = 0.02  # SI unit (m)
+        self.param.showAffine = False
+        self.param.showAffineScale = 0.02  # SI unit (m)
+        self.param.showOffset = False
+        self.param.showOffsetScale = 0.01  # SI unit (m)
 
     def createScene(self):
+
         self.node.createObject('RequiredPlugin', name='image')
         self.node.createObject('RequiredPlugin', name='Flexible')
         self.node.createObject('RequiredPlugin', name='Compliant')
@@ -186,11 +191,12 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
 
         # rigidScale
         for rigidModel in self.model.getSolidsByTags({"armature"}):
-        #for rigidModel in self.model.solids:
             body = RigidScale.API.ShearlessAffineBody(self.node, rigidModel.name)
-            body.setMeshLess(offset=[rigidModel.position], mass=1, param=self.param);
-            body.affineDofs.showObject=self.param.showAffine
-            body.affineDofs.showObjectScale=SofaPython.units.length_from_SI(self.param.showAffineScale)
+            body.setManually(offset=[rigidModel.position], mass=1)
+            body.affineDofs.showObject = self.param.showAffine
+            body.affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showAffineScale)
+            body.rigidDofs.showObject = self.param.showRigid
+            body.rigidDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
             self.rigidScales[rigidModel.id] = body
 
         # joints
@@ -201,7 +207,7 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         self.nodes["armature"] = self.insertMergeAffine(mergeNodeName="armature", tags={"armature"}, affineIndexById=self.skinningArmatureBoneIndexById)
         for solidModel in self.model.solids.values():
             print solidModel.name, len(solidModel.skinnings)
-            if len(solidModel.skinnings)>0: # ignore solid if it has no skinning
+            if len(solidModel.skinnings) > 0:  # ignore solid if it has no skinning
                 # for each mesh create a Flexible.API.Deformable
                 for mesh in solidModel.mesh:
                     # take care only of visual meshes with skinning

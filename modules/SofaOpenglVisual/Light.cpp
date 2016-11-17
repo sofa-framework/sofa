@@ -54,19 +54,22 @@ SOFA_DECL_CLASS(Light)
 
 SOFA_DECL_CLASS(DirectionalLight)
 //Register DirectionalLight in the Object Factory
-int DirectionalLightClass = core::RegisterObject("Directional Light")
+int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light.")
         .add< DirectionalLight >()
         ;
 
 SOFA_DECL_CLASS(PositionalLight)
 //Register PositionalLight in the Object Factory
-int PositionalLightClass = core::RegisterObject("Positional Light")
+int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
+                                                "The light has a location from which the ray are starting in all direction")
         .add< PositionalLight >()
         ;
 
 SOFA_DECL_CLASS(SpotLight)
 //Register SpotLight in the Object Factory
-int SpotLightClass = core::RegisterObject("Spot Light")
+int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
+                                          "The light has a location and a illumination cone restricting the directions"
+                                          "taken by the rays of light.")
         .add< SpotLight >()
         ;
 
@@ -116,8 +119,7 @@ void Light::init()
     if(lm)
     {
         lm->putLight(this);
-        d_softShadows.setParent(&(lm->softShadowsEnabled));
-        //softShadows = lm->softShadowsEnabled.getValue();
+        d_softShadows.setParent(&(lm->d_softShadowsEnabled));
     }
     else
     {
@@ -136,12 +138,12 @@ void Light::initVisual()
     m_shadowFBO.init(m_shadowTexWidth, m_shadowTexHeight);
     m_blurHFBO.init(m_shadowTexWidth, m_shadowTexHeight);
     m_blurVFBO.init(m_shadowTexWidth, m_shadowTexHeight);
-    m_depthShader->vertFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
-    m_depthShader->fragFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    m_depthShader->vertFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,true);
+    m_depthShader->fragFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER,true);
     m_depthShader->init();
     m_depthShader->initVisual();
-    m_blurShader->vertFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
-    m_blurShader->fragFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    m_blurShader->vertFilename.addPath(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER,true);
+    m_blurShader->fragFilename.addPath(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER,true);
     m_blurShader->init();
     m_blurShader->initVisual();
 #endif
@@ -506,7 +508,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
     Vector3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
-    
+
     double epsilon = 0.0000001;
     Vector3 zAxis = -dir;
     zAxis.normalize();
@@ -585,7 +587,7 @@ void SpotLight::preDrawShadow(core::visual::VisualParams* vp)
     Vector3 dir = d_direction.getValue();
     if (d_lookat.getValue())
         dir -= d_position.getValue();
-    
+
     Light::preDrawShadow(vp);
 
     computeClippingPlane(vp, zNear, zFar);

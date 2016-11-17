@@ -102,7 +102,7 @@ BoxROI<DataTypes>::BoxROI()
     , p_drawHexahedra( initData(&p_drawHexahedra,false,"drawHexahedra","Draw Tetrahedra. (default = false)") )
     , p_drawQuads( initData(&p_drawQuads,false,"drawQuads","Draw Quads. (default = false)") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
-    , p_doUpdate( initData(&p_doUpdate,(bool) false,"doUpdate","Boolean for updating the Box. (default = false)") )
+    , p_doUpdate( initData(&p_doUpdate,(bool)true,"doUpdate","If true, updates the selection at the beginning of simulation steps. (default = true)") )
 
     /// In case you add a new attribute please also add it into to the BoxROI_test.cpp::attributesTests
     /// In case you want to remove or rename an attribute, please keep it as-is but add a warning message
@@ -274,14 +274,14 @@ void BoxROI<DataTypes>::init()
                     f_quad.setReadOnly(true);
                 }
             }
-        }else{
+        }/*else{
             msg_warning(this) << "No primitives provided nor TopologyContainer and a BaseMeshTopology in the current context.\n"
                                  "To remove this message you can either: \n"
                                  "  - set value into one or more of the attributes 'edges', 'triangles', 'tetrahedra', 'hexahedra'. \n"
                                  "  - add a TopologyContainer and a BaseMeshTopology in the context of this object. \n";
             m_componentstate = ComponentState::Invalid ;
             return ;
-        }
+        }*/
     }
 
     addInput(&f_X0);
@@ -304,19 +304,15 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_hexahedraInROI);
     addOutput(&f_quadInROI);
     addOutput(&f_nbIndices);
-    setDirtyValue();
-
-
-    //TODO(dmarchal): why this thing is not in reinit ?
-    this->f_listening.setValue( p_doUpdate.getValue() );
-
-    // remove the following after 01/01/2017.
-    //if(p_doUpdate.getValue())
-    //    this->f_listening.setValue(true);
 
     m_componentstate = ComponentState::Valid ;
 
+    /// The following is a trick to force the initial selection of the element by the engine.
+    bool tmp=p_doUpdate.getValue() ;
+    p_doUpdate.setValue(true);
+    setDirtyValue();
     reinit();
+    p_doUpdate.setValue(tmp);
 }
 
 template <class DataTypes>
@@ -419,13 +415,19 @@ bool BoxROI<DataTypes>::isQuadInBox(const Quad& q, const Vec6& b)
 
 }
 
-//TODO(dmarchal): Clarify here what the doUpdate date field means, currently when this field is "false"
-//the update methode is called. I'm not this is was what is expected by user of the BoxROI component.
+// The update method is called when the engine is marked as dirty.
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
-    if(m_componentstate==ComponentState::Invalid)
+    if(m_componentstate==ComponentState::Invalid){
+        cleanDirty() ;
         return ;
+    }
+
+    if(!p_doUpdate.getValue()){
+        cleanDirty() ;
+        return ;
+    }
 
     const vector<Vec6>& vb = boxes.getValue();
 

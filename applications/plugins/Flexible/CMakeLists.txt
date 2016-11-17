@@ -208,6 +208,9 @@ else()
 endif()
 
 
+set(README_FILES README_Flexible.txt)
+
+
 ## Flexible/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
@@ -215,7 +218,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "inclu
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
 set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_FLEXIBLE")
