@@ -4,22 +4,28 @@
 
 
 
-
 ### New features
 
-*   ATest 
-*   Adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
+## New features for users
 
+* Adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
+* Live-coding for python 
+* Live-coding for GLSL 
+* new component MakeAlias 
+* new component MakeDataAlias
+* Improved error message & console rendering
 
+## New features for developpers
 
-
-### Moved files
-
-
-
+* Preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
+* class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
+* class CountingMessageHandler (count the number of message for each message type)
+* class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
+* class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
 
 ### Improvements
-
+*   XXXX new tests
+*   YYYY/ZZZ components have an associated example 
 *   RigidMapping: in case jetJs is called several times per step
 *   [SofaPython]
     *   binding AssembledSystem as a new class in python
@@ -30,16 +36,19 @@
     *   raw import: adding commented basic size verifications (could be performed in debug)
 
 
-
-
 ### Bug Fixes
 
 *   fix ConstantForceField::updateForceMask()
 
 
-
-
 ### Cleaning
+
+
+
+### Moved files
+
+
+
 
 * * *
 
