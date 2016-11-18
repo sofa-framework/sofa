@@ -49,6 +49,9 @@ using sofa::helper::logging::DefaultStyleMessageFormatter;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
+#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::MessageDispatcher;
 
@@ -86,14 +89,14 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
 
     string stype(type) ;
 
-
     if(stype=="sofa"){
-
         MessageDispatcher::addHandler(new ConsoleMessageHandler()) ;
     }else if(stype=="clang"){
         MessageDispatcher::addHandler(new ClangMessageHandler()) ;
 //    }else if(stype=="log"){
 //        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
+    }else if(stype=="rich"){
+         MessageDispatcher::addHandler(new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter())) ;
     }else if(stype=="silent"){
         MessageDispatcher::clearHandlers() ;
     }else{

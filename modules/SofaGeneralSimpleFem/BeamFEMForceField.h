@@ -206,6 +206,7 @@ protected:
     Data<Real> _radius;
     Data<Real> _radiusInner;
     Data< VecIndex > _list_segment;
+    Data< bool> _useSymmetricAssembly;
     bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;

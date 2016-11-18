@@ -45,7 +45,7 @@ namespace engine
 
 template <class DataTypes>
 NormalsFromPoints<DataTypes>::NormalsFromPoints()
-    :   position(initData(&position,"position","Vertices of the mesh"))
+    : position(initData(&position,"position","Vertices of the mesh"))
     , triangles(initData(&triangles,"triangles","Triangles of the mesh"))
     , quads(initData(&quads,"quads","Quads of the mesh"))
     , normals(initData(&normals,"normals","Computed vertex normals of the mesh"))

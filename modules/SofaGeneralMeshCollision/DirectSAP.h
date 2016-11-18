@@ -88,15 +88,14 @@ public:
   *it sorts all the primitives along an axis (not checking the moving ones) and computes overlaping pairs without
   *saving it. But the memory used to save these primitives is created just once, the first time we add CollisionModels.
   */
-template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
-class TDirectSAP :
+class SOFA_GENERAL_MESH_COLLISION_API DirectSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(TDirectSAP,List,Allocator), core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(DirectSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
-    typedef List<EndPoint*,Allocator<EndPoint*> > EndPointList;
+    typedef std::vector<EndPoint*> EndPointList;
 
     typedef DSAPBox SAPBox;
 
@@ -136,9 +135,9 @@ private:
     double _alarmDist_d2;
     double _sq_alarmDist;
 protected:
-    TDirectSAP();
+    DirectSAP();
 
-    ~TDirectSAP();
+    ~DirectSAP();
 
     std::vector<EndPoint*> _to_del;//EndPoint arrays to delete when deleting DirectSAP
 public:
@@ -165,12 +164,6 @@ public:
     inline virtual bool needsDeepBoundingTree()const{return false;}
 };
 
-typedef TDirectSAP<std::vector,std::allocator> DirectSAP;
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DIRECTSAP_CPP)
-extern template class SOFA_GENERAL_MESH_COLLISION_API TDirectSAP<helper::vector,helper::CPUMemoryManager>;
-extern template class SOFA_GENERAL_MESH_COLLISION_API TDirectSAP<std::vector,std::allocator>;
-#endif
 
 } // namespace collision
 

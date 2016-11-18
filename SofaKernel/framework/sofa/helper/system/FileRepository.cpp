@@ -214,6 +214,9 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 bool FileRepository::findFile(std::string& filename, const std::string& basedir, std::ostream* errlog)
 {
     if (filename.empty()) return false; // no filename
+    if (!directAccessProtocolPrefix.empty() && filename.substr(0, directAccessProtocolPrefix.size()) == directAccessProtocolPrefix)
+        return true;
+
     std::string currentDir = SetDirectory::GetCurrentDir();
     if (!basedir.empty())
     {

@@ -59,6 +59,9 @@ private:
     //std::string type;
 
     std::string basefile;
+    std::string m_srcfile;
+    int m_srcline;
+
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
@@ -101,8 +104,13 @@ public:
 
     /// Get the file where this description was read from. Useful to resolve relative file paths.
     std::string getBaseFile();
-
     virtual void setBaseFile(const std::string& newBaseFile);
+
+    const std::string& getSrcFile() const ;
+    virtual void setSrcFile(const std::string& newSrcFile);
+
+    int getSrcLine() const ;
+    virtual void setSrcLine(const int l);
 
     /// Return true if this element was the root of the file
     bool isFileRoot();

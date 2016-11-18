@@ -104,7 +104,7 @@ void FEMGridBehaviorModel<DataTypes>::init()
 
 
     m_internalMass = sofa::core::objectmodel::New< component::mass::UniformMass<DataTypes,Real> >();
-    m_internalMass->totalMass.setValue( _totalMass.getValue() );
+    m_internalMass->d_totalMass.setValue( _totalMass.getValue() );
 
 
     // to constrain certain internal dof to exposed sofa dofs. Here there are exactly at the same place, they could be interpolated

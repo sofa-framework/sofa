@@ -37,6 +37,8 @@ namespace loader
 {
 
 using namespace sofa::defaulttype;
+using std::string;
+using std::stringstream;
 
 SOFA_DECL_CLASS(MeshGmshLoader)
 
@@ -48,7 +50,7 @@ bool MeshGmshLoader::load()
 {
     sout << "Loading Gmsh file: " << m_filename << sendl;
 
-    std::string cmd;
+    string cmd;
     bool fileRead = false;
     unsigned int gmshFormat = 0;
 
@@ -56,30 +58,25 @@ bool MeshGmshLoader::load()
     const char* filename = m_filename.getFullPath().c_str();
     std::ifstream file(filename);
 
-    if (!file.good())
-    {
-        serr << "Error: MeshGmshLoader: Cannot read file '" << m_filename << "'." << sendl;
+    if (!canLoad())
         return false;
-    }
-
 
     // -- Looking for Gmsh version of this file.
     std::getline(file, cmd); //Version
     std::istringstream versionReader(cmd);
-    std::string version;
+    string version;
     versionReader >> version;
     if (version == "$MeshFormat") // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
-//      sout << "Gmsh format 2.0" << sendl;
-        std::string line;
+        string line;
         std::getline(file, line); // we don't care about this line (2 0 8)
         std::getline(file, cmd); // end Version
         std::istringstream endMeshReader(cmd);
-        std::string endMesh;
+        string endMesh;
         endMeshReader >> endMesh;
 
-        if (endMesh != std::string("$EndMeshFormat") ) // it should end with $EndMeshFormat
+        if (endMesh != string("$EndMeshFormat") ) // it should end with $EndMeshFormat
         {
             serr << "Closing File" << sendl;
             file.close();
@@ -92,13 +89,12 @@ bool MeshGmshLoader::load()
     }
     else
     {
-        //sout << "Gmsh format 1.0" << sendl;
         gmshFormat = 1;
     }
 
 
     std::istringstream nodeReader(cmd);
-    std::string node;
+    string node;
     nodeReader >> node;
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
@@ -123,8 +119,8 @@ void MeshGmshLoader::addInGroup(helper::vector< sofa::core::loader::PrimitiveGro
         }
     }
 
-    std::stringstream ss;
-    std::string s;
+    stringstream ss;
+    string s;
     ss << tag;
 
     group.push_back(sofa::core::loader::PrimitiveGroup(tag,1,s,s,-1));
@@ -142,7 +138,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 {
     sout << "Reading Gmsh file: " << gmshFormat << sendl;
 
-    std::string cmd;
+    string cmd;
 
     unsigned int npoints = 0;
     unsigned int nelems = 0;
@@ -156,7 +152,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     // --- Loading Vertices ---
     file >> npoints; //nb points
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
 
     std::vector<unsigned int> pmap; // map for reordering vertices possibly not well sorted
     for (unsigned int i=0; i<npoints; ++i)
@@ -171,9 +167,8 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             pmap.resize(index+1);
 
         pmap[index] = i; // In case of hole or switch
-        //sout << "pmap[" << index << "] = " << pmap[index] << sendl;
     }
-    positions.endEdit();
+    d_positions.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
@@ -195,17 +190,17 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
     file >> nelems; //Loading number of Element
 
-    helper::vector<Edge>& my_edges = *(edges.beginEdit());
-    helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
-    helper::vector<Quad>& my_quads = *(quads.beginEdit());
-    helper::vector<Tetrahedron>& my_tetrahedra = *(tetrahedra.beginEdit());
-    helper::vector<Hexahedron>& my_hexahedra = *(hexahedra.beginEdit());
+    helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
+    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
+    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
+    helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
+    helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
 
 
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(edgesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(trianglesGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(tetrahedraGroups.beginEdit());
-    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(hexahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(d_tetrahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(d_hexahedraGroups.beginEdit());
 
     for (unsigned int i=0; i<nelems; ++i) // for each elem
     {
@@ -296,7 +291,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
         default:
             //if the type is not handled, skip rest of the line
-            std::string tmp;
+            string tmp;
             std::getline(file, tmp);
         }
     }
@@ -306,16 +301,16 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     normalizeGroup(my_tetrahedraGroups);
     normalizeGroup(my_hexahedraGroups);
 
-    edgesGroups.endEdit();
-    trianglesGroups.endEdit();
-    tetrahedraGroups.endEdit();
-    hexahedraGroups.endEdit();
+    d_edgesGroups.endEdit();
+    d_trianglesGroups.endEdit();
+    d_tetrahedraGroups.endEdit();
+    d_hexahedraGroups.endEdit();
 
-    edges.endEdit();
-    triangles.endEdit();
-    quads.endEdit();
-    tetrahedra.endEdit();
-    hexahedra.endEdit();
+    d_edges.endEdit();
+    d_triangles.endEdit();
+    d_quads.endEdit();
+    d_tetrahedra.endEdit();
+    d_hexahedra.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")

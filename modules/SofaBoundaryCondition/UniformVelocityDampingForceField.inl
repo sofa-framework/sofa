@@ -40,6 +40,7 @@ namespace forcefield
 template<class DataTypes>
 UniformVelocityDampingForceField<DataTypes>::UniformVelocityDampingForceField()
     : dampingCoefficient(initData(&dampingCoefficient, Real(0.1), "dampingCoefficient", "velocity damping coefficient"))
+    , d_implicit(initData(&d_implicit, false, "implicit", "should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)"))
 {
     core::objectmodel::Base::addAlias( &dampingCoefficient, "damping" );
 }
@@ -55,35 +56,41 @@ void UniformVelocityDampingForceField<DataTypes>::addForce (const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/ , const DataVecDeriv& /*d_dx*/)
+void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
 {
     (void)mparams->kFactor(); // get rid of warning message
-//    Real bfactor = (Real)mparams->bFactor();
 
-//    if( bfactor )
-//    {
-//        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
-//        const VecDeriv& dx = d_dx.getValue();
+    if( !d_implicit.getValue() ) return;
 
-//        bfactor *= dampingCoefficient.getValue();
+    Real bfactor = (Real)mparams->bFactor();
 
-//        for(unsigned int i=0; i<dx.size(); i++)
-//            df[i] -= dx[i]*bfactor;
-//    }
+    if( bfactor )
+    {
+        sofa::helper::WriteAccessor<DataVecDeriv> df(d_df);
+        const VecDeriv& dx = d_dx.getValue();
+
+        bfactor *= dampingCoefficient.getValue();
+
+        for(unsigned int i=0; i<dx.size(); i++)
+            df[i] -= dx[i]*bfactor;
+    }
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset)
 {
-//    const unsigned int size = this->mstate->getMatrixSize();
+    if( !d_implicit.getValue() ) return;
 
-//    for( unsigned i=0 ; i<size ; i++ )
-//        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
+    const unsigned int size = this->mstate->getMatrixSize();
+
+    for( unsigned i=0 ; i<size ; i++ )
+        mat->add( offset+i, offset+i, -dampingCoefficient.getValue()*bFact );
 }
 
 template <class DataTypes>
 SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
+    // TODO
     return 0;
 }
 
@@ -95,6 +102,7 @@ SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core
 } // namespace sofa
 
 #endif
+
 
 
 

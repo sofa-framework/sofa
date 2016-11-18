@@ -52,7 +52,7 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
         this->errorMax *= 10;
 
         SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
-        map->f_computeDistance.setValue(true);
+//        map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
         component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
@@ -73,6 +73,37 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
         return this->runTest( incoord, expectedoutcoord );
     }
 
+//    bool test_restLength()
+//    {
+//        this->errorMax *= 10;
+
+//        SquareDistanceMapping* map = static_cast<SquareDistanceMapping*>( this->mapping );
+////        map->f_computeDistance.setValue(true);
+//        map->d_geometricStiffness.setValue(1);
+
+//        helper::vector< SReal > restLength(2);
+//        restLength[0] = .5;
+//        restLength[1] = 2;
+//        map->f_restLengths.setValue( restLength );
+
+//        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
+//        edges->addEdge( 0, 1 );
+//        edges->addEdge( 2, 1 );
+
+//        // parent positions
+//        InVecCoord incoord(3);
+//        InDataTypes::set( incoord[0], 0,0,0 );
+//        InDataTypes::set( incoord[1], 1,1,1 );
+//        InDataTypes::set( incoord[2], 6,3,-1 );
+
+//        // expected child positions
+//        OutVecCoord expectedoutcoord;
+//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(3.)-.5) * (sqrt(3.)-.5) ) );
+//        expectedoutcoord.push_back( defaulttype::Vector1( (sqrt(33.)-2.) * (sqrt(33.)-2.) ) );
+
+//        return this->runTest( incoord, expectedoutcoord );
+//    }
+
 };
 
 
@@ -91,6 +122,12 @@ TYPED_TEST( SquareDistanceMappingTest , test )
 {
     ASSERT_TRUE(this->test());
 }
+
+//TYPED_TEST( SquareDistanceMappingTest , test_restLength )
+//{
+//    ASSERT_TRUE(this->test_restLength());
+//}
+
 
 } // namespace
 } // namespace sofa

@@ -59,7 +59,7 @@ there are computed from an image (typically a rasterized object)
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct VoronoiShapeFunctionSpecialization
 {
 };
@@ -76,8 +76,8 @@ struct NaturalNeighborData
 
 
 /// Specialization for regular Image
-template <>
-struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
 {
     template<class VoronoiShapeFunction>
     static void init(VoronoiShapeFunction* This)
@@ -120,7 +120,6 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     static void computeVoronoi(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
         typedef typename VoronoiShapeFunction::raTransform raTransform;
@@ -160,7 +159,6 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     static void ComputeWeigths_DistanceRatio(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
         typedef typename VoronoiShapeFunction::raTransform raTransform;
@@ -273,12 +271,10 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     *   - the updated voronoi including the point (@param voronoiPt and @param distancesPt)
     * returns volume, area and distance associated to each natural neighbor (indexed in @param ref)
     */
-
     template<class VoronoiShapeFunction>
     static void ComputeWeigths_NaturalNeighbors(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Real Real;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
@@ -386,8 +382,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class VoronoiShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
-    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct VoronoiShapeFunctionSpecialization<ImageTypes_>;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(VoronoiShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
@@ -440,14 +435,14 @@ public:
         Inherit::init();
 
         // init voronoi, distance, weight and indice image
-        VoronoiShapeFunctionSpecialization<ImageTypes::label>::init( this );
+        VoronoiShapeFunctionSpecialization<ImageTypes>::init( this );
 
         // compute voronoi based on node positions
-        VoronoiShapeFunctionSpecialization<ImageTypes::label>::computeVoronoi( this );
+        VoronoiShapeFunctionSpecialization<ImageTypes>::computeVoronoi( this );
 
         // compute weights from voronoi
-        if(this->method.getValue().getSelectedId() == DISTANCE)  VoronoiShapeFunctionSpecialization<ImageTypes::label>::ComputeWeigths_DistanceRatio(this);
-        else VoronoiShapeFunctionSpecialization<ImageTypes::label>::ComputeWeigths_NaturalNeighbors(this);
+        if(this->method.getValue().getSelectedId() == DISTANCE)  VoronoiShapeFunctionSpecialization<ImageTypes>::ComputeWeigths_DistanceRatio(this);
+        else VoronoiShapeFunctionSpecialization<ImageTypes>::ComputeWeigths_NaturalNeighbors(this);
 
         // clear voronoi and distance image ?
         if(this->f_clearData.getValue())

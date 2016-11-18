@@ -305,7 +305,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
     UniformMass3::SPtr mass = modeling::addNew<UniformMass3>(deformableGrid,"mass" );
-    mass->mass.setValue( totalMass/(numX*numY*numZ) );
+    mass->d_mass.setValue( totalMass/(numX*numY*numZ) );
 
     RegularGridSpringForceField3::SPtr spring = modeling::addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
     spring->setLinesStiffness(stiffnessValue);
@@ -441,7 +441,7 @@ MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
 copyToData( vMassDof, vMass );
 
 UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
-massPtr->totalMass.setValue( mass );
+massPtr->d_totalMass.setValue( mass );
 
 // attach a spring
 StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
@@ -488,7 +488,7 @@ fixed->addConstraint(0);
 
 // Uniform Mass
 UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(root,"mass");
-massPtr->totalMass.setValue(mPlanet + mSun);
+massPtr->d_totalMass.setValue(mPlanet + mSun);
 
 // Lennard Jones Force Field
 typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =

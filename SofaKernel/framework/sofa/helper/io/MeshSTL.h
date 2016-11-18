@@ -50,8 +50,12 @@ public:
 
 protected:
 
-    void readSTL (const std::string &filename);
+    /// ascii
+    void readSTL ( std::ifstream& file );
+
+    /// binary
     void readBinarySTL (const std::string &filename);
+
 
 };
 

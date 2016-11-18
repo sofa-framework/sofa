@@ -83,6 +83,10 @@ template class SOFA_BOUNDARY_CONDITION_API FixedConstraint<Rigid2fTypes>;
 template <>
 void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!f_showObject.getValue()) return;
+    if (!this->isActive()) return;
+
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
@@ -114,6 +118,10 @@ void FixedConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpara
 template <>
 void FixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!f_showObject.getValue()) return;
+    if (!this->isActive()) return;
+
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
@@ -148,6 +156,10 @@ void FixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vpara
 template <>
 void FixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!f_showObject.getValue()) return;
+    if (!this->isActive()) return;
+
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     std::vector< Vector3 > points;
@@ -169,6 +181,10 @@ void FixedConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vpara
 template <>
 void FixedConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!f_showObject.getValue()) return;
+    if (!this->isActive()) return;
+
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 

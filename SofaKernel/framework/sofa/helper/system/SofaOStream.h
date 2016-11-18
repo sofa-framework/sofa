@@ -85,7 +85,7 @@ public:
 
     // operator std::ostream&() const { return m_ostream; }
 
-    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo& fi )
+    friend inline SofaOStream& operator<<( SofaOStream& out, const logging::FileInfo::SPtr& fi )
     {
         out.m_fileInfo = fi;
         return out;
@@ -117,7 +117,7 @@ public:
     std::streamsize precision( std::streamsize p ) { return m_ostream.precision(p); }
 
     std::ostringstream& ostringstream() const { return m_ostream; }
-    const logging::FileInfo& fileInfo() const { return m_fileInfo; }
+    const logging::FileInfo::SPtr& fileInfo() const { return m_fileInfo; }
     const logging::Message::Type& messageType() const { return m_messageType; }
     const logging::Message::Class& messageClass() const { return m_messageClass; }
 
@@ -125,7 +125,7 @@ public:
     void clear()
     {
         str("");
-        m_fileInfo = helper::logging::FileInfo();
+        m_fileInfo = helper::logging::EmptyFileInfo;
         m_messageType = (logging::Message::Type)DefaultMessageType;
         m_messageClass = logging::Message::Runtime;
     }
@@ -136,7 +136,7 @@ protected:
     std::ostringstream& m_ostream;
 
     /// the current FileInfo
-    logging::FileInfo m_fileInfo;
+    logging::FileInfo::SPtr m_fileInfo {helper::logging::EmptyFileInfo};
     /// the current Message type
     logging::Message::Type m_messageType;
     /// the current Message class

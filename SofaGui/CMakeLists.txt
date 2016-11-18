@@ -20,8 +20,7 @@ if(NOT SOFA_NO_OPENGL)
         find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
 
         if(WIN32)
-            #TODO: check if it is working well...
-            file(GLOB QT5_DLLS "${_qt5Core_install_prefix}/lib/*.dll")
+            file(GLOB_RECURSE QT5_DLLS "${_qt5Core_install_prefix}/bin/*.dll")
             if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
                 foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
                     file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
@@ -123,8 +122,8 @@ if(NOT SOFA_NO_OPENGL)
             endif()
 
            ## QWT
-           option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")
-           if(SOFA_ENABLE_QWT)
+           option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
+           if(SOFAGUI_ENABLE_QWT)
                 set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
 

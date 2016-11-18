@@ -116,30 +116,30 @@ public:
         DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
 
         void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double > &);
+                                 const sofa::helper::vector< double > &);
 
         using topology::TopologyDataHandler<Point,MassVector>::ApplyTopologyChange;
 
         ///////////////////////// Functions on Edges //////////////////////////////////////
         /// Apply adding edges elements.
         void applyEdgeCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-                const sofa::helper::vector< Edge >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+                               const sofa::helper::vector< Edge >& /*elems*/,
+                               const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                               const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing edges elements.
         void applyEdgeDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
-         /// Callback to add edges elements.
+        /// Callback to add edges elements.
         virtual void ApplyTopologyChange(const core::topology::EdgesAdded* /*event*/);
         /// Callback to remove edges elements.
         virtual void ApplyTopologyChange(const core::topology::EdgesRemoved* /*event*/);
 
-         ///////////////////////// Functions on Triangles //////////////////////////////////////
+        ///////////////////////// Functions on Triangles //////////////////////////////////////
         /// Apply adding triangles elements.
         void applyTriangleCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-                const sofa::helper::vector< Triangle >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+                                   const sofa::helper::vector< Triangle >& /*elems*/,
+                                   const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                   const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing triangles elements.
         void applyTriangleDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
@@ -151,9 +151,9 @@ public:
         ///////////////////////// Functions on Tetrahedron //////////////////////////////////////
         /// Apply adding tetrahedron elements.
         void applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-                const sofa::helper::vector< Tetrahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+                                      const sofa::helper::vector< Tetrahedron >& /*elems*/,
+                                      const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                      const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing tetrahedron elements.
         void applyTetrahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
 
@@ -165,9 +165,9 @@ public:
         ///////////////////////// Functions on Hexahedron //////////////////////////////////////
         /// Apply adding hexahedron elements.
         void applyHexahedronCreation(const sofa::helper::vector< unsigned int >& /*indices*/,
-                const sofa::helper::vector< Hexahedron >& /*elems*/,
-                const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
-                const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
+                                     const sofa::helper::vector< Hexahedron >& /*elems*/,
+                                     const sofa::helper::vector< sofa::helper::vector< unsigned int > >& /*ancestors*/,
+                                     const sofa::helper::vector< sofa::helper::vector< double > >& /*coefs*/);
         /// Apply removing hexahedron elements.
         void applyHexahedronDestruction(const sofa::helper::vector<unsigned int> & /*indices*/);
         /// Callback to add hexahedron elements.
@@ -194,14 +194,23 @@ public:
     core::objectmodel::DataFileName fileMass;
 
 protected:
-    //VecMass masses;
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using core::behavior::ForceField<DataTypes>::mstate ;
+    using core::objectmodel::BaseObject::getContext;
+    using core::objectmodel::BaseObject::m_componentstate ;
+    ////////////////////////////////////////////////////////////////////////////
+
 
     class Loader;
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
 
-public:
 
+public:
     sofa::core::topology::BaseMeshTopology* _topology;
 
     sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
@@ -241,6 +250,9 @@ public:
     {
         m_massDensity.setValue(m);
     }
+
+    SReal getTotalMass() const { return m_totalMass.getValue(); }
+    int getMassCount() { return f_mass.getValue().size(); }
 
 
     void addMass(const MassType& mass);
@@ -283,6 +295,30 @@ public:
     {
         return DataTypes::Name();
     }
+
+private:
+    template <class T>
+    SReal getPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
+                                       const DataVecCoord& x) const ;
+
+    template <class T>
+    void drawRigid3dImpl(const core::visual::VisualParams* vparams) ;
+
+    template <class T>
+    void drawRigid2dImpl(const core::visual::VisualParams* vparams) ;
+
+    template <class T>
+    void initRigidImpl() ;
+
+    template <class T>
+    defaulttype::Vector6 getMomentumRigid3Impl ( const core::MechanicalParams*,
+                                                 const DataVecCoord& vx,
+                                                 const DataVecDeriv& vv ) const ;
+
+    template <class T>
+    defaulttype::Vector6 getMomentumVec3Impl ( const core::MechanicalParams*,
+                                               const DataVecCoord& vx,
+                                               const DataVecDeriv& vv ) const ;
 };
 
 

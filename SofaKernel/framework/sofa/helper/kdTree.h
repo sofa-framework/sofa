@@ -68,22 +68,28 @@ public:
         unsigned int right; // index of the right node
     } TREENODE;
 
-    bool isEmpty() {return tree.size()==0;}
+    bool isEmpty() const {return tree.size()==0;}
     void build(const VecCoord& positions);       ///< update tree (to be used whenever positions have changed)
     void build(const VecCoord& positions, const vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
-    void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< get an ordered set of n distance/index pairs between positions and x
-    unsigned int getClosest(const Coord &x, const VecCoord& positions); ///< get the index of the closest point between positions and x
-    bool getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
+    void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< get an ordered set of n distance/index pairs between positions and x
+    unsigned int getClosest(const Coord &x, const VecCoord& positions) const; ///< get the index of the closest point between positions and x
+    bool getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n) const;  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
+
+
+    /// @name To be Data-zable
+    /// @{
+        inline friend std::ostream& operator<< ( std::ostream& os, const kdTree<Coord>& ) {return os;}
+        inline friend std::istream& operator>> ( std::istream& is, kdTree<Coord>& ) {return is;}
+    /// @}
 
 protected :
     void print(const unsigned int index);
 
-    unsigned int N;
     vector< TREENODE > tree; unsigned int firstNode;
 
     unsigned int build(UIlist &list, unsigned char direction, const VecCoord& positions); // recursive function to build the kdtree
-    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions);     // recursive function to get closest points
-    void closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions);  // recursive function to get closest point
+    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const;     // recursive function to get closest points
+    void closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions) const;  // recursive function to get closest point
 };
 
 

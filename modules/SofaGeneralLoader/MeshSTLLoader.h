@@ -38,10 +38,6 @@ namespace component
 namespace loader
 {
 
-#ifdef WIN32
-#define strcasecmp stricmp
-#endif
-
 // Format doc: http://en.wikipedia.org/wiki/STL_(file_format)
 class SOFA_GENERAL_LOADER_API MeshSTLLoader : public sofa::core::loader::MeshLoader
 {
@@ -60,14 +56,17 @@ public:
 
 protected:
 
-    bool readSTL(const char* filename);
+    // ascii
+    bool readSTL(std::ifstream& file);
 
+    // binary
     bool readBinarySTL(const char* filename);
 
 public:
     //Add Data here
     Data <unsigned int> _headerSize;
     Data <bool> _forceBinary;
+    Data <bool> d_mergePositionUsingMap;
 
 };
 

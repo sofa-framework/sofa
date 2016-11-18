@@ -32,8 +32,10 @@ class Dummy: public sofa::core::objectmodel::BaseObject
     bool *m_destroyed;
 public:
     SOFA_CLASS(Dummy, sofa::core::objectmodel::BaseObject);
+
+    Dummy(const std::string& name): m_destroyed(nullptr) {this->setName(name);}
     Dummy(bool *destroyed): m_destroyed(destroyed) {}
-    ~Dummy() { *m_destroyed = true; }
+    ~Dummy() { if(m_destroyed) *m_destroyed = true; }
 };
 
 template<class Node>

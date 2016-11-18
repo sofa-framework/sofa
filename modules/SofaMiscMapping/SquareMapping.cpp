@@ -16,68 +16,57 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ScriptEnvironment.h"
+#define SOFA_COMPONENT_MAPPING_SquareMapping_CPP
+
+#include "SquareMapping.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
-static std::list<Node*> m_NodesCreatedByScript;
-static bool m_NodeQueuedInitEnabled = true;
-
-
-// nodes initialization stuff
-void ScriptEnvironment::nodeCreatedByScript(Node* node)        // to be called each time a new node is created by a script.
+namespace mapping
 {
-    if (!m_NodeQueuedInitEnabled) return;
 
-    m_NodesCreatedByScript.push_back(node);
-}
+SOFA_DECL_CLASS(SquareMapping)
 
-bool ScriptEnvironment::isNodeCreatedByScript(Node* node)        // to be called each time a new node is created by a script.
-{
-    if (!m_NodeQueuedInitEnabled) return true;
 
-    std::list<Node*>::iterator it = m_NodesCreatedByScript.begin();
-    while (it != m_NodesCreatedByScript.end())
-    {
-        if ((*it)==node)
-            return true;
-        it++;
-    }
-    return false;
-}
+using namespace defaulttype;
 
-void ScriptEnvironment::initScriptNodes()                      // to be called after each call to a script function.
-{
-    if (!m_NodeQueuedInitEnabled) return;
 
-    while (!m_NodesCreatedByScript.empty())
-    {
-        Node *node = m_NodesCreatedByScript.front();
-        m_NodesCreatedByScript.pop_front();
-        if (!node->isInitialized())
-            node->init(sofa::core::ExecParams::defaultInstance());
-    }
-}
+// Register in the Factory
+int SquareMappingClass = core::RegisterObject("Compute the square")
+#ifndef SOFA_FLOAT
+        .add< SquareMapping< Vec1dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SquareMapping< Vec1fTypes, Vec1fTypes > >()
+#endif
+        ;
 
-void ScriptEnvironment::enableNodeQueuedInit(bool enable)
-{
-    m_NodeQueuedInitEnabled = enable;
-}
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API SquareMapping< Vec1dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API SquareMapping< Rigid3dTypes, Vec1dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API SquareMapping< Vec1fTypes, Vec1fTypes >;
+#endif
 
 
 
 
-} // namespace simulation
+} // namespace mapping
+
+} // namespace component
 
 } // namespace sofa
 

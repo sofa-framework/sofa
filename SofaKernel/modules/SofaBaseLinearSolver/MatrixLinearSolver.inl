@@ -36,7 +36,8 @@ namespace linearsolver {
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
-    : multiGroup( initData( &multiGroup, false, "multiGroup", "activate multiple system solve, one for each child node" ) )
+    : Inherit()
+    , multiGroup( initData( &multiGroup, false, "multiGroup", "activate multiple system solve, one for each child node" ) )
 //, needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
     , currentGroup(&defaultGroup)
 {

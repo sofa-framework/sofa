@@ -1,13 +1,11 @@
-# SOFA, Simulation Open-Framework Architecture
-   (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH
+[![SOFA, Simulation Open-Framework Architecture]
+(https://www.sofa-framework.org/wp-content/uploads/2013/01/SOFA_LOGO_ORANGE_2-normal.png)]
+(https://www.sofa-framework.org/)
 
-Authors: See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
 
-Licence: See [LICENCE.txt](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt)
+# Introduction
 
-Contact information: contact@sofa-framework.org
-
-SOFA is an Open Source framework primarily targeted at real-time simulation, 
+SOFA is an open source framework primarily targeted at real-time simulation, 
 with an emphasis on medical simulation.  
 It is mainly intended for the research community to help foster newer 
 algorithms, but can also be used as an efficient prototyping tool.  
@@ -23,9 +21,30 @@ SOFA's advanced software architecture allows:
     abstract equation solvers; and  
 (5) the comparison of various algorithms available in SOFA. 
 
------------------------------------------------------------------------------
 
-## INSTALLATION
+# Installation
 
 For up-to-date instructions, please refer to the SOFA documentation:  
 https://www.sofa-framework.org/documentation
+
+
+# Contribution
+
+The SOFA community will be pleased to welcome you!  
+Find all the ways to get involved here: https://www.sofa-framework.org/community/get-involved/
+
+Before creating any issue or pull request, please read carefully [our CONTRIBUTING rules](https://github.com/sofa-framework/sofa/blob/master/CONTRIBUTING.md).
+
+
+# Information
+
+Authors: See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
+
+Licence: See [LICENCE.txt](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt)
+
+Contact information: contact@sofa-framework.org
+
+-----------------------------------------------------------------------------
+
+SOFA, Simulation Open-Framework Architecture  
+(c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH

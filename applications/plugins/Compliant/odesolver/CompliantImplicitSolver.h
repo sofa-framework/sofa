@@ -171,6 +171,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     typedef linearsolver::AssembledSystem system_type;
 				
     virtual void init();
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     // OdeSolver API
     virtual void solve(const core::ExecParams* params,
@@ -188,7 +189,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;
 
-    Data<bool> warm_start, propagate_lambdas, debug;
+    Data<bool> warm_start, debug;
+    Data<helper::OptionsGroup> constraint_forces;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
 

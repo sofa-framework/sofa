@@ -45,7 +45,8 @@ template <class DataTypes, class TMassType>
 class UniformMass : public core::behavior::Mass<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType),
+               SOFA_TEMPLATE(core::behavior::Mass,DataTypes));
 
     typedef core::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -57,26 +58,26 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
+    Data<MassType>                        d_mass;         ///< the mass of each particle
+    Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
+    sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
-    Data<MassType>                        mass;         ///< the mass of each particle
-    Data<SReal>                           totalMass;    ///< if >0 : total mass of this body
-    sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
+    Data<bool>                            d_showCenterOfGravity; /// to display the center of gravity of the system
+    Data<float>                           d_showAxisSize;        /// to display the center of gravity of the system
 
-    Data<bool>                        showCenterOfGravity; /// to display the center of gravity of the system
-    Data<float>                       showAxisSize;        /// to display the center of gravity of the system
+    Data<bool>  d_computeMappingInertia;
+    Data<bool>  d_showInitialCenterOfGravity;
 
-    Data<bool>  computeMappingInertia;
-    Data<bool>  showInitialCenterOfGravity;
+    Data<bool>  d_showX0; /// to display the rest positions
 
-
-    Data<bool>  showX0; /// to display the rest positions
-
-    /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
-    Data< defaulttype::Vec<2,int> > localRange;
+    /// optional range of local DOF indices. Any computation involving only
+    /// indices outside of this range are discarded (useful for parallelization
+    /// using mesh partitionning)
+    Data< defaulttype::Vec<2,int> > d_localRange;
     Data< helper::vector<int> >     d_indices;
 
-    Data<bool> handleTopoChange;
-    Data<bool> preserveTotalMass;
+    Data<bool> d_handleTopoChange;
+    Data<bool> d_preserveTotalMass;
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
@@ -95,27 +96,26 @@ protected:
 
     ~UniformMass();
 
-    /// @internal fonction called in the constructor that can be specialized (does nothing by default)
-    void constructor_message() {}
+    /// @internal fonction called in the constructor that can be specialized
+    void constructor_message() ;
 
 public:
-    void setMass(const MassType& mass);
-    const MassType& getMass() const { return mass.getValue(); }
+    void setMass(const MassType& d_mass);
+    const MassType& getMass() const { return d_mass.getValue(); }
 
-    SReal getTotalMass() const { return totalMass.getValue(); }
+    SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
 
-    void setFileMass(const std::string& file) {filenameMass.setValue(file);}
-    std::string getFileMass() const {return filenameMass.getFullPath();}
+    void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
+    std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
-    void loadRigidMass(std::string filename);
+    void loadRigidMass(const std::string& filename);
     // -- Mass interface
 
     void reinit();
     void init();
 
     void handleTopologyChange();
-
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
@@ -140,14 +140,55 @@ public:
     bool isDiagonal() {return true;}
 
     void draw(const core::visual::VisualParams* vparams);
+
+private:
+    template<class T>
+    void reinitDefaultImpl() ;
+
+    template<class T>
+    void reinitRigidImpl() ;
+
+    template<class T>
+    void drawRigid3DImpl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    void drawRigid2DImpl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    void drawVec6Impl(const core::visual::VisualParams* vparams) ;
+
+    template<class T>
+    SReal getPotentialEnergyRigidImpl(const core::MechanicalParams* mparams,
+                                      const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+
+
+
+    template<class T>
+    defaulttype::Vector6 getMomentumRigid3DImpl(const core::MechanicalParams* mparams,
+                                                const DataVecCoord& x,
+                                                const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    template<class T>
+    defaulttype::Vector6 getMomentumVec3DImpl(const core::MechanicalParams* mparams,
+                                              const DataVecCoord& x,
+                                              const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+
+    template <class T>
+    void loadFromFileRigidImpl(const std::string& filename) ;
+
+    template <class T>
+    void addMDxToVectorVecImpl(defaulttype::BaseVector *resVect,
+                               const VecDeriv* dx,
+                               SReal mFact,
+                               unsigned int& offset);
+
 };
 
 //Specialization for rigids
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
 template <>
-void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( std::string );
+void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( const std::string&  );
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
 template <>
@@ -159,11 +200,11 @@ double UniformMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>::getPoten
 template <>
 void UniformMass<defaulttype::Vec6dTypes,double>::draw(const core::visual::VisualParams* vparams);
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template<>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
 template<>
-void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( std::string );
+void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( const std::string& );
 template <>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
@@ -177,7 +218,7 @@ void UniformMass<defaulttype::Vec6fTypes,float>::draw(const core::visual::Visual
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_UNIFORMMASS_CPP)
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec3dTypes, double>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec2dTypes, double>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec1dTypes, double>;
@@ -185,7 +226,7 @@ extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec6dType
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>;
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec3fTypes, float>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec2fTypes, float>;
 extern template class SOFA_BASE_MECHANICS_API UniformMass<defaulttype::Vec1fTypes, float>;

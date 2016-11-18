@@ -16,40 +16,53 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SCRIPTENVIRONMENT_H
-#define SCRIPTENVIRONMENT_H
-
-#include <sofa/simulation/Node.h>
+#define SOFA_COMPONENT_ENGINE_SumEngine_CPP
+#include "SumEngine.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
-
-class ScriptEnvironment
+namespace engine
 {
-public:
-    // nodes initialization stuff
-    static void     nodeCreatedByScript(Node* node);        // to be called each time a new node is created by a script.
-    static void     initScriptNodes();                      // to be called after each call to a script function.
-    static bool     isNodeCreatedByScript(Node* node);
 
-    static void     enableNodeQueuedInit(bool enable);
-};
+using namespace sofa::defaulttype;
 
+SOFA_DECL_CLASS(SumEngine)
 
-} // namespace core
+int SumEngineClass = core::RegisterObject("Computing the Sum between two vector of dofs")
+#ifndef SOFA_FLOAT
+        .add< SumEngine<Vec1d> >()
+        .add< SumEngine<Vec3d> >(true) // default template
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SumEngine<Vec1f> >()
+        .add< SumEngine<Vec3f> >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1d>;
+template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3d>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_GENERAL_ENGINE_API SumEngine<Vec1f>;
+template class SOFA_GENERAL_ENGINE_API SumEngine<Vec3f>;
+#endif
+
+} // namespace engine
+
+} // namespace component
 
 } // namespace sofa
 
 
-
-#endif // SCRIPTENVIRONMENT_H

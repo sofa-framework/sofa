@@ -47,7 +47,7 @@ namespace engine
 {
 
 /**
- * This class extrudes a quad surface into a set of hexahedra
+ * This engine extrudes an edge-based curve into a quad surface patch
  */
 template <class DataTypes>
 class ExtrudeEdgesAndGenerateQuads : public core::DataEngine
@@ -64,13 +64,13 @@ protected:
 
     ExtrudeEdgesAndGenerateQuads();
 
-    ~ExtrudeEdgesAndGenerateQuads() {}
+    virtual ~ExtrudeEdgesAndGenerateQuads() {}
 public:
-    void init();
 
-    void reinit();
-
-    void update();
+    virtual void init();
+    virtual void bwdInit();
+    virtual void reinit();
+    virtual void update();
 
     virtual std::string getTemplateName() const
     {
@@ -83,26 +83,29 @@ public:
     }
 
     bool                                             initialized;
-    Data<bool>                                       isVisible;
-    Data<Coord>                                      f_direction;
-    Data<Real>                                       f_thickness;
-    Data<Real>                                       f_thicknessIn;
-    Data<Real>                                       f_thicknessOut;
-    Data<int>                                        f_numberOfSections;
-    Data<VecCoord>                                   f_curveVertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   f_curveEdges;
-    Data<VecCoord>                                   f_extrudedVertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   f_extrudedEdges;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads;
+    Data<Coord>                                      d_direction;
+    Data<Real>                                       d_thickness;
+    Data<Real>                                       d_thicknessIn;
+    Data<Real>                                       d_thicknessOut;
+    Data<int>                                        d_nbSections;
+    Data<VecCoord>                                   d_curveVertices;
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_curveEdges;
+    Data<VecCoord>                                   d_extrudedVertices;
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_extrudedEdges;
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   d_extrudedQuads;
+
+protected:
+
+    void checkInput();
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_EXTRUDEEDGESANDGENERATEQUADS_CPP)
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#endif //SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API ExtrudeEdgesAndGenerateQuads<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#endif //SOFA_WITH_FLOAT
 #endif
 
 } // namespace engine

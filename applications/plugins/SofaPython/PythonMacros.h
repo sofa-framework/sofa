@@ -25,6 +25,8 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
+#include <sofa/config.h>
+
 #include "PythonCommon.h"
 #include <boost/intrusive_ptr.hpp>
 
@@ -371,6 +373,17 @@ void printPythonExceptions();
 // =============================================================================
 // PYTHON SCRIPT METHOD CALL
 // =============================================================================
+// call a function that returns void
+#define SP_CALL_FILEFUNC(func, ...){\
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));\
+    PyObject *pFunc = PyDict_GetItemString(pDict, func);\
+    if (PyCallable_Check(pFunc))\
+{\
+    PyObject *res = PyObject_CallFunction(pFunc,__VA_ARGS__); \
+    if( res )  Py_DECREF(res); \
+}\
+}
+
 #define SP_CALL_MODULEFUNC(func, ...) \
 { \
     if (func) { \

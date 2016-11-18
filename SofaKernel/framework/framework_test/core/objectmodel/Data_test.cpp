@@ -137,15 +137,13 @@ struct DataFileNameVector_test: public ::testing::Test
 
 TEST_F(DataFileNameVector_test , setValueAsString_spaces )
 {
-    // fails because setValueAsString does not look for a vector
-    dataFileNameVector.setValueAsString( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 
 TEST_F(DataFileNameVector_test , read_spaces )
 {
-    // fails because read is considering that path are separated with space, so path cannot contain spaces (creating 6 entries)
-    dataFileNameVector.read( std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt "+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt" );
+    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
     ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
 }
 

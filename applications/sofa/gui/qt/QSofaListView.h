@@ -25,6 +25,7 @@
 #ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
 #define SOFA_GUI_QT_QSOFALISTVIEW_H
 
+#include "SofaGUIQt.h"
 
 #include <QWidget>
 #include <QTreeWidget>

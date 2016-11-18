@@ -120,7 +120,7 @@ protected:
         UniformMass3::SPtr mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
-        mass->mass.setValue( totalMass/numParticles );
+        mass->d_mass.setValue( totalMass/numParticles );
 
 
 
@@ -201,7 +201,7 @@ protected:
         mass = core::objectmodel::New<UniformMass3>();
         string_node->addObject(mass);
         mass->setName(oss.str()+"_mass");
-        mass->mass.setValue( totalMass/numParticles );
+        mass->d_mass.setValue( totalMass/numParticles );
 
 
         //--------
