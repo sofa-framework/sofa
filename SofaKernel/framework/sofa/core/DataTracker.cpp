@@ -54,6 +54,27 @@ void DataTrackerDDGNode::cleanDirty(const core::ExecParams* params)
 
 }
 
+
+
+void DataTrackerDDGNode::updateAllInputsIfDirty()
+{
+    const DDGLinkContainer& inputs = DDGNode::getInputs();
+    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
+    {
+        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
+    }
+}
+
+
+
+///////////////////////
+
+
+void DataTrackerEngine::setUpdateCallback( void (*f)(DataTrackerEngine*) )
+{
+    m_updateCallback = f;
+}
+
 }
 
 }

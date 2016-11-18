@@ -10,6 +10,10 @@ namespace core
 {
 
     /// Tracking Data mechanism
+    /// to be able to check when selected Data changed since their last clean.
+    ///
+    /// The Data must be added to tracking system by calling "trackData".
+    /// Then it can be checked if it changed with "isDirty" since its last "clean".
     struct DataTracker
     {
         /// select a Data to track to be able to check
@@ -34,7 +38,7 @@ namespace core
 
     protected:
 
-        /// map a tracked Data to a DataTracker
+        /// map a tracked Data to a DataTracker (storing its call-counter at each 'clean')
         typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
         DataTrackers m_dataTrackers;
 
@@ -44,7 +48,7 @@ namespace core
 //////////////////////////////
 
 
-    /// A DDGNode with trackable input Data
+    /// A DDGNode with trackable input Data (containing a DataTracker)
     class DataTrackerDDGNode : public core::objectmodel::DDGNode
     {
     public:
@@ -58,8 +62,14 @@ namespace core
     public:
 
         /// Set dirty flag to false
-        /// for the Engine and for all the tracked Data
+        /// for the DDGNode and for all the tracked Data
         virtual void cleanDirty(const core::ExecParams* params = 0);
+
+
+        /// utility function to ensure all inputs are up-to-date
+        /// can be useful for particulary complex DDGNode
+        /// with a lot input/output imbricated access
+        void updateAllInputsIfDirty();
 
     protected:
 
@@ -79,17 +89,74 @@ namespace core
 
  ///////////////////
 
-
-    class DataTrackerEngine : DataTrackerDDGNode
+    /// a DDGNode that automatically triggers its update function
+    /// when asking for an output and any input changed.
+    /// Similar behavior than a DataEngine, but this is NOT a component
+    /// and can be used everywhere.
+    ///
+    /// Note that it contains a DataTrackerDDGNode (m_dataTracker)
+    /// to be able to check precisly which input changed if needed.
+    ///
+    ///
+    ///
+    ///
+    /// **** Implementation good rules: (similar to DataEngine)
+    ///
+    /// //init
+    ///    addInput // indicate all inputs
+    ///    addOutput // indicate all outputs
+    ///    setDirtyValue(); // the engine must start dirty (of course, no output are up-to-date)
+    ///
+    ///
+    /// void UpdateCallback( DataTrackerEngine* dataTrackerEngine )
+    /// {
+    ///      // get the list of inputs for this DDGNode
+    ///      const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
+    ///      // get the list of outputs for this DDGNode
+    ///      const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+    ///
+    ///      // we known who is who from the order Data were added to the DataTrackerEngine
+    ///      static_cast<Data< FirstInputType >*>( inputs[0] );
+    ///
+    ///      // all inputs must be updated
+    ///      // can be done by Data::getValue, ReadAccessor, Data::updateIfDirty, DataTrackerDDGNode::updateAllInputsIfDirty
+    ///
+    ///      // must be called AFTER updating all inputs, otherwise a modified input will set the engine to dirty again.
+    ///      // must be called BEFORE read access to an output, otherwise read-accessing the output will call update
+    ///      dataTrackerEngine->cleanDirty();
+    ///
+    ///      // FINALLY access and set outputs
+    ///      // Note that a write-only access has better performance and is enough in 99% engines   Data::beginWriteOnly, WriteOnlyAccessor
+    ///      // A read access is possible, in that case, be careful the cleanDirty is called before the read-access
+    /// }
+    ///
+    class DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
 
-        DataTrackerEngine( const objectmodel::Base* base );
+        /// set the update function to call
+        /// when asking for an output and any input changed.
+        void setUpdateCallback( void (*f)(DataTrackerEngine*) );
 
-        virtual void updateData() = 0;
+        /// Update this value
+        /// @warning the update callback must have been set with "setUpdateCallback"
+        virtual void update() { m_updateCallback( this ); }
+
+        /// This method is needed by DDGNode
+        const std::string& getName() const
+        {
+            static const std::string emptyName ="";
+            return emptyName;
+        }
+        /// This method is needed by DDGNode
+        objectmodel::Base* getOwner() const { return nullptr; }
+        /// This method is needed by DDGNode
+        objectmodel::BaseData* getData() const { return nullptr; }
 
     protected:
-        const objectmodel::Base* m_base;
+
+        void (*m_updateCallback)(DataTrackerEngine*);
+
     };
 
 } // namespace core

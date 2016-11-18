@@ -42,17 +42,6 @@ DataEngine::~DataEngine()
 }
 
 
-void DataEngine::updateAllInputsIfDirty()
-{
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
-    {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
-}
-
-
-
 /// Add a new input to this engine
 void DataEngine::addInput(objectmodel::BaseData* n)
 {

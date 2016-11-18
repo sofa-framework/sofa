@@ -35,7 +35,12 @@ namespace sofa {
 /// The 'input' Data is tracked.
 /// At each time step, we can check if it changed.
 /// If so, we can update 'depend_on_input' Data.
+///
 /// E.g. if the young modulus Data changed, we can update the sitffness matrix.
+///
+/// Cons: extra test at regular intervals to check if the Data changed.
+/// Pros: it is clear what's going on (and when).
+///       Maybe easier to manage multithreading?
 class TestObject : public core::objectmodel::BaseObject
 {
 
@@ -137,7 +142,14 @@ TEST_F(DataTracker_test, testTrackedData )
 
 
 /// An example to automatically update 'depend_on_input'
-/// when needed and when 'input' changed.
+/// when asking for its value and when 'input' changed.
+/// It's the regular Data flow but w/o a sofa component (DataEngine).
+/// The connected Data can be everywhere (inside a component, in between components)
+/// not only between input and output of a DataEngine.
+///
+/// Pros: very flexible
+/// Cons: more complex w/ multithreading??
+///       It is not obvious to know who is an input, who is an output
 class TestObject2 : public core::objectmodel::BaseObject
 {
 
@@ -147,87 +159,191 @@ public:
 
 
     Data< bool > input;
-    Data< int > depend_on_input;
+    Data< bool > depend_on_input;
 
-    enum { UNDEFINED=0, CHANGED, NO_CHANGED };
 
     TestObject2()
         : Inherit1()
         , input(initData(&input,false,"input","input"))
-        , depend_on_input(initData(&depend_on_input,(int)UNDEFINED,"depend_on_input","depend_on_input"))
+        , depend_on_input(initData(&depend_on_input,"depend_on_input","depend_on_input"))
     {
-        m_dataTracker.addInput(&input);
-        m_dataTracker.addOutput(&depend_on_input);
+        m_dataTracker.addInput(&input); // several inputs can be added
+        m_dataTracker.addOutput(&depend_on_input); // several output can be added
+        m_dataTracker.setUpdateCallback( &TestObject2::myUpdate );
+        m_dataTracker.setDirtyValue();
     }
 
     ~TestObject2() {}
 
+    static unsigned s_updateCounter;
 
-    // my own function to update Data
-    void updateData()
-    {
-        // true only iff the DataTracker associated to the Data 'input' is Dirty
-        // that could only happen if 'input' was dirtied since last update
-        if( m_dataTracker.isDirty( input ) )
-        {
-            depend_on_input.setValue(CHANGED);
-            m_dataTracker.clean( input );
-        }
-        else
-            depend_on_input.setValue(NO_CHANGED);
-    }
-
-
-
-    void handleEvent( core::objectmodel::Event* _event )
-    {
-        if (simulation::AnimateBeginEvent::checkEventType(_event))
-        {
-            updateData(); // check if Data changed since last step
-        }
-    }
 
 protected:
 
-    core::DataTrackerDDGNode m_dataTracker;
+    core::DataTrackerEngine m_dataTracker;
 
+
+    static void myUpdate( core::DataTrackerEngine* dataTrackerEngine )
+    {
+        ++s_updateCounter;
+
+        // get the list of inputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
+        // get the list of outputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+
+        // we known who is who from the order Data were added to the DataTrackerEngine
+        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+
+        dataTrackerEngine->cleanDirty();
+
+
+        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+
+        output->setValue( input );
+    }
+
+};
+unsigned TestObject2::s_updateCounter = 0u;
+
+class DummyObject : public core::objectmodel::BaseObject
+{
+public:
+    SOFA_CLASS(DummyObject,core::objectmodel::BaseObject);
+    Data< bool > myData;
+    DummyObject()
+        : Inherit1()
+        , myData(initData(&myData,false,"myData","myData"))
+    {}
 };
 
 
-struct DataTracker_test: public ::testing::Test
-{
-    TestObject testObject;
 
+struct DataTrackerEngine_test: public ::testing::Test
+{
+
+    static unsigned updateCounter;
     void SetUp()
     {
-        testObject.init();
+        updateCounter = 0;
     }
 
-    /// to test tracked Data
-    void testTrackedData()
-    {
-        // input did not change, it is not dirtied, so neither its associated DataTracker
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::NO_CHANGED);
 
-        // modifying input sets it as dirty, so its associated DataTracker too
+    /// to test DataTrackerEngine between Data in the same component
+    void testInsideComponent()
+    {
+        TestObject2 testObject;
+        testObject.init();
+
+        unsigned localCounter = 0u;
+
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
         testObject.input.setValue(true);
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==true);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==true);
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
 
         testObject.input.setValue(false);
-        testObject.input.cleanDirty();
-        testObject.updateData();
-        ASSERT_TRUE(testObject.depend_on_input.getValue()==TestObject::CHANGED);
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
+        testObject.input.setValue(false);
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
+
+        testObject.depend_on_input.setValue(true);
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==true);
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+
+        testObject.input.setValue(false);
+        ASSERT_TRUE(testObject.depend_on_input.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, TestObject2::s_updateCounter );
+    }
+
+
+    static void myUpdate( core::DataTrackerEngine* dataTrackerEngine )
+    {
+        ++updateCounter;
+
+        // get the list of inputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& inputs = dataTrackerEngine->getInputs();
+        // get the list of outputs for this DDGNode
+        const core::DataTrackerEngine::DDGLinkContainer& outputs = dataTrackerEngine->getOutputs();
+
+        // we known who is who from the order Data were added to the DataTrackerEngine
+        bool input = static_cast<Data< bool >*>( inputs[0] )->getValue();
+
+        dataTrackerEngine->cleanDirty();
+
+
+        Data< bool >* output = static_cast<Data< bool >*>( outputs[0] );
+
+        output->setValue( input );
+    }
+
+
+    /// to test DataTrackerEngine between Data in separated components
+    void testBetweenComponents()
+    {
+
+
+        DummyObject testObject, testObject2;
+
+        core::DataTrackerEngine dataTracker;
+        dataTracker.addInput(&testObject.myData); // several inputs can be added
+        dataTracker.addOutput(&testObject2.myData); // several output can be added
+        dataTracker.setUpdateCallback( &DataTrackerEngine_test::myUpdate );
+        dataTracker.setDirtyValue();
+
+
+
+        unsigned localCounter = 0u;
+
+        testObject.myData.setValue(true);
+        ASSERT_TRUE(testObject2.myData.getValue()==true);
+        ++localCounter;
+        ASSERT_EQ( localCounter, updateCounter );
+        ASSERT_TRUE(testObject2.myData.getValue()==true);
+        ASSERT_EQ( localCounter, updateCounter );
+
+        testObject.myData.setValue(false);
+        ASSERT_TRUE(testObject2.myData.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, updateCounter );
+
+        testObject.myData.setValue(false);
+        ASSERT_TRUE(testObject2.myData.getValue()==false);
+        ++localCounter;
+        ASSERT_EQ( localCounter, updateCounter );
     }
 
 };
+unsigned DataTrackerEngine_test::updateCounter = 0u;
 
 // Test
-TEST_F(DataTracker_test, testTrackedData )
+TEST_F(DataTrackerEngine_test, testTrackedData )
 {
-    this->testTrackedData();
+    this->testInsideComponent();
+    this->testBetweenComponents();
 }
+
+//////////////////////////////
+
+// TODO version with a callbackdata
+// linking a data to a callback
+// the callback is called each time the data changes
+// how to do it w/o observer/listener not to polluate Data?
+// or at least how to have a version of Data w/o any extra cost if it has not listeners?
+
 
 
 }// namespace sofa
