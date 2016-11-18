@@ -7,6 +7,7 @@ set(SOURCE_FILES
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
     core/DataEngine_test.cpp
+    core/TrackedData_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
     helper/KdTree_test.cpp
