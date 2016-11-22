@@ -100,7 +100,7 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
 
-    if( depthTest )
+    if( !depthTest )
         glPopAttrib();
 }
 
