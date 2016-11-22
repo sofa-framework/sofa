@@ -79,10 +79,10 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
     const bool& depthTest = d_depthTest.getValue();
-    if( depthTest )
+    if( !depthTest )
     {
         glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_DEPTH_TEST );
+        glDisable(GL_DEPTH_TEST);
     }
 
     vparams->drawTool()->setLightingEnabled(true);
