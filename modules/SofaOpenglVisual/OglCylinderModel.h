@@ -78,6 +78,7 @@ private:
     Data<float>		radius;
     // Data<float>		alpha;
     Data<std::string>	color;
+    Data<bool> d_depthTest;
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges;
