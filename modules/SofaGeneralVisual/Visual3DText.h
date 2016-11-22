@@ -53,11 +53,13 @@ namespace visualmodel
 /// Draw camera-oriented (billboard) 3D text
 class SOFA_GENERAL_VISUAL_API Visual3DText : public core::visual::VisualModel
 {
+
 public:
     SOFA_CLASS(Visual3DText,core::visual::VisualModel);
+
 protected:
     Visual3DText();
-    virtual ~Visual3DText();
+
 public:
     virtual void init();
 
@@ -68,16 +70,15 @@ public:
 private:
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
+    defaulttype::Vec4f m_color;
 
-private:
+public:
     Data<std::string> d_text;
     Data<defaulttype::Vec3f> d_position;
     Data<float> d_scale;
     Data<std::string> d_color;
     Data<bool> d_depthTest;
 
-    // todo set it at a Vec4f
-    float r,g,b,a;
 
 };
 

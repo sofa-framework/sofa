@@ -43,14 +43,6 @@ int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
         .add< Visual3DText >()
         ;
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
-
-Data<std::string> d_text;
-Data<defaulttype::Vec3f> d_position;
-Data<float> d_scale;
-Data<std::string> d_color;
-Data<bool> d_depthTest;
 
 
 Visual3DText::Visual3DText()
@@ -62,9 +54,6 @@ Visual3DText::Visual3DText()
 {
 }
 
-Visual3DText::~Visual3DText()
-{
-}
 
 void Visual3DText::init()
 {
@@ -97,9 +86,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     vparams->drawTool()->setLightingEnabled(true);
 
 
-	Vec<4,float> col( r, g, b, a );
-
-    vparams->drawTool()->draw3DText(pos,scale,col,d_text.getValue().c_str());
+    vparams->drawTool()->draw3DText(pos,scale,m_color,d_text.getValue().c_str());
 
 
     if( !depthTest )
@@ -109,10 +96,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 
 void Visual3DText::setColor(float r, float g, float b, float a)
 {
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
+    m_color.set( r, g, b, a );
 }
 
 static int hexval(char c)
