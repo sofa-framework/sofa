@@ -102,7 +102,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
     vparams->drawTool()->draw3DText(pos,scale,col,d_text.getValue().c_str());
 
 
-    if( depthTest )
+    if( !depthTest )
         glPopAttrib();
 }
 
