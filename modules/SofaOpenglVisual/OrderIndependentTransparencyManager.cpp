@@ -419,13 +419,12 @@ void OrderIndependentTransparencyManager::FrameBufferObject::releaseTextures()
 
 void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
-    bool hasTexture = false;
+    bool hasTexture = vm->hasTexture();;
 
     OglModel* oglModel = dynamic_cast<OglModel*>(vm);
     if(oglModel)
     {
         oglModel->blendTransparency.setValue(false);
-        hasTexture = oglModel->hasTexture();
     }
 
     GLSLShader* oitShader = 0;

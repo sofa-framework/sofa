@@ -67,6 +67,8 @@ public:
 
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
+    virtual bool hasTexture() const { return true; }
+
 private:
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
