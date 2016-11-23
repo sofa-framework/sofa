@@ -27,16 +27,6 @@
 
 #include <sofa/helper/helper.h>
 
-
-/// Forward declaration.
-namespace sofa {
-    namespace helper {
-        namespace system {
-            class FileEventListener ;
-        }
-    }
-}
-
 #ifndef SOFA_HAVE_GLEW
 #error GL Shader support requires GLEW. Please define SOFA_HAVE_GLEW to use shaders.
 #endif
@@ -54,10 +44,6 @@ namespace sofa {
 #include <map>
 #include <iostream>
 
-#include <sofa/helper/system/FileMonitor.h>
-using sofa::helper::system::FileEventListener ;
-using sofa::helper::system::FileMonitor ;
-
 namespace sofa
 {
 
@@ -66,6 +52,8 @@ namespace helper
 
 namespace gl
 {
+
+
 
 class SOFA_HELPER_API GLSLShader
 {
@@ -247,7 +235,6 @@ protected:
     GLint geometry_vertices_out;
 #endif
 
-    sofa::helper::system::FileEventListener* m_filelistener {nullptr} ;
 };
 
 } // namespace gl
