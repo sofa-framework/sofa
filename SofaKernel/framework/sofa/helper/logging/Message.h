@@ -121,7 +121,7 @@ public:
     enum Type {Info=0, Advice, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
 
     /// class of messages
-    enum Class {Dev, Runtime, CEmpty, ClassCount};
+    enum Class {Dev, Runtime, Log, CEmpty, ClassCount};
 
     Message() {}
     Message( const Message& msg );

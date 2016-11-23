@@ -25,6 +25,16 @@ using sofa::helper::logging::LogMessage ;
 using sofa::helper::logging::MainCountingMessageHandler ;
 using sofa::helper::logging::CountingMessageHandler ;
 
+#include <sofa/helper/logging/RoutingMessageHandler.h>
+using sofa::helper::logging::RoutingMessageHandler ;
+using sofa::helper::logging::MainRoutingMessageHandler ;
+
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+using sofa::helper::logging::ConsoleMessageHandler ;
+
+#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
+
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -351,5 +361,59 @@ TEST(LoggingTest, checkCountingMessageHandler)
 
         EXPECT_EQ(m.getMessageCountFor(type), i) ;
     }
+}
 
+TEST(LoggingTest, checkRoutingMessageHandler)
+{
+    RoutingMessageHandler& m = MainRoutingMessageHandler::getInstance() ;
+
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler( &m );
+
+    std::vector<Message::Type> errortypes = {Message::Error, Message::Warning, Message::Info,
+                                             Message::Advice, Message::Deprecated, Message::Fatal} ;
+
+    RichConsoleStyleMessageFormatter* fmt = new RichConsoleStyleMessageFormatter();
+    ConsoleMessageHandler* consolehandler = new ConsoleMessageHandler(fmt) ;
+
+    /// Install a simple message filter that always call the ConsoleMessageHandler.
+    m.setAFilter( [](Message&) { return true ; }, consolehandler );
+
+
+    CountingMessageHandler* countinghandler = new CountingMessageHandler() ;
+    /// Install a new message filter that cal the counting message handler if the message
+    /// are Runtime & Info
+    m.setAFilter( [](Message& m)
+        {
+            if(m.context() == Message::Runtime && m.type() == Message::Warning)
+                return true ;
+            return false ;
+        }, countinghandler );
+
+    msg_info("test") << "An info message " ;
+    dmsg_info("test") << "An info message " ;
+    logmsg_info("test") << "An info message " ;
+
+    for(auto& type : errortypes)
+        EXPECT_EQ( countinghandler->getMessageCountFor(type), 0) ;
+
+    msg_warning("test") << "An second message " ;
+    dmsg_warning("test") << "An second message " ;
+    logmsg_warning("test") << "An second message " ;
+
+    EXPECT_EQ( countinghandler->getMessageCountFor(Message::Warning), 1) ;
+    EXPECT_EQ( countinghandler->getMessageCountFor(Message::Info), 0) ;
+
+
+    countinghandler->reset() ;
+    m.removeAllFilters();
+
+    msg_warning("test") << "An second message " ;
+    dmsg_warning("test") << "An second message " ;
+    logmsg_warning("test") << "An second message " ;
+
+    EXPECT_EQ( countinghandler->getMessageCountFor(Message::Warning), 0) ;
+    EXPECT_EQ( countinghandler->getMessageCountFor(Message::Info), 0) ;
+
+    delete consolehandler ;
 }
