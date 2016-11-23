@@ -58,6 +58,8 @@ namespace sofa {
 using sofa::helper::system::FileEventListener ;
 using sofa::helper::system::FileMonitor ;
 
+#include <memory>
+
 namespace sofa
 {
 
@@ -247,7 +249,7 @@ protected:
     GLint geometry_vertices_out;
 #endif
 
-    sofa::helper::system::FileEventListener* m_filelistener {nullptr} ;
+    std::shared_ptr<sofa::helper::system::FileEventListener> m_filelistener ;
 };
 
 } // namespace gl

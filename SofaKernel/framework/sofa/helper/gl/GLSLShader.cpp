@@ -106,7 +106,7 @@ GLSLShader::GLSLShader()
     geometry_vertices_out = -1;
 #endif
     header = "";
-    m_filelistener = new GLSLFileListener(this) ;
+    m_filelistener = std::shared_ptr<FileEventListener>(new GLSLFileListener(this)) ;
 }
 
 GLSLShader::~GLSLShader()
@@ -114,8 +114,7 @@ GLSLShader::~GLSLShader()
     // BUGFIX: if the GL context is gone, this can crash the application on exit -- Jeremie A.
     //Release();
     if(m_filelistener){
-        FileMonitor::removeListener(m_filelistener);
-        delete m_filelistener;
+        FileMonitor::removeListener(m_filelistener.get());
     }
 }
 
@@ -136,12 +135,12 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
     if (filename.empty())
     {
         if(m_filelistener)
-            FileMonitor::removeFileListener(m_hFileNames[target], m_filelistener) ;
+            FileMonitor::removeFileListener(m_hFileNames[target], m_filelistener.get()) ;
         m_hFileNames.erase(target);
     }else{
         m_hFileNames[target] = filename;
         if(m_filelistener)
-            FileMonitor::addFile(filename, m_filelistener) ;
+            FileMonitor::addFile(filename, m_filelistener.get()) ;
     }
 }
 
