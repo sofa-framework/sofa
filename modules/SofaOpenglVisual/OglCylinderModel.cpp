@@ -57,11 +57,13 @@ int OglCylinderModelClass = core::RegisterObject("A simple visualization for set
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel() 
+OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
+      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+      //This field should support the color="red" api.
       color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
@@ -92,9 +94,9 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     // glPushAttrib(GL_ENABLE_BIT);
 
     vparams->drawTool()->setLightingEnabled(true);
-	Real _radius = radius.getValue();
+    Real _radius = radius.getValue();
 
-	Vec<4,float> col( r, g, b, a );
+    Vec<4,float> col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 

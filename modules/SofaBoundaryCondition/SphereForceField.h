@@ -113,6 +113,8 @@ protected:
         , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+        //This field should support the color="red" api.
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )

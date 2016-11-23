@@ -37,6 +37,7 @@ std::vector<int> BaseCollisionElementIterator::emptyVector; ///< empty vector to
 const float* CollisionModel::getColor4f()
 {
 
+    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
     static const float defaultColorSimulatedMovingActive[4] = {1, 0.5f, 0, 1};
 
     static const float defaultColorSimulatedMoving[4] = {0.5f, 0.25f, 0, 1};
