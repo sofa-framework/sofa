@@ -93,8 +93,8 @@
 #include <sstream>
 #include <ctime>
 
-#include <sofa/core/objectmodel/HeartBeatEvent.h>
-using sofa::core::objectmodel::HeartBeatEvent ;
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
 
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor ;
@@ -313,9 +313,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     /// We activate this timer only if the interactive mode is enabled (ie livecoding+mouse mouve event).
     if(m_enableInteraction){
-        timerHeartBeat = new QTimer(this);
-        connect ( timerHeartBeat, SIGNAL ( timeout() ), this, SLOT ( emitHeartBeat() ) );
-        timerHeartBeat->start(50) ;
+        timerIdle = new QTimer(this);
+        connect ( timerIdle, SIGNAL ( timeout() ), this, SLOT ( emitIdle() ) );
+        timerIdle->start(50) ;
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
@@ -771,17 +771,20 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
 //------------------------------------
 
-void RealGUI::emitHeartBeat()
+void RealGUI::emitIdle()
 {
     // Update all the registered monitor.
     FileMonitor::updates(0) ;
 
-    HeartBeatEvent hb;
+    IdleEvent hb;
     Node* groot = mViewer->getScene();
     if (groot)
     {
         groot->propagateEvent(core::ExecParams::defaultInstance(), &hb);
     }
+
+    if(isEmbeddedViewer())
+        getQtViewer()->getQWidget()->update();;
 }
 
 //------------------------------------
