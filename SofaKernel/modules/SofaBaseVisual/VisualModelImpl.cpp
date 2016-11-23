@@ -182,7 +182,7 @@ VisualModelImpl::~VisualModelImpl()
 {
 }
 
-bool VisualModelImpl::hasTransparent()
+bool VisualModelImpl::hasTransparent() const
 {
     const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
@@ -201,7 +201,7 @@ bool VisualModelImpl::hasTransparent()
     return false;
 }
 
-bool VisualModelImpl::hasOpaque()
+bool VisualModelImpl::hasOpaque() const
 {
     const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
