@@ -78,19 +78,15 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 
     const bool& depthTest = d_depthTest.getValue();
     if( !depthTest )
-    {
-        glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_DEPTH_TEST);
-    }
-
-    vparams->drawTool()->setLightingEnabled(true);
-
+        vparams->drawTool()->disableDepthTest();
 
     vparams->drawTool()->draw3DText(pos,scale,m_color,d_text.getValue().c_str());
 
-
     if( !depthTest )
-        glPopAttrib();
+        vparams->drawTool()->enableDepthTest();
+
+
+//    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
 }
 
 
