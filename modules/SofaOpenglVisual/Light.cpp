@@ -90,6 +90,8 @@ Light::Light()
     , m_depthShader(sofa::core::objectmodel::New<OglShader>())
     , m_blurShader(sofa::core::objectmodel::New<OglShader>())
 #endif
+    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+    //This field should support the color="red" api.
     , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , d_shadowTextureSize (initData(&d_shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
