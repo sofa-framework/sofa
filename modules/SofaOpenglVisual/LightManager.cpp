@@ -232,10 +232,17 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
 
 #ifdef SOFA_HAVE_GLEW
     const core::visual::VisualParams::Pass pass = vp->pass();
-    GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
+    GLint lightFlags[MAX_NUMBER_OF_LIGHTS];
+    GLint lightTypes[MAX_NUMBER_OF_LIGHTS];
     GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
     GLfloat zNears[MAX_NUMBER_OF_LIGHTS];
     GLfloat zFars[MAX_NUMBER_OF_LIGHTS];
+    GLfloat lightDirs[MAX_NUMBER_OF_LIGHTS * 3];
+    GLfloat lightProjectionMatrices[MAX_NUMBER_OF_LIGHTS * 16];
+    GLfloat lightModelViewMatrices[MAX_NUMBER_OF_LIGHTS * 16];
+    GLfloat shadowFactors[MAX_NUMBER_OF_LIGHTS];
+    GLfloat vsmLightBleedings[MAX_NUMBER_OF_LIGHTS];
+    GLfloat vsmMinVariances[MAX_NUMBER_OF_LIGHTS];
 
     if(pass != core::visual::VisualParams::Shadow)
     {
@@ -249,20 +256,39 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
                 glEnable(GL_TEXTURE_2D);
 
                 if (d_softShadowsEnabled.getValue())
+                {
                     glBindTexture(GL_TEXTURE_2D, m_lights[i]->getColorTexture());
+                    vsmLightBleedings[i] = m_lights[i]->getVSMLightBleeding();
+                    vsmMinVariances[i] = m_lights[i]->getVSMMinVariance();
+                }
                 else
                     glBindTexture(GL_TEXTURE_2D, m_lights[i]->getColorTexture());
 
-                lightFlag[i] = 1;
+                lightFlags[i] = 1;
                 shadowTextureID[i] = 0;
-                zNears[i] = (GLfloat) m_lights[i]->d_zNear.getValue();
-                zFars[i] = (GLfloat) m_lights[i]->d_zFar.getValue();
+
+                zNears[i] = (GLfloat) m_lights[i]->getZNear();
+                zFars[i] = (GLfloat) m_lights[i]->getZFar();
+
+                for (unsigned int j = 0; j < 3; j++)
+                    lightDirs[i*3 + j] = (m_lights[i]->getDirection())[j];
+                lightTypes[i] = m_lights[i]->getLightType();
+
+
+                const GLfloat* tmpProj = m_lights[i]->getOpenGLProjectionMatrix();
+                const GLfloat* tmpMv = m_lights[i]->getOpenGLModelViewMatrix();
+                for (unsigned int j = 0; j < 16; j++)
+                {
+                    lightProjectionMatrices[i * 16 + j] = tmpProj[j];
+                    lightModelViewMatrices[i * 16 + j] = tmpMv[j];
+                }
 
                 if (d_shadowsEnabled.getValue() && m_lights[i]->d_shadowsEnabled.getValue())
                 {
-                    lightFlag[i] = 2;
+                    lightFlags[i] = 2;
                     shadowTextureID[i] = shadowTextureUnit;
                 }
+                shadowFactors[i] = m_lights[i]->getShadowFactor();
 
                 glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
                 glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
@@ -276,19 +302,34 @@ void LightManager::fwdDraw(core::visual::VisualParams* vp)
 
             for (unsigned int i = (unsigned int)m_lights.size() ; i< MAX_NUMBER_OF_LIGHTS ; i++)
             {
-                lightFlag[i] = 0;
+                lightFlags[i] = 0;
                 shadowTextureID[i] = 0;
             }
 
             for(unsigned int i=0 ; i<m_shadowShaders.size() ; ++i)
             {
-
-                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
-                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
-                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "shadowTextureUnit" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
-                m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex() , "zNear" , MAX_NUMBER_OF_LIGHTS, zNears);
-                m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex() , "zFar" , MAX_NUMBER_OF_LIGHTS, zFars);
+                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "u_lightFlags" , MAX_NUMBER_OF_LIGHTS, lightFlags);
+                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex(), "u_lightTypes", MAX_NUMBER_OF_LIGHTS, lightTypes);
+                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "u_shadowTextures" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
+                m_shadowShaders[i]->setIntVector(m_shadowShaders[i]->getCurrentIndex() , "u_shadowTextureUnits" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
+                m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex() , "u_zNears" , MAX_NUMBER_OF_LIGHTS, zNears);
+                m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex() , "u_zFars" , MAX_NUMBER_OF_LIGHTS, zFars);
+                m_shadowShaders[i]->setFloatVector3(m_shadowShaders[i]->getCurrentIndex(), "u_lightDirs", MAX_NUMBER_OF_LIGHTS, lightDirs);
+                m_shadowShaders[i]->setMatrix4(m_shadowShaders[i]->getCurrentIndex(), "u_lightProjectionMatrices", MAX_NUMBER_OF_LIGHTS, false, lightProjectionMatrices);
+                m_shadowShaders[i]->setMatrix4(m_shadowShaders[i]->getCurrentIndex(), "u_lightModelViewMatrices", MAX_NUMBER_OF_LIGHTS, false, lightModelViewMatrices);
+                m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex(), "u_shadowFactors", MAX_NUMBER_OF_LIGHTS, shadowFactors);
             }
+
+            if (d_softShadowsEnabled.getValue())
+            {
+                for (unsigned int i = 0; i < m_shadowShaders.size(); ++i)
+                {
+                    m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex(), "u_lightBleedings", MAX_NUMBER_OF_LIGHTS, vsmLightBleedings);
+                    m_shadowShaders[i]->setFloatVector(m_shadowShaders[i]->getCurrentIndex(), "u_minVariances", MAX_NUMBER_OF_LIGHTS, vsmMinVariances);
+                }
+            }
+
+
 
         }
     }

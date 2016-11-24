@@ -90,8 +90,6 @@ Light::Light()
     , m_depthShader(sofa::core::objectmodel::New<OglShader>())
     , m_blurShader(sofa::core::objectmodel::New<OglShader>())
 #endif
-    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-    //This field should support the color="red" api.
     , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , d_shadowTextureSize (initData(&d_shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
@@ -99,9 +97,22 @@ Light::Light()
     , d_zFar(initData(&d_zFar, "zFar", "Light's ZFar"))
     , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
     , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
+    , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "Shadow Factor (decrease/increase darkness)"))
+    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "(VSM only) Light bleeding paramter"))
+    , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "(VSM only) Minimum variance parameter"))
     , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "Texture unit for the genereated shadow texture"))
+    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "ModelView Matrix"))
+    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
     , b_needUpdate(false)
 {
+    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+
+    wModelViewMatrix.resize(16);
+    wProjectionMatrix.resize(16);
+
+    d_modelViewMatrix.endEdit();
+    d_projectionMatrix.endEdit();
 }
 
 Light::~Light()
@@ -128,6 +139,17 @@ void Light::init()
         serr << "No LightManager found" << sendl;
     }
 
+    if (!d_zNear.isSet())
+    {
+        d_zNear.setReadOnly(true);
+    }
+    if (!d_zFar.isSet())
+    {
+        d_zFar.setReadOnly(true);
+    }
+    d_shadowTextureSize.setReadOnly(true);
+
+
 }
 
 void Light::initVisual()
@@ -148,7 +170,7 @@ void Light::initVisual()
     m_blurShader->fragFilename.addPath(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER,true);
     m_blurShader->init();
     m_blurShader->initVisual();
-#endif
+#endif // SOFA_HAVE_GLEW
 }
 
 void Light::updateVisual()
@@ -187,13 +209,28 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     glPushMatrix();
 
 #ifdef SOFA_HAVE_GLEW
-    m_depthShader->setFloat(0, "zFar", (GLfloat)d_zFar.getValue());
-    m_depthShader->setFloat(0, "zNear", (GLfloat)d_zNear.getValue());
-    m_depthShader->setFloat4(0, "lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
+    m_depthShader->setFloat(0, "u_zFar", this->getZFar());
+    m_depthShader->setFloat(0, "u_zNear", this->getZNear());
+    m_depthShader->setInt(0, "u_lightType", this->getLightType());
+    m_depthShader->setFloat(0, "u_shadowFactor", d_shadowFactor.getValue());
+    //m_depthShader->setFloat4(0, "u_lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
     m_depthShader->start();
     m_shadowFBO.start();
 #endif
 }
+
+
+const GLfloat* Light::getOpenGLProjectionMatrix()
+{
+    return m_lightMatProj;
+}
+
+const GLfloat* Light::getOpenGLModelViewMatrix()
+{
+    return m_lightMatModelview;
+}
+
+
 
 void Light::postDrawShadow()
 {
@@ -319,6 +356,15 @@ GLuint Light::getShadowMapSize()
     return m_shadowTexWidth;
 }
 
+const GLfloat Light::getZNear() 
+{ 
+    return d_zNear.getValue(); 
+}
+
+const GLfloat Light::getZFar()
+{
+    return d_zFar.getValue();
+}
 
 DirectionalLight::DirectionalLight()
     : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
@@ -347,6 +393,198 @@ void DirectionalLight::drawLight()
 void DirectionalLight::draw(const core::visual::VisualParams* )
 {
 
+}
+void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
+{
+    //1-compute bounding box
+    sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    Vector3 center = (sceneBBox.minBBox() + sceneBBox.maxBBox()) * 0.5;
+    Vector3 posLight = center;
+
+    posLight[0] = sceneBBox.maxBBox()[0] - sceneBBox.minBBox()[0] * 0.5;
+    posLight[1] = sceneBBox.maxBBox()[1] - sceneBBox.minBBox()[1] * 0.5;
+    posLight[2] = sceneBBox.minBBox()[2];
+
+
+    //2-compute orientation to fit the bbox from light's pov
+    // bounding box in light space = frustrum
+    double epsilon = 0.0000001;
+    Vector3 zAxis = -direction;
+    zAxis.normalize();
+    Vector3 yAxis(0, 1, 0);
+
+    if (fabs(zAxis[0]) < epsilon && fabs(zAxis[2]) < epsilon)
+    {
+        if (zAxis[1] > 0)
+            yAxis = Vector3(0, 0, -1);
+        else
+            yAxis = Vector3(0, 0, 1);
+    }
+
+    Vector3 xAxis = yAxis.cross(zAxis);
+    xAxis.normalize();
+
+    yAxis = zAxis.cross(xAxis);
+    yAxis.normalize();
+
+    defaulttype::Quat q;
+    q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+    Vector3 lightMinBBox = q.rotate(sceneBBox.minBBox() - center) + posLight;
+    Vector3 lightMaxBBox = q.rotate(sceneBBox.maxBBox() - center) + posLight;
+    
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        mat[i * 4] = xAxis[i];
+        mat[i * 4 + 1] = yAxis[i];
+        mat[i * 4 + 2] = zAxis[i];
+    }
+    
+    //translation
+    mat[12] = 0;
+    mat[13] = 0;
+    mat[14] = (sceneBBox.maxBBox()[2] - sceneBBox.minBBox()[2])*-0.5;
+
+    //std::cout << "BB " << sceneBBox << std::endl;
+    //std::cout << "LightBB " << lightBBox << std::endl;
+    //std::cout << "Position " << position << std::endl;
+    //std::cout << "Center " << center << std::endl;
+
+    //w
+    mat[15] = 1;
+
+    //Save output as data for external shaders
+    //we transpose it to get a standard matrix (and not OpenGL formatted)
+    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
+
+    for (unsigned int i = 0; i < 4; i++)
+        for (unsigned int j = 0; j < 4; j++)
+        {
+            wModelViewMatrix[i * 4 + j] = mat[j * 4 + i];
+        }
+
+    d_modelViewMatrix.endEdit();
+}
+
+void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& left, float& right, float& top, float& bottom, float& zNear, float& zFar)
+{
+    mat[0] = 2 / (right - left);
+    mat[4] = 0.0;
+    mat[8] = 0.0;
+    mat[12] = -1 * (right + left) / (right - left);
+
+    mat[1] = 0.0;
+    mat[5] = 2 / (top - bottom);
+    mat[9] = 0.0;
+    mat[13] = -1 * (top + bottom) / (top - bottom);
+
+    mat[2] = 0;
+    mat[6] = 0;
+    mat[10] = -2 / (zFar - zNear);
+    mat[14] = -1 * (zFar + zNear) / (zFar - zNear);
+
+    mat[3] = 0.0;
+    mat[7] = 0.0;
+    mat[11] = 0.0;
+    mat[15] = 1.0;
+    
+    //Save output as data for external shaders
+    //we transpose it to get a standard matrix (and not OpenGL formatted)
+    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
+
+    for (unsigned int i = 0; i < 4; i++)
+        for (unsigned int j = 0; j < 4; j++)
+        {
+            wProjectionMatrix[i * 4 + j] = mat[j * 4 + i];
+        }
+
+    d_projectionMatrix.endEdit();
+}
+
+
+void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar )
+{
+    const sofa::defaulttype::BoundingBox& sceneBBox = vp->sceneBBox();
+    Vector3 minBBox = sceneBBox.minBBox();
+    Vector3 maxBBox = sceneBBox.maxBBox();
+
+    float width = (maxBBox[0] - minBBox[0]);
+    float height = (maxBBox[1] - minBBox[1]);
+    float depth = (maxBBox[2] - minBBox[2]);
+    float maxLength = std::max(std::max(width, height), depth);
+
+    left = maxLength * -0.5;
+    right = maxLength * 0.5;
+    top = maxLength * 0.5;
+    bottom = maxLength * -0.5;
+    zNear = 0.0;
+    zFar = maxLength;
+
+    if (d_zNear.isSet())
+        zNear = d_zNear.getValue();
+    else
+        d_zNear.setValue(zNear);
+
+    if (d_zFar.isSet())
+        zFar = d_zFar.getValue();
+    else
+        d_zFar.setValue(zFar);
+}
+
+
+void DirectionalLight::preDrawShadow(core::visual::VisualParams* vp)
+{
+
+    float zNear, left, bottom;
+    float zFar, right, top;
+
+    zNear, left, bottom = -1e10;
+    zFar = right = top = 1e10;
+
+    Light::preDrawShadow(vp);
+    const Vector3& dir = d_direction.getValue();
+    //TODO
+    computeClippingPlane(vp, left, right, top, bottom, zNear, zFar);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    computeOpenGLProjectionMatrix(m_lightMatProj, left, right, top, bottom, zNear, zFar);
+    glMultMatrixf(m_lightMatProj);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    computeOpenGLModelViewMatrix(m_lightMatModelview, dir);
+    glMultMatrixf(m_lightMatModelview);
+
+    glViewport(0, 0, m_shadowTexWidth, m_shadowTexHeight);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+}
+
+GLuint DirectionalLight::getDepthTexture()
+{
+    //return debugVisualShadowTexture;
+    //return shadowTexture;
+#ifdef SOFA_HAVE_GLEW
+    return m_shadowFBO.getDepthTexture();
+#else
+    return 0;
+#endif
+}
+
+GLuint DirectionalLight::getColorTexture()
+{
+    //return debugVisualShadowTexture;
+    //return shadowTexture;
+#ifdef SOFA_HAVE_GLEW
+    if (d_softShadows.getValue())
+        return m_blurVFBO.getColorTexture();
+    else
+        return m_shadowFBO.getColorTexture();
+#else
+    return 0;
+#endif
 }
 
 PositionalLight::PositionalLight()
@@ -417,19 +655,10 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
 SpotLight::SpotLight()
     : d_direction(initData(&d_direction, (Vector3) Vector3(0,0,-1), "direction", "Set the direction of the light"))
     , d_cutoff(initData(&d_cutoff, (float) 30.0, "cutoff", "Set the angle (cutoff) of the spot"))
-    , d_exponent(initData(&d_exponent, (float) 20.0, "exponent", "Set the exponent of the spot"))
+    , d_exponent(initData(&d_exponent, (float) 1.0, "exponent", "Set the exponent of the spot"))
     , d_lookat(initData(&d_lookat, false, "lookat", "If true, direction specify the point at which the spotlight should be pointed to"))
-    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "ModelView Matrix"))
-    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
 {
-    helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
-    helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
 
-    wModelViewMatrix.resize(16);
-    wProjectionMatrix.resize(16);
-
-    d_modelViewMatrix.endEdit();
-    d_projectionMatrix.endEdit();
 }
 
 SpotLight::~SpotLight()
@@ -692,7 +921,32 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[7] = 0.0;
     mat[11] = -1.0;
     mat[15] = 0.0;
+    
+    /*float left = width*-0.5;
+    float right = width*0.5;
+    float top = height*0.5;
+    float bottom = height*-0.5;
 
+    mat[0] = 2 / (right - left);
+    mat[4] = 0.0;
+    mat[8] = 0.0;
+    mat[12] = -1 * (right + left) / (right - left);
+
+    mat[1] = 0.0;
+    mat[5] = 2 / (top - bottom);
+    mat[9] = 0.0;
+    mat[13] = -1 * (top + bottom) / (top - bottom);
+
+    mat[2] = 0;
+    mat[6] = 0;
+    mat[10] = -2 / (zFar - zNear);
+    mat[14] = -1 * (zFar + zNear) / (zFar - zNear);
+
+    mat[3] = 0.0;
+    mat[7] = 0.0;
+    mat[11] = 0.0;
+    mat[15] = 1.0;
+*/
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
@@ -730,17 +984,6 @@ GLuint SpotLight::getColorTexture()
     return 0;
 #endif
 }
-
-const GLfloat* SpotLight::getOpenGLProjectionMatrix()
-{
-    return m_lightMatProj;
-}
-
-const GLfloat* SpotLight::getOpenGLModelViewMatrix()
-{
-    return m_lightMatModelview;
-}
-
 
 }
 
