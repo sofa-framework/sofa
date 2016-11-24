@@ -38,12 +38,32 @@ namespace helper
 namespace gl
 {
 
+class GLSLFileListener : public FileEventListener
+{
+public:
+    /// This attribute is not owning the pointer.
+    GLSLShader* m_glslshader ;
+
+    GLSLFileListener(GLSLShader* owner){
+        m_glslshader = owner ;
+    }
+
+    /// Inherited from FileEventListener
+    void fileHasChanged(const std::string&){
+        /// We recompiling & re-initializing all the shaders...
+        /// If this become a bottleneck we can do finer grain updates to
+        /// speed up the thing.
+        m_glslshader->InitShaders() ;
+    }
+};
+
+
 bool GLSLIsSupported = false;
 
 bool GLSLShader::InitGLSL()
 {
 #ifdef PS3
-	return false;
+    return false;
 #else
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if( !CanUseGlExtension("GL_ARB_shading_language_100") )
@@ -86,12 +106,16 @@ GLSLShader::GLSLShader()
     geometry_vertices_out = -1;
 #endif
     header = "";
+    m_filelistener = std::shared_ptr<FileEventListener>(new GLSLFileListener(this)) ;
 }
 
 GLSLShader::~GLSLShader()
 {
     // BUGFIX: if the GL context is gone, this can crash the application on exit -- Jeremie A.
     //Release();
+    if(m_filelistener){
+        FileMonitor::removeListener(m_filelistener.get());
+    }
 }
 
 void GLSLShader::AddHeader(const std::string &header)
@@ -109,9 +133,15 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
 {
     //std::cout << "Shader " << GetShaderStageName(target) << " = " << filename << std::endl;
     if (filename.empty())
+    {
+        if(m_filelistener)
+            FileMonitor::removeFileListener(m_hFileNames[target], m_filelistener.get()) ;
         m_hFileNames.erase(target);
-    else
+    }else{
         m_hFileNames[target] = filename;
+        if(m_filelistener)
+            FileMonitor::addFile(filename, m_filelistener.get()) ;
+    }
 }
 
 
