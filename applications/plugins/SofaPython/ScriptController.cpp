@@ -32,8 +32,8 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 
-#include <sofa/core/objectmodel/HeartBeatEvent.h>
-using sofa::core::objectmodel::HeartBeatEvent ;
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -174,9 +174,9 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
     }
-    else if (dynamic_cast<HeartBeatEvent *>(event))
+    else if (dynamic_cast<IdleEvent *>(event))
     {
-        script_onHeartBeatEvent(static_cast<HeartBeatEvent *> (event));
+        script_onIdleEvent(static_cast<IdleEvent *> (event));
     }else
         Controller::handleEvent(event);
 }

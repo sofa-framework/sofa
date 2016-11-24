@@ -33,7 +33,7 @@
 namespace sofa {
     namespace core{
         namespace objectmodel{
-            class HeartBeatEvent ;
+            class IdleEvent ;
         }
     }
 }
@@ -98,7 +98,7 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
-    virtual void script_onHeartBeatEvent(const sofa::core::objectmodel::HeartBeatEvent* event) ;
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) ;
 
     /// @}
 
@@ -125,7 +125,7 @@ public:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
     PyObject *m_Func_draw;
-    PyObject *m_Func_onHeartBeat;
+    PyObject *m_Func_onIdle;
 private:
     PythonMainScriptController();
 
