@@ -2180,14 +2180,20 @@ void RealGUI::screenshot()
 
     if ( filename != "" )
     {
-        std::ostringstream ofilename;
-        const char* begin = filename.toStdString().c_str();
-        const char* end = strrchr ( begin,'_' );
-        if ( !end )
-            end = begin + filename.length();
-        ofilename << std::string ( begin, end );
-        ofilename << "_";
-        getViewer()->setPrefix ( ofilename.str() );
+        QString prefix;
+        int end = filename.lastIndexOf('_');
+        if (end > -1) {
+            prefix = filename.mid(
+                0,
+                end+1
+            );
+        } else {
+            prefix = QString::fromStdString(
+              sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.toStdString().c_str()) + "_");
+        }
+
+        if (!prefix.isEmpty())
+            getViewer()->setPrefix ( prefix.toStdString(), false );
 
         getViewer()->screenshot ( filename.toStdString() );
     }
