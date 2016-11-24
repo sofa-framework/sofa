@@ -14,7 +14,7 @@ namespace core
     ///
     /// The Data must be added to tracking system by calling "trackData".
     /// Then it can be checked if it changed with "isDirty" since its last "clean".
-    struct DataTracker
+    struct SOFA_CORE_API DataTracker
     {
         /// select a Data to track to be able to check
         /// if it was dirtied since the previous clean.
@@ -49,7 +49,7 @@ namespace core
 
 
     /// A DDGNode with trackable input Data (containing a DataTracker)
-    class DataTrackerDDGNode : public core::objectmodel::DDGNode
+    class SOFA_CORE_API DataTrackerDDGNode : public core::objectmodel::DDGNode
     {
     public:
 
@@ -130,7 +130,7 @@ namespace core
     ///      // A read access is possible, in that case, be careful the cleanDirty is called before the read-access
     /// }
     ///
-    class DataTrackerEngine : public DataTrackerDDGNode
+    class SOFA_CORE_API DataTrackerEngine : public DataTrackerDDGNode
     {
     public:
 
