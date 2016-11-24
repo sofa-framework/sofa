@@ -1,6 +1,6 @@
 #version 120
 
-uniform vec4 u_lightType;
+uniform int u_lightType;
 
 varying vec4 lightVec;
 
