@@ -48,9 +48,6 @@ def insertRigidScale(parentNode, rigidModel, param):
     body.rigidDofs.showObject = param.showRigid
     body.rigidDofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
 
-    print "affines:", body.affineDofs.showObject, body.affineDofs.showObjectScale
-    print "rigids: ", body.rigidDofs.showObject, body.rigidDofs.showObjectScale
-
     if param.showImage:
         body.image.addViewer()
 
@@ -207,7 +204,6 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # insert node containing all bones of the armature
         self.nodes["armature"] = self.insertMergeAffine(mergeNodeName="armature", tags={"armature"}, affineIndexById=self.skinningArmatureBoneIndexById)
         for solidModel in self.model.solids.values():
-            print solidModel.name, len(solidModel.skinnings)
             if len(solidModel.skinnings) > 0:  # ignore solid if it has no skinning
                 # for each mesh create a Flexible.API.Deformable
                 for mesh in solidModel.mesh:
