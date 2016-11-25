@@ -177,6 +177,11 @@ public:
     {
     }
 
+    ~CompressedRowSparseMatrix()
+    {
+        this->clear();
+    }
+
     /// \returns the number of row blocs
     Index rowBSize() const
     {
