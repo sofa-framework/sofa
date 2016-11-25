@@ -29,10 +29,15 @@ using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 using sofa::helper::logging::MessageAsTestFailure ;
 
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
 namespace light_test
 {
 
 int initMessage(){
+    /// Install the backtrace so that we have more information in case of test segfault.
+    BackTrace::autodump() ;
     //MessageDispatcher::clearHandlers() ;
     //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
     return 0;

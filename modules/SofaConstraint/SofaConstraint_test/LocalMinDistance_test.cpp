@@ -63,16 +63,6 @@ struct TestLocalMinDistance : public ::testing::Test {
     void checkIfThereIsAnExampleFile();
 };
 
-void TestLocalMinDistance::checkIfThereIsAnExampleFile()
-{
-    ExpectMessage error(Message::Error) ;
-
-    std::string f="Components/constraint/LocalMinDistance.scn";
-    EXPECT_TRUE(DataRepository.findFile(f))
-            << "Missing an example file for this component in the directory '"
-            << FRAMEWORK_EXAMPLES_DIR << "/Components/constraint'";
-}
-
 void TestLocalMinDistance::checkBasicIntersectionTests()
 {
     ExpectMessage warning(Message::Warning) ;
@@ -255,10 +245,6 @@ TEST_F(TestLocalMinDistance, checkMissingRequiredAttributes)
     checkMissingRequiredAttributes();
 }
 
-TEST_F(TestLocalMinDistance, checkIfThereIsAnExampleFile_OpenIssue)
-{
-    checkIfThereIsAnExampleFile();
-}
 
 
 }
