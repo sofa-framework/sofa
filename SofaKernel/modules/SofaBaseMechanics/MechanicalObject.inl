@@ -2603,6 +2603,31 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+{
+    const size_t N = Deriv::size();
+    Data<MatrixDeriv>* cMatrix= this->write(mID);
+
+    unsigned int columnIndex = 0;
+    MatrixDeriv& jacobian = *cMatrix->beginEdit();
+
+
+    for (unsigned int i=0; i<list_n.size(); i++)
+    { //loop on the nodes on which we assign the identity blocks
+        for(unsigned int j=0; j<N; j++)
+        {   //identity block
+            unsigned int node= list_n[i];
+            typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(columnIndex);
+            Deriv d;
+            d[j]=1.0;
+            rowIterator.setCol(node,  d);
+            columnIndex++;
+        }
+    }
+
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
 {
     this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
