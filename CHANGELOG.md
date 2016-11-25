@@ -24,7 +24,10 @@
 * class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
 
 ### Improvements
-*   XXXX new tests
+*   3 new tests on basic functions:
+    - Light
+    - LocalMinDistance
+    - AllComponent
 *   YYYY/ZZZ components have an associated example 
 *   RigidMapping: in case jetJs is called several times per step
 *   [SofaPython]
