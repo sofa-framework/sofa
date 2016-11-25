@@ -36,7 +36,7 @@
 namespace sofa {
     namespace core {
         namespace objectmodel {
-            class HeartBeatEvent ;
+            class IdleEvent ;
         }
     }
 }
@@ -195,8 +195,8 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*) = 0;
 
-    /// HeartBeat event is sent a regular interval from the host application
-    virtual void script_onHeartBeatEvent(const sofa::core::objectmodel::HeartBeatEvent* event) = 0;
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) = 0;
 
     /// @}
 

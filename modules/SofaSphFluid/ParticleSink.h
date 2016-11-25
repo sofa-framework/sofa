@@ -99,6 +99,8 @@ protected:
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
         , planeD0(initData(&planeD0, (Real)0, "d0", "plane d coef at which particles acceleration is constrained to 0"))
         , planeD1(initData(&planeD1, (Real)0, "d1", "plane d coef at which particles are removed"))
+        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+        //This field should support the color="red" api.
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
         , fixed(initData(&fixed, "fixed", "indices of fixed particles"))

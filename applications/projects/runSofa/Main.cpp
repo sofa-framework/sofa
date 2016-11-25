@@ -224,7 +224,7 @@ int main(int argc, char** argv)
     .option(&verif,'v',"verification","load verification data for the scene")
     .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
     .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
-    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes heart beats and mouse events (EXPERIMENTAL)")
+    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
 
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")

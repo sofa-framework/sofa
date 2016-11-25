@@ -110,6 +110,8 @@ protected:
         , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+        //This field should support the color="red" api.
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
     {

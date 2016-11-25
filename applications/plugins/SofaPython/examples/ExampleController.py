@@ -77,7 +77,7 @@ class ExampleController(Sofa.PythonScriptController):
 		sys.stdout.flush()
 		return 0
 
-	def onHeartBeat(self):
+	def onIdle(self):
 		sys.stdout.flush()
 		return 0
 		

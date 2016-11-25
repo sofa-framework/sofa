@@ -58,6 +58,19 @@ inline double sign(T &toto)
     return 1.0;
 }
 
+inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
+{
+    if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
+    {
+        a[0] = -a[0];
+        a[1] = -a[1];
+        a[2] = -a[2];
+        a[3] = -a[3];
+    }
+    defaulttype::Quat q = b.inverse() * a;
+    return q;
+}
+
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
@@ -74,6 +87,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
     //TODO(dmarchal): what do TEST means in the following ? should it be renamed (EXPERIMENTAL FEATURE) and when those Experimental feature will become official feature ?
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
 
     , activated(true), iteration(0)
 
@@ -96,6 +110,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(Mechan
 
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
     , activated(true), iteration(0)
 {
     this->f_listening.setValue(true);
@@ -112,6 +127,7 @@ BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint()
 
     , merge(initData(&merge,false, "merge", "TEST: merge the bilateral constraints in a unique constraint"))
     , derivative(initData(&derivative,false, "derivative", "TEST: derivative"))
+    , keepOrientDiff(initData(&keepOrientDiff,false, "keepOrientationDifference", "keep the initial difference in orientation (only for rigids)"))
     , activated(true), iteration(0)
 {
     this->f_listening.setValue(true);

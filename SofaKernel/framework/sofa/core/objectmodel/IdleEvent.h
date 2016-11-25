@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_CORE_OBJECTMODEL_IDLEEVENT_H
+#define SOFA_CORE_OBJECTMODEL_IDLEEVENT_H
 
-#include <sofa/core/objectmodel/HeartBeatEvent.h>
+#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
 {
@@ -34,8 +36,25 @@ namespace core
 namespace objectmodel
 {
 
-SOFA_EVENT_CPP( HeartBeatEvent )
+/**
+    @author Damien Marchal
+    @brief This event is propagated along the objects hierarchy at regular interval.
+*/
+class SOFA_CORE_API IdleEvent : public Event
+{
+public:
+    IdleEvent() {}
+    virtual ~IdleEvent() {}
+    SOFA_EVENT_H( IdleEvent )
 
-}
-}
-}
+    virtual const char* getClassName() const { return "IdleEvent"; }
+protected:
+};
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
+
+#endif

@@ -86,9 +86,9 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
     }
 
     vparams->drawTool()->setLightingEnabled(true);
-	Real _radius = radius.getValue();
+    Real _radius = radius.getValue();
 
-	Vec<4,float> col( r, g, b, a );
+    Vec<4,float> col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 
