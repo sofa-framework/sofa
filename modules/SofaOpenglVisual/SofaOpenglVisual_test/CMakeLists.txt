@@ -4,6 +4,7 @@ project(SofaOpenglVisual_test)
 
 set(SOURCE_FILES
     LightManager_test.cpp
+    Light_test.cpp
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
