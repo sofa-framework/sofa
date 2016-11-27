@@ -96,7 +96,6 @@ void TestLight::checkPositionalLightValidAttributes()
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
-             "   <PositionalLight name='light1'/>                                            \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
