@@ -142,7 +142,6 @@ void TestLight::checkDirectionalLightValidAttributes()
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
-             "   <DirectionalLight name='light1'/>                                           \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -189,7 +188,6 @@ void TestLight::checkSpotLightValidAttributes()
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
-             "   <SpotLight name='light1'/>                                                  \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
