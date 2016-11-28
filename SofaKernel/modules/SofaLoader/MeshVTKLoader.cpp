@@ -400,9 +400,8 @@ bool LegacyVTKReader::readFile(const char* filename)
 {
     std::ifstream inVTKFile(filename, std::ifstream::in | std::ifstream::binary);
     if( !inVTKFile.is_open() )
-    {
         return false;
-    }
+
     string line;
 
     // Part 1
@@ -410,7 +409,6 @@ bool LegacyVTKReader::readFile(const char* filename)
     if (string(line,0,23) != "# vtk DataFile Version ")
     {
         msg_error(this) << "Error: Unrecognized header in file '" << filename << "'." ;
-        inVTKFile.close();
         return false;
     }
     string version(line,23);
@@ -434,7 +432,6 @@ bool LegacyVTKReader::readFile(const char* filename)
     else
     {
         msg_error(this) << "Error: Unrecognized format in file '" << filename << "'." ;
-        inVTKFile.close();
         return false;
     }
 
@@ -445,12 +442,11 @@ bool LegacyVTKReader::readFile(const char* filename)
     // Part 4
     do
         std::getline(inVTKFile, line);
-    while (line == "");
+    while (line.empty());
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
         && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
         msg_error(this) << "Error: Unsupported data type in file '" << filename << "'." << sendl;
-        inVTKFile.close();
         return false;
     }
 
@@ -462,8 +458,10 @@ bool LegacyVTKReader::readFile(const char* filename)
 
     while(!inVTKFile.eof())
     {
-        std::getline(inVTKFile, line);
-        if (line.empty()) continue;
+        do {
+            std::getline(inVTKFile, line);
+        } while (!inVTKFile.eof() && line.empty());
+
         istringstream ln(line);
         string kw;
         ln >> kw;
@@ -521,61 +519,111 @@ bool LegacyVTKReader::readFile(const char* filename)
             inputCellTypesInt = dynamic_cast<VTKDataIO<int>* > (inputCellTypes);
             if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
         }
-        else if (kw == "CELL_DATA") {
-            int n;
-            ln >> n;
-
-            std::getline(inVTKFile, line);
-            if (line.empty()) continue;
-            /// line defines the type and name such as SCALAR dataset
-            istringstream lnData(line);
-            string dataStructure, dataName, dataType;
-            lnData >> dataStructure;
-
-            msg_info(this) << "Data structure: " << dataStructure ;
-
-            if (dataStructure == "SCALARS") {
-                size_t sz = inputCellDataVector.size();
-
-                inputCellDataVector.resize(sz+1);
-                lnData >> dataName;
-                lnData >> dataType;
-
-                inputCellDataVector[sz] = newVTKDataIO(dataType);
-                if (inputCellDataVector[sz] == NULL) return false;
-                /// one more getline to read LOOKUP_TABLE line, not used here
-                std::getline(inVTKFile, line);
-
-                if (!inputCellDataVector[sz]->read(inVTKFile,n, binary)) return false;
-                inputCellDataVector[sz]->name = dataName;
-                msg_info(this) << "Read cell data: " << inputCellDataVector[sz]->dataSize ;
-            }
-            else if (dataStructure == "FIELD") {
-                std::getline(inVTKFile,line);
-                if (line.empty()) continue;
+        else if (kw == "CELL_DATA" || kw == "POINT_DATA")
+        {
+            const bool cellData = (kw == "CELL_DATA");
+            helper::vector<BaseVTKDataIO*>& inputDataVector = cellData?inputCellDataVector:inputPointDataVector;
+            int nb_ele;
+            ln >> nb_ele;
+            while (!inVTKFile.eof())
+            {
+                std::ifstream::pos_type previousPos = inVTKFile.tellg();
                 /// line defines the type and name such as SCALAR dataset
+                 do {
+                    std::getline(inVTKFile,line);
+                } while (!inVTKFile.eof() && line.empty());
+
+                if (line.empty())
+                    break;
                 istringstream lnData(line);
                 string dataStructure;
                 lnData >> dataStructure;
 
-//                if (dataStructure == "Topology") {
-                    int perCell, cells;
-                    lnData >> perCell >> cells;
-                    msg_info(this) << "Reading topology for lines: "<< perCell << " " << cells ;
+                msg_info(this) << "Data structure: " << dataStructure ;
 
-                    size_t sz = inputCellDataVector.size();
+                if (dataStructure == "SCALARS")
+                {
+                    string dataName, dataType;
+                    lnData >> dataName >> dataType;
+                    BaseVTKDataIO*  data = newVTKDataIO(dataType);
+                    if (data != NULL)
+                    {
+                        { // skip lookup_table if present
+                            const std::ifstream::pos_type positionBeforeLookupTable = inVTKFile.tellg();
+                            std::string lookupTable;
+                            std::string lookupTableName;
+                            std::getline(inVTKFile, line);
+                            istringstream lnDataLookup(line);
+                            lnDataLookup >> lookupTable >> lookupTableName;
+                            if (lookupTable == "LOOKUP_TABLE")
+                            {
+                                msg_info(this) << "Ignoring lookup table named \"" << lookupTableName << "\".";
+                            } else {
+                                inVTKFile.seekg(positionBeforeLookupTable);
+                            }
+                        }
+                        if (data->read(inVTKFile, nb_ele, binary))
+                        {
+                            inputDataVector.push_back(data);
+                            data->name = dataName;
+                            if (kw == "CELL_DATA")
+                                msg_info(this) << "Read cell data: " << data->name;
+                            else
+                                msg_info(this) << "Read point data: " << data->name;
+                        } else
+                            delete data;
+                    }
 
-                    inputCellDataVector.resize(sz+1);
-                    inputCellDataVector[sz] = newVTKDataIO("int");
-
-                    if (!inputCellDataVector[sz]->read(inVTKFile,perCell*cells, binary))
-                        return false;
-
-                    inputCellDataVector[sz]->name = "Topology";
-//                }
+                }
+                else if (dataStructure == "FIELD")
+                {
+                    std::string fieldName;
+                    unsigned int nb_arrays = 0u;
+                    lnData >> fieldName >> nb_arrays;
+                    msg_info(this) << "Reading field \"" << fieldName << "\" with " << nb_arrays << " arrays.";
+                    for (unsigned field = 0u ; field < nb_arrays ; ++field)
+                    {
+                        do{
+                            std::getline(inVTKFile,line);
+                        } while (line.empty());
+                        istringstream lnData(line);
+                        std::string dataName;
+                        int nbData;
+                        int nbComponents;
+                        std::string dataType;
+                        lnData >> dataName >> nbComponents >> nbData >> dataType;
+                        msg_info(this) << "Reading field data named \""<< dataName << "\" of type \"" << dataType << "\" with " << nbComponents << " components.";
+                        BaseVTKDataIO*  data = newVTKDataIO(dataType, nbComponents);
+                        if (data != NULL)
+                        {
+                            if (data->read(inVTKFile,nbData, binary))
+                            {
+                                inputDataVector.push_back(data);
+                                data->name = dataName;
+                            } else
+                            {
+                                delete data;
+                            }
+                        }
+                    }
+                }
+                else if (dataStructure == "LOOKUP_TABLE")
+                {
+                    std::string tableName;
+                    lnData >> tableName >> nb_ele;
+                    msg_info(this) << "Ignoring the definition of the lookup table named \"" << tableName << "\".";
+                    BaseVTKDataIO*  data = newVTKDataIO("Float32", 4);
+                    if (data)
+                        data->read(inVTKFile, nb_ele, binary); // vtk file format doc says that the lookup table consist of 4 float or unsigned. let's skip them
+                    delete data;
+                }
+                else  /// TODO
+                {
+                    inVTKFile.seekg(previousPos);
+                    break;
+                }
             }
-            else  /// TODO
-                msg_error(this) << "WARNING: reading vector data not implemented" ;
+            continue;
         }
         else if (!kw.empty())
             msg_error(this) << "WARNING: Unknown keyword " << kw ;

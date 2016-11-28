@@ -94,6 +94,9 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
             case 3:
                 result = new VTKDataIO<Vec<3, int> >;
                 break;
+            case 4:
+                result = new VTKDataIO<Vec<4, int> >;
+                break;
             default:
                 return NULL;
             }
@@ -111,6 +114,9 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
             case 3:
                 result = new VTKDataIO<Vec<3, unsigned int> >;
                 break;
+            case 4:
+                result = new VTKDataIO<Vec<4, unsigned int> >;
+                break;
             default:
                 return NULL;
             }
@@ -124,6 +130,9 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
                 break;
             case 3:
                 result = new VTKDataIO<Vec<3, float> >;
+                break;
+            case 4:
+                result = new VTKDataIO<Vec<4, float> >;
                 break;
             default:
                 return NULL;
@@ -139,6 +148,9 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
             case 3:
                 result = new VTKDataIO<Vec<3, double> >;
                 break;
+            case 4:
+                result = new VTKDataIO<Vec<4, double> >;
+                break;
             default:
                 return NULL;
             }
@@ -150,8 +162,7 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
 
 bool BaseVTKReader::readVTK(const char* filename)
 {
-    bool state = readFile(filename);
-    return state;
+    return readFile(filename);
 }
 
 } // basevtkreader
