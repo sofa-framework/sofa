@@ -51,8 +51,8 @@ using std::remove ;
 
 #include <sofa/core/objectmodel/Base.h>
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
-using sofa::helper::logging::RichConsoleStyleMessageFormatter;
+#include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
+using sofa::helper::logging::DefaultStyleMessageFormatter;
 
 #include <mutex>
 using std::lock_guard ;
@@ -68,7 +68,7 @@ namespace logging
 {
 
 MessageHandler* getDefaultMessageHandler(){
-    static ConsoleMessageHandler s_consoleMessageHandler(new RichConsoleStyleMessageFormatter());
+    static ConsoleMessageHandler s_consoleMessageHandler(&DefaultStyleMessageFormatter::getInstance());
     return &s_consoleMessageHandler ;
 }
 
@@ -233,7 +233,7 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
 #ifdef WIN32
                  , ComponentInfo::SPtr( new ComponentInfo("", "")) )
 #else
-                 , ComponentInfo::SPtr( new ComponentInfo(sender->getName(), "")) )
+                 , ComponentInfo::SPtr( new ComponentInfo("" /*sender->getName()*/, "")) )
 #endif //WIN32
 {
 }

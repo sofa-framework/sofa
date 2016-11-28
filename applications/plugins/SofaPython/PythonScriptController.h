@@ -32,7 +32,7 @@
 /// Forward declarations
 namespace sofa {
     namespace core{
-        namespace objectmodel{ class HeartBeatEvent ;}
+        namespace objectmodel{ class IdleEvent ;}
     }
     namespace helper{
         namespace system{ class FileEventListener; }
@@ -104,8 +104,8 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
-    /// HeartBeat event is sent a regular interval from the host application
-    virtual void script_onHeartBeatEvent(const sofa::core::objectmodel::HeartBeatEvent* event);
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event);
 
     /// @}
 
@@ -142,7 +142,7 @@ protected:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
     PyObject *m_Func_draw;
-    PyObject *m_Func_onHeartBeat;
+    PyObject *m_Func_onIdle;
 };
 
 

@@ -23,21 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
-
-#include <sofa/core/loader/VoxelLoader.h>
-
-#include <SofaOpenglVisual/OglCylinderModel.h>
+#include "Visual3DText.h"
 #include <sofa/core/visual/VisualParams.h>
 
-#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -48,30 +37,25 @@ namespace component
 namespace visualmodel
 {
 
-SOFA_DECL_CLASS(OglCylinderModel)
+SOFA_DECL_CLASS(Visual3DText)
 
-int OglCylinderModelClass = core::RegisterObject("A simple visualization for set of cylinder.")
-        .add< OglCylinderModel >()
+int Visual3DTextClass = core::RegisterObject("Display 3D camera-oriented text")
+        .add< Visual3DText >()
         ;
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel()
-    : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-      //This field should support the color="red" api.
-      color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
-    , d_edges(initData(&d_edges,"edges","List of edge indices"))
-      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+
+Visual3DText::Visual3DText()
+    : d_text(initData(&d_text, "text", "Test to display"))
+    , d_position(initData(&d_position, defaulttype::Vec3f(), "position", "3d position"))
+    , d_scale(initData(&d_scale, 1.f, "scale", "text scale"))
+    , d_color(initData(&d_color, std::string("white"), "color", "text color"))
+    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
 {
 }
 
-OglCylinderModel::~OglCylinderModel()
-{
-}
 
-void OglCylinderModel::init()
+void Visual3DText::init()
 {
     VisualModel::init();
 
@@ -80,44 +64,39 @@ void OglCylinderModel::init()
     updateVisual();
 }
 
-void OglCylinderModel::reinit()
+void Visual3DText::reinit()
 {
-    setColor(color.getValue());
+    setColor(d_color.getValue());
 }
 
-void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
+void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
-    const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
+    const defaulttype::Vec3f& pos = d_position.getValue();
+    float scale = d_scale.getValue();
 
-    // glPushAttrib(GL_ENABLE_BIT);
-
-    vparams->drawTool()->setLightingEnabled(true);
-    Real _radius = radius.getValue();
-
-    Vec<4,float> col( r, g, b, a );
-
-    const SeqEdges& edges = d_edges.getValue();
-
-    for( SeqEdges::const_iterator it=edges.begin(), itend=edges.end() ; it !=itend ; ++it )
+    const bool& depthTest = d_depthTest.getValue();
+    if( !depthTest )
     {
-        const Coord& p1 = pos[(*it)[0]];
-        const Coord& p2 = pos[(*it)[1]];
-
-        vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_DEPTH_TEST);
     }
 
-    // glPopAttrib();
+    vparams->drawTool()->setLightingEnabled(true);
+
+
+    vparams->drawTool()->draw3DText(pos,scale,m_color,d_text.getValue().c_str());
+
+
+    if( !depthTest )
+        glPopAttrib();
 }
 
 
-void OglCylinderModel::setColor(float r, float g, float b, float a)
+void Visual3DText::setColor(float r, float g, float b, float a)
 {
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
+    m_color.set( r, g, b, a );
 }
 
 static int hexval(char c)
@@ -128,7 +107,9 @@ static int hexval(char c)
     else return 0;
 }
 
-void OglCylinderModel::setColor(std::string color)
+
+// TODO this could be moved as a shared utility
+void Visual3DText::setColor(std::string color)
 {
     if (color.empty()) return;
     float r = 1.0f;
@@ -171,27 +152,6 @@ void OglCylinderModel::setColor(std::string color)
     }
     setColor(r,g,b,a);
 }
-
-void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
-{
-    const VecCoord& x = this->read( core::ConstVecCoordId::position() )->getValue();
-    const SeqEdges& edges = d_edges.getValue();
-
-    int nbv = x.size();
-
-    *out << "g "<<name<<"\n";
-
-    for( int i=0 ; i<nbv; i++ )
-        *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
-
-    for( size_t i = 0 ; i < edges.size() ; i++ )
-        *out << "f " << edges[i][0]+vindex+1 << " " << edges[i][1]+vindex+1 << '\n';
-
-    *out << sendl;
-
-    vindex += nbv;
-}
-
 
 
 } // namespace visualmodel

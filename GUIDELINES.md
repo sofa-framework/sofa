@@ -16,17 +16,17 @@ Example: `[SofaKernel] ADD test for the mass conservation in UniformMass`
 ### Naming
 Identifiers must respect the following conventions:
 
-- Class names are in UpperCamelCase
-- Function names are in lowerCamelCase()
-- Namespaces names are in lowercase
-- Variables names are in lowerCamelCase and must express their use more than their type. **Exceptions**:  mathematical objects like `Matrix M`, local iterators variables like `i`, `j`, `k`  and usual symbols like `x` for positions or `v` for velocities.
-- Data member variables names must begin with `d_`
-- Link member variables names (e.g. SingleLink) must begin with `l_`
-- Other member variables names must begin with `m_ `(exception: this is not mandatory for PODs as well as public attributes)
-- Names for booleans variables must answer a question: `m_isRed`, `m_hasName`
-- C++ files must must have the extension .h, .cpp, or .inl
-- Files that define a class should have the same name as the class and should contain only one class.
-- Each library name should be prefixed with `Sofa`.
+- [N1] Class names are in UpperCamelCase
+- [N2] Function names are in lowerCamelCase()
+- [N3] Namespaces names are in lowercase
+- [N4] Variables names are in lowerCamelCase and must express their use more than their type. **Exceptions**:  mathematical objects like `Matrix M`, local iterators variables like `i`, `j`, `k`  and usual symbols like `x` for positions or `v` for velocities.
+- [N5] Data member variables names must begin with `d_`
+- [N6] Link member variables names (e.g. SingleLink) must begin with `l_`
+- [N7] Other member variables names must begin with `m_ `(exception: this is not mandatory for PODs as well as public attributes)
+- [N8] Names for booleans variables must answer a question: `m_isRed`, `m_hasName`
+- [N9] C++ files must must have the extension .h, .cpp, or .inl
+- [N10] Files that define a class should have the same name as the class and should contain only one class.
+- [N11] Each library name should be prefixed with `Sofa`.
 
 ### Formatting
 - Special characters like TAB and page break must be avoided.
@@ -105,15 +105,15 @@ class MechanicalObject : public sofa::core::behavior::MechanicalState<DataTypes>
 More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index.html 
 
 ### Good practices
-- You should try to use as few `#include` directive as possible.
-- You should limit as much as possible the amount of code in included files (*.h, *.inl).
-- All definitions should reside in source files. The header files should declare an interface only.
-- Variables should be initialized when they are declared.
-- You should use `const` profusely.
-- You should use `assert` profusely.
-- You must avoid the `using` directive in header files (.h and .inl): ~~`using namespace foo;`~~
-- You should declare automatic variables only when you need them (not before).
-- You must always initialize pointers, either to the address of something, or to `NULL`
+- [G1] You should try to use as few `#include` directive as possible.
+- [G2] You should limit as much as possible the amount of code in included files (*.h, *.inl).
+- [G3] All definitions should reside in source files. The header files should declare an interface only.
+- [G4] Variables should be initialized when they are declared.
+- [G5] You should use `const` profusely.
+- [G6] You should use `assert` profusely.
+- [G7] You must avoid the `using` directive in header files (.h and .inl): ~~`using namespace foo;`~~
+- [G8] You should declare automatic variables only when you need them (not before).
+- [G9] You must always initialize pointers, either to the address of something, or to `nullptr`
 
 
 ## SOFA specific rules

@@ -18,45 +18,74 @@
 *******************************************************************************
 *                               SOFA :: Modules                               *
 *                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
+#ifndef SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
+#define SOFA_COMPONENT_VISUALMODEL_3DTEXT_H
 
-#include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
+#include "config.h"
+
+#include <sofa/core/visual/VisualModel.h>
 
 namespace sofa
 {
-
-namespace helper
+namespace core
 {
-
-namespace logging
+namespace topology
 {
-
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
+class BaseMeshTopology;
+}
+namespace behavior
 {
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
+class BaseMechanicalState;
+}
 }
 
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
-}
-
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+namespace component
 {
-    m_formatter = formatter;
-}
 
-} // logging
-} // helper
-} // sofa
+namespace visualmodel
+{
 
+
+/// Draw camera-oriented (billboard) 3D text
+class SOFA_GENERAL_VISUAL_API Visual3DText : public core::visual::VisualModel
+{
+
+public:
+    SOFA_CLASS(Visual3DText,core::visual::VisualModel);
+
+protected:
+    Visual3DText();
+
+public:
+    virtual void init();
+
+    virtual void reinit();
+
+    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+
+private:
+    void setColor(float r, float g, float b, float a);
+    void setColor(std::string color);
+    defaulttype::Vec4f m_color;
+
+public:
+    Data<std::string> d_text;
+    Data<defaulttype::Vec3f> d_position;
+    Data<float> d_scale;
+    Data<std::string> d_color;
+    Data<bool> d_depthTest;
+
+
+};
+
+} // namespace visualmodel
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,47 +16,26 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
+* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
 
-#include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
+#include <sofa/core/objectmodel/IdleEvent.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-namespace logging
+namespace objectmodel
 {
 
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
-{
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
+SOFA_EVENT_CPP( IdleEvent )
+
 }
-
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
 }
-
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
-{
-    m_formatter = formatter;
 }
-
-} // logging
-} // helper
-} // sofa
-

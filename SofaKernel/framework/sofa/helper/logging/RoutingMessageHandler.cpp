@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-20ll6 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,7 +20,8 @@
 *                                                                             *
 * This component is open-source                                               *
 *                                                                             *
-* Authors: Damien Marchal                                                     *
+* Contributors:                                                               *
+*       - damien.marchal@univ-lille1.fr                                       *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,34 +29,61 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-
-#include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
+#include <sofa/helper/logging/RoutingMessageHandler.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace logging
 {
-
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
+namespace routingmessagehandler
 {
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
-}
 
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
-}
-
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
+void RoutingMessageHandler::process(Message& m)
 {
-    m_formatter = formatter;
+    for(auto& f : m_filters)
+    {
+        if(f.first(m))
+        {
+            f.second->process(m) ;
+        }
+    }
 }
 
+RoutingMessageHandler::RoutingMessageHandler()
+{
+}
+
+void RoutingMessageHandler::setAFilter(FilterFunction f, MessageHandler* handler)
+{
+    m_filters.push_back(std::make_pair(f, handler));
+}
+
+void RoutingMessageHandler::removeAllFilters()
+{
+    m_filters.clear();
+}
+
+RoutingMessageHandler& MainRoutingMessageHandler::getInstance()
+{
+    static RoutingMessageHandler s_instance;
+    return s_instance;
+}
+
+void MainRoutingMessageHandler::setAFilter(FilterFunction filter,
+                                           MessageHandler* handler)
+{
+    getInstance().setAFilter(filter, handler);
+}
+
+void MainRoutingMessageHandler::removeAllFilters()
+{
+    getInstance().removeAllFilters() ;
+}
+
+
+} // loggingmessagehandler
 } // logging
 } // helper
 } // sofa

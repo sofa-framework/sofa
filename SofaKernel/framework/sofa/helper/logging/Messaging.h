@@ -111,12 +111,18 @@
 #define msg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 #define msg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 
+#define logmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+
 #define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 #define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 #define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 #define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 #define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
 #define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-
 
 #endif // MESSAGING_H

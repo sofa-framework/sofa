@@ -118,11 +118,14 @@ protected:
 
     Data<helper::vector<int> > m1;
     Data<helper::vector<int> > m2;
-    Data<VecDeriv> restVector;
+    Data<VecDeriv> restVector;    
+    VecCoord initialDifference;
+
     Data<double> d_numericalTolerance;
     Data<int> activateAtIteration;
     Data<bool> merge;
     Data<bool> derivative;
+    Data<bool> keepOrientDiff;
     std::vector<Vec3d> prevForces;
 
     // grouped square constraints
@@ -141,6 +144,8 @@ protected:
     virtual ~BilateralInteractionConstraint(){}
 public:
     virtual void init();
+
+    virtual void bwdInit() {}
 
     virtual void reinit();
 

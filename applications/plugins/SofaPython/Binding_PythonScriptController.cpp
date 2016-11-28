@@ -41,13 +41,13 @@ using namespace sofa::core::objectmodel;
 
 //#define LOG_UNIMPLEMENTED_METHODS   // prints a message each time a non-implemented (in the script) method is called
 
-extern "C" PyObject * PythonScriptController_onHeartBeat(PyObject * /*self*/, PyObject * args)
+extern "C" PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args)
 {
     SOFA_UNUSED(args) ;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-     msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onHeartBeatEvent not implemented in " << obj->name.getValueString() << std::endl;
+     msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onIdle not implemented in " << obj->name.getValueString() << std::endl;
 #endif
 
     Py_RETURN_NONE;
@@ -381,7 +381,7 @@ SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
-SP_CLASS_METHOD(PythonScriptController,onHeartBeat)
+SP_CLASS_METHOD(PythonScriptController,onIdle)
 SP_CLASS_METHODS_END
 
 

@@ -827,10 +827,17 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
         Py_RETURN_NONE;
     }
 
+    typedef PyPtr<BaseData> PyBaseData;
+
     if (PyString_Check(value))
     {
         data->setParent(PyString_AsString(value));
         data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+    }
+    else if( dynamic_cast<BaseData*>(((PyBaseData*)value)->object) )
+    {
+//        SP_MESSAGE_INFO("Data_setParent from BaseData")
+        data->setParent( ((PyBaseData*)value)->object );
     }
     else
     {

@@ -42,11 +42,12 @@ void DifferenceEngine<DataType>::reinit()
 template <class DataType>
 void DifferenceEngine<DataType>::update()
 {
-    cleanDirty();
-
     helper::ReadAccessor<Data<VecData> > in = d_input;
     helper::ReadAccessor<Data<VecData> > sub = d_substractor;
-    helper::WriteAccessor<Data<VecData> > out = d_output;
+
+    cleanDirty();
+
+    helper::WriteOnlyAccessor<Data<VecData> > out = d_output;
 
     if(in.size() != sub.size())
     {

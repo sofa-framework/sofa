@@ -42,8 +42,8 @@ using sofa::core::objectmodel::PythonScriptEvent;
 using sofa::helper::system::FileMonitor ;
 using sofa::helper::system::FileEventListener ;
 
-#include <sofa/core/objectmodel/HeartBeatEvent.h>
-using sofa::core::objectmodel::HeartBeatEvent ;
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
 
 #include "PythonFactory.h"
 
@@ -160,7 +160,7 @@ void PythonScriptController::refreshBinding()
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
     BIND_OBJECT_METHOD(draw)
-    BIND_OBJECT_METHOD(onHeartBeat)
+    BIND_OBJECT_METHOD(onIdle)
 }
 
 bool PythonScriptController::isDerivedFrom(const std::string& name, const std::string& module)
@@ -230,7 +230,7 @@ void PythonScriptController::loadScript()
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
     BIND_OBJECT_METHOD(draw)
-    BIND_OBJECT_METHOD(onHeartBeat)
+    BIND_OBJECT_METHOD(onIdle)
 }
 
 void PythonScriptController::doLoadScript()
@@ -238,11 +238,11 @@ void PythonScriptController::doLoadScript()
     loadScript() ;
 }
 
-void PythonScriptController::script_onHeartBeatEvent(const HeartBeatEvent* /*event*/)
+void PythonScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
 {
     FileMonitor::updates(0);
 
-    SP_CALL_MODULEFUNC_NOPARAM(m_Func_onHeartBeat) ;
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle) ;
 
     // Flush the console to avoid the sys.stdout.flush() in each script function.
     std::cout.flush() ;

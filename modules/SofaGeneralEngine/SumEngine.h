@@ -1,3 +1,4 @@
+ 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
 *                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
@@ -18,45 +19,81 @@
 *******************************************************************************
 *                               SOFA :: Modules                               *
 *                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
+#ifndef SOFA_COMPONENT_ENGINE_SumEngine_H
+#define SOFA_COMPONENT_ENGINE_SumEngine_H
 
-#include "Message.h"
-#include "ConsoleMessageHandler.h"
-#include "DefaultStyleMessageFormatter.h"
+#include "config.h"
+#include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace logging
+namespace engine
 {
 
-ConsoleMessageHandler::ConsoleMessageHandler(MessageFormatter* formatter)
+/// Computing the Sum between two vector of dofs
+/// output = input - substractor
+template <class TDataType>
+class SumEngine : public core::DataEngine
 {
-    m_formatter = (formatter==0?&DefaultStyleMessageFormatter::getInstance():formatter);
-}
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(SumEngine,TDataType),core::DataEngine);
 
-void ConsoleMessageHandler::process(Message &m) {
-    m_formatter->formatMessage(m, m.type()>=Message::Error ? std::cerr : std::cout ) ;
-}
+    typedef TDataType DataType;
+    typedef helper::vector<DataType> VecData;
 
-void ConsoleMessageHandler::setMessageFormatter(MessageFormatter* formatter)
-{
-    m_formatter = formatter;
-}
 
-} // logging
-} // helper
-} // sofa
+    SumEngine();
 
+    virtual ~SumEngine() {}
+
+    void init();
+
+    void reinit();
+
+    void update();
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SumEngine<TDataType>* = NULL)
+    {
+        return defaulttype::DataTypeInfo<TDataType>::name();
+    }
+
+
+protected:
+
+    Data<VecData> d_input;
+    Data<DataType> d_output;
+
+};
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SumEngine_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1d>;
+extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3d>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec1f>;
+extern template class SOFA_GENERAL_ENGINE_API SumEngine<defaulttype::Vec3f>;
+#endif
+#endif
+
+} // namespace engine
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

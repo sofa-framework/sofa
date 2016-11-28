@@ -56,7 +56,7 @@ PickHandler::PickHandler():
     mouseContainer(NULL),
     mouseCollision(NULL),
 #ifndef SOFA_NO_OPENGL
-    _fbo(true,true,true,0),
+    _fbo(true,true,true,false,0),
 #endif
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),

@@ -113,6 +113,7 @@ set(HEADER_FILES
     logging/FileMessageHandler.h
     logging/CountingMessageHandler.h
     logging/LoggingMessageHandler.h
+    logging/RoutingMessageHandler.h
     logging/MessageHandler.h
     logging/MessageFormatter.h
     logging/ClangMessageHandler.h
@@ -192,6 +193,7 @@ set(SOURCE_FILES
     logging/FileMessageHandler.cpp
     logging/CountingMessageHandler.cpp
     logging/LoggingMessageHandler.cpp
+    logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
     logging/RichConsoleStyleMessageFormatter.cpp
 )
