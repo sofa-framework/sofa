@@ -103,6 +103,13 @@ try:\n\
 except:\n\
     pass");
 
+
+    // If the script directory is not available (e.g. if the interpreter is invoked interactively
+    // or if the script is read from standard input), path[0] is the empty string,
+    // which directs Python to search modules in the current directory first.
+    PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());
+
+
     // Add the paths to the plugins' python modules to sys.path.  Those paths
     // are read from all the files in 'etc/sofa/python.d'
     std::string confDir = Utils::getSofaPathPrefix() + "/etc/sofa/python.d";
@@ -145,7 +152,9 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     static std::set<std::string> addedPath;
     if (addedPath.find(path)==addedPath.end()) {
-        PyRun_SimpleString(std::string("sys.path.insert(0,\""+path+"\")").c_str());
+        // note not to insert at first 0 place
+        // an empty string must be at first so modules can be found in the current directory first.
+        PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
         SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
         addedPath.insert(path);
     }
@@ -267,10 +276,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 //    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
 
-    // current path is always added to environment (if it is not empty)
-    if( !dir.empty() ) addPythonModulePath(dir);
-
-//    SP_MESSAGE_INFO( commandString.c_str() )
+    //    SP_MESSAGE_INFO( commandString.c_str() )
 
     if(!arguments.empty())
     {
