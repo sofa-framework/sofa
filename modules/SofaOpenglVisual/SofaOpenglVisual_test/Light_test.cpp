@@ -171,7 +171,6 @@ void TestLight::checkDirectionalLightValidAttributes()
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
     sofa::simulation::getSimulation()->unload(root);
-
 }
 
 void TestLight::checkSpotLightValidAttributes()
