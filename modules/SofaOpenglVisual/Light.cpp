@@ -508,26 +508,23 @@ void DirectionalLight::computeClippingPlane(const core::visual::VisualParams* vp
     Vector3 minBBox = sceneBBox.minBBox();
     Vector3 maxBBox = sceneBBox.maxBBox();
 
-    float width = (maxBBox[0] - minBBox[0]);
-    float height = (maxBBox[1] - minBBox[1]);
-    float depth = (maxBBox[2] - minBBox[2]);
-    float maxLength = std::max(std::max(width, height), depth);
+    float maxLength = (maxBBox - minBBox).norm();
 
     left = maxLength * -0.5;
     right = maxLength * 0.5;
     top = maxLength * 0.5;
     bottom = maxLength * -0.5;
-    zNear = 0.0;
+    zNear = 0.0 - maxLength*0.01;
     zFar = maxLength;
 
-    if (d_zNear.isSet())
-        zNear = d_zNear.getValue();
-    else
+    //if (d_zNear.isSet())
+    //    zNear = d_zNear.getValue();
+    //else
         d_zNear.setValue(zNear);
 
-    if (d_zFar.isSet())
-        zFar = d_zFar.getValue();
-    else
+    //if (d_zFar.isSet())
+    //    zFar = d_zFar.getValue();
+    //else
         d_zFar.setValue(zFar);
 }
 

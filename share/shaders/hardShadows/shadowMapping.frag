@@ -217,7 +217,7 @@ void main()
 #if ENABLE_SHADOW == 1 
 	 t = shadowsVar[0];
 #endif // ENABLE_SHADOW == 1 
-	gl_FragColor = vec4(t,t,t,1);
+	//gl_FragColor = vec4(t,t,t,1);
 // 	//gl_FragColor = vec4(lightSpacePosition[0].xyz*10, 1.0);
 
 }
