@@ -516,9 +516,6 @@ public:
     Data< unsigned int > f_fillOrder; ///< Fill Order  // For the mapping, we use second order fit (to have translation invariance of elastons, use first order)
     //@}
 
-    virtual std::string getTemplateName() const    { return templateName(this); }
-    static std::string templateName(const ImageGaussPointSampler<ImageTypes_, MaskTypes_>* = NULL) { return ImageTypes_::Name()+std::string(",")+MaskTypes_::Name(); }
-
     virtual void init()
     {
         Inherit::init();
@@ -528,6 +525,7 @@ public:
         addInput(&f_transform);
         addInput(&f_mask);
         addInput(&f_maskLabels);
+        addOutput(&f_position);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();

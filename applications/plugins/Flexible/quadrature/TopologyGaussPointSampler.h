@@ -82,9 +82,6 @@ public:
 
     Data< helper::vector<Real> > f_fineVolumes;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const TopologyGaussPointSampler* = NULL) { return std::string();    }
-
     virtual void init()
     {
         Inherited::init();
@@ -98,6 +95,7 @@ public:
         addInput(&f_inPosition);
         addInput(&f_fineVolumes);
         addInput(&f_indices);
+        addOutput(&f_position);
         addOutput(&f_cell);
         setDirtyValue();
     }
@@ -130,12 +128,12 @@ protected:
 
     virtual void update()
     {
-        raPositions parent(f_inPosition);
-        f_fineVolumes.updateIfDirty();
-        f_indices.updateIfDirty();
+        this->updateAllInputsIfDirty();
         cleanDirty();
 
         if( !parentTopology ) return;
+
+        raPositions parent(f_inPosition);
 
         if(!parent.size()) return;
 

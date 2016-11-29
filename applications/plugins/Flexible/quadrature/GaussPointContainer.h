@@ -56,13 +56,12 @@ public:
     Data< unsigned int > f_volumeDim;
     Data< helper::vector<Real> > f_inputVolume;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
-    static std::string templateName(const GaussPointContainer* = NULL) { return std::string();    }
-
     virtual void init()
     {
         Inherited::init();
+        addInput(&f_position);
         addInput(&f_inputVolume);
+        addInput(&f_volumeDim);
         setDirtyValue();
     }
 
@@ -82,12 +81,13 @@ protected:
 
     virtual void update()
     {
+        this->updateAllInputsIfDirty();
+        cleanDirty();
+
         helper::ReadAccessor< Data< helper::vector<Real> > > invol(f_inputVolume);
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
         unsigned int dim = this->f_volumeDim.getValue();
-
-        cleanDirty();
 
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
