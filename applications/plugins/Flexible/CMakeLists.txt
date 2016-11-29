@@ -70,6 +70,7 @@ set(HEADER_FILES
     quadrature/BaseGaussPointSampler.h
     quadrature/GaussPointContainer.h
     quadrature/TopologyGaussPointSampler.h
+    quadrature/GaussPointSmoother.h
     shapeFunction/BarycentricShapeFunction.h
     shapeFunction/BaseShapeFunction.h
     shapeFunction/BezierShapeFunction.h
@@ -92,6 +93,8 @@ set(HEADER_FILES
     strainMapping/PrincipalStretchesMapping.h
     strainMapping/RelativeStrainJacobianBlock.h
     strainMapping/RelativeStrainMapping.h
+    strainMapping/LinearStrainJacobianBlock.h
+    strainMapping/LinearStrainMapping.h
     types/AffineComponents.h
     types/AffineTypes.h
     types/ComponentSpecializations.cpp.inl
@@ -147,6 +150,7 @@ set(SOURCE_FILES
     quadrature/BaseGaussPointSampler.cpp
     quadrature/GaussPointContainer.cpp
     quadrature/TopologyGaussPointSampler.cpp
+    quadrature/GaussPointSmoother.cpp
     shapeFunction/BarycentricShapeFunction.cpp
     shapeFunction/BaseShapeFunction.cpp
     shapeFunction/BezierShapeFunction.cpp
@@ -160,6 +164,7 @@ set(SOURCE_FILES
     strainMapping/PlasticStrainMapping.cpp
     strainMapping/PrincipalStretchesMapping.cpp
     strainMapping/RelativeStrainMapping.cpp
+    strainMapping/LinearStrainMapping.cpp
     types/AffineComponents.cpp
     types/DeformationGradientTypes.cpp
     types/QuadraticComponents.cpp
