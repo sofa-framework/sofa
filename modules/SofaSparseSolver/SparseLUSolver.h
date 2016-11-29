@@ -46,7 +46,7 @@ namespace linearsolver
 
 //defaut structure for a LDL factorization
 template<class Real>
-class SpaseLUInvertData : public MatrixInvertData {
+class SparseLUInvertData : public MatrixInvertData {
 public :
 
     css *S;
@@ -55,12 +55,12 @@ public :
     helper::vector<int> A_i, A_p;
     helper::vector<Real> A_x;
     Real * tmp;
-    SpaseLUInvertData()
+    SparseLUInvertData()
     {
         S=NULL; N=NULL; tmp=NULL;
     }
 
-    ~SpaseLUInvertData()
+    ~SparseLUInvertData()
     {
         if (S) cs_sfree (S);
         if (N) cs_nfree (N);
@@ -91,7 +91,7 @@ public:
 protected :
 
     MatrixInvertData * createInvertData() {
-        return new SpaseLUInvertData<Real>();
+        return new SparseLUInvertData<Real>();
     }
 
 };
