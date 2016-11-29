@@ -555,7 +555,8 @@ void DirectionalLight::preDrawShadow(core::visual::VisualParams* vp)
 
     glViewport(0, 0, m_shadowTexWidth, m_shadowTexHeight);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 }
 
