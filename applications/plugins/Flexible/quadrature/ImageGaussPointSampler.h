@@ -528,6 +528,7 @@ public:
         addInput(&f_transform);
         addInput(&f_mask);
         addInput(&f_maskLabels);
+        addOutput(&f_position);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
