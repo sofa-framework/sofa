@@ -621,8 +621,8 @@ void MechanicalVReallocVisitor<vtype>::alloc( core::behavior::BaseMechanicalStat
         v->setId( mm, vid );
         mm->vAlloc( this->params, vid );
     }
-//    else
-//        mm->vRealloc( this->params, vid );
+    else
+        mm->vRealloc( this->params, vid );
 }
 
 template< VecType vtype>
