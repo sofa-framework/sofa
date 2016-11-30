@@ -612,10 +612,18 @@ bool LegacyVTKReader::readFile(const char* filename)
                     std::string tableName;
                     lnData >> tableName >> nb_ele;
                     msg_info(this) << "Ignoring the definition of the lookup table named \"" << tableName << "\".";
-                    BaseVTKDataIO*  data = newVTKDataIO("Float32", 4);
-                    if (data)
-                        data->read(inVTKFile, nb_ele, binary); // vtk file format doc says that the lookup table consist of 4 float or unsigned. let's skip them
-                    delete data;
+                    if (binary)
+                    {
+                        BaseVTKDataIO* data = newVTKDataIO("UInt8", 4); // in the binary case there will be 4 unsigned chars per table entry
+                        if (data)
+                            data->read(inVTKFile, nb_ele, binary);
+                        delete data;
+                    } else {
+                        BaseVTKDataIO* data = newVTKDataIO("Float32", 4);
+                        if (data)
+                            data->read(inVTKFile, nb_ele, binary); // in the ascii case there will be 4 float32 per table entry
+                        delete data;
+                    }
                 }
                 else  /// TODO
                 {
