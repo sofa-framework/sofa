@@ -49,7 +49,54 @@ class RigidImpl {};
 template<>
 class BilateralInteractionConstraintSpecialization<RigidImpl>
 {
-public:
+public:    
+
+    template<class T>
+    static void bwdInit(BilateralInteractionConstraint<T>& self) {
+        if (!self.keepOrientDiff.getValue())
+            return;
+
+        const helper::vector<int> &m1Indices = self.m1.getValue();
+        const helper::vector<int> &m2Indices = self.m2.getValue();
+
+        unsigned minp = std::min(m1Indices.size(),m2Indices.size());
+
+        helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::VecDeriv > > wrest = self.restVector;
+
+        const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
+        const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
+
+        const typename BilateralInteractionConstraint<T>::VecCoord &x1 = d_x1.getValue();
+        const typename BilateralInteractionConstraint<T>::VecCoord &x2 = d_x2.getValue();
+
+        for (unsigned pid=0; pid<minp; pid++)
+        {
+            const typename BilateralInteractionConstraint<T>::Coord P = x1[m1Indices[pid]];
+            const typename BilateralInteractionConstraint<T>::Coord Q = x2[m2Indices[pid]];
+
+            defaulttype::Quat qP, qQ, dQP, qQ2;
+            qP = P.getOrientation();
+            qQ = Q.getOrientation();
+            qP.normalize();
+            qQ.normalize();
+            dQP = qDiff(qQ, qP);
+            dQP.normalize();
+
+            qQ2 = qP*dQP;
+
+            typename BilateralInteractionConstraint<T>::Coord df;
+            df.getCenter() = Q.getCenter() - P.getCenter();
+            df.getOrientation() = dQP;
+            self.initialDifference.push_back(df);
+
+            typename BilateralInteractionConstraint<T>::Deriv diff;
+            getVCenter(diff) = Q.getCenter() - P.getCenter();
+            getVOrientation(diff) =  P.rotate(self.q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
+            wrest.push_back(diff);
+        }
+    }
+
+
     template<class T>
     static void getConstraintResolution(BilateralInteractionConstraint<T>& self,
                                         const ConstraintParams* cParams,
@@ -166,14 +213,30 @@ public:
 
         for (unsigned pid=0; pid<min; pid++)
         {
-            typename BilateralInteractionConstraint<T>::Coord dof1 = x1[m1Indices[pid]];
-            typename BilateralInteractionConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
+            //typename BilateralInteractionConstraint<T>::Coord dof1 = x1[m1Indices[pid]];
+            //typename BilateralInteractionConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
+            typename BilateralInteractionConstraint<T>::Coord dof1;
+
+             if (self.keepOrientDiff.getValue()) {
+                 const typename BilateralInteractionConstraint<T>::Coord dof1c = x1[m1Indices[pid]];
+
+                 typename BilateralInteractionConstraint<T>::Coord corr=self.initialDifference[pid];
+                 defaulttype::Quat df = corr.getOrientation();
+                 defaulttype::Quat o1 = dof1c.getOrientation();
+                 defaulttype::Quat ro1 = o1 * df;
+
+                 dof1.getCenter() = dof1c.getCenter() + corr.getCenter();
+                 dof1.getOrientation() = ro1;
+             } else
+                 dof1 = x1[m1Indices[pid]];
+
+            const typename BilateralInteractionConstraint<T>::Coord dof2 = x2[m2Indices[pid]];
 
             getVCenter(self.dfree[pid]) = dof2.getCenter() - dof1.getCenter();
             getVOrientation(self.dfree[pid]) =  dof1.rotate(self.q.angularDisplacement(dof2.getOrientation() ,
                                                                                   dof1.getOrientation())); // angularDisplacement compute the rotation vector btw the two quaternions
-            if (pid < restVector.size())
-                self.dfree[pid] -= restVector[pid];
+            //if (pid < restVector.size())
+            //    self.dfree[pid] -= restVector[pid];
 
             for (unsigned int i=0 ; i<self.dfree[pid].size() ; i++)
                 v->set(self.cid[pid]+i, self.dfree[pid][i]);
@@ -206,6 +269,11 @@ public:
 template<>
 void BilateralInteractionConstraint<Rigid3dTypes>::init(){
     unspecializedInit() ;
+}
+
+template<>
+void BilateralInteractionConstraint<Rigid3dTypes>::bwdInit() {
+    BilateralInteractionConstraintSpecialization<RigidImpl>::bwdInit(*this);
 }
 
 template<>
@@ -280,6 +348,12 @@ void BilateralInteractionConstraint<Rigid3fTypes>::init()
                              "your scene.  ";
     }
 }
+
+template<>
+void BilateralInteractionConstraint<Rigid3fTypes>::bwdInit() {
+    BilateralInteractionConstraintSpecialization<RigidImpl>::bwdInit(*this);
+}
+
 
 template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const ConstraintParams* cParams,

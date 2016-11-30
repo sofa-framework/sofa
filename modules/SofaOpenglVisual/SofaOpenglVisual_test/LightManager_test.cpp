@@ -4,7 +4,7 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -38,14 +38,11 @@ int messageInited = initMessage();
 
 namespace sofa {
 
-struct TestLightManager : public ::testing::Test {
-    void checkAttributes();
+struct TestLightManager : public Sofa_test<double> {
 };
 
-void TestLightManager::checkAttributes()
+void checkAttributes()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"

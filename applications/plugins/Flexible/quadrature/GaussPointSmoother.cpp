@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,26 +16,34 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_GaussPointSmoother_CPP
 
-#include <sofa/core/objectmodel/HeartBeatEvent.h>
+#include <Flexible/config.h>
+#include "../quadrature/GaussPointSmoother.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
-namespace core
+namespace component
+{
+namespace engine
 {
 
-namespace objectmodel
-{
+using namespace defaulttype;
 
-SOFA_EVENT_CPP( HeartBeatEvent )
+SOFA_DECL_CLASS(GaussPointSmoother)
 
-}
-}
-}
+int GaussPointSmootherClass = core::RegisterObject("Smooth gauss points from another sampler")
+        .add<GaussPointSmoother>(true)
+        ;
+
+} // namespace engine
+} // namespace component
+} // namespace sofa
+

@@ -212,7 +212,7 @@ protected:
     QWidget* currentTab;
     QSofaStatWidget* statWidget;
     QTimer* timerStep;
-    QTimer* timerHeartBeat;
+    QTimer* timerIdle;
     WDoubleLineEdit *background[3];
     QLineEdit *backgroundImage;
     SofaPluginManager* pluginManager_dialog;
@@ -362,7 +362,7 @@ public slots:
     virtual void playpauseGUI(bool value);
     virtual void interactionGUI(bool value);
     virtual void step();
-    virtual void emitHeartBeat();
+    virtual void emitIdle();
     // virtual void setDt(double);
     virtual void setDt(const QString&);
     // Disable dtEdit when realTimeCheckBox is checked

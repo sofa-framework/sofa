@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,42 +16,26 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <SofaGraphComponent/BackgroundSetting.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/IdleEvent.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace configurationsetting
+namespace objectmodel
 {
 
-SOFA_DECL_CLASS(BackgroundSetting)
-int BackgroundSettingClass = core::RegisterObject("Background colour setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
-
-BackgroundSetting::BackgroundSetting():
-    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-    //This field should support the color="red" api.
-    color(initData(&color, "color", "Color of the Background of the Viewer"))
-    , image(initData(&image, "image", "Image to be used as background of the viewer"))
-{
-}
+SOFA_EVENT_CPP( IdleEvent )
 
 }
-
 }
-
 }

@@ -616,10 +616,7 @@ public:
 #endif
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false;
-    }
+    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map);
 
     virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm);
 
@@ -651,7 +648,7 @@ public:
 protected:
 
 
-    MyVecId getId( core::behavior::BaseMechanicalState* mm );
+    void alloc( core::behavior::BaseMechanicalState* mm );
 };
 
 

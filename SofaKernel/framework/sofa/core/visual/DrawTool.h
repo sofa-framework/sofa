@@ -203,6 +203,9 @@ public:
 
     virtual void clear() {}
 
+    virtual void enableDepthTest() = 0;
+    virtual void disableDepthTest() = 0;
+
 
 };
 

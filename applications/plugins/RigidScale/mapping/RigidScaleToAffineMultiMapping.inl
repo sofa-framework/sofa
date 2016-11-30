@@ -234,7 +234,7 @@ void RigidScaleToAffineMultiMapping<I1, I2, O>::autoInit()
 			// index
 			for (unsigned int j = 0; j < 3; ++j) _index.push_back(i);
 			// Scale, Affine
-			_x2.push_back(InCoord2(1, 1, 1));
+			_x2.push_back(InCoord2(defaulttype::Vector3(1, 1, 1)));
 			_xout.push_back(OutCoord());
 		}
 		// Update of the different data
@@ -336,7 +336,7 @@ void RigidScaleToAffineMultiMapping<I1, I2, O>::computeAffineFromRigidAndScale(c
 	// Conversion of the rigid quaternion into a rotation matrix
 	q.toMatrix(rot);
 	// Conversion of the scale into a 3x3 matrix
-	for (unsigned int i = 0; i < 3; ++i) scale[i][i] = in2[i];
+    computeScaleMatrix(in2, scale);
 
 	// Computation of the affine matrix without the translation
 	affine = rot*scale;

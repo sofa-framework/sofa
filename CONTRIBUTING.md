@@ -44,8 +44,8 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 
 ### Rules for SOFA pull requests
 
-- Description must explain the **issue solved** or the **feature added**.
-- Code must follow [our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md).
+- Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
+- Code must follow **[our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)**.
 - Commit must build **successfully** on Jenkins for all steps (compilation + tests + examples).
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.

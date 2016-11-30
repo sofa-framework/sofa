@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,45 +16,56 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Plugins                               *
 *                                                                             *
-* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_HEARTBEATEVENT_H
-#define SOFA_CORE_OBJECTMODEL_HEARTBEATEVENT_H
+#define SOFA_COMPONENT_LINEARSTRAINMAPPING_CPP
 
-#include <sofa/core/objectmodel/Event.h>
+#include "LinearStrainMapping.h"
+
+#include <sofa/core/ObjectFactory.h>
+
+#include "../types/StrainTypes.h"
 
 namespace sofa
 {
-
-namespace core
+namespace component
+{
+namespace mapping
 {
 
-namespace objectmodel
-{
+SOFA_DECL_CLASS(LinearStrainMapping)
 
-/**
-    @author Damien Marchal
-    @brief This event is propagated along the objects at regular interval.
-*/
-class SOFA_CORE_API HeartBeatEvent : public Event
-{
-public:
-    HeartBeatEvent() {}
-    virtual ~HeartBeatEvent() {}
-    SOFA_EVENT_H( HeartBeatEvent )
+using namespace defaulttype;
 
-    virtual const char* getClassName() const { return "HeartBeatEvent"; }
-protected:
-};
+// Register in the Factory
+int LinearStrainMappingClass = core::RegisterObject("Map strain positions as a linear combination of strains, for smoothing.")
 
-} // namespace objectmodel
+        .add< LinearStrainMapping< E331Types > >(true)
+        .add< LinearStrainMapping< E311Types > >()
+        .add< LinearStrainMapping< E321Types > >()
+        .add< LinearStrainMapping< E332Types > >()
+        .add< LinearStrainMapping< E333Types > >()
 
-} // namespace core
+//        .add< LinearStrainMapping< D331Types > >()
+//        .add< LinearStrainMapping< D321Types > >()
+//        .add< LinearStrainMapping< D332Types > >()
+        ;
 
+template class SOFA_Flexible_API LinearStrainMapping< E331Types >;
+template class SOFA_Flexible_API LinearStrainMapping< E311Types >;
+template class SOFA_Flexible_API LinearStrainMapping< E321Types >;
+template class SOFA_Flexible_API LinearStrainMapping< E332Types >;
+template class SOFA_Flexible_API LinearStrainMapping< E333Types >;
+
+//template class SOFA_Flexible_API LinearStrainMapping< D331Types >;
+//template class SOFA_Flexible_API LinearStrainMapping< D321Types >;
+//template class SOFA_Flexible_API LinearStrainMapping< D332Types >;
+
+
+} // namespace mapping
+} // namespace component
 } // namespace sofa
-
-#endif

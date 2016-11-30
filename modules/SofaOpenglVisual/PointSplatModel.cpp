@@ -62,6 +62,8 @@ PointSplatModel::PointSplatModel() //const std::string &name, std::string filena
     : radius(initData(&radius, 1.0f, "radius", "Radius of the spheres.")),
       textureSize(initData(&textureSize, 32, "textureSize", "Size of the billboard texture.")),
       alpha(initData(&alpha, 1.0f, "alpha", "Opacity of the billboards. 1.0 is 100% opaque.")),
+      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+      //This field should support the color="red" api.
       color(initData(&color, std::string("white"), "color", "Billboard color.")),
       _topology(NULL),
       _mstate(NULL),
