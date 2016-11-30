@@ -54,14 +54,14 @@ SOFA_DECL_CLASS(Light)
 
 SOFA_DECL_CLASS(DirectionalLight)
 //Register DirectionalLight in the Object Factory
-int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light.")
+int DirectionalLightClass = core::RegisterObject("A directional light illuminating the scene with parallel rays of light (can cast shadows).")
         .add< DirectionalLight >()
         ;
 
 SOFA_DECL_CLASS(PositionalLight)
 //Register PositionalLight in the Object Factory
 int PositionalLightClass = core::RegisterObject("A positional light illuminating the scene."
-                                                "The light has a location from which the ray are starting in all direction")
+                                                "The light has a location from which the ray are starting in all direction  (cannot cast shadows for now)")
         .add< PositionalLight >()
         ;
 
@@ -69,7 +69,7 @@ SOFA_DECL_CLASS(SpotLight)
 //Register SpotLight in the Object Factory
 int SpotLightClass = core::RegisterObject("A spot light illuminating the scene."
                                           "The light has a location and a illumination cone restricting the directions"
-                                          "taken by the rays of light.")
+                                          "taken by the rays of light  (can cast shadows).")
         .add< SpotLight >()
         ;
 
@@ -90,19 +90,21 @@ Light::Light()
     , m_depthShader(sofa::core::objectmodel::New<OglShader>())
     , m_blurShader(sofa::core::objectmodel::New<OglShader>())
 #endif
+    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+    //This field should support the color="red" api.
     , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
-    , d_shadowTextureSize (initData(&d_shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
-    , d_zNear(initData(&d_zNear, "zNear", "Light's ZNear"))
-    , d_zFar(initData(&d_zFar, "zFar", "Light's ZFar"))
-    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "Enable Shadow from this light"))
-    , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "Turn on Soft Shadow from this light"))
-    , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "Shadow Factor (decrease/increase darkness)"))
-    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "(VSM only) Light bleeding paramter"))
-    , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "(VSM only) Minimum variance parameter"))
-    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "Texture unit for the genereated shadow texture"))
-    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "ModelView Matrix"))
-    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "Projection Matrix"))
+    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
+    , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
+    , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "[Shadowing] Turn on Soft Shadow from this light"))
+    , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "[Shadowing] Shadow Factor (decrease/increase darkness)"))
+    , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding paramter"))
+    , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "[Shadowing] (VSM only) Minimum variance parameter"))
+    , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the genereated shadow texture"))
+    , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
+    , d_zFar(initData(&d_zFar, "zFar", "[Shadowing] Light's ZFar"))
+    , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "[Shadowing] ModelView Matrix"))
+    , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "[Shadowing] Projection Matrix"))
     , b_needUpdate(false)
 {
     helper::vector<float>& wModelViewMatrix = *d_modelViewMatrix.beginEdit();
@@ -113,6 +115,10 @@ Light::Light()
 
     d_modelViewMatrix.endEdit();
     d_projectionMatrix.endEdit();
+
+    //Set Read-Only as we dont want to modify it with the GUI
+    d_modelViewMatrix.setReadOnly(true);
+    d_projectionMatrix.setReadOnly(true);
 }
 
 Light::~Light()
@@ -540,7 +546,7 @@ void DirectionalLight::preDrawShadow(core::visual::VisualParams* vp)
 
     Light::preDrawShadow(vp);
     const Vector3& dir = d_direction.getValue();
-    //TODO
+
     computeClippingPlane(vp, left, right, top, bottom, zNear, zFar);
 
     glMatrixMode(GL_PROJECTION);
@@ -920,31 +926,6 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[11] = -1.0;
     mat[15] = 0.0;
     
-    /*float left = width*-0.5;
-    float right = width*0.5;
-    float top = height*0.5;
-    float bottom = height*-0.5;
-
-    mat[0] = 2 / (right - left);
-    mat[4] = 0.0;
-    mat[8] = 0.0;
-    mat[12] = -1 * (right + left) / (right - left);
-
-    mat[1] = 0.0;
-    mat[5] = 2 / (top - bottom);
-    mat[9] = 0.0;
-    mat[13] = -1 * (top + bottom) / (top - bottom);
-
-    mat[2] = 0;
-    mat[6] = 0;
-    mat[10] = -2 / (zFar - zNear);
-    mat[14] = -1 * (zFar + zNear) / (zFar - zNear);
-
-    mat[3] = 0.0;
-    mat[7] = 0.0;
-    mat[11] = 0.0;
-    mat[15] = 1.0;
-*/
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
@@ -960,8 +941,6 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
 
 GLuint SpotLight::getDepthTexture()
 {
-    //return debugVisualShadowTexture;
-    //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
     return m_shadowFBO.getDepthTexture();
 #else
@@ -971,8 +950,6 @@ GLuint SpotLight::getDepthTexture()
 
 GLuint SpotLight::getColorTexture()
 {
-    //return debugVisualShadowTexture;
-    //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
     if(d_softShadows.getValue())
         return m_blurVFBO.getColorTexture();
