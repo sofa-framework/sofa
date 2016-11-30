@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/DataTracker.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/helper/cast.h>
 
 #include <gtest/gtest.h>
 
@@ -338,11 +339,99 @@ TEST_F(DataTrackerEngine_test, testTrackedData )
 
 //////////////////////////////
 
-// TODO version with a callbackdata
-// linking a data to a callback
-// the callback is called each time the data changes
-// how to do it w/o observer/listener not to polluate Data?
-// or at least how to have a version of Data w/o any extra cost if it has not listeners?
+
+/// Testing DataTrackerFunctor
+/// to call a functor as soon as a Data is modified.
+///
+/// This mechanism is useful is some specific situations
+/// such as updating particular fields in a gui.
+/// An idea to do so: the functor can add the modified Data in a list
+/// that will be read by the gui when it is refreshed in order to
+/// update something.
+struct DataTrackerFunctor_test: public ::testing::Test
+{
+
+    // This functor illustrates what is possible.
+    // It shows how to get access to its inputs,
+    // that it can have its own variables...
+    struct MyDataFunctor
+    {
+        MyDataFunctor() : m_counter(0u) {}
+
+        void operator() ( core::DataTrackerFunctor<MyDataFunctor>* tracker )
+        {
+            core::objectmodel::BaseData* data = down_cast<core::objectmodel::BaseData>( tracker->getInputs()[0] );
+            msg_info("MyDataFunctor")<<"Data "<<data->getName()<<" just changed for the "<<++m_counter<<"-th time";
+        }
+
+        unsigned m_counter;
+    };
+
+
+
+    /// to test DataTrackerEngine between Data in the same component
+    void test()
+    {
+        DummyObject testObject;
+        testObject.init();
+
+
+        // as soon as testObject.myData changes, myDataFunctor will be triggered
+        MyDataFunctor myDataFunctor;
+        core::DataTrackerFunctor<MyDataFunctor> myDataTrackerFunctor( myDataFunctor );
+        myDataTrackerFunctor.addInput( &testObject.myData );
+
+        // the functor is called when adding an input
+        ASSERT_EQ( 1u, myDataFunctor.m_counter );
+
+
+
+
+        // modifying the Data is calling the functor
+        testObject.myData.setValue( false );
+        ASSERT_EQ( 2u, myDataFunctor.m_counter );
+
+        // getting the value is not calling the function
+        testObject.myData.getValue();
+        ASSERT_EQ( 2u, myDataFunctor.m_counter );
+
+        // modifying the Data even with the same value is calling the functor
+        // note it would be possible to do your own functor,
+        // that keep a hash of the previous value
+        // if you really need to check when the data trully changed
+        testObject.myData.setValue( false );
+        ASSERT_EQ( 3u, myDataFunctor.m_counter );
+
+        // editing the data
+        // the behavior would be simular with beginEdit()
+        bool* t = testObject.myData.beginWriteOnly(); // the functor is triggered as soon as the edition begins
+        ASSERT_EQ( 4u, myDataFunctor.m_counter );
+        *t = true; // the functor is not triggered
+        ASSERT_EQ( 4u, myDataFunctor.m_counter );
+        *t = false; // the functor is not triggered
+        ASSERT_EQ( 4u, myDataFunctor.m_counter );
+        testObject.myData.endEdit();
+
+        // example with an accessor
+        {
+        helper::WriteOnlyAccessor<core::objectmodel::Data<bool>> acc( testObject.myData );  // the functor is triggered as soon as the edition begins
+        ASSERT_EQ( 5u, myDataFunctor.m_counter );
+        *acc = false;  // the functor is not triggered
+        *acc = true; // the functor is not triggered
+        ASSERT_EQ( 5u, myDataFunctor.m_counter );
+        }
+
+    }
+};
+
+
+// Test
+TEST_F(DataTrackerFunctor_test, test )
+{
+    this->test();
+}
+
+
 
 
 
