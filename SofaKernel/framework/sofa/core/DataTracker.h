@@ -56,8 +56,8 @@ namespace core
         DataTrackerDDGNode() : core::objectmodel::DDGNode() {}
 
     private:
-        DataTrackerDDGNode(const DataTrackerDDGNode& n) ;
-        DataTrackerDDGNode& operator=(const DataTrackerDDGNode& n) ;
+        DataTrackerDDGNode(const DataTrackerDDGNode& n);
+        DataTrackerDDGNode& operator=(const DataTrackerDDGNode& n);
 
     public:
 
@@ -156,6 +156,56 @@ namespace core
     protected:
 
         void (*m_updateCallback)(DataTrackerEngine*);
+
+    };
+
+
+/////////////////////////
+
+
+
+    /// A DDGNode that will call a given Functor as soon as one of its input changes
+    /// (a pointer to this DataTrackerFunctor is passed as parameter in the functor)
+    template <typename FunctorType>
+    class SOFA_CORE_API DataTrackerFunctor : public core::objectmodel::DDGNode
+    {
+    public:
+
+        DataTrackerFunctor( FunctorType& functor )
+            : core::objectmodel::DDGNode()
+            , m_functor( functor )
+        {}
+
+        /// The trick is here, this function is called as soon as the input data changes
+        /// and can then trigger the callback
+        virtual void setDirtyValue(const core::ExecParams* params = 0)
+        {
+            m_functor( this );
+
+            // the input needs to be inform their output (including this DataTrackerFunctor)
+            // are not dirty, to be sure they will call setDirtyValue when they are modified
+            cleanDirtyOutputsOfInputs(params);
+        }
+
+
+        /// This method is needed by DDGNode
+        virtual void update(){};
+        /// This method is needed by DDGNode
+        const std::string& getName() const
+        {
+            static const std::string emptyName ="";
+            return emptyName;
+        }
+        /// This method is needed by DDGNode
+        virtual objectmodel::Base* getOwner() const { return nullptr; }
+        /// This method is needed by DDGNode
+        virtual objectmodel::BaseData* getData() const { return nullptr; }
+
+    private:
+
+        DataTrackerFunctor(const DataTrackerFunctor& n);
+        DataTrackerFunctor& operator=(const DataTrackerFunctor& n);
+        FunctorType& m_functor; ///< the functor to call when the input data changed
 
     };
 
