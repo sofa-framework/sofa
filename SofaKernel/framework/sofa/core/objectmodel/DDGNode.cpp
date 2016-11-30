@@ -106,10 +106,17 @@ void DDGNode::cleanDirty(const core::ExecParams* params)
             owner->sout << "Data " << getName() << " has been updated." << owner->sendl;
 #endif
 
-        for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
-            (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
+        cleanDirtyOutputsOfInputs(params);
     }
 }
+
+
+void DDGNode::cleanDirtyOutputsOfInputs(const core::ExecParams* params)
+{
+    for(DDGLinkIterator it=inputs.begin(params), itend=inputs.end(params); it != itend; ++it)
+        (*it)->dirtyFlags[currentAspect(params)].dirtyOutputs = false;
+}
+
 
 void DDGNode::copyAspect(int destAspect, int srcAspect)
 {
