@@ -1,18 +1,22 @@
 #version 120
 
 //0 -> disabled, 1 -> only lighting, 2 -> lighting & shadow
-uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
-uniform vec3 lightPosition[MAX_NUMBER_OF_LIGHTS];
+uniform int u_shadowTextureUnit[MAX_NUMBER_OF_LIGHTS];
+uniform int u_lightFlags[MAX_NUMBER_OF_LIGHTS];
+uniform int u_lightTypes[MAX_NUMBER_OF_LIGHTS];
+uniform vec3 u_lightDirs[MAX_NUMBER_OF_LIGHTS];
+uniform mat4 u_lightProjectionMatrices[MAX_NUMBER_OF_LIGHTS];
+uniform mat4 u_lightModelViewMatrices[MAX_NUMBER_OF_LIGHTS];
+
 varying vec3 normal;
 varying vec4 ambientGlobal;
-varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
-varying float spotOff[MAX_NUMBER_OF_LIGHTS];
-uniform int shadowTextureUnit[MAX_NUMBER_OF_LIGHTS];
+varying vec3 lightDirs[MAX_NUMBER_OF_LIGHTS];
+varying vec4 lightSpacePosition[MAX_NUMBER_OF_LIGHTS];
 
 #if ENABLE_SHADOW == 1 
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+//uniform float shadowNormalBias;
 #endif // ENABLE_SHADOW == 1 
-
 void main()
 {
 	vec4 ecPos;
@@ -21,39 +25,37 @@ void main()
 	// first transform the normal into eye space and normalize the result
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 
-#ifdef FLIP_NORMAL
-	normal *= -1.0;
-#endif
-
 	// now normalize the light's direction. Note that according to the
 	//OpenGL specification, the light is stored in eye space.
 	ecPos = gl_ModelViewMatrix * gl_Vertex;
+
+#if ENABLE_SHADOW == 1
+//       vec4 shadowPos = ecPos + vec4(normal * 1.0 /* shadowNormalBias */, 0.0);
+#endif
 
 	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 
 	for (int i=0 ; i<MAX_NUMBER_OF_LIGHTS ;i++)
 	{
-		if (lightFlag[i] > 0)
+		if (u_lightFlags[i] > 0)
 		{
-			aux = vec3(gl_LightSource[i].position-ecPos);
-			lightDir[i] = (aux);
+			lightSpacePosition[i] = u_lightProjectionMatrices[i] * u_lightModelViewMatrices[i] * gl_Vertex;
 
-			// compute the distance to the light source to a varying variable
-			//dist[i] = length(aux);
+			if(u_lightTypes[i] == 0)
+				lightDirs[i] = (gl_ModelViewMatrix * vec4((u_lightDirs[i] * -1), 0.0)).xyz;
+			else if(u_lightTypes[i] == 2)
+			{
+				lightDirs[i] = (gl_LightSource[i].position-ecPos).xyz;
+				//spotOff[i] = gl_LightSource[i].spotCosCutoff;
+			}
 
-			// Normalize the halfVector to pass it to the fragment shader
-			//halfVector[i] = normalize(gl_LightSource[i].halfVector.xyz);
-
-			// Compute the diffuse, ambient and globalAmbient terms
-			//diffuse[i] = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
-			//ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
-			spotOff[i] = gl_LightSource[i].spotCosCutoff;
 
 #if ENABLE_SHADOW == 1 
-			if (lightFlag[i] == 2)
-			{
-				shadowTexCoord[i] = gl_TextureMatrix[shadowTextureUnit[i]] * gl_ModelViewMatrix * gl_Vertex;
-			}
+			if (u_lightFlags[i] == 2)
+            {
+                shadowTexCoord[i] = gl_TextureMatrix[u_shadowTextureUnit[i]] * gl_ModelViewMatrix * gl_Vertex;
+
+            }
 #endif // ENABLE_SHADOW == 1 
 		}
 

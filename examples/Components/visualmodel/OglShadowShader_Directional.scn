@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Node 	 name="root"  dt="0.02"  >
+	<BackgroundSetting color="0.5 0.5 0.5" />
+	<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/dragon.obj"  translation="0 0 -5"  scale3d="0.3 0.3 0.3"  material="Default Diffuse 1 0 1 0 1 Ambient 1 0 0.2 0 1 Specular 0 0 1 0 1 Emissive 0 0 1 0 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+	
+	<OglModel template="ExtVec3f" name="FloorV"  fileMesh="mesh/floor.obj"  translation="0 -2.5 0"  scale3d="0.5 0.5 0.5"  material="Default Diffuse 1 0.5 0.5 0.8 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45 No texture linked to the material No bump texture linked to the material "  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+	<LightManager name="lightManager1"  listening="1"  shadows="1"  softShadows="0" />
+	<OglShadowShader name="oglShadowShader1" />
+	<DirectionalLight name="spotLight1"  shadowTextureSize="512" direction="-0.5 -0.5 -0.5"  shadowFactor="1" />
+	<!-- <OglViewport screenPosition="0 0" screenSize="250 250" cameraPosition="-200 0 0" cameraOrientation="0 0.707 0 -0.707" zNear="1" zFar="1000" /> -->
+
+</Node>
