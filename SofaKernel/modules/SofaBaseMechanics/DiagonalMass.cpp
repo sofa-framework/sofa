@@ -330,31 +330,25 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const VisualParams* vparams)
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
-    Inherited::init();
+    Inherited::reinit();
 }
 
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::reinit()
 {
-    Inherited::init();
+    Inherited::reinit();
 }
 
-// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
-// WARNING WARNING It is needed to clarify if this is a bug or a desired
-// implementation.
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
 {
-    Inherited::init();
+     initRigidImpl<Rigid3fTypes>() ;
 }
 
-// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
-// WARNING WARNING It is needed to clarify if this is a bug or a desired
-// implementation.
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
 {
-    Inherited::init();
+     initRigidImpl<Rigid2fTypes>() ;
 }
 
 template <>
