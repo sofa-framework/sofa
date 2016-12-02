@@ -93,16 +93,16 @@ Light::Light()
     //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
     //This field should support the color="red" api.
     , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
-    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
-    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
+    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
+    , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
+    , d_zFar(initData(&d_zFar, "zFar", "[Shadowing] Light's ZFar"))
+    , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
     , d_softShadows(initData(&d_softShadows, (bool) false, "softShadows", "[Shadowing] Turn on Soft Shadow from this light"))
     , d_shadowFactor(initData(&d_shadowFactor, (float) 1.0, "shadowFactor", "[Shadowing] Shadow Factor (decrease/increase darkness)"))
     , d_VSMLightBleeding(initData(&d_VSMLightBleeding, (float) 0.05, "VSMLightBleeding", "[Shadowing] (VSM only) Light bleeding paramter"))
     , d_VSMMinVariance(initData(&d_VSMMinVariance, (float) 0.001, "VSMMinVariance", "[Shadowing] (VSM only) Minimum variance parameter"))
     , d_textureUnit(initData(&d_textureUnit, (unsigned short) 1, "textureUnit", "[Shadowing] Texture unit for the genereated shadow texture"))
-    , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
-    , d_zFar(initData(&d_zFar, "zFar", "[Shadowing] Light's ZFar"))
     , d_modelViewMatrix(initData(&d_modelViewMatrix, "modelViewMatrix", "[Shadowing] ModelView Matrix"))
     , d_projectionMatrix(initData(&d_projectionMatrix, "projectionMatrix", "[Shadowing] Projection Matrix"))
     , b_needUpdate(false)
@@ -208,7 +208,6 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
 {
     if (b_needUpdate)
         updateVisual();
-    const Vector3& pos = getPosition();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -219,6 +218,7 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     m_depthShader->setFloat(0, "u_zNear", this->getZNear());
     m_depthShader->setInt(0, "u_lightType", this->getLightType());
     m_depthShader->setFloat(0, "u_shadowFactor", d_shadowFactor.getValue());
+    //const Vector3& pos = getPosition();
     //m_depthShader->setFloat4(0, "u_lightPosition", (GLfloat) pos[0], (GLfloat)pos[1], (GLfloat)pos[2], 1.0);
     m_depthShader->start();
     m_shadowFBO.start();
@@ -362,12 +362,12 @@ GLuint Light::getShadowMapSize()
     return m_shadowTexWidth;
 }
 
-const GLfloat Light::getZNear() 
-{ 
-    return d_zNear.getValue(); 
+GLfloat Light::getZNear()
+{
+    return d_zNear.getValue();
 }
 
-const GLfloat Light::getZFar()
+GLfloat Light::getZFar()
 {
     return d_zFar.getValue();
 }
@@ -400,6 +400,7 @@ void DirectionalLight::draw(const core::visual::VisualParams* )
 {
 
 }
+
 void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
 {
     //1-compute bounding box
@@ -436,16 +437,16 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
 
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
-    Vector3 lightMinBBox = q.rotate(sceneBBox.minBBox() - center) + posLight;
-    Vector3 lightMaxBBox = q.rotate(sceneBBox.maxBBox() - center) + posLight;
-    
+    //Vector3 lightMinBBox = q.rotate(sceneBBox.minBBox() - center) + posLight;
+    //Vector3 lightMaxBBox = q.rotate(sceneBBox.maxBBox() - center) + posLight;
+
     for (unsigned int i = 0; i < 3; i++)
     {
         mat[i * 4] = xAxis[i];
         mat[i * 4 + 1] = yAxis[i];
         mat[i * 4 + 2] = zAxis[i];
     }
-    
+
     //translation
     mat[12] = 0;
     mat[13] = 0;
@@ -493,7 +494,7 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
     mat[7] = 0.0;
     mat[11] = 0.0;
     mat[15] = 1.0;
-    
+
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
@@ -541,7 +542,7 @@ void DirectionalLight::preDrawShadow(core::visual::VisualParams* vp)
     float zNear, left, bottom;
     float zFar, right, top;
 
-    zNear, left, bottom = -1e10;
+    zNear = left = bottom = -1e10;
     zFar = right = top = 1e10;
 
     Light::preDrawShadow(vp);
@@ -925,7 +926,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[7] = 0.0;
     mat[11] = -1.0;
     mat[15] = 0.0;
-    
+
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
