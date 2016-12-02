@@ -98,7 +98,7 @@ SOFA_HELPER_API std::ostream& SVector<std::string>::write( std::ostream& os ) co
 {
     if ( !this->empty() )
     {
-        typename SVector<std::string>::const_iterator i = this->begin(), iend=this->end();
+        SVector<std::string>::const_iterator i = this->begin(), iend=this->end();
         os << "[ '" << *i <<"'";
         ++i;
         for ( ; i!=iend; ++i )
