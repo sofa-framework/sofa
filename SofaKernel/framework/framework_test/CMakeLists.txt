@@ -15,7 +15,6 @@ set(SOURCE_FILES
     helper/Quater_test.cpp
     helper/SVector_test.cpp
     helper/io/MeshOBJ_test.cpp
-    helper/io/ImagePNG_test.cpp
     helper/system/FileMonitor_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
@@ -23,6 +22,10 @@ set(SOURCE_FILES
     helper/logging/logging_test.cpp
     main.cpp
 )
+
+if(SOFA_HAVE_PNG)
+    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
+endif()
 
 include_directories(${gtest_SOURCE_DIR}/include)
 
