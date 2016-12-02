@@ -48,7 +48,7 @@ namespace component
 namespace forcefield
 {
 
-
+using sofa::core::objectmodel::ComponentState ;
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  basic computation methods  /////////////////////
@@ -689,8 +689,8 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
         }
 
         /*for(unsigned int i=0;i<_stiffnesses.size();++i)
-        	for(typename CompressedValue::iterator it=_stiffnesses[i].begin();it!=_stiffnesses[i].end();++it)
-        		serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
+            for(typename CompressedValue::iterator it=_stiffnesses[i].begin();it!=_stiffnesses[i].end();++it)
+                serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
 
         F = JKJt * D;
     }
@@ -1397,6 +1397,8 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
+    m_componentstate = ComponentState::Invalid ;
+
     const VecReal& youngModulus = _youngModulus.getValue();
     minYoung=youngModulus[0];
     maxYoung=youngModulus[0];
@@ -1417,7 +1419,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
     _mesh = this->getContext()->getMeshTopology();
     if (_mesh==NULL)
     {
-        serr << "ERROR(TetrahedronFEMForceField): object must have a BaseMeshTopology."<<sendl;
+        msg_error(this) << " object must have a mesh topology. The component is inactivated.  "
+                           "To remove this error message please add a topology component to your scene.";
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -1426,7 +1429,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
     if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbCubes()<=0))
 #endif
     {
-        serr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric BaseMeshTopology."<<sendl;
+        msg_error(this) << " object must have a tetrahedric topology. The component is inactivated.  "
+                           "To remove this error message please add a tetrahedric topology component to your scene.";
         return;
     }
     if (!_mesh->getTetrahedra().empty())
@@ -1516,16 +1520,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
         tetrahedra->reserve(nbcubes*5);
         for (int i=0;i<nbcubes;i++)
         {
-        	MeshTopology::Cube c = _mesh->getCube(i);
-        	int sym = 0;
-        	if ((i%nx)&1) sym+=1;
-        	if (((i/nx)%ny)&1) sym+=2;
-        	if ((i/(nx*ny))&1) sym+=4;
-        	tetrahedra->push_back(make_array(c[1^sym],c[0^sym],c[3^sym],c[5^sym]));
-        	tetrahedra->push_back(make_array(c[2^sym],c[3^sym],c[0^sym],c[6^sym]));
-        	tetrahedra->push_back(make_array(c[4^sym],c[5^sym],c[6^sym],c[0^sym]));
-        	tetrahedra->push_back(make_array(c[7^sym],c[6^sym],c[5^sym],c[3^sym]));
-        	tetrahedra->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
+            MeshTopology::Cube c = _mesh->getCube(i);
+            int sym = 0;
+            if ((i%nx)&1) sym+=1;
+            if (((i/nx)%ny)&1) sym+=2;
+            if ((i/(nx*ny))&1) sym+=4;
+            tetrahedra->push_back(make_array(c[1^sym],c[0^sym],c[3^sym],c[5^sym]));
+            tetrahedra->push_back(make_array(c[2^sym],c[3^sym],c[0^sym],c[6^sym]));
+            tetrahedra->push_back(make_array(c[4^sym],c[5^sym],c[6^sym],c[0^sym]));
+            tetrahedra->push_back(make_array(c[7^sym],c[6^sym],c[5^sym],c[3^sym]));
+            tetrahedra->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
         }
         */
         _indexedElements = tetrahedra;
@@ -1548,10 +1552,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
         }
     }*/
 
+    m_componentstate = ComponentState::Valid ;
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
-//     sout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<sendl;
+     sout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<sendl;
 }
 
 
@@ -1570,6 +1575,9 @@ void TetrahedronFEMForceField<DataTypes>::reset()
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::reinit()
 {
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
+
     if (!this->mstate) return;
     if (!_mesh->getTetrahedra().empty())
     {
@@ -1813,6 +1821,8 @@ inline void TetrahedronFEMForceField<DataTypes>::addDForce(const core::Mechanica
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(m_componentstate == ComponentState::Invalid)
+        return ;
 
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
@@ -2007,7 +2017,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
             if(heterogeneous)
             {
-                float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));                
+                float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
                 defaulttype::Vec<4,float> color1 = defaulttype::Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
                 defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
@@ -2024,7 +2034,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 #ifdef SIMPLEFEM_COLORMAP
                 if (_computeVonMisesStress.getValue() > 0) {
                     helper::ColorMap::evaluator<Real> evalColor = m_VonMisesColorMap.getEvaluator(minVM, maxVM);
-                    defaulttype::Vec4f col = evalColor(vM[i]); 
+                    defaulttype::Vec4f col = evalColor(vM[i]);
 
                     col[3] = 1.0f;
                     vparams->drawTool()->drawTriangles(points[0],col);
@@ -2407,7 +2417,7 @@ void TetrahedronFEMForceField<DataTypes>::handleEvent(core::objectmodel::Event *
 {
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event)) {
         if (_updateStiffness.getValue()) {
-            //std::cout << this->getName() << " HANDLE EVENT " << std::endl;            
+            //std::cout << this->getName() << " HANDLE EVENT " << std::endl;
 
             unsigned int i;
             typename VecElement::const_iterator it;
