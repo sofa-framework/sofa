@@ -92,8 +92,6 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
-        std::vector< std::string > attributeList;
-        arg->getAttributeList(attributeList);
         std::string valueString(arg->getAttribute("src"));
 
         if (valueString[0] != '@')
@@ -102,6 +100,8 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         else
         {
+            std::vector< std::string > attributeList;
+            arg->getAttributeList(attributeList);
             setSrc(valueString, &attributeList);
         }
         arg->removeAttribute("src");
