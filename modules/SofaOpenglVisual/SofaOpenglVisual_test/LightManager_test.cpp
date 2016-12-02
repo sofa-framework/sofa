@@ -5,6 +5,7 @@ using std::vector;
 using std::string;
 
 #include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -39,7 +40,7 @@ int messageInited = initMessage();
 
 namespace sofa {
 
-struct TestLightManager : public ::testing::Test {
+struct TestLightManager : public Sofa_test<double> {
     void checkAttributes();
     void checkColor_Ambient_OK();
     void checkColor_Ambient_OpenIssue();
@@ -73,14 +74,14 @@ void  TestLightManager::checkAttributes()
 
     for(auto& attrname : attrnames)
         EXPECT_NE( lm->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
+
+    clearSceneGraph();
 }
 
 void TestLightManager::checkColor_Ambient_OK()
 {
     MessageAsTestFailure error(Message::Error) ;
     MessageAsTestFailure warning(Message::Warning) ;
-
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
@@ -99,14 +100,14 @@ void TestLightManager::checkColor_Ambient_OK()
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     EXPECT_NE(lm, nullptr) ;
+
+    clearSceneGraph();
 }
 
 void TestLightManager::checkColor_Ambient_OpenIssue()
 {
     MessageAsTestFailure error(Message::Error) ;
     MessageAsTestFailure warning(Message::Warning) ;
-
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
@@ -125,6 +126,8 @@ void TestLightManager::checkColor_Ambient_OpenIssue()
 
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("lightmanager") ;
     EXPECT_NE(lm, nullptr) ;
+
+    clearSceneGraph();
 }
 
 TEST_F(TestLightManager, checkAttributes)

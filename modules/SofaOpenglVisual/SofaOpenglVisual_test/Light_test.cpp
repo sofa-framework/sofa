@@ -4,7 +4,8 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test;
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -45,7 +46,8 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-struct TestLight : public ::testing::Test {
+class TestLight : public Sofa_test<double> {
+public:
     void checkSpotLightValidAttributes();
     void checkDirectionalLightValidAttributes();
     void checkPositionalLightValidAttributes();
@@ -56,9 +58,6 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
 {
     MessageAsTestFailure error(Message::Error) ;
     ExpectMessage warning(Message::Warning) ;
-
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -78,8 +77,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
     BaseObject* lm = root->getTreeNode("Level 1")->getObject("light1") ;
     ASSERT_NE(lm, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
-
+    clearSceneGraph();
 }
 
 void TestLight::checkPositionalLightValidAttributes()
@@ -87,15 +85,13 @@ void TestLight::checkPositionalLightValidAttributes()
     MessageAsTestFailure warning(Message::Warning) ;
     MessageAsTestFailure error(Message::Error) ;
 
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
+             "   <PositionalLight name='light1'/>                                            \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -124,8 +120,7 @@ void TestLight::checkPositionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
-
+    clearSceneGraph();
 }
 
 void TestLight::checkDirectionalLightValidAttributes()
@@ -133,15 +128,13 @@ void TestLight::checkDirectionalLightValidAttributes()
     MessageAsTestFailure warning(Message::Warning) ;
     MessageAsTestFailure error(Message::Error) ;
 
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
+             "   <DirectionalLight name='light1'/>                                           \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
@@ -170,7 +163,7 @@ void TestLight::checkDirectionalLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 void TestLight::checkSpotLightValidAttributes()
@@ -187,6 +180,7 @@ void TestLight::checkSpotLightValidAttributes()
              "  <Node name='Level 1'>                                                        \n"
              "   <MechanicalObject/>                                                         \n"
              "   <LightManager name='lightmanager'/>                                         \n"
+             "   <SpotLight name='light1'/>                                                  \n"
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
