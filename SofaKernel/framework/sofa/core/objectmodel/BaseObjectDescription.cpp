@@ -86,10 +86,10 @@ std::string BaseObjectDescription::getBaseFile()
 }
 
 ///// Get all attribute data, read-only
-//const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
-//{
-//    return attributes;
-//}
+const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
+{
+    return attributes;
+}
 
 /// Find an object description given its name (relative to this object)
 BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)

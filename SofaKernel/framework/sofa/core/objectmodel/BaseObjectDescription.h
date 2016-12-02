@@ -57,15 +57,15 @@ public:
     {
     protected:
         std::string value;
-        bool accessed;
+        mutable bool accessed;
     public:
         Attribute() : accessed(false) {}
         Attribute(const std::string& v) : value(v), accessed(false) {}
         void operator=(const std::string& v) { value = v; }
         void operator=(const char* v) { value = v; }
-        operator std::string() { accessed = true; return value; }
-        const char* c_str() { accessed = true; return value.c_str(); }
-        bool isAccessed() { return accessed; }
+        operator std::string() const { accessed = true; return value; }
+        const char* c_str() const { accessed = true; return value.c_str(); }
+        bool isAccessed() const { return accessed; }
         void setAccessed(bool v) { accessed = v; }
     };
 
@@ -91,12 +91,12 @@ public:
     virtual std::string getBaseFile();
 
     ///// Get all attribute data, read-only
-    //virtual const AttributeMap& getAttributeMap() const;
+    virtual const AttributeMap& getAttributeMap() const;
 
     ///// Get list of all attributes
-    template<class T> void getAttributeList(T& container)
+    template<class T> void getAttributeList(T& container) const
     {
-        for (AttributeMap::iterator it = attributes.begin();
+        for (AttributeMap::const_iterator it = attributes.begin();
                 it != attributes.end(); ++it)
             container.push_back(it->first);
     }
