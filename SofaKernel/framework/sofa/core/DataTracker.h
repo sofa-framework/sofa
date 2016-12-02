@@ -56,8 +56,8 @@ namespace core
         DataTrackerDDGNode() : core::objectmodel::DDGNode() {}
 
     private:
-        DataTrackerDDGNode(const DataTrackerDDGNode& n);
-        DataTrackerDDGNode& operator=(const DataTrackerDDGNode& n);
+        DataTrackerDDGNode(const DataTrackerDDGNode&);
+        void operator=(const DataTrackerDDGNode&);
 
     public:
 
@@ -167,7 +167,7 @@ namespace core
     /// A DDGNode that will call a given Functor as soon as one of its input changes
     /// (a pointer to this DataTrackerFunctor is passed as parameter in the functor)
     template <typename FunctorType>
-    class SOFA_CORE_API DataTrackerFunctor : public core::objectmodel::DDGNode
+    class DataTrackerFunctor : public core::objectmodel::DDGNode
     {
     public:
 
@@ -189,7 +189,7 @@ namespace core
 
 
         /// This method is needed by DDGNode
-        virtual void update(){};
+        virtual void update(){}
         /// This method is needed by DDGNode
         const std::string& getName() const
         {
@@ -203,8 +203,8 @@ namespace core
 
     private:
 
-        DataTrackerFunctor(const DataTrackerFunctor& n);
-        DataTrackerFunctor& operator=(const DataTrackerFunctor& n);
+        DataTrackerFunctor(const DataTrackerFunctor&);
+        void operator=(const DataTrackerFunctor&);
         FunctorType& m_functor; ///< the functor to call when the input data changed
 
     };
