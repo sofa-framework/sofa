@@ -422,9 +422,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     interactionButton->setCheckable(true);
     interactionButton->setStyleSheet("background-color: cyan;");
 
-    _14->addWidget(interactionButton, 3, 0, 1, 1);
-    _14->removeWidget(screenshotButton);
-    _14->addWidget(screenshotButton, 3, 1, 1,1);
+    gridLayout->addWidget(interactionButton, 3, 0, 1, 1);
+    gridLayout->removeWidget(screenshotButton);
+    gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
 
     interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0));
     interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0));
