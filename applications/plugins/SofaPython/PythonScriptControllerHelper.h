@@ -79,7 +79,6 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
 
 } // namespase internal
 
-
 /** A helper function to call \a funcName in \a pythonScriptControllerName.
  * The function returned value is stored in \a result.
  * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.
@@ -113,7 +112,6 @@ void PythonScriptController_call(std::nullptr_t /*result*/, sofa::simulation::No
     int* none=nullptr;
     PythonScriptController_call(none, root, pythonScriptControllerName, funcName, parameters...);
 }
-
 
 } // namespace helper
 } // namespace sofa
