@@ -620,6 +620,7 @@ protected:
 
     void elaston()
     {
+        if (this->Reg.size() == 0) return;
         // retrieve data
         waPositions pos(this->f_position);
 
