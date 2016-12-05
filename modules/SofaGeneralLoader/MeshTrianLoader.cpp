@@ -107,7 +107,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
     // --- Loading Vertices positions ---
     dataFile >> nbVertices; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
     for (unsigned int i=0; i<nbVertices; ++i)
     {
         SReal x,y,z;
@@ -116,12 +116,12 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
         my_positions.push_back (Vector3(x, y, z));
     }
-    positions.endEdit();
+    d_positions.endEdit();
 
     // --- Loading Triangles array ---
     dataFile >> nbTriangles; //Loading number of Triangle
 
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
     helper::vector<helper::fixed_array <int,3> >& my_neighborTable = *(neighborTable.beginEdit());
     helper::vector<helper::vector <unsigned int> >& my_edgesOnBorder = *(edgesOnBorder.beginEdit());
     helper::vector<unsigned int>& my_trianglesOnBorderList = *(trianglesOnBorderList.beginEdit());
@@ -220,7 +220,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
     }
 
-    triangles.endEdit();
+    d_triangles.endEdit();
     neighborTable.endEdit();
     trianglesOnBorderList.endEdit();
     edgesOnBorder.endEdit();
@@ -252,7 +252,7 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
     // --- Loading Vertices positions ---
     dataFile >> buffer >> nbVertices; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
     for (unsigned int i=0; i<nbVertices; ++i)
     {
         SReal x,y,z;
@@ -260,13 +260,13 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         dataFile >> x >> y >> z;
         my_positions.push_back (Vector3(x, y, z));
     }
-    positions.endEdit();
+    d_positions.endEdit();
 
 
     // --- Loading Normals positions ---
     dataFile >> buffer >> nbNormals; //Loading number of Vertex
 
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
     for (unsigned int i=0; i<nbNormals; ++i)
     {
         SReal x,y,z;
@@ -274,13 +274,13 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         dataFile >> x >> y >> z;
         my_normals.push_back (Vector3(x, y, z));
     }
-    normals.endEdit();
+    d_normals.endEdit();
 
 
     // --- Loading Triangles array ---
     dataFile >> buffer >> nbTriangles; //Loading number of Triangle
 
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     for (unsigned int i=0; i<nbTriangles; ++i)
     {
@@ -291,7 +291,7 @@ bool MeshTrianLoader::readTrian2 (const char* filename)
         addTriangle(&my_triangles, nodes);
     }
 
-    triangles.endEdit();
+    d_triangles.endEdit();
 
     return true;
 }

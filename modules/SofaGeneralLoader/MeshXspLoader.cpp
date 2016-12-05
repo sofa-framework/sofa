@@ -127,8 +127,8 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
     }
 
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
 
     helper::vector <Vector3>& my_gravity = *(gravity.beginEdit());
     helper::vector <double>& my_viscosity = *(viscosity.beginEdit());
@@ -194,16 +194,16 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
         else		// it's an unknown keyword
         {
             std::cerr << "Unknown MassSpring keyword:" << cmd;
-            positions.endEdit();
-            edges.endEdit();
+            d_positions.endEdit();
+            d_edges.endEdit();
             gravity.endEdit();
             viscosity.endEdit();
             return false;
         }
     }
 
-    positions.endEdit();
-    edges.endEdit();
+    d_positions.endEdit();
+    d_edges.endEdit();
     gravity.endEdit();
     viscosity.endEdit();
 

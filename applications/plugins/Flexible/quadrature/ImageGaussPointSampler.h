@@ -52,35 +52,39 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageTypes, class MaskTypes>
 struct ImageGaussPointSamplerSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageTypes, class MaskTypes> class ImageGaussPointSampler;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class ImageT, class MaskT>
+struct ImageGaussPointSamplerSpecialization<defaulttype::Image<ImageT>,defaulttype::Image<MaskT>>
 {
+    typedef ImageGaussPointSampler<defaulttype::Image<ImageT>,defaulttype::Image<MaskT>> ImageGaussPointSamplerT;
+
     typedef unsigned int IndT;
     typedef defaulttype::Image<IndT> IndTypes;
 
-    template<class ImageGaussPointSampler>
-    static void init(ImageGaussPointSampler* This)
+    static void init(ImageGaussPointSamplerT* This)
     {
-        typedef typename ImageGaussPointSampler::IndTypes IndTypes;
-        typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::raDist raDist;
-        typedef typename ImageGaussPointSampler::waDist waDist;
-        typedef typename ImageGaussPointSampler::waPositions waPositions;
-        typedef typename ImageGaussPointSampler::waVolume waVolume;
+        typedef typename ImageGaussPointSamplerT::IndTypes IndTypes;
+        typedef typename ImageGaussPointSamplerT::waInd waInd;
+        typedef typename ImageGaussPointSamplerT::DistTypes DistTypes;
+        typedef typename ImageGaussPointSamplerT::raDist raDist;
+        typedef typename ImageGaussPointSamplerT::waDist waDist;
+        typedef typename ImageGaussPointSamplerT::waPositions waPositions;
+        typedef typename ImageGaussPointSamplerT::waVolume waVolume;
 
         // retrieve data
         raDist rweights(This->f_w);             if(rweights->isEmpty())  { This->serr<<"Weights not found"<<This->sendl; return; }
 
         // init pos, vol, reg data; voronoi (=region data) and distances (=error image)
-        typename ImageGaussPointSampler::imCoord dim = rweights->getDimensions();
+        typename ImageGaussPointSamplerT::imCoord dim = rweights->getDimensions();
         dim[DistTypes::DIMENSION_S]=dim[DistTypes::DIMENSION_T]=1;
 
         waPositions pos(This->f_position);          pos.clear();                // pos is cleared since it is always initialized with one point, so user placed points are not allowed for now..
@@ -97,22 +101,20 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     /// midpoint integration : put samples uniformly and weight them by their volume
-
-    template<class ImageGaussPointSampler>
-    static void midpoint(ImageGaussPointSampler* This)
+    static void midpoint(ImageGaussPointSamplerT* This)
     {
-        typedef typename ImageGaussPointSampler::IndTypes IndTypes;
-        typedef typename ImageGaussPointSampler::raInd raInd;
-        typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::DistT DistT;
-        typedef typename ImageGaussPointSampler::waDist waDist;
-        typedef typename ImageGaussPointSampler::SeqPositions SeqPositions;
-        typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::waPositions waPositions;
-        typedef typename ImageGaussPointSampler::indList indList;
-        typedef typename ImageGaussPointSampler::raTransform raTransform;
-        typedef typename ImageGaussPointSampler::factType factType;
+        typedef typename ImageGaussPointSamplerT::IndTypes IndTypes;
+        typedef typename ImageGaussPointSamplerT::raInd raInd;
+        typedef typename ImageGaussPointSamplerT::waInd waInd;
+        typedef typename ImageGaussPointSamplerT::DistTypes DistTypes;
+        typedef typename ImageGaussPointSamplerT::DistT DistT;
+        typedef typename ImageGaussPointSamplerT::waDist waDist;
+        typedef typename ImageGaussPointSamplerT::SeqPositions SeqPositions;
+        typedef typename ImageGaussPointSamplerT::Coord Coord;
+        typedef typename ImageGaussPointSamplerT::waPositions waPositions;
+        typedef typename ImageGaussPointSamplerT::indList indList;
+        typedef typename ImageGaussPointSamplerT::raTransform raTransform;
+        typedef typename ImageGaussPointSamplerT::factType factType;
 
         typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
@@ -234,31 +236,29 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     /// returns true if (x,y,z) in the region of interest
-    template<class ImageGaussPointSampler>
-    static bool isInMask(ImageGaussPointSampler* This,unsigned x,unsigned y, unsigned z)
+    static bool isInMask(ImageGaussPointSamplerT* This,unsigned x,unsigned y, unsigned z)
     {
-        typename ImageGaussPointSampler::raMask rmask(This->f_mask);
+        typename ImageGaussPointSamplerT::raMask rmask(This->f_mask);
         if(rmask->isEmpty()) return true;
-        typename ImageGaussPointSampler::raMaskLabels labels(This->f_maskLabels);
-        typename ImageGaussPointSampler::MaskT val = rmask->getCImg()(x,y,z);
+        typename ImageGaussPointSamplerT::raMaskLabels labels(This->f_maskLabels);
+        typename ImageGaussPointSamplerT::MaskT val = rmask->getCImg()(x,y,z);
         for(unsigned int i=0;i<labels.size();i++) if(labels[i]==val) return true;
         return false;
     }
 
     /// Identify regions sharing similar parents
     /// returns a list of region containing the parents, the number of voxels and center; and fill the voronoi image
-    template<class ImageGaussPointSampler>
-    static void Cluster_SimilarIndices(ImageGaussPointSampler* This)
+    static void Cluster_SimilarIndices(ImageGaussPointSamplerT* This)
     {
-        typedef typename ImageGaussPointSampler::Real Real;
-        typedef typename ImageGaussPointSampler::IndTypes IndTypes;
-        typedef typename ImageGaussPointSampler::raInd raInd;
-        typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::indList indList;
-        typedef typename ImageGaussPointSampler::raTransform raTransform;
-        typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::raPositions raPositions;
-        typedef typename ImageGaussPointSampler::factType factType;
+        typedef typename ImageGaussPointSamplerT::Real Real;
+        typedef typename ImageGaussPointSamplerT::IndTypes IndTypes;
+        typedef typename ImageGaussPointSamplerT::raInd raInd;
+        typedef typename ImageGaussPointSamplerT::waInd waInd;
+        typedef typename ImageGaussPointSamplerT::indList indList;
+        typedef typename ImageGaussPointSamplerT::raTransform raTransform;
+        typedef typename ImageGaussPointSamplerT::Coord Coord;
+        typedef typename ImageGaussPointSamplerT::raPositions raPositions;
+        typedef typename ImageGaussPointSamplerT::factType factType;
 
         // retrieve data
         raInd rindices(This->f_index);          if(rindices->isEmpty())  { This->serr<<"Indices not found"<<This->sendl; return; }        const typename IndTypes::CImgT& indices = rindices->getCImg();
@@ -306,18 +306,17 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     /// subdivide region[index] in two regions
-    template<class ImageGaussPointSampler>
-    static void subdivideRegion(ImageGaussPointSampler* This,const unsigned int index)
+    static void subdivideRegion(ImageGaussPointSamplerT* This,const unsigned int index)
     {
-        typedef typename ImageGaussPointSampler::Real Real;
-        typedef typename ImageGaussPointSampler::IndTypes IndTypes;
-        typedef typename ImageGaussPointSampler::waInd waInd;
-        typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::DistT DistT;
-        typedef typename ImageGaussPointSampler::waDist waDist;
-        typedef typename ImageGaussPointSampler::raTransform raTransform;
-        typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::factType factType;
+        typedef typename ImageGaussPointSamplerT::Real Real;
+        typedef typename ImageGaussPointSamplerT::IndTypes IndTypes;
+        typedef typename ImageGaussPointSamplerT::waInd waInd;
+        typedef typename ImageGaussPointSamplerT::DistTypes DistTypes;
+        typedef typename ImageGaussPointSamplerT::DistT DistT;
+        typedef typename ImageGaussPointSamplerT::waDist waDist;
+        typedef typename ImageGaussPointSamplerT::raTransform raTransform;
+        typedef typename ImageGaussPointSamplerT::Coord Coord;
+        typedef typename ImageGaussPointSamplerT::factType factType;
 
         typedef defaulttype::Vec<3,int> iCoord;
         typedef std::pair<DistT,iCoord > DistanceToPoint;
@@ -384,19 +383,18 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     /// update Polynomial Factors from the voxel map
-    template<class ImageGaussPointSampler>
-    static void fillPolynomialFactors(ImageGaussPointSampler* This,const unsigned int factIndex, const bool writeErrorImg=false)
+    static void fillPolynomialFactors(ImageGaussPointSamplerT* This,const unsigned int factIndex, const bool writeErrorImg=false)
     {
-        typedef typename ImageGaussPointSampler::Real Real;
-        typedef typename ImageGaussPointSampler::IndTypes IndTypes;
-        typedef typename ImageGaussPointSampler::raInd raInd;
-        typedef typename ImageGaussPointSampler::DistTypes DistTypes;
-        typedef typename ImageGaussPointSampler::raDist raDist;
-        typedef typename ImageGaussPointSampler::waDist waDist;
-        typedef typename ImageGaussPointSampler::Coord Coord;
-        typedef typename ImageGaussPointSampler::indListIt indListIt;
-        typedef typename ImageGaussPointSampler::raTransform raTransform;
-        typedef typename ImageGaussPointSampler::factType factType;
+        typedef typename ImageGaussPointSamplerT::Real Real;
+        typedef typename ImageGaussPointSamplerT::IndTypes IndTypes;
+        typedef typename ImageGaussPointSamplerT::raInd raInd;
+        typedef typename ImageGaussPointSamplerT::DistTypes DistTypes;
+        typedef typename ImageGaussPointSamplerT::raDist raDist;
+        typedef typename ImageGaussPointSamplerT::waDist waDist;
+        typedef typename ImageGaussPointSamplerT::Coord Coord;
+        typedef typename ImageGaussPointSamplerT::indListIt indListIt;
+        typedef typename ImageGaussPointSamplerT::raTransform raTransform;
+        typedef typename ImageGaussPointSamplerT::factType factType;
 
         // retrieve data
         raDist rweights(This->f_w);             if(rweights->isEmpty())  { This->serr<<"Weights not found"<<This->sendl; return; }  const typename DistTypes::CImgT& weights = rweights->getCImg();
@@ -410,7 +408,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         helper::vector<Coord> pi(fact.nb);
 
         // weights (one line for each parent)
-        typename ImageGaussPointSampler::Matrix wi(fact.parentsToNodeIndex.size(),fact.nb); wi.setZero();
+        typename ImageGaussPointSamplerT::Matrix wi(fact.parentsToNodeIndex.size(),fact.nb); wi.setZero();
 
         // get them from images
         unsigned int count=0;
@@ -453,9 +451,8 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ImageTypes_, class MaskTypes_>
 class ImageGaussPointSampler : public BaseGaussPointSampler
 {
-    friend struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
-    typedef ImageGaussPointSamplerSpecialization<ImageTypes_::label> ImageGaussPointSamplerSpec;
+    friend struct ImageGaussPointSamplerSpecialization<ImageTypes_,MaskTypes_>;
+    typedef ImageGaussPointSamplerSpecialization<ImageTypes_,MaskTypes_> ImageGaussPointSamplerSpec;
 
 public:
     typedef BaseGaussPointSampler Inherit;
@@ -531,6 +528,7 @@ public:
         addInput(&f_transform);
         addInput(&f_mask);
         addInput(&f_maskLabels);
+        addOutput(&f_position);
         addOutput(&f_region);
         addOutput(&f_error);
         setDirtyValue();
@@ -622,6 +620,7 @@ protected:
 
     void elaston()
     {
+        if (this->Reg.size() == 0) return;
         // retrieve data
         waPositions pos(this->f_position);
 

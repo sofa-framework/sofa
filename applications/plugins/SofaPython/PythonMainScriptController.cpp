@@ -32,8 +32,6 @@ using sofa::helper::ScopedAdvancedTimer;
 
 using sofa::core::visual::VisualParams;
 
-#include "ScriptEnvironment.h"
-using sofa::simulation::ScriptEnvironment;
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
@@ -46,6 +44,7 @@ using sofa::core::objectmodel::PythonScriptEvent;
 
 //TODO(dmarchal): Use the deactivable ScopedTimer
 
+
 namespace sofa
 {
 
@@ -54,6 +53,8 @@ namespace component
 
 namespace controller
 {
+
+using sofa::core::objectmodel::IdleEvent ;
 
 int PythonMainScriptControllerClass = RegisterObject("A Sofa controller scripted in python, looking for callbacks directly "
                                                      "in the file (not in a class like the more general and powerful "
@@ -111,8 +112,15 @@ void PythonMainScriptController::loadScript()
     BIND_SCRIPT_FUNC_WITH_MESSAGE(onGUIEvent)
     BIND_SCRIPT_FUNC_WITH_MESSAGE(onScriptEvent)
     BIND_SCRIPT_FUNC_WITH_MESSAGE(draw)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onIdle)
 
     #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
+}
+
+void PythonMainScriptController::script_onIdleEvent(const IdleEvent* event)
+{
+    SOFA_UNUSED(event) ;
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle)
 }
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
@@ -227,7 +235,6 @@ void PythonMainScriptController::handleEvent(Event *event)
     if (PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
-        ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }

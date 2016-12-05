@@ -25,6 +25,8 @@
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <SofaBaseMechanics/initBaseMechanics.h>
+using sofa::core::ExecParams ;
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
@@ -38,8 +40,16 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
 #include <sofa/simulation/Node.h>
+using sofa::simulation::Node ;
+
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
+
+#include <SofaSimulationCommon/SceneLoaderXML.h>
+using sofa::simulation::SceneLoaderXML ;
+
+#include <string>
+using std::string ;
 
 #include <gtest/gtest.h>
 
@@ -71,6 +81,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename helper::vector<MassType> VecMass;
+    typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
 
     simulation::Simulation* simulation;
     simulation::Node::SPtr root;
@@ -124,6 +135,126 @@ public:
         createSceneGraph(positions, topologyContainer, geometryAlgorithms);
         simulation::getSimulation()->init(root.get());
         check(expectedTotalMass, expectedMass);
+    }
+
+    /// It is important to freeze what are the available Data field
+    /// of a component and rise warning/errors when some are removed.
+    void checkAttributes(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <DiagonalMass name='m_mass'/>                            "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        EXPECT_TRUE( mass->findData("mass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("totalMass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("massDensity") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("computeMassOnRest") != nullptr ) ;
+
+        EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr ) ;
+
+        EXPECT_TRUE( mass->findData("fileMass") != nullptr ) ;
+
+        // This one is an alias...
+        EXPECT_TRUE( mass->findData("filename") != nullptr ) ;
+
+        return ;
+    }
+
+
+    void checkAttributeSemantics(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <DiagonalMass name='m_mass' totalMass='8.0' />           "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            // TODO(dmarchal): The totalmass shouldn't be initialized with scene value as it is
+            // a read only value.
+            EXPECT_NE( mass->getTotalMass(), 8 ) ;
+        }
+
+        return ;
+    }
+
+    void checkAttributeTotalMassValidity(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <DiagonalMass name='m_mass'/>           "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            // TODO(dmarchal): The totalmass shouldn't be at -1 because
+            // it indicate it has not been properly initialized in init or reinit.
+            // the source code should be fixed.
+            EXPECT_NE( mass->getTotalMass(), -1 ) ;
+        }
+
+        return ;
+    }
+
+    void checkAttributeLoadFromFile(){
+        string scene =
+                "<?xml version='1.0'?>"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                "   <DiagonalMass name='m_mass' filename='BehaviorModels/card.rigid'/>      "
+                "</Node>                                                     " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            // The number of mass in card.rigid is one so this should be
+            // returned from the getMassCount()
+            EXPECT_EQ( mass->getMassCount(), 1 ) ;
+
+            // TODO(dmarchal): The totalmass shouldn't be at -1 because
+            // it indicate it has not been properly initialized.
+            // the source code should be fixed.
+            EXPECT_NE( mass->getTotalMass(), -1 ) ;
+        }
+
+        return ;
     }
 };
 
@@ -249,6 +380,22 @@ TEST_F(DiagonalMass3_test, singleHexahedron)
             geometryAlgorithms,
             expectedTotalMass,
             expectedMass);
+}
+
+TEST_F(DiagonalMass3_test, checkAttributes){
+    checkAttributes() ;
+}
+
+TEST_F(DiagonalMass3_test, checkAttributeSemantics_OpenIssue){
+    checkAttributeSemantics() ;
+}
+
+TEST_F(DiagonalMass3_test, checkAttributeTotalMassValidity_OpenIssue){
+    checkAttributeTotalMassValidity(); ;
+}
+
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile_OpenIssue){
+    checkAttributeLoadFromFile(); ;
 }
 
 

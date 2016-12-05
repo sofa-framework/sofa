@@ -45,7 +45,7 @@ int RequiredPluginClass = core::RegisterObject("Load required plugin")
         .add< RequiredPlugin >();
 
 RequiredPlugin::RequiredPlugin()
-    : pluginName( initData(&pluginName, "pluginName", "Name of the plugin to loaded. If this is empty, the name of this component is used as plugin name."))
+    : d_pluginName( initData(&d_pluginName, "pluginName", "Name of the plugin to loaded. If this is empty, the name of this component is used as plugin name."))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
 }
@@ -53,24 +53,29 @@ RequiredPlugin::RequiredPlugin()
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
-    if (!pluginName.getValue().empty() || !name.getValue().empty())
-        loadPlugin();
+
+    const helper::vector<std::string>& pluginName = d_pluginName.getValue();
+
+    // if no plugin name is given, try with the component name
+    if(pluginName.empty())
+        loadPlugin( name.getValue() );
+    else
+        for( const auto& it: pluginName )
+            loadPlugin( it );
 }
 
-void RequiredPlugin::loadPlugin()
+void RequiredPlugin::loadPlugin( const std::string& pluginName )
 {
-    if(pluginName.getValue().empty()) pluginName.setValue( name.getValue() );
-
     PluginManager& pluginManager = PluginManager::getInstance();
 
-    const std::string path = pluginManager.findPlugin(pluginName.getValue());
+    const std::string path = pluginManager.findPlugin(pluginName);
     if (path != "")
     {
         if (!PluginManager::getInstance().pluginIsLoaded(path))
         {
             if (PluginManager::getInstance().loadPlugin(path))
             {
-                const std::string guiPath = pluginManager.findPlugin(pluginName.getValue() + "_" + PluginManager::s_gui_postfix);
+                const std::string guiPath = pluginManager.findPlugin(pluginName + "_" + PluginManager::s_gui_postfix);
                 if (guiPath != "")
                 {
                     PluginManager::getInstance().loadPlugin(guiPath);
@@ -80,9 +85,7 @@ void RequiredPlugin::loadPlugin()
     }
     else
     {
-        const std::string msg = "Plugin not found: \"" + pluginName.getValue() + "\"";
-        msg_error("RequiredPlugin") << msg;
-
+        msg_error("RequiredPlugin") << "Plugin not found: \"" + pluginName + "\"";
     }
 }
 

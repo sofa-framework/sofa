@@ -59,7 +59,6 @@ SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObje
 
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
-#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
@@ -77,9 +76,6 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
         PyTuple_SetItem(tuple, i, vecParam[i]);
     return tuple;
 }
-#else
-// implement a c++98 version if necessary
-#endif
 
 } // namespase internal
 

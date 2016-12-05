@@ -405,7 +405,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 
     for (unsigned int i = 0 ; i < tetraDomain.size(); i++)
     {
-        std::cout << "tetraDomain " << tetraDomain[i] << std::endl;
+        //std::cout << "tetraDomain " << tetraDomain[i] << std::endl;
         data.push_back(labelCellData.getValue()[tetraDomain[i]-1]);
     }
 

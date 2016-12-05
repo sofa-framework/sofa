@@ -58,6 +58,7 @@ public:
 
     virtual std::streambuf* streambuf() const;
     virtual std::string readAll();
+    virtual void write(const std::string& data);
 
 private:
     std::fstream myFile;

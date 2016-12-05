@@ -82,10 +82,10 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
     if(f_printLog.getValue())
         sout << "MeshOffLoader::readOFF" << sendl;
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
 
-    helper::vector<Triangle>& my_triangles = *(triangles.beginEdit());
-    helper::vector<Quad>& my_quads = *(quads.beginEdit());
+    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
+    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
 
     size_t numberOfVertices = 0, numberOfFaces = 0, numberOfEdges = 0;
     size_t currentNumberOfVertices = 0, currentNumberOfFaces = 0;
@@ -158,9 +158,9 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         currentNumberOfFaces++;
     }
 
-    positions.endEdit();
-    triangles.endEdit();
-    quads.endEdit();
+    d_positions.endEdit();
+    d_triangles.endEdit();
+    d_quads.endEdit();
 
     return true;
 }

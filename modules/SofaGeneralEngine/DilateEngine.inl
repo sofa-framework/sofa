@@ -29,6 +29,7 @@
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 #include <sofa/helper/rmath.h> //M_PI
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -39,34 +40,51 @@ namespace component
 namespace engine
 {
 
+using helper::ReadAccessor;
+using helper::WriteOnlyAccessor;
+using helper::vector;
+using collision::TriangleOctreeRoot;
+
 template <class DataTypes>
 DilateEngine<DataTypes>::DilateEngine()
-    : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
-    , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , f_triangles( initData (&f_triangles, "triangles", "input mesh triangles") )
-    , f_quads( initData (&f_quads, "quads", "input mesh quads") )
-    , f_normals( initData (&f_normals, "normal", "point normals") )
-    , f_thickness( initData (&f_thickness, "thickness", "point thickness") )
-    , f_distance( initData (&f_distance, (Real)0, "distance", "distance to move the points (positive for dilatation, negative for erosion)") )
-    , f_minThickness( initData (&f_minThickness, (Real)0, "minThickness", "minimal thickness to enforce") )
+    : d_inputX ( initData (&d_inputX, "input_position", "input array of 3d points") )
+    , d_outputX( initData (&d_outputX, "output_position", "output array of 3d points") )
+    , d_triangles( initData (&d_triangles, "triangles", "input mesh triangles") )
+    , d_quads( initData (&d_quads, "quads", "input mesh quads") )
+    , d_normals( initData (&d_normals, "normal", "point normals") )
+    , d_thickness( initData (&d_thickness, "thickness", "point thickness") )
+    , d_distance( initData (&d_distance, (Real)0, "distance", "distance to move the points (positive for dilatation, negative for erosion)") )
+    , d_minThickness( initData (&d_minThickness, (Real)0, "minThickness", "minimal thickness to enforce") )
 {
-    addAlias(&f_inputX,"position");
+    addAlias(&d_inputX,"position");
 }
 
 
 template <class DataTypes>
 void DilateEngine<DataTypes>::init()
 {
-    addInput(&f_inputX);
-    addInput(&f_triangles);
-    addInput(&f_quads);
-    addInput(&f_distance);
-    addInput(&f_minThickness);
-    addOutput(&f_outputX);
-    addOutput(&f_normals);
-    addOutput(&f_thickness);
+    addInput(&d_inputX);
+    addInput(&d_triangles);
+    addInput(&d_quads);
+    addInput(&d_distance);
+    addInput(&d_minThickness);
+    addOutput(&d_outputX);
+    addOutput(&d_normals);
+    addOutput(&d_thickness);
     setDirtyValue();
 }
+
+
+template <class DataTypes>
+void DilateEngine<DataTypes>::bwdInit()
+{
+    if((d_triangles.getValue().size()==0) && (d_quads.getValue().size()==0))
+        msg_warning(this) << "No input mesh";
+
+    if(d_inputX.getValue().size()==0)
+        msg_warning(this) << "No input position";
+}
+
 
 template <class DataTypes>
 void DilateEngine<DataTypes>::reinit()
@@ -77,21 +95,21 @@ void DilateEngine<DataTypes>::reinit()
 template <class DataTypes>
 void DilateEngine<DataTypes>::update()
 {
-    helper::ReadAccessor<Data<VecCoord> > in = f_inputX;
-    helper::ReadAccessor<Data<SeqTriangles> > triangles = f_triangles;
-    helper::ReadAccessor<Data<SeqQuads> > quads = f_quads;    
-    const Real distance = f_distance.getValue();
-    const Real minThickness = f_minThickness.getValue();
+    ReadAccessor<Data<VecCoord> > in = d_inputX;
+    ReadAccessor<Data<SeqTriangles> > triangles = d_triangles;
+    ReadAccessor<Data<SeqQuads> > quads = d_quads;
+    const Real distance = d_distance.getValue();
+    const Real minThickness = d_minThickness.getValue();
 
     cleanDirty();
 
-    helper::WriteOnlyAccessor<Data<VecCoord> > out = f_outputX;
+    WriteOnlyAccessor<Data<VecCoord> > out = d_outputX;
 
     const int nbp = in.size();
     const int nbt = triangles.size();
     const int nbq = quads.size();
 
-    helper::WriteOnlyAccessor<Data<VecCoord> > normals = f_normals;
+    WriteOnlyAccessor<Data<VecCoord> > normals = d_normals;
     normals.resize(nbp);
     for (int i=0; i<nbp; ++i)
         normals[i].clear();
@@ -114,14 +132,14 @@ void DilateEngine<DataTypes>::update()
 
     if (minThickness != 0)
     {
-        collision::TriangleOctreeRoot octree;
+        TriangleOctreeRoot octree;
         SeqTriangles alltri = triangles.ref();
         for(int i=0; i<nbq; ++i)
         {
             alltri.push_back(Triangle(quads[i][0], quads[i][1], quads[i][2]));
             alltri.push_back(Triangle(quads[i][0], quads[i][2], quads[i][3]));
         }
-        helper::WriteOnlyAccessor<Data<helper::vector<Real> > > thickness = f_thickness;
+        WriteOnlyAccessor<Data<vector<Real> > > thickness = d_thickness;
         thickness.resize(nbp);
         octree.buildOctree(&alltri, &(in.ref()));
         for (int ip=0; ip<nbp; ++ip)
@@ -129,7 +147,7 @@ void DilateEngine<DataTypes>::update()
             Coord origin = in[ip];
             Coord direction = -normals[ip];
             Real mindist = -1.0f;
-            helper::vector< collision::TriangleOctree::traceResult > results;
+            vector< collision::TriangleOctree::traceResult > results;
             octree.octreeRoot->traceAll(origin, direction, results);
             for (unsigned int i=0; i<results.size(); ++i)
             {
@@ -146,7 +164,7 @@ void DilateEngine<DataTypes>::update()
 
     //Set Output
     out.resize(nbp);
-    helper::ReadAccessor<Data<helper::vector<Real> > > thickness = f_thickness;
+    ReadAccessor<Data<vector<Real> > > thickness = d_thickness;
     for (int i=0; i<nbp; ++i)
     {
         Real d = distance;

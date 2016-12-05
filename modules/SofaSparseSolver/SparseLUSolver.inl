@@ -67,7 +67,7 @@ SparseLUSolver<TMatrix,TVector,TThreadManager>::SparseLUSolver()
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    SpaseLUInvertData<Real> * invertData = (SpaseLUInvertData<Real>*) this->getMatrixInvertData(&M);
+    SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int n = invertData->A.n;
 
     cs_ipvec (n, invertData->N->Pinv, r.ptr(), invertData->tmp) ;	/* x = P*b */
@@ -79,7 +79,7 @@ void SparseLUSolver<TMatrix,TVector,TThreadManager>::solve (Matrix& M, Vector& z
 template<class TMatrix, class TVector,class TThreadManager>
 void SparseLUSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M)
 {
-    SpaseLUInvertData<Real> * invertData = (SpaseLUInvertData<Real>*) this->getMatrixInvertData(&M);
+    SparseLUInvertData<Real> * invertData = (SparseLUInvertData<Real>*) this->getMatrixInvertData(&M);
     int order = -1; //?????
 
     if (invertData->S) cs_sfree(invertData->S);

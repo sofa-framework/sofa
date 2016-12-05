@@ -25,6 +25,8 @@
 #ifndef SOFA_GUI_BASEVIEWER_H
 #define SOFA_GUI_BASEVIEWER_H
 
+#include "sofa/config.h"
+
 #include "SofaGUI.h"
 
 #include "ColourPickingVisitor.h"
@@ -112,7 +114,7 @@ public:
 
     //Fonctions needed to take a screenshot
     const std::string screenshotName();
-    void setPrefix(const std::string& prefix);
+    void setPrefix(const std::string& prefix, bool prependDirectory = true);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
     virtual void getView(sofa::defaulttype::Vector3& pos, sofa::defaulttype::Quat& ori) const;

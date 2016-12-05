@@ -57,8 +57,6 @@ set(HEADER_FILES
     mapping/NormalizationMapping.h
     mapping/PairingMultiMapping.h
     mapping/ProjectionMapping.h
-    mapping/PythonMultiMapping.h
-    mapping/PythonMultiMapping.inl
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
     mapping/RigidJointMapping.h
@@ -105,8 +103,6 @@ set(HEADER_FILES
     preconditioner/CompliantJacobiPreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
     preconditioner/IncompleteCholeskyPreconditioner.h
-    python/Binding_AssembledSystem.h
-    python/python.h
     utils/anderson.h
     utils/nlnscg.h
     utils/basis.h
@@ -174,7 +170,6 @@ set(SOURCE_FILES
     mapping/NormalizationMapping.cpp
     mapping/PairingMultiMapping.cpp
     mapping/ProjectionMapping.cpp
-    mapping/PythonMultiMapping.cpp
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/RigidJointMapping.cpp
@@ -214,27 +209,51 @@ set(SOURCE_FILES
     preconditioner/CompliantJacobiPreconditioner.cpp
     preconditioner/CompliantLDLTPreconditioner.cpp
     preconditioner/IncompleteCholeskyPreconditioner.cpp
-    python/_Compliant.cpp
-    python/Binding_AssembledSystem.cpp
-    python/python.cpp
     utils/anderson.cpp
     utils/nlnscg.cpp
     utils/sub_kkt.cpp
 )
 
-set(PYTHON_FILES
-    python/Compliant/Control.py
-    python/Compliant/Frame.py
-    python/Compliant/Quaternion.py
-    python/Compliant/Rigid.py
-    python/Compliant/Script.py
-    python/Compliant/StructuralAPI.py
-    python/Compliant/Tools.py
-    python/Compliant/Vec.py
-    python/Compliant/__init__.py
-    python/Compliant/future.py
-    python/Compliant/sml.py
-)
+
+
+
+find_package(SofaPython QUIET)
+if( SofaPython_FOUND )
+
+    set(PYTHON_FILES
+        python/Compliant/Control.py
+        python/Compliant/Frame.py
+        python/Compliant/Quaternion.py
+        python/Compliant/Rigid.py
+        python/Compliant/Script.py
+        python/Compliant/StructuralAPI.py
+        python/Compliant/Tools.py
+        python/Compliant/Vec.py
+        python/Compliant/__init__.py
+        python/Compliant/future.py
+        python/Compliant/sml.py
+    )
+
+
+    list(APPEND HEADER_FILES
+        mapping/PythonMultiMapping.h
+        mapping/PythonMultiMapping.inl
+        python/Binding_AssembledSystem.h
+        python/python.h
+        )
+
+    list(APPEND SOURCE_FILES
+        mapping/PythonMultiMapping.cpp
+        python/_Compliant.cpp
+        python/Binding_AssembledSystem.cpp
+        python/python.cpp
+        )
+
+    # Config files and install rules for pythons scripts
+    sofa_set_python_directory(${PROJECT_NAME} "python")
+
+endif()
+
 
 set(README_FILES Compliant.txt)
 
@@ -244,16 +263,30 @@ find_package(SofaMisc REQUIRED)
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Compliant/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Compliant/config.h" DESTINATION "include/Compliant")
 
-# Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaPython)
+target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
+
+# linking explicitly with rt looks necessary on some posix (e.g. CentOS)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${PROJECT_NAME} rt)
+endif()
+
+
+set(COMPLIANT_COMPILER_FLAGS "-DSOFA_BUILD_Compliant")
+
+if( SofaPython_FOUND )
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+    set(COMPLIANT_COMPILER_FLAGS "${COMPLIANT_COMPILER_FLAGS} -DSOFA_HAVE_SOFAPYTHON")
+endif()
+
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPLIANT_COMPILER_FLAGS}")
+
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

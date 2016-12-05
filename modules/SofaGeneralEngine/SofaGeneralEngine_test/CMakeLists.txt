@@ -7,7 +7,16 @@ set(HEADER_FILES)
 
 set(SOURCE_FILES
 
-	TransformEngine_test.cpp)
+        AverageCoord_test.cpp
+        ClusteringEngine_test.cpp
+        ComplementaryROI_test.cpp
+        DifferenceEngine_test.cpp
+        DilateEngine_test.cpp
+        ExtrudeEdgesAndGenerateQuads_test.cpp
+        MeshROI_test.cpp
+        TransformEngine_test.cpp
+
+        )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)

@@ -83,6 +83,9 @@ bool NodeElement::init()
     //Store the warnings created by the objects
     for (unsigned int i=0; i<errors.size(); ++i)
     {
+        //TODO(dmarchal): This way of getting the name of a component should be replaced
+        // with the use of the ComponentInfo from message.h.
+
         const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
         //MAINLOGGER( Error, errors[i], name );
         //msg_error(this) << errors[i];

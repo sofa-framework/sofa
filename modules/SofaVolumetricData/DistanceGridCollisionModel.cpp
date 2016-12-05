@@ -31,10 +31,6 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-//#ifdef SOFA_HAVE_FLOWVR
-#include <flowvr/render/mesh.h>
-//#endif
-
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <sofa/helper/Factory.inl>
@@ -208,7 +204,7 @@ void RigidDistanceGridCollisionModel::updateState()
             {
                 elems[i].translation = initTranslation;
             }
-            
+
         }
     }
 }
@@ -818,7 +814,7 @@ void FFDDistanceGridCollisionModel::draw(const core::visual::VisualParams* vpara
                 {
                     SReal c = cube.radius*(SReal)cos(r*M_PI/8);
                     SReal s = cube.radius*(SReal)sin(r*M_PI/8);
-        			sofa::defaulttype::Vec<3, SReal> p = cube.center;
+                    sofa::defaulttype::Vec<3, SReal> p = cube.center;
                     p[j] += c;
                     p[(j+1)%3] += s;
                     helper::gl::glVertexT(p);

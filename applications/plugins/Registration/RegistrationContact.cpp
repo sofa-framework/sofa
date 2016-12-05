@@ -29,7 +29,10 @@
 #include <SofaMeshCollision/IdentityContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMiscCollision/TetrahedronModel.h>
+#ifdef SOFA_HAVE_MINIFLOWVR
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
+#endif
+
 
 namespace sofa
 {
@@ -63,6 +66,7 @@ Creator<Contact::Factory, RegistrationContact<TetrahedronModel, LineModel> > Tet
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleRegistrationContactClass("registration",true);
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
 
+#ifdef SOFA_HAVE_MINIFLOWVR
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereRegistrationContactClass("registration", true);
@@ -73,7 +77,7 @@ Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, Rig
 Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPoinRegistrationtContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleRegistrationContactClass("registration", true);
-
+#endif
 
 } // namespace collision
 

@@ -56,7 +56,6 @@ protected:
     ///Destructor
     virtual ~BaseLoader() { }
 public:
-    // virtual bool load(const char *filename) = 0;
 
     virtual bool load() = 0;
 
@@ -64,7 +63,7 @@ public:
     {
         objectmodel::BaseObject::parse(arg);
         if (canLoad())
-            load(/*m_filename.getFullPath().c_str()*/);
+            load();
         else
             sout << "Doing nothing" << sendl;
     }
@@ -101,7 +100,7 @@ public:
             return false;
         }
 
-        // -- Step 2.2: Check first line.
+        // -- Check first line:
         file >> cmd;
         if (cmd.empty())
         {
@@ -143,14 +142,6 @@ public:
         return true;
     }
 
-    /*
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-
-      return BaseMapping::canCreate(obj, context, arg);
-    }
-    */
     sofa::core::objectmodel::DataFileName m_filename;
 
 };

@@ -86,6 +86,9 @@ public:
 
     const std::vector< std::string > &getPaths() const {return vpath;}
 
+    const std::string& getDirectAccessProtocolPrefix() const { return directAccessProtocolPrefix; }
+    void setDirectAccessProtocolPrefix(const std::string& protocolPrefix) { directAccessProtocolPrefix = protocolPrefix; }
+
     /// Find file using the stored set of paths.
     /// @param basedir override current directory (optional)
     /// @param filename requested file as input, resolved file path as output
@@ -133,6 +136,11 @@ public:
     void displayPaths() {std::cout<<(*this)<<std::endl;}
 
 protected:
+
+    /// A protocol like http: or file: which will bypass the file search if found in the filename of the findFile* functions that directly returns the path as if the function succeeded
+    /// Use case: add the prefix ram: as the direct protocol, this way the FileRepository will not try to look for the file on the hard disk and will directly return
+    /// then the inherited FileAccess singleton enhanced with the capacity to find ram file will deliver a correct stream to this in-ram virtual file
+    std::string directAccessProtocolPrefix;
 
     /// Vector of paths.
     std::vector<std::string> vpath;

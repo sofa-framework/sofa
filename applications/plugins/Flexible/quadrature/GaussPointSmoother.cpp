@@ -16,68 +16,34 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ScriptEnvironment.h"
+#define SOFA_GaussPointSmoother_CPP
+
+#include <Flexible/config.h>
+#include "../quadrature/GaussPointSmoother.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
-namespace simulation
+namespace component
+{
+namespace engine
 {
 
-static std::list<Node*> m_NodesCreatedByScript;
-static bool m_NodeQueuedInitEnabled = true;
+using namespace defaulttype;
 
+SOFA_DECL_CLASS(GaussPointSmoother)
 
-// nodes initialization stuff
-void ScriptEnvironment::nodeCreatedByScript(Node* node)        // to be called each time a new node is created by a script.
-{
-    if (!m_NodeQueuedInitEnabled) return;
+int GaussPointSmootherClass = core::RegisterObject("Smooth gauss points from another sampler")
+        .add<GaussPointSmoother>(true)
+        ;
 
-    m_NodesCreatedByScript.push_back(node);
-}
-
-bool ScriptEnvironment::isNodeCreatedByScript(Node* node)        // to be called each time a new node is created by a script.
-{
-    if (!m_NodeQueuedInitEnabled) return true;
-
-    std::list<Node*>::iterator it = m_NodesCreatedByScript.begin();
-    while (it != m_NodesCreatedByScript.end())
-    {
-        if ((*it)==node)
-            return true;
-        it++;
-    }
-    return false;
-}
-
-void ScriptEnvironment::initScriptNodes()                      // to be called after each call to a script function.
-{
-    if (!m_NodeQueuedInitEnabled) return;
-
-    while (!m_NodesCreatedByScript.empty())
-    {
-        Node *node = m_NodesCreatedByScript.front();
-        m_NodesCreatedByScript.pop_front();
-        if (!node->isInitialized())
-            node->init(sofa::core::ExecParams::defaultInstance());
-    }
-}
-
-void ScriptEnvironment::enableNodeQueuedInit(bool enable)
-{
-    m_NodeQueuedInitEnabled = enable;
-}
-
-
-
-
-} // namespace simulation
-
+} // namespace engine
+} // namespace component
 } // namespace sofa
 

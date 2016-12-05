@@ -39,7 +39,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 
-
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::ComponentState ;
 
 namespace sofa
 {
@@ -62,7 +63,7 @@ TSphereModel<DataTypes>::TSphereModel()
 template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
-    , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
+    , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
     , mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;
@@ -94,22 +95,37 @@ void TSphereModel<DataTypes>::resize(int size)
 template<class DataTypes>
 void TSphereModel<DataTypes>::init()
 {
+    if(m_componentstate==ComponentState::Valid){
+        msg_warning(this) << "Calling an already fully initialized component. You should use reinit instead." ;
+    }
+
     this->CollisionModel::init();
     mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
-    if (mstate==NULL)
+    if (mstate==nullptr)
     {
-        serr<<"TSphereModel requires a Vec3 Mechanical Model" << sendl;
+        //TODO(dmarchal): The previous message was saying this only work for a vec3 mechanicalstate but there
+        // it seems that a mechanicalstate will work we well...where is the truth ?
+        msg_error(this) << "Missing a MechanicalObject with template '" << DataTypes::Name() << ". "
+                           "This MechnicalObject stores the position of the spheres. When this one is missing the collision model is deactivated. \n"
+                           "To remove this error message you can add to your scene a line <MechanicalObject template='"<< DataTypes::Name() << "'/>. ";
+        m_componentstate = ComponentState::Invalid ;
+
         return;
     }
 
     const int npoints = mstate->getSize();
     resize(npoints);
+
+    m_componentstate = ComponentState::Valid ;
 }
 
 
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
+
     TSphere<DataTypes> t(this,index);
 
     vparams->drawTool()->drawSphere(t.p(), (float)t.r());
@@ -119,6 +135,9 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
+
     using namespace sofa::defaulttype;
 
     if (!this->isActive()) return;
@@ -155,6 +174,9 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
+
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
     bool updated = false;
@@ -190,7 +212,10 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
-    using namespace sofa::defaulttype;
+    using sofa::defaulttype::Vector3 ;
+
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
 
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->getSize();
@@ -244,27 +269,31 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
 template<class DataTypes>
 void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
-    if( !onlyVisible ) return;
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
+
+    if( !onlyVisible )
+        return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
     Real maxBBox[3] = {-max_real,-max_real,-max_real}; //Warning: minimum of float/double is 0, not -inf
     Real minBBox[3] = {max_real,max_real,max_real};
 
     const int npoints = mstate->getSize();
-        
+
     for(int i = 0 ; i < npoints ; ++i )
     {
         TSphere<DataTypes> t(this,i);
         const Coord& p = t.p();
         Real r = t.r();
-                
+
         for (int c=0; c<3; c++)
         {
             if (p[c]+r > maxBBox[c]) maxBBox[c] = (Real)p[c]+r;
             if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
         }
     }
-    
+
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 

@@ -99,7 +99,7 @@ unsigned int kdTree<Coord>::build(UIlist &list, unsigned char direction, const V
 
 
 template<class Coord>
-void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions)
+void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const
 // [zhang94] algorithm
 {
     Real Dmax;
@@ -118,14 +118,14 @@ void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &
             if(cl.size()>N) {it=cl.end(); it--; cl.erase(it);}
         }
     }
-    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions);
-    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions);
+    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions,N);
+    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions,N);
 }
 
 
 // slightly improved version of the above, for one point
 template<class Coord>
-void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions)
+void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions) const
 {
     Real Dmax=cl.first;
     unsigned int splitdir=tree[currentnode].splitdir;
@@ -147,15 +147,14 @@ void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned i
 
 
 template<class Coord>
-void kdTree<Coord>::getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n)
+void kdTree<Coord>::getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n) const
 {
-    N=n;
     cl.clear();
-    closest(cl,x,firstNode,positions);
+    closest(cl,x,firstNode,positions,n);
 }
 
 template<class Coord>
-unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions)
+unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions) const
 {
     distanceToPoint cl(std::numeric_limits<Real>::max(),firstNode);
     closest(cl,x,firstNode,positions);
@@ -163,7 +162,7 @@ unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions
 }
 
 template<class Coord>
-bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n)
+bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n) const
 {
     Real dx=(previous_x-x).norm();
     if(dx>=cacheThresh_max.first || cl.size()<2)

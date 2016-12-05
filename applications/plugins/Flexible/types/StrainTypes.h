@@ -202,6 +202,7 @@ public:
     static void add ( Deriv& /*c*/, T /*x*/, T /*y*/, T /*z*/ )    {    }
     //@}
 
+    static const TotalVec& getCPos(const Deriv& c) { return c.getVec(); }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
     static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )

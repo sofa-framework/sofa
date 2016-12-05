@@ -25,12 +25,15 @@
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "ScriptController.h"
-#include "ScriptEnvironment.h"
 
 #include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
+
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
@@ -64,8 +67,6 @@ void ScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     // call script notifications...
     script_onLoaded( down_cast<simulation::Node>(getContext()) );
     script_createGraph( down_cast<simulation::Node>(getContext()) );
-
- //   ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::init()
@@ -73,7 +74,6 @@ void ScriptController::init()
     Controller::init();
     // init the script
     script_initGraph( down_cast<simulation::Node>(getContext()) );
-//    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::bwdInit()
@@ -81,7 +81,6 @@ void ScriptController::bwdInit()
     Controller::bwdInit();
     // init the script
     script_bwdInitGraph( down_cast<simulation::Node>(getContext()) );
-//    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::storeResetState()
@@ -89,7 +88,6 @@ void ScriptController::storeResetState()
     Controller::storeResetState();
     // init the script
     script_storeResetState();
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::reset()
@@ -97,7 +95,6 @@ void ScriptController::reset()
     Controller::reset();
     // init the script
     script_reset();
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::cleanup()
@@ -105,19 +102,16 @@ void ScriptController::cleanup()
     Controller::cleanup();
     // init the script
     script_cleanup();
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onBeginAnimationStep(const double dt)
 {
     script_onBeginAnimationStep(dt);
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onEndAnimationStep(const double dt)
 {
     script_onEndAnimationStep(dt);
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
@@ -151,31 +145,26 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
         break;
     default:
         break;
-
     }
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyPressedEvent(core::objectmodel::KeypressedEvent * evt)
 {
     if( script_onKeyPressed(evt->getKey()) )
         evt->setHandled();
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent * evt)
 {
     if( script_onKeyReleased(evt->getKey()) )
         evt->setHandled();
-    ScriptEnvironment::initScriptNodes();
 }
 
 void ScriptController::onGUIEvent(core::objectmodel::GUIEvent *event)
 {
     script_onGUIEvent(event->getControlID().c_str(),
-            event->getValueName().c_str(),
-            event->getValue().c_str());
-    ScriptEnvironment::initScriptNodes();
+                      event->getValueName().c_str(),
+                      event->getValue().c_str());
 }
 
 
@@ -184,15 +173,17 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     if (sofa::core::objectmodel::ScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
-        ScriptEnvironment::initScriptNodes();
     }
-    else Controller::handleEvent(event);
+    else if (dynamic_cast<IdleEvent *>(event))
+    {
+        script_onIdleEvent(static_cast<IdleEvent *> (event));
+    }else
+        Controller::handleEvent(event);
 }
 
 void ScriptController::draw(const core::visual::VisualParams* vis)
 {
     script_draw(vis);
-    ScriptEnvironment::initScriptNodes();
 }
 
 } // namespace controller

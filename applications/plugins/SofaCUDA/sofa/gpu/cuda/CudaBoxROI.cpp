@@ -36,14 +36,14 @@ namespace component
 
 namespace engine
 {
-template class BoxROI<gpu::cuda::CudaVec2fTypes>;
-template class BoxROI<gpu::cuda::CudaVec3fTypes>;
-template class BoxROI<gpu::cuda::CudaVec3f1Types>;
-template class BoxROI<gpu::cuda::CudaRigid3fTypes>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec2fTypes>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec3fTypes>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec3f1Types>;
+template class boxroi::BoxROI<gpu::cuda::CudaRigid3fTypes>;
 #ifdef SOFA_GPU_CUDA_DOUBLE
-template class BoxROI<gpu::cuda::CudaVec2dTypes>;
-template class BoxROI<gpu::cuda::CudaVec3dTypes>;
-template class BoxROI<gpu::cuda::CudaVec3d1Types>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec2dTypes>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec3dTypes>;
+template class boxroi::BoxROI<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace engine
@@ -59,15 +59,15 @@ namespace cuda
 SOFA_DECL_CLASS(CudaBoxROI)
 
 int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::engine::BoxROI<CudaVec2fTypes> >()
-        .add< component::engine::BoxROI<CudaVec3fTypes> >()
-        .add< component::engine::BoxROI<CudaVec3f1Types> >()
-		.add< component::engine::BoxROI<CudaRigid3fTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec2fTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec3fTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec3f1Types> >()
+        .add< component::engine::boxroi::BoxROI<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::engine::BoxROI<CudaVec2dTypes> >()
-        .add< component::engine::BoxROI<CudaVec3dTypes> >()
-        .add< component::engine::BoxROI<CudaVec3d1Types> >()
-		.add< component::engine::BoxROI<CudaRigid3dTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec2dTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec3dTypes> >()
+        .add< component::engine::boxroi::BoxROI<CudaVec3d1Types> >()
+        .add< component::engine::boxroi::BoxROI<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 

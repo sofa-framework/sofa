@@ -76,6 +76,7 @@ namespace controller
 class ForceFeedback;
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using core::objectmodel::Data;
 
 /** Holds data retrieved from HDAPI. */
@@ -198,7 +199,6 @@ public:
     void setDataValue();
 
     //variable pour affichage graphique
-    simulation::Node *parent;
     enum
     {
         VN_stylus = 0,

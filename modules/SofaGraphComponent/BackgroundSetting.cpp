@@ -43,6 +43,8 @@ int BackgroundSettingClass = core::RegisterObject("Background colour setting")
         ;
 
 BackgroundSetting::BackgroundSetting():
+    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+    //This field should support the color="red" api.
     color(initData(&color, "color", "Color of the Background of the Viewer"))
     , image(initData(&image, "image", "Image to be used as background of the viewer"))
 {

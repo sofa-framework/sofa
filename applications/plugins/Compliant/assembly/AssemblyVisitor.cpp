@@ -715,7 +715,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
         if( !c.mechanical || c.master() || !c.Ktilde ) continue;
 
         // Note this is a pointer (no copy for matrices that are already in the right type i.e. EigenBaseSparseMatrix<SReal>)
-        MySPtr<rmat> Ktilde( convertSPtr<rmat>( c.Ktilde ) );
+        helper::OwnershipSPtr<rmat> Ktilde( convertSPtr<rmat>( c.Ktilde ) );
 
         if( zero( *Ktilde ) ) continue;
 
@@ -814,7 +814,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 				assert( !zero(Jc) );
 
                 // Note this is a pointer (no copy for matrices that are already in the right type i.e. EigenBaseSparseMatrix<SReal>)
-                MySPtr<rmat> C( convertSPtr<rmat>( c.C ) );
+                helper::OwnershipSPtr<rmat> C( convertSPtr<rmat>( c.C ) );
 
                 // fetch projector and constraint value if any
                 AssembledSystem::constraint_type constraint;

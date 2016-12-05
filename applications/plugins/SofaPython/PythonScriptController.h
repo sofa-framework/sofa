@@ -29,6 +29,17 @@
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 
+/// Forward declarations
+namespace sofa {
+    namespace core{
+        namespace objectmodel{ class IdleEvent ;}
+    }
+    namespace helper{
+        namespace system{ class FileEventListener; }
+    }
+}
+
+
 namespace sofa
 {
 
@@ -46,9 +57,11 @@ public:
     PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
 
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
-
+    void doLoadScript();
+    void refreshBinding();
 protected:
     PythonScriptController();
+    virtual ~PythonScriptController();
 
     void handleEvent(core::objectmodel::Event *event);
 
@@ -91,6 +104,9 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event);
+
     /// @}
 
 public:
@@ -98,7 +114,11 @@ public:
     sofa::core::objectmodel::Data<std::string>  m_classname;
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
+    sofa::core::objectmodel::Data<bool>         m_doAutoReload;
+
 protected:
+    sofa::helper::system::FileEventListener* m_filelistener ;
+
     PyObject *m_ScriptControllerClass;      // class implemented in the script to use to instanciate the python controller
     //PyObject *m_ScriptControllerInstanceDict;  // functions dictionnary
     PyObject *m_ScriptControllerInstance;   // instance of m_ScriptControllerClass
@@ -122,6 +142,7 @@ protected:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
     PyObject *m_Func_draw;
+    PyObject *m_Func_onIdle;
 };
 
 

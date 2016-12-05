@@ -49,14 +49,18 @@ namespace mapping
   Type TOut corresponds to a scalar value.
   The pairs are given in an EdgeSetTopologyContainer in the same node.
 
-  If the rest lengths are not defined, they are set using the initial values.
-  If computeDistance is set to true, the rest lengths are set to 0.
-
     In: parent point positions
     Out: square distance between point pairs, minus a square rest distance.
 
+    No restLength (imposed null rest length) for now
+    TODO: compute Jacobians for non null restLength
+
 @author Matthieu Nesme
   */
+
+
+// If the rest lengths are not defined, they are set using the initial values.
+// If computeDistance is set to true, the rest lengths are set to 0.
 template <class TIn, class TOut>
 class SquareDistanceMapping : public core::Mapping<TIn, TOut>
 {
@@ -90,8 +94,8 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
+//    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
+//    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
