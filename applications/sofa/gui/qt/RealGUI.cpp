@@ -128,7 +128,7 @@ public:
         : QApplication(argc,argv)
     { }
 
-#if QT_DEPRECATED_SINCE(5, 0)
+#if QT_VERSION < 0x050000
     static inline QString translate(const char * context, const char * key, const char * disambiguation,
                             QCoreApplication::Encoding encoding = QCoreApplication::UnicodeUTF8, int n = -1)
         { return QApplication::translate(context, key, disambiguation, encoding, n); }
