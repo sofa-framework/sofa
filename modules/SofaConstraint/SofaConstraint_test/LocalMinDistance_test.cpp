@@ -4,7 +4,7 @@ using std::vector;
 #include <string>
 using std::string;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
 
 #include<sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
@@ -34,16 +34,28 @@ using sofa::component::collision::LocalMinDistance ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::MainCountingMessageHandler;
+
+#include <sofa/helper/logging/LoggingMessageHandler.h>
+using sofa::helper::logging::MainLoggingMessageHandler;
+
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
+
+//TODO(dmarchal) to remove when the handler will be installed by sofa_test
 int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
+    // We can add handler there is a check they are not duplicated in the dispatcher.
+    MessageDispatcher::addHandler(&MainLoggingMessageHandler::getInstance()) ;
+    MessageDispatcher::addHandler(&MainCountingMessageHandler::getInstance()) ;
     return 0;
 }
 int messageInited = initMessage();
 
 namespace sofa {
 
-struct TestLocalMinDistance : public ::testing::Test {
+struct TestLocalMinDistance : public Sofa_test<double> {
     void SetUp()
     {
         DataRepository.addFirstPath(FRAMEWORK_EXAMPLES_DIR);
@@ -66,8 +78,6 @@ struct TestLocalMinDistance : public ::testing::Test {
 void TestLocalMinDistance::checkBasicIntersectionTests()
 {
     ExpectMessage warning(Message::Warning) ;
-
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -93,16 +103,13 @@ void TestLocalMinDistance::checkBasicIntersectionTests()
     sofa::component::collision::Point p1;
     sofa::component::collision::Point p2;
 
-
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 
 void TestLocalMinDistance::checkMissingRequiredAttributes()
 {
     ExpectMessage warning(Message::Warning) ;
-
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -122,13 +129,11 @@ void TestLocalMinDistance::checkMissingRequiredAttributes()
     BaseObject* lmd = root->getTreeNode("Level 1")->getObject("lmd") ;
     ASSERT_NE(lmd, nullptr) ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 void TestLocalMinDistance::checkAttributes()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -156,14 +161,12 @@ void TestLocalMinDistance::checkAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( lmd->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 
 void TestLocalMinDistance::checkDoubleInit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -187,14 +190,12 @@ void TestLocalMinDistance::checkDoubleInit()
     //TODO(dmarchal) ask consortium what is the status for double call.
     FAIL() << "TODO: Calling init twice does not produce any warning message" ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 
 void TestLocalMinDistance::checkInitReinit()
 {
-    sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -215,7 +216,7 @@ void TestLocalMinDistance::checkInitReinit()
 
     lmd->reinit() ;
 
-    sofa::simulation::getSimulation()->unload(root);
+    clearSceneGraph();
 }
 
 
