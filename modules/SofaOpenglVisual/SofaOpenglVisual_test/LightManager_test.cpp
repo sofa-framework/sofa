@@ -31,9 +31,15 @@ using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::MessageAsTestFailure;
 using sofa::helper::logging::Message ;
 
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::MainCountingMessageHandler;
+
+#include <sofa/helper/logging/LoggingMessageHandler.h>
+using sofa::helper::logging::MainLoggingMessageHandler;
+
 int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
+    MessageDispatcher::addHandler(&MainLoggingMessageHandler::getInstance()) ;
+    MessageDispatcher::addHandler(&MainCountingMessageHandler::getInstance()) ;
     return 0;
 }
 int messageInited = initMessage();
