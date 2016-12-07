@@ -177,9 +177,6 @@ void TestLight::checkSpotLightValidAttributes()
     MessageAsTestFailure warning(Message::Warning) ;
     MessageAsTestFailure error(Message::Error) ;
 
-    if(sofa::simulation::getSimulation()==nullptr)
-        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -219,8 +216,7 @@ void TestLight::checkSpotLightValidAttributes()
     for(auto& attrname : attrnames)
         EXPECT_NE( light->findData(attrname), nullptr ) << "Missing attribute with name '" << attrname << "'." ;
 
-    sofa::simulation::getSimulation()->unload(root);
-
+    clearSceneGraph();
 }
 
 

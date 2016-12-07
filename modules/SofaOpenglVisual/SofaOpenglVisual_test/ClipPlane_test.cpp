@@ -124,6 +124,13 @@ TEST_F(TestClipPlane, checkClipPlaneIdInValidValues_OpenIssue)
     checkClipPlaneAttributesValues("id", "-1");
 }
 
+TEST_F(TestClipPlane, checkClipPlaneIdTooBigValue_OpenIssue)
+{
+    ExpectMessage warning(Message::Warning) ;
+
+    checkClipPlaneAttributesValues("id", "15654654");
+}
+
 TEST_F(TestClipPlane, checkClipPlaneNormalInvalidNormalValue)
 {
     ExpectMessage warning(Message::Warning) ;
@@ -131,7 +138,8 @@ TEST_F(TestClipPlane, checkClipPlaneNormalInvalidNormalValue)
     checkClipPlaneAttributesValues("normal", "1 0");
 }
 
-// Normal should be "normalized :) "
+// Normal should be "normalized" so passing a non normalized value should be tested and report an error
+// and convert it to a noramlized version.
 TEST_F(TestClipPlane, checkClipPlanePassingNotNormalizedAsNormal_OpenIssue)
 {
     ExpectMessage warning(Message::Warning) ;
