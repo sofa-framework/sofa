@@ -64,7 +64,7 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
             "computeEdges", "computeTriangles", "computeQuads", "computeTetrahedra",
             "indices", "edgeIndices", "quadIndices", "triangleIndices", "tetrahedronIndices",
             "indicesOut",
-            "pointsInROI", "edgesInROI", "QuadsInROI", "trianglesInROI", "tetrahedraInROI",
+            "pointsInROI", "edgesInROI", "quadsInROI", "trianglesInROI", "tetrahedraInROI",
             "drawSphere", "drawPoints", "drawEdges", "drawTriangles", "drawQuads", "drawTetrahedra",
             "drawSize"
         };
@@ -86,10 +86,10 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isPointInSphere computation with a simple example
     void isPointInSphereTest()
     {
-        m_thisObject->findData("center")->read("0. 0. 0.");
+        m_thisObject->findData("centers")->read("0. 0. 0.");
         m_thisObject->findData("radii")->read("1.");
         m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
-        m_thisObject->init();
+        m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"0 1");
         EXPECT_EQ(m_thisObject->findData("indicesOut")->getValueString(),"2");
@@ -99,11 +99,11 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isEdgeInSphere computation with a simple example
     void isEdgeInSphereTest()
     {
-        m_thisObject->findData("center")->read("0. 0. 0.");
+        m_thisObject->findData("centers")->read("0. 0. 0.");
         m_thisObject->findData("radii")->read("1.");
         m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
         m_thisObject->findData("edges")->read("0 1 1 2 ");
-        m_thisObject->init();
+        m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("edgeIndices")->getValueString(),"0");
         EXPECT_EQ(m_thisObject->findData("edgesInROI")->getValueString(),"0 1 ");
@@ -113,11 +113,11 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isTriangleInSphere computation with a simple example
     void isTriangleInSphereTest()
     {
-        m_thisObject->findData("center")->read("0. 0. 0.");
+        m_thisObject->findData("centers")->read("0. 0. 0.");
         m_thisObject->findData("radii")->read("1.");
-        m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 2. 0. 0.");
+        m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 0. 1. 0. 2. 0. 0.");
         m_thisObject->findData("triangles")->read("0 1 2 1 3 2");
-        m_thisObject->init();
+        m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("triangleIndices")->getValueString(),"0");
         EXPECT_EQ(m_thisObject->findData("trianglesInROI")->getValueString(),"0 1 2 ");
@@ -127,11 +127,11 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
     /// Test isTetrahedraInSphere computation with a simple example
     void isTetrahedraInSphereTest()
     {
-        m_thisObject->findData("center")->read("0. 0. 0.");
+        m_thisObject->findData("centers")->read("0. 0. 0.");
         m_thisObject->findData("radii")->read("1.");
-        m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 1. 0. 1. 2. 0. 0.");
+        m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 0. 1. 0. 0. 0. 1. 2. 0. 0.");
         m_thisObject->findData("tetrahedra")->read("0 1 2 3 1 2 4 3");
-        m_thisObject->init();
+        m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("tetrahedronIndices")->getValueString(),"0");
         EXPECT_EQ(m_thisObject->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
