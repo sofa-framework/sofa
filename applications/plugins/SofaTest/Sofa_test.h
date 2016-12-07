@@ -38,6 +38,9 @@
 #include <time.h>
 #include <iostream>
 
+#include <sofa/helper/logging/LoggingMessageHandler.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
+
 // Maybe not the right place to put this (private header?)
 #ifndef SOFA_FLOAT
 typedef sofa::defaulttype::Rigid3dTypes Rigid3;
@@ -61,7 +64,7 @@ const SReal g_minDeltaErrorRatio = .1; // TODO is it already too small?
 struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
 {
     /// Initialize Sofa and the random number generator
-    BaseSofa_test();
+    BaseSofa_test() ;
 
     /// Clear the scene graph
     virtual ~BaseSofa_test();
@@ -313,10 +316,10 @@ void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>&
 template<class DataTypes>
 typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, const sofa::helper::Quater<SReal>& rot)
 {
-	typename DataTypes::Coord temp;
-	DataTypes::set(temp, pos[0], pos[1], pos[2]);
-	setRot<DataTypes>(temp, rot);
-	return temp;
+    typename DataTypes::Coord temp;
+    DataTypes::set(temp, pos[0], pos[1], pos[2]);
+    setRot<DataTypes>(temp, rot);
+    return temp;
 }
 
 template <int N, class real>
