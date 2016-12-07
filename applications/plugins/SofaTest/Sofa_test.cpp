@@ -30,6 +30,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
 #include "TestMessageHandler.h"
 
 using sofa::helper::system::PluginRepository;
@@ -41,14 +42,13 @@ namespace sofa {
 
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
-namespace {
 
+namespace {
     static struct raii {
       raii() {
-            helper::logging::MessageDispatcher::addHandler( &helper::logging::TestMessageHandler::getInstance() ) ;
             helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
+            helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
       }
-
     } singleton;
 }
 
@@ -63,6 +63,12 @@ BaseSofa_test::BaseSofa_test(){
     //use the same seed (the seed value is indicated at the 2nd line of test results)
     //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
     helper::srand(seed);
+
+
+    // Repeating this for each class is harmless because addHandler test if the handler is already installed and
+    // if so it don't install it again.
+    helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
+    helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
 }
 
 BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
