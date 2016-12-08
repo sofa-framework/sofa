@@ -10,14 +10,21 @@
 //#include <string.h>      // for strerror()
 //#include <sys/event.h>   // for kqueue() etc.
 //#include <unistd.h>      // for close()
-#include <CoreServices/CoreServices.h>
-
-
 
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
+
+using namespace std ;
+
+
+//////////////////// C++ Header ///////////////////////////////////////////////
+#include <vector>
+#include <string>
+#include <map>
+
+
 
 namespace sofa
 {
@@ -28,19 +35,11 @@ namespace helper
 namespace system
 {
 
-FSEventStreamRef streamRef = 0;
-
-FSEventStreamRef FileMonitor_init()
-{
-    if (streamRef!=0)
-        return streamRef;
-
- //   streamRef = FSEventStreamCreate();
-
-    return streamRef;
-}
-
-
+typedef vector<string> ListOfFiles ;
+typedef vector<FileEventListener*> ListOfListeners ;
+map<string, ListOfFiles> dir2files ;
+map<int, string> fd2fn ;
+map<string, ListOfListeners> file2listener ;
 
 void FileMonitor::removeFileListener(const string& filename,
                                      FileEventListener *listener)
@@ -65,12 +64,17 @@ int FileMonitor::addFile(const std::string& filepath, FileEventListener* listene
 
 int FileMonitor::addFile(const std::string& directoryname, const std::string& filename, FileEventListener* listener)
 {
+    if(!FileSystem::exists(directoryname+filename))
+        return -1 ;
+
     // TODO
     return 0;
 }
 
 int FileMonitor::updates(int timeout)
 {
+    printf("*************** FileMonitor::updates timeout=%d\n",timeout);
+
     // TODO
     return 0;
 }
