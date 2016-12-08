@@ -26,6 +26,7 @@
 #include <gtest/gtest.h>
 
 #include "SofaLoader/MeshVTKLoader.h"
+#include "SofaLoader/BaseVTKReader.h"
 using sofa::component::loader::MeshVTKLoader ;
 
 #include <sofa/helper/system/FileRepository.h>
@@ -54,6 +55,9 @@ int s_autodump = initTestEnvironment() ;
 struct MeshVTKLoaderTest : public ::testing::Test,
                             public MeshVTKLoader
 {
+    using BaseVTKDataIO = component::loader::BaseVTKReader::BaseVTKDataIO;
+    template<typename T>
+    using VTKDataIO = component::loader::BaseVTKReader::VTKDataIO<T>;
 
     MeshVTKLoaderTest()
     {}
@@ -87,6 +91,76 @@ TEST_F(MeshVTKLoaderTest, loadLegacy)
 TEST_F(MeshVTKLoaderTest, loadXML)
 {
     testLoad(DataRepository.getFile("mesh/Armadillo_Tetra_4406.vtu"), 1446, 0, 0, 0, 0, 4406, 0);
+}
+
+TEST_F(MeshVTKLoaderTest, loadLegacy_binary)
+{
+    testLoad(DataRepository.getFile("mesh/vox8_binary.vtk"), 27, 0, 0, 0, 0, 0, 8);
+
+    const auto& cellDataVec = this->reader->inputCellDataVector;
+    const auto& pointDataVec = this->reader->inputPointDataVector;
+
+    const auto findCellData = [this,&cellDataVec] (const std::string& name)
+    {
+        auto res = std::find_if(cellDataVec.begin(), cellDataVec.end(), [&name](const BaseVTKDataIO* data_ptr)
+        {
+            return data_ptr->name == name;
+        });
+        return res ;
+    };
+    auto cRamp1 = findCellData("cRamp1");
+    EXPECT_TRUE(cRamp1 != cellDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*cRamp1) != nullptr);
+
+    auto cRamp2 = findCellData("cRamp2");
+    EXPECT_TRUE(cRamp2 != cellDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*cRamp2) != nullptr);
+
+    auto cVects = findCellData("cVects");
+    EXPECT_TRUE(cVects != cellDataVec.end());
+    VTKDataIO<defaulttype::Vec<3, float>>* cVectsCasted = dynamic_cast<VTKDataIO<defaulttype::Vec<3, float>>*>(*cVects);
+    EXPECT_TRUE(cVectsCasted != nullptr);
+
+    auto cv2 = findCellData("cv2");
+    EXPECT_TRUE(cv2 != cellDataVec.end());
+    VTKDataIO<defaulttype::Vec<3, float>>* cv2Casted = dynamic_cast<VTKDataIO<defaulttype::Vec<3, float>>*>(*cv2);
+    EXPECT_TRUE(cv2Casted != nullptr);
+
+
+    const auto findPointData = [this,&pointDataVec] (const std::string& name)
+    {
+        auto res = std::find_if(pointDataVec.begin(), pointDataVec.end(), [&name](const BaseVTKDataIO* data_ptr)
+        {
+            return data_ptr->name == name;
+        });
+        return res;
+    };
+
+    auto mytest = findPointData("mytest");
+    EXPECT_TRUE(mytest != pointDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*mytest) != nullptr);
+
+    auto xRamp = findPointData("xRamp");
+    EXPECT_TRUE(xRamp != pointDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*xRamp) != nullptr);
+
+    auto yRamp = findPointData("yRamp");
+    EXPECT_TRUE(yRamp != pointDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*yRamp) != nullptr);
+
+    auto zRamp = findPointData("zRamp");
+    EXPECT_TRUE(zRamp != pointDataVec.end());
+    EXPECT_TRUE(dynamic_cast<VTKDataIO<float>*>(*zRamp) != nullptr);
+
+    auto outVect = findPointData("outVect");
+    EXPECT_TRUE(outVect != pointDataVec.end());
+    VTKDataIO<defaulttype::Vec<3, float>>* outVectCasted = dynamic_cast<VTKDataIO<defaulttype::Vec<3, float>>*>(*outVect);
+    EXPECT_TRUE(outVectCasted != nullptr);
+
+    auto vect2 = findPointData("vect2");
+    EXPECT_TRUE(vect2 != pointDataVec.end());
+    VTKDataIO<defaulttype::Vec<3, float>>* vect2Casted = dynamic_cast<VTKDataIO<defaulttype::Vec<3, float>>*>(*vect2);
+    EXPECT_TRUE(vect2Casted != nullptr);
 }
 
 TEST_F(MeshVTKLoaderTest, loadInvalidFilenames)
