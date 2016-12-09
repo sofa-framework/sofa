@@ -159,8 +159,8 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # the set of tags simulated as rigids
         # simulation
         self.param.rigidScaleStiffness = 10e3 # SI unit
-        self.param.mass = 1;
-        self.param.uniformScale = False;
+        self.param.mass = 1
+        self.param.uniformScale = False
         # for tagged joints, values come from these dictionnaries if they contain one of the tag
         self.param.jointIsComplianceByTag=dict()
         self.param.jointIsComplianceByTag["default"]=False
@@ -189,8 +189,14 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
 
         # rigidScale
         for rigidModel in self.model.getSolidsByTags({"armature"}):
+
+            # the global uniformScale specified by default can be overridden
+            uniformScale=self.param.uniformScale
+            if "scale1" in rigidModel.tags: uniformScale = True
+            elif "scale3" in rigidModel.tags: uniformScale = False
+
             body = RigidScale.API.ShearlessAffineBody(self.node, rigidModel.name)
-            body.setManually(offset=[rigidModel.position], mass=0, inertia=[0,0,0], uniformScale=self.param.uniformScale)
+            body.setManually(offset=[rigidModel.position], mass=0, inertia=[0,0,0], uniformScale=uniformScale)
             body.affineDofs.showObject = self.param.showAffine
             body.affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showAffineScale)
             body.rigidDofs.showObject = self.param.showRigid
