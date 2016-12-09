@@ -22,9 +22,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <SofaTest/ForceField_test.h>
+
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
+
+#include <SofaSimulationGraph/DAGSimulation.h>
+using sofa::core::objectmodel::ComponentState ;
+using sofa::core::objectmodel::BaseObject ;
+using sofa::simulation::Simulation ;
+using sofa::simulation::Node ;
+
+#include <SofaSimulationCommon/SceneLoaderXML.h>
+using sofa::simulation::SceneLoaderXML ;
+using sofa::core::ExecParams ;
 
 namespace sofa {
 
@@ -80,7 +93,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         DataTypes::set( f[1],  fdown[0], fdown[1], (Real)fdown[2]);
         DataTypes::set( f[2],  fdown[0], fdown[1], (Real)fdown[2]);
         DataTypes::set( f[3],  -fup[0], -fup[1], -(Real)fup[2]);
-        
+
         // Set force parameters
         Inherited::force->_poissonRatio.setValue(0);
         helper::vector<Real> youngModulusVec;youngModulusVec.push_back(40);
@@ -97,6 +110,34 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
+
+    void checkGracefullHandlingWhenTopologyIsMissing()
+    {
+        this->clearSceneGraph();
+
+        // This is a RAII message.
+        ExpectMessage error(Message::Error) ;
+
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+                 "<Node 	name='Root'>                                \n"
+                 "  <VisualStyle displayFlags='showForceFields'/>       \n"
+                 "  <Node name='FEMnode'>                               \n"
+                 "    <MechanicalObject/>                               \n"
+                 "    <TetrahedronFEMForceField name='fem'/>            \n"
+                 "  </Node>                                             \n"
+                 "</Node>                                               \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        BaseObject* fem = root->getTreeNode("FEMnode")->getObject("fem") ;
+        EXPECT_NE(fem, nullptr) ;
+
+        EXPECT_EQ(fem->getComponentState(), ComponentState::Invalid) ;
+    }
 };
 
 // ========= Define the list of types to instanciate.
@@ -107,8 +148,13 @@ component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>
 
 
 
+
+
 // ========= Tests to run for each instanciated type
 TYPED_TEST_CASE(TetrahedronFEMForceField_test, TestTypes);
+
+
+
 
 // test case
 TYPED_TEST( TetrahedronFEMForceField_test , extension )
@@ -121,6 +167,11 @@ TYPED_TEST( TetrahedronFEMForceField_test , extension )
 
     // run test
     this->test_valueForce();
+}
+
+TYPED_TEST(TetrahedronFEMForceField_test, checkGracefullHandlingWhenTopologyIsMissing)
+{
+    this->checkGracefullHandlingWhenTopologyIsMissing();
 }
 
 } // namespace sofa

@@ -23,7 +23,7 @@ Please **DO NOT create an issue for questions or support**. Use [the SOFA forum]
 When creating an issue, pay attention to the following tips:
 
 - **Check existing issues**. What you are running into may have been addressed already.
-- **Set the right label** to your issue among our label list.
+- **Set the right label** to your issue among our label list or propose them in the description.
 - **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
 
 For more information on issues, check out [this GitHub guide](https://guides.github.com/features/issues/).  
@@ -50,11 +50,14 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
+### Reviewing (for the reviewers team)
 
-### Open Pull Requests
-
-Once you have opened a pull request a discussion will start around your proposed changes. Other contributors and users may chime in, but ultimately the decision is made by the maintainer(s). You may be asked to make some changes to your pull request, if so, add more commits to your branch and push them – they will automatically go into the existing pull request.
-
+- Make sure the pull request is **labelized** and well assigned.
+- Control that it follows **our rules** (defined above).
+- You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
+- If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
+- **Control the builds**: Dashboard > Details in the pull request checks.
+- Merge method: **prefer "rebase"** or "squash" over "merge" to keep linear history.
 
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
