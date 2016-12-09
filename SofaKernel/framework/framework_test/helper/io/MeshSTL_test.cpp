@@ -108,7 +108,7 @@ protected:
   };
 };
 
-TEST_F(MeshSTL_test, MeshOBJ_NoFile)
+TEST_F(MeshSTL_test, MeshSTL_NoFile)
 {
     /// This generate a test failure if no message is generated.
     ExpectMessage raii(Message::Error);
@@ -117,9 +117,9 @@ TEST_F(MeshSTL_test, MeshOBJ_NoFile)
     meshNoFile.testBench();
 }
 
-TEST_F(MeshSTL_test, MeshOBJ_NoMesh)
+TEST_F(MeshSTL_test, MeshSTL_NoMesh)
 {
-    MeshSTLTestData meshNoMesh("mesh/meshtest_nomesh.obj", 0, 0, 0, 0, 0, 0);
+    MeshSTLTestData meshNoMesh("mesh/meshtest_nomesh.stl", 0, 0, 0, 0, 0, 0);
     meshNoMesh.testBench();
 }
 
