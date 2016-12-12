@@ -129,6 +129,16 @@ double SofaPhysicsSimulation::getCurrentFPS() const
     return impl->getCurrentFPS();
 }
 
+double* SofaPhysicsSimulation::getGravity() const
+{
+    return impl->getGravity();
+}
+
+void SofaPhysicsSimulation::setGravity(double* gravity)
+{
+    impl->setGravity(gravity);
+}
+
 const char* SofaPhysicsSimulation::getSceneFileName() const
 {
     return impl->getSceneFileName();
@@ -326,6 +336,27 @@ double SofaPhysicsSimulation::Impl::getTime() const
 double SofaPhysicsSimulation::Impl::getCurrentFPS() const
 {
     return currentFPS;
+}
+
+double *SofaPhysicsSimulation::Impl::getGravity() const
+{
+    double* gravityVec = new double[3];
+
+    if (getScene())
+    {
+        const Vec3d& g = getScene()->getContext()->getGravity();
+        gravityVec[0] = g.x();
+        gravityVec[1] = g.y();
+        gravityVec[2] = g.z();
+    }
+
+    return gravityVec;
+}
+
+void SofaPhysicsSimulation::Impl::setGravity(double* gravity)
+{
+    Vec3d g = Vec3d(gravity[0], gravity[1], gravity[2]);
+    getScene()->getContext()->setGravity(g);
 }
 
 

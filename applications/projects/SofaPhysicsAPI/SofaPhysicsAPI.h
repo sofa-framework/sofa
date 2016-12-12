@@ -95,6 +95,9 @@ public:
     /// the last 100 steps)
     double getCurrentFPS() const;
 
+    double* getGravity() const;
+    void setGravity(double* gravity);
+
     /// Return the number of currently active data monitors
     unsigned int getNbDataMonitors();
 

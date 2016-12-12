@@ -49,6 +49,8 @@ public:
     void   setTimeStep(double dt);
     double getTime() const;
     double getCurrentFPS() const;
+    double* getGravity() const;
+    void setGravity(double* gravity);
 
     unsigned int getNbDataMonitors();
     SofaPhysicsDataMonitor** getDataMonitors();
