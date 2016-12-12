@@ -30,8 +30,6 @@ using namespace std ;
 #include <sys/vnode.h>
 #include <ctime>
 
-#include <CarboneCore/Finder.h>
-
 namespace sofa
 {
 
