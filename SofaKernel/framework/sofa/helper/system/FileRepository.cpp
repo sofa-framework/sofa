@@ -36,6 +36,9 @@
 #include <unistd.h>
 #endif
 
+#include <boost/filesystem.hpp>
+#include <boost/locale.hpp>
+
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
@@ -56,13 +59,13 @@ std::string cleanPath( const std::string& path )
 {
     std::string p = path;
     size_t pos = p.find("//");
-	size_t len = p.length();
+    size_t len = p.length();
     while( pos != std::string::npos )
     {
-		if ( pos == (len-1))
-			p.replace( pos, 2, "");
-		else
-			p.replace(pos,2,"/");
+        if ( pos == (len-1))
+            p.replace( pos, 2, "");
+        else
+            p.replace(pos,2,"/");
         pos = p.find("//");
     }
     return p;
@@ -108,18 +111,18 @@ FileRepository::~FileRepository()
 
 std::string FileRepository::cleanPath( const std::string& path )
 {
-	std::string p = path;
-	size_t pos = p.find("//");
-	size_t len = p.length();
-	while( pos != std::string::npos )
-	{
-		if ( pos == (len-2))
-			p.replace( pos, 2, "");
-		else
-			p.replace(pos,2,"/");
-		pos = p.find("//");
-	}
-	return p;
+    std::string p = path;
+    size_t pos = p.find("//");
+    size_t len = p.length();
+    while( pos != std::string::npos )
+    {
+        if ( pos == (len-2))
+            p.replace( pos, 2, "");
+        else
+            p.replace(pos,2,"/");
+        pos = p.find("//");
+    }
+    return p;
 }
 
 void FileRepository::addFirstPath(const std::string& p)
@@ -198,10 +201,11 @@ std::string FileRepository::getFirstPath()
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
-    struct stat s;
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
+    boost::filesystem::path::imbue( boost::locale::generator().generate("") );
+    boost::filesystem::path p(newfname);
     //std::cout << "Looking for " << newfname <<std::endl;
-    if (!stat(newfname.c_str(),&s))
+    if (boost::filesystem::exists(p))
     {
         // File found
         //std::cout << "File "<<filename<<" found in "<<path.substr(p0,p1-p0)<<std::endl;
