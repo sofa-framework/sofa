@@ -29,6 +29,7 @@ set(SOURCE_FILES
     MergeImages.cpp
     MeshToImageEngine.cpp
     TransferFunction.cpp
+    ThresholdingEngine.cpp
     VoronoiToMeshEngine.cpp
     initImage.cpp
 )
@@ -56,6 +57,7 @@ set(HEADER_FILES
     MergeImages.h
     MeshToImageEngine.h
     TransferFunction.h
+    ThresholdingEngine.h
     VectorVis.h
     VoronoiToMeshEngine.h
 )
