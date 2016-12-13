@@ -6,7 +6,7 @@ def createScene(node):
     node.createObject('ImageContainer', template="ImageUC", name="img", filename="data/depth0014-scale.pgm", drawBB="1")
 
 
-    node.createObject('ThresholdingEngine', template="ImageUC", name="engine", method="1", param="500", src="@img" )
+    node.createObject('ThresholdingEngine', template="ImageUC", name="engine", method="1", src="@img", param="100")
 
     node.createObject('ImageFilter', template="ImageUC,ImageUC", name="filter", filter="13", param="@engine.threshold",  src="@img" )
 

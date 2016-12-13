@@ -23,7 +23,6 @@ int ThresholdingEngineClass = core::RegisterObject("Find image threshold")
         .add<ThresholdingEngine<ImageL>>()
         .add<ThresholdingEngine<ImageF>>()
         .add<ThresholdingEngine<ImageD>>()
-        .add<ThresholdingEngine<ImageB>>()
         ;
 
 template class SOFA_IMAGE_API ThresholdingEngine<ImageUC>;
@@ -36,7 +35,6 @@ template class SOFA_IMAGE_API ThresholdingEngine<ImageL>;
 template class SOFA_IMAGE_API ThresholdingEngine<ImageUL>;
 template class SOFA_IMAGE_API ThresholdingEngine<ImageF>;
 template class SOFA_IMAGE_API ThresholdingEngine<ImageD>;
-template class SOFA_IMAGE_API ThresholdingEngine<ImageB>;
 
 
 } // namespace engine

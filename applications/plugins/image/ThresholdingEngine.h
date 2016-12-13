@@ -18,6 +18,16 @@ namespace component
 namespace engine
 {
 
+
+
+
+/// to get an default histogram size depending on the image type
+template<class T> size_t getHistogramSize() { return std::numeric_limits<typename std::make_unsigned<T>::type>::max()+1; }
+template<> size_t getHistogramSize<float>() { return std::numeric_limits<unsigned>::max()+1; }
+template<> size_t getHistogramSize<double>() { return std::numeric_limits<unsigned long>::max()+1; }
+
+
+
 /**
  * This class computes an automatic image threshold that would separate foreground from background
  */
@@ -32,8 +42,6 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T Ti;
     typedef typename ImageTypes::imCoord imCoordi;
-
-    typedef SReal Real;
 
     typedef helper::vector<double> ParamTypes;
 
@@ -77,6 +85,8 @@ public:
 
 protected:
 
+
+
     virtual void update()
     {
         const helper::vector<double>& param = d_param.getValue();
@@ -90,31 +100,42 @@ protected:
         if(image.isEmpty()) { threshold = Ti(); return; }
 
 
+        unsigned histogramSize = param.empty() ? getHistogramSize<Ti>() : param[0];
+
+//        sout << "histogramSize: " << histogramSize << sendl;
+
+        Ti tmin, tmax;
+
+        // TODO pass the histogram by reference to save a copy
+        cimg_library::CImg<unsigned int> histogram = image.get_histogram( tmin, tmax, histogramSize, true );
+
+
         switch(d_method.getValue().getSelectedId())
         {
-        case BHT:
-        {
-            unsigned histogramSize = param.empty() ? 256 : param[0];
+            case BHT:
+            {
+                threshold = BHThreshold( histogram );
+                break;
+            }
 
-            Ti tmin,tmax;
-            threshold = BHThreshold( image.get_histogram( tmin, tmax, histogramSize, true ) );
-            break;
+            case OTSU:
+            {
+                const cimg_library::CImgList<Ti>& imglist = image.getCImgList();
+                const cimg_library::CImg<Ti> img = imglist(0);
+                size_t nbPixels = imglist.size()*img.width()*img.height()*img.depth();
+                threshold = OtsuThreshold( histogram, nbPixels );
+                break;
+            }
+
+            default:
+                assert(false);
+                break;
         }
 
-        case OTSU:
-        {
-            unsigned histogramSize = param.empty() ? 256 : param[0];
 
-            Ti tmin,tmax;
-            const cimg_library::CImg<Ti> img = image.getCImgList()(0);
-            threshold = OtsuThreshold( image.get_histogram( tmin, tmax, histogramSize, true ), image.getCImgList().size()*img.width()*img.height()*img.depth() );
-            break;
-        }
-
-        default:
-            assert(false);
-            break;
-        }
+        // get threshold in Ti range from histogram range
+        SReal fact = ((SReal)std::numeric_limits<Ti>::max() - (SReal)std::numeric_limits<Ti>::lowest() ) / (SReal)histogramSize;
+        threshold = fact * threshold - std::numeric_limits<Ti>::lowest();
 
         d_threshold.endEdit();
 
@@ -183,17 +204,17 @@ protected:
              wF = totalImageSize - wB;
              if (wF == 0) continue;
 
-             sumB += (double)(i * histogram[i]);
+             sumB += i * histogram[i];
 
              double mB = sumB / wB;
              double mF = (sum - sumB) / wF;
 
              double between = wB * wF * (mB - mF) * (mB - mF);
 
-             if (between > max)
+             if( between > max )
              {
+                 threshold = i;
                  max = between;
-                 threshold = histogram[i];
              }
          }
          return threshold;
