@@ -25,7 +25,7 @@ void createAFilledFile(const string filename, unsigned int rep){
 
     //throw_when(!file1.is_open()) ;
 
-    string sample = "#include<TODOD> int main(int argc...){ ... }\n}" ;
+    string sample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.\n" ;
     for(unsigned int i=0;i<rep;i++){
         file1.write(sample.c_str(), sample.size()) ;
     }
@@ -48,7 +48,7 @@ TEST(FileMonitor, addFileNotExist_test)
     MyFileListener listener ;
 
     // Should refuse to add a file that does not exists
-     EXPECT_EQ( FileMonitor::addFile(getPath("nonexisting.txt"), &listener), -1 ) ;
+     EXPECT_EQ( -1, FileMonitor::addFile(getPath("nonexisting.txt"), &listener) ) ;
 
      FileMonitor::removeListener(&listener) ;
 }
@@ -58,7 +58,7 @@ TEST(FileMonitor, addFileNotExist2_test)
     MyFileListener listener ;
 
     // Should refuse to add a file that does not exists
-     EXPECT_EQ( FileMonitor::addFile(getPath(""),"nonexisting.txt", &listener), -1 ) ;
+     EXPECT_EQ( -1, FileMonitor::addFile(getPath(""),"nonexisting.txt", &listener) ) ;
 
      FileMonitor::removeListener(&listener) ;
 }
@@ -68,7 +68,7 @@ TEST(FileMonitor, addFileExist_test)
     MyFileListener listener ;
 
     // Add an existing file.It should work.
-    EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
+    EXPECT_EQ( 1, FileMonitor::addFile(getPath("existing.txt"), &listener) ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -81,14 +81,14 @@ TEST(FileMonitor, addFileTwice_test)
     FileMonitor::addFile(getPath("existing.txt"), &listener);
 
     // Retry to add an existing file. It should fail.
-    EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
+    EXPECT_EQ( 1, FileMonitor::addFile(getPath("existing.txt"), &listener) ) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
     FileMonitor::updates(0) ;
 
     // The listener should be notified 1 times with the same event.
-    EXPECT_EQ( listener.m_files.size(), 1u) ;
+    EXPECT_EQ( 1u, listener.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -99,7 +99,7 @@ TEST(FileMonitor, noUpdate_test)
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    EXPECT_EQ( listener.m_files.size(), 0u) ;
+    EXPECT_EQ( 0u, listener.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -110,7 +110,7 @@ TEST(FileMonitor, updateNoChange_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 0u) ;
+    EXPECT_EQ( 0u, listener.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -125,7 +125,22 @@ TEST(FileMonitor, fileChange_test)
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 1u) ;
+    EXPECT_EQ( 1u, listener.m_files.size() ) ;
+
+    FileMonitor::removeListener(&listener) ;
+}
+
+TEST(FileMonitor, fileChange2_test)
+{
+    MyFileListener listener ;
+
+    FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
+    FileMonitor::updates(0) ;
+
+    // change the file content..
+    createAFilledFile(getPath("existing.txt"), 10) ;
+    FileMonitor::updates(0) ;
+    EXPECT_EQ( 1u, listener.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -143,7 +158,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 200) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener.m_files.size(), 1u) ;
+    EXPECT_EQ( 1u, listener.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener) ;
 }
@@ -165,8 +180,8 @@ TEST(FileMonitor, fileListenerRemoved_test)
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener1.m_files.size(), 0u) ;
-    EXPECT_EQ( listener2.m_files.size(), 1u) ;
+    EXPECT_EQ( 0u, listener1.m_files.size() ) ;
+    EXPECT_EQ( 1u, listener2.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
@@ -189,8 +204,8 @@ TEST(FileMonitor, listenerRemoved_test)
     FileMonitor::removeListener(&listener1) ;
 
     FileMonitor::updates(0) ;
-    EXPECT_EQ( listener1.m_files.size(), 0u) ;
-    EXPECT_EQ( listener2.m_files.size(), 1u) ;
+    EXPECT_EQ( 0u, listener1.m_files.size() ) ;
+    EXPECT_EQ( 1u, listener2.m_files.size() ) ;
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
