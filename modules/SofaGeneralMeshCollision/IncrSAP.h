@@ -236,15 +236,15 @@ private:
 
 
     //The following methods are used when updating end points in the end point lists, it updates in the same time the collisions.
-    void moveMinForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it);
-    void moveMaxForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it);
-    void moveMinBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it);
-    void moveMaxBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it);
+    void moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it);
+    void moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it);
+    void moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it);
+    void moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it);
 
-    static bool assertion_order(typename EndPointList::iterator it,typename EndPointList::iterator begin,typename EndPointList::iterator end);
-    static bool assertion_list_order(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it);
-    static bool assertion_superior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point);
-    static bool assertion_inferior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point);
+    static bool assertion_order(EndPointList::iterator it,EndPointList::iterator begin,EndPointList::iterator end);
+    static bool assertion_list_order(EndPointList::iterator begin_it,const EndPointList::iterator & end_it);
+    static bool assertion_superior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point);
+    static bool assertion_inferior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point);
     bool assertion_end_points_sorted()const;
     //EndPointID & findEndPoint(int dim,int data);
 
