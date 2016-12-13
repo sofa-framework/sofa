@@ -136,7 +136,7 @@ public:
     {
         const std::vector<Message>& messages = MainLoggingMessageHandler::getMessages() ;
 
-        return messages.size() ;
+        return messages.end()-(messages.begin()+m_firstMessage);
     }
 
 private:
