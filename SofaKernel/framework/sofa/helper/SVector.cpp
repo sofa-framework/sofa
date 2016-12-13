@@ -16,7 +16,7 @@ SOFA_HELPER_API std::istream& SVector<std::string>::read( std::istream& in )
 {
     this->clear();
 
-    std::string s(std::istreambuf_iterator<char>(in), {});
+    std::string s = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
     size_t f = s.find_first_of('[');
     if( f == std::string::npos )
@@ -98,7 +98,7 @@ SOFA_HELPER_API std::ostream& SVector<std::string>::write( std::ostream& os ) co
 {
     if ( !this->empty() )
     {
-        typename SVector<std::string>::const_iterator i = this->begin(), iend=this->end();
+        SVector<std::string>::const_iterator i = this->begin(), iend=this->end();
         os << "[ '" << *i <<"'";
         ++i;
         for ( ; i!=iend; ++i )
