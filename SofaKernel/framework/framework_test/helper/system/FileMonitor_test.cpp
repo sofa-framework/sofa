@@ -130,6 +130,21 @@ TEST(FileMonitor, fileChange_test)
     FileMonitor::removeListener(&listener) ;
 }
 
+TEST(FileMonitor, fileChange2_test)
+{
+    MyFileListener listener ;
+
+    FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
+    FileMonitor::updates(0) ;
+
+    // change the file content..
+    createAFilledFile(getPath("existing.txt"), 10) ;
+    FileMonitor::updates(0) ;
+    EXPECT_EQ( listener.m_files.size(), 1u) ;
+
+    FileMonitor::removeListener(&listener) ;
+}
+
 TEST(FileMonitor, fileChangeTwice_test)
 {
     MyFileListener listener ;
