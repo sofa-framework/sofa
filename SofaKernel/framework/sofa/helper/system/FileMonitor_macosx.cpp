@@ -1,16 +1,5 @@
 // TO BE DONE USING THE SPECIFIC API... OR FIND A CROSS PLATEFORM LIBRARY.
 
-// let's use FSEvent API for this...
-// https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/
-
-//#include <errno.h>       // for errno
-//#include <fcntl.h>       // for O_RDONLY
-//#include <stdio.h>       // for fprintf()
-//#include <stdlib.h>      // for EXIT_SUCCESS
-//#include <string.h>      // for strerror()
-//#include <sys/event.h>   // for kqueue() etc.
-//#include <unistd.h>      // for close()
-
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;
 
@@ -39,7 +28,7 @@ namespace helper
 namespace system
 {
 
-    static unsigned int getFileHash(const string& filename)
+    static unsigned int getFileHashTimeSize(const string& filename)
     {
         typedef struct attrlist attrlist_t;
 
@@ -62,36 +51,12 @@ namespace system
         attrList.fileattr  = ATTR_FILE_TOTALSIZE;
 
         err = getattrlist(filename.c_str(), &attrList, &attrBuf, sizeof(attrBuf), 0);
-        if (err != 0) {
-           // printf("FileStatus(%s) ERROR\n");
-        }
 
         unsigned int result(0);
 
         if (err == 0) {
-//            assert(attrBuf.length == sizeof(attrBuf));
-//            printf("Information for %s:\n", filename.c_str());
-            // attrBuf.timeSpec.tv_sec est la date du fichier en secondes: good enough ?
-//            printf("modification time: %d\n",attrBuf.timeSpec.tv_sec);
-//            printf("size: %d\n",attrBuf.totalSize);
-/*
-            switch (attrBuf.objType) {
-                case VREG:
-                    printf("file type    = '%.4s' %d-%d-%d-%d\n", swap32(&attrBuf.finderInfo[0]), attrBuf.finderInfo[0],attrBuf.finderInfo[1],attrBuf.finderInfo[2],attrBuf.finderInfo[3]);
-                    printf("file creator = '%.4s'\n", swap32(&attrBuf.finderInfo[4]));
-                    break;
-                case VDIR:
-                    printf("directory\n");
-                    break;
-                default:
-                    printf("other object type, %d\n", attrBuf.objType);
-                    break;
-            }
-            */
-
             // this "hash" computation is DIRTY.
             result  = attrBuf.totalSize>0?attrBuf.timeSpec.tv_sec % attrBuf.totalSize : attrBuf.timeSpec.tv_sec;
-//            printf("hash: %8X\n",result);
         }
 
         return result;
@@ -105,41 +70,26 @@ public:
     MonitoredFile(const string &filename, FileEventListener* listener)
     {
         m_filename = filename;
-        m_hash = getFileHash(filename);
+        m_hashTimeSize = getFileHashTimeSize(filename);
         m_listener = listener;
     }
 
     // update hash; returns FALSE if file changed
     bool update()
     {
-        unsigned int oldHash = m_hash;
-        m_hash = getFileHash(m_filename);
-        if (oldHash!=m_hash)
-            printf("MonitoredFile.update : File %s changed\n",m_filename.c_str());
-        else
-            printf("MonitoredFile.update : File %s not changed\n",m_filename.c_str());
-        return (oldHash==m_hash);
+        unsigned int oldHash = m_hashTimeSize;
+        m_hashTimeSize = getFileHashTimeSize(m_filename);
+        return (oldHash==m_hashTimeSize);
     }
 
 private:
-    unsigned int        m_hash;
+    unsigned int        m_hashTimeSize; // first criteria
+//    unsigned int        m_hashContent;  // subsidiary (slow) criteria
 public:
     FileEventListener   *m_listener;
     string              m_filename;
 };
 
-
-
-
-
-
-/*
-typedef vector<string> ListOfFiles ;
-typedef vector<FileEventListener*> ListOfListeners ;
-map<string, ListOfFiles> dir2files ;
-map<int, string> fd2fn ;
-map<string, ListOfListeners> file2listener ;
-*/
 typedef list<MonitoredFile> ListOfMonitors ;
 ListOfMonitors monitors;
 
@@ -168,6 +118,8 @@ int FileMonitor::addFile(const std::string& filepath, FileEventListener* listene
     if(!FileSystem::exists(filepath))
         return -1 ;
 
+    printf("FileMonitor::addFile(%s)\n",filepath.c_str());
+
     for(ListOfMonitors::iterator it_monitor=monitors.begin(); it_monitor!=monitors.end(); it_monitor++)
         if (it_monitor->m_listener==listener && it_monitor->m_filename==filepath)
             return 1;
@@ -179,11 +131,7 @@ int FileMonitor::addFile(const std::string& filepath, FileEventListener* listene
 
 int FileMonitor::addFile(const std::string& directoryname, const std::string& filename, FileEventListener* listener)
 {
-    if(!FileSystem::exists(directoryname+filename))
-        return -1 ;
-
-    // TODO
-    return 0;
+    return addFile(directoryname+filename,listener);
 }
 
 int FileMonitor::updates(int timeout)
