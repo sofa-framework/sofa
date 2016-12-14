@@ -233,7 +233,7 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
 #ifdef WIN32
                  , ComponentInfo::SPtr( new ComponentInfo("", "")) )
 #else
-                 , ComponentInfo::SPtr( new ComponentInfo("" /*sender->getName()*/, "")) )
+                 , ComponentInfo::SPtr( new ComponentInfo(sender)) )
 #endif //WIN32
 {
 }

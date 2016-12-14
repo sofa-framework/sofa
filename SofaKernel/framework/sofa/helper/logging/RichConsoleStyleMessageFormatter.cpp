@@ -246,10 +246,11 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     if (!m.sender().empty())
     {
-        if( m.componentInfo() )
+        if( false && m.componentInfo() )
         {
-            psize +=m.sender().size()+m.componentInfo()->m_name.size()+5 ;
-            out << Console::BLUE << "[" << m.sender()<< "(" << m.componentInfo()->m_name << ")] ";
+            //std::string cname = m.componentInfo()->m_component->getName();
+            //psize +=m.sender().size()+cname.size()+5 ;
+            //out << Console::BLUE << "[" << m.sender()<< "(" << cname << ")] ";
         }
         else
         {
