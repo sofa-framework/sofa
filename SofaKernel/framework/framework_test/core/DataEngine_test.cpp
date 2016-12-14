@@ -54,7 +54,7 @@ public:
     void init()
     {
         addInput(&input);
-        trackData(&input); // to connect a DataTracker to the Data 'input'
+        m_dataTracker.trackData(input); // to connect a DataTracker to the Data 'input'
 
         addOutput(&output);
 
@@ -70,7 +70,7 @@ public:
     {
         // true only iff the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update
-        if( isTrackedDataDirty( input ) )
+        if( m_dataTracker.isDirty( input ) )
             output.setValue(CHANGED);
         else
             output.setValue(NO_CHANGED);

@@ -251,6 +251,9 @@ protected:
         outputs.remove(n);
     }
 
+    /// the dirtyOutputs flags of all the inputs will be set to false
+    void cleanDirtyOutputsOfInputs(const core::ExecParams* params);
+
 private:
 
     struct DirtyFlags

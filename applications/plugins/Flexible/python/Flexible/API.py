@@ -214,9 +214,9 @@ class Deformable:
 
 
     def addSkinning(self, armatureNode, indices, weights, assemble=True, isMechanical=True):
-        """ Add skinning (linear) mapping based on the armature (Rigid3) in armatureNode using
+        """ Add skinning (linear) mapping based on the armature in armatureNode using
         """
-        self.mapping = self.node.createObject("LinearMapping", template="Rigid3,Vec3", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
+        self.mapping = self.node.createObject("LinearMapping", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
 
 
     def getFilename(self, filenamePrefix=None, directory=""):

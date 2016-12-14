@@ -171,6 +171,9 @@ public:
 
     virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL);
 
+    virtual void enableDepthTest();
+    virtual void disableDepthTest();
+
 protected:
 
     bool mLightEnabled;

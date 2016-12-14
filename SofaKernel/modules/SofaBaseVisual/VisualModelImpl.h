@@ -332,8 +332,8 @@ protected:
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    virtual bool hasTransparent();
-    bool hasOpaque();
+    virtual bool hasTransparent() const;
+    bool hasOpaque() const;
 
     void drawVisual(const core::visual::VisualParams* vparams);
     void drawTransparent(const core::visual::VisualParams* vparams);

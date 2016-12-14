@@ -595,9 +595,9 @@ using namespace core::behavior;
                               << x.transpose() << sendl;
                 }
 
-                MultiVecDeriv v_stab( &sop.vop ); // a temporary multivec not to modify velocity
-                set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-                integrate( sop, posId, v_stab.id() );
+                _vstab.realloc( &sop.vop ); // a temporary multivec not to modify velocity
+                set_state_v( sys, x, _vstab.id() ); // set v (no need to set lambda)
+                integrate( sop, posId, _vstab.id() );
             }
 
             // actual dynamics
@@ -745,9 +745,10 @@ using namespace core::behavior;
                       << x.transpose() << sendl;
         }
 
-        MultiVecDeriv v_stab( &sop.vop );  // a temporary multivec not to modify velocity
-        set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-        integrate( sop, posId, v_stab.id() );
+
+        _vstab.realloc( &sop.vop ); // a temporary multivec not to modify velocity
+        set_state_v( sys, x, _vstab.id() ); // set v (no need to set lambda)
+        integrate( sop, posId, _vstab.id() );
 
         propagate( &sop.mparams() );
     }
