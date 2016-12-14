@@ -22,9 +22,13 @@
 * class CountingMessageHandler (count the number of message for each message type)
 * class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
 * class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
+* a script in tools/aliasremover to convert the components alias in scenes for their real component name.
 
 ### Improvements
-*   XXXX new tests
+*   several new tests:
+    - Light
+    - LocalMinDistance
+    - AllComponent
 *   YYYY/ZZZ components have an associated example 
 *   RigidMapping: in case jetJs is called several times per step
 *   [SofaPython]
