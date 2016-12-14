@@ -44,7 +44,7 @@ public:
 
     Data<bool> d_doPrintInfoMessage;
     Data<bool> d_doDebugDraw;
-    Data<int>  m_depth;
+    Data<int>  d_depth;
 protected:
     DefaultPipeline();
 public:
