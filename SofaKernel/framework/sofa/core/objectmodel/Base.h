@@ -340,12 +340,11 @@ public:
     /// @{
 
 private:
-
     /// effective ostringstream for logging
     mutable std::ostringstream _serr, _sout;
+    mutable sofa::helper::vector<sofa::helper::logging::Message> m_messageslog ;
 
 public:
-
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
     mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
@@ -365,6 +364,7 @@ public:
 
     void processStream(std::ostream& out);
 
+    void addMessage(const sofa::helper::logging::Message& m) const ;
     /// @}
 
 protected:

@@ -25,6 +25,8 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::Message ;
+
 #include <map>
 #include <typeinfo>
 #include <string.h>
@@ -305,6 +307,13 @@ void Base::clearOutputs()
     outputs.clear();
 }
 
+void Base::addMessage(const Message &m) const
+{
+    if(m_messageslog.size() > 1000){
+        //m_messageslog.pop_front();
+    }
+    m_messageslog.push_back(m) ;
+}
 
 bool Base::hasTag(Tag t) const
 {
