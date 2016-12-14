@@ -85,6 +85,7 @@ TEST(FileMonitor, addFileTwice_test)
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
 
     // The listener should be notified 1 times with the same event.
@@ -109,6 +110,7 @@ TEST(FileMonitor, updateNoChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
@@ -124,6 +126,7 @@ TEST(FileMonitor, fileChange_test)
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -139,6 +142,7 @@ TEST(FileMonitor, fileChange2_test)
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -157,6 +161,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 100) ;
     createAFilledFile(getPath("existing.txt"), 200) ;
 
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -179,6 +184,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
@@ -203,6 +209,7 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::removeListener(&listener1) ;
 
+    sleep(1);   // on osx there is a latency between 0.2 and 0.5s for file events...
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
