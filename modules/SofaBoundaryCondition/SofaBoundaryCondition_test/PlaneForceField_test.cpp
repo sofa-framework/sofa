@@ -70,18 +70,18 @@ using std::string ;
 using std::map ;
 using std::pair;
 
-using sofa::linearsolver::GraphScatteredMatrix ;
-using sofa::linearsolver::GraphScatteredVector ;
-using sofa::linearsolver::CGLinearSolver ;
+using sofa::component::linearsolver::GraphScatteredMatrix ;
+using sofa::component::linearsolver::GraphScatteredVector ;
+using sofa::component::linearsolver::CGLinearSolver ;
 
 using sofa::simulation::graph::DAGSimulation ;
 
 using sofa::component::mass::UniformMass ;
 using sofa::component::forcefield::PlaneForceField ;
 
-using sofa::container::MechanicalObject ;
+using sofa::component::container::MechanicalObject ;
 
-using sofa::odesolver::EulerImplicitSolver ;
+using sofa::component::odesolver::EulerImplicitSolver ;
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple
