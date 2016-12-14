@@ -132,7 +132,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     helper::vector < defaulttype::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
     typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
-    boxRoi->boxes.setValue(vecBox);
+    boxRoi->d_alignedBoxes.setValue(vecBox);
 
     //PairBoxRoi to define the constrained points = points of the border
     typename PairBoxRoi::SPtr pairBoxRoi = modeling::addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
@@ -141,7 +141,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
 
     //Affine constraint
     patchStruct.affineConstraint  = modeling::addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
-    modeling::setDataLink(&boxRoi->f_indices,&patchStruct.affineConstraint->m_meshIndices);
+    modeling::setDataLink(&boxRoi->d_indices,&patchStruct.affineConstraint->m_meshIndices);
     modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
 
     patchStruct.SquareNode = SquareNode;
@@ -209,11 +209,11 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
     typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
-    boxRoi1->boxes.setValue(vecBox);
+    boxRoi1->d_alignedBoxes.setValue(vecBox);
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
         modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
-    sofa::modeling::setDataLink(&boxRoi1->f_indices,&fc->f_indices);
+    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->f_indices);
     // FixedPlaneConstraint
     typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
         modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
@@ -224,13 +224,13 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     box[0]= -0.2;box[1]= -0.2;box[2]= 0.99;box[3]= 0.2;box[4]= 0.2;box[5]= 1.01;
     vecBox[0]=box;
     typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
-    boxRoi2->boxes.setValue(vecBox);
-    boxRoi2->f_computeTriangles=true;
+    boxRoi2->d_alignedBoxes.setValue(vecBox);
+    boxRoi2->d_computeTriangles=true;
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
         modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
-    sofa::modeling::setDataLink(&boxRoi2->f_triangleIndices,&tpff->triangleList);
+    sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
     // ProjectToLineConstraint
     typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
         modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
