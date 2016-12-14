@@ -23,21 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
-
-#include <sofa/core/loader/VoxelLoader.h>
-
 #include <SofaOpenglVisual/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
-
-#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -57,13 +45,12 @@ int OglCylinderModelClass = core::RegisterObject("A simple visualization for set
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel()
-    : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-      //This field should support the color="red" api.
-      color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+OglCylinderModel::OglCylinderModel() 
+    : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder."))
+    , color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
@@ -91,7 +78,12 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
-    // glPushAttrib(GL_ENABLE_BIT);
+    const bool& depthTest = d_depthTest.getValue();
+    if( !depthTest )
+    {
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_DEPTH_TEST);
+    }
 
     vparams->drawTool()->setLightingEnabled(true);
     Real _radius = radius.getValue();
@@ -108,7 +100,8 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
 
-    // glPopAttrib();
+    if( !depthTest )
+        glPopAttrib();
 }
 
 

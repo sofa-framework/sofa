@@ -317,7 +317,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::computeRigidFromRigidAndScale(con
     // Variables
     Matrix3 scale;
     // Conversion of the scale into a 3x3 matrix
-    for (unsigned int i = 0; i < 3; ++i) scale[i][i] = in2[i];
+    computeScaleMatrix(in2, scale);
     // Final position
     out = se3::prod(in1, OutCoord(scale*rOut.getCenter(), rOut.getOrientation()));
 	return;
@@ -430,7 +430,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
 
             assert( parentIdx == ind1 );
 
-            for (unsigned int k=0; k<3; ++k) S[k][k] = vIn2[ind2][k];
+            computeScaleMatrix(vIn2[ind2], S);
 
             const OutDeriv& force = childForce[ind0];
             const typename OutDeriv::Vec3& f = force.getLinear();

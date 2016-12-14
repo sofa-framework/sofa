@@ -713,14 +713,14 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 //    m_vtexcoords.updateIfDirty();
 }
 
-bool OglModel::hasTransparent()
+bool OglModel::hasTransparent() const
 {
     if(alphaBlend.getValue())
         return true;
     return VisualModelImpl::hasTransparent();
 }
 
-bool OglModel::hasTexture()
+bool OglModel::hasTexture() const
 {
     return !textures.empty() || tex;
 }
