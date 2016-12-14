@@ -41,14 +41,6 @@ DataEngine::~DataEngine()
 {
 }
 
-void DataEngine::updateAllInputsIfDirty()
-{
-    const DDGLinkContainer& inputs = DDGNode::getInputs();
-    for(size_t i=0, iend=inputs.size() ; i<iend ; ++i )
-    {
-        static_cast<core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
-}
 
 /// Add a new input to this engine
 void DataEngine::addInput(objectmodel::BaseData* n)
@@ -58,46 +50,12 @@ void DataEngine::addInput(objectmodel::BaseData* n)
     core::objectmodel::DDGNode::addInput(n);
 }
 
-/// Remove an input from this engine
-void DataEngine::delInput(objectmodel::BaseData* n)
-{
-    core::objectmodel::DDGNode::delInput(n);
-}
-
 /// Add a new output to this engine
 void DataEngine::addOutput(objectmodel::BaseData* n)
 {
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Outputs"); // set the group of output Datas if not yet set
     core::objectmodel::DDGNode::addOutput(n);
-}
-
-/// Remove an output from this engine
-void DataEngine::delOutput(objectmodel::BaseData* n)
-{
-    core::objectmodel::DDGNode::delOutput(n);
-}
-
-
-
-
-void DataEngine::cleanDirty(const core::ExecParams* params)
-{
-    core::objectmodel::DDGNode::cleanDirty(params);
-
-    // it is also time to clean the tracked Data
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second.cleanDirty();
-}
-
-void DataEngine::trackData( objectmodel::BaseData* data )
-{
-    m_dataTrackers[data].setData( data );
-}
-
-bool DataEngine::isTrackedDataDirty( const objectmodel::BaseData& data )
-{
-    return m_dataTrackers[&data].isDirty();
 }
 
 
