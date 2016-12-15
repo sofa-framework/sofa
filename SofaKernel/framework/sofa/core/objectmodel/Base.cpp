@@ -315,6 +315,11 @@ void Base::addMessage(const Message &m) const
     m_messageslog.push_back(m) ;
 }
 
+const sofa::helper::vector<sofa::helper::logging::Message>& Base::getLoggedMessages() const
+{
+    return m_messageslog ;
+}
+
 bool Base::hasTag(Tag t) const
 {
     return (f_tags.getValue().count( t ) > 0 );

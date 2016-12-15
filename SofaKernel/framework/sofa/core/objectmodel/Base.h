@@ -365,6 +365,7 @@ public:
     void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
+    const sofa::helper::vector<sofa::helper::logging::Message>& getLoggedMessages() const ;
     /// @}
 
 protected:
