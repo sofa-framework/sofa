@@ -224,21 +224,20 @@ public:
                     cimg_forXYZ(img(l),x,y,z)
             {
                 cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
-                long double val=vect.magnitude();
-                T tval=(T)val;
+                T tval=(T)vect.magnitude();
                 if(value_min>tval) value_min=tval;
-                if(value_max<tval) value_max=tval;
+                else if(value_max<tval) value_max=tval;
             }
             if(value_max==value_min) value_max=value_min+(T)1;
+            long double mul= ((long double)dimx-1.)/((long double)value_max-(long double)value_min);
             cimglist_for(img,l)
                     cimg_forXYZ(img(l),x,y,z)
             {
                 cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
-                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                if(v<0) v=0;
-                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                ++res((int)(v),0,0,0);
+                long double v = ((long double)val-(long double)value_min)*mul;
+                if(v<0) v=0; else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                ++res((int)(v));
             }
         }
         else
@@ -246,17 +245,13 @@ public:
             value_min=img.min();
             value_max=img.max();
             if(value_max==value_min) value_max=value_min+(T)1;
+            long double mul= ((long double)dimx-1.)/((long double)value_max-(long double)value_min);
             cimglist_for(img,l)
                     cimg_forXYZC(img(l),x,y,z,c)
             {
-                if((long double)value_max-(long double)value_min !=0)
-                {
-                    const T val = img(l)(x,y,z,c);
-                    long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                    if(v<0) v=0;
-                    else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                    ++res((int)(v),0,0,c);
-                }
+                long double v = ((long double)img(l)(x,y,z,c)-(long double)value_min)*mul;
+                if(v<0) v=0; else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                ++res((int)(v),0,0,c);
             }
         }
         return res;
