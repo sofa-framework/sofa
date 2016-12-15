@@ -29,6 +29,7 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 
 namespace sofa
@@ -46,18 +47,18 @@ void PerComponentLoggingMessageHandler::process(Message& m)
         m.componentInfo()->m_component->addMessage(m) ;
 }
 
-PerComponentLoggingMesssageHandler::PerComponentLoggingMesssageHandler()
+PerComponentLoggingMessageHandler::PerComponentLoggingMessageHandler()
 {
 }
 
-PerComponentLoggingMesssageHandler& MainPerComponentLoggingMesssageHandler::getInstance()
+PerComponentLoggingMessageHandler& MainPerComponentLoggingMessageHandler::getInstance()
 {
-    static PerComponentLoggingMesssageHandler s_instance;
+    static PerComponentLoggingMessageHandler s_instance;
     return s_instance;
 }
 
 
-} // loggingmessagehandler
+} // percomponentloggingmessagehandler
 } // logging
 } // helper
 } // sofa
