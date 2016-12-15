@@ -63,7 +63,7 @@ using std::vector ;
 /// at \see MainRoutingMessageHandler.
 ///
 ///
-class SOFA_HELPER_API PerComponentLoggingMessageHandler : public MessageHandler
+class SOFA_CORE_API PerComponentLoggingMessageHandler : public MessageHandler
 {
 public:
     PerComponentLoggingMessageHandler() ;
@@ -79,7 +79,7 @@ public:
 ///
 /// \see PerComponentLoggingMessageHandler
 ///
-class SOFA_HELPER_API MainPerComponentLoggingMessageHandler
+class SOFA_CORE_API MainPerComponentLoggingMessageHandler
 {
 public:
     static PerComponentLoggingMessageHandler& getInstance() ;

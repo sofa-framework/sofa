@@ -59,7 +59,7 @@ namespace richconsolestylemessageformater
 ///     - automatic reading of the console number of column for prettier display.
 ///
 ///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+class SOFA_CORE_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
 public:
     virtual void formatMessage(const Message& m,std::ostream& out);
@@ -68,7 +68,7 @@ public:
 };
 
 /// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
+class SOFA_CORE_API MainRichConsoleStyleMessageFormatter
 {
 public:
     static void formatMessage(const Message& m,std::ostream& out)
