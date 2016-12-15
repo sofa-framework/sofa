@@ -33,8 +33,8 @@
 #define RICHCONSOLESTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/MessageFormatter.h>
 #include <sofa/helper/helper.h>
 
 namespace sofa
