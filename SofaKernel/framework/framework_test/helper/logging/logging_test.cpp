@@ -173,7 +173,7 @@ class MyComponent : public sofa::core::objectmodel::BaseObject
 public:
     MyComponent() {}
 
-    void emitSerrMessages(){
+    void emitSerrSoutMessages(){
         f_printLog.setValue(true); // to print sout
         serr<<"regular serr"<<sendl;
         sout<<"regular sout"<<sendl;
@@ -197,7 +197,7 @@ public:
 
 };
 
-TEST(LoggingTest, BaseObjectSerr)
+TEST(LoggingTest, checkBaseObjectSerr)
 {
     MessageDispatcher::clearHandlers() ;
     MyMessageHandler h;
@@ -206,7 +206,7 @@ TEST(LoggingTest, BaseObjectSerr)
 
     MyComponent c;
 
-    c.emitSerrMessages();
+    c.emitSerrSoutMessages();
     /// the constructor of MyComponent is sending 4 messages
     EXPECT_EQ( h.numMessages(), 4u ) ;
 
@@ -280,7 +280,7 @@ TEST(LoggingTest, BaseObjectSerr)
 }
 
 
-TEST(LoggingTest, BaseObjectMsgAPI)
+TEST(LoggingTest, checkBaseObjectMsgAPI)
 {
     MessageDispatcher::clearHandlers() ;
     MyMessageHandler h;
@@ -310,6 +310,22 @@ TEST(LoggingTest, BaseObjectMsgAPI)
     msg_info(&c) << "A fourth message ";
 
     EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
+}
+
+
+TEST(LoggingTest, checkBaseObjectQueueSize)
+{
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    MyComponent c;
+
+    /// Filling the internal message queue.
+    for(unsigned int i=0;i<20;i++){
+        c.emitMessages();
+    }
+    EXPECT_EQ(c.getLoggedMessages().size(), c.d_logSize.getValue())
 }
 
 
@@ -371,6 +387,7 @@ TEST(LoggingTest, checkLoggingMessageHandler)
         }
     }
 }
+
 
 TEST(LoggingTest, checkCountingMessageHandler)
 {
