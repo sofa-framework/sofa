@@ -92,7 +92,7 @@ using sofa::gui::BaseGUI;
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #ifdef SOFA_HAVE_GLUT_GUI

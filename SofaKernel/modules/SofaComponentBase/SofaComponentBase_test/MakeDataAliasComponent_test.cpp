@@ -61,7 +61,7 @@ using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::MessageAsTestFailure ;
 using sofa::helper::logging::LogMessage ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
