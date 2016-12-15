@@ -40,6 +40,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <deque>
 #include <string>
 #include <map>
 
@@ -342,7 +343,7 @@ public:
 private:
     /// effective ostringstream for logging
     mutable std::ostringstream _serr, _sout;
-    mutable sofa::helper::vector<sofa::helper::logging::Message> m_messageslog ;
+    mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
     /// write into component buffer + Message processedby message handlers
@@ -365,7 +366,7 @@ public:
     void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
-    const sofa::helper::vector<sofa::helper::logging::Message>& getLoggedMessages() const ;
+    const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
     /// @}
 
 protected:
@@ -467,6 +468,15 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags;
 
     Data< sofa::defaulttype::BoundingBox > f_bbox;
+
+    /// This one indicates the level at which a message is emmited.
+    Data<int> d_msgLevel;
+
+    /// This one indicates the level at which a message is recorded into the internal log.
+    Data<int> d_logLevel;
+
+    /// This one indicates the number of messages the log can stores.
+    Data<int> d_logSize;
 
 
     /// @name casting

@@ -53,6 +53,9 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
+    , d_msgLevel(initData(&d_msgLevel, 3, "messageLevel", "specify which kind of message should be emitted. (default=Info)"))
+    , d_logLevel(initData(&d_logLevel, 3, "loggingLevel", "specify which kind of message should be recorded in the component history. (default = Info)"))
+    , d_logSize(initData(&d_logSize, 20, "loggingSize", "specify the number of message this component can stores in its history. (default = 20)"))
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
@@ -67,6 +70,12 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+
+    d_msgLevel.setOwnerClass("Base");
+    d_msgLevel.setAutoLink(false);
+
+    d_logLevel.setOwnerClass("Base");
+    d_logLevel.setAutoLink(false);
 }
 
 Base::~Base()
@@ -309,13 +318,13 @@ void Base::clearOutputs()
 
 void Base::addMessage(const Message &m) const
 {
-    if(m_messageslog.size() > 1000){
-        //m_messageslog.pop_front();
+    if(m_messageslog.size() >= d_logSize.getValue() ){
+        m_messageslog.pop_front();
     }
     m_messageslog.push_back(m) ;
 }
 
-const sofa::helper::vector<sofa::helper::logging::Message>& Base::getLoggedMessages() const
+const std::deque<sofa::helper::logging::Message>& Base::getLoggedMessages() const
 {
     return m_messageslog ;
 }
