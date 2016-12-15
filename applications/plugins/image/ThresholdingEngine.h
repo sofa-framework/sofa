@@ -101,8 +101,8 @@ protected:
         Ti tmin, tmax;
 
         // TODO pass the histogram by reference to save a copy
-        cimg_library::CImg<unsigned int> histogram = image.get_histogram( tmin, tmax, histogramSize, true );
-        //        cimg_library::CImg<unsigned int> histogram = get_normalizedHistogram( tmin, tmax, histogramSize, image.getCImgList() );
+//        cimg_library::CImg<unsigned int> histogram = image.get_histogram( tmin, tmax, histogramSize, true );
+                cimg_library::CImg<unsigned int> histogram = get_normalizedHistogram( tmin, tmax, histogramSize, image.getCImgList() );
 
         helper::vector<unsigned> thresholds;
         switch(d_method.getValue().getSelectedId())
