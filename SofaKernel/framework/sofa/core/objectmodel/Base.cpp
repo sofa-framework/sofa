@@ -318,7 +318,7 @@ void Base::clearOutputs()
 
 void Base::addMessage(const Message &m) const
 {
-    if(m_messageslog.size() >= d_logSize.getValue() ){
+    if(m_messageslog.size() > d_logSize.getValue() ){
         m_messageslog.pop_front();
     }
     m_messageslog.push_back(m) ;
