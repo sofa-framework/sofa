@@ -226,15 +226,7 @@ MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Ty
                  // information are really usefull. I have to make small experiment to see what could be a nice
                  // approach without too much overhead.
                  , fileInfo
-
-//TODO(dmarchal): this is a dirty fix to make the source code compile on windows which fail at link
-//time. More fundamentally this function should'nt be in the message dispatcher class that is supposed
-//to have no link to sofa::core::objectmodel::Base
-#ifdef WIN32
-                 , ComponentInfo::SPtr( new ComponentInfo("", "")) )
-#else
                  , ComponentInfo::SPtr( new ComponentInfo(sender)) )
-#endif //WIN32
 {
 }
 
