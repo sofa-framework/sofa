@@ -341,7 +341,12 @@ if(SOFA-EXTERNAL_FFMPEG)
                 endif()
 
 endif()
+if(APPLE)
+    # on macOS, -framework CoreServices is needed for FileMonitor
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")

@@ -30,6 +30,15 @@
 using sofa::helper::logging::ExpectMessage;
 using sofa::helper::logging::Message;
 
+#include <sofa/helper/logging/Message.h>
+using sofa::helper::logging::MessageDispatcher ;
+
+#include <sofa/helper/logging/LoggingMessageHandler.h>
+using sofa::helper::logging::MainLoggingMessageHandler ;
+
+#include <sofa/helper/logging/CountingMessageHandler.h>
+using sofa::helper::logging::MainCountingMessageHandler ;
+
 
 namespace sofa {
 
@@ -38,7 +47,11 @@ using namespace core::loader;
 class MeshOBJ_test : public ::testing::Test
 {
 protected:
-    MeshOBJ_test() {}
+    MeshOBJ_test() {
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
+        MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
+    }
 
     void SetUp()
     {
