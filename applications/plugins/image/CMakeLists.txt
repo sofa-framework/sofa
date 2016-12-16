@@ -74,8 +74,8 @@ if( SofaPython_FOUND )
         python/SofaImage/__init__.py
     )
 
-    list(APPEND SOURCE_FILES python/Binding_ImageData.cpp)
-    list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
+    list(APPEND SOURCE_FILES python/Binding_ImageData.cpp python/Binding_ImageTransformData.cpp)
+    list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl python/Binding_ImageTransformData.h)
 endif()
 
 
