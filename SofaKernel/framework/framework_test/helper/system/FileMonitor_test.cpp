@@ -141,8 +141,6 @@ TEST(FileMonitor, fileChange_test)
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
 	waitForFileEvents();
 	FileMonitor::updates(0) ;
-	printf("changes = %d\n",listener.m_files.size());
-
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
