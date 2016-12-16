@@ -22,7 +22,7 @@
 * class CountingMessageHandler (count the number of message for each message type)
 * class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
 * class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
-* FileMonitor is now implemented on macOS & Wsindows (for live-coding features, for example)
+* FileMonitor is now implemented on macOS & Windows (for live-coding features, for example)
 
 ### Improvements
 *   XXXX new tests
