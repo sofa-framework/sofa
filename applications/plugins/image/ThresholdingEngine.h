@@ -23,7 +23,11 @@ namespace engine
 
 
 /**
- * This class computes an automatic image threshold that would separate foreground from background
+ * This class computes an automatic image threshold that would separate foreground from background.
+
+ @author Matthieu Nesme, Benjamin Gilles
+ @date 2016
+
  */
 
 
