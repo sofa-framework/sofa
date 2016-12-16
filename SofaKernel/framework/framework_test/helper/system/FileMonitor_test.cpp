@@ -15,6 +15,10 @@ using std::string ;
 using sofa::helper::system::FileEventListener ;
 using sofa::helper::system::FileMonitor ;
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 static std::string getPath(std::string s) {
     return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
 }
@@ -35,9 +39,13 @@ void createAFilledFile(const string filename, unsigned int rep){
 void waitForFileEvents()
 {
     // on osx there is a latency between 0.2 and 0.5s for file events...
-    #ifdef __APPLE__
-        sleep(1);
-    #endif
+#ifdef __APPLE__
+	sleep(1);
+#endif
+	// on windows we use file date, which resoution is assumed (by us) to be below this value in ms
+#ifdef WIN32
+	Sleep(100);
+#endif
 }
 
 class MyFileListener : public FileEventListener
@@ -131,7 +139,10 @@ TEST(FileMonitor, fileChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    FileMonitor::updates(0) ;
+	waitForFileEvents();
+	FileMonitor::updates(0) ;
+	printf("changes = %d\n",listener.m_files.size());
+
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
