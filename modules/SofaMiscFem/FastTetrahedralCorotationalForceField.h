@@ -82,6 +82,23 @@ public:
 
 protected:
 
+    class PointRestInformation
+    {
+    public:
+        Mat3x3 DfDx;  /// the vertex stiffness matrix
+        unsigned int v;
+
+        PointRestInformation() {}
+
+        inline friend std::ostream& operator<< ( std::ostream& os, const PointRestInformation& /*eri*/ ) {
+            return os;
+        }
+
+        /// Input stream
+        inline friend std::istream& operator>> ( std::istream& in, PointRestInformation& /*eri*/ ) {
+            return in;
+        }
+    };
 
     class EdgeRestInformation
     {
@@ -114,11 +131,13 @@ protected:
         /// rest volume
         Real restVolume;
         Coord restEdgeVector[6];
+        Mat3x3 linearDfDxDiag[4];  // the diagonal 3x3 block matrices that makes the 12x12 linear elastic matrix
         Mat3x3 linearDfDx[6];  // the off-diagonal 3x3 block matrices that makes the 12x12 linear elastic matrix
         Mat3x3 rotation; // rotation from deformed to rest configuration
         Mat3x3 restRotation; // used for QR decomposition
-        unsigned int v[4]; // the indices of the 4 vertices
+        //unsigned int v[4]; // the indices of the 4 vertices
 
+        PointRestInformation *pointInfo[6]; // shortcut to the 4 vertex information
         EdgeRestInformation *edgeInfo[6];  // shortcut to the 6 edge information
         Real edgeOrientation[6];
 
@@ -163,6 +182,7 @@ protected:
 
     };
 
+    topology::PointData<sofa::helper::vector<PointRestInformation> > pointInfo;
     topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
     topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
@@ -198,6 +218,9 @@ public:
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
+
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
 
     void updateTopologyInformation();
 
