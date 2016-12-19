@@ -517,20 +517,19 @@ protected:
     void getCorners(defaulttype::Vec<8,defaulttype::Vector3> &c) // get image corners
     {
         raImage rimage(this->image);
+        raTransform rtransform(this->transform);
         const imCoord dim= rimage->getDimensions();
 
-        defaulttype::Vec<8,defaulttype::Vector3> p;
-        p[0]=defaulttype::Vector3(-0.5,-0.5,-0.5);
-        p[1]=defaulttype::Vector3(dim[0]-0.5,-0.5,-0.5);
-        p[2]=defaulttype::Vector3(-0.5,dim[1]-0.5,-0.5);
-        p[3]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
-        p[4]=defaulttype::Vector3(-0.5,-0.5,dim[2]-0.5);
-        p[5]=defaulttype::Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
-        p[6]=defaulttype::Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
-        p[7]=defaulttype::Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+        typedef TransformType::Coord Coord;
 
-        raTransform rtransform(this->transform);
-        for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
+        c[0]=rtransform->fromImage(Coord(-0.5,-0.5,-0.5));
+        c[1]=rtransform->fromImage(Coord(dim[0]-0.5,-0.5,-0.5));
+        c[2]=rtransform->fromImage(Coord(-0.5,dim[1]-0.5,-0.5));
+        c[3]=rtransform->fromImage(Coord(dim[0]-0.5,dim[1]-0.5,-0.5));
+        c[4]=rtransform->fromImage(Coord(-0.5,-0.5,dim[2]-0.5));
+        c[5]=rtransform->fromImage(Coord(dim[0]-0.5,-0.5,dim[2]-0.5));
+        c[6]=rtransform->fromImage(Coord(-0.5,dim[1]-0.5,dim[2]-0.5));
+        c[7]=rtransform->fromImage(Coord(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5));
     }
 
     virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false )
@@ -552,6 +551,9 @@ protected:
 
     void draw(const core::visual::VisualParams* vparams)
     {
+
+    // TODO: to use drawtool instead of opengl code
+
 #ifndef SOFA_NO_OPENGL
         // draw bounding box
 
