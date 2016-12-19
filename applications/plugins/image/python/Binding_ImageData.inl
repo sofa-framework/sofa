@@ -58,7 +58,7 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
 extern "C" PyObject * EVALUATOR(BOUNDNAME,getDimensions)(PyObject * self, PyObject * /*args*/)
 {
     Data<IMAGETYPE>* data=((PyPtr< Data<IMAGETYPE> >*)self)->object;
-    IMAGETYPE& image = *data->beginEdit();  // where should be the endedit?
+    const IMAGETYPE& image = data->getValue();
 
     IMAGETYPE::imCoord dim = image.getDimensions();
 
