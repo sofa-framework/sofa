@@ -12,15 +12,8 @@ def createScene(node):
     node.createObject('ImageViewer',template="ImageUC",src="@img")
 
 
-    # @warning: init is mandatory for projective images to set pinhole camera intrinsic parameters
-    ic.init()
-
-
-
-
     dim = ic.image.getDimensions()
     print "image dimensions",dim
-
 
 
     # directly access to a ImageTransform type

@@ -92,13 +92,15 @@ struct ImageContainerSpecialization< defaulttype::Image<T> >
         // try to load it now (maybe the loading was data-dependant, like the filename)
 
         typename ImageContainerT::waImage wimage(container->image);
-        if( wimage->isEmpty() )
-            if( !container->load() )
-                if( !container->loadCamera() )
-                {
-                    wimage->getCImgList().push_back(cimg_library::CImg<T>());
-                    container->serr << "no input image" << container->sendl;
-                }
+
+        assert( wimage->isEmpty() ); // the image is supposed not to be loaded here
+
+        if( !container->load() )
+            if( !container->loadCamera() )
+            {
+                wimage->getCImgList().push_back(cimg_library::CImg<T>());
+                container->serr << "no input image" << container->sendl;
+            }
     }
 
     static bool load( ImageContainerT* container, std::string fname )
@@ -412,12 +414,26 @@ public:
             sout << "Transform is NOT set" << sendl;
 
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
+
+        // if the image is already loaded, let's initialize right now
+        raImage wimage(this->image);
+        if( !wimage->isEmpty() )
+            reinit();
     }
 
     virtual void init()
     {
-        ImageContainerSpecialization<ImageTypes>::init( this );
+        raImage wimage(this->image);
+        if( wimage->isEmpty() )
+        {
+            ImageContainerSpecialization<ImageTypes>::init( this );
+            reinit();
+        }
+    }
 
+    virtual void reinit()
+    {
+        // must reinit if dimensions or transform rotation changed
         raImage wimage(this->image);
         waTransform wtransform(this->transform);
         wtransform->setCamPos((Real)(wimage->getDimensions()[0]-1)/2.0,(Real)(wimage->getDimensions()[1]-1)/2.0); // for perspective transforms
