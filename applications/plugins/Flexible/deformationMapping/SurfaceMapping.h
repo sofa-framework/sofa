@@ -22,10 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_VolumeMapping_H
-#define SOFA_COMPONENT_MAPPING_VolumeMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_SurfaceMapping_H
+#define SOFA_COMPONENT_MAPPING_SurfaceMapping_H
 
-#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -43,17 +42,19 @@ namespace component
 namespace mapping
 {
 
+static const SReal s_null_surface_epsilon = 1e-8;
 
-/** Maps point positions to volume
+
+/** Maps point positions to surface
 
 @author Benjamin GILLES
   */
 
 template <class TIn, class TOut>
-class VolumeMapping : public core::Mapping<TIn, TOut>
+class SurfaceMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(SurfaceMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -104,42 +105,62 @@ public:
         this->Inherit::reinit();
     }
 
-    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord A, const InCoord B, const InCoord C)
+    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord A, const InCoord B, const InCoord C, const bool useGeomStiffness)
     {
-        InDeriv ab = B - A;
-        InDeriv ac = C - A;
-        InDeriv bc = C - B;
-        InDeriv sn = (ab.cross(ac))/6.;
+        InDeriv ab = B - A, ac = C - A, bc = C - B, dir;
+        InDeriv sn = (ab.cross(ac))/2.;
+        Real S = sn.norm();
+        if(S<s_null_surface_epsilon) // -> arbitrary direction
+        {
+            Real p = 1.0f/std::sqrt((Real)Nin);
+            for( unsigned i=0;i<Nin;++i) dir[i]=p;
+        }
+        else dir = sn/S;
+
+        InDeriv JA= defaulttype::crossProductMatrix<Real>(bc)*dir*(-0.5);
+        InDeriv JB= defaulttype::crossProductMatrix<Real>(ac)*dir*(+0.5);
+        InDeriv JC= defaulttype::crossProductMatrix<Real>(ab)*dir*(-0.5);
 
         for(unsigned k=0; k<Nin; k++ )
         {
-            jacobian.add(meshIndex, a*Nin+k, sn[k] );
-            jacobian.add(meshIndex, b*Nin+k, sn[k] );
-            jacobian.add(meshIndex, c*Nin+k, sn[k] );
+            jacobian.add(meshIndex, a*Nin+k, JA[k] );
+            jacobian.add(meshIndex, b*Nin+k, JB[k] );
+            jacobian.add(meshIndex, c*Nin+k, JC[k] );
         }
-        if( f_geometricStiffness.getValue() )
+        if(S>s_null_surface_epsilon && useGeomStiffness )
         {
-            defaulttype::Mat<3,3,Real> DsnDA= defaulttype::crossProductMatrix<Real>(bc)*(+1./6.);
-            defaulttype::Mat<3,3,Real> DsnDB= defaulttype::crossProductMatrix<Real>(ac)*(-1./6.);
-            defaulttype::Mat<3,3,Real> DsnDC= defaulttype::crossProductMatrix<Real>(ab)*(+1./6.);
+            // TODO verif this on maple to pass the test
+
+            defaulttype::Mat<3,3,Real> BC= defaulttype::crossProductMatrix<Real>(bc);
+            defaulttype::Mat<3,3,Real> AC= defaulttype::crossProductMatrix<Real>(ac);
+            defaulttype::Mat<3,3,Real> AB= defaulttype::crossProductMatrix<Real>(ab);
+            defaulttype::Mat<3,3,Real> SN= defaulttype::crossProductMatrix<Real>(sn);
+
+            defaulttype::Mat<3,3,Real> DJADA= BC*BC/(-2.*S);
+            defaulttype::Mat<3,3,Real> DJBDB= AC*AC/(+2.*S);
+            defaulttype::Mat<3,3,Real> DJCDC= AB*AB/(-2.*S);
+
+            defaulttype::Mat<3,3,Real> DJADB= (BC*AC-SN)/(+2.*S);
+            defaulttype::Mat<3,3,Real> DJADC= (BC*AB-SN)/(-2.*S);
+            defaulttype::Mat<3,3,Real> DJCDB= (AB*AC-SN)/(+2.*S);
 
             for(unsigned j=0; j<Nin; j++ )
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    hessian[meshIndex].add(a*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, a*Nin+k,  DsnDA[j][k] );
+                    hessian[meshIndex].add(a*Nin+j, a*Nin+k,  DJADA[j][k] );
+                    hessian[meshIndex].add(b*Nin+j, a*Nin+k,  DJADB[k][j] );
+                    hessian[meshIndex].add(c*Nin+j, a*Nin+k,  DJADC[k][j] );
 
-                    hessian[meshIndex].add(a*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, b*Nin+k,  DsnDB[j][k] );
+                    hessian[meshIndex].add(a*Nin+j, b*Nin+k,  DJADB[j][k] );
+                    hessian[meshIndex].add(b*Nin+j, b*Nin+k,  DJBDB[j][k] );
+                    hessian[meshIndex].add(c*Nin+j, b*Nin+k,  DJCDB[j][k] );
 
-                    hessian[meshIndex].add(a*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, c*Nin+k,  DsnDC[j][k] );
+                    hessian[meshIndex].add(a*Nin+j, c*Nin+k,  DJADC[j][k] );
+                    hessian[meshIndex].add(b*Nin+j, c*Nin+k,  DJCDB[k][j] );
+                    hessian[meshIndex].add(c*Nin+j, c*Nin+k,  DJCDC[j][k] );
                 }
         }
-        return sn[2] * (A[2] + B[2] + C[2]);
+        return S;
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -151,7 +172,6 @@ public:
 
         for(size_t m=0;m<f_nbMeshes.getValue();++m) v[m][0] = off[std::min(m,offset.getValue().size())];
         jacobian.resizeBlocks(v.size(),x.size());
-
         if( useGeomStiffness )
         {
             hessian.resize(v.size());
@@ -167,16 +187,16 @@ public:
             for (size_t i = 0; i < triangles.size(); ++i)
             {
                 const Triangle& t = triangles[i];
-                v[m][0] += processTriangle(m,t[0],t[1],t[2],x[t[0]],x[t[1]],x[t[2]]);
+                v[m][0] += processTriangle(m,t[0],t[1],t[2],x[t[0]],x[t[1]],x[t[2]],useGeomStiffness);
             }
 
             for (size_t i = 0; i < quads.size(); ++i)
             {
                 const Quad& q = quads[i];
-                v[m][0] += processTriangle(m,q[0],q[1],q[2],x[q[0]],x[q[1]],x[q[2]]);
-                v[m][0] += processTriangle(m,q[0],q[2],q[3],x[q[0]],x[q[2]],x[q[3]]);
+                v[m][0] += processTriangle(m,q[0],q[1],q[2],x[q[0]],x[q[1]],x[q[2]],useGeomStiffness);
+                v[m][0] += processTriangle(m,q[0],q[2],q[3],x[q[0]],x[q[2]],x[q[3]],useGeomStiffness);
             }
-            if(useGeomStiffness)            hessian[m].compress();
+            if( useGeomStiffness ) hessian[m].compress();
         }
 
         jacobian.compress();
@@ -228,10 +248,10 @@ public:
     }
 
 protected:
-    VolumeMapping()
+    SurfaceMapping()
         : Inherit()
-        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
-        , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the volume for") )
+        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output surfaces"))
+        , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the surface for") )
         , vf_triangles(this,"triangles", "input triangles for mesh ")
         , vf_quads(this,"quads", "input quads for mesh ")
         , f_geometricStiffness( initData( &f_geometricStiffness, false, "geometricStiffness", "Should geometricStiffness be considered?" ) )
@@ -240,17 +260,15 @@ protected:
         vf_quads.resize(f_nbMeshes.getValue());
         this->addAlias(vf_triangles[0], "triangles");
         this->addAlias(vf_quads[0], "quads");
-
     }
 
-    virtual ~VolumeMapping() {}
+    virtual ~SurfaceMapping() {}
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     helper::vector<SparseKMatrixEigen> hessian;
     SparseKMatrixEigen K; ///< Stiffness due to the non-linearity of the mapping
 };
-
 
 
 } // namespace mapping

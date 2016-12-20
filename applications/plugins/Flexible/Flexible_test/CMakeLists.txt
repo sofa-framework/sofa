@@ -27,6 +27,7 @@ set(SOURCE_FILES
     TetrahedronVolumeMapping_test.cpp
     VolumeMapping_test.cpp
     LengthMapping_test.cpp
+#    SurfaceMapping_test.cpp
 )
 
 set(PYTHON_FILES
