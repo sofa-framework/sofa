@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_VolumeMapping_H
-#define SOFA_COMPONENT_MAPPING_VolumeMapping_H
+#ifndef SOFA_COMPONENT_MAPPING_LengthMapping_H
+#define SOFA_COMPONENT_MAPPING_LengthMapping_H
 
 #include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
@@ -43,17 +43,21 @@ namespace component
 namespace mapping
 {
 
+static const SReal s_null_distance_epsilon = 1e-8;
 
-/** Maps point positions to volume
+
+
+
+/** Maps point positions to length
 
 @author Benjamin GILLES
   */
 
 template <class TIn, class TOut>
-class VolumeMapping : public core::Mapping<TIn, TOut>
+class LengthMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(VolumeMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_CLASS(SOFA_TEMPLATE2(LengthMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -73,19 +77,16 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TIn>     SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-    typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
-    typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
+    typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
+    typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
-    typedef typename core::topology::BaseMeshTopology::SeqQuads SeqQuads;
-    typedef helper::ReadAccessor<Data< SeqQuads > > raQuads;
     typedef typename sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::helper::vector< Index > VecIndex;
 
     Data<helper::vector<Real> > offset;
     Data<unsigned int> f_nbMeshes;
-    helper::vectorData< SeqTriangles > vf_triangles;
-    helper::vectorData< SeqQuads > vf_quads;
+    helper::vectorData< SeqEdges > vf_edges;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
     virtual void init()
@@ -98,60 +99,45 @@ public:
 
     virtual void reinit()
     {
-        vf_triangles.resize(f_nbMeshes.getValue());
-        vf_quads.resize(f_nbMeshes.getValue());
+        vf_edges.resize(f_nbMeshes.getValue());
         this->getToModel()->resize( f_nbMeshes.getValue() );
         this->Inherit::reinit();
     }
 
-    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord A, const InCoord B, const InCoord C)
+    Real processEdge(const unsigned meshIndex, const unsigned a, const unsigned b, const InCoord A, const InCoord B, const bool useGeomStiffness)
     {
-        InDeriv ab = B - A;
-        InDeriv ac = C - A;
-        InDeriv bc = C - B;
-        InDeriv sn = (ab.cross(ac))/6.;
-
+        InDeriv ab = B - A, dir;
+        Real l = ab.norm();
+        if(l<s_null_distance_epsilon) // -> arbitrary direction
+        {
+            Real p = 1.0f/std::sqrt((Real)Nin);
+            for( unsigned i=0;i<Nin;++i) dir[i]=p;
+        }
+        else dir = ab/l;
         for(unsigned k=0; k<Nin; k++ )
         {
-            jacobian.add(meshIndex, a*Nin+k, sn[k] );
-            jacobian.add(meshIndex, b*Nin+k, sn[k] );
-            jacobian.add(meshIndex, c*Nin+k, sn[k] );
+            jacobian.add(meshIndex, a*Nin+k, -dir[k] );
+            jacobian.add(meshIndex, b*Nin+k, dir[k] );
         }
-        if( f_geometricStiffness.getValue() )
+
+        if(l>s_null_distance_epsilon && useGeomStiffness )
         {
-            defaulttype::Mat<3,3,Real> DsnDA;
-            DsnDA[0][0]=0;           DsnDA[0][1]=-bc[2]/6.;   DsnDA[0][2]=bc[1]/6.;
-            DsnDA[1][0]=bc[2]/6.;    DsnDA[1][1]=0;           DsnDA[1][2]=-bc[0]/6.;
-            DsnDA[2][0]=-bc[1]/6.;   DsnDA[2][1]=bc[0]/6.;    DsnDA[2][2]=0;
-
-            defaulttype::Mat<3,3,Real> DsnDB;
-            DsnDB[0][0]=0;           DsnDB[0][1]=ac[2]/6.;    DsnDB[0][2]=-ac[1]/6.;
-            DsnDB[1][0]=-ac[2]/6.;   DsnDB[1][1]=0;           DsnDB[1][2]=ac[0]/6.;
-            DsnDB[2][0]=ac[1]/6.;    DsnDB[2][1]=-ac[0]/6.;   DsnDB[2][2]=0;
-
-
-            defaulttype::Mat<3,3,Real> DsnDC;
-            DsnDC[0][0]=0;           DsnDC[0][1]=-ab[2]/6.;   DsnDC[0][2]=ab[1]/6.;
-            DsnDC[1][0]=ab[2]/6.;    DsnDC[1][1]=0;           DsnDC[1][2]=-ab[0]/6.;
-            DsnDC[2][0]=-ab[1]/6.;   DsnDC[2][1]=ab[0]/6.;    DsnDC[2][2]=0;
-
+            Real dj;
             for(unsigned j=0; j<Nin; j++ )
                 for(unsigned k=0; k<Nin; k++ )
                 {
-                    hessian[meshIndex].add(a*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, a*Nin+k,  DsnDA[j][k] );
+                    if(j==k) dj = 1 - dir[j]*dir[k];
+                    else dj = - dir[j]*dir[k];
+                    dj/=l;
 
-                    hessian[meshIndex].add(a*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, b*Nin+k,  DsnDB[j][k] );
-
-                    hessian[meshIndex].add(a*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                    hessian[meshIndex].add(b*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                    hessian[meshIndex].add(c*Nin+j, c*Nin+k,  DsnDC[j][k] );
+                    hessian[meshIndex].add(a*Nin+j, a*Nin+k,  dj);
+                    hessian[meshIndex].add(b*Nin+j, a*Nin+k, -dj);
+                    hessian[meshIndex].add(a*Nin+j, b*Nin+k, -dj);
+                    hessian[meshIndex].add(b*Nin+j, b*Nin+k,  dj);
                 }
+            hessian[meshIndex].compress();
         }
-        return sn[2] * (A[2] + B[2] + C[2]);
+        return l;
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -163,7 +149,6 @@ public:
 
         for(size_t m=0;m<f_nbMeshes.getValue();++m) v[m][0] = off[std::min(m,offset.getValue().size())];
         jacobian.resizeBlocks(v.size(),x.size());
-
         if( useGeomStiffness )
         {
             hessian.resize(v.size());
@@ -173,22 +158,12 @@ public:
 
         for (size_t m = 0; m < f_nbMeshes.getValue(); ++m)
         {
-            raTriangles triangles(*this->vf_triangles[m]);
-            raQuads quads(*this->vf_quads[m]);
-
-            for (size_t i = 0; i < triangles.size(); ++i)
+            raEdges edges(*this->vf_edges[m]);
+            for (size_t i = 0; i < edges.size(); ++i)
             {
-                const Triangle& t = triangles[i];
-                v[m][0] += processTriangle(m,t[0],t[1],t[2],x[t[0]],x[t[1]],x[t[2]]);
+                const Edge& t = edges[i];
+                v[m][0] += processEdge(m,t[0],t[1],x[t[0]],x[t[1]],useGeomStiffness);
             }
-
-            for (size_t i = 0; i < quads.size(); ++i)
-            {
-                const Quad& q = quads[i];
-                v[m][0] += processTriangle(m,q[0],q[1],q[2],x[q[0]],x[q[1]],x[q[2]]);
-                v[m][0] += processTriangle(m,q[0],q[2],q[3],x[q[0]],x[q[2]],x[q[3]]);
-            }
-            if(useGeomStiffness)            hessian[m].compress();
         }
 
         jacobian.compress();
@@ -226,36 +201,31 @@ public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     {
-        vf_triangles.parseSizeData(arg, f_nbMeshes);
-        vf_quads.parseSizeData(arg, f_nbMeshes);
+        vf_edges.parseSizeData(arg, f_nbMeshes);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
     void parseFields ( const std::map<std::string,std::string*>& str )
     {
-        vf_triangles.parseFieldsSizeData(str, f_nbMeshes);
-        vf_quads.parseFieldsSizeData(str, f_nbMeshes);
+        vf_edges.parseFieldsSizeData(str, f_nbMeshes);
         Inherit1::parseFields(str);
     }
 
 protected:
-    VolumeMapping()
+    LengthMapping()
         : Inherit()
-        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output volumes"))
-        , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the volume for") )
-        , vf_triangles(this,"triangles", "input triangles for mesh ")
-        , vf_quads(this,"quads", "input quads for mesh ")
+        , offset(initData(&offset, helper::vector<Real>((int)1,(Real)0.0), "offset", "offsets added to output lengths"))
+        , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to compute the length for") )
+        , vf_edges(this,"edges", "input edges for mesh ")
         , f_geometricStiffness( initData( &f_geometricStiffness, false, "geometricStiffness", "Should geometricStiffness be considered?" ) )
     {
-        vf_triangles.resize(f_nbMeshes.getValue());
-        vf_quads.resize(f_nbMeshes.getValue());
-        this->addAlias(vf_triangles[0], "triangles");
-        this->addAlias(vf_quads[0], "quads");
+        vf_edges.resize(f_nbMeshes.getValue());
+        this->addAlias(vf_edges[0], "edges");
 
     }
 
-    virtual ~VolumeMapping() {}
+    virtual ~LengthMapping() {}
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector

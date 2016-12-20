@@ -25,6 +25,8 @@ set(SOURCE_FILES
     StabilizedNeoHookeHexahedraMaterial_test.cpp
     TetrahedraMaterial_test.cpp
     TetrahedronVolumeMapping_test.cpp
+    VolumeMapping_test.cpp
+    LengthMapping_test.cpp
 )
 
 set(PYTHON_FILES
