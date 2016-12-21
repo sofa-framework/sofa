@@ -10,6 +10,11 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the SofaCUDA plugin.")
+endif()
+
 set(HEADER_FILES
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
