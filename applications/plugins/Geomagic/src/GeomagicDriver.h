@@ -28,7 +28,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
+
+#ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
+#endif
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/behavior/BaseController.h>

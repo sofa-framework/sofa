@@ -8,16 +8,16 @@
 
 ## New features for users
 
-* Adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
-* Live-coding for python 
-* Live-coding for GLSL 
+* adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
+* live-coding for python 
+* live-coding for GLSL 
 * new component MakeAlias 
 * new component MakeDataAlias
-* Improved error message & console rendering
+* improved error message & console rendering
 
 ## New features for developpers
 
-* Preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
+* preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
 * class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
 * class CountingMessageHandler (count the number of message for each message type)
 * class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
@@ -44,7 +44,7 @@
 
 ### Cleaning
 
-
+* clean the compilation when SOFA_NO_OPENGL flag is activated
 
 ### Moved files
 

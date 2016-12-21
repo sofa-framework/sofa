@@ -161,6 +161,7 @@ template <class DataTypes>
 template<class DataTypes>
 void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
 	if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
 	const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
 	const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -220,6 +221,7 @@ void RegistrationContactForceField<DataTypes>::draw(const core::visual::VisualPa
 		}
                 vparams->drawTool()->drawLines(pointsN, 1, defaulttype::Vec<4,float>(1,1,0,1));
 	}
+#endif
 }
 
 
