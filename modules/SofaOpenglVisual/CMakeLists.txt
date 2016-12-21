@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaOpenglVisual)
 
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the SofaOpenglVisual module.")    
+endif()
+
 set(HEADER_FILES
     ClipPlane.h
     OglColorMap.h

@@ -27,7 +27,6 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <image/ImageContainer.h>
-#include <image/ImageViewer.h>
 
 namespace sofa {
 
