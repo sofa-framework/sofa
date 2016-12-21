@@ -111,6 +111,13 @@
 #define msg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 #define msg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
 
+#define msg_info_when(cond)          if(cond) sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_deprecated_when(cond)    if(cond) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_warning_when(cond)       if(cond) sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_error_when(cond)         if(cond) sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_fatal_when(cond)         if(cond) sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+#define msg_advice_when(cond)        if(cond) sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
+
 #define logmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
 #define logmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
 #define logmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)

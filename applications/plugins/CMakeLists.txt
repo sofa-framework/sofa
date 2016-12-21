@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 find_package(SofaFramework)
 
-sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI)
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
@@ -29,8 +28,6 @@ sofa_add_plugin(PersistentContact PersistentContact)
 # sofa_add_plugin(SofaPML SofaPML)
 sofa_add_plugin(Sensable Sensable)
 sofa_add_plugin(SensableEmulation SensableEmulation)
-sofa_add_plugin(VolumetricRendering VolumetricRendering)
-sofa_add_plugin(SofaCUDA SofaCUDA)
 sofa_add_plugin(SofaHAPI SofaHAPI)
 sofa_add_plugin(THMPGSpatialHashing THMPGSpatialHashing)
 sofa_add_plugin(SofaCarving SofaCarving)
@@ -40,4 +37,12 @@ sofa_add_plugin(Geomagic Geomagic)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
+endif()
+
+if(${SOFA_NO_OPENGL})
+    message("SOFA_NO_OPENGL flag prevents from using the SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
+else()
+    sofa_add_plugin(SofaCUDA SofaCUDA)           # SofaCUDA plugin can't work without OPENGL
+    sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
+    sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()

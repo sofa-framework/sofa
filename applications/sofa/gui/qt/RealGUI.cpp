@@ -128,6 +128,16 @@ public:
         : QApplication(argc,argv)
     { }
 
+#if QT_VERSION < 0x050000
+    static inline QString translate(const char * context, const char * key, const char * disambiguation,
+                            QCoreApplication::Encoding encoding = QCoreApplication::UnicodeUTF8, int n = -1)
+        { return QApplication::translate(context, key, disambiguation, encoding, n); }
+#else
+    static inline QString translate(const char * context, const char * key,
+                            const char * disambiguation = Q_NULLPTR, int n = -1)
+        { return QApplication::translate(context, key, disambiguation, n); }
+#endif
+
 protected:
     bool event(QEvent *event)
     {
@@ -426,10 +436,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     gridLayout->removeWidget(screenshotButton);
     gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
 
-    interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
-    interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0, QApplication::UnicodeUTF8));
+    interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
+    interactionButton->setShortcut(QSOFAApplication::translate("GUI", "Alt+i", 0));
 #ifndef QT_NO_TOOLTIP
-    interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
+    interactionButton->setProperty("toolTip", QVariant(QSOFAApplication::translate("GUI", "Start interaction mode", 0)));
 #endif
 
     connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
@@ -2025,7 +2035,7 @@ void RealGUI::interactionGUI ( bool value )
 
     if(value)
     {
-        interactionButton->setText(QApplication::translate("GUI", "ESC to qu&it", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QSOFAApplication::translate("GUI", "ESC to qu&it", 0));
         this->grabMouse();
         this->grabKeyboard();
         this->setMouseTracking(true);
@@ -2036,7 +2046,7 @@ void RealGUI::interactionGUI ( bool value )
     }
     else
     {
-        interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
         this->releaseKeyboard();
         this->releaseMouse();
         this->setMouseTracking(false);
