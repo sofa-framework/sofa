@@ -14,7 +14,7 @@ using namespace sofa::defaulttype;
 
 typedef SReal Real;
 typedef ImageLPTransform<Real> MyImageTransform;
-typedef typename MyImageTransform::Coord Coord;
+typedef typename MyImageTransform::Coord MyCoord;
 
 
 extern "C" PyObject * ImageTransformData_fromImage(PyObject * self, PyObject * args)
@@ -30,7 +30,7 @@ extern "C" PyObject * ImageTransformData_fromImage(PyObject * self, PyObject * a
 
     Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
     const MyImageTransform& transform = data->getValue();
-    Coord p = transform.fromImage( Coord(x,y,z) );
+    MyCoord p = transform.fromImage( MyCoord(x,y,z) );
 
 
 //    msg_info("ImageTransformData_fromImage")<<p;
@@ -55,7 +55,7 @@ extern "C" PyObject * ImageTransformData_toImage(PyObject * self, PyObject * arg
 
     Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
     const MyImageTransform& transform = data->getValue();
-    Coord p = transform.toImage( Coord(x,y,z) );
+    MyCoord p = transform.toImage( MyCoord(x,y,z) );
 
     PyObject* res = PyList_New(3);
     PyList_SetItem( res, 0, PyFloat_FromDouble( p[0] ) );
@@ -121,7 +121,7 @@ extern "C" PyObject * ImageTransformData_getAttr_translation(PyObject *self, voi
     Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
     const MyImageTransform& transform = data->getValue();
 
-    const Coord& t = transform.getTranslation();
+    const MyCoord& t = transform.getTranslation();
 
     PyObject* res = PyList_New(3);
     PyList_SetItem( res, 0, PyFloat_FromDouble( t[0] ) );
@@ -154,7 +154,7 @@ extern "C" PyObject * ImageTransformData_getAttr_rotation(PyObject *self, void*)
     Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
     const MyImageTransform& transform = data->getValue();
 
-    const Coord& t = transform.getRotation();
+    const MyCoord& t = transform.getRotation();
 
     PyObject* res = PyList_New(3);
     PyList_SetItem( res, 0, PyFloat_FromDouble( t[0] ) );
@@ -187,7 +187,7 @@ extern "C" PyObject * ImageTransformData_getAttr_scale(PyObject *self, void*)
     Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
     const MyImageTransform& transform = data->getValue();
 
-    const Coord& t = transform.getScale();
+    const MyCoord& t = transform.getScale();
 
     PyObject* res = PyList_New(3);
     PyList_SetItem( res, 0, PyFloat_FromDouble( t[0] ) );
