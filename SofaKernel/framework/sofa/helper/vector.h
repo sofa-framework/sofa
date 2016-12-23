@@ -90,21 +90,22 @@ public:
     explicit vector(size_type n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
-    /// Constructor
+    /// Move constructor
+    vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
+
+    /// Copy operator
     vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {
-        this->operator=(x); return *this;
-        /* an other way??
-        this->resize(x.size());
-        for(unsigned int i=0;i<x.size();i++){
-        	this->operator[](i)=x[i];
-        }
+        std::vector<T,Alloc>::operator=(x);
         return *this;
-        */
-
-        //std::vector<T,Alloc>::operator = (x);
-        //return vector(x);
     }
+    /// Move assignment operator
+    vector<T, Alloc>& operator=(std::vector<T,Alloc>&& v)
+    {
+        std::vector<T,Alloc>::operator=(std::move(v));
+        return *this;
+    }
+
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
