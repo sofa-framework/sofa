@@ -224,9 +224,9 @@ void DefaultPipeline::doCollisionResponse()
     }
 }
 
-helper::set< std::string > DefaultPipeline::getResponseList() const
+std::set< std::string > DefaultPipeline::getResponseList() const
 {
-    helper::set< std::string > listResponse;
+    std::set< std::string > listResponse;
     core::collision::Contact::Factory::iterator it;
     for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
     {

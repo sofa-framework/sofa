@@ -290,9 +290,9 @@ void ParallelCollisionPipeline::doCollisionResponse()
     }
 }
 
-helper::set< std::string > ParallelCollisionPipeline::getResponseList() const
+std::set< std::string > ParallelCollisionPipeline::getResponseList() const
 {
-    helper::set< std::string > listResponse;
+    std::set< std::string > listResponse;
     core::collision::Contact::Factory::iterator it;
     for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
     {
