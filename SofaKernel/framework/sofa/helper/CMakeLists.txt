@@ -73,6 +73,7 @@ set(HEADER_FILES
     list.h
     map.h
     map_ptr_stable_compare.h
+    pair.h
     polygon_cube_intersection/polygon_cube_intersection.h
     polygon_cube_intersection/vec.h
     proximity.h

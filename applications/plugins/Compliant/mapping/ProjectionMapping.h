@@ -5,7 +5,7 @@
 #include <Compliant/config.h>
 
 #include "../utils/map.h"
-#include "../utils/pair.h"
+#include <sofa/helper/pair.h>
 
 namespace sofa {
 
@@ -32,7 +32,7 @@ public:
 	typedef typename TIn::Real in_real;
 	typedef typename TOut::Real out_real;
 
-	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> set_type;
+    typedef std::pair<unsigned, typename TIn::Coord> set_type;
     Data< helper::vector< set_type > > set;
 	
     Data< helper::vector<SReal> > offset;

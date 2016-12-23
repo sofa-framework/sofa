@@ -29,7 +29,7 @@
 #include <Compliant/config.h>
 
 #include "../utils/se3.h"
-#include "../utils/pair.h"
+#include <sofa/helper/pair.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -83,7 +83,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 
 
-	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
+    typedef std::pair<unsigned, typename TIn::Coord> source_type;
     typedef helper::vector< source_type > source_vectype;
     Data< helper::vector< source_type > > source;
 
