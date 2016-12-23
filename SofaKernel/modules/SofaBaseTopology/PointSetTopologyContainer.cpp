@@ -156,7 +156,7 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEn
 }
 
 
-void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, sofa::helper::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
+void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
     // clear data stored by previous call of this function
     my_enginesList.clear();
@@ -170,13 +170,13 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     bool allDone = false;
 
     unsigned int cpt_security = 0;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> _engines;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it_engines;
+    std::list<sofa::core::topology::TopologyEngine *> _engines;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it_engines;
 
     while (!allDone && cpt_security < 1000)
     {
-        sofa::helper::list <sofa::core::objectmodel::DDGNode* > next_GraphLevel;
-        sofa::helper::list <sofa::core::topology::TopologyEngine *> next_enginesLevel;
+        std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
+        std::list<sofa::core::topology::TopologyEngine *> next_enginesLevel;
 
         // for drawing graph
         sofa::helper::vector <std::string> enginesNames;
@@ -251,7 +251,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
+    std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
 #ifndef NDEBUG
 //    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;

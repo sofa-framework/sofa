@@ -392,7 +392,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
 #endif
     // Declare all engines to dirty:
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
@@ -440,7 +440,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     // get directly the list of engines created at init: case of removing.... for the moment
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
     std::cout << "points is dirty" << std::endl;
