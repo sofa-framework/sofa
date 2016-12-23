@@ -25,14 +25,12 @@
 #ifndef SOFA_HELPER_SET_H
 #define SOFA_HELPER_SET_H
 
+#include <sofa/helper/helper.h>
+
 #include <set>
 #include <string>
-#include <algorithm>
-#include <cassert>
 #include <iostream>
-#include <cstdlib>
 
-#include <sofa/helper/helper.h>
 #include <sofa/helper/logging/Messaging.h>
 
 
@@ -42,12 +40,12 @@ namespace std
 {
 
 /// Output stream
-template<class K, class L, class T>
-std::ostream& operator<< ( std::ostream& o, const std::set<K,L,T>& s )
+template<class K>
+std::ostream& operator<< ( std::ostream& o, const std::set<K>& s )
 {
     if( !s.empty() )
     {
-        typename std::set<K,L,T>::const_iterator i=s.begin(), iend=s.end();
+        typename std::set<K>::const_iterator i=s.begin(), iend=s.end();
         o << *i;
         ++i;
         for( ; i!=iend; ++i )
@@ -57,8 +55,8 @@ std::ostream& operator<< ( std::ostream& o, const std::set<K,L,T>& s )
 }
 
 /// Input stream
-template<class K, class L, class T>
-std::istream& operator>> ( std::istream& i, std::set<K,L,T>& s )
+template<class K>
+std::istream& operator>> ( std::istream& i, std::set<K>& s )
 {
     K t;
     s.clear();
@@ -74,7 +72,7 @@ std::istream& operator>> ( std::istream& i, std::set<K,L,T>& s )
 /// Input stream
 /// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-inline std::istream& operator>> ( std::istream& in, std::set<int, std::less<int>, std::allocator<int> >& _set )
+inline std::istream& operator>> ( std::istream& in, std::set<int>& _set )
 {
     int t;
     _set.clear();
@@ -133,7 +131,7 @@ inline std::istream& operator>> ( std::istream& in, std::set<int, std::less<int>
 /// Input stream
 /// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-inline std::istream& operator>> ( std::istream& in, std::set<unsigned int, std::less<unsigned int>, std::allocator<unsigned int> >& _set )
+inline std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
 {
     unsigned int t;
     _set.clear();
