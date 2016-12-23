@@ -14,10 +14,10 @@ namespace std
 {
 
 /// Output stream
-template<class T>
-std::ostream& operator<< ( std::ostream& os, const std::pair<T1,T2>& p )
+template<class T1, class T2>
+std::ostream& operator<< ( std::ostream& o, const std::pair<T1,T2>& p )
 {
-    return out << p.first << " " << p.second;
+    return o << p.first << " " << p.second;
 }
 
 /// Input stream
