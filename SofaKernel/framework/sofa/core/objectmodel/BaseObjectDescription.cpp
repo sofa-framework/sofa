@@ -113,6 +113,16 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
         return it->second.c_str();
 }
 
+/// Get an attribute given its name (return null if not present.
+BaseObjectDescription::Attribute* BaseObjectDescription::getRawAttribute(const std::string& attr)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return nullptr;
+    else
+        return &(it->second);
+}
+
 /// Set an attribute. Override any existing value
 void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
 {
