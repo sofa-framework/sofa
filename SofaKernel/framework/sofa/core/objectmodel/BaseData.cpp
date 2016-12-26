@@ -50,6 +50,14 @@ BaseData::BaseData(const char* h, DataFlags dataflags)
     m_isSets.assign(false);
     //setAutoLink(true);
     //if (owner) owner->addData(this);
+
+    /// By default the data field are marked as non persistant so that we don't save them.
+    /// It is then marked "persistant" either:
+    ///   - implicitely by changing the value in the GUI.
+    ///   - implicitely if the value was set in the xml or python source file
+    ///   - explicitely using the python API or a dedicated UI.
+    setPersistent(false) ;
+    parentBaseData.setStorePath(false) ;
 }
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
@@ -65,6 +73,14 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
     setFlag(FLAG_READONLY,isReadOnly);
     //setAutoLink(true);
     //if (owner) owner->addData(this);
+
+    /// By default the data field are marked as non persistant so that we don't save them.
+    /// It is then marked "persistant" either:
+    ///   - implicitely by changing the value in the GUI.
+    ///   - implicitely if the value was set in the xml or python source file
+    ///   - explicitely using the python API or a dedicated UI.
+    setPersistent(false) ;
+    parentBaseData.setStorePath(false) ;
 }
 
 BaseData::BaseData( const BaseInitData& init)
@@ -89,7 +105,16 @@ BaseData::BaseData( const BaseInitData& init)
         exit( EXIT_FAILURE );
     }
     //setAutoLink(true);
+    //TODO(dmarchal): Why is this different to the other constructors.
     if (m_owner) m_owner->addData(this, m_name);
+
+    /// By default the data field are marked as non persistant so that we don't save them.
+    /// It is then marked "persistant" either:
+    ///   - implicitely by changing the value in the GUI.
+    ///   - implicitely if the value was set in the xml or python source file.
+    ///   - explicitely using the python API or a dedicated UI.
+    setPersistent(false) ;
+    parentBaseData.setStorePath(false) ;
 }
 
 BaseData::~BaseData()
@@ -286,6 +311,7 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
         else            m_owner->sout << "OK, " << nbl << "*"<<copySize<<" values copied.";
         m_owner->sout << m_owner->sendl;
     }
+
 
     return true;
 }

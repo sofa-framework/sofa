@@ -520,7 +520,15 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        /// If the field is parsed from the xml file then it has to made persistent.
+        if( parseField(attrName, it.second))
+        {
+            BaseData* b = findData(attrName);
+            if(b)
+                b->setPersistent(true);
+        }
+
+        //parseField(attrName, it.second);
     }
     updateLinks(false);
 }
@@ -584,7 +592,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         BaseData* field = *iData;
-        if (!field->getLinkPath().empty() )
+        if (field->isPersistent() && !field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
         }

@@ -111,6 +111,10 @@ public:
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
     bool storePath() const { return getFlag(FLAG_STOREPATH); }
 
+    /// Control if the link path need should be saved.
+    void setStorePath(bool b) { if(b) m_flags |= (LinkFlagsEnum)FLAG_STOREPATH;
+                                else m_flags &= ~(LinkFlagsEnum)FLAG_STOREPATH; }
+
     /// Alias to match BaseData API
     bool isPersistent() const { return storePath(); }
 
