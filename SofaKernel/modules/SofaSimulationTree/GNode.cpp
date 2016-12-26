@@ -41,17 +41,19 @@ GNode::GNode(const std::string& name, GNode* parent)
     : simulation::Node(name)
     , l_parent(initLink("parent", "Parent node in the graph"))
 {
+    l_parent.setStorePath(false);
+
     if( parent )
         parent->addChild((Node*)this);
 }
 
 GNode::~GNode()
 {
-	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-		GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
-		gnode->l_parent.remove(this);
-	}
+        GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
+        gnode->l_parent.remove(this);
+    }
 }
 
 /// Create, add, then return the new child of this Node

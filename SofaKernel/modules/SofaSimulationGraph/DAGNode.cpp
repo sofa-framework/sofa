@@ -42,17 +42,20 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
+    l_parents.setStorePath(false);
+
     if( parent )
         parent->addChild((Node*)this);
+
 }
 
 DAGNode::~DAGNode()
 {
-	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-		DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
-		dagnode->l_parents.remove(this);
-	}
+        DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+        dagnode->l_parents.remove(this);
+    }
 }
 
 /// Create, add, then return the new child of this Node
@@ -458,21 +461,21 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 /// Execute a recursive action starting from this node
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-	if( precomputedOrder && !_precomputedTraversalOrder.empty() )
+    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
         for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
-		{
-			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
-				action->processNodeTopDown( *it );
-		}
+        {
+            if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+                action->processNodeTopDown( *it );
+        }
 
         for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
-		{
-			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
-	            action->processNodeBottomUp( *it );
-		}
+        {
+            if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+                action->processNodeBottomUp( *it );
+        }
     }
     else
     {
@@ -541,8 +544,8 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         return;
     }
 
-	if( this->isSleeping() && !action->canAccessSleepingNode )
-	{
+    if( this->isSleeping() && !action->canAccessSleepingNode )
+    {
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
@@ -663,8 +666,8 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
         return;
     }
 
-	if( this->isSleeping() && !action->canAccessSleepingNode )
-	{
+    if( this->isSleeping() && !action->canAccessSleepingNode )
+    {
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
         return;
