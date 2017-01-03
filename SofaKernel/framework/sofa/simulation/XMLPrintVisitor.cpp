@@ -65,8 +65,8 @@ void XMLPrintVisitor::processObject(T obj)
     std::string templatename = obj->getTemplateName();
 
     m_out << "<" << xmlencode(classname);
-    if (!templatename.empty())
-        m_out << " template=\"" << xmlencode(templatename) << "\"";
+    //if (!templatename.empty() && )
+    //    m_out << " template=\"" << xmlencode(templatename) << "\"";
 
     obj->writeDatas( m_out, " " );
 
@@ -144,8 +144,8 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 
 bool XMLPrintVisitor::treeTraversal(TreeTraversalRepetition& repeat)
 {
-	repeat = NO_REPETITION;
-	return true;
+    repeat = NO_REPETITION;
+    return true;
 }
 
 } // namespace simulation

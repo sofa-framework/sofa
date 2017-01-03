@@ -48,6 +48,7 @@ Base::Base()
     , serr(_serr)
     , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
+    , m_template(initData(&m_template,string(""),"template","object's template"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
@@ -55,6 +56,8 @@ Base::Base()
     name.setOwnerClass("Base");
     name.setAutoLink(false);
     name.setReadOnly(true);
+    m_template.setOwnerClass("Base");
+    m_template.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
@@ -520,8 +523,10 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         if (!hasField(attrName)) continue;
 
-        /// If the field is parsed from the xml file then it has to made persistent.
-        if( parseField(attrName, it.second))
+        /// If the field is parsed from the xml then the arg->getRawAttrbute(attrName)->isToSave
+        /// will be set to true.
+        if( parseField(attrName, it.second) &&
+            arg->getRawAttribute(attrName)->isToSave())
         {
             BaseData* b = findData(attrName);
             if(b)

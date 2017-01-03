@@ -98,9 +98,13 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
 }
 
 /// Remove an attribute given its name
-bool BaseObjectDescription::removeAttribute(const std::string&)
+bool BaseObjectDescription::removeAttribute(const std::string& attr)
 {
-    return false;
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return false;
+    attributes.erase(it);
+    return true;
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
