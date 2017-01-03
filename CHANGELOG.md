@@ -4,6 +4,11 @@
 
 ## On master branch (not released yet)
 
+### Environment
+- **C++11 is now mandatory**. This implies some changes in building tools.
+    - Generator: CMake 3.1 or higher.
+    - Compiler: GCC 4.8 or higher, Clang 3.4 or higher, Microsoft Visual C++ 2013 or higher.
+
 ### New features for users
 
 - adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
