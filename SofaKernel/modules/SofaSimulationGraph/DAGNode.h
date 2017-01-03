@@ -223,7 +223,7 @@ protected:
     typedef std::map<DAGNode*,StatusStruct> StatusMap;
 
     /// list of DAGNode*
-    typedef helper::list<DAGNode*> NodeList;
+    typedef std::list<DAGNode*> NodeList;
 
     /// the ordered list of Node to traverse from this Node
     NodeList _precomputedTraversalOrder;
