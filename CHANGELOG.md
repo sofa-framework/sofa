@@ -1,12 +1,11 @@
-# ChangeLog Master
-
-**current version**
+# SOFA Changelog
 
 
 
-### New features
 
-## New features for users
+## On master branch (not released yet)
+
+### New features for users
 
 * adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
 * live-coding for python 
@@ -15,7 +14,7 @@
 * new component MakeDataAlias
 * improved error message & console rendering
 
-## New features for developpers
+### New features for developpers
 
 * preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
 * class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
@@ -32,10 +31,8 @@
     *   binding AssembledSystem as a new class in python
     *   adding Compliant.getImplicitAssembledSystem(node)
     *   SofaNumpy: bind/share a c++ 1d array as a numpy array
-
 *   [image]
     *   raw import: adding commented basic size verifications (could be performed in debug)
-
 
 ### Bug Fixes
 
@@ -51,20 +48,9 @@
 
 
 
-* * *
-
-
-
-
-
-
-
-# ChangeLog v16.08
+## v16.08
 
 **Last commit: on Jul 28, 2016**
-
-
-
 
 ### New features
 
@@ -78,11 +64,6 @@
 *   DataTracker: simple and elegant way to track Data in Engine
 *   extlibs: update cimg to version 1.7.3
 *   Add guidelines for contributions in CONTRIBUTING.md
-
-
-
-
-
 
 ### Moved files
 
@@ -98,15 +79,12 @@
 *   [Compliant]
     *   moving propagate_constraint_force_visitor in a helper file and minor cleaning of CompliantImplicitSolver
 
-
-
 ### Improvements
 
 *   test examples are now running (on Jenkins for the Continuous Integration)
 *   Add unit test for quaternions
 *   Improving default mouse manipulation while picking a dof
 *   MouseWheel events now propagated
-
 
 *   Minor improvements
     *   runSofa : force loading the SofaPython plugin if existing
@@ -160,7 +138,6 @@
     *   update the applyConstraint methods according to the actual API
     *   Adding ProjectionTo{Plane|Line}MultiMapping where the plane (origin,normal) and the line (origin,direction) are dofs
     *   add MeshBoundaryROI with an example
-
 
 *   [Tests]
     *   for (multi)Mapping test, check the size of the mapping output is correct
@@ -309,9 +286,6 @@
     *   half perspective, half orthographic image transforms
     *   add imageCoordValuesFromPositions engine
 
-
-
-
 ### Bug Fixes
 
 *   [PluginManager] crashed when a plugin was removed
@@ -404,9 +378,6 @@
     *   fix resampling of projection images, and marching cubes default parameter
     *   fix bug in mhd file loader
     *   fix rasterization when using vertex colors
-
-
-
 
 ### Cleaning
 
