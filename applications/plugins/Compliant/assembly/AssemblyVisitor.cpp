@@ -829,6 +829,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
                     if( zero(*C) /*|| fillWithZeros(*C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
                     // by default, a compliant (elastic) constraint is not stabilized
                     else constraint.value = new component::odesolver::ConstraintValue( c.dofs );
+                    constraint.value->setName("constraint");
 
                     c.dofs->getContext()->addObject( constraint.value );
                     constraint.value->init();
