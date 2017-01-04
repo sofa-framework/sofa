@@ -23,6 +23,7 @@
 * class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
 * class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
 * FileMonitor is now implemented on macOS (for live-coding features, for example)
+* Implements the move semantics on sofa::helper::vector 
 
 ### Improvements
 *   XXXX new tests
@@ -35,7 +36,7 @@
 
 *   [image]
     *   raw import: adding commented basic size verifications (could be performed in debug)
-
+  
 
 ### Bug Fixes
 
