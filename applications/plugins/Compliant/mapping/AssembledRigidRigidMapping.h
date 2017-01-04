@@ -154,7 +154,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                 const unsigned i = it->second[w];
 
                 const source_type& s = src[i];
-                assert( it->first == s.first() );
+                assert( it->first == s.first );
 
                 const typename TOut::Deriv& lambda = out_force[i];
                 const typename TOut::Deriv::Vec3& f = lambda.getLinear();
