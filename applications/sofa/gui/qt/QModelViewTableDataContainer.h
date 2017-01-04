@@ -454,12 +454,8 @@ public:
             {
                 wSize->setEnabled(false);
             }
-            parent->connect(wTableView, SIGNAL( activated(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( pressed(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( clicked(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
-        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent,   SLOT(setWidgetDirty()));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
 
@@ -478,7 +474,15 @@ public:
         wSize->setEnabled(!readOnly);
         if (readOnly)
         {
+            wTableModel->setReadOnly(true);
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            QObject::disconnect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+        }else{
+            QObject::connect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
         }
     }
 
