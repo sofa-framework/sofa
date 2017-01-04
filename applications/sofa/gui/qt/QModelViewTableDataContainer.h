@@ -395,7 +395,7 @@ public:
         wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
-		wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
@@ -422,12 +422,12 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-		//if(isDisplayed() || propertyWidgetFlagOn)
-		{
-			processTableModifications(d);
-			fillTable(d);
-			rows = dataRows;
-		}
+        //if(isDisplayed() || propertyWidgetFlagOn)
+        {
+            processTableModifications(d);
+            fillTable(d);
+            rows = dataRows;
+        }
 
         if(!propertyWidgetFlagOn)
             wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
@@ -440,8 +440,6 @@ public:
         if (readOnly)
         {
             wSize->setEnabled(false);
-
-            //wTableView->setEnabled(false);
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         }
         else
@@ -449,8 +447,6 @@ public:
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
                 parent->connect(wSize, SIGNAL( valueChanged(int) ), parent, SLOT( setWidgetDirty() ));
-                //_widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
-
 
                 if( FLAGS & TABLE_HORIZONTAL)
                     parent->connect(wSize, SIGNAL( valueChanged(int) ), wTableModel, SLOT(resizeTableH(int) ) );
@@ -461,12 +457,8 @@ public:
             {
                 wSize->setEnabled(false);
             }
-            parent->connect(wTableView, SIGNAL( activated(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( pressed(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( clicked(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
-        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent,   SLOT(setWidgetDirty()));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
 
@@ -483,10 +475,16 @@ public:
     void setReadOnly(bool readOnly)
     {
         wSize->setEnabled(!readOnly);
-        //wTableView->setEnabled(!readOnly);
         if (readOnly)
         {
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            QObject::disconnect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+        }else{
+            QObject::connect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
         }
     }
 
