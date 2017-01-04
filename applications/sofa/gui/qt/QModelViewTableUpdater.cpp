@@ -54,6 +54,31 @@ QTableModelUpdater::QTableModelUpdater ( int numRows, int numCols, QWidget * par
     QStandardItemModel(numRows, numCols, parent)
 {}
 
+Qt::ItemFlags QTableModelUpdater::flags(const QModelIndex&) const
+{
+    if(m_isReadOnly)
+        return (Qt::ItemIsSelectable) ;
+    return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled ;
+}
+
+QVariant QTableModelUpdater::data(const QModelIndex &index, int role) const
+{
+    if(m_isReadOnly){
+        switch(role){
+        case Qt::BackgroundRole:
+            return QGuiApplication::palette().color(QPalette::Disabled, QPalette::Background) ;
+        case Qt::ForegroundRole:
+            return QGuiApplication::palette().color(QPalette::Disabled, QPalette::Text);
+        }
+    }
+    return QStandardItemModel::data(index,role) ;
+}
+
+void QTableModelUpdater::setReadOnly(const bool isReadOnly)
+{
+    m_isReadOnly=isReadOnly;
+}
+
 void QTableModelUpdater::resizeTableV( int number )
 {
     QSpinBox *spinBox = (QSpinBox *) sender();

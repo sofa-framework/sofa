@@ -395,7 +395,7 @@ public:
         wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
-		wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
@@ -422,12 +422,9 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-		//if(isDisplayed() || propertyWidgetFlagOn)
-		{
-			processTableModifications(d);
-			fillTable(d);
-			rows = dataRows;
-		}
+        processTableModifications(d);
+        fillTable(d);
+        rows = dataRows;
 
         if(!propertyWidgetFlagOn)
             wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
@@ -440,8 +437,6 @@ public:
         if (readOnly)
         {
             wSize->setEnabled(false);
-
-            //wTableView->setEnabled(false);
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         }
         else
@@ -449,8 +444,6 @@ public:
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
                 parent->connect(wSize, SIGNAL( valueChanged(int) ), parent, SLOT( setWidgetDirty() ));
-                //_widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
-
 
                 if( FLAGS & TABLE_HORIZONTAL)
                     parent->connect(wSize, SIGNAL( valueChanged(int) ), wTableModel, SLOT(resizeTableH(int) ) );
@@ -483,7 +476,6 @@ public:
     void setReadOnly(bool readOnly)
     {
         wSize->setEnabled(!readOnly);
-        //wTableView->setEnabled(!readOnly);
         if (readOnly)
         {
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);

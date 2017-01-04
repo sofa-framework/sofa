@@ -33,7 +33,7 @@
 #include <QSpinBox>
 #include <QTableView>
 #include <QStandardItemModel>
-
+#include <QGuiApplication>
 
 namespace sofa
 {
@@ -57,9 +57,14 @@ public slots:
 class QTableModelUpdater : public QStandardItemModel
 {
     Q_OBJECT
-
+    bool m_isReadOnly ;
 public:
     QTableModelUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * /*name*/ = 0 );
+
+    virtual Qt::ItemFlags flags(const QModelIndex&) const override ;
+    virtual QVariant data(const QModelIndex &index, int role) const ;
+
+    void setReadOnly(const bool isReadOnly) ;
 
 public slots:
     void resizeTableV( int number );

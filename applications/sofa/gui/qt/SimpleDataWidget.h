@@ -88,6 +88,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
@@ -144,7 +145,10 @@ public:
     }
     void setReadOnly(bool readOnly)
     {
-        if(w) helper::setReadOnly(w, readOnly);
+        if(w){
+            w->setEnabled(!readOnly);
+            helper::setReadOnly(w, readOnly);
+        }
     }
     void readFromData(const data_type& d)
     {
@@ -226,7 +230,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent);
-		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
@@ -240,6 +244,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
@@ -346,7 +351,7 @@ public:
         w->setMaximum(vmax);
         w->setSingleStep(1);
 
-		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
@@ -817,6 +822,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
