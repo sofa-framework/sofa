@@ -78,6 +78,7 @@ DataWidget::updateDataValue()
         std::string previousName;
         if ( hasOwner ) previousName = baseData->getOwner()->getName();
         writeToData();
+        baseData->setPersistent(true);
 
         if (hasOwner)
         {
@@ -157,10 +158,6 @@ DataWidget::updateWidgetValue()
 void
 DataWidget::setWidgetDirty(bool b)
 {
-    if(baseData)
-    {
-        baseData->setPersistent(true);
-    }
     dirty = b;
     Q_EMIT WidgetDirty(b);
 }
