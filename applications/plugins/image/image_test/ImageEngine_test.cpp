@@ -40,7 +40,7 @@ namespace sofa {
  * Visualize the output image of the engine with ImageViewer.
  * The input image of ImageViewer is then linked to the ouput image of the engine.
  * Copy on Write option is true.
- * Note: the function draw of ImageViewer is acutally not called in this test (it works with the gui).
+ * Note: the function draw of ImageViewer is actually not called in this test (it works with the gui).
   */
 struct ImageEngine_test : public Sofa_test<>
 {
