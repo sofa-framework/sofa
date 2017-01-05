@@ -29,7 +29,7 @@
 #include <QSpinBox>
 #include <QTableView>
 #include <QStandardItemModel>
-
+#include <QApplication>
 
 namespace sofa
 {
@@ -66,9 +66,9 @@ QVariant QTableModelUpdater::data(const QModelIndex &index, int role) const
     if(m_isReadOnly){
         switch(role){
         case Qt::BackgroundRole:
-            return QGuiApplication::palette().color(QPalette::Disabled, QPalette::Background) ;
+            return QApplication::palette().color(QPalette::Disabled, QPalette::Background) ;
         case Qt::ForegroundRole:
-            return QGuiApplication::palette().color(QPalette::Disabled, QPalette::Text);
+            return QApplication::palette().color(QPalette::Disabled, QPalette::Text);
         }
     }
     return QStandardItemModel::data(index,role) ;

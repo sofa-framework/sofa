@@ -33,7 +33,7 @@
 #include <QSpinBox>
 #include <QTableView>
 #include <QStandardItemModel>
-#include <QGuiApplication>
+
 
 namespace sofa
 {
