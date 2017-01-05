@@ -2,10 +2,18 @@
 
 **current version**
 
-
-
 ### New features
+* Saving scene in a readable xml format. The attributes saved are the one that where given in the initial scene file as well as the one edited in the runSofa
 
+## New features for users
+## New features for developpers
+### Improvements
+### Bug Fixes
+### Cleaning
+### Moved files
+
+# ChangeLog 16.12
+### New features
 ## New features for users
 
 * Adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
