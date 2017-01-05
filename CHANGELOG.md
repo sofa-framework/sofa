@@ -1,8 +1,22 @@
-# SOFA Changelog
+# ChangeLog (Master)
 
+### Environment
 
+### New features for users
+- Saving scene in a readable xml format. The attributes saved are the one that where given in the initial scene file as well as the one edited in the runSofa
 
-## On master branch (not released yet)
+### New features for developpers
+
+### Improvements
+
+### Bug Fixes
+
+### Cleaning
+
+### Moved files
+
+____________________________________________________________
+# ChangeLog (Still Master but soon 16.12)
 
 ### Environment
 - **C++11 is now mandatory**. This implies some changes in building tools.

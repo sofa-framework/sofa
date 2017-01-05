@@ -98,9 +98,13 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
 }
 
 /// Remove an attribute given its name
-bool BaseObjectDescription::removeAttribute(const std::string&)
+bool BaseObjectDescription::removeAttribute(const std::string& attr)
 {
-    return false;
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return false;
+    attributes.erase(it);
+    return true;
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
@@ -111,6 +115,16 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
         return defaultVal;
     else
         return it->second.c_str();
+}
+
+/// Get an attribute given its name (return null if not present.
+BaseObjectDescription::Attribute* BaseObjectDescription::getRawAttribute(const std::string& attr)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return nullptr;
+    else
+        return &(it->second);
 }
 
 /// Set an attribute. Override any existing value

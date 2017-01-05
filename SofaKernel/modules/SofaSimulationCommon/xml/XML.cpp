@@ -142,8 +142,8 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 
     classType = element->Value();
 
+    /// Now handle the "name" of the created node.
     const char* pname = element->Attribute("name");
-
     if (pname != NULL)
     {
         name = pname;
@@ -154,8 +154,8 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
         ++numDefault;
     }
 
+    /// Now handle the "type" of the created node.
     const char* ptype = element->Attribute("type");
-
     if (ptype != NULL)
     {
         type = ptype;
@@ -164,6 +164,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     {
         type = "default";
     }
+
 
     if (!BaseElement::NodeFactory::HasKey(classType) && type == "default")
     {
@@ -205,13 +206,24 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     node->setSrcFile(basefilename);
     node->setSrcLine(element->Row()) ;
 
+    /// In case pname == nullptr this means that the XML file didn't included the "name" attribute.
+    /// and that this attribute was created automatically. If so we don't wan't this generated
+    /// attribute to be saved in the file.
+    node->getRawAttribute("name")->setIsToSave(pname != NULL);
+
      // List attributes
     for (TiXmlAttribute* attr=element->FirstAttribute(); attr ; attr = attr->Next())
     {
         if (attr->Value()==NULL) continue;
         if (!(strcmp(attr->Name(), "name"))) continue;
         if (!(strcmp(attr->Name(), "type"))) continue;
+
+        /// Set the value into the corresponding node attribute at specified name.
         node->setAttribute(attr->Name(), attr->Value());
+
+        /// Indicates that the value at the specified name came from XML elements and thus
+        /// needs to be saved.
+        node->getRawAttribute(attr->Name())->setIsToSave(true);
     }
 
     for (TiXmlNode* child = root->FirstChild() ; child != NULL; child = child->NextSibling())

@@ -44,6 +44,7 @@ namespace objectmodel
 BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
+    , m_src(initData( &m_src, std::string(""), "src", "if set, the data fields with similar names from src will be set as parent. (default='')"))
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
@@ -90,6 +91,8 @@ void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, 
 
 void BaseObject::parse( BaseObjectDescription* arg )
 {
+    /// The "src" attribute is handled in a different way as the other field because it is a kind
+    /// of 'hack'.
     if (arg->getAttribute("src"))
     {
         std::string valueString(arg->getAttribute("src"));
@@ -105,6 +108,11 @@ void BaseObject::parse( BaseObjectDescription* arg )
             setSrc(valueString, &attributeList);
         }
         arg->removeAttribute("src");
+
+        /// We copy the content of the attribute in a data field so that the src value is
+        /// preserved and can be save.
+        m_src.setValue(valueString) ;
+        m_src.setPersistent(true) ;
     }
     Base::parse(arg);
 }
@@ -293,13 +301,13 @@ void BaseObject::init()
         setPartition(new Iterative::IterativePartition());
 #endif
 
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
+    for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+    {
+        if ((*iData)->isRequired() && !(*iData)->isSet())
+        {
             serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
-		}
-	}
+        }
+    }
 }
 
 void BaseObject::bwdInit()

@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Link.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
@@ -437,8 +438,8 @@ public:
     /// @name events
     ///   Methods related to Event processing
     /// @{
-
     Data<bool> f_listening;
+    Data<std::string> m_src ;
 
     /// Handle an event
     virtual void handleEvent( Event* );

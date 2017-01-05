@@ -164,6 +164,7 @@ public:
     Data< float > showVectorsScale;
     Data< int > drawMode;
     Data< defaulttype::Vec4f > d_color;  ///< drawing color
+    //TODO(dmarchal:xmlsave) remove this crappy isToPrint
     Data < bool > isToPrint; ///< ignore some Data for file export
 
     virtual void init();
@@ -428,6 +429,7 @@ protected :
     sofa::core::objectmodel::DataFileName filename;
     Data< bool> ignoreLoader;
     Data< int > f_reserve;
+    Data< int > d_size ;
 
     bool m_initialized;
 

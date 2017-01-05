@@ -48,6 +48,7 @@ Base::Base()
     , serr(_serr)
     , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
+    , m_template(initData(&m_template,string(""),"template","object's template"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
@@ -55,6 +56,8 @@ Base::Base()
     name.setOwnerClass("Base");
     name.setAutoLink(false);
     name.setReadOnly(true);
+    m_template.setOwnerClass("Base");
+    m_template.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
     f_tags.setOwnerClass("Base");
@@ -520,7 +523,17 @@ void  Base::parse ( BaseObjectDescription* arg )
 
         if (!hasField(attrName)) continue;
 
-        parseField(attrName, it.second);
+        /// If the field is parsed from the xml then the arg->getRawAttrbute(attrName)->isToSave
+        /// will be set to true.
+        if( parseField(attrName, it.second) &&
+            arg->getRawAttribute(attrName)->isToSave())
+        {
+            BaseData* b = findData(attrName);
+            if(b)
+                b->setPersistent(true);
+        }
+
+        //parseField(attrName, it.second);
     }
     updateLinks(false);
 }
@@ -584,7 +597,7 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         BaseData* field = *iData;
-        if (!field->getLinkPath().empty() )
+        if (field->isPersistent() && !field->getLinkPath().empty() )
         {
             out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
         }

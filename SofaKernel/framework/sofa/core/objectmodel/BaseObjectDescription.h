@@ -58,6 +58,7 @@ public:
     protected:
         std::string value;
         mutable bool accessed;
+        bool m_isToSave;
     public:
         Attribute() : accessed(false) {}
         Attribute(const std::string& v) : value(v), accessed(false) {}
@@ -67,6 +68,9 @@ public:
         const char* c_str() const { accessed = true; return value.c_str(); }
         bool isAccessed() const { return accessed; }
         void setAccessed(bool v) { accessed = v; }
+
+        bool isToSave() const {return m_isToSave; }
+        void setIsToSave(bool b) { m_isToSave = b; }
     };
 
     typedef std::map<std::string,Attribute> AttributeMap;
@@ -109,6 +113,9 @@ public:
 
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
+
+    /// Get an attribute given its name (return nullptr if not present).
+    virtual Attribute* getRawAttribute(const std::string& attr);
 
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);

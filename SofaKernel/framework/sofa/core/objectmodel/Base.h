@@ -460,7 +460,7 @@ protected:
 public:
     /// Name of the object.
     Data<std::string> name;
-
+    Data<std::string> m_template ;
     Data<bool> f_printLog;
 
     Data< sofa::core::objectmodel::TagSet > f_tags;
