@@ -20,13 +20,12 @@
 
 ### New features for developpers
 
-
 * preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
 * class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
 * class CountingMessageHandler (count the number of message for each message type)
 * class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
 * class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
-* FileMonitor is now implemented on macOS (for live-coding features, for example)
+* FileMonitor is now implemented on MacOS & Windows (for live-coding features, for example)
 * Implements the move semantics on sofa::helper::vector 
 
 ### Improvements
