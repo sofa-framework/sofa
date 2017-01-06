@@ -27,7 +27,7 @@
 #define SOFA_DEFAULTTYPE_COLOR_H
 #include <string>
 
-#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa
@@ -36,7 +36,7 @@ namespace sofa
 namespace defaulttype
 {
 
-class RGBAColorEMPTY : public sofa::defaulttype::Vec<4, double>
+class SOFA_DEFAULTTYPE_API RGBAColorEMPTY : public sofa::defaulttype::Vec<4, double>
 {
 public:
 };
@@ -44,7 +44,7 @@ public:
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, double> vector.
  */
-class RGBAColor : public sofa::defaulttype::Vec<4, double>
+class SOFA_DEFAULTTYPE_API RGBAColor : public sofa::defaulttype::Vec<4, double>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
