@@ -38,6 +38,8 @@ int hexval(char c)
     else return 0;
 }
 
+RGBAColorEMPTY empty;
+
 RGBAColor::RGBAColor()
 {
 

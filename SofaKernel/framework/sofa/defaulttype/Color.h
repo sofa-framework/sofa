@@ -36,11 +36,15 @@ namespace sofa
 namespace defaulttype
 {
 
+class RGBAColorEMPTY : public sofa::defaulttype::Vec<4, double>
+{
+public:
+};
 
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, double> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public sofa::defaulttype::Vec<4, double>
+class RGBAColor : public sofa::defaulttype::Vec<4, double>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
