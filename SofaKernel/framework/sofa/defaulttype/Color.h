@@ -62,6 +62,11 @@ public:
     double& g(){ return y() ; }
     double& b(){ return z() ; }
     double& a(){ return w() ; }
+    const double& r() const { return x() ; }
+    const double& g() const { return y() ; }
+    const double& b() const { return z() ; }
+    const double& a() const { return w() ; }
+
     void r(const double r){ x()=r; }
     void g(const double r){ y()=r; }
     void b(const double r){ z()=r; }
