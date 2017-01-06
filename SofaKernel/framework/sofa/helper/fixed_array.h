@@ -71,7 +71,7 @@ namespace helper
 {
 
 template<class T, std::size_t N>
-class fixed_array
+class SOFA_DEFAULTTYPE_API fixed_array
 {
 public:
     T elems[N];    // fixed-size array of elements of type T

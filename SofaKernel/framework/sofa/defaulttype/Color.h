@@ -40,7 +40,7 @@ namespace defaulttype
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, double> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public Vec<4, double>
+class SOFA_DEFAULTTYPE_API RGBAColor : public sofa::defaulttype::Vec<4, double>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
@@ -81,12 +81,11 @@ public:
 
 };
 
-/*
 template<>
 struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<4, double> >
 {
     static std::string name() { std::ostringstream o; o << "RGBAColor" << 4 << "d"; return o.str(); }
-};*/
+};
 
 } // namespace defaulttype
 
