@@ -81,12 +81,12 @@ public:
 
 };
 
-
+/*
 template<>
 struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<4, double> >
 {
     static std::string name() { std::ostringstream o; o << "RGBAColor" << 4 << "d"; return o.str(); }
-};
+};*/
 
 } // namespace defaulttype
 
