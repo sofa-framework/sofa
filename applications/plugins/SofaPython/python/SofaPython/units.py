@@ -62,6 +62,41 @@ def setLocalUnits(time="s", length="m", mass="kg"):
     local_length = eval("length_"+length)
     local_mass = eval("mass_"+mass)
 
+def getLocalUnit_time():
+    """ return string representation
+    """
+    if local_time == time_h :
+        return "h"
+    elif local_time == time_min :
+        return "min"
+    elif local_time == time_ms :
+        return "ms"
+    return "s"
+
+def getLocalUnit_length():
+    """ return string representation
+    """
+    if local_length == length_hm :
+        return "hm"
+    elif local_length == length_dam :
+        return "dam"
+    elif local_length == length_dm :
+        return "dm"
+    elif local_length == length_cm :
+        return "cm"
+    elif local_length == length_mm :
+        return "mm"
+    return "m"
+
+def getLocalUnit_mass():
+    """ return string representation
+    """
+    if local_mass == mass_g :
+        return "h"
+    elif local_mass == mass_ton :
+        return "ton"
+    return "kg"
+
 ### conversion methods
 
 # BASE
