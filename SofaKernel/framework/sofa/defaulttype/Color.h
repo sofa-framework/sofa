@@ -48,6 +48,16 @@ public:
     static RGBAColor fromVec4(const Vec4d color) ;
     static bool read(const std::string& str, RGBAColor& color) ;
 
+    static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
+    static RGBAColor black()  { return RGBAColor(0.0,0.0,0.0,1.0); }
+    static RGBAColor red()    { return RGBAColor(1.0,0.0,0.0,1.0); }
+    static RGBAColor green()  { return RGBAColor(0.0,1.0,0.0,1.0); }
+    static RGBAColor blue()   { return RGBAColor(0.0,0.0,1.0,1.0); }
+    static RGBAColor cyan()   { return RGBAColor(0.0,1.0,1.0,1.0); }
+    static RGBAColor magenta() { return RGBAColor(1.0,0.0,1.0,1.0); }
+    static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
+    static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
+
     double& r(){ return x() ; }
     double& g(){ return y() ; }
     double& b(){ return z() ; }
