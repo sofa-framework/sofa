@@ -42,7 +42,7 @@ namespace defaulttype
 enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
 
 template <int N, typename real=float>
-class SOFA_DEFAULTTYPE_API Vec : public helper::fixed_array<real,N>
+class Vec : public helper::fixed_array<real,N>
 {
 
     static_assert( N > 0, "" );
