@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
-    BezierTetrahedronTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp)
 
 add_definitions("-DSOFABASETOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")

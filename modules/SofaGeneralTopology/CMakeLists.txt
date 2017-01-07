@@ -3,12 +3,6 @@ project(SofaGeneralTopology)
 
 
 set(HEADER_FILES
-    BezierTetrahedronSetGeometryAlgorithms.h
-    BezierTetrahedronSetGeometryAlgorithms.inl
-    BezierTetrahedronSetTopologyContainer.h
-    BezierTriangleSetGeometryAlgorithms.h
-    BezierTriangleSetGeometryAlgorithms.inl
-    BezierTriangleSetTopologyContainer.h
     CubeTopology.h
     CylinderGridTopology.h
     SphereQuadTopology.h
@@ -17,10 +11,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    BezierTetrahedronSetGeometryAlgorithms.cpp
-    BezierTetrahedronSetTopologyContainer.cpp
-    BezierTriangleSetGeometryAlgorithms.cpp
-    BezierTriangleSetTopologyContainer.cpp
     CubeTopology.cpp
     CylinderGridTopology.cpp
     SphereQuadTopology.cpp
