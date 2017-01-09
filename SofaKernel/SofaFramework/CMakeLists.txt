@@ -194,7 +194,7 @@ list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 set(SOFAFRAMEWORK_VERSION "16.12.0")
 
 ## sofa/version.h
-set(SOFA_VERSION "999999")
+set(SOFA_VERSION "16120")
 set(SOFA_VERSION_STR "\"devel\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
