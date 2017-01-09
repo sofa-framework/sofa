@@ -357,22 +357,24 @@ void BaseSequentialSolver::solve_impl(vec& res,
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
-//	vec primal;
-	for(k = 0; k < max; ++k) {
+	vec old;
 
+	for(k = 0; k < max; ++k) {
+        old = lambda;
+        
         real estimate2 = step( lambda, net, sys, constant, error, delta, correct, damping );
 
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 		
 		// stop if we only gain one significant digit after precision
-		if( std::sqrt(estimate2) / sys.n < epsilon ) break;
+        SReal error = (old - lambda).norm();
+		if( error < epsilon ) break;
 	}
 
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
-
-
+    
     if( this->f_printLog.getValue() )
         serr << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
 	
