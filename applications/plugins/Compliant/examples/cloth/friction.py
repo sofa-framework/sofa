@@ -31,13 +31,11 @@ def createScene(node):
     
     num = node.createObject('ModulusSolver',
                             iterations = 15,
-                            precision = 1e-6,
-                            nlnscg = True,
-                            anderson = 4)
+                            precision = 0)
 
     # num = node.createObject('SequentialSolver',
-    #                         iterations = 10,
-    #                         precision = 1e-6,
+    #                         iterations = 15,
+    #                         precision = 0,
     #                         anderson = 4)
     
 
