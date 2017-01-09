@@ -326,9 +326,9 @@ install(FILES "${CMAKE_SOURCE_DIR}/LICENCE.txt" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "16.dev.0")
+SET(CPACK_PACKAGE_VERSION "16.12.0")
 SET(CPACK_PACKAGE_VERSION_MAJOR "16")
-SET(CPACK_PACKAGE_VERSION_MINOR "dev")
+SET(CPACK_PACKAGE_VERSION_MINOR "12")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
