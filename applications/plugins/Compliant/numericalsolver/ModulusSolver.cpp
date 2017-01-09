@@ -100,6 +100,12 @@ void ModulusSolver::factor(const system_type& sys) {
 
             typedef linearsolver::CoulombConstraintBase proj_type;
             Constraint* c = sys.constraints[i].projector.get();
+
+            // unilateral mask
+            if( c ) {
+                unilateral.segment(off, dim).setOnes();
+            }
+            
             if( c && proj_type::checkConstraintType(c) ) {
                 assert( dim % 3 == 0 && "non vec3 dofs not handled");
                 for(unsigned j = 0, je = dim / 3; j < je; ++j) {
@@ -128,15 +134,19 @@ void ModulusSolver::factor(const system_type& sys) {
     for(unsigned i = 0; i < sys.n; ++i) {
 
         sub.matrix.coeffRef(sub.primal.cols() + i,
-                            sub.primal.cols() + i) += -omega * diagonal(i);
+                            sub.primal.cols() + i) += unilateral(i) * (-omega * diagonal(i));
+        
     }
 
     // factor the modified kkt
     sub.factor( solver );
+
+    // std::clog << unilateral.transpose() << std::endl;
 }
 
- 
-void ModulusSolver::project(vec::SegmentReturnType view, const system_type& sys, bool correct) const {
+
+template<class View>
+static void project(View&& view, const ModulusSolver::system_type& sys, bool correct) {
     unsigned off = 0;
     
     for(unsigned i = 0, n = sys.constraints.size(); i < n; ++i) {
@@ -157,17 +167,18 @@ void ModulusSolver::solve(vec& res,
                           const system_type& sys,
                           const vec& rhs) const {
 
-    vec constant = rhs;
-    if( sys.n ) constant.tail(sys.n) = - constant.tail(sys.n);
-
-    vec tmp;
-    sub.solve(solver, tmp, constant);
-    
-    if(!sys.n) {
-        res = tmp;
+    if( !sys.n ) {
+        sub.solve(solver, res, rhs);
         return;
     }
+    
+    vec constant, tmp;
+    constant.resize(sys.size() );
+    tmp.resize(sys.size() );    
 
+    constant.head(sys.m) = rhs.head(sys.m);
+    constant.tail(sys.n) = - rhs.tail(sys.n);
+    
     // y = (x, z)
     vec y = vec::Zero( sys.size() );
 
@@ -178,12 +189,11 @@ void ModulusSolver::solve(vec& res,
 
     // TODO
     const bool correct = false;
-    
     const real omega = this->omega.getValue();
     const real precision = this->precision.getValue();
 
-    // utils::anderson accel(sys.n, anderson.getValue(), diagonal);
-    utils::nlnscg accel(sys.n, diagonal);    
+    // // utils::anderson accel(sys.n, anderson.getValue(), diagonal);
+    // utils::nlnscg accel(sys.n, diagonal);    
     
     unsigned k;
     const unsigned kmax = iterations.getValue();
@@ -191,60 +201,36 @@ void ModulusSolver::solve(vec& res,
     const bool use_accel = anderson.getValue();
     
     for(k = 0; k < kmax; ++k) {
-        
-        // tmp = (x, |z|)
-        tmp = y;
-
-        // |z| = 2 * P(z) - z
-        project( tmp.tail(sys.n), sys, correct );
-        tmp.tail(sys.n) = 2 * tmp.tail(sys.n) - y.tail(sys.n);
-
-        zabs = tmp.tail(sys.n);
-
-        // TODO fix this mess
-        // after this, prod is wrong, we need to add back 2 diag * omega |z|
-        {
-            scoped::timer step("subkkt prod");
-            sub.prod(tmp, tmp, true);
-        }
-        
-        // tmp += 2 * omega.getValue() * zabs;
-        tmp.tail(sys.n).array() += (2 * omega) * diagonal.array() * zabs.array();
-
-        // 
-        tmp -= constant;
-
-        // solve
-        sub.solve(solver, tmp, tmp);
-        
-        // backup old dual
         old = y.tail(sys.n);
         
-        y.head(sys.m).array() -= tmp.head(sys.m).array();
-        y.tail(sys.n).array() -= tmp.tail(sys.n).array() + y.tail(sys.n).array();
+        // |z| = 2 * P(z) - z
+        zabs = y.tail(sys.n);
+        project( zabs, sys, correct );
+        zabs = 2 * zabs - y.tail(sys.n);
 
-        if( use_accel ) {
-            
-            // reuse zabs
-            zabs = y.tail(sys.n);
-            accel(zabs);
-            y.tail(sys.n) = zabs;
-        }
+        // don't consider bilateral constraints
+        zabs = zabs.array() * unilateral.array();
+        
+        tmp = constant;
 
+        // TODO only non-projection constraints?
+        tmp.head(sys.m) += sys.J.transpose() * zabs;
+        tmp.tail(sys.n) += sys.C * zabs - omega * diagonal.cwiseProduct(zabs);
+        
+        // solve in place
+        sub.solve(solver, y, tmp);
+        
         error = (old - y.tail(sys.n)).norm();
         if( error <= precision ) break;
     }
 
-    sout << "fixed point error: " << error << "\titerations: " << k << sendl;
+    if( this->f_printLog.getValue() ) {
+        serr << "fixed point error: " << error << "\titerations: " << k << sendl;
+    }
 
     // and that should be it ?
-    res = y;
-
-    // we need to project 2 z to get lambdas
-    res.tail(sys.n) *= 2.0;
-    project( res.tail(sys.n), sys, correct );
-    
-    // TODO we should recompute x based on actual, non sticky lambdas
+    res.head(sys.m) = y.head(sys.m);
+    res.tail(sys.n) = (y.tail(sys.n) + zabs);
     
 }
 

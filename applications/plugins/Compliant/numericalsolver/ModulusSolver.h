@@ -35,7 +35,7 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
     };
 
 
-    void project(vec::SegmentReturnType view, const system_type& sys, bool correct) const;
+    // void project(vec::SegmentReturnType view, const system_type& sys, bool correct) const;
     
     sub_kkt sub;
 
