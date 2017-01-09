@@ -127,6 +127,11 @@ RGBAColor RGBAColor::fromVec4(const Vec4d color)
     return RGBAColor(color) ;
 }
 
+RGBAColor RGBAColor::fromVec4(const Vec4f color)
+{
+    return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
+}
+
 std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;

@@ -50,6 +50,7 @@ public:
     static RGBAColor fromString(const std::string& str) ;
     static RGBAColor fromDouble(const double r, const double g, const double b, const double a) ;
     static RGBAColor fromVec4(const Vec4d color) ;
+    static RGBAColor fromVec4(const Vec4f color) ;
     static bool read(const std::string& str, RGBAColor& color) ;
 
     static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
