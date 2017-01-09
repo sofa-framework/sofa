@@ -123,7 +123,6 @@ public:
     Data<sofa::helper::vector<Spring> > springs;
 
 protected:
-    Real m_potentialEnergy;
     core::objectmodel::DataFileName fileSprings;
 
 protected:
