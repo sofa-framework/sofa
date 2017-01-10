@@ -80,6 +80,34 @@ void Color_Test::checkCreateFromString()
     EXPECT_FALSE( RGBAColor::read("1 2 3 4 5", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("1 a 3 4", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("-1 2 3 5", color2) ) ;
+
+    ///# short hexadecimal notation
+    EXPECT_EQ( RGBAColor::fromString("#000"), RGBAColor(0.0,0.0,0.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("#0000"), RGBAColor(0.0,0.0,0.0,0.0) ) ;
+
+    EXPECT_TRUE( RGBAColor::read("#ABA", color2) ) ;
+    EXPECT_TRUE( RGBAColor::read("#FFAA", color2) ) ;
+
+    EXPECT_TRUE( RGBAColor::read("#aba", color2) ) ;
+    EXPECT_TRUE( RGBAColor::read("#ffaa", color2) ) ;
+
+    EXPECT_FALSE( RGBAColor::read("#ara", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("#ffap", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("##fapa", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("#f#apa", color2) ) ;
+
+    ///# long hexadecimal notation
+    EXPECT_EQ( RGBAColor::fromString("#000000"), RGBAColor(0.0,0.0,0.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("#00000000"), RGBAColor(0.0,0.0,0.0,0.0) ) ;
+
+    EXPECT_TRUE( RGBAColor::read("#AABBAA", color2) ) ;
+    EXPECT_TRUE( RGBAColor::read("#FFAA99AA", color2) ) ;
+
+    EXPECT_FALSE( RGBAColor::read("#aabraa", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("#fffapaba", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("##fpaapddda", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("#fasdqdpa", color2) ) ;
+
 }
 
 void Color_Test::checkCreateFromDouble()
