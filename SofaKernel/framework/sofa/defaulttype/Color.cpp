@@ -80,11 +80,14 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
     if (str[0]>='0' && str[0]<='9')
     {
         std::istringstream iss(str);
-        iss >> r >> g >> b >> a ;
+        iss >> r >> g >> b ;
         if(iss.fail())
             return false;
-        if(!iss.eof())
-            return false;
+        if(!iss.eof()){
+            iss >> a;
+            if(iss.fail() || !iss.eof())
+                return false;
+        }
     }
     else if (str[0]=='#' && str.length()>=7)
     {

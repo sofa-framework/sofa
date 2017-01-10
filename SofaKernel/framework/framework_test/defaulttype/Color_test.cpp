@@ -59,8 +59,13 @@ void Color_Test::checkCreateFromString()
     EXPECT_TRUE( RGBAColor::read("white", color) ) ;
     EXPECT_FALSE( RGBAColor::read("invalidcolor", color) ) ;
 
+    /// READ RGBA colors
     EXPECT_EQ( RGBAColor::fromString("1 2 3 4"), RGBAColor(1.0,2.0,3.0,4.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("0 0 3 4"), RGBAColor(0.0,0.0,3.0,4.0) ) ;
+
+    /// READ RGB colors
+    EXPECT_EQ( RGBAColor::fromString("1 2 3"), RGBAColor(1.0,2.0,3.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("0 0 3"), RGBAColor(0.0,0.0,3.0,1.0) ) ;
 
     RGBAColor color2;
     EXPECT_TRUE( RGBAColor::read("1 2 3 4", color2) ) ;
@@ -69,7 +74,9 @@ void Color_Test::checkCreateFromString()
     EXPECT_TRUE( RGBAColor::read("0 0 3 4", color2) ) ;
     EXPECT_EQ( color2, RGBAColor(0,0,3,4));
 
-    EXPECT_FALSE( RGBAColor::read("1 2 3", color2) ) ;
+    EXPECT_TRUE( RGBAColor::read("1 2 3", color2) ) ;
+    EXPECT_EQ( color2, RGBAColor(1,2,3,1));
+
     EXPECT_FALSE( RGBAColor::read("1 2 3 4 5", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("1 a 3 4", color2) ) ;
     EXPECT_FALSE( RGBAColor::read("-1 2 3 5", color2) ) ;
