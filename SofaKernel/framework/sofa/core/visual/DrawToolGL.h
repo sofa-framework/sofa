@@ -30,6 +30,8 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
 
+#include <sofa/defaulttype/Color.h>
+
 
 namespace sofa
 {

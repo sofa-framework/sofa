@@ -65,9 +65,9 @@ public:
     Data<unsigned int> x;
     Data<unsigned int> y;
     Data<unsigned int> fontsize;
-    Data<std::string> color;
+    Data<defaulttype::RGBAColor> color;
     Data<unsigned int> updateLabelEveryNbSteps;
-	Data<bool> f_visible;
+    Data<bool> f_visible;
 
     void init();
     void reinit();
@@ -77,18 +77,7 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *);
 
 private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-
-    float r,g,b,a;
-    typedef defaulttype::Vec4f Color;   // Color with alpha value
-
     std::string internalLabel;
-
-    sofa::component::configurationsetting::BackgroundSetting* backgroundSetting;
-
-
 };
 
 } // namespace visualmodel

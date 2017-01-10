@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
+#include <sofa/defaulttype/Color.h>
 
 namespace sofa
 {
@@ -77,7 +78,7 @@ private:
 private:
     Data<float>		radius;
     // Data<float>		alpha;
-    Data<std::string>	color;
+    Data<defaulttype::RGBAColor>	color;
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges;

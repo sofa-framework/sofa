@@ -52,7 +52,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , force(initData(&force, "force", "applied force to all points if forces attribute is not specified"))
     , totalForce(initData(&totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
 {
     arrowSizeCoef.setGroup("Visualization");

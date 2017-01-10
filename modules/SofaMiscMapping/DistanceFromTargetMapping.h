@@ -31,6 +31,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Color.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -131,7 +132,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
     Data<float> d_showObjectScale;
-    Data<defaulttype::Vec4f> d_color;
+    Data<defaulttype::RGBAColor> d_color;
 
 protected:
     DistanceFromTargetMapping();

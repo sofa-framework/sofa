@@ -180,7 +180,7 @@ extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
 // set the viewer resolution
 extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
 {
-	int width, height;
+    int width, height;
     if (!PyArg_ParseTuple(args, "ii",&width,&height))
     {
         PyErr_BadArgument();
@@ -202,20 +202,22 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
 // set the viewer resolution
 extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
-	float r = 0.0f, g = 0.0f, b = 0.0f;
-	sofa::defaulttype::Vector3 color;
+    float r = 0.0f, g = 0.0f, b = 0.0f;
+    sofa::defaulttype::RGBAColor color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
     {
         PyErr_BadArgument();
         return 0;
     }
-	color[0] = r; color[1] = g; color[2] = b;
-	for (int i = 0; i < 3; ++i){
-		if (color[i] < 00.f || color[i] > 1.0) {
-			PyErr_BadArgument();
-			return 0;
-		}
-	}
+    color[0] = r; color[1] = g; color[2] = b;
+    for (int i = 0; i < 3; ++i){
+        if (color[i] < 00.f || color[i] > 1.0) {
+            PyErr_BadArgument();
+            return 0;
+        }
+    }
+
+    color.set(r,g,b,1.0);
 
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -622,7 +624,7 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
-SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
+SP_MODULE_METHOD(Sofa,getSofaPythonVersion)
 SP_MODULE_METHOD(Sofa,createNode)
 SP_MODULE_METHOD_KW(Sofa,createObject)
 SP_MODULE_METHOD(Sofa,getObject)        // deprecated on date 2012/07/18

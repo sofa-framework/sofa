@@ -38,19 +38,17 @@ int hexval(char c)
     else return 0;
 }
 
-RGBAColorEMPTY empty;
-
 RGBAColor::RGBAColor()
 {
 
 }
 
-RGBAColor::RGBAColor(const Vec<4,double>& c) : Vec<4,double>(c)
+RGBAColor::RGBAColor(const Vec<4,float>& c) : Vec<4,float>(c)
 {
 
 }
 
-RGBAColor::RGBAColor(const double pr, const double pg, const double pb, const double pa)
+RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
 {
     r(pr);
     g(pg);
@@ -117,7 +115,7 @@ RGBAColor RGBAColor::fromString(const std::string& c)
     return color;
 }
 
-RGBAColor RGBAColor::fromDouble(const double r, const double g, const double b, const double a)
+RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, const float a)
 {
     return RGBAColor(r,g,b,a);
 }

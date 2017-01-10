@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
-
+#include <sofa/defaulttype/Color.h>
 
 namespace sofa
 {
@@ -71,7 +71,7 @@ public:
     ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     /// display color
-    Data< defaulttype::Vec4f > d_color;
+    Data< defaulttype::RGBAColor > d_color;
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
 protected:

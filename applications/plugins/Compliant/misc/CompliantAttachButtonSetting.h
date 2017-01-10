@@ -29,6 +29,8 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
+#include <sofa/defaulttype/Color.h>
+
 namespace sofa
 {
 
@@ -52,7 +54,7 @@ public:
     Data<SReal> compliance;
     Data<bool> isCompliance;
     Data<SReal> arrowSize;
-    Data<defaulttype::Vec<4,SReal> > color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> visualmodel;
 };
 
