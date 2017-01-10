@@ -13,7 +13,10 @@ namespace core
     /// to be able to check when selected Data changed since their last clean.
     ///
     /// The Data must be added to tracking system by calling "trackData".
-    /// Then it can be checked if it changed with "isDirty" since its last "clean".
+    /// Then it can be checked if it was modified with "wasModified" since its last "clean".
+    /// @warning Note that "wasModified" does not check if the data is actually dirty, use 'isDirty' for that.
+    /// @warning Note that "wasModified" does not check if the data has the same value as when the last clean.
+    /// @todo add mechanism to check if the data value changed since last clean (by using hash)
     struct SOFA_CORE_API DataTracker
     {
         /// select a Data to track to be able to check
@@ -21,12 +24,21 @@ namespace core
         /// @see isTrackedDataDirty
         void trackData( const objectmodel::BaseData& data );
 
-        /// Was the tracked Data dirtied since last update?
-        /// @warning data must be a tracked Data @see trackData
-        bool isDirty( const objectmodel::BaseData& data );
 
-        /// Was one of the tracked Data dirtied since last update?
-        bool isDirty();
+        /// Was the tracked Data modified since the last clean?
+        /// @warning data must be a tracked Data @see trackData
+        bool wasModified( const objectmodel::BaseData& data ) const;
+
+        /// Was one of the tracked Data modified since the last clean?
+        bool wasModified() const;
+
+
+        /// Was the tracked Data modified since the last clean or is dirty right now?
+        /// @warning data must be a tracked Data @see trackData
+        bool isDirty( const objectmodel::BaseData& data ) const;
+
+        /// Was one of the tracked Data modified since the last clean or is dirty right now?
+        bool isDirty() const;
 
         /// comparison point is cleaned for the specified tracked Data
         /// @warning data must be a tracked Data @see trackData
@@ -41,7 +53,6 @@ namespace core
         /// map a tracked Data to a DataTracker (storing its call-counter at each 'clean')
         typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
         DataTrackers m_dataTrackers;
-
     };
 
 

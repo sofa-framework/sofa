@@ -298,6 +298,14 @@ if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
 
+
+
+## Custom
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
+    message("Adding custom file")
+    include( "custom.cmake" )
+endif()
+
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
 if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
@@ -308,12 +316,6 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     endforeach()
 endif()
 
-
-## Custom
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
-    message("Adding custom file")
-    include( "custom.cmake" )
-endif()
 
 
 ## when installing, keep an eye on options/params/sources used for compilation

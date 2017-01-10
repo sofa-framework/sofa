@@ -88,12 +88,12 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 		// get the descriptor of numerical integration on tetrahedra
         NumericalIntegrationDescriptor &nid=geo->getTetrahedronNumericalIntegrationDescriptor();
 		// get all quadrature method
-		sofa::helper::set<typename NumericalIntegrationDescriptor::QuadratureMethod> qmArray=nid.getQuadratureMethods();
-        typename sofa::helper::set<typename NumericalIntegrationDescriptor::QuadratureMethod>::iterator itqm;
+        std::set<typename NumericalIntegrationDescriptor::QuadratureMethod> qmArray=nid.getQuadratureMethods();
+        typename std::set<typename NumericalIntegrationDescriptor::QuadratureMethod>::iterator itqm;
 		for (itqm=qmArray.begin();itqm!=qmArray.end();itqm++) {
 			// get all the integration orders for this integration method
-			sofa::helper::set<typename NumericalIntegrationDescriptor::IntegrationOrder> ioArray=nid.getIntegrationOrders(*itqm);
-            typename sofa::helper::set<typename NumericalIntegrationDescriptor::IntegrationOrder>::iterator itio;
+            std::set<typename NumericalIntegrationDescriptor::IntegrationOrder> ioArray=nid.getIntegrationOrders(*itqm);
+            typename std::set<typename NumericalIntegrationDescriptor::IntegrationOrder>::iterator itio;
 			// go through the integration orders of this method
 			for (itio=ioArray.begin();itio!=ioArray.end();itio++) {
 				// get the integration point

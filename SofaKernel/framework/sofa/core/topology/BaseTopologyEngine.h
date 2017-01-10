@@ -73,7 +73,7 @@ public:
 
 public:
     // really need to be a Data??
-    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
+    Data <std::list<const TopologyChange *> >m_changeList;
 
     size_t getNumberOfTopologicalChanges() {return (m_changeList.getValue()).size();}
 

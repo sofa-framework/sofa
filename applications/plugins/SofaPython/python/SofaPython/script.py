@@ -5,6 +5,10 @@ import inspect
 
 class Controller(Sofa.PythonScriptController):
 
+    # to stack data for recursive creations of Controllers
+    instances = []
+    kwargs = []
+
     def __new__(cls, node, name='pythonScriptController', filename='', **kwarg):
         """
         :param filename: you may have to define it (at least once) to create
@@ -13,7 +17,7 @@ class Controller(Sofa.PythonScriptController):
         """
 
         # temporary variable to store optional arguments
-        Controller.kwarg = kwarg
+        Controller.kwargs.append( kwarg )
 
         node.createObject('PythonScriptController',
                           filename = filename,
@@ -21,13 +25,8 @@ class Controller(Sofa.PythonScriptController):
                           name = name)
         # note the previous calls callbacks onLoaded and createGraph
 
-        # no need for storing optional arguments any longer
-        del Controller.kwarg
-
         try:
-            res = Controller.instance
-            del Controller.instance
-            return res
+            return Controller.instances.pop() # let's trust the garbage collector
         except AttributeError:
             # if this fails, you need to call
             # Controller.onLoaded(self, node) in derived classes
@@ -35,8 +34,8 @@ class Controller(Sofa.PythonScriptController):
             raise
 
     def onLoaded(self, node):
-        Controller.instance = self
-        self.additionalArguments(Controller.kwarg)
+        Controller.instances.append(self)
+        self.additionalArguments(Controller.kwargs.pop()) # let's trust the garbage collector
 
     def additionalArguments(self,kwarg):
         """ to handle optional constructor arguments before createGraph

@@ -146,13 +146,11 @@ endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 ## Boost
-find_package(Boost COMPONENTS thread system date_time filesystem locale QUIET)
-
-set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+# optional boost libraries
+find_package(Boost REQUIRED system filesystem locale
+                   OPTIONAL_COMPONENTS thread date_time)
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
-set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
-set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 

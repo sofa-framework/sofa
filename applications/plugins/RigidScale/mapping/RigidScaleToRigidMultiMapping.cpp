@@ -20,20 +20,12 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(RigidScaleToRigidMultiMapping)
 
 int RigidScaleToRigidMultiMappingClass = core::RegisterObject("Convert a rigid in addition to a scale into a rigid, this mapping is designed to work with affine articulated systems constraint by rigid and scale.")
-#ifndef SOFA_FLOAT
-.add< RigidScaleToRigidMultiMapping<Rigid3dTypes, Vec3dTypes, Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-.add< RigidScaleToRigidMultiMapping<Rigid3fTypes, Vec3fTypes, Rigid3fTypes > >()
-#endif
+.add< RigidScaleToRigidMultiMapping<Rigid3Types, Vec3Types, Rigid3Types> >()
+.add< RigidScaleToRigidMultiMapping<Rigid3Types, Vec1Types, Rigid3Types> >()
 ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3dTypes, Vec3dTypes, Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3fTypes, Vec3fTypes, Rigid3fTypes>;
-#endif
+template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3Types, Vec3Types, Rigid3Types>;
+template class SOFA_RIGIDSCALE_API RigidScaleToRigidMultiMapping<Rigid3Types, Vec1Types, Rigid3Types>;
 
 }//namespace forcefield
 }// namespace component

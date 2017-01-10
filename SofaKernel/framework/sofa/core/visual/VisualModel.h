@@ -177,6 +177,10 @@ public:
 
     virtual bool insertInNode( objectmodel::BaseNode* node );
     virtual bool removeInNode( objectmodel::BaseNode* node );
+
+    /// returns true iff this visual model is using a texture (returns false by default)
+    /// to be compatible with some visual manager
+    virtual bool hasTexture() const { return false; }
 };
 
 } // namespace visual

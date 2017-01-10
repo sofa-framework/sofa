@@ -255,25 +255,31 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > pairs;
+        Data<unsigned>  d_unidirectional; ///< 0->birectional (default), 1-> only the 1st object will receive the forces, 2-> only the 2nd object will receive the forces
 
     protected:
 
         DifferenceMultiMapping()
-            : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") ) {
-
-        }
+            : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
+            , d_unidirectional( initData(&d_unidirectional, 0u, "unidirectional", "0->birectional (default), 1-> only the 1st object will receive the forces, 2-> only the 2nd object will receive the forces") )
+        {}
 
         void assemble(const helper::vector<typename self::in_pos_type>& in ) {
 
             const pairs_type& p = pairs.getValue();
+            const unsigned& unidirectional = d_unidirectional.getValue();
+
             assert( !p.empty() );
 
             for(unsigned i = 0, n = in.size(); i < n; ++i) {
+
 
                 typename Inherit1::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
 
                 J.resize( Nout * p.size(), Nin * in[i].size());
                 J.reserve( p.size()*Nout );
+
+                if( unidirectional && unidirectional-1!=i ) continue;
 
                 Real sign = (i == 0) ? -1 : 1;
 
@@ -307,14 +313,15 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         virtual void updateForceMask()
         {
             const pairs_type& p = pairs.getValue();
+            const unsigned& unidirectional = d_unidirectional.getValue();
 
             for( size_t i = 0, iend = p.size(); i < iend; ++i )
             {
                 if( this->maskTo[0]->getEntry(i) )
                 {
                     const index_pair& indices = p[i];
-                    this->maskFrom[0]->insertEntry(indices[0]);
-                    this->maskFrom[1]->insertEntry(indices[1]);
+                    if( unidirectional!=2u ) this->maskFrom[0]->insertEntry(indices[0]);
+                    if( unidirectional!=1u ) this->maskFrom[1]->insertEntry(indices[1]);
                 }
             }
         }

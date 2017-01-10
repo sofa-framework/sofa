@@ -137,7 +137,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         {
             if (!it.second.isAccessed())
             {
-                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\"" << obj->sendl;
+                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" << obj->sendl;
             }
         }
 

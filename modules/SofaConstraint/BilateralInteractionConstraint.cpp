@@ -205,7 +205,7 @@ public:
         const helper::vector<int> &m2Indices = self.m2.getValue();
 
         unsigned min = std::min(m1Indices.size(), m2Indices.size());
-        const  typename BilateralInteractionConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
+//        const  typename BilateralInteractionConstraint<T>::VecDeriv& restVector = self.restVector.getValue();
         self.dfree.resize(min);
 
         const  typename BilateralInteractionConstraint<T>::VecCoord &x1 = d_x1.getValue();
