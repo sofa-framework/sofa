@@ -14,7 +14,7 @@ using namespace sofa::defaulttype;
 
 typedef SReal Real;
 typedef ImageLPTransform<Real> MyImageTransform;
-typedef typename MyImageTransform::Coord MyCoord;
+typedef MyImageTransform::Coord MyCoord;
 
 
 extern "C" PyObject * ImageTransformData_fromImage(PyObject * self, PyObject * args)
