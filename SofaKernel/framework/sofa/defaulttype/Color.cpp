@@ -38,7 +38,20 @@ int hexval(char c)
     else return 0;
 }
 
-RGBAColorEMPTY empty;
+bool isValidEncoding(const std::string& s)
+{
+    auto c = s.begin();
+    if( *c != '#' )
+        return false;
+
+    for( c++ ; c != s.end() ; ++c ){
+        if (*c>='0' && *c<='9') {}
+        else if (*c>='a' && *c<='f') {}
+        else if (*c>='A' && *c<='F') {}
+        else return false;
+    }
+    return true;
+}
 
 RGBAColor::RGBAColor()
 {
@@ -75,19 +88,29 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
     }
     else if (str[0]=='#' && str.length()>=7)
     {
+        if(!isValidEncoding(str))
+            return false;
+
         r = (hexval(str[1])*16+hexval(str[2]))/255.0f;
         g = (hexval(str[3])*16+hexval(str[4]))/255.0f;
         b = (hexval(str[5])*16+hexval(str[6]))/255.0f;
         if (str.length()>=9)
             a = (hexval(str[7])*16+hexval(str[8]))/255.0f;
+        if (str.length()>9)
+            return false;
     }
     else if (str[0]=='#' && str.length()>=4)
     {
+        if(!isValidEncoding(str))
+            return false;
+
         r = (hexval(str[1])*17)/255.0f;
         g = (hexval(str[2])*17)/255.0f;
         b = (hexval(str[3])*17)/255.0f;
         if (str.length()>=5)
             a = (hexval(str[4])*17)/255.0f;
+        if (str.length()>5)
+            return false;
     }
     /// If you add more colors... please also add them in the test file.
     else if (str == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
