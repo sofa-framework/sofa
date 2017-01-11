@@ -6,7 +6,7 @@
 ## Significant environnement variables:
 # - CI_MAKE_OPTIONS       # additional arguments to pass to make
 # - CI_ARCH               # x86|amd64  (32-bit or 64-bit build - Windows-specific)
-# - CI_COMPILER           # important for Visual Studio (VS-2012 or VS-2015)
+# - CI_COMPILER           # important for Visual Studio (VS-2012, VS-2013 or VS-2015)
 
 # Exit on error
 set -o errexit
@@ -45,9 +45,15 @@ call-make() {
             echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
             $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
         else
-            local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
-            $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+            if [ "$CI_COMPILER" = "VS-2013" ]; then
+                local vcvarsall="call \"%VS120COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+                echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
+                $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+            else
+                local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+                echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
+                $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+            fi
         fi
     else
         make $CI_MAKE_OPTIONS

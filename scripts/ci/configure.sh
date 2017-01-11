@@ -11,7 +11,7 @@
 # - CI_ARCH = x86 | amd64     (for Windows builds)
 # - CI_BUILD_TYPE             Debug|Release
 # - CC and CXX
-# - CI_COMPILER               # important for Visual Studio paths (VS-2012 or VS-2015)
+# - CI_COMPILER               # important for Visual Studio paths (VS-2012, VS-2013 or VS-2015)
 # About available libraries:
 # - CI_HAVE_BOOST
 # - CI_BOOST_PATH             (empty string if installed in standard location)
@@ -84,9 +84,15 @@ call-cmake() {
             echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
             $COMSPEC /c "$vcvarsall & cmake $*"
         else
-            local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
-            $COMSPEC /c "$vcvarsall & cmake $*"
+            if [ "$CI_COMPILER" = "VS-2013" ]; then
+                local vcvarsall="call \"%VS120COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+                echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
+                $COMSPEC /c "$vcvarsall & cmake $*"
+            else
+                local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+                echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
+                $COMSPEC /c "$vcvarsall & cmake $*"
+            fi
         fi
     else
         cmake "$@"
