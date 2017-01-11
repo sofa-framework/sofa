@@ -36,16 +36,21 @@ namespace sofa
 namespace defaulttype
 {
 
+class SOFA_DEFAULTTYPE_API RGBAColorEMPTY : public sofa::defaulttype::Vec<4, float>
+{
+public:
+};
+
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public Vec<4, float>
+class SOFA_DEFAULTTYPE_API RGBAColor : public Vec4f
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
     static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
-    static RGBAColor fromVec4(const Vec4d color) ;
-    static RGBAColor fromVec4(const Vec4f color) ;
+    static RGBAColor fromVec4(const Vec4d& color) ;
+    static RGBAColor fromVec4(const Vec4f& color) ;
     static bool read(const std::string& str, RGBAColor& color) ;
 
     static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
@@ -57,7 +62,6 @@ public:
     static RGBAColor magenta() { return RGBAColor(1.0,0.0,1.0,1.0); }
     static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
     static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
-
 
     float& r(){ return x() ; }
     float& g(){ return y() ; }
@@ -83,7 +87,7 @@ public:
 };
 
 template<>
-struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<4, float> >
+struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<Vec4f>
 {
     static std::string name() { std::ostringstream o; o << "RGBAColor" << 4 << "f"; return o.str(); }
 };

@@ -58,7 +58,7 @@ RGBAColor::RGBAColor()
 
 }
 
-RGBAColor::RGBAColor(const Vec<4,float>& c) : Vec<4,float>(c)
+RGBAColor::RGBAColor(const Vec4f& c) : Vec4f(c)
 {
 
 }
@@ -148,12 +148,12 @@ RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, con
     return RGBAColor(r,g,b,a);
 }
 
-RGBAColor RGBAColor::fromVec4(const Vec4d color)
+RGBAColor RGBAColor::fromVec4(const Vec4d& color)
 {
     return RGBAColor(color) ;
 }
 
-RGBAColor RGBAColor::fromVec4(const Vec4f color)
+RGBAColor RGBAColor::fromVec4(const Vec4f& color)
 {
     return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
 }
