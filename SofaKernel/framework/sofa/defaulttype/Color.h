@@ -36,21 +36,21 @@ namespace sofa
 namespace defaulttype
 {
 
-class SOFA_DEFAULTTYPE_API RGBAColorEMPTY : public sofa::defaulttype::Vec<4, double>
+class SOFA_DEFAULTTYPE_API RGBAColorEMPTY : public sofa::defaulttype::Vec<4, float>
 {
 public:
 };
 
 /**
- *  \brief encode a 4 RGBA component color as a specialized Vec<4, double> vector.
+ *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public sofa::defaulttype::Vec<4, double>
+class SOFA_DEFAULTTYPE_API RGBAColor : public Vec4f
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
-    static RGBAColor fromDouble(const double r, const double g, const double b, const double a) ;
-    static RGBAColor fromVec4(const Vec4d color) ;
-    static RGBAColor fromVec4(const Vec4f color) ;
+    static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
+    static RGBAColor fromVec4(const Vec4d& color) ;
+    static RGBAColor fromVec4(const Vec4f& color) ;
     static bool read(const std::string& str, RGBAColor& color) ;
 
     static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
@@ -63,33 +63,33 @@ public:
     static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
     static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
 
-    double& r(){ return x() ; }
-    double& g(){ return y() ; }
-    double& b(){ return z() ; }
-    double& a(){ return w() ; }
-    const double& r() const { return x() ; }
-    const double& g() const { return y() ; }
-    const double& b() const { return z() ; }
-    const double& a() const { return w() ; }
+    float& r(){ return x() ; }
+    float& g(){ return y() ; }
+    float& b(){ return z() ; }
+    float& a(){ return w() ; }
+    const float& r() const { return x() ; }
+    const float& g() const { return y() ; }
+    const float& b() const { return z() ; }
+    const float& a() const { return w() ; }
 
-    void r(const double r){ x()=r; }
-    void g(const double r){ y()=r; }
-    void b(const double r){ z()=r; }
-    void a(const double r){ w()=r; }
+    void r(const float r){ x()=r; }
+    void g(const float r){ y()=r; }
+    void b(const float r){ z()=r; }
+    void a(const float r){ w()=r; }
 
     friend std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
     RGBAColor() ;
-    RGBAColor(const  Vec4d&) ;
-    RGBAColor(const double r, const double g, const double b, const double a) ;
+    RGBAColor(const  Vec4f&) ;
+    RGBAColor(const float r, const float g, const float b, const float a) ;
 
 };
 
 template<>
-struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<4, double> >
+struct DataTypeInfo< RGBAColor > : public FixedArrayTypeInfo<Vec4f>
 {
-    static std::string name() { std::ostringstream o; o << "RGBAColor" << 4 << "d"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "RGBAColor" << 4 << "f"; return o.str(); }
 };
 
 } // namespace defaulttype

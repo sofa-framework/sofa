@@ -58,12 +58,12 @@ RGBAColor::RGBAColor()
 
 }
 
-RGBAColor::RGBAColor(const Vec<4,double>& c) : Vec<4,double>(c)
+RGBAColor::RGBAColor(const Vec4f& c) : Vec4f(c)
 {
 
 }
 
-RGBAColor::RGBAColor(const double pr, const double pg, const double pb, const double pa)
+RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
 {
     r(pr);
     g(pg);
@@ -143,17 +143,17 @@ RGBAColor RGBAColor::fromString(const std::string& c)
     return color;
 }
 
-RGBAColor RGBAColor::fromDouble(const double r, const double g, const double b, const double a)
+RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, const float a)
 {
     return RGBAColor(r,g,b,a);
 }
 
-RGBAColor RGBAColor::fromVec4(const Vec4d color)
+RGBAColor RGBAColor::fromVec4(const Vec4d& color)
 {
     return RGBAColor(color) ;
 }
 
-RGBAColor RGBAColor::fromVec4(const Vec4f color)
+RGBAColor RGBAColor::fromVec4(const Vec4f& color)
 {
     return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
 }
