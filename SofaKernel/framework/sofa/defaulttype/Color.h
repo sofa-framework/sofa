@@ -36,11 +36,6 @@ namespace sofa
 namespace defaulttype
 {
 
-class SOFA_DEFAULTTYPE_API RGBAColorEMPTY : public sofa::defaulttype::Vec<4, float>
-{
-public:
-};
-
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
