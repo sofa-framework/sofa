@@ -39,10 +39,7 @@ DataEngine::DataEngine()
 
 DataEngine::~DataEngine()
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-    {
-           m_dataTrackers.erase(it);
-    }
+    m_dataTrackers.clear();
 }
 
 void DataEngine::updateAllInputsIfDirty()
@@ -89,32 +86,33 @@ void DataEngine::cleanDirty(const core::ExecParams* params)
 {
     core::objectmodel::DDGNode::cleanDirty(params);
 
-    // it is also time to clean the tracked Data
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
-        it->second->cleanDirty();
+    // it is also time to clean the tracked Datas
+    for( DataTrackers::iterator it = m_dataTrackers.begin() ; it != m_dataTrackers.end() ; ++it )
+    {
+        DataTracker* tracker = it->second;
+        if(tracker)
+        {
+            tracker->cleanDirty();
+        }
+    }
 }
 
 void DataEngine::trackData( objectmodel::BaseData* data )
 {
-    DataTracker*& tracker = m_dataTrackers[data];
-    if (tracker == NULL)
+    if( m_dataTrackers.find(data) == m_dataTrackers.end() ) // no data
     {
-        tracker = new DataTracker();
+        m_dataTrackers[data] = new DataTracker();
     }
-    tracker->setData( data );
+    m_dataTrackers[data]->setData( data );
 }
 
 bool DataEngine::isTrackedDataDirty( const objectmodel::BaseData& data )
 {
-    DataTracker* tracker = m_dataTrackers[&data];
-    if (tracker == NULL)
+    if ( m_dataTrackers.find(&data) == m_dataTrackers.end() ) // no data
     {
         return false;
     }
-    else
-    {
-        return tracker->isDirty();
-    }
+    return m_dataTrackers[&data]->isDirty();
 }
 
 
