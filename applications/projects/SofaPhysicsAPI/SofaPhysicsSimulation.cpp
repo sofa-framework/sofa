@@ -81,6 +81,10 @@ unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
     return impl->getNbOutputMeshes();
 }
 
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID)
+{
+    return impl->getOutputMesh(meshID);
+}
 
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 {
@@ -523,6 +527,14 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
 unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshes()
 {
     return outputMeshes.size();
+}
+
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMesh(unsigned int meshID)
+{
+    if (meshID >= outputMeshes.size())
+        return NULL;
+    else
+        return &(outputMeshes[meshID]);
 }
 
 SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
