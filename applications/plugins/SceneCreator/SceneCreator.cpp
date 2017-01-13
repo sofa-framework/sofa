@@ -65,6 +65,7 @@
 
 //Including Visual Models
 #include <SofaBaseVisual/VisualStyle.h>
+
 #ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
 #else
@@ -94,7 +95,12 @@ using sofa::component::odesolver::EulerSolver ;
 
 using sofa::component::loader::MeshObjLoader ;
 using sofa::component::topology::MeshTopology ;
+
+#ifndef SOFA_NO_OPENGL
 using sofa::component::visualmodel::OglModel ;
+#else
+using sofa::component::visualmodel::VisualModelImpl;
+#endif
 
 using sofa::component::mapping::BarycentricMapping ;
 using sofa::component::mapping::RigidMapping ;

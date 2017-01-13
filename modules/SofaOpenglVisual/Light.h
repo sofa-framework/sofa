@@ -113,8 +113,8 @@ public:
     virtual void reinit();
     virtual void updateVisual();
 
-    const GLfloat getZNear();
-    const GLfloat getZFar();
+    GLfloat getZNear();
+    GLfloat getZFar();
 
     //CastShadowModel
     virtual void preDrawShadow(core::visual::VisualParams* vp);

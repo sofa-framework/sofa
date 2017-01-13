@@ -7,6 +7,7 @@ set(SOURCE_FILES
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
     core/DataEngine_test.cpp
+    core/TrackedData_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
     helper/KdTree_test.cpp
@@ -14,7 +15,7 @@ set(SOURCE_FILES
     helper/Quater_test.cpp
     helper/SVector_test.cpp
     helper/io/MeshOBJ_test.cpp
-    helper/io/ImagePNG_test.cpp
+    helper/io/MeshSTL_test.cpp
     helper/system/FileMonitor_test.cpp
     helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
@@ -22,6 +23,10 @@ set(SOURCE_FILES
     helper/logging/logging_test.cpp
     main.cpp
 )
+
+if(SOFA_HAVE_PNG)
+    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
+endif()
 
 include_directories(${gtest_SOURCE_DIR}/include)
 

@@ -97,7 +97,7 @@ DirectSAP::DirectSAP()
 
 DirectSAP::~DirectSAP()
 {
-//    for(typename EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
+//    for(EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
 //        delete (*it);
 //    }
 
@@ -374,7 +374,7 @@ void DirectSAP::beginNarrowPhase()
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for(typename EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
+    for(EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
         if((**it).max()){//erase it from the active_boxes
             assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
             active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
@@ -494,7 +494,7 @@ void DirectSAP::beginNarrowPhase()
 //                                 //                  the active boxes.
 //                                 //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
 //                                 //                  so, we delete the owner box, of this max end point from the active boxes
-//    for(typename EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
+//    for(EndPointList::iterator it = _end_points.begin() ; it != _end_points.end() ; ++it){
 //        if((**it).max()){//erase it from the active_boxes
 //            //assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
 //            //active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));

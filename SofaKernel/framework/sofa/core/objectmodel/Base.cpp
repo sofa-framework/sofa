@@ -510,19 +510,17 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 void  Base::parse ( BaseObjectDescription* arg )
 {
-    std::vector< std::string > attributeList;
-    arg->getAttributeList(attributeList);
-    for (unsigned int i=0; i<attributeList.size(); ++i)
+    for( auto& it : arg->getAttributeMap() )
     {
-        std::string attrName = attributeList[i];
+        const std::string& attrName = it.first;
+
         // FIX: "type" is already used to define the type of object to instanciate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
         if (attrName == std::string("type")) continue;
+
         if (!hasField(attrName)) continue;
-        const char* val = arg->getAttribute(attrName);
-        if (!val) continue;
-        std::string valueString(val);
-        parseField(attrName, valueString);
+
+        parseField(attrName, it.second);
     }
     updateLinks(false);
 }

@@ -18,7 +18,7 @@ def decomposeInertia(inertia):
     return diagonal_inertia, inertia_rotation
 
 class RigidMassInfo:
-    """ A structure to set and store a RgidMass as used by sofa: mass, com, diagonal_inertia and inertia_rotation
+    """ A structure to set and store a RigidMass as used by sofa: mass, com, diagonal_inertia and inertia_rotation
     """
 
     def __init__(self):
@@ -26,10 +26,12 @@ class RigidMassInfo:
         self.com=[0.,0.,0.]
         self.diagonal_inertia=[0.,0.,0.]
         self.inertia_rotation=Quaternion.id()
+        self.density = 0.
 
     def setFromMesh(self, filepath, density = 1000, scale3d=[1,1,1], rotation=[0,0,0]):
         """ TODO: a single scalar for scale could be enough
         """
+        self.density = density
         rigidInfo = Sofa.generateRigid( filepath, density, scale3d[0], scale3d[1], scale3d[2], rotation[0], rotation[1], rotation[2] )
         self.mass = rigidInfo[0]
         self.com = rigidInfo[1:4]
@@ -72,4 +74,10 @@ class RigidMassInfo:
         res_I_com = res_I_w - res.mass*(pow(numpy.linalg.norm(res.com),2)*numpy.eye(3) - a*a.transpose())
 
         res.diagonal_inertia, res.inertia_rotation = decomposeInertia(res_I_com)
+        if 0. == self.density:
+            res.density = other.density
+        elif 0. == other.density:
+            res.density = self.density
+        else :
+            res.density = self.density*other.density*(self.mass+other.mass) / ( other.density*self.mass + self.density*other.mass )
         return res

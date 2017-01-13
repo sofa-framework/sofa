@@ -71,6 +71,7 @@ void Visual3DText::reinit()
 
 void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 {
+#ifndef SOFA_NO_OPENGL
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const defaulttype::Vec3f& pos = d_position.getValue();
@@ -91,6 +92,7 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 
     if( !depthTest )
         glPopAttrib();
+#endif /* SOFA_NO_OPENGL */
 }
 
 

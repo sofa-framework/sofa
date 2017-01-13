@@ -92,7 +92,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
-if(NOT SOFA-NO_OPENGL)
+if(NOT ${SOFA_NO_OPENGL})
     list(APPEND HEADER_FILES ImageViewer.h)
     list(APPEND SOURCE_FILES ImageViewer.cpp)
 endif()
@@ -120,13 +120,10 @@ endif()
 
 # OpenMP is bugged in image, forcing it to be single threaded for now
 if(SOFA_OPENMP)
-     message( WARNING "image: deactivating OpenMP" )
-     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
+    message( WARNING "image: deactivating OpenMP" )
+    string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+    string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
 endif()
-
-
-
 
 
 find_package(DiffusionSolver CONFIG REQUIRED)
