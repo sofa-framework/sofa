@@ -86,8 +86,8 @@ call-cmake() {
         else
             vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         fi
-        echo "Calling $COMSPEC /c \"$vcvarsall & cmake $CI_MAKE_OPTIONS\""
-        $COMSPEC /c "$vcvarsall & cmake $CI_MAKE_OPTIONS"
+        echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
+        $COMSPEC /c "$vcvarsall & cmake $*"
     else
         cmake "$@"
     fi
