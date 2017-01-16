@@ -74,8 +74,11 @@
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
+
 #include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 
 namespace sofa
 {
@@ -98,8 +101,10 @@ using sofa::component::visualmodel::OglModel ;
 
 using sofa::component::mapping::BarycentricMapping ;
 using sofa::component::mapping::RigidMapping ;
+using sofa::component::mapping::IdentityMapping ;
 
 using sofa::component::interactionforcefield::StiffSpringForceField ;
+using sofa::component::forcefield::TetrahedronFEMForceField;
 using sofa::component::mass::UniformMass ;
 
 using sofa::simulation::graph::DAGSimulation ;
@@ -118,7 +123,9 @@ using sofa::helper::system::DataRepository ;
 typedef CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >    CGLinearSolverGraph;
 typedef UniformMass<Vec3Types, SReal>                                   UniformMass3;
 typedef StiffSpringForceField<Vec3Types >                               StiffSpringForceField3;
+typedef TetrahedronFEMForceField<Vec3Types>                             TetrahedronFEMForceField3;
 
+typedef IdentityMapping<Vec3Types, ExtVec3fTypes>       IdentityMapping3_to_Ext3;
 typedef BarycentricMapping<Vec3Types, Vec3Types >       BarycentricMapping3_to_3;
 typedef BarycentricMapping<Vec3Types, ExtVec3fTypes>    BarycentricMapping3_to_Ext3;
 typedef RigidMapping<Rigid3Types, Vec3Types >           RigidMappingRigid3_to_3;
@@ -310,8 +317,8 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  
     return CollisionNode;
 }
 
-Node::SPtr createVisualNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
-                                                                 const Deriv3& translation, const Deriv3 &rotation)
+simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, MechanicalObject3::SPtr  dof,  const std::string &filename, const std::string& color,
+                                                                 const Deriv3& translation, const Deriv3 &rotation, const MappingType &mappingT)
 {
     Node::SPtr  VisualNode =parent->createChild("Visu");
 
@@ -326,12 +333,26 @@ Node::SPtr createVisualNodeVec3(Node::SPtr  parent, MechanicalObject3::SPtr  dof
     visual->setRotation(rotation[0],rotation[1],rotation[2]);
     VisualNode->addObject(visual);
 
-    BarycentricMapping3_to_Ext3::SPtr mapping = New<BarycentricMapping3_to_Ext3>();
-    mapping->setModels(dof.get(), visual.get());
-    mapping->setName("Mapping Visual");
-    mapping->setPathInputObject(refDof);
-    mapping->setPathOutputObject(refVisual);
-    VisualNode->addObject(mapping);
+    if (mappingT == MT_Barycentric) // TODO check if possible to create a baseMapping::SPtr before the switch
+    {
+        BarycentricMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<BarycentricMapping3_to_Ext3>();
+        mapping->setModels(dof.get(), visual.get());
+        mapping->setName("Mapping Visual");
+        mapping->setPathInputObject(refDof);
+        mapping->setPathOutputObject(refVisual);
+        VisualNode->addObject(mapping);
+    }
+    else if (mappingT == MT_Identity)
+    {
+        IdentityMapping3_to_Ext3::SPtr mapping = sofa::core::objectmodel::New<IdentityMapping3_to_Ext3>();
+        mapping->setModels(dof.get(), visual.get());
+        mapping->setName("Mapping Visual");
+        mapping->setPathInputObject(refDof);
+        mapping->setPathOutputObject(refVisual);
+        VisualNode->addObject(mapping);
+    }
+    else
+        std::cout << "Error: mapping visual not possible";
 
     return VisualNode;
 }
@@ -434,6 +455,88 @@ void addCollisionModels(Node::SPtr CollisionNode, const std::vector<std::string>
             CollisionNode->addObject(obb);
         }
     }
+}
+
+
+simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
+                               const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
+                               const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    // Add Cube Node
+    sofa::simulation::Node::SPtr cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
+    dofFEM->setTranslation(translation[0],translation[1],translation[2]);
+    dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFEM->setScale(scale[0],scale[1],scale[2]);
+    cube->addObject(dofFEM);
+
+    // Add Mass
+    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
+    uniMassSpring->setTotalMass(totalMass);
+    uniMassSpring->setName(objectName + "_mass");
+    cube->addObject(uniMassSpring);
+
+    // Add topo
+    sofa::component::topology::RegularGridTopology::SPtr grid = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
+    grid->setName(objectName + "_grid");
+    grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    grid->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f); // by default object is centered and volume equal to 1 unit, use dof modifier to change the scale/position/rotation
+    cube->addObject(grid);
+
+    // Add FEM
+    TetrahedronFEMForceField3::SPtr tetraFEMFF = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
+    tetraFEMFF->setName(objectName + "_FEM");
+    tetraFEMFF->setComputeGlobalMatrix(false);
+    tetraFEMFF->setMethod("large");
+    tetraFEMFF->setPoissonRatio(poisson);
+    tetraFEMFF->setYoungModulus(young);
+    cube->addObject(tetraFEMFF);
+
+    // Add collisions models
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(cube, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    return cube;
+}
+
+simulation::Node::SPtr addFloor(simulation::Node::SPtr parent, const std::string& objectName,
+                                const Deriv3& gridSize,
+                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    // Add new node
+    sofa::simulation::Node::SPtr floorNode = parent->createChild(objectName + "_node");
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFloor = sofa::core::objectmodel::New<MechanicalObject3>(); dofFloor->setName("FEM Object");
+    dofFloor->setTranslation(translation[0],translation[1],translation[2]);
+    dofFloor->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFloor->setScale(scale[0],scale[1],scale[2]);
+    floorNode->addObject(dofFloor);
+
+    // Add topo
+    sofa::component::topology::RegularGridTopology::SPtr gridFloor = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
+    gridFloor->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    gridFloor->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
+    floorNode->addObject(gridFloor);
+
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(floorNode, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(floorNode, dofFloor, "", "green", Deriv3(), Deriv3(), MT_Identity);
+
+    return floorNode;
 }
 
 //template<class Component>
