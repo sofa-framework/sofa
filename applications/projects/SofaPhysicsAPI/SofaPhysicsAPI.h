@@ -31,6 +31,10 @@ public:
     /// Load an XML file containing the main scene description
     bool load(const char* filename);
 
+    void APIName();
+
+    void createScene();
+
     /// Start the simulation
     /// Currently this simply sets the animated flag to true, but this might
     /// start a separate computation thread in a future version

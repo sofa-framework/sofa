@@ -39,9 +39,10 @@ ENDIF()
 
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SceneCreator REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaComponentGeneral)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiMain SofaComponentGeneral SceneCreator)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX _d)

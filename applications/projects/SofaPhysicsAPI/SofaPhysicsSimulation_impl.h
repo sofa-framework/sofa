@@ -25,7 +25,11 @@ public:
     Impl(bool useGUI_ = false, int GUIFramerate_ = 0);
     ~Impl();
 
+    virtual void APIName();
+
     bool load(const char* filename);
+    void createScene();    
+
     void start();
     void stop();
     void step();
@@ -35,6 +39,7 @@ public:
     void drawGL();
 
     unsigned int getNbOutputMeshes();
+    SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
 
 #ifdef USE_OGL_TETRA_MODEL
@@ -62,6 +67,7 @@ public:
     typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
+
 #ifdef USE_OGL_TETRA_MODEL
     typedef SofaPhysicsOutputMeshTetrahedron::Impl::SofaOutputMeshTetrahedron SofaOutputMeshTetrahedron;
     //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
@@ -117,6 +123,8 @@ protected:
     void beginStep();
     void endStep();
     void calcProjection();
+
+    virtual void createScene_impl();
 
 public:
 

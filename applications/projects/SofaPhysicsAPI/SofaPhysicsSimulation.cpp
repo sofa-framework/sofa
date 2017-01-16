@@ -20,11 +20,12 @@
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/gui/BaseGUI.h>
-
 #include "fakegui.h"
 
 #include <math.h>
 #include <iostream>
+
+#include "../plugins/SceneCreator/SceneCreator.h"
 
 SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI, int GUIFramerate)
     : impl(new Impl(useGUI, GUIFramerate))
@@ -36,9 +37,19 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
     delete impl;
 }
 
+void SofaPhysicsSimulation::APIName()
+{
+    return impl->APIName();
+}
+
 bool SofaPhysicsSimulation::load(const char* filename)
 {
     return impl->load(filename);
+}
+
+void SofaPhysicsSimulation::createScene()
+{
+    return impl->createScene();
 }
 
 void SofaPhysicsSimulation::start()
@@ -250,6 +261,11 @@ SofaPhysicsSimulation::Impl::~Impl()
     }
 }
 
+void SofaPhysicsSimulation::Impl::APIName()
+{
+    std::cout << "SofaPhysicsSimulation API" << std::endl;
+}
+
 bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
 {
     std::string filename = cfilename;
@@ -263,7 +279,6 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
     if (m_RootNode.get())
     {
         sceneFileName = filename;
-        std::cout << "INIT" << std::endl;
         m_Simulation->init(m_RootNode.get());
         updateOutputMeshes();
 
@@ -284,6 +299,28 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
 //    if (isAnimated() != wasAnimated)
 //        animatedChanged();
     return success;
+}
+
+void SofaPhysicsSimulation::Impl::createScene()
+{
+    m_RootNode = sofa::modeling::createRootWithCollisionPipeline();
+    if (m_RootNode.get())
+    {
+        m_RootNode->setGravity( Vec3d(0,-9.8,0) );
+        this->createScene_impl();
+
+        m_Simulation->init(m_RootNode.get());
+
+        updateOutputMeshes();
+    }
+    else
+        std::cout <<"Error: can't get m_RootNode" << std::endl;
+}
+
+void SofaPhysicsSimulation::Impl::createScene_impl()
+{
+    if (!m_RootNode.get())
+        return;
 }
 
 
