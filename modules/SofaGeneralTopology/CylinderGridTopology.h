@@ -58,9 +58,9 @@ public:
     void setLength(SReal length);
 
 protected:
-    Data< Vector3 > m_center;
-    Data< Vector3 > m_axis;
-    Data< SReal > m_radius, m_length;
+    Data< Vector3 > d_center;
+    Data< Vector3 > d_axis;
+    Data< SReal > d_radius, d_length;
 };
 
 } // namespace topology

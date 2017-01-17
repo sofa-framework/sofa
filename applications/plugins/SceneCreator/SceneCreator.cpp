@@ -364,7 +364,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, Mech
         VisualNode->addObject(mapping);
     }
     else
-        std::cout << "Error: mapping visual not possible";
+        std::cerr << "Visual Mapping creation not possible. Mapping should be Barycentric or Identity. Found MappingType enum: " << mappingT << std::endl;
 
     return VisualNode;
 }
