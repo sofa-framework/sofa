@@ -60,7 +60,10 @@ STLExporter::STLExporter()
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, (bool)false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, (bool)false, "exportAtEnd", "export file when the simulation is finished"))
+    , maxStep(0)
 {
+        this->addAlias(&m_triangle, "triangles");
+        this->addAlias(&m_quad, "quads");
 }
 
 STLExporter::~STLExporter()
