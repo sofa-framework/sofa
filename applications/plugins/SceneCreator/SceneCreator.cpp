@@ -507,8 +507,18 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
     // Add Cube Node
-    sofa::simulation::Node::SPtr cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+    sofa::simulation::Node::SPtr cube;
+    if (isRigid)
+        cube = parent->createChild(objectName + "_node");
+    else
+        cube = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
 
     // Add mecaObj
     MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
@@ -518,7 +528,8 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     cube->addObject(dofFEM);
 
     // Add FEM and Mass system
-    addTetraFEM(cube, objectName, totalMass, young, poisson);
+    if (!isRigid) // Add FEM and Mass system
+        addTetraFEM(cube, objectName, totalMass, young, poisson);
 
     // Add topo
     RegularGridTopology::SPtr grid = sofa::core::objectmodel::New<RegularGridTopology>();
@@ -542,13 +553,32 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 }
 
 
+simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::string& objectName,
+                                    const Deriv3& gridSize,
+                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addCube(parent, objectName, gridSize, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
+
+
+
 simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
                                    const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
-    // Add Cube Node
-    sofa::simulation::Node::SPtr cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add Cylinder Node
+    sofa::simulation::Node::SPtr cylinder;
+    if (isRigid)
+        cylinder = parent->createChild(objectName + "_node");
+    else
+        cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
 
     // Add mecaObj
     MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
@@ -557,8 +587,8 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
     dofFEM->setScale(scale[0],scale[1],scale[2]);
     cylinder->addObject(dofFEM);
 
-    // Add FEM and Mass system
-    addTetraFEM(cylinder, objectName, totalMass, young, poisson);
+    if (!isRigid) // Add FEM and Mass system
+        addTetraFEM(cylinder, objectName, totalMass, young, poisson);
 
     // Add topo
     CylinderGridTopology::SPtr grid = sofa::core::objectmodel::New<CylinderGridTopology>();
@@ -583,38 +613,64 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
     return cylinder;
 }
 
+simulation::Node::SPtr addRigidCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                   const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
+                                   const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addCylinder(parent, objectName, gridSize, axis, radius, length, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
 
-simulation::Node::SPtr addFloor(simulation::Node::SPtr parent, const std::string& objectName,
-                                const Deriv3& gridSize,
+
+simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string& objectName,
+                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
-    // Add new node
-    sofa::simulation::Node::SPtr floorNode = parent->createChild(objectName + "_node");
+    // Check rigid
+    bool isRigid = false;
+    if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
+        isRigid = true;
+
+    // Add plane node
+    sofa::simulation::Node::SPtr planeNode;
+    if (isRigid)
+        planeNode = parent->createChild(objectName + "_node");
+    else
+        planeNode = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
 
     // Add mecaObj
-    MechanicalObject3::SPtr dofFloor = sofa::core::objectmodel::New<MechanicalObject3>(); dofFloor->setName("FEM Object");
-    dofFloor->setTranslation(translation[0],translation[1],translation[2]);
-    dofFloor->setRotation(rotation[0],rotation[1],rotation[2]);
-    dofFloor->setScale(scale[0],scale[1],scale[2]);
-    floorNode->addObject(dofFloor);
+    MechanicalObject3::SPtr dofPlane = sofa::core::objectmodel::New<MechanicalObject3>(); dofPlane->setName("FEM Object");
+    dofPlane->setTranslation(translation[0],translation[1],translation[2]);
+    dofPlane->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofPlane->setScale(scale[0],scale[1],scale[2]);
+    planeNode->addObject(dofPlane);
+
+    if (!isRigid) // Add FEM and Mass system
+        addTriangleFEM(planeNode, objectName, totalMass, young, poisson);
 
     // Add topo
-    sofa::component::topology::RegularGridTopology::SPtr gridFloor = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
-    gridFloor->setSize(gridSize[0], gridSize[1], gridSize[2]);
-    gridFloor->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
-    floorNode->addObject(gridFloor);
+    sofa::component::topology::RegularGridTopology::SPtr gridPlane = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
+    gridPlane->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    gridPlane->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f);
+    planeNode->addObject(gridPlane);
 
     std::vector<std::string> colElements;
     colElements.push_back("Triangle");
     colElements.push_back("Line");
     colElements.push_back("Point");
-    sofa::modeling::addCollisionModels(floorNode, colElements);
+    sofa::modeling::addCollisionModels(planeNode, colElements);
 
     //Node VISUAL
-    createVisualNodeVec3(floorNode, dofFloor, "", "green", Deriv3(), Deriv3(), MT_Identity);
+    createVisualNodeVec3(planeNode, dofPlane, "", "green", Deriv3(), Deriv3(), MT_Identity);
 
-    return floorNode;
+    return planeNode;
 }
+
+simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::string& objectName, const Deriv3& gridSize,
+                                     const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    return addPlane(parent, objectName, gridSize, -1.f, -1.f, -1.f, translation, rotation, scale);
+}
+
 
 //template<class Component>
 //typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")

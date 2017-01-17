@@ -100,16 +100,30 @@ SOFA_SceneCreator_API simulation::Node::SPtr addCube(simulation::Node::SPtr pare
                                                      SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
                                                      const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
 
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::string& objectName,
+                                                          const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                          const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
 SOFA_SceneCreator_API simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
                                                          const Deriv3& gridSize=Deriv3(10, 10, 10),
                                                          const Deriv3& axis = Deriv3(0, 1, 0), SReal radius = 1.0, SReal length = 1.0,
                                                          SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
                                                          const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
 
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                                              const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                              const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
 
-SOFA_SceneCreator_API simulation::Node::SPtr addFloor(simulation::Node::SPtr parent, const std::string& objectName,
+
+SOFA_SceneCreator_API simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string& objectName,
                                                       const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                      SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
                                                       const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::string& objectName,
+                                                           const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                           const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
 
 SOFA_SceneCreator_API void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
                                        SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
