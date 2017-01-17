@@ -1,26 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-20ll6 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Matthieu Nesme                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -48,70 +43,10 @@ namespace helper
 namespace logging
 {
 
-/// each ERROR and FATAL message raises a gtest error
-class SOFA_TestPlugin_API TestMessageHandler : public MessageHandler
-{
-public:
-
-    /// raises a gtest error as soon as message is an error
-    /// iff the handler is active (see setActive)
-    virtual void process(Message &m)
-    {
-        assert(m.type()<m_failsOn.size() && "If this happens this means that the code initializing m_failsOn is broken.") ;
-
-        if( active && m_failsOn[m.type()] ){
-            ADD_FAILURE() << "An error message was emitted and is interpreted as a test failure. "
-                          <<  "src: " << std::string(m.fileInfo()->filename) << ":" << m.fileInfo()->line
-                          << "message: " << m.message().str() << std::endl;
-
-        }
-    }
-
-    // singleton
-    static TestMessageHandler& getInstance()
-    {
-        static TestMessageHandler s_instance;
-        return s_instance;
-    }
-
-    /// raising a gtest error can be temporarily deactivated
-    /// indeed, sometimes, testing that a error message is raised is mandatory
-    /// and should not raise a gtest error
-    static void setActive( bool a ) { getInstance().active = a; }
-
-private:
-    sofa::helper::vector<bool> m_failsOn ;
-
-    /// true by default
-    bool active;
-
-    // private default constructor for singleton
-    TestMessageHandler() : active(true) {
-        for(unsigned int i=Message::Info ; i<Message::TypeCount;i++){
-            m_failsOn.push_back(false) ;
-        }
-        m_failsOn[Message::Error] = true ;
-        m_failsOn[Message::Fatal] = true ;
-    }
-
-    void setFailureOn(const Message::Type m, bool state){
-        m_failsOn[m] = state ;
-    }
-};
-
-
-/// the TestMessageHandler is deactivated in the scope of a ScopedDeactivatedTestMessageHandler variable
-struct SOFA_TestPlugin_API ScopedDeactivatedTestMessageHandler
-{
-    ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(false); }
-    ~ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(true); }
-};
-
 struct SOFA_TestPlugin_API ExpectMessage
 {
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
-    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
 
     ExpectMessage(const Message::Type t) {
         m_type = t ;
@@ -130,7 +65,6 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
 {
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
-    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
     LogMessage m_log;
 
     MessageAsTestFailure(const Message::Type t)

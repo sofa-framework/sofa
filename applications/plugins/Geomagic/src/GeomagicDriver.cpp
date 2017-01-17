@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, ____VERSION_NUMBER____  *
-*                (c) 2006-YYYY INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -331,6 +331,7 @@ void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta) 
 }
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams) {
+#ifndef SOFA_NO_OPENGL
     if (!d_omniVisu.getValue()) return;
 
     Mat<4,4, GLdouble> M;
@@ -355,6 +356,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams) {
     vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
     vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
     vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
+#endif
 }
 
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  ) {
