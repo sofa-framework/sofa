@@ -35,9 +35,9 @@
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
 
-#include <sofa/component/typedef/Sofa_typedef.h>
+//#include <sofa/component/typedef/Sofa_typedef.h>
 
-void cubeExample(sofa::simulation::Node::SPtr root)
+void fallingCubeExample(sofa::simulation::Node::SPtr root)
 {
     //Add objects
     for (unsigned int i=0; i<10; ++i)
@@ -50,7 +50,7 @@ void cubeExample(sofa::simulation::Node::SPtr root)
                                   sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(40, 0, 40));
 }
 
-void cylinderExample(sofa::simulation::Node::SPtr root)
+void fallingCylinderExample(sofa::simulation::Node::SPtr root)
 {
     //Add objects
     for (unsigned int i=0; i<10; ++i)
@@ -63,6 +63,29 @@ void cylinderExample(sofa::simulation::Node::SPtr root)
     sofa::modeling::addRigidPlane(root, "Floor", sofa::defaulttype::Vec3Types::Deriv(50, 1, 50),
                                   sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(40, 0, 40));
 }
+
+
+void fallingDrapExample(sofa::simulation::Node::SPtr root)
+{
+    //Add objects
+    for (unsigned int i=0; i<6; ++i){
+        sofa::modeling::addRigidCube(root, "cubeFIX_"+ std::to_string(i), sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                     sofa::defaulttype::Vec3Types::Deriv(-8.0+i*4, 0.51, 0));
+
+        sofa::modeling::addRigidCylinder(root, "cylinderFIX_"+ std::to_string(i), sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                         sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5, 3.0,
+                                         sofa::defaulttype::Vec3Types::Deriv(0, 0.51, -10.0+i*4));
+    }
+
+    // Add floor
+    sofa::modeling::addRigidPlane(root, "Floor", sofa::defaulttype::Vec3Types::Deriv(50, 1, 50),
+                                  sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(40, 0, 40));
+
+    // Add falling plane
+    sofa::modeling::addPlane(root, "Drap", sofa::defaulttype::Vec3Types::Deriv(50, 1, 50), 30, 600, 0.3,
+                             sofa::defaulttype::Vec3Types::Deriv(0, 30, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(20, 0, 20));
+}
+
 
 int main(int argc, char** argv)
 {
@@ -85,20 +108,23 @@ int main(int argc, char** argv)
 
     // Create the graph root node with collision
     sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
-    root->setGravity( Coord3(0,-10.0,0) );
+    root->setGravity( sofa::defaulttype::Vec3Types::Deriv(0,-10.0,0) );
 
 
     // Create scene example (depends on user input)
     switch (idExample)
     {
     case 0:
-        cylinderExample(root);
+        fallingCubeExample(root);
         break;
     case 1:
-        cylinderExample(root);
+        fallingCylinderExample(root);
+        break;
+    case 2:
+        fallingDrapExample(root);
         break;
     default:
-        cylinderExample(root);
+        fallingCubeExample(root);
         break;
     }
 
