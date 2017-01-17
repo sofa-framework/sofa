@@ -141,6 +141,7 @@ public:
     }
 
     /// Specific set for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     void set(real r1)
     {
         static_assert(N==1, "");
@@ -148,6 +149,7 @@ public:
     }
 
     /// Specific set for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     void set(real r1, real r2)
     {
         static_assert(N == 2, "");
@@ -156,6 +158,7 @@ public:
     }
 
     /// Specific set for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     void set(real r1, real r2, real r3)
     {
         static_assert(N == 3, "");
@@ -165,6 +168,7 @@ public:
     }
 
     /// Specific set for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     void set(real r1, real r2, real r3, real r4)
     {
         static_assert(N == 4, "");
@@ -175,6 +179,7 @@ public:
     }
 
     /// Specific set for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5)
     {
         static_assert(N == 5, "");
@@ -186,6 +191,7 @@ public:
     }
 
     /// Specific set for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6)
     {
         static_assert(N == 6, "");
@@ -198,6 +204,7 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7)
     {
         static_assert(N == 7, "");
@@ -211,6 +218,7 @@ public:
     }
 
     /// Specific set for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
         static_assert(N == 8, "");
@@ -225,6 +233,7 @@ public:
     }
 
     /// Specific set for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
         static_assert(N == 9, "");
@@ -240,6 +249,7 @@ public:
     }
 
     /// Specific set for 12-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==12,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
         static_assert(N == 12, "");
@@ -270,6 +280,7 @@ public:
 
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
+    //template<int NN = N, typename std::enable_if<(NN>1),int>::type = 0>
     Vec(const Vec<N-1,real>& v, real r1)
     {
         static_assert(N > 1, "");
@@ -301,24 +312,28 @@ public:
     }
 
     /// Special access to first element.
+    template<int NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
     real& x()
     {
         static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special access to second element.
+    template<int NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
     real& y()
     {
         static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special access to third element.
+    template<int NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
     real& z()
     {
         static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special access to fourth element.
+    template<int NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
     real& w()
     {
         static_assert(N >= 4, "");
@@ -326,24 +341,28 @@ public:
     }
 
     /// Special const access to first element.
+    template<int NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
     const real& x() const
     {
         static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special const access to second element.
+    template<int NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
     const real& y() const
     {
         static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special const access to third element.
+    template<int NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
     const real& z() const
     {
         static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special const access to fourth element.
+    template<int NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
     const real& w() const
     {
         static_assert(N >= 4, "");
@@ -689,7 +708,7 @@ public:
     /// return true iff norm()==1
     bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const { return helper::rabs<real>( norm2()-(real)1 ) <= threshold; }
 
-    template<typename R>
+    template<typename R,int NN = N, typename std::enable_if<(NN==3),int>::type = 0>
     Vec cross( const Vec<3,R>& b ) const
     {
         static_assert(N == 3, "");
