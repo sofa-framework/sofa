@@ -49,19 +49,39 @@ int CylinderGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
 
 CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
-      center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
-      axis(initData(&axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the cylinder")),
-      length(initData(&length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+      m_center(initData(&m_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
+      m_axis(initData(&m_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
+      m_radius(initData(&m_radius,(SReal)1.0,"radius", "Radius of the cylinder")),
+      m_length(initData(&m_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
 {
 }
 
 CylinderGridTopology::CylinderGridTopology()
-    : center(initData(&center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
-      axis(initData(&axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
-      radius(initData(&radius,(SReal)1.0,"radius", "Radius of the cylinder")),
-      length(initData(&length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+    : m_center(initData(&m_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
+      m_axis(initData(&m_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
+      m_radius(initData(&m_radius,(SReal)1.0,"radius", "Radius of the cylinder")),
+      m_length(initData(&m_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
 {
+}
+
+void CylinderGridTopology::setCenter(SReal x, SReal y, SReal z)
+{
+    m_center.setValue(Vector3(x,y,z));
+}
+
+void CylinderGridTopology::setAxis(SReal x, SReal y, SReal z)
+{
+    m_axis.setValue(Vector3(x,y,z));
+}
+
+void CylinderGridTopology::setRadius(SReal radius)
+{
+    m_radius.setValue(radius);
+}
+
+void CylinderGridTopology::setLength(SReal length)
+{
+    m_length.setValue(length);
 }
 
 unsigned CylinderGridTopology::getIndex( int i, int j, int k ) const
@@ -80,9 +100,9 @@ Vector3 CylinderGridTopology::getPoint(int i) const
 Vector3 CylinderGridTopology::getPoint(int x, int y, int z) const
 {
     //return p0+dx*x+dy*y+dz*z;
-    SReal r = radius.getValue();
-    SReal l = length.getValue();
-    Vector3 axisZ = axis.getValue();
+    SReal r = m_radius.getValue();
+    SReal l = m_length.getValue();
+    Vector3 axisZ = m_axis.getValue();
     axisZ.normalize();
     Vector3 axisX = ((axisZ-Vector3(1,0,0)).norm() < 0.000001 ? Vector3(0,1,0) : Vector3(1,0,0));
     Vector3 axisY = cross(axisZ,axisX);
@@ -100,7 +120,7 @@ Vector3 CylinderGridTopology::getPoint(int x, int y, int z) const
         p *= helper::rmax(helper::rabs(p[0]),helper::rabs(p[1]))/p.norm();
     if (nz>1)
         p[2] = z*l/(nz-1);
-    return center.getValue()+axisX*p[0] + axisY*p[1] + axisZ * p[2];
+    return m_center.getValue()+axisX*p[0] + axisY*p[1] + axisZ * p[2];
 }
 
 } // namespace topology
