@@ -3,10 +3,6 @@ project(SofaPhysicsAPI)
 
 set(SOFAPHYSICSAPI_VERSION 0.1)
 
-# \todo {@epernod remove that define when understand how to replace this}
-SET(USE_OGL_TETRA_MODEL false)
-
-
 set(HEADER_FILES
     SofaPhysicsAPI.h
     SofaPhysicsDataController_impl.h
@@ -24,18 +20,6 @@ set(SOURCE_FILES
     fakegui.cpp
     # main.cpp
 )
-
-IF(USE_OGL_TETRA_MODEL)
-add_definitions(-DUSE_OGL_TETRA_MODEL)
-
-set(HEADER_FILES ${HEADER_FILES}
-    SofaPhysicsOutputMesh_Tetrahedron_impl.h
-)
-
-set(SOURCE_FILES ${SOURCE_FILES}
-    SofaPhysicsOutputMesh_Tetrahedron.cpp
-)
-ENDIF()
 
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)

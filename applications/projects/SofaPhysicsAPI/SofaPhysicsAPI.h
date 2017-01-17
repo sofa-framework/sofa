@@ -11,9 +11,6 @@
 
 class SofaPhysicsSimulation;
 class SofaPhysicsOutputMesh;
-#ifdef USE_OGL_TETRA_MODEL
-class SofaPhysicsOutputMeshTetrahedron;
-#endif
 class SofaPhysicsDataMonitor;
 class SofaPhysicsDataController;
 
@@ -69,10 +66,6 @@ public:
 
     /// Return an array of pointers to active output meshes
     SofaPhysicsOutputMesh** getOutputMeshes();
-
-#ifdef USE_OGL_TETRA_MODEL
-    SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
-#endif
 
     /// Return true if the simulation is running
     /// Note that currently you must call the step() method

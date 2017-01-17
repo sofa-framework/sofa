@@ -14,10 +14,6 @@
 
 #include <map>
 
-#ifdef USE_OGL_TETRA_MODEL
-#include "SofaPhysicsOutputMesh_Tetrahedron_impl.h"
-#endif
-
 
 class SofaPhysicsSimulation::Impl
 {
@@ -42,11 +38,6 @@ public:
     SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
 
-#ifdef USE_OGL_TETRA_MODEL
-    unsigned int getNbOutputMeshTetrahedrons();
-    SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
-#endif
-
     bool isAnimated() const;
     void setAnimated(bool val);
 
@@ -68,11 +59,6 @@ public:
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
 
-#ifdef USE_OGL_TETRA_MODEL
-    typedef SofaPhysicsOutputMeshTetrahedron::Impl::SofaOutputMeshTetrahedron SofaOutputMeshTetrahedron;
-    //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
-#endif
-
 protected:
 
     sofa::simulation::Simulation* m_Simulation;
@@ -85,13 +71,6 @@ protected:
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
 
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
-
-
-#ifdef USE_OGL_TETRA_MODEL
-    std::map<SofaOutputMeshTetrahedron*, SofaPhysicsOutputMeshTetrahedron*> outputMeshMapTetrahedron;
-    std::vector<SofaOutputMeshTetrahedron*> sofaOutputMeshTetrahedrons;
-    std::vector<SofaPhysicsOutputMeshTetrahedron*> outputMeshTetrahedrons;
-#endif
 
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;
