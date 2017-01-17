@@ -51,6 +51,9 @@
 #pragma once
 #endif
 
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/helper.h>
+
 #include <cstddef>
 #include <stdexcept>
 #include <iterator>
