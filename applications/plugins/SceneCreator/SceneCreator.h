@@ -114,6 +114,9 @@ SOFA_SceneCreator_API simulation::Node::SPtr addFloor(simulation::Node::SPtr par
 SOFA_SceneCreator_API void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
                                        SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
 
+SOFA_SceneCreator_API void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                                          SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
+
 #ifndef SOFA_FLOAT
 typedef Eigen::VectorXd Vector;
 #else

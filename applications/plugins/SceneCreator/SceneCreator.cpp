@@ -79,6 +79,7 @@
 
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <SofaMiscFem/TriangularFEMForceField.h>
 
 #include <SofaGeneralTopology/CylinderGridTopology.h>
 
@@ -109,6 +110,7 @@ using sofa::component::mapping::IdentityMapping ;
 
 using sofa::component::interactionforcefield::StiffSpringForceField ;
 using sofa::component::forcefield::TetrahedronFEMForceField;
+using sofa::component::forcefield::TriangularFEMForceField;
 using sofa::component::mass::UniformMass ;
 
 using sofa::simulation::graph::DAGSimulation ;
@@ -128,6 +130,7 @@ typedef CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >    CGLinear
 typedef UniformMass<Vec3Types, SReal>                                   UniformMass3;
 typedef StiffSpringForceField<Vec3Types >                               StiffSpringForceField3;
 typedef TetrahedronFEMForceField<Vec3Types>                             TetrahedronFEMForceField3;
+typedef TriangularFEMForceField<Vec3Types>                              TriangularFEMForceField3;
 
 typedef IdentityMapping<Vec3Types, ExtVec3fTypes>       IdentityMapping3_to_Ext3;
 typedef BarycentricMapping<Vec3Types, Vec3Types >       BarycentricMapping3_to_3;
@@ -480,6 +483,25 @@ void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectNa
     tetraFEMFF->setYoungModulus(young);
     currentNode->addObject(tetraFEMFF);
 }
+
+void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                    SReal totalMass, SReal young, SReal poisson)
+{
+    // Add Mass
+    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
+    uniMassSpring->setTotalMass(totalMass);
+    uniMassSpring->setName(objectName + "_mass");
+    currentNode->addObject(uniMassSpring);
+
+    // Add FEM
+    TriangularFEMForceField3::SPtr triFEMFF = sofa::core::objectmodel::New<TriangularFEMForceField3>();
+    triFEMFF->setName(objectName + "_FEM");
+    triFEMFF->setMethod("large");
+    triFEMFF->setPoisson(poisson);
+    triFEMFF->setYoung(young);
+    currentNode->addObject(triFEMFF);
+}
+
 
 simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
