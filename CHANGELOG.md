@@ -14,6 +14,8 @@
 * new component MakeAlias 
 * new component MakeDataAlias
 * Improved error message & console rendering
+* [SceneCreator]
+    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
 
 ## New features for developpers
 
