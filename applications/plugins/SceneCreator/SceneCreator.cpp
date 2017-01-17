@@ -80,6 +80,8 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
 
+#include <SofaGeneralTopology/CylinderGridTopology.h>
+
 namespace sofa
 {
 namespace modeling {
@@ -97,6 +99,8 @@ using sofa::component::odesolver::EulerSolver ;
 
 using sofa::component::loader::MeshObjLoader ;
 using sofa::component::topology::MeshTopology ;
+using sofa::component::topology::RegularGridTopology ;
+using sofa::component::topology::CylinderGridTopology ;
 using sofa::component::visualmodel::OglModel ;
 
 using sofa::component::mapping::BarycentricMapping ;
@@ -458,6 +462,25 @@ void addCollisionModels(Node::SPtr CollisionNode, const std::vector<std::string>
 }
 
 
+void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                 SReal totalMass, SReal young, SReal poisson)
+{
+    // Add Mass
+    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
+    uniMassSpring->setTotalMass(totalMass);
+    uniMassSpring->setName(objectName + "_mass");
+    currentNode->addObject(uniMassSpring);
+
+    // Add FEM
+    TetrahedronFEMForceField3::SPtr tetraFEMFF = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
+    tetraFEMFF->setName(objectName + "_FEM");
+    tetraFEMFF->setComputeGlobalMatrix(false);
+    tetraFEMFF->setMethod("large");
+    tetraFEMFF->setPoissonRatio(poisson);
+    tetraFEMFF->setYoungModulus(young);
+    currentNode->addObject(tetraFEMFF);
+}
+
 simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
@@ -472,27 +495,16 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
     dofFEM->setScale(scale[0],scale[1],scale[2]);
     cube->addObject(dofFEM);
 
-    // Add Mass
-    UniformMass3::SPtr uniMassSpring = sofa::core::objectmodel::New<UniformMass3>();
-    uniMassSpring->setTotalMass(totalMass);
-    uniMassSpring->setName(objectName + "_mass");
-    cube->addObject(uniMassSpring);
+    // Add FEM and Mass system
+    addTetraFEM(cube, objectName, totalMass, young, poisson);
 
     // Add topo
-    sofa::component::topology::RegularGridTopology::SPtr grid = sofa::core::objectmodel::New<sofa::component::topology::RegularGridTopology>();
+    RegularGridTopology::SPtr grid = sofa::core::objectmodel::New<RegularGridTopology>();
     grid->setName(objectName + "_grid");
     grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
     grid->setPos(-0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f); // by default object is centered and volume equal to 1 unit, use dof modifier to change the scale/position/rotation
     cube->addObject(grid);
 
-    // Add FEM
-    TetrahedronFEMForceField3::SPtr tetraFEMFF = sofa::core::objectmodel::New<TetrahedronFEMForceField3>();
-    tetraFEMFF->setName(objectName + "_FEM");
-    tetraFEMFF->setComputeGlobalMatrix(false);
-    tetraFEMFF->setMethod("large");
-    tetraFEMFF->setPoissonRatio(poisson);
-    tetraFEMFF->setYoungModulus(young);
-    cube->addObject(tetraFEMFF);
 
     // Add collisions models
     std::vector<std::string> colElements;
@@ -506,6 +518,49 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 
     return cube;
 }
+
+
+simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                   const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
+                                   SReal totalMass, SReal young, SReal poisson,
+                                   const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
+{
+    // Add Cube Node
+    sofa::simulation::Node::SPtr cylinder = sofa::modeling::createEulerSolverNode(parent, objectName + "_node");
+
+    // Add mecaObj
+    MechanicalObject3::SPtr dofFEM = sofa::core::objectmodel::New<MechanicalObject3>(); dofFEM->setName(objectName + "_dof");
+    dofFEM->setTranslation(translation[0],translation[1],translation[2]);
+    dofFEM->setRotation(rotation[0],rotation[1],rotation[2]);
+    dofFEM->setScale(scale[0],scale[1],scale[2]);
+    cylinder->addObject(dofFEM);
+
+    // Add FEM and Mass system
+    addTetraFEM(cylinder, objectName, totalMass, young, poisson);
+
+    // Add topo
+    CylinderGridTopology::SPtr grid = sofa::core::objectmodel::New<CylinderGridTopology>();
+    grid->setName(objectName + "_grid");
+    grid->setSize(gridSize[0], gridSize[1], gridSize[2]);
+    grid->setRadius(radius);
+    grid->setLength(length);
+    grid->setAxis(axis[0], axis[1], axis[2]);
+    cylinder->addObject(grid);
+
+
+    // Add collisions models
+    std::vector<std::string> colElements;
+    colElements.push_back("Triangle");
+    colElements.push_back("Line");
+    colElements.push_back("Point");
+    sofa::modeling::addCollisionModels(cylinder, colElements);
+
+    //Node VISUAL
+    createVisualNodeVec3(cylinder, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    return cylinder;
+}
+
 
 simulation::Node::SPtr addFloor(simulation::Node::SPtr parent, const std::string& objectName,
                                 const Deriv3& gridSize,
