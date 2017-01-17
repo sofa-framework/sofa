@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaConstraint)
 
 set(HEADER_FILES
+    BilateralConstraintResolution.h
     BilateralInteractionConstraint.h
     BilateralInteractionConstraint.inl
     ConstraintAnimationLoop.h

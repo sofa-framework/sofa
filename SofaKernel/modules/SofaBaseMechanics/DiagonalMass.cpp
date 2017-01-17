@@ -38,6 +38,7 @@ namespace component
 
 namespace mass
 {
+using sofa::core::objectmodel::ComponentState ;
 
 using namespace sofa::defaulttype;
 
@@ -138,7 +139,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
 {
     if(this->getContext()==nullptr){
         dmsg_error(this) << "Calling the initRigidImpl function is only possible if the object has a valid associated context \n" ;
-        m_cstate = ComponentState::Invalid ;
+        m_componentstate = ComponentState::Invalid ;
 
         //return;
     }
@@ -146,7 +147,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     if(this->mstate == nullptr ){
         msg_error(this) << "DiagonalComponent can only be used on node with an associated '<MechanicalObject>' \n"
                            "To remove this warning you can: add a <MechanicalObject> to the node. \n" ;
-        m_cstate = ComponentState::Invalid ;
+        m_componentstate = ComponentState::Invalid ;
 
         //return;
     }
@@ -157,7 +158,8 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
         msg_warning(this) << "Unable to retreive a valid MeshTopology component in the current context. \n"
                              "The component cannot be initialized and thus is de-activated. \n "
                              "To supress this warning you can add a Topology component in the parent node of'<"<< this->getName() <<">'.\n" ;
-        m_cstate = ComponentState::Invalid ;
+        m_componentstate = ComponentState::Invalid ;
+
         //return;
     }
 
@@ -179,7 +181,7 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
         f_mass.endEdit();
     }
 
-    m_cstate = ComponentState::Valid ;
+    m_componentstate = ComponentState::Valid ;
 }
 
 template <class RigidTypes, class RigidMass>
@@ -328,31 +330,25 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw(const VisualParams* vparams)
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
-    Inherited::init();
+    Inherited::reinit();
 }
 
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::reinit()
 {
-    Inherited::init();
+    Inherited::reinit();
 }
 
-// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
-// WARNING WARNING It is needed to clarify if this is a bug or a desired
-// implementation.
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
 {
-    Inherited::init();
+     initRigidImpl<Rigid3fTypes>() ;
 }
 
-// TODO(dmarchal): Why this one is not similar to the Rigid3dTypes case ?
-// WARNING WARNING It is needed to clarify if this is a bug or a desired
-// implementation.
 template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
 {
-    Inherited::init();
+     initRigidImpl<Rigid2fTypes>() ;
 }
 
 template <>

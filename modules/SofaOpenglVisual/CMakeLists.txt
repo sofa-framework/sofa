@@ -6,10 +6,6 @@ set(HEADER_FILES
     OglColorMap.h
     CompositingVisualLoop.h
     DataDisplay.h
-    Light.h
-    LightManager.h
-    OrderIndependentTransparencyManager.h
-    OglOITShader.h
     OglCylinderModel.h
     OglGrid.h
     OglLabel.h
@@ -28,10 +24,6 @@ set(SOURCE_FILES
     OglColorMap.cpp
     CompositingVisualLoop.cpp
     DataDisplay.cpp
-    Light.cpp
-    LightManager.cpp
-    OrderIndependentTransparencyManager.cpp
-    OglOITShader.cpp
     OglCylinderModel.cpp
     OglGrid.cpp
     OglLabel.cpp
@@ -47,6 +39,10 @@ set(SOURCE_FILES
 if(SOFA_HAVE_GLEW)
 
     list(APPEND HEADER_FILES
+		LightManager.h
+		Light.h
+		OrderIndependentTransparencyManager.h
+		OglOITShader.h
         OglAttribute.h
         OglAttribute.inl
         OglShader.h
@@ -65,6 +61,10 @@ if(SOFA_HAVE_GLEW)
     )
 
     list(APPEND SOURCE_FILES
+		Light.cpp
+		LightManager.cpp
+		OrderIndependentTransparencyManager.cpp
+		OglOITShader.cpp
         OglAttribute.cpp
         OglShader.cpp
         OglShaderMacro.cpp

@@ -122,6 +122,8 @@ protected:
 
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+        //This field should support the color="red" api.
         , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "cone color"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the cone"))
     {

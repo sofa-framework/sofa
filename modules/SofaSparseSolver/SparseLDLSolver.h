@@ -58,7 +58,7 @@ public :
     typedef sofa::component::linearsolver::SparseLDLSolverImpl<TMatrix,TVector,TThreadManager> Inherit;
     typedef typename Inherit::ResMatrixType ResMatrixType;
     typedef typename Inherit::JMatrixType JMatrixType;
-    typedef SpaseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
+    typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);

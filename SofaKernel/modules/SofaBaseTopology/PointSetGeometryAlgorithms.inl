@@ -238,7 +238,6 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 {
     if (showPointIndices.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 

@@ -67,7 +67,8 @@ template class SOFA_CONSTRAINT_API DistanceLMConstraint<Rigid3fTypes>;
 #endif
 
 
-
+//TODO(dmarchal) Yet again this ugly code duplication between float and double.
+// To fix this you can use the same design of UniformMass.
 #ifndef SOFA_FLOAT
 template<>
 Rigid3dTypes::Deriv DistanceLMConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const

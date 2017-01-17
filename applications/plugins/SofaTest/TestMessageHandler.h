@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-20ll6 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,6 +31,9 @@
 #ifndef TESTMESSAGEHANDLER_H
 #define TESTMESSAGEHANDLER_H
 
+#include <sofa/helper/vector.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
@@ -45,7 +48,6 @@ namespace helper
 namespace logging
 {
 
-
 /// each ERROR and FATAL message raises a gtest error
 class SOFA_TestPlugin_API TestMessageHandler : public MessageHandler
 {
@@ -55,8 +57,14 @@ public:
     /// iff the handler is active (see setActive)
     virtual void process(Message &m)
     {
-        if( active && m.type()>=Message::Error )
-            ADD_FAILURE() << std::endl;
+        assert(m.type()<m_failsOn.size() && "If this happens this means that the code initializing m_failsOn is broken.") ;
+
+        if( active && m_failsOn[m.type()] ){
+            ADD_FAILURE() << "An error message was emitted and is interpreted as a test failure. "
+                          <<  "src: " << std::string(m.fileInfo()->filename) << ":" << m.fileInfo()->line
+                          << "message: " << m.message().str() << std::endl;
+
+        }
     }
 
     // singleton
@@ -72,12 +80,23 @@ public:
     static void setActive( bool a ) { getInstance().active = a; }
 
 private:
+    sofa::helper::vector<bool> m_failsOn ;
 
     /// true by default
     bool active;
 
     // private default constructor for singleton
-    TestMessageHandler() : active(true) {}
+    TestMessageHandler() : active(true) {
+        for(unsigned int i=Message::Info ; i<Message::TypeCount;i++){
+            m_failsOn.push_back(false) ;
+        }
+        m_failsOn[Message::Error] = true ;
+        m_failsOn[Message::Fatal] = true ;
+    }
+
+    void setFailureOn(const Message::Type m, bool state){
+        m_failsOn[m] = state ;
+    }
 };
 
 
@@ -88,8 +107,52 @@ struct SOFA_TestPlugin_API ScopedDeactivatedTestMessageHandler
     ~ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(true); }
 };
 
+struct SOFA_TestPlugin_API ExpectMessage
+{
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
+    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
 
+    ExpectMessage(const Message::Type t) {
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+    }
 
+    ~ExpectMessage() {
+        if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was expected. None was received." << std::endl ;
+        }
+    }
+};
+
+struct SOFA_TestPlugin_API MessageAsTestFailure
+{
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
+    ScopedDeactivatedTestMessageHandler m_scopeddeac ;
+    LogMessage m_log;
+
+    MessageAsTestFailure(const Message::Type t)
+    {
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+    }
+
+    ~MessageAsTestFailure()
+    {
+        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
+            std::cout << "====================== Messages Backlog =======================" << std::endl ;
+            for(auto& message : m_log)
+            {
+                std::cout << message << std::endl ;
+            }
+            std::cout << "===============================================================" << std::endl ;
+        }
+    }
+};
 
 } // logging
 } // helper

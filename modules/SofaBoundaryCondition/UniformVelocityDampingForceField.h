@@ -59,6 +59,7 @@ namespace sofa
 
                 /// air drag coefficient.
                 Data< Real > dampingCoefficient;
+                Data<bool> d_implicit;
 
             protected:
 

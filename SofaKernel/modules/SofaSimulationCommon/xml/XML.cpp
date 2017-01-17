@@ -33,6 +33,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <string.h>
 
+#include <sofa/helper/logging/Message.h>
 
 /* For loading the scene */
 
@@ -48,7 +49,6 @@ namespace xml
 
 using std::cout;
 using std::endl;
-
 
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
@@ -124,10 +124,10 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     TiXmlElement* element = root->ToElement();
     if (!element)
         return NULL;
-    //std::cout << "XML Element : " << element->ValueStr() << std::endl;
+
     if (!element->Value() || !element->Value()[0])
     {
-        std::cerr << "XML Parsing ERROR: Invalid element : " << *element << std::endl;
+        msg_error_withfile("XMLParser", basefilename, element->Row()) << "Invalid element : " << *element ;
         return NULL;
     }
 
@@ -195,19 +195,19 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
     BaseElement* node = BaseElement::Create(classType,name,type);
     if (node==NULL)
     {
-        std::cerr << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
+        msg_info_withfile("XMLParser", basefilename, element->Row()) << "Node "<<element->Value()<<" name "<<name<<" type "<<type<<" creation failed.\n";
         return NULL;
     }
 
     if (isRoot)
         node->setBaseFile( basefilename );
 
-    //std::cout << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
+    node->setSrcFile(basefilename);
+    node->setSrcLine(element->Row()) ;
 
-    // List attributes
+     // List attributes
     for (TiXmlAttribute* attr=element->FirstAttribute(); attr ; attr = attr->Next())
     {
-        //std::cout << "attr->Value " <<  attr->Value() << std::endl;
         if (attr->Value()==NULL) continue;
         if (!(strcmp(attr->Name(), "name"))) continue;
         if (!(strcmp(attr->Name(), "type"))) continue;
@@ -226,8 +226,8 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
             {
                 if (!node->addChild(childnode))
                 {
-                    std::cerr << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
-                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
+                    msg_info_withfile("XMLParser", basefilename, element->Row()) << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
+                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType() ;
                     delete childnode;
                 }
                 break;
@@ -271,28 +271,27 @@ static void dumpNode(BaseElement* node, std::string prefix0="==", std::string pr
 }
 */
 
-BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
+BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc, bool fromMem)
 {
     ElementNameHelper resolveElementName;
     const TiXmlElement* hRoot = doc.RootElement();
 
     if (hRoot == NULL)
     {
-        std::cerr << "empty document" << std::endl;
+        msg_info("XMLParser") << " Empty document: " << filename ;
         return NULL;
     }
-    //std::cout << "Creating XML graph"<<std::endl;
-    std::string basefilename =
-        sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
+
+    std::string basefilename;
+    if(fromMem)
+        basefilename = filename ;
+    else
+        basefilename = sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
     BaseElement* graph = createNode((TiXmlElement*)hRoot, basefilename.c_str(),resolveElementName, true);
-    //std::cout << "XML Graph created"<<std::endl;
-    //xmlFreeDoc(doc);
-    //xmlCleanupParser();
-    //xmlMemoryDump();
 
     if (graph == NULL)
     {
-        std::cerr << "XML Graph creation failed."<<std::endl;
+        msg_error("XMLParser") << "XML Graph creation failed." ;
         return NULL;
     }
 
@@ -308,10 +307,10 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
     doc.Parse(data);
     if (doc.Error())
     {
-        std::cerr << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() << std::endl;
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() ;
         return NULL;
     }
-    return processXMLLoading(filename, doc);
+    return processXMLLoading(filename, doc, true);
 }
 
 BaseElement* loadFromFile(const char *filename)
@@ -330,7 +329,7 @@ BaseElement* loadFromFile(const char *filename)
 
     if (!(doc->LoadFile(filename)))
     {
-        std::cerr << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() << std::endl;
+        msg_error("XMLParser") << "Failed to open " << filename << "\n" << doc->ErrorDesc() << " at line " << doc->ErrorRow() << " row " << doc->ErrorCol() ;
         delete doc;
         return NULL;
     }
@@ -358,22 +357,21 @@ BaseElement* includeNode(TiXmlNode* root,const char *basefilename, ElementNameHe
     }
     if (filename.empty())
     {
-        std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
+        msg_error("XMLParser") << "Xml include tag requires non empty filename or href attribute." ;
         return NULL;
     }
-    /*  std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;*/
     sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
     TiXmlDocument doc; // the resulting document tree
     if (!doc.LoadFile(filename.c_str()))
     {
-        std::cerr << "ERROR: Failed to parse " << filename << std::endl;
+        msg_error("XMLParser") << "Failed to parse " << filename << "\n";
         return NULL;
     }
     TiXmlElement* newroot = doc.RootElement();
 
     if (newroot == NULL)
     {
-        std::cerr << "ERROR: empty document in " << filename << std::endl;
+        msg_error("XMLParser") << "ERROR: empty document in " << filename << "\n";
         //xmlFreeDoc(doc);
         return NULL;
     }

@@ -92,9 +92,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
         sout << "Reading binary STL file..." << sendl;
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->positions.beginWriteOnly());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(this->normals.beginWriteOnly());
-    helper::vector<Triangle >& my_triangles = *(this->triangles.beginWriteOnly());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->d_positions.beginWriteOnly());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(this->d_normals.beginWriteOnly());
+    helper::vector<Triangle >& my_triangles = *(this->d_triangles.beginWriteOnly());
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0;
@@ -195,9 +195,9 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 //            break;
     }
 
-    this->positions.endEdit();
-    this->triangles.endEdit();
-    this->normals.endEdit();
+    this->d_positions.endEdit();
+    this->d_triangles.endEdit();
+    this->d_normals.endEdit();
 
     if( this->f_printLog.getValue() )
         sout << "done!" << sendl;
@@ -215,9 +215,9 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     std::string buffer;
     std::string name; // name of the solid, needed?
 
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(normals.beginEdit());
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_normals = *(d_normals.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
@@ -305,9 +305,9 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
         position = dataFile.tellg();
     }
 
-    positions.endEdit();
-    triangles.endEdit();
-    normals.endEdit();
+    d_positions.endEdit();
+    d_triangles.endEdit();
+    d_normals.endEdit();
 
     dataFile.close();
 
@@ -325,4 +325,5 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 } // namespace component
 
 } // namespace sofa
+
 

@@ -126,6 +126,7 @@ public:
     void reinit();
     void drawVisual(const core::visual::VisualParams* vparams);
     void updateVisual();
+    void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void start();
     void stop();

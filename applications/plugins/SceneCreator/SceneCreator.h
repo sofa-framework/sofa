@@ -35,6 +35,9 @@
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
+#ifdef SOFA_HAVE_METIS
+#include <SofaSparseSolver/SparseLDLSolver.h>
+#endif
 
 /// @warning this can only manage one scene at a time
 /// (root singleton)
@@ -53,6 +56,13 @@ typedef sofa::defaulttype::Vec<1,SReal> Vec1;
 typedef component::container::MechanicalObject<defaulttype::Vec3Types> MechanicalObject3;
 typedef component::container::MechanicalObject<defaulttype::Rigid3Types> MechanicalObjectRigid3;
 
+typedef enum
+{
+    MT_Barycentric = 0,
+    MT_Rigid,
+    MT_Identity
+} MappingType;
+
 SOFA_SceneCreator_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
 SOFA_SceneCreator_API simulation::Node::SPtr createEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));
 
@@ -66,8 +76,7 @@ SOFA_SceneCreator_API simulation::Node::SPtr createObstacle(simulation::Node::SP
 SOFA_SceneCreator_API simulation::Node::SPtr createCollisionNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof, const std::string &filename, const std::vector<std::string> &elements,
                                                                      const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
 SOFA_SceneCreator_API simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr parent, MechanicalObject3::SPtr dof,  const std::string &filename, const std::string& color,
-                                                                  const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3());
-
+                                                                  const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const MappingType& mappingT=MT_Barycentric);
 
 
 //Create a collision node using Rigid Mapping, using a 3d model specified by filename.
@@ -83,6 +92,45 @@ SOFA_SceneCreator_API simulation::Node::SPtr createGridScene(Vec3 startPoint, Ve
 
 SOFA_SceneCreator_API void addCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 
+
+// Create 3D objects, using mechanical Obj, grid topology and visualisation inside one node
+// By default object is centered and volume equal to 1 unit, use dof modifier to change the scale/position/rotation
+SOFA_SceneCreator_API simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
+                                                     const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                     SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
+                                                     const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::string& objectName,
+                                                          const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                          const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                                         const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                         const Deriv3& axis = Deriv3(0, 1, 0), SReal radius = 1.0, SReal length = 1.0,
+                                                         SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
+                                                         const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+                                                              const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                              const Deriv3& axis = Deriv3(0, 1, 0), SReal radius = 1.0, SReal length = 1.0,
+                                                              const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+
+SOFA_SceneCreator_API simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string& objectName,
+                                                      const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                      SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
+                                                      const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::string& objectName,
+                                                           const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                           const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+
+SOFA_SceneCreator_API void addTetraFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                                       SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
+
+SOFA_SceneCreator_API void addTriangleFEM(simulation::Node::SPtr currentNode, const std::string& objectName,
+                                          SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3);
 
 #ifndef SOFA_FLOAT
 typedef Eigen::VectorXd Vector;
@@ -138,7 +186,7 @@ SOFA_SceneCreator_API void initScene(simulation::Node::SPtr root);
 /// Clear the scene graph and return a pointer to the new root
 SOFA_SceneCreator_API simulation::Node::SPtr clearScene();
 
-/// Create a link from source to target.  
+/// Create a link from source to target.
 SOFA_SceneCreator_API void setDataLink(core::objectmodel::BaseData* source, core::objectmodel::BaseData* target);
 
 

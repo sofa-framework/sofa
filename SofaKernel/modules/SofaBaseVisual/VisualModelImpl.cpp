@@ -465,7 +465,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             }
         }
     }
-    
+
     m_edges.endEdit();
     m_triangles.endEdit();
     m_quads.endEdit();
@@ -478,7 +478,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     using sofa::helper::io::Mesh;
-    
+
     //      bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
     {
@@ -491,7 +491,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         else
             serr << "Texture \"" << textureName << "\" not found" << sendl;
     }
-    
+
     // Make sure all Data are up-to-date
     m_vertices2.updateIfDirty();
     m_vnormals.updateIfDirty();
@@ -501,7 +501,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     m_edges.updateIfDirty();
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
-    
+
     if (!filename.empty() && (m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
     {
         std::string meshFilename(filename);
@@ -517,7 +517,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             {
                 objLoader.reset(Mesh::Create(loader, filename));
             }
-            
+
             if (objLoader.get() == 0)
             {
                 return false;
@@ -536,7 +536,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                     setMesh(*objLoader, true);
                 }
             }
-            
+
             if(textureName.empty())
             {
                 //we check how many textures are linked with a material (only if a texture name is not defined in the scn file)
@@ -568,10 +568,10 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             sout << "VisualModel: will use Topology." << sendl;
             useTopology = true;
         }
-        
+
         modified = true;
     }
-    
+
     if (!xformsModified)
     {
         // add one identity matrix
@@ -1057,7 +1057,7 @@ void VisualModelImpl::flipFaces()
     ResizableExtVector<Edge>& edges = *(m_edges.beginEdit());
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
-    
+
     for (unsigned int i = 0; i < edges.size() ; i++)
     {
         int temp = edges[i][1];
@@ -1108,6 +1108,8 @@ static int hexval(char c)
     else return 0;
 }
 
+//TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+// This code should be factored out.
 void VisualModelImpl::setColor(std::string color)
 {
     if (color.empty()) return;
@@ -1303,20 +1305,20 @@ void VisualModelImpl::computeMesh()
                 setMesh(m, !texturename.getValue().empty());
                 sout << m.getVertices().size() << " points, " << m.getFacets().size()  << " triangles." << sendl;
                 useTopology = false; //visual model needs to be created only once at initial time
-				return;
-			}
+                return;
+            }
 
-			if (this->f_printLog.getValue())
-				sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+            if (this->f_printLog.getValue())
+                sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
 
-			vertices.resize(m_topology->getNbPoints());
+            vertices.resize(m_topology->getNbPoints());
 
-			for (unsigned int i=0; i<vertices.size(); i++)
-			{
-				vertices[i][0] = (Real)m_topology->getPX(i);
-				vertices[i][1] = (Real)m_topology->getPY(i);
-				vertices[i][2] = (Real)m_topology->getPZ(i);
-			}
+            for (unsigned int i=0; i<vertices.size(); i++)
+            {
+                vertices[i][0] = (Real)m_topology->getPX(i);
+                vertices[i][1] = (Real)m_topology->getPY(i);
+                vertices[i][2] = (Real)m_topology->getPZ(i);
+            }
 
         }
         else
@@ -1324,20 +1326,20 @@ void VisualModelImpl::computeMesh()
             BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
-			{
-				if (this->f_printLog.getValue())
-					sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+            {
+                if (this->f_printLog.getValue())
+                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
 
-				vertices.resize(mstate->getSize());
+                vertices.resize(mstate->getSize());
 
-				for (unsigned int i=0; i<vertices.size(); i++)
-				{
-					vertices[i][0] = (Real)mstate->getPX(i);
-					vertices[i][1] = (Real)mstate->getPY(i);
-					vertices[i][2] = (Real)mstate->getPZ(i);
-				}
-				
-			}
+                for (unsigned int i=0; i<vertices.size(); i++)
+                {
+                    vertices[i][0] = (Real)mstate->getPX(i);
+                    vertices[i][1] = (Real)mstate->getPY(i);
+                    vertices[i][2] = (Real)mstate->getPZ(i);
+                }
+
+            }
         }
         m_positions.endEdit();
     }
@@ -1347,17 +1349,17 @@ void VisualModelImpl::computeMesh()
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
 
-	if (this->f_printLog.getValue())
-		sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
+    if (this->f_printLog.getValue())
+        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
 
-	ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
-	triangles.resize(inputTriangles.size());
+    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+    triangles.resize(inputTriangles.size());
 
-	for (unsigned int i=0; i<triangles.size(); ++i)
-	{
-		triangles[i] = inputTriangles[i];
-	}
-	m_triangles.endEdit();
+    for (unsigned int i=0; i<triangles.size(); ++i)
+    {
+        triangles[i] = inputTriangles[i];
+    }
+    m_triangles.endEdit();
 
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
@@ -1898,7 +1900,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
         }
     }
-    
+
     for (unsigned int i = 0; i < edges.size() ; i++)
     {
         *out << "f";

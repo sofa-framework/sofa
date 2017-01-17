@@ -82,6 +82,24 @@ bool BaseElement::isFileRoot()
     return !basefile.empty();
 }
 
+const std::string& BaseElement::getSrcFile() const {
+    return m_srcfile ;
+}
+
+void BaseElement::setSrcFile(const std::string& filename) {
+    m_srcfile = filename ;
+}
+
+int BaseElement::getSrcLine() const {
+    return m_srcline ;
+}
+
+void BaseElement::setSrcLine(const int l)
+{
+    m_srcline = l ;
+}
+
+
 // const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
 // {
 // 	return attributes;

@@ -63,19 +63,19 @@ void GridMeshCreator::insertUniqueEdge( unsigned a, unsigned b )
 
 void GridMeshCreator::insertTriangle(unsigned a, unsigned b, unsigned c)
 {
-    helper::vector<Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     my_triangles.push_back(Triangle( a,b,c ) );
     insertUniqueEdge(a,b);
     insertUniqueEdge(b,c);
     insertUniqueEdge(c,a);
 
-    triangles.endEdit();
+    d_triangles.endEdit();
 }
 
 void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
 {
-    helper::vector<Quad >& my_quads = *(quads.beginEdit());
+    helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
 
     my_quads.push_back( Quad( a,b,c,d ) );
     insertUniqueEdge(a,b);
@@ -83,13 +83,13 @@ void GridMeshCreator::insertQuad(unsigned a, unsigned b, unsigned c, unsigned d)
     insertUniqueEdge(c,d);
     insertUniqueEdge(d,a);
 
-    quads.endEdit();
+    d_quads.endEdit();
 }
 
 
 bool GridMeshCreator::load()
 {
-    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (positions);
+    helper::WriteAccessor<Data<vector<sofa::defaulttype::Vector3> > > my_positions (d_positions);
     unsigned numX = resolution.getValue()[0], numY=resolution.getValue()[1];
 
     // Warning: Vertex creation order must be consistent with method vert.
@@ -148,10 +148,10 @@ bool GridMeshCreator::load()
             }
         }
 
-    helper::vector<Edge >& my_edges = *(edges.beginEdit());
+    helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
     for( std::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
         my_edges.push_back( *it );
-    edges.endEdit();
+    d_edges.endEdit();
 
     return true;
 

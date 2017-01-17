@@ -37,10 +37,10 @@ namespace component
 namespace engine
 {
 
-template class BoxROI<gpu::opencl::OpenCLVec3fTypes>;
-template class BoxROI<gpu::opencl::OpenCLVec3f1Types>;
-template class BoxROI<gpu::opencl::OpenCLVec3dTypes>;
-template class BoxROI<gpu::opencl::OpenCLVec3d1Types>;
+template class boxroi::BoxROI<gpu::opencl::OpenCLVec3fTypes>;
+template class boxroi::BoxROI<gpu::opencl::OpenCLVec3f1Types>;
+template class boxroi::BoxROI<gpu::opencl::OpenCLVec3dTypes>;
+template class boxroi::BoxROI<gpu::opencl::OpenCLVec3d1Types>;
 
 } // namespace engine
 
@@ -55,10 +55,10 @@ namespace opencl
 SOFA_DECL_CLASS(OpenCLBoxROI)
 
 int BoxROIOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
-        .add< component::engine::BoxROI<OpenCLVec3fTypes> >()
-        .add< component::engine::BoxROI<OpenCLVec3f1Types> >()
-        .add< component::engine::BoxROI<OpenCLVec3dTypes> >()
-        .add< component::engine::BoxROI<OpenCLVec3d1Types> >()
+        .add< component::engine::boxroi::BoxROI<OpenCLVec3fTypes> >()
+        .add< component::engine::boxroi::BoxROI<OpenCLVec3f1Types> >()
+        .add< component::engine::boxroi::BoxROI<OpenCLVec3dTypes> >()
+        .add< component::engine::boxroi::BoxROI<OpenCLVec3d1Types> >()
         ;
 
 } // namespace opencl

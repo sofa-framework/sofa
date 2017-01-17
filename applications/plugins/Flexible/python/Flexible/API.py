@@ -199,7 +199,8 @@ class Deformable:
         if self.dofs is None:
             Sofa.msg_error("Flexible.API.Deformable","addMass : no dofs for "+ self.name)
             return
-        self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
+        if totalMass!=0:
+            self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, useGlobalIndices=False, useIndexLabelPairs=False, assemble=True, isMechanical=True):
         cell = ''
@@ -445,7 +446,8 @@ class FEMDof:
         self.dof = self.node.createObject("MechanicalObject", template="Vec3", name="dofs", position=position, **kwargs)
 
     def addUniformMass(self, totalMass):
-        self.mass=self.node.createObject("UniformMass", template="Vec3", name="mass", totalMass=totalMass)
+        if totalMass!=0:
+            self.mass=self.node.createObject("UniformMass", template="Vec3", name="mass", totalMass=totalMass)
 
     def addShapeFunction(self):
         self.shapeFunction=self.node.createObject("BarycentricShapeFunction", name="shapeFunction")

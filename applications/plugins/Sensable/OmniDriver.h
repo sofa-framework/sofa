@@ -54,6 +54,7 @@ class ForceFeedback;
 
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using core::objectmodel::Data;
 
 /** Holds data retrieved from HDAPI. */

@@ -115,7 +115,7 @@ protected:
             {
                 Eigen::Matrix<real, 3, 1> n = utils::map( normal.getValue()[i] );
                 try{
-                    local_frame.template rightCols<2>() = ker( n );
+                    local_frame.template leftCols<2>() = ker( n );
                 }
                 catch( const std::logic_error& ) {
                     std::cout << "skipping degenerate normal for contact " << i

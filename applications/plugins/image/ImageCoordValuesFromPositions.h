@@ -61,21 +61,21 @@ template <class ImageType> class ImageCoordValuesFromPositions;
 template <class T>
 struct ImageCoordValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
-    typedef ImageCoordValuesFromPositions<defaulttype::Image<T>> ImageCoordValuesFromPositions;
+    typedef ImageCoordValuesFromPositions<defaulttype::Image<T>> ImageCoordValuesFromPositionsT;
 
-    static void update(ImageCoordValuesFromPositions& This)
+    static void update(ImageCoordValuesFromPositionsT& This)
     {
-        typedef typename ImageCoordValuesFromPositions::Real Real;
-        typedef typename ImageCoordValuesFromPositions::Coord Coord;
+        typedef typename ImageCoordValuesFromPositionsT::Real Real;
+        typedef typename ImageCoordValuesFromPositionsT::Coord Coord;
 
-        typename ImageCoordValuesFromPositions::raTransform inT(This.transform);
-        typename ImageCoordValuesFromPositions::raPositions pos(This.position);
+        typename ImageCoordValuesFromPositionsT::raTransform inT(This.transform);
+        typename ImageCoordValuesFromPositionsT::raPositions pos(This.position);
 
-        typename ImageCoordValuesFromPositions::raImage in(This.image);
+        typename ImageCoordValuesFromPositionsT::raImage in(This.image);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
-        typename ImageCoordValuesFromPositions::waValues val(This.values);
+        typename ImageCoordValuesFromPositionsT::waValues val(This.values);
         Coord outval (This.outValue.getValue(),This.outValue.getValue(),This.outValue.getValue());
         val.resize(pos.size());
 

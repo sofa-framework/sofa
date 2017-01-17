@@ -49,7 +49,7 @@ struct SquareMappingTest : public Mapping_test<SquareMapping>
 
     bool test()
     {
-        this->errorMax *= 10;
+        this->errorMax *= 30;
 
 //        SquareMapping* map = static_cast<SquareMapping*>( this->mapping );
 

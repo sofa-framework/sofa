@@ -75,7 +75,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
    
 
 
-	bool test(double epsilon)
+    bool test(double epsilon, const std::string &integrationScheme )
 	{
 		//Init
 
@@ -90,7 +90,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
 
-        simulation::Node::SPtr node = createEulerSolverNode(root,"test");
+        simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
         
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
         dofs->resize(1);
@@ -134,12 +134,25 @@ typedef Types<
 // Test suite for all the instanciations
 TYPED_TEST_CASE(FixedConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( FixedConstraint_test , testValue )
+TYPED_TEST( FixedConstraint_test , testValueImplicitWithCG )
 {
-    EXPECT_TRUE(  this->test(1e-8) );
+    EXPECT_TRUE(  this->test(1e-8,std::string("Implicit")) );
 }
 
-}// namespace 
+TYPED_TEST( FixedConstraint_test , testValueExplicit )
+{
+    EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
+}
+
+#ifdef SOFA_HAVE_METIS
+TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
+{
+    EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
+}
+#endif
+
+
+}// namespace
 }// namespace sofa
 
 

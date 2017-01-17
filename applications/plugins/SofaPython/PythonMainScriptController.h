@@ -29,6 +29,15 @@
 #include "ScriptController.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 
+/// Forward declarations
+namespace sofa {
+    namespace core{
+        namespace objectmodel{
+            class IdleEvent ;
+        }
+    }
+}
+
 namespace sofa
 {
 
@@ -89,6 +98,8 @@ protected:
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) ;
+
     /// @}
 
 
@@ -114,7 +125,7 @@ public:
     PyObject *m_Func_reset;
     PyObject *m_Func_cleanup;
     PyObject *m_Func_draw;
-
+    PyObject *m_Func_onIdle;
 private:
     PythonMainScriptController();
 

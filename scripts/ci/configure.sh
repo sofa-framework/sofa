@@ -6,6 +6,7 @@
 
 ## Significant environnement variables:
 # - CI_JOB                    (e.g. ubuntu_gcc-4.8_options)
+# - CI_OPTIONS                if contains "options" then activate plugins
 # - CI_CMAKE_OPTIONS          (additional arguments to pass to cmake)
 # - CI_ARCH = x86 | amd64     (for Windows builds)
 # - CI_BUILD_TYPE             Debug|Release
@@ -109,7 +110,7 @@ if [[ -n "$CI_HAVE_BOOST" ]]; then
     append "-DBOOST_ROOT=$CI_BOOST_PATH"
 fi
 
-case $CI_JOB in
+case $CI_OPTIONS in
     # Build with as many options enabled as possible
     *options*)
         append "-DSOFA_BUILD_METIS=ON"

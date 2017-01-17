@@ -35,11 +35,6 @@ def insertRigid(parentNode, rigidModel, density, scale=1, param=None):
 
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
-    # check mesh formats are supported by generateRigid
-    meshFormatSupported = True
-    for mesh in rigidModel.mesh :
-        meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
-
     if not rigidModel.mass is None and not rigidModel.com is None and not rigidModel.inertia is None:
         if not 1==scale:
             Sofa.msg_info("Compliant.sml","scale is not supported in that case")
@@ -56,10 +51,9 @@ def insertRigid(parentNode, rigidModel, density, scale=1, param=None):
                                     rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
                                     rigidModel.inertia[5] ) # Izz
         rigid.setFromRigidInfo(massinfo, offset=rigidModel.position, inertia_forces = False )    # TODO: handle inertia_forces ?
-    elif len(rigidModel.mesh)!=0 and meshFormatSupported:
+    elif len(rigidModel.mesh)!=0 :
         # get inertia from meshes and density
-        massinfo = SofaPython.sml.getSolidRigidMassInfo(rigidModel, density, scale)
-        rigid.setFromRigidInfo(massinfo, offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
+        rigid.setFromRigidInfo(rigidModel.getRigidMassInfo(density, scale), offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
             ## no density but a mesh let's normalise computed mass with specified mass
@@ -268,7 +262,7 @@ class SceneSkinning(SceneArticulatedRigid) :
         SceneArticulatedRigid.createScene(self)
         
         # insert node containing all bones of the armature
-        self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tag=["armature"], rigidIndexById=self.skinningArmatureBoneIndexById)
+        self.nodes["armature"] = self.insertMergeRigid(mergeNodeName="armature", tags={"armature"}, rigidIndexById=self.skinningArmatureBoneIndexById)
         for solidModel in self.model.solids.values():
             print solidModel.name, len(solidModel.skinnings)
             if len(solidModel.skinnings)>0: # ignore solid if it has no skinning

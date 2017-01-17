@@ -1056,10 +1056,10 @@ namespace engine
 
 
 #ifndef SOFA_FLOAT
-    template class SOFA_Flexible_API BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API boxroi::BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-    template class SOFA_Flexible_API BoxROI< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API boxroi::BoxROI< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 } // namespace engine

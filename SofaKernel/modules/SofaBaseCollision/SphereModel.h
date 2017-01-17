@@ -188,6 +188,7 @@ public:
         return DataTypes::Name();
     }
 
+    //TODO(dmarchal) guideline de sofa.
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
 

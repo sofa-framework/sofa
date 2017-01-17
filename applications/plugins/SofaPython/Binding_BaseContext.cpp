@@ -130,15 +130,20 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         Py_RETURN_NONE;
     }
 
+
     if( warning )
     {
-        Node *node = static_cast<Node*>(context);
-        if (node)
+        for( auto it : desc.getAttributeMap() )
         {
-            //SP_MESSAGE_INFO( "Sofa.Node.createObject("<<type<<") node="<<node->getName()<<" isInitialized()="<<node->isInitialized() )
-            if (node->isInitialized())
-                SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
+            if (!it.second.isAccessed())
+            {
+                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\"" << obj->sendl;
+            }
         }
+
+        Node *node = static_cast<Node*>(context);
+        if (node && node->isInitialized())
+            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
     }
 
     return sofa::PythonFactory::toPython(obj.get());

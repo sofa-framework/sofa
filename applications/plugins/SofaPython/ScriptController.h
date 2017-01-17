@@ -32,6 +32,15 @@
 #include "ScriptEvent.h"
 #include "ScriptFunction.h"
 
+/// fwd declaration
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class IdleEvent ;
+        }
+    }
+}
+
 namespace sofa
 {
 
@@ -146,7 +155,6 @@ public:
     virtual void draw(const core::visual::VisualParams*);
 
 protected:
-
     /// @name Script interface
     ///   Function that need to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
@@ -186,6 +194,9 @@ protected:
 
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*) = 0;
+
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) = 0;
 
     /// @}
 

@@ -60,16 +60,18 @@ set(HEADER_FILES
     VoronoiToMeshEngine.h
 )
 
-set(PYTHON_FILES
-    python/SofaImage/API.py
-    python/SofaImage/__init__.py
-)
 
 set(README_FILES image.txt)
 
 
 find_package(SofaPython QUIET)
 if( SofaPython_FOUND )
+
+    set(PYTHON_FILES
+        python/SofaImage/API.py
+        python/SofaImage/__init__.py
+    )
+
     list(APPEND SOURCE_FILES python/Binding_ImageData.cpp)
     list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
 endif()
@@ -118,13 +120,10 @@ endif()
 
 # OpenMP is bugged in image, forcing it to be single threaded for now
 if(SOFA_OPENMP)
-     message( WARNING "image: deactivating OpenMP" )
-     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-     string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
+    message( WARNING "image: deactivating OpenMP" )
+    string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+    string(REPLACE "${OpenMP_CXX_FLAGS}" "" CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS})
 endif()
-
-
-
 
 
 find_package(DiffusionSolver CONFIG REQUIRED)

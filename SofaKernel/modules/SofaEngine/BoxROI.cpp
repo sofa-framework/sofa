@@ -36,34 +36,38 @@ namespace component
 namespace engine
 {
 
+namespace boxroi
+{
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(BoxROI)
 
 int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
         .add< BoxROI<Vec3dTypes> >()
         .add< BoxROI<Rigid3dTypes> >()
         .add< BoxROI<Vec6dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#endif //SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
         .add< BoxROI<Vec3fTypes> >()
         .add< BoxROI<Rigid3fTypes> >()
         .add< BoxROI<Vec6fTypes> >()
-#endif //SOFA_DOUBLE
+#endif //SOFA_WITH_FLOAT
         ;
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_ENGINE_API BoxROI<Vec3dTypes>;
 template class SOFA_ENGINE_API BoxROI<Rigid3dTypes>;
 template class SOFA_ENGINE_API BoxROI<Vec6dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#endif // SOFA_WITH_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_ENGINE_API BoxROI<Vec3fTypes>;
 template class SOFA_ENGINE_API BoxROI<Rigid3fTypes>;
 template class SOFA_ENGINE_API BoxROI<Vec6fTypes>;
-#endif //SOFA_DOUBLE
+#endif //SOFA_WITH_FLOAT
 
+} // namespace boxroi
 
 } // namespace constraint
 

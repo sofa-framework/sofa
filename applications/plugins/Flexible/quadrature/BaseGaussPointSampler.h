@@ -66,7 +66,7 @@ public:
     /** @name quadrature method */
     //@{
     Data<helper::OptionsGroup> f_method;    ///< Quadrature method <br>
-                                            /**< \arg \c 0 Gauss-Legendre http://en.wikipedia.org/wiki/Gaussian_quadrature
+    /**< \arg \c 0 Gauss-Legendre http://en.wikipedia.org/wiki/Gaussian_quadrature
                                                  \arg \c 1 Newton-Cotes http://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas
                                                  \arg \c 2 Elaston [Martin-2010] http://graphics.ethz.ch/publications/papers/paperMar10.php
                                             */
@@ -128,12 +128,12 @@ public:
 
     virtual void init()
     {
-        addOutput(&f_position);
+        addInput(&f_method);
+        addInput(&f_order);
+//        addInput(&f_position); // can be either input or output depending on the sampler
         addOutput(&f_volume);
         addOutput(&f_transforms);
-        setDirtyValue();
     }
-
 
     ///@brief Get the number of samples
     unsigned int getNbSamples() {return this->f_position.getValue().size(); }
@@ -144,19 +144,17 @@ public:
 
 protected:
 
-#ifndef SOFA_NO_OPENGL
     virtual void draw(const core::visual::VisualParams* vparams)
     {
-
-#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels()) return;
+
+        vparams->drawTool()->saveLastState();
+
         if (showSamplesScale.getValue()>0) {
             switch( drawMode.getValue() ) {
             case 1:
-                glPushAttrib(GL_LIGHTING_BIT);
-                glEnable(GL_LIGHTING);
+                vparams->drawTool()->setLightingEnabled(true);
                 vparams->drawTool()->drawSpheres(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
-                glPopAttrib();
                 break;
             default:
                 vparams->drawTool()->drawPoints(this->f_position.getValue(),showSamplesScale.getValue(),defaulttype::Vec<4,float>(0.2f, 1.0f, 0.2f, 1.0f));
@@ -167,9 +165,8 @@ protected:
             vparams->drawTool()->draw3DText_Indices(this->f_position.getValue(), showIndicesScale.getValue(), defaulttype::Vec<4,float>(0.1f, 0.7f, 0.1f, 1.0f));
         }
 
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
-#endif
 
 
 };

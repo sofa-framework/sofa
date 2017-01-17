@@ -43,29 +43,29 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PlaneForceField)
 
 int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 .add< PlaneForceField<Vec3dTypes> >()
 .add< PlaneForceField<Vec2dTypes> >()
 .add< PlaneForceField<Vec1dTypes> >()
 .add< PlaneForceField<Vec6dTypes> >()
 .add< PlaneForceField<Rigid3dTypes> >()
 #endif
-#ifndef SOFA_DOUBLE
-.add< PlaneForceField<Vec3fTypes> >() 
+#ifdef SOFA_WITH_FLOAT
+.add< PlaneForceField<Vec3fTypes> >()
 .add< PlaneForceField<Vec2fTypes> >()
 .add< PlaneForceField<Vec1fTypes> >()
 .add< PlaneForceField<Vec6fTypes> >()
 .add< PlaneForceField<Rigid3fTypes> >()
 #endif
 ;
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec6dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Rigid3dTypes>;
 #endif
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec2fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API PlaneForceField<Vec1fTypes>;

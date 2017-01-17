@@ -68,9 +68,6 @@
         <jointSolidRef id="s_ulna_radius">
             <offset type="relative">-2.499684 8.221661 1.142404 0.000000 0.000000 -0.000000 1.000000</offset>
         </jointSolidRef>
-        <dof index="x"/>
-        <dof index="z"/>
-        <dof index="y"/>
         <dof index="rx" max="1.5707963705062866" min="-1.7453292608261108"/>
         <dof index="rz" max="0.7853981852531433" min="-0.7853981852531433"/>
         <dof index="ry" max="0.03490658476948738" min="-0.03490658476948738"/>
@@ -82,9 +79,6 @@
         <jointSolidRef id="s_humerus">
             <offset type="relative">-2.130480 10.512712 0.670172 0.000000 0.000000 -0.000000 1.000000</offset>
         </jointSolidRef>
-        <dof index="x"/>
-        <dof index="z"/>
-        <dof index="y"/>
         <dof index="rx" max="2.268928050994873" min="-0.0872664600610733"/>
         <dof index="rz" max="0.0872664600610733" min="-0.0872664600610733"/>
         <dof index="ry" max="0.03490658476948738" min="-0.03490658476948738"/>

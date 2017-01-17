@@ -27,7 +27,6 @@
 #include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
-//#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -45,18 +44,9 @@ public:
 
     virtual bool load();
 
-    //    virtual bool canLoad(); // To Be replace by cancreate
-
-    //    virtual bool load (const char* filename){}
-
-
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        //std::cout << "MeshGmshLoader::cancreate()" << std::endl;
-
-        //      std::cout << BaseLoader::m_filename << " is not an Gmsh file." << std::endl;
-
         return BaseLoader::canCreate (obj, context, arg);
     }
 

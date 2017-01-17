@@ -108,7 +108,7 @@ public:
 
         if ( c != '[' )
         {
-            msg_error("Svector") << "read : Bad begin character : " << c << ", expected  [";
+            msg_error("SVector") << "read : Bad begin character : " << c << ", expected  [";
             return in;
         }
         std::streampos pos = in.tellg();
@@ -129,7 +129,7 @@ public:
             }
             if ( c != ']' )
             {
-                msg_error("Svector") << "read : Bad end character : " << c << ", expected  ]";
+                msg_error("SVector") << "read : Bad end character : " << c << ", expected  ]";
                 return in;
             }
         }
@@ -149,6 +149,16 @@ public:
     }
 
 };
+
+/// reading specialization for std::string
+/// SVector begins by [, ends by ] and separates elements with ,
+/// string elements must be delimited by ' or " (like a list of strings in python).
+/// example: ['string1' ,  "string 2 ",'etc...' ]
+template<>
+std::istream& SVector<std::string>::read( std::istream& in );
+template<>
+std::ostream& SVector<std::string>::write( std::ostream& os ) const;
+
 
 } // namespace helper
 
