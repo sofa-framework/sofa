@@ -155,7 +155,6 @@ public:
     defaulttype::MapMapSparseMatrix< Deriv > c2;
 
     Data< SReal > restScale;
-
     Data< bool >  showObject;
     Data< float > showObjectScale;
     Data< bool >  showIndices;
@@ -429,7 +428,7 @@ protected :
     sofa::core::objectmodel::DataFileName filename;
     Data< bool> ignoreLoader;
     Data< int > f_reserve;
-    Data< int > d_size ;
+    Data< int > d_initialSize ;
 
     bool m_initialized;
 

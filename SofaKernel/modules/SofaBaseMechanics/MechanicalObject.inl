@@ -107,9 +107,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
-    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader. (default=false)"))
+    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "If the Mechanical Object do not use a loader. (default=false)"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
-    , d_size(initData(&d_size, 0, "size", "Size of the state vectors. (default=0)"))
+    , d_initialSize(initData(&d_initialSize, 1, "initialSize", "Initial size of the state vectors. (default=1)"))
     , vsize(0)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
@@ -293,7 +293,9 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        //resize();
+        d_initialSize.setValue(atoi(arg->getAttribute("size", "0"))) ;
+        d_initialSize.setPersistent(true);
     }
 
     if (arg->getAttribute("scale") != NULL)
@@ -1076,6 +1078,8 @@ void MechanicalObject<DataTypes>::init()
     if(this->getContext()->getProcessor()!=-1)
         numa_set_preferred(this->getContext()->getProcessor()/2);
 #endif
+
+    resize(d_initialSize.getValue()) ;
 
     //Look at a topology associated to this instance of MechanicalObject by a tag
     this->getContext()->get(m_topology, this->getTags());
