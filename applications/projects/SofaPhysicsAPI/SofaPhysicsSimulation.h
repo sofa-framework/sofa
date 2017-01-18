@@ -19,12 +19,12 @@ class SofaPhysicsSimulation
 {
 public:
     SofaPhysicsSimulation(bool useGUI_ = false, int GUIFramerate_ = 0);
-    ~SofaPhysicsSimulation();
+    virtual ~SofaPhysicsSimulation();
 
-    virtual void APIName();
+    void APIName();
 
     bool load(const char* filename);
-    void createScene();    
+    void createScene();
 
     void start();
     void stop();
@@ -118,6 +118,11 @@ public:
     sofa::simulation::Node* getScene() const
     {
         return m_RootNode.get();
+    }
+
+    sofa::simulation::Node::SPtr getRootNode() const
+    {
+        return m_RootNode;
     }
 
 };

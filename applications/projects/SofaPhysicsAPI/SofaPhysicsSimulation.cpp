@@ -1,5 +1,5 @@
 #include "SofaPhysicsAPI.h"
-#include "SofaPhysicsSimulation_impl.h"
+#include "SofaPhysicsSimulation.h"
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
@@ -49,6 +49,7 @@ bool SofaPhysicsAPI::load(const char* filename)
 
 void SofaPhysicsAPI::createScene()
 {
+    std::cout << "SofaPhysicsAPI::createScene" <<std::endl;
     return impl->createScene();
 }
 
@@ -302,7 +303,7 @@ void SofaPhysicsSimulation::createScene()
         updateOutputMeshes();
     }
     else
-        std::cout <<"Error: can't get m_RootNode" << std::endl;
+        std::cerr <<"Error: can't get m_RootNode" << std::endl;
 }
 
 void SofaPhysicsSimulation::createScene_impl()
