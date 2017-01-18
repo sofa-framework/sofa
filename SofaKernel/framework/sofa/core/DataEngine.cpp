@@ -34,11 +34,7 @@ DataEngine::DataEngine()
     addLink(&(this->core::objectmodel::DDGNode::outputs));
 }
 
-DataEngine::~DataEngine()
-{
-    m_dataTrackers.clear();
-}
-
+DataEngine::~DataEngine(){}
 
 /// Add a new input to this engine
 void DataEngine::addInput(objectmodel::BaseData* n)
