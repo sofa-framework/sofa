@@ -289,7 +289,7 @@ Expected output: RABCDEEDCBAR
 
     static void getObjectByPath( Node::SPtr node, const std::string& searchpath, const std::string& objpath )
     {
-        void *foundObj = node->getObject(classid(Dummy), searchpath);
+        void *foundObj = node->getObject(Dummy::GetClass(), searchpath);
         ASSERT_TRUE( foundObj!=nullptr );
         Dummy* dummyObj = reinterpret_cast<Dummy*>(foundObj);
         ASSERT_TRUE( dummyObj!=nullptr );
@@ -335,7 +335,7 @@ Expected output: RABCDEEDCBAR
 
         // by path
         {
-        void* foundObj = A->getObject(classid(Dummy), "/inexisting");
+        void* foundObj = A->getObject(Dummy::GetClass(), "/inexisting");
         ASSERT_TRUE( foundObj==nullptr );
         }
 
