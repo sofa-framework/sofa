@@ -27,142 +27,142 @@
 
 #include "../plugins/SceneCreator/SceneCreator.h"
 
-SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI, int GUIFramerate)
-    : impl(new Impl(useGUI, GUIFramerate))
+SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
+    : impl(new SofaPhysicsSimulation(useGUI, GUIFramerate))
 {
 }
 
-SofaPhysicsSimulation::~SofaPhysicsSimulation()
+SofaPhysicsAPI::~SofaPhysicsAPI()
 {
     delete impl;
 }
 
-void SofaPhysicsSimulation::APIName()
+void SofaPhysicsAPI::APIName()
 {
     return impl->APIName();
 }
 
-bool SofaPhysicsSimulation::load(const char* filename)
+bool SofaPhysicsAPI::load(const char* filename)
 {
     return impl->load(filename);
 }
 
-void SofaPhysicsSimulation::createScene()
+void SofaPhysicsAPI::createScene()
 {
     return impl->createScene();
 }
 
-void SofaPhysicsSimulation::start()
+void SofaPhysicsAPI::start()
 {
     impl->start();
 }
 
-void SofaPhysicsSimulation::stop()
+void SofaPhysicsAPI::stop()
 {
     impl->stop();
 }
 
-void SofaPhysicsSimulation::step()
+void SofaPhysicsAPI::step()
 {
     impl->step();
 }
 
-void SofaPhysicsSimulation::reset()
+void SofaPhysicsAPI::reset()
 {
     impl->reset();
 }
 
-void SofaPhysicsSimulation::resetView()
+void SofaPhysicsAPI::resetView()
 {
     impl->resetView();
 }
 
-void SofaPhysicsSimulation::sendValue(const char* name, double value)
+void SofaPhysicsAPI::sendValue(const char* name, double value)
 {
     impl->sendValue(name, value);
 }
 
-void SofaPhysicsSimulation::drawGL()
+void SofaPhysicsAPI::drawGL()
 {
     impl->drawGL();
 }
 
-unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
+unsigned int SofaPhysicsAPI::getNbOutputMeshes()
 {
     return impl->getNbOutputMeshes();
 }
 
-SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID)
+SofaPhysicsOutputMesh** SofaPhysicsAPI::getOutputMesh(unsigned int meshID)
 {
     return impl->getOutputMesh(meshID);
 }
 
-SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
+SofaPhysicsOutputMesh** SofaPhysicsAPI::getOutputMeshes()
 {
     return impl->getOutputMeshes();
 }
 
-bool SofaPhysicsSimulation::isAnimated() const
+bool SofaPhysicsAPI::isAnimated() const
 {
     return impl->isAnimated();
 }
 
-void SofaPhysicsSimulation::setAnimated(bool val)
+void SofaPhysicsAPI::setAnimated(bool val)
 {
     impl->setAnimated(val);
 }
 
-double SofaPhysicsSimulation::getTimeStep() const
+double SofaPhysicsAPI::getTimeStep() const
 {
     return impl->getTimeStep();
 }
 
-void SofaPhysicsSimulation::setTimeStep(double dt)
+void SofaPhysicsAPI::setTimeStep(double dt)
 {
     impl->setTimeStep(dt);
 }
 
-double SofaPhysicsSimulation::getTime() const
+double SofaPhysicsAPI::getTime() const
 {
     return impl->getTime();
 }
 
-double SofaPhysicsSimulation::getCurrentFPS() const
+double SofaPhysicsAPI::getCurrentFPS() const
 {
     return impl->getCurrentFPS();
 }
 
-double* SofaPhysicsSimulation::getGravity() const
+double* SofaPhysicsAPI::getGravity() const
 {
     return impl->getGravity();
 }
 
-void SofaPhysicsSimulation::setGravity(double* gravity)
+void SofaPhysicsAPI::setGravity(double* gravity)
 {
     impl->setGravity(gravity);
 }
 
-const char* SofaPhysicsSimulation::getSceneFileName() const
+const char* SofaPhysicsAPI::getSceneFileName() const
 {
     return impl->getSceneFileName();
 }
 
-unsigned int SofaPhysicsSimulation::getNbDataMonitors()
+unsigned int SofaPhysicsAPI::getNbDataMonitors()
 {
     return impl->getNbDataMonitors();
 }
 
-SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
+SofaPhysicsDataMonitor** SofaPhysicsAPI::getDataMonitors()
 {
     return impl->getDataMonitors();
 }
 
-unsigned int SofaPhysicsSimulation::getNbDataControllers()
+unsigned int SofaPhysicsAPI::getNbDataControllers()
 {
     return impl->getNbDataControllers();
 }
 
-SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
+SofaPhysicsDataController** SofaPhysicsAPI::getDataControllers()
 {
     return impl->getDataControllers();
 }
@@ -177,7 +177,7 @@ using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
-SofaPhysicsSimulation::Impl::Impl(bool useGUI_, int GUIFramerate_) :
+SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_) :
 useGUI(useGUI_), GUIFramerate(GUIFramerate_)
 {
     static bool first = true;
@@ -229,7 +229,7 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     lastRedrawTime = 0;
 }
 
-SofaPhysicsSimulation::Impl::~Impl()
+SofaPhysicsSimulation::~SofaPhysicsSimulation()
 {
     for (std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*>::const_iterator it = outputMeshMap.begin(), itend = outputMeshMap.end(); it != itend; ++it)
     {
@@ -249,12 +249,12 @@ SofaPhysicsSimulation::Impl::~Impl()
     }
 }
 
-void SofaPhysicsSimulation::Impl::APIName()
+void SofaPhysicsSimulation::APIName()
 {
     std::cout << "SofaPhysicsSimulation API" << std::endl;
 }
 
-bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
+bool SofaPhysicsSimulation::load(const char* cfilename)
 {
     std::string filename = cfilename;
     std::cout << "FROM APP: SofaPhysicsSimulation::load(" << filename << ")" << std::endl;
@@ -289,7 +289,7 @@ bool SofaPhysicsSimulation::Impl::load(const char* cfilename)
     return success;
 }
 
-void SofaPhysicsSimulation::Impl::createScene()
+void SofaPhysicsSimulation::createScene()
 {
     m_RootNode = sofa::modeling::createRootWithCollisionPipeline();
     if (m_RootNode.get())
@@ -305,14 +305,14 @@ void SofaPhysicsSimulation::Impl::createScene()
         std::cout <<"Error: can't get m_RootNode" << std::endl;
 }
 
-void SofaPhysicsSimulation::Impl::createScene_impl()
+void SofaPhysicsSimulation::createScene_impl()
 {
     if (!m_RootNode.get())
         return;
 }
 
 
-void SofaPhysicsSimulation::Impl::sendValue(const char* name, double value)
+void SofaPhysicsSimulation::sendValue(const char* name, double value)
 {
     // send a GUIEvent to the tree
     if (m_RootNode!=0)
@@ -325,20 +325,20 @@ void SofaPhysicsSimulation::Impl::sendValue(const char* name, double value)
     this->update();
 }
 
-bool SofaPhysicsSimulation::Impl::isAnimated() const
+bool SofaPhysicsSimulation::isAnimated() const
 {
     if (getScene())
         return getScene()->getContext()->getAnimate();
     return false;
 }
 
-void SofaPhysicsSimulation::Impl::setAnimated(bool val)
+void SofaPhysicsSimulation::setAnimated(bool val)
 {
     if (val) start();
     else stop();
 }
 
-double SofaPhysicsSimulation::Impl::getTimeStep() const
+double SofaPhysicsSimulation::getTimeStep() const
 {
     if (getScene())
         return getScene()->getContext()->getDt();
@@ -346,7 +346,7 @@ double SofaPhysicsSimulation::Impl::getTimeStep() const
         return 0.0;
 }
 
-void SofaPhysicsSimulation::Impl::setTimeStep(double dt)
+void SofaPhysicsSimulation::setTimeStep(double dt)
 {
     if (getScene())
     {
@@ -354,7 +354,7 @@ void SofaPhysicsSimulation::Impl::setTimeStep(double dt)
     }
 }
 
-double SofaPhysicsSimulation::Impl::getTime() const
+double SofaPhysicsSimulation::getTime() const
 {
     if (getScene())
         return getScene()->getContext()->getTime();
@@ -362,12 +362,12 @@ double SofaPhysicsSimulation::Impl::getTime() const
         return 0.0;
 }
 
-double SofaPhysicsSimulation::Impl::getCurrentFPS() const
+double SofaPhysicsSimulation::getCurrentFPS() const
 {
     return currentFPS;
 }
 
-double *SofaPhysicsSimulation::Impl::getGravity() const
+double *SofaPhysicsSimulation::getGravity() const
 {
     double* gravityVec = new double[3];
 
@@ -382,14 +382,14 @@ double *SofaPhysicsSimulation::Impl::getGravity() const
     return gravityVec;
 }
 
-void SofaPhysicsSimulation::Impl::setGravity(double* gravity)
+void SofaPhysicsSimulation::setGravity(double* gravity)
 {
     Vec3d g = Vec3d(gravity[0], gravity[1], gravity[2]);
     getScene()->getContext()->setGravity(g);
 }
 
 
-void SofaPhysicsSimulation::Impl::start()
+void SofaPhysicsSimulation::start()
 {
     std::cout << "FROM APP: start()" << std::endl;
     if (isAnimated()) return;
@@ -400,7 +400,7 @@ void SofaPhysicsSimulation::Impl::start()
     }
 }
 
-void SofaPhysicsSimulation::Impl::stop()
+void SofaPhysicsSimulation::stop()
 {
     std::cout << "FROM APP: stop()" << std::endl;
     if (!isAnimated()) return;
@@ -412,7 +412,7 @@ void SofaPhysicsSimulation::Impl::stop()
 }
 
 
-void SofaPhysicsSimulation::Impl::reset()
+void SofaPhysicsSimulation::reset()
 {
     std::cout << "FROM APP: reset()" << std::endl;
     if (getScene())
@@ -422,7 +422,7 @@ void SofaPhysicsSimulation::Impl::reset()
     }
 }
 
-void SofaPhysicsSimulation::Impl::resetView()
+void SofaPhysicsSimulation::resetView()
 {
     if (getScene() && currentCamera)
     {
@@ -436,11 +436,11 @@ void SofaPhysicsSimulation::Impl::resetView()
     }
 }
 
-void SofaPhysicsSimulation::Impl::update()
+void SofaPhysicsSimulation::update()
 {
 }
 
-void SofaPhysicsSimulation::Impl::step()
+void SofaPhysicsSimulation::step()
 {
     sofa::simulation::Node* groot = getScene();
     if (!groot) return;
@@ -463,18 +463,18 @@ void SofaPhysicsSimulation::Impl::step()
     endStep();
 }
 
-void SofaPhysicsSimulation::Impl::beginStep()
+void SofaPhysicsSimulation::beginStep()
 {
 }
 
-void SofaPhysicsSimulation::Impl::endStep()
+void SofaPhysicsSimulation::endStep()
 {
     update();
     updateCurrentFPS();
     updateOutputMeshes();
 }
 
-void SofaPhysicsSimulation::Impl::updateCurrentFPS()
+void SofaPhysicsSimulation::updateCurrentFPS()
 {
     if (frameCounter==0)
     {
@@ -499,7 +499,7 @@ void SofaPhysicsSimulation::Impl::updateCurrentFPS()
     ++frameCounter;
 }
 
-void SofaPhysicsSimulation::Impl::updateOutputMeshes()
+void SofaPhysicsSimulation::updateOutputMeshes()
 {
     sofa::simulation::Node* groot = getScene();
     if (!groot)
@@ -527,12 +527,12 @@ void SofaPhysicsSimulation::Impl::updateOutputMeshes()
     }
 }
 
-unsigned int SofaPhysicsSimulation::Impl::getNbOutputMeshes()
+unsigned int SofaPhysicsSimulation::getNbOutputMeshes()
 {
     return outputMeshes.size();
 }
 
-SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMesh(unsigned int meshID)
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMesh(unsigned int meshID)
 {
     if (meshID >= outputMeshes.size())
         return NULL;
@@ -540,7 +540,7 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMesh(unsigned int 
         return &(outputMeshes[meshID]);
 }
 
-SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
+SofaPhysicsOutputMesh** SofaPhysicsSimulation::getOutputMeshes()
 {
     if (outputMeshes.empty())
         return NULL;
@@ -548,12 +548,12 @@ SofaPhysicsOutputMesh** SofaPhysicsSimulation::Impl::getOutputMeshes()
         return &(outputMeshes[0]);
 }
 
-unsigned int SofaPhysicsSimulation::Impl::getNbDataMonitors()
+unsigned int SofaPhysicsSimulation::getNbDataMonitors()
 {
     return dataMonitors.size();
 }
 
-SofaPhysicsDataMonitor** SofaPhysicsSimulation::Impl::getDataMonitors()
+SofaPhysicsDataMonitor** SofaPhysicsSimulation::getDataMonitors()
 {
     if (dataMonitors.empty())
     {
@@ -575,12 +575,12 @@ SofaPhysicsDataMonitor** SofaPhysicsSimulation::Impl::getDataMonitors()
     return &(dataMonitors[0]);
 }
 
-unsigned int SofaPhysicsSimulation::Impl::getNbDataControllers()
+unsigned int SofaPhysicsSimulation::getNbDataControllers()
 {
     return dataControllers.size();
 }
 
-SofaPhysicsDataController** SofaPhysicsSimulation::Impl::getDataControllers()
+SofaPhysicsDataController** SofaPhysicsSimulation::getDataControllers()
 {
     if (dataControllers.empty())
     {
@@ -602,7 +602,7 @@ SofaPhysicsDataController** SofaPhysicsSimulation::Impl::getDataControllers()
     return &(dataControllers[0]);
 }
 
-void SofaPhysicsSimulation::Impl::drawGL()
+void SofaPhysicsSimulation::drawGL()
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
@@ -793,7 +793,7 @@ void SofaPhysicsSimulation::Impl::drawGL()
 // ---------------------------------------------------------
 // --- Reshape of the window, reset the projection
 // ---------------------------------------------------------
-void SofaPhysicsSimulation::Impl::calcProjection()
+void SofaPhysicsSimulation::calcProjection()
 {
     int width = lastW;
     int height = lastH;

@@ -9,7 +9,6 @@
 #  define SOFA_SOFAPHYSICSAPI_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-class SofaPhysicsSimulation;
 class SofaPhysicsOutputMesh;
 class SofaPhysicsDataMonitor;
 class SofaPhysicsDataController;
@@ -18,12 +17,16 @@ typedef unsigned int Index; ///< Type used for topology indices
 typedef float Real;         ///< Type used for coordinates
 typedef void* ID;           ///< Type used for IDs
 
+/// Internal implementation sub-class
+class SofaPhysicsSimulation;
+
+
 /// Main class used to control a Sofa Simulation
-class SOFA_SOFAPHYSICSAPI_API SofaPhysicsSimulation
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsAPI
 {
 public:
-    SofaPhysicsSimulation(bool useGUI = false, int GUIFramerate = 0);
-    ~SofaPhysicsSimulation();
+    SofaPhysicsAPI(bool useGUI = false, int GUIFramerate = 0);
+    ~SofaPhysicsAPI();
 
     /// Load an XML file containing the main scene description
     bool load(const char* filename);
@@ -110,9 +113,7 @@ public:
     SofaPhysicsDataController** getDataControllers();
 
     /// Internal implementation sub-class
-    class Impl;
-    /// Internal implementation sub-class
-    Impl* impl;
+    SofaPhysicsSimulation* impl;
 };
 
 /// Class describing one output mesh (i.e. visual model) in the simulation
@@ -156,52 +157,6 @@ public:
     class Impl;
     /// Internal implementation sub-class
     Impl* impl;
-};
-
-class SOFA_SOFAPHYSICSAPI_API SofaPhysicsOutputMeshTetrahedron 
-{
-public:
-
-  SofaPhysicsOutputMeshTetrahedron();
-  ~SofaPhysicsOutputMeshTetrahedron();
-
-  const char* getName(); ///< (non-unique) name of this object
-  ID          getID();   ///< unique ID of this object
-
-  unsigned int getNbVertices(); ///< number of vertices
-  const Real* getVPositions();  ///< vertices positions (Vec3)
-  const Real* getVNormals();    ///< vertices normals   (Vec3)
-  const Real* getVTexCoords();  ///< vertices UVs       (Vec2)
-  int getTexCoordRevision();    ///< changes each time texture coord data are updated
-  int getVerticesRevision();    ///< changes each time vertices data are updated
-
-  unsigned int getNbVAttributes();                    ///< number of vertices attributes
-  unsigned int getNbAttributes(int index);            ///< number of the attributes in specified vertex attribute 
-  const char*  getVAttributeName(int index);          ///< vertices attribute name
-  int          getVAttributeSizePerVertex(int index); ///< vertices attribute #
-  const Real*  getVAttributeValue(int index);         ///< vertices attribute (Vec#)
-  int          getVAttributeRevision(int index);      ///< changes each time vertices attribute is updated
-
-  unsigned int getNbLines(); ///< number of lines
-  const Index* getLines();   ///< lines topology (2 indices / line)
-  int getLinesRevision();    ///< changes each time lines data is updated
-
-  unsigned int getNbTriangles(); ///< number of triangles
-  const Index* getTriangles();   ///< triangles topology (3 indices / triangle)
-  int getTrianglesRevision();    ///< changes each time triangles data is updated
-
-  unsigned int getNbQuads(); ///< number of quads
-  const Index* getQuads();   ///< quads topology (4 indices / quad)
-  int getQuadsRevision();    ///< changes each time quads data is updated
-
-  unsigned int getNbTetrahedrons(); ///< number of Tetrahedrons
-  const Index* getTetrahedrons();   ///< Tetrahedrons topology (4 indices / Tetrahedron)
-  int getTetrahedronsRevision();    ///< changes each time Tetrahedrons data is updated
-
-  /// Internal implementation sub-class
-  class Impl;
-  /// Internal implementation sub-class
-  Impl* impl;
 };
 
 /// Class for data monitoring

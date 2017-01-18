@@ -15,11 +15,11 @@
 #include <map>
 
 
-class SofaPhysicsSimulation::Impl
+class SofaPhysicsSimulation
 {
 public:
-    Impl(bool useGUI_ = false, int GUIFramerate_ = 0);
-    ~Impl();
+    SofaPhysicsSimulation(bool useGUI_ = false, int GUIFramerate_ = 0);
+    ~SofaPhysicsSimulation();
 
     virtual void APIName();
 
