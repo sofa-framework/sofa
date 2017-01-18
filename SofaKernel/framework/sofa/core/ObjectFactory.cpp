@@ -123,8 +123,11 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     else
     {
 //        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
-        ClassEntry::SPtr entry = it->second;
-        if(templatename.empty()) templatename = entry->defaultTemplate;
+        entry = it->second;
+        // If no template has been given or if the template does not exist, first try with the default one
+        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+            templatename = entry->defaultTemplate;
+
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
