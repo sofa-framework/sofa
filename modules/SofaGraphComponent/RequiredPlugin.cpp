@@ -42,12 +42,12 @@ int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >();
 
 RequiredPlugin::RequiredPlugin()
-    : pluginName( initData(&pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))
-    , suffixMap ( initData(&suffixMap , "suffixMap", "standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix"))
-    , stopAfterFirstNameFound( initData(&stopAfterFirstNameFound , false, "stopAfterFirstNameFound", "Stop after the first plugin name that is loaded successfully"))
-    , stopAfterFirstSuffixFound( initData(&stopAfterFirstSuffixFound , true, "stopAfterFirstSuffixFound", "For each plugin name, stop after the first suffix that is loaded successfully"))
-    , requireOne ( initData(&requireOne , true, "requireOne", "Display an error message if no plugin names were successfully loaded"))
-    , requireAll ( initData(&requireAll , false, "requireAll", "Display an error message if any plugin names failed to be loaded"))
+    : d_pluginName( initData(&d_pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))
+    , d_suffixMap ( initData(&d_suffixMap , "suffixMap", "standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix"))
+    , d_stopAfterFirstNameFound( initData(&d_stopAfterFirstNameFound , false, "stopAfterFirstNameFound", "Stop after the first plugin name that is loaded successfully"))
+    , d_stopAfterFirstSuffixFound( initData(&d_stopAfterFirstSuffixFound , true, "stopAfterFirstSuffixFound", "For each plugin name, stop after the first suffix that is loaded successfully"))
+    , d_requireOne ( initData(&d_requireOne , false, "requireOne", "Display an error message if no plugin names were successfully loaded"))
+    , d_requireAll ( initData(&d_requireAll , true, "requireAll", "Display an error message if any plugin names failed to be loaded"))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
 }
@@ -55,15 +55,14 @@ RequiredPlugin::RequiredPlugin()
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
-    if (!pluginName.getValue().empty())
-        loadPlugin();
+    loadPlugin();
 }
 
-void RequiredPlugin::loadPlugin( const std::string& pluginName )
+void RequiredPlugin::loadPlugin()
 {
     sofa::helper::system::PluginManager* pluginManager = &sofa::helper::system::PluginManager::getInstance();
     std::string defaultSuffix = pluginManager->getDefaultSuffix();
-    const helper::vector<helper::fixed_array<std::string,2> >& sMap = suffixMap.getValue();
+    const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
     helper::vector<std::string> suffixVec;
     if (!sMap.empty())
     {
@@ -78,13 +77,15 @@ void RequiredPlugin::loadPlugin( const std::string& pluginName )
     }
     if (suffixVec.empty())
         suffixVec.push_back(defaultSuffix);
-    const helper::vector<std::string>& nameVec = pluginName.getValue();
+    const helper::vector<std::string>& nameVec = d_pluginName.getValue();
+    helper::vector<std::string> nameVecCopy=nameVec;
+    if(nameVec.empty()) nameVecCopy.push_back(this->getName());
     helper::vector< std::string > loaded;
     helper::vector< std::string > failed;
     std::ostringstream errmsg;
-    for (std::size_t nameIndex = 0; nameIndex < nameVec.size(); ++nameIndex)
+    for (std::size_t nameIndex = 0; nameIndex < nameVecCopy.size(); ++nameIndex)
     {
-        const std::string& name = nameVec[nameIndex];
+        const std::string& name = nameVecCopy[nameIndex];
         //sout << "Loading " << name << sendl;
         bool nameLoaded = false;
         for (std::size_t suffixIndex = 0; suffixIndex < suffixVec.size(); ++suffixIndex)
@@ -101,7 +102,7 @@ void RequiredPlugin::loadPlugin( const std::string& pluginName )
                 sout << "Loaded " << pluginPath << sendl;
                 loaded.push_back(pluginPath);
                 nameLoaded = true;
-                if (stopAfterFirstSuffixFound.getValue()) break;
+                if (d_stopAfterFirstSuffixFound.getValue()) break;
             }
         }
         if (!nameLoaded)
@@ -110,12 +111,12 @@ void RequiredPlugin::loadPlugin( const std::string& pluginName )
         }
         else
         {
-            if (stopAfterFirstNameFound.getValue()) break;
+            if (d_stopAfterFirstNameFound.getValue()) break;
         }
     }
     if (!failed.empty())
     {
-        if ((requireAll.getValue() || (requireOne.getValue() && loaded.empty())))
+        if ((d_requireAll.getValue() || (d_requireOne.getValue() && loaded.empty())))
         {
             serr << errmsg.str();
             serr << "Required plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed << sendl;

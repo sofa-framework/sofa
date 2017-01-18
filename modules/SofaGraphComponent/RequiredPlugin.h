@@ -48,12 +48,12 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
     sofa::core::objectmodel::Data<helper::vector<std::string> > pluginName;
-    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > suffixMap;
+    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap;
 
-    sofa::core::objectmodel::Data<bool> stopAfterFirstNameFound;
-    sofa::core::objectmodel::Data<bool> stopAfterFirstSuffixFound;
-    sofa::core::objectmodel::Data<bool> requireOne;
-    sofa::core::objectmodel::Data<bool> requireAll;
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound;
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound;
+    sofa::core::objectmodel::Data<bool> d_requireOne;
+    sofa::core::objectmodel::Data<bool> d_requireAll;
 
 protected:
     RequiredPlugin();
@@ -63,7 +63,7 @@ public:
 
     virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
-    static void loadPlugin( const std::string& pluginName );
+    void loadPlugin();
 
 };
 
