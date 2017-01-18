@@ -8,7 +8,7 @@ set(HEADER_FILES
     SofaPhysicsDataController_impl.h
     SofaPhysicsDataMonitor_impl.h
     SofaPhysicsOutputMesh_impl.h
-    SofaPhysicsSimulation_impl.h
+    SofaPhysicsSimulation.h
     fakegui.h
 )
 
