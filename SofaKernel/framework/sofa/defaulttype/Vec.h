@@ -68,6 +68,7 @@ public:
     }
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit Vec(real r1)
     {
         set( r1 );
@@ -80,61 +81,70 @@ public:
     }
 
     /// Specific constructor for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     Vec(real r1, real r2)
     {
         set( r1, r2 );
     }
 
     /// Specific constructor for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     Vec(real r1, real r2, real r3)
     {
         set( r1, r2, r3 );
     }
 
     /// Specific constructor for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4)
     {
         set( r1, r2, r3, r4 );
     }
 
     /// Specific constructor for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5)
     {
         set( r1, r2, r3, r4, r5 );
     }
 
     /// Specific constructor for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6)
     {
         set( r1, r2, r3, r4, r5, r6 );
     }
 
     /// Specific constructor for 6-elements vectors.
-    template<typename R, typename T>
+    template<typename R, typename T, int NN=N, typename std::enable_if<NN==6,int>::type = 0 >
     Vec( const Vec<3,R>& a , const Vec<3,T>& b )
     {
         set( a[0], a[1], a[2], b[0], b[1], b[2] );
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7)
     {
         set( r1, r2, r3, r4, r5, r6, r7 );
     }
 
     /// Specific constructor for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8 );
     }
 
     /// Specific constructor for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8, r9 );
     }
 
     /// Specific constructor for 12-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==12,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12 );
