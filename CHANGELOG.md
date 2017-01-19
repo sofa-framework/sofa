@@ -3,52 +3,146 @@
 
 
 ## On master branch (not released yet)
+### Environment
+
+
+
+### New features for users
+
+
+
+### New features for developpers
+
+
+
+### Improvements
+
+- XXX new tests
+- XXX/YYY components have an associated example
+
+### Bug Fixes
+
+
+
+### Cleaning
+
+
+
+### Moved files
+
+
+____________________________________________________________
+
+
+
+## v16.12
+
+**Last commit: on Jan 08, 2017**
 
 ### Environment
 - **C++11 is now mandatory**. This implies some changes in building tools.
     - Generator: CMake 3.1 or higher.
     - Compiler: GCC 4.8 or higher, Clang 3.4 or higher, Microsoft Visual C++ 2013 or higher.
 
+
 ### New features for users
 
-- adding ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
+- new Geomagic plugin: supporting latest versions of force feedback interfaces from Geomagic
+- add ForceMaskOff, a component to locally (in a branch of the scene graph) cancel the force mask
 - live-coding for python 
 - live-coding for GLSL 
 - new component MakeAlias 
 - new component MakeDataAlias
 - improved error message & console rendering
 
+
+
 ### New features for developpers
 
-* preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
-* class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
-* class CountingMessageHandler (count the number of message for each message type)
-* class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
-* class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
-* FileMonitor is now implemented on MacOS & Windows (for live-coding features, for example)
-* Implements the move semantics on sofa::helper::vector 
+- Preliminary Markdown support in the msg_* API. You can now write much better formatting & alignement as well as adding URL to documentations related to  the error.
+- class RichStyleConsoleFormatter which interprete the markdowns in the message and format this to a resizable console with nice alignement.
+- class CountingMessageHandler (count the number of message for each message type)
+- class RoutingMessageHandler (to implement context specific routing of the messages to different handler) 
+- class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
+- FileMonitor is now implemented on MacOS & Windows (for live-coding features, for example)
+- RequiredPlugin: modified API to take a list of plugins to load
+- Implements the move semantics on sofa::helper::vector 
 
 ### Improvements
-*   XXXX new tests
-*   YYYY/ZZZ components have an associated example 
-*   RigidMapping: in case jetJs is called several times per step
-*   [SofaPython]
-    *   binding AssembledSystem as a new class in python
-    *   adding Compliant.getImplicitAssembledSystem(node)
-    *   SofaNumpy: bind/share a c++ 1d array as a numpy array
 
-*   [image]
-    *   raw import: adding commented basic size verifications (could be performed in debug)
-  
+- **372 new tests**: DAGNode, MeshObj, DiagonalMass, BoxROI, ComplementaryROI, DifferenceEngine, BilateralInteractionConstraint, Quaternion, ImagePNG, etc.
+- 184/480 components have an associated example
+- [SofaKernel]
+    - replace raw pointers with a smart ones
+    - add a ComponentState attribute to BaseObject
+    - BaseData::typeName is now public: useful to debug
+    - implement DataTrackerEngine, a kind of DataEngine but that is not a BaseObject
+    - fix SVector<std::string>. The string serialization changed
+- [SofaRigid]
+    - in case jetJs is called several times per step
+- [SofaGeneralLoader] 
+    - MeshVTKLoader can now read FIELD data of legacy file. Lookup tables are ignored.
+- [SofaPython]
+    - binding AssembledSystem as a new class in python
+    - binding VisualModel::exportOBJ
+    - binding for DataFileNameVector
+    - add Compliant.getImplicitAssembledSystem(node)
+    - SofaNumpy: bind/share a c++ 1d array as a numpy array
+    - script.Controller :  handle optional arguments before createGraph
+- [image]
+    - raw import: add commented basic size verifications (could be performed in debug)
+- [Flexible]
+    - add support for shapefunction viewer
+    - new feature of strain smoothing
+    - improve readme file
+- [Compliant]
+    - simulation unit: convert gravity, dt
+    - MaskMapping: every input are now mapped 
+    - add LinearDiagonalCompliance component
+    - fix use of VLA in python mappings
+    - improve readme file
+
 ### Bug Fixes
 
 - fix ConstantForceField::updateForceMask()
+- fix ObjExporter memory leak
+- [SofaOpenGLVisual] OglTexture: fix possible memory leaks 
+- [Compliant]
+    - clean python
+
 
 ### Cleaning
 
 - clean the compilation when SOFA_NO_OPENGL flag is activated
+- clean the config.h (SOFAGUI_HAVE_QWT)
+- remove boost library links (includes still required). boost chrono is not required anymore.
+- remove unused POINT_DATA_VECTOR_ACCESS macro
+- make miniflowVR build optional (default OFF)
+- [SofaKernel]
+    - remove last direct opengl calls in modules
+    - add deprecation message on MechanicalObject attributes
+- [SofaBaseVisual] clean BaseCamera: remove direct opengl calls
+- [SofaHaptics] boost-thread is not used any more, clean cmake
+- [SofaGeneralLoader] STLLoader: fixing binary loading in debug and cleaning examples
+- [SofaPython]
+    - remove ScriptEnvironment i.e. automatic initialization of Node
+    - Node::isInitialized(), not used anymore
+- [Flexible]
+    - clean relativeStrainMapping
+
 
 ### Moved files
+
+- move CImg from extlibs to image plugin extlibs
+
+
+### Documentation
+
+- Add the contribution and guidelines : **CONTRIBUTING.md** and **GUIDELINES.md**
+- Add the configuration required (ex: C++, compiler versions)
+- Add a page to use SOFA in Matlab
+- Improve Logger documentation
+- Add a page to use SOFA in Matlab
 
 
 ____________________________________________________________
