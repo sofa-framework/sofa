@@ -75,6 +75,7 @@ public:
     }
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     void operator=(real r1)
     {
         set( r1 );
