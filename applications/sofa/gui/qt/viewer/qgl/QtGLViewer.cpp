@@ -993,7 +993,12 @@ void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mousePressEvent(e);
+    {
+        if ( isControlPressed() )
+            SofaViewer::mousePressEvent(e);
+        else
+            QGLViewer::mousePressEvent(e);
+    }
 }
 
 
@@ -1002,7 +1007,12 @@ void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mouseReleaseEvent(e);
+    {
+        if (isControlPressed())
+            SofaViewer::mouseReleaseEvent(e);
+        else
+            QGLViewer::mouseReleaseEvent(e);
+    }
 }
 
 
@@ -1012,7 +1022,12 @@ void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mouseMoveEvent(e);
+    {
+        if ( isControlPressed() )
+            SofaViewer::mouseMoveEvent(e);
+        else
+            QGLViewer::mouseMoveEvent(e);
+    }
 }
 
 
