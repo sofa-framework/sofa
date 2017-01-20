@@ -64,19 +64,19 @@ public:
     using Vec<4,T>::z ;
     using Vec<4,T>::w ;
 
-    float& SOFA_DEFAULTTYPE_API r(){ return x() ; }
-    float& SOFA_DEFAULTTYPE_API g(){ return y() ; }
-    float& SOFA_DEFAULTTYPE_API b(){ return z() ; }
-    float& SOFA_DEFAULTTYPE_API a(){ return w() ; }
-    const float& SOFA_DEFAULTTYPE_API r() const { return x() ; }
-    const float& SOFA_DEFAULTTYPE_API g() const { return y() ; }
-    const float& SOFA_DEFAULTTYPE_API b() const { return z() ; }
-    const float& SOFA_DEFAULTTYPE_API a() const { return w() ; }
+    float& r(){ return x() ; }
+    float& g(){ return y() ; }
+    float& b(){ return z() ; }
+    float& a(){ return w() ; }
+    const float& r() const { return x() ; }
+    const float& g() const { return y() ; }
+    const float& b() const { return z() ; }
+    const float& a() const { return w() ; }
 
-    void SOFA_DEFAULTTYPE_API r(const float rr){ x()=rr; }
-    void SOFA_DEFAULTTYPE_API g(const float rr){ y()=rr; }
-    void SOFA_DEFAULTTYPE_API b(const float rr){ z()=rr; }
-    void SOFA_DEFAULTTYPE_API a(const float rr){ w()=rr; }
+    void r(const float r){ x()=r; }
+    void g(const float r){ y()=r; }
+    void b(const float r){ z()=r; }
+    void a(const float r){ w()=r; }
 
     friend std::istream& operator>>(std::istream& i, TRGBAColor<float>& t) ;
 
