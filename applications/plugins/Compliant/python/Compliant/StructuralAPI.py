@@ -676,7 +676,7 @@ class DistanceRigidJoint:
             self.node = node.createChild( 'constraint' )
             self.dofs = self.node.createObject('MechanicalObject', template = 'Vec1'+template_suffix, name = 'dofs', position = '0' )
             self.topology = self.node.createObject('EdgeSetTopologyContainer', edges="0 1" )
-            self.mapping = self.node.createObject('DistanceMapping',  name='mapping', rest_length=(rest_length if rest_length>0 else "" ) )
+            self.mapping = self.node.createObject('DistanceMapping',  name='mapping', restLengths=(rest_length if rest_length>0 else "" ) )
             self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
             # self.type = self.node.createObject('Stabilization')
 
