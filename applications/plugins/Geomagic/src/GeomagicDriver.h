@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, ____VERSION_NUMBER____  *
-*                (c) 2006-YYYY INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,7 +28,10 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
+
+#ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
+#endif
 
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/behavior/BaseController.h>
