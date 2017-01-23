@@ -14,6 +14,8 @@ set(SOURCE_FILES
         DilateEngine_test.cpp
         ExtrudeEdgesAndGenerateQuads_test.cpp
         MeshROI_test.cpp
+        SphereROI_test.cpp
+        PlaneROI_test.cpp
         TransformEngine_test.cpp
 
         )

@@ -89,10 +89,12 @@ find_package(CImg REQUIRED)
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
 
-# Config files and install rules for pythons scripts
-sofa_set_python_directory(${PROJECT_NAME} "python")
+if( SofaPython_FOUND )
+    # Config files and install rules for pythons scripts
+    sofa_set_python_directory(${PROJECT_NAME} "python")
+endif()
 
-if(NOT SOFA-NO_OPENGL)
+if(NOT ${SOFA_NO_OPENGL})
     list(APPEND HEADER_FILES ImageViewer.h)
     list(APPEND SOURCE_FILES ImageViewer.cpp)
 endif()

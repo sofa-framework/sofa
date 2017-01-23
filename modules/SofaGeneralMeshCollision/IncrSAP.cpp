@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -233,7 +230,7 @@ IncrSAP::IncrSAP()
 
 IncrSAP::~IncrSAP(){
     for(int i = 0 ; i < 3 ; ++i)
-        for(typename EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
             delete (*it);
 
 
@@ -244,7 +241,7 @@ IncrSAP::~IncrSAP(){
 
 void IncrSAP::purge(){
     for(int i = 0 ; i < 3 ; ++i){
-        for(typename EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
+        for(EndPointList::iterator it = _end_points[i].begin() ; it != _end_points[i].end() ; ++it)
             delete (*it);
 
         _end_points[i].clear();
@@ -343,7 +340,7 @@ int IncrSAP::greatestVarianceAxis()const{
 
     //computing the mean value of end points on each axis
     for(int j = 0 ; j < 3 ; ++j)
-        for(typename EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it)
+        for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it)
             m[j] += (**it).value;
 
     m[0] /= 2*_boxes.size();
@@ -352,7 +349,7 @@ int IncrSAP::greatestVarianceAxis()const{
 
     //computing the variance of end points on each axis
     for(int j = 0 ; j < 3 ; ++j){
-        for(typename EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
+        for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
             diff = (**it).value - m[j];
             v[j] += diff*diff;
         }
@@ -380,7 +377,7 @@ void IncrSAP::updateEndPoints(){
 void IncrSAP::setEndPointsID(){
     for(int dim = 0 ; dim < 3 ; ++dim){
         int ID = 0;
-        for(typename EndPointList::iterator it = _end_points[dim].begin() ; it != _end_points[dim].end() ; ++it){
+        for(EndPointList::iterator it = _end_points[dim].begin() ; it != _end_points[dim].end() ; ++it){
             (**it).ID = ID;
             ++ID;
         }
@@ -402,7 +399,7 @@ void IncrSAP::reinitDetection(){
 void IncrSAP::showEndPoints()const{
     for(int j = 0 ; j < 3 ; ++j){
         std::cout<<"dimension "<<j<<"==========="<<std::endl;
-        for(typename EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
+        for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
             const EndPointID & end_pt = (**it);
             end_pt.show();
         }
@@ -487,7 +484,7 @@ void IncrSAP::boxPrune(){
                                  //                  the active boxes.
                                  //                 -every time we encounter a max end point of a box, we are sure that we encountered min end point of a box because _end_points is sorted,
                                  //                  so, we delete the owner box, of this max end point from the active boxes
-    for(typename EndPointList::iterator it = _end_points[_cur_axis].begin() ; it != _end_points[_cur_axis].end() ; ++it){
+    for(EndPointList::iterator it = _end_points[_cur_axis].begin() ; it != _end_points[_cur_axis].end() ; ++it){
         if((**it).max()){//erase it from the active_boxes
             assert(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()) != active_boxes.end());
             active_boxes.erase(std::find(active_boxes.begin(),active_boxes.end(),(**it).boxID()));
@@ -545,14 +542,14 @@ void IncrSAP::beginNarrowPhase(){
 }
 
 
-bool IncrSAP::assertion_order(typename EndPointList::iterator it,typename EndPointList::iterator begin,typename EndPointList::iterator end){
+bool IncrSAP::assertion_order(EndPointList::iterator it,EndPointList::iterator begin,EndPointList::iterator end){
     CompPEndPoint comp;
-    typename EndPointList::iterator next_it = it;++next_it;
+    EndPointList::iterator next_it = it;++next_it;
     if(next_it != end && comp(*next_it,*it))
         return false;
 
     if(it != begin){
-        typename EndPointList::iterator prev_it = it;--prev_it;
+        EndPointList::iterator prev_it = it;--prev_it;
         if(comp(*it,*prev_it))
             return false;
     }
@@ -562,9 +559,9 @@ bool IncrSAP::assertion_order(typename EndPointList::iterator it,typename EndPoi
 
 
 
-bool IncrSAP::assertion_list_order(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it){
+bool IncrSAP::assertion_list_order(EndPointList::iterator begin_it,const EndPointList::iterator & end_it){
     CompPEndPoint inferior;
-    typename EndPointList::iterator next_it = begin_it;
+    EndPointList::iterator next_it = begin_it;
     ++next_it;
     for(;next_it != end_it ; ++next_it,++begin_it){
         if(inferior(*next_it,*begin_it))
@@ -576,7 +573,7 @@ bool IncrSAP::assertion_list_order(typename EndPointList::iterator begin_it,cons
 
 
 
-bool IncrSAP::assertion_superior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point){
+bool IncrSAP::assertion_superior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point){
     CompPEndPoint inferior;
     for(;begin_it != end_it ;++begin_it){
         if(inferior(point,*begin_it)){
@@ -590,7 +587,7 @@ bool IncrSAP::assertion_superior(typename EndPointList::iterator begin_it,const 
 }
 
 
-bool IncrSAP::assertion_inferior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point){
+bool IncrSAP::assertion_inferior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point){
     CompPEndPoint inferior;
     for(;begin_it != end_it ;++begin_it){
         if(inferior(*begin_it,point))
@@ -608,9 +605,9 @@ bool IncrSAP::assertion_end_points_sorted() const{
     int n = 0;
     for(int dim = 0 ; dim < 3 ; ++dim){
         int ID = 0;
-        typename EndPointList::const_iterator next_it2;
+        EndPointList::const_iterator next_it2;
         int equality_number = 0;
-        for(typename EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
+        for(EndPointList::const_iterator it2 = _end_points[dim].begin() ; it2 != _end_points[dim].end() ; ++it2){
             assert((**it2).ID == ID);
 
             next_it2 = it2;
@@ -651,7 +648,7 @@ bool IncrSAP::assertion_end_points_sorted() const{
 //}
 
 
-void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it){
+void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it){
     CompPEndPoint inferior;
     do{
         if((**next_it).max())
@@ -671,7 +668,7 @@ void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,typename EndPoin
 
 
 
-void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it){
+void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it){
     CompPEndPoint inferior;
     do{
         if((**next_it).min())
@@ -690,7 +687,7 @@ void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,typename EndPoin
 }
 
 
-void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it){
+void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it){
     CompPEndPoint inferior;
     do{
         if((**prev_it).max())
@@ -713,7 +710,7 @@ void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,typename EndPoi
 }
 
 
-void IncrSAP::moveMaxBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it){
+void IncrSAP::moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it){
     CompPEndPoint inferior;
     do{
         if((**prev_it).min())
@@ -748,7 +745,7 @@ void IncrSAP::updateMovingBoxes(){
     EndPointID * cur_end_point_min,*cur_end_point_max;
     cur_end_point_min = cur_end_point_max = 0x0;
 
-    typename EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
+    EndPointList::iterator it_min,next_it_min,prev_it_min,base_it_min,it_max,next_it_max,prev_it_max,base_it_max;
     bool min_updated,max_updated,min_moving,max_moving;
     EndPointID updated_min;
     EndPointID updated_max;

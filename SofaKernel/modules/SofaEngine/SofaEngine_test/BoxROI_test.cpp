@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -87,6 +84,10 @@ struct BoxROITest :  public ::testing::Test
         initBaseMechanics();
         setSimulation( m_simu = new DAGSimulation() );
         m_root = m_simu->createNewGraph("root");
+
+        m_node = m_root->createChild("node") ;
+        m_boxroi = New< TheBoxROI >() ;
+        m_node->addObject(m_boxroi) ;
     }
 
     void TearDown()
@@ -99,9 +100,6 @@ struct BoxROITest :  public ::testing::Test
     /// It is important to freeze what are the available Data field
     /// of a component and rise warning/errors when some one removed.
     void attributesTests(){
-        m_node = m_root->createChild("node") ;
-        m_boxroi = New< TheBoxROI >() ;
-        m_node->addObject(m_boxroi) ;
 
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
@@ -249,6 +247,56 @@ struct BoxROITest :  public ::testing::Test
         EXPECT_EQ(boxroi->getComponentState(), ComponentState::Invalid ) << "The component should fails to initialized because there is no topology in this context. " ;
     }
 
+
+    /// Test isPointInBox computation with a simple example
+    void isPointInBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 1. 1. 1.");
+        m_boxroi->findData("position")->read("0. 0. 0. 1. 1. 1. 2. 2. 2.");
+        m_boxroi->update();
+
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1");
+    }
+
+
+    /// Test isEdgeInBox computation with a simple example
+    void isEdgeInBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 1. 1. 1.");
+        m_boxroi->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
+        m_boxroi->findData("edges")->read("0 1 1 2");
+        m_boxroi->update();
+
+        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1 ");
+    }
+
+
+    /// Test isTriangleInBox computation with a simple example
+    void isTriangleInBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 1. 1. 1.");
+        m_boxroi->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 2. 0. 0.");
+        m_boxroi->findData("triangles")->read("0 1 2 1 3 2");
+        m_boxroi->update();
+
+        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+    }
+
+
+    /// Test isTetrahedraInBox computation with a simple example
+    void isTetrahedraInBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 1. 1. 1.");
+        m_boxroi->findData("position")->read("0. 0. 0. 1. 0. 0. 1. 1. 0. 1. 0. 1. 2. 0. 0.");
+        m_boxroi->findData("tetrahedra")->read("0 1 2 3 1 2 4 3");
+        m_boxroi->update();
+
+        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+    }
+
 };
 
 
@@ -292,3 +340,21 @@ TYPED_TEST(BoxROITest, checkAutomaticSearchingOfMeshLoader) {
 //TYPED_TEST(BoxROITest, checkMissingTopology) {
 //    ASSERT_NO_THROW(this->checkMissingTopology()) ;
 //}
+
+TYPED_TEST(BoxROITest, isPointInBoxTest) {
+    ASSERT_NO_THROW(this->isPointInBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isEdgeInBoxTest) {
+    ASSERT_NO_THROW(this->isEdgeInBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isTriangleInBoxTest) {
+    ASSERT_NO_THROW(this->isTriangleInBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isTetrahedraInBoxTest) {
+    ASSERT_NO_THROW(this->isTetrahedraInBoxTest()) ;
+}
+
+
