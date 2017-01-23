@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -88,6 +85,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
@@ -144,7 +142,10 @@ public:
     }
     void setReadOnly(bool readOnly)
     {
-        if(w) helper::setReadOnly(w, readOnly);
+        if(w){
+            w->setEnabled(!readOnly);
+            helper::setReadOnly(w, readOnly);
+        }
     }
     void readFromData(const data_type& d)
     {
@@ -226,7 +227,7 @@ public:
     static Widget* create(QWidget* parent, const data_type& /*d*/)
     {
         Widget* w = new Widget(parent);
-		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
@@ -240,6 +241,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
@@ -346,7 +348,7 @@ public:
         w->setMaximum(vmax);
         w->setSingleStep(1);
 
-		w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)
@@ -817,6 +819,7 @@ public:
     }
     static void setReadOnly(Widget* w, bool readOnly)
     {
+        w->setEnabled(!readOnly);
         w->setReadOnly(readOnly);
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)

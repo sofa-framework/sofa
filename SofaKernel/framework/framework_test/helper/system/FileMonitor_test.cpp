@@ -15,6 +15,10 @@ using std::string ;
 using sofa::helper::system::FileEventListener ;
 using sofa::helper::system::FileMonitor ;
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 static std::string getPath(std::string s) {
     return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
 }
@@ -30,6 +34,18 @@ void createAFilledFile(const string filename, unsigned int rep){
         file1.write(sample.c_str(), sample.size()) ;
     }
     file1.close();
+}
+
+void waitForFileEvents()
+{
+    // on osx there is a latency between 0.2 and 0.5s for file events...
+#ifdef __APPLE__
+	sleep(1);
+#endif
+	// on windows we use file date, which resoution is assumed (by us) to be below this value in ms
+#ifdef WIN32
+	Sleep(100);
+#endif
 }
 
 class MyFileListener : public FileEventListener
@@ -85,6 +101,8 @@ TEST(FileMonitor, addFileTwice_test)
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
+
+    waitForFileEvents();
     FileMonitor::updates(0) ;
 
     // The listener should be notified 1 times with the same event.
@@ -109,6 +127,7 @@ TEST(FileMonitor, updateNoChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
+    waitForFileEvents();
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
@@ -120,10 +139,12 @@ TEST(FileMonitor, fileChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    FileMonitor::updates(0) ;
+	waitForFileEvents();
+	FileMonitor::updates(0) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
+    waitForFileEvents();
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -142,6 +163,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 100) ;
     createAFilledFile(getPath("existing.txt"), 200) ;
 
+    waitForFileEvents();
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -164,6 +186,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
+    waitForFileEvents();
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
@@ -188,10 +211,29 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::removeListener(&listener1) ;
 
+    waitForFileEvents();
     FileMonitor::updates(0) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener1) ;
     FileMonitor::removeListener(&listener2) ;
+}
+
+TEST(FileMonitor, fileChange2_test)
+{
+    MyFileListener listener ;
+
+    FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
+    waitForFileEvents();
+    FileMonitor::updates(0) ;
+
+    // change the file content..
+    createAFilledFile(getPath("existing.txt"), 10) ;
+
+    waitForFileEvents();
+    FileMonitor::updates(0) ;
+    EXPECT_EQ( listener.m_files.size(), 1u) ;
+
+    FileMonitor::removeListener(&listener) ;
 }
