@@ -9,6 +9,7 @@
 
 ### New features for users
 
+- Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 
 
 ### New features for developpers
@@ -26,7 +27,7 @@
 
 ### Cleaning
 
-
+- Clean the attributes names in BoxROI (API BREAKING)
 
 ### Moved files
 
