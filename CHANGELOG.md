@@ -43,6 +43,7 @@
 
 ### Cleaning
 
+*   Clean DefaultPipeline.cpp/h (API BREAKING) 
 
 
 ### Moved files
