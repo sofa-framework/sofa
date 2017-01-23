@@ -13,7 +13,8 @@
 
 ### New features for developpers
 
-
+- Add a Logger component that stores the history of messages into each sofa component. 
+ 
 
 ### Improvements
 
