@@ -11,7 +11,7 @@
 # - CI_ARCH = x86 | amd64     (for Windows builds)
 # - CI_BUILD_TYPE             Debug|Release
 # - CC and CXX
-# - CI_COMPILER               # important for Visual Studio paths (VS-2012 or VS-2015)
+# - CI_COMPILER               # important for Visual Studio paths (VS-2012, VS-2013 or VS-2015)
 # About available libraries:
 # - CI_HAVE_BOOST
 # - CI_BOOST_PATH             (empty string if installed in standard location)
@@ -77,17 +77,17 @@ generator() {
 }
 
 call-cmake() {
-    if [ $(uname) != Darwin -a $(uname) != Linux ]; then
-        # Run cmake after calling vcvarsall.bat to setup compiler stuff
+    if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
+        # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
-            local vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
-            $COMSPEC /c "$vcvarsall & cmake $*"
+            vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+        elif [ "$CI_COMPILER" = "VS-2013" ]; then
+            vcvarsall="call \"%VS120COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         else
-            local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
-            $COMSPEC /c "$vcvarsall & cmake $*"
+            vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         fi
+        echo "Calling $COMSPEC /c \"$vcvarsall & cmake $*\""
+        $COMSPEC /c "$vcvarsall & cmake $*"
     else
         cmake "$@"
     fi

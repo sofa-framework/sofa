@@ -6,7 +6,7 @@
 ## Significant environnement variables:
 # - CI_MAKE_OPTIONS       # additional arguments to pass to make
 # - CI_ARCH               # x86|amd64  (32-bit or 64-bit build - Windows-specific)
-# - CI_COMPILER           # important for Visual Studio (VS-2012 or VS-2015)
+# - CI_COMPILER           # important for Visual Studio (VS-2012, VS-2013 or VS-2015)
 
 # Exit on error
 set -o errexit
@@ -39,16 +39,16 @@ if [ -z "$CI_ARCH" ]; then CI_ARCH="x86"; fi
 
 call-make() {
     if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
-        # We need to call vcvarsall.bat before nmake to setup compiler stuff
+        # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
-            local vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
-            $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+            vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
+        elif [ "$CI_COMPILER" = "VS-2013" ]; then
+            vcvarsall="call \"%VS120COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         else
-            local vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
-            echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
-            $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+            vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         fi
+        echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
+        $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
     else
         make $CI_MAKE_OPTIONS
     fi
