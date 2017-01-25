@@ -95,7 +95,7 @@ void MeshSampler<DataTypes>::update()
         if(!LLoyd(distances,voronoi,ngb)) break;
         count++;
     }
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": Lloyd relaxation done in "<<count<<" iterations\n";
+    if (this->f_printLog.getValue()) sout<<this->getPathName()<<": Lloyd relaxation done in "<<count<<" iterations"<<sendl;
 
     // get export position from indices
     sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
@@ -140,7 +140,7 @@ void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,con
         computeDistances( distances, voronoi, ngb);
     }
 
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": farthestPointSampling done\n";
+    if (this->f_printLog.getValue()) sout<<this->getPathName()<<": farthestPointSampling done"<<sendl;
 }
 
 template <class DataTypes>
