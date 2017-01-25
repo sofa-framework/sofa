@@ -39,9 +39,9 @@ class SOFA_BASE_COLLISION_API DefaultPipeline : public sofa::simulation::Pipelin
 public:
     SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
 
-    Data<bool> bVerbose;
-    Data<bool> bDraw;
-    Data<int> depth;
+    Data<bool> d_doPrintInfoMessage;
+    Data<bool> d_doDebugDraw;
+    Data<int>  d_depth;
 protected:
     DefaultPipeline();
 public:

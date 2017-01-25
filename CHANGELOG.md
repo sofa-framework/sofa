@@ -27,6 +27,7 @@
 
 ### Cleaning
 
+- Clean DefaultPipeline.cpp/h (API BREAKING) 
 - Clean the attributes names in BoxROI (API BREAKING)
 
 ### Moved files
