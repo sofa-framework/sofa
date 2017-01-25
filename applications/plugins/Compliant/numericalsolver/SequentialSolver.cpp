@@ -226,7 +226,8 @@ SReal BaseSequentialSolver::step(vec& lambda,
             // project new lambdas if needed
             if( b.projector ) {
                 b.projector->project( lambda_chunk.data(), lambda_chunk.size(), i, correct );
-                assert( !has_nan(lambda_chunk.eval()) );
+                assert( !has_nan(lambda_chunk) );
+
             }
 
             // correct lambda differences based on projection
