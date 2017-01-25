@@ -118,6 +118,7 @@ protected:
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
         compliance->damping.setValue( this->damping_ratio.getValue() );
+        compliance->resizable.setValue( true );
         compliance->init();
 
 
@@ -168,10 +169,6 @@ protected:
             compliance->compliance.setValue( this->compliance_value.getValue() );
             compliance->damping.setValue( this->damping_ratio.getValue() );
         }
-
-        // don't forget reinit as dofs size may have changed !
-        compliance->reinit();
-
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
