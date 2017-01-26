@@ -81,7 +81,7 @@ if(NOT SOFA_NO_OPENGL)
 
     ## GLUT
     find_package(GLUT)
-    if(GLUT_FOUND)
+    if(GLUT_FOUND AND SOFAGUI_GLUT)
         if(NOT APPLE)
             sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}")
             list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target})
@@ -122,7 +122,7 @@ if(PNG_FOUND)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
 
 
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
+    sofa_install_get_libraries("${PNG_LIBRARY}")
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
@@ -134,6 +134,8 @@ set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
+
+
 
 # if(SOFA_HAVE_BOOST_SYSTEM
 #    AND SOFA_HAVE_BOOST_THREAD

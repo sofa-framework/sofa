@@ -95,9 +95,9 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
-#ifdef SOFA_HAVE_GLUT_GUI
+#ifdef SOFAGUI_GLUT
 #include <sofa/helper/system/glut.h>
-#endif // SOFA_HAVE_GLUT_GUI
+#endif // SOFAGUI_GLUT
 
 #ifdef SOFA_SMP
 #include <athapascan-1>
@@ -269,9 +269,9 @@ int main(int argc, char** argv)
 #endif /* SOFA_SMP */
 
 #ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLUT_GUI
+#ifdef SOFAGUI_GLUT
     if(gui!="batch") glutInit(&argc,argv);
-#endif // SOFA_HAVE_GLUT_GUI
+#endif // SOFAGUI_GLUT
 #endif // SOFA_NO_OPENGL
 
 #ifdef SOFA_SMP
