@@ -890,6 +890,7 @@ int TriangleOctreeRoot::fillOctree (int tId, int /*d*/, defaulttype::Vector3 /*v
 
     // computes the depth of the bounding box in a octree
     int d1 = (int)((log10( (double) CUBE_SIZE * 2/ bbsize ) / log10( (double)2) ));
+    if(d1>30) d1=30; // maximum possible depth
     // computes the size of the octree box that can store the bounding box
     int divs = (1 << (d1));
     double inc = (double) (2 * CUBE_SIZE) / divs;
