@@ -182,7 +182,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
                                  const vec& rhs,
                                  vec& error, vec& delta,
                                  bool correct,
-                                 real /*damping*/ ) const {
+                                 real damping ) const {
 
 	// TODO size asserts
 	

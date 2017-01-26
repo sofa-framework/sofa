@@ -8,6 +8,7 @@ from scipy import sparse
 
 from SofaPython import SofaNumpy as sofa_numpy
 
+from collections import namedtuple
 from contextlib import contextmanager
 
 def set_opaque(obj, name, value):
@@ -25,19 +26,35 @@ def set_opaque(obj, name, value):
 
 
 def Vec(t):
-    '''a parametrized vector class mirroring that of PythonMultiMapping'''
+    '''a parametrized vector class for state vectors mirroring that of
+    PythonMultiMapping
+    '''
     
     class Vector(Structure):
-        _fields_ = (('outer', c_size_t),
+        _fields_ = (('data', POINTER(t)),
+                    ('outer', c_size_t),
                     ('inner', c_size_t),
-                    ('data', POINTER(t)))
+                    )
 
         def numpy(self):
             shape = self.outer, self.inner
             return np.ctypeslib.as_array(self.data, shape)
         
     return Vector
-                    
+
+
+def Eigen(t):
+    '''a parametrized vector class for eigen vectors'''
+    
+    class Vector(Structure):
+        _fields_ = (('data', POINTER(t)),
+                    ('size', c_int))
+
+        def numpy(self):
+            return np.ctypeslib.as_array(self.data, (self.size,) )
+        
+    return Vector
+
 
 class CompressedStorage(Structure):
     '''struct mirroring eigen sparse matrices internal storage'''
@@ -45,7 +62,7 @@ class CompressedStorage(Structure):
                 ('indices', POINTER(c_int)),
                 ('size', c_size_t),
                 ('allocated_size', c_size_t))
-                 
+
 
 class SparseMatrix(Structure):
     '''struct mirroring eigen sparse matrices'''
@@ -126,8 +143,16 @@ class SparseMatrix(Structure):
                 
 
 # we need a few c functions
-dll = CDLL(find_library('Compliant'))
+def load_dll():
+    try:
+        dll_name = find_library('Compliant') or 'libCompliant.so'
+        return CDLL(dll_name)
+    except OSError:
+        dll_name = find_library('Compliant_d') or 'libCompliant_d.so'
+        return CDLL(dll_name)
+        
 
+dll = load_dll()
 dll.eigen_sparse_matrix_assign.restype = None
 dll.eigen_sparse_matrix_assign.argtypes = (POINTER(SparseMatrix), POINTER(SparseMatrix))
     
@@ -166,7 +191,81 @@ def dofs_type(obj):
     _, _, name = obj.findData('position').getValueVoidPtr()
     return sofa_numpy.ctypeFromName[name]
 
-            
+
+class Block(Structure):
+    _fields_ = ( ('offset', c_size_t),
+                 ('size', c_size_t),
+                 ('_proj', c_void_p) )
+
+
+class System(Structure):
+
+    real = c_double
+
+    _fields_ = (('m', c_uint),
+                ('n', c_uint),
+                ('dt', real),
+                ('H', SparseMatrix),
+                ('C', SparseMatrix),
+                ('J', SparseMatrix),
+                ('P', SparseMatrix),
+                )
+
+    class View(namedtuple('System', 'm n dt H C J P')): pass
+
+    @contextmanager
+    def view(self):
+        with self.H.view() as H, self.C.view() as C, self.J.view() as J, self.P.view() as P:
+            yield System.View(m = self.m, n = self.n, dt = self.dt,
+                       H = H, C = C, J = J, P = P)
+
+class Solver(object):
+
+
+    class Data(Structure):
+        
+        _fields_ = (('sys', POINTER(System)),
+                    ('blocks', POINTER(Vec(Block))),
+                    ('project', CFUNCTYPE(None, POINTER(System.real), POINTER(Block))))
+        
+
+        @contextmanager
+        def view(self):
+            with self.sys.contents.view() as sys:
+
+                sys.blocks = lambda : (self.blocks.contents.data[i] for i in xrange(self.blocks.contents.outer))
+                sys.project = lambda x, b: self.project(x.ctypes.data_as( POINTER(System.real)), b)
+                
+                yield sys
+                
+        
+    def factor(self, view): pass
+    def solve(self, res, view, rhs): pass
+    
+    def __init__(self, node):
+        self.node = node
+        self.obj = node.createObject('PythonSolver')
+
+        vec = Eigen(System.real)
+
+        @callback(None, POINTER(Solver.Data))
+        def factor(data):
+            with data.contents.view() as view:
+                return self.factor(view)
+
+        @callback(None, POINTER(vec), POINTER(Solver.Data), POINTER(vec))
+        def solve(res, data, rhs):
+            # TODO detect resizes for output vector
+            with data.contents.view() as view:
+                return self.solve(res.contents.numpy(), view, rhs.contents.numpy())
+        
+        set_opaque(self.obj, 'factor_callback', factor)
+        set_opaque(self.obj, 'solve_callback', solve)        
+
+        # keep refs to prevent gc
+        self.handles = [factor, solve]
+        
+
 class Mapping(object):
     '''a nice mapping wrapper class for PythonMultiMapping'''
     
@@ -192,9 +291,9 @@ class Mapping(object):
         out_type = dofs_type(destination[0])
 
         # setup callbacks
-        @callback(None, Vec(out_type), POINTER(Vec(in_type)), c_size_t)
+        @callback(None, POINTER(Vec(out_type)), POINTER(Vec(in_type)), c_size_t)
         def apply_callback(output, inputs, n):
-            self.apply( output.numpy(), tuple(inputs[i].numpy() for i in range(n) ) )
+            self.apply( output.contents.numpy(), tuple(inputs[i].numpy() for i in range(n) ) )
             return
 
         @callback(None, POINTER( POINTER(SparseMatrix) ), POINTER(Vec(in_type)), c_size_t)
@@ -207,13 +306,13 @@ class Mapping(object):
                 self.jacobian(js, inputs)
                 return 
 
-        @callback(None, POINTER( SparseMatrix), POINTER(Vec(in_type)), c_size_t, Vec(out_type))
+        @callback(None, POINTER( SparseMatrix), POINTER(Vec(in_type)), c_size_t, POINTER(Vec(out_type)))
         def gs_callback(gs, inputs, n, force):
 
             inputs = tuple(inputs[i].numpy() for i in range(n) )
             
             with gs.contents.view() as gs:
-                self.geometric_stiffness(gs, inputs, force.numpy())
+                self.geometric_stiffness(gs, inputs, force.contents.numpy())
                 return 
             
         # set callbacks

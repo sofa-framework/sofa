@@ -37,7 +37,7 @@ void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<type
     }
 
     dJ.resize( size, size );
-    gs_callback.getValue().data(&dJ, at.data(), in.size(), f);
+    gs_callback.getValue().data(&dJ, at.data(), in.size(), &f);
     
 }
     
@@ -84,7 +84,7 @@ void PythonMultiMapping<TIn, TOut>::apply(typename self::out_pos_type& out,
     }
     
     out_vec to = out_vec::map(out.ref());
-    apply_callback.getValue().data(to, at.data(), in.size());
+    apply_callback.getValue().data(&to, at.data(), in.size());
     
 }
 

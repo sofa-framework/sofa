@@ -32,18 +32,24 @@ struct opaque<T*> {
 
 template<class Real>
 struct vec {
+    Real* data;
+
     std::size_t outer;
     std::size_t inner;
-
-    Real* data;
-        
+    
     template<class T>
     static vec map(const std::vector<T>& value) {
-        return {value.size(),
-                T::total_size,
-                // yeah i know
-                const_cast<Real*>(&value[0][0]) };
+        return {const_cast<Real*>(&value[0][0]),
+                value.size(),
+                T::total_size};
     }
+
+    static vec map(const std::vector<Real>& value) {
+        return {const_cast<Real*>(value.data()),
+                value.size(),
+                1};
+    }
+    
 };
 }
 

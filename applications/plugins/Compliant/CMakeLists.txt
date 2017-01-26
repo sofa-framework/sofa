@@ -96,6 +96,7 @@ set(HEADER_FILES
     numericalsolver/SequentialSolver.h
     numericalsolver/SubKKT.h
     numericalsolver/SubKKT.inl
+    numericalsolver/PythonSolver.h
     odesolver/CompliantImplicitSolver.h
     odesolver/CompliantNLImplicitSolver.h
     odesolver/CompliantPostStabilizationAnimationLoop.h
@@ -205,6 +206,7 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/SequentialSolver.cpp
     numericalsolver/SubKKT.cpp
+    numericalsolver/PythonSolver.cpp    
     odesolver/CompliantImplicitSolver.cpp
     odesolver/CompliantNLImplicitSolver.cpp
     odesolver/CompliantPostStabilizationAnimationLoop.cpp
