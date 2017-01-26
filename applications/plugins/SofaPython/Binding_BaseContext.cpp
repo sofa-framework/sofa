@@ -82,7 +82,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     // temporarily, the name is set to the type name.
@@ -124,7 +124,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             SP_MESSAGE_ERROR(*it);
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 
@@ -190,7 +190,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!context || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
@@ -219,7 +219,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
     if (!context || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
@@ -246,7 +246,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     if (!context)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;

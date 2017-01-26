@@ -666,14 +666,14 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&index))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         SP_MESSAGE_ERROR( "Data.getValue index overflow" )
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     if (typeinfo->Scalar())
         return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
@@ -685,7 +685,7 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     // should never happen....
     SP_MESSAGE_ERROR( "Data.getValue unknown data type" )
     PyErr_BadArgument();
-    Py_RETURN_NONE;
+    return NULL;
 }
 extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
@@ -696,14 +696,14 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "iO",&index,&value))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
         // out of bounds!
         SP_MESSAGE_ERROR( "Data.setValue index overflow" )
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
@@ -724,7 +724,7 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
     // should never happen....
     SP_MESSAGE_ERROR( "Data.setValue type mismatch" )
     PyErr_BadArgument();
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 
@@ -762,7 +762,7 @@ extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&size))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     typeinfo->setSize((void*)data->getValueVoidPtr(),size);
@@ -797,7 +797,7 @@ extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O",&value))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     if (PyString_Check(value))
@@ -808,8 +808,9 @@ extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
     {
         SP_MESSAGE_ERROR( "Data.read type mismatch" )
         PyErr_BadArgument();
+        return NULL;
     }
-
+    
     Py_RETURN_NONE;
 }
 
@@ -821,7 +822,7 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O",&value))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     typedef PyPtr<BaseData> PyBaseData;
@@ -840,8 +841,9 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
     {
         SP_MESSAGE_ERROR( "Data.setParent type mismatch" )
         PyErr_BadArgument();
+        return NULL;
     }
-
+    
     Py_RETURN_NONE;
 }
 
