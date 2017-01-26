@@ -39,10 +39,7 @@ if [ -z "$CI_ARCH" ]; then CI_ARCH="x86"; fi
 ### Actual work
 
 call-make() {
-    if [ -x "$(command -v ninja)" ]; then
-        echo "Ninja ! (VRAAOUUUUUMmmmm)"
-        ninja $CI_MAKE_OPTIONS
-    elif [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
+    if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
         # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
             vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
