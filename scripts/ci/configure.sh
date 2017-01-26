@@ -69,7 +69,9 @@ if [ -z "$CI_BUILD_TYPE" ]; then CI_BUILD_TYPE="Release"; fi
 ## Utils
 
 generator() {
-    if [[ $(uname) = Darwin || $(uname) = Linux ]]; then
+    if [ -x "$(command -v ninja)" ]; then
+        echo "Ninja"
+    elif [[ $(uname) = Darwin || $(uname) = Linux ]]; then
         echo "Unix Makefiles"
     else
         echo "\"NMake Makefiles\""
@@ -77,6 +79,7 @@ generator() {
 }
 
 call-cmake() {
+    pwd
     if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
         # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
