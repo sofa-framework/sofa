@@ -80,9 +80,9 @@ SP_CLASS_ATTR_GET(Link,value)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
-    if (SetLinkValuePython(link,args))
-        return 0;   // OK
-
+    if (SetLinkValuePython(link,args)) {
+        return 0;
+    }
 
     SP_MESSAGE_ERROR( "argument type not supported" )
     PyErr_BadArgument();
@@ -198,3 +198,4 @@ SP_CLASS_ATTR(Link,value)
 SP_CLASS_ATTRS_END
 
 SP_CLASS_TYPE_BASE_PTR_ATTR(Link,BaseLink)
+

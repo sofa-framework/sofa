@@ -77,7 +77,7 @@ extern "C" PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * 
     if (!PyArg_ParseTuple(args, "i",&index))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     OptionsGroupData_setAttr_selectedId_impl(self,index);
     Py_RETURN_NONE;
@@ -92,7 +92,7 @@ extern "C" PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject 
     if (!PyArg_ParseTuple(args, "s",&item))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     OptionsGroupData_setAttr_selectedItem_impl(self,item);
     Py_RETURN_NONE;
@@ -106,7 +106,7 @@ extern "C" PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&index))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     return PyString_FromString(data->getValue()[index].c_str());
 }
