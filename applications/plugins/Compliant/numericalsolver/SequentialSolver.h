@@ -83,21 +83,8 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 
     void fetch_blocks(const system_type& system);
 
-    // constraint responses
-    typedef Eigen::LDLT< dmat > inverse_type;
-
-	// blocks inverse
-	typedef std::vector< inverse_type > blocks_inv_type;
-	blocks_inv_type blocks_inv;
-	
-	// blocks factorization
-    typedef Eigen::Map<dmat> schur_type;
-	void factor_block(inverse_type& inv, const schur_type& schur);
-
-	// blocks solve
-	typedef Eigen::Map< vec > chunk_type;
-    void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
-
+    vec diagonal;
+	typedef Eigen::Map< vec > chunk_type;    
 
 
 };
