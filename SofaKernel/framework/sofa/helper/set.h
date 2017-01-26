@@ -31,7 +31,10 @@
 #include <sofa/helper/logging/Messaging.h>
 
 
-/// adding string serialization to std::set to make it compatible with Data
+/// adding string serialization to std::deque to make it compatible with Data
+/// \todo: refactoring of the containers required
+/// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
+
 
 namespace std
 {
