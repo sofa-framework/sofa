@@ -38,10 +38,7 @@ if [ -z "$CI_ARCH" ]; then CI_ARCH="x86"; fi
 ### Actual work
 
 call-make() {
-    if [ -x "$(command -v ninja)" ]; then
-        echo "Ninja ! (VRAAOUUUUUMmmmm)"
-        ninja $CI_MAKE_OPTIONS
-    elif [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
+    if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
         # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
             vcvarsall="call \"%VS140COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
@@ -50,10 +47,20 @@ call-make() {
         else
             vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         fi
-        echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
-        $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+        toolname="nmake"
+        if [ -x "$(command -v ninja)" ]; then
+        	echo "Using ninja as build system"
+		toolname="ninja"
+        fi
+        echo "Calling $COMSPEC /c \"$vcvarsall & $toolname $CI_MAKE_OPTIONS\""
+        $COMSPEC /c "$vcvarsall & $toolname $CI_MAKE_OPTIONS"
     else
-        make $CI_MAKE_OPTIONS
+    	toolname="make"
+        if [ -x "$(command -v ninja)" ]; then
+		echo "Using ninja as build system"
+	        toolname="ninja"
+        fi 
+	$toolname $CI_MAKE_OPTIONS
     fi
 }
 
