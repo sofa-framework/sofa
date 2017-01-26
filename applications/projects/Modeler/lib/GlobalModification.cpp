@@ -51,8 +51,8 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
     //setCaption(QString("Global Modifications"));
 
 
-    helper::set< std::string > allNames;
-    helper::set< std::string > allAliases;
+    std::set< std::string > allNames;
+    std::set< std::string > allAliases;
 
     for (InternalStorage::const_iterator it=components.begin(); it!=components.end(); ++it)
     {
@@ -71,10 +71,10 @@ GlobalModification::GlobalModification(const InternalStorage &c, GraphHistoryMan
 
     }
 
-    for (helper::set< std::string >::const_iterator it=allNames.begin(); it!=allNames.end(); ++it)
+    for (std::set< std::string >::const_iterator it=allNames.begin(); it!=allNames.end(); ++it)
         listDataName << it->c_str();
 
-    for (helper::set< std::string >::const_iterator it=allAliases.begin(); it!=allAliases.end(); ++it)
+    for (std::set< std::string >::const_iterator it=allAliases.begin(); it!=allAliases.end(); ++it)
         listDataAliases << it->c_str();
 
     //Creation of the GUI

@@ -409,7 +409,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
             const VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(0);
             std::vector<Real> edgeLengthArray;
             // compute median of the edge distance between control points
-            sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
+            std::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
             //Real val=0;
             Coord pp;
             for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
@@ -571,7 +571,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
                     }
 
 
-                    sofa::helper::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
+                    std::set<std::pair<Edge,size_t> >::iterator ite=bezierTetrahedronEdgeSet.begin();
                     for (; ite!=bezierTetrahedronEdgeSet.end(); ite++)
                     {
                         if ((*ite).second==2) {

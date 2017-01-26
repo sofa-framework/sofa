@@ -68,7 +68,7 @@ ____________________________________________________________
 - class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
 - FileMonitor is now implemented on MacOS & Windows (for live-coding features, for example)
 - RequiredPlugin: modified API to take a list of plugins to load
-
+- Implements the move semantics on sofa::helper::vector 
 
 ### Improvements
 
@@ -103,7 +103,6 @@ ____________________________________________________________
     - add LinearDiagonalCompliance component
     - fix use of VLA in python mappings
     - improve readme file
-
 
 ### Bug Fixes
 

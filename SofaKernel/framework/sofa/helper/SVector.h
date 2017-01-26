@@ -60,11 +60,21 @@ public:
     explicit SVector(size_type n): helper::vector<T,Alloc>(n) {}
     /// Constructor
     SVector(const helper::vector<T, Alloc>& x): helper::vector<T,Alloc>(x) {}
-    /// Constructor
-    vector<T, Alloc>& operator=(const helper::vector<T, Alloc>& x)
+    /// Move constructor
+    SVector(helper::vector<T,Alloc>&& v): helper::vector<T,Alloc>(std::move(v)) {}
+
+
+    /// Copy operator
+    SVector<T>& operator=(const helper::vector<T, Alloc>& x)
     {
-        helper::vector<T,Alloc>::operator = (x);
-        return (*this);
+        helper::vector<T,Alloc>::operator=(x);
+        return *this;
+    }
+    /// Move assignment operator
+    SVector<T>& operator=(helper::vector<T,Alloc>&& v)
+    {
+        helper::vector<T,Alloc>::operator=(std::move(v));
+        return *this;
     }
 
 #ifdef __STL_MEMBER_TEMPLATES
