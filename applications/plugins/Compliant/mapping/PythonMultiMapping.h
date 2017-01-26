@@ -59,12 +59,17 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
     typedef void (*apply_callback_type)(out_vec* out, in_vec* in, std::size_t n);
     typedef void (*jacobian_callback_type)(out_csr_matrix** out, in_vec* in, std::size_t n);
     typedef void (*gs_callback_type)(in_csr_matrix* out, in_vec* in, std::size_t n, out_vec* f);
-        
+    typedef void (*draw_callback_type)();
+    
     Data< python::opaque< apply_callback_type > > apply_callback;
     Data< python::opaque< jacobian_callback_type > >jacobian_callback;
     Data< python::opaque< gs_callback_type > > gs_callback;
+    Data< python::opaque< draw_callback_type > > draw_callback;    
     
 	PythonMultiMapping();
+
+public:
+    virtual void draw(const core::visual::VisualParams*);
     
  protected:
 

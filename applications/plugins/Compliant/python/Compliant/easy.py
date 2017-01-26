@@ -314,14 +314,19 @@ class Mapping(object):
             with gs.contents.view() as gs:
                 self.geometric_stiffness(gs, inputs, force.contents.numpy())
                 return 
+
+        @callback(None)
+        def draw_callback():
+            self.draw()
             
-        # set callbacks
+        # set callbacks TODO set conditionnally ?
         set_opaque(self.obj, 'apply_callback', apply_callback)
         set_opaque(self.obj, 'jacobian_callback', jacobian_callback)
-        set_opaque(self.obj, 'gs_callback', gs_callback)                
+        set_opaque(self.obj, 'gs_callback', gs_callback)
+        set_opaque(self.obj, 'draw_callback', draw_callback)                        
 
         # keep a handle to avoid gc
-        self.refs = [apply_callback, jacobian_callback, gs_callback]
+        self.refs = [apply_callback, jacobian_callback, gs_callback, draw_callback]
         
         
     def apply(self, out, at):
@@ -359,3 +364,7 @@ class Mapping(object):
         '''
         pass
     
+
+    def draw(self):
+        '''draw mapping info for debugging purpose'''
+        pass

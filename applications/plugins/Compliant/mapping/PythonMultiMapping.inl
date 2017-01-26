@@ -13,11 +13,21 @@ template<class TIn, class TOut>
 PythonMultiMapping<TIn, TOut>::PythonMultiMapping() :
     apply_callback(initData(&apply_callback, "apply_callback", "apply callback")),
     jacobian_callback(initData(&jacobian_callback, "jacobian_callback", "jacobian callback")),
-    gs_callback(initData(&gs_callback, "gs_callback", "geometric stiffness callback"))
+    gs_callback(initData(&gs_callback, "gs_callback", "geometric stiffness callback")),
+    draw_callback(initData(&draw_callback, "draw_callback", "draw callback"))
 {        
     
 }
-    
+
+
+template<class TIn, class TOut>
+void PythonMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams*) {
+    if(!draw_callback.getValue().data) return;
+
+    draw_callback.getValue().data();
+}
+
+
 template<class TIn, class TOut>
 void PythonMultiMapping<TIn, TOut>::assemble_geometric(const helper::vector<typename self::in_pos_type>& in,
                                                        const typename self::const_out_deriv_type& out) {
