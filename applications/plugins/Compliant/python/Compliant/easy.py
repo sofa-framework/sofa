@@ -275,12 +275,17 @@ class Mapping(object):
         
         self.node = node
 
-        self.src = kwargs['input'] 
-        self.dst = kwargs['output']
+        self.input = list(kwargs['input'])
+        self.output = kwargs['output']
 
+        input = ' '.join( [x.getLinkPath() for x in self.input] )
+        output = self.output.getLinkPath()
+        
         # create wrapped mapping
-        self.obj = node.createObject('PythonMultiMapping', **kwargs)
-
+        self.obj = node.createObject('PythonMultiMapping',
+                                     input = input,
+                                     output = output)
+        
         # find source/dest scalar types
         source = self.obj.getFrom()
         in_type = dofs_type(source[0])
@@ -290,43 +295,62 @@ class Mapping(object):
         assert len(destination) == 1
         out_type = dofs_type(destination[0])
 
-        # setup callbacks
-        @callback(None, POINTER(Vec(out_type)), POINTER(Vec(in_type)), c_size_t)
-        def apply_callback(output, inputs, n):
-            self.apply( output.contents.numpy(), tuple(inputs[i].numpy() for i in range(n) ) )
-            return
-
-        @callback(None, POINTER( POINTER(SparseMatrix) ), POINTER(Vec(in_type)), c_size_t)
-        def jacobian_callback(js, inputs, n):
-
-            ctx = tuple( js[i].contents.view() for i in range(n) )
-            inputs = tuple(inputs[i].numpy() for i in range(n) )
-
-            with nested( ctx ) as js:
-                self.jacobian(js, inputs)
-                return 
-
-        @callback(None, POINTER( SparseMatrix), POINTER(Vec(in_type)), c_size_t, POINTER(Vec(out_type)))
-        def gs_callback(gs, inputs, n, force):
-
-            inputs = tuple(inputs[i].numpy() for i in range(n) )
-            
-            with gs.contents.view() as gs:
-                self.geometric_stiffness(gs, inputs, force.contents.numpy())
-                return 
-
-        @callback(None)
-        def draw_callback():
-            self.draw()
-            
-        # set callbacks TODO set conditionnally ?
-        set_opaque(self.obj, 'apply_callback', apply_callback)
-        set_opaque(self.obj, 'jacobian_callback', jacobian_callback)
-        set_opaque(self.obj, 'gs_callback', gs_callback)
-        set_opaque(self.obj, 'draw_callback', draw_callback)                        
+        # derived type
+        cls = type(self)
 
         # keep a handle to avoid gc
-        self.refs = [apply_callback, jacobian_callback, gs_callback, draw_callback]
+        self._refs = []
+                
+        # setup callbacks
+        if cls.apply is not Mapping.apply:
+            
+            @callback(None, POINTER(Vec(out_type)), POINTER(Vec(in_type)), c_size_t)
+            def cb(output, inputs, n):
+                self.apply( output.contents.numpy(), tuple(inputs[i].numpy() for i in range(n) ) )
+                return
+            
+            set_opaque(self.obj, 'apply_callback', cb)
+            self._refs.append(cb)
+
+        if cls.jacobian is not Mapping.jacobian:
+
+            @callback(None, POINTER( POINTER(SparseMatrix) ), POINTER(Vec(in_type)), c_size_t)
+            def cb(js, inputs, n):
+
+                ctx = tuple( js[i].contents.view() for i in range(n) )
+                inputs = tuple(inputs[i].numpy() for i in range(n) )
+
+                with nested( ctx ) as js:
+                    self.jacobian(js, inputs)
+                    return
+
+            set_opaque(self.obj, 'jacobian_callback', cb)
+            self._refs.append(cb)
+
+
+        if cls.geometric_stiffness is not Mapping.geometric_stiffness:
+            
+            @callback(None, POINTER( SparseMatrix), POINTER(Vec(in_type)), c_size_t, POINTER(Vec(out_type)))
+            def cb(gs, inputs, n, force):
+
+                inputs = tuple(inputs[i].numpy() for i in range(n) )
+
+                with gs.contents.view() as gs:
+                    self.geometric_stiffness(gs, inputs, force.contents.numpy())
+                    return 
+
+            set_opaque(self.obj, 'gs_callback', cb)
+            self._refs.append(cb)
+
+
+        if cls.draw is not Mapping.draw:
+
+            @callback(None)
+            def cb():
+                self.draw()
+                
+            set_opaque(self.obj, 'draw_callback', cb)
+            self._refs.append(cb)
         
         
     def apply(self, out, at):
