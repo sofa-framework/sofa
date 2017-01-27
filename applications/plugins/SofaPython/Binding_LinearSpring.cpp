@@ -67,7 +67,7 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index2 %d\n",(int)PyInt_AsLong(args));
     obj->m2=PyInt_AsLong(args);
@@ -91,7 +91,7 @@ extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Ks %f\n",(float)PyFloat_AsDouble(args));
     obj->ks=PyFloat_AsDouble(args);
