@@ -355,7 +355,7 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
             }
         }
 
-
+        PyErr_BadArgument();
         return false;
     }
 
@@ -633,8 +633,8 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
 
     }
 
+    PyErr_BadArgument();    
     return false;
-
 }
 
 
