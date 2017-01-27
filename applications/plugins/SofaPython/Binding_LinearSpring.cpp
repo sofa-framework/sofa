@@ -43,7 +43,7 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return NULL;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index1 %d\n",(int)PyInt_AsLong(args));
     obj->m1=PyInt_AsLong(args);
