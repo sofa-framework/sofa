@@ -79,7 +79,6 @@ generator() {
 }
 
 call-cmake() {
-    pwd
     if [[ "$(uname)" != "Darwin" && "$(uname)" != "Linux" ]]; then
         # Call vcvarsall.bat first to setup environment
         if [ "$CI_COMPILER" = "VS-2015" ]; then
