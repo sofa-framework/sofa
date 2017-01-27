@@ -279,8 +279,7 @@ class RigidBody(SingleMechanicalObject):
             self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
-                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r),
-                                                useNormals=False, updateNormals=True)
+                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 
