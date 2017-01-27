@@ -30,6 +30,7 @@ if [[ ! -e "$build_dir/CMakeCache.txt" ]]; then
 fi
 
 
+
 ### Defaults
 
 if [ -z "$CI_ARCH" ]; then CI_ARCH="x86"; fi
@@ -50,10 +51,20 @@ call-make() {
         else
             vcvarsall="call \"%VS110COMNTOOLS%..\\..\\VC\vcvarsall.bat\" $CI_ARCH"
         fi
-        echo "Calling $COMSPEC /c \"$vcvarsall & nmake $CI_MAKE_OPTIONS\""
-        $COMSPEC /c "$vcvarsall & nmake $CI_MAKE_OPTIONS"
+        toolname="nmake"
+        if [ -x "$(command -v ninja)" ]; then
+        	echo "Using ninja as build system"
+		toolname="ninja"
+        fi
+        echo "Calling $COMSPEC /c \"$vcvarsall & $toolname $CI_MAKE_OPTIONS\""
+        $COMSPEC /c "$vcvarsall & $toolname $CI_MAKE_OPTIONS"
     else
-        make $CI_MAKE_OPTIONS
+    	toolname="make"
+        if [ -x "$(command -v ninja)" ]; then
+		echo "Using ninja as build system"
+	        toolname="ninja"
+        fi 
+	$toolname $CI_MAKE_OPTIONS
     fi
 }
 
