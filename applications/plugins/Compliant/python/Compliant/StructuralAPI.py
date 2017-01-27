@@ -22,6 +22,12 @@ import SofaPython.mass
 import math
 import sys
 
+
+from SofaPython import SofaNumpy as sofa_numpy
+from SofaPython.SofaNumpy import numpy_data
+from types import Rigid3
+
+
 # to specify the floating point encoding:
 # "d" to force double
 # "f" to force float
@@ -40,9 +46,111 @@ def scaleOffset(scale, offset):
     """
     return (scale*numpy.asarray(offset[0:3])).tolist() + numpy.asarray(offset[3:]).tolist()
 
-class RigidBody:
-    ## Generic Rigid Body
 
+
+class MechanicalObject(object):
+    '''state vector view for a mechanical object'''
+    
+    __slots__ = ('dofs', )
+    
+    def __init__(self, dofs):
+        self.dofs = dofs
+        
+    @property
+    def position(self):
+        return numpy_data(self.dofs, 'position')
+    
+    @position.setter
+    def position(self, value):
+        self.position[:] = value
+
+    @property
+    def velocity(self):
+        return numpy_data(self.dofs, 'velocity')
+    
+    @velocity.setter
+    def velocity(self, value):
+        self.velocity[:] = value
+
+
+    @property
+    def force(self):
+        return numpy_data(self.dofs, 'force')
+    
+    @force.setter
+    def force(self, value):
+        self.force[:] = value
+
+    @property
+    def external_force(self):
+        return numpy_data(self.dofs, 'externalForce')
+    
+    @external_force.setter
+    def external_force(self, value):
+        self.external_force[:] = value
+
+        
+    @property
+    def template(self):
+        return self.dofs.getTemplateName()
+
+
+    @property
+    def show(self):
+        return self.dofs.showObject
+
+    @show.setter
+    def show(self, value):
+        self.dofs.showObject = value
+
+
+
+class SingleMechanicalObject(MechanicalObject):
+    '''state vector view for single dofs objects'''
+
+    __slots__ = ()
+    
+    @property
+    def position(self):
+        return super(SingleMechanicalObject, self).position[0]
+
+    @property
+    def velocity(self):
+        return super(SingleMechanicalObject, self).velocity[0]        
+
+    @property
+    def force(self):
+        return super(SingleMechanicalObject, self).force[0]        
+        
+
+    @property
+    def external_force(self):
+        return super(SingleMechanicalObject, self).external_force[0]            
+        
+
+
+class RigidBody(SingleMechanicalObject):
+    ## Generic Rigid Body
+    
+    @property
+    def position(self):
+        return super(RigidBody, self).position.view(Rigid3)
+
+    @property
+    def velocity(self):
+        return super(RigidBody, self).velocity.view(Rigid3.Deriv)
+
+    @property
+    def force(self):
+        return super(RigidBody, self).force.view(Rigid3.Deriv)
+
+    @property
+    def external_force(self):
+        return super(RigidBody, self).external_force.view(Rigid3.Deriv)
+
+    # TODO provide accessors to the above for user frame (offseted by
+    # com/inertia/offset)
+    
 
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
