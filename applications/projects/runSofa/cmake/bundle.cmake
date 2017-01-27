@@ -42,7 +42,7 @@ get_filename_component(QT_PLUGINS_PLATFORMS_DIR ${QtCocoaLocation} DIRECTORY)
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 INSTALL(DIRECTORY "${QT_PLUGINS_IMAGES_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT BundlePack)
-INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT BundlePack)
+INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${plugin_dest_dir}/../Contents/MacOS COMPONENT BundlePack)
 
 #--------------------------------------------------------------------------------
 # install a qt.conf file
