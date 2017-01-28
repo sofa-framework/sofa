@@ -26,7 +26,8 @@
 
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/BasicShapesGL.h>
 
 namespace sofa
 {
@@ -50,6 +51,8 @@ public:
 
     DrawToolGL();
     ~DrawToolGL();
+
+    virtual void init();
 
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour);
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour);
@@ -168,11 +171,16 @@ public:
 
     virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL);
 
+    void internalDrawSpheres(const helper::vector<Vector3>& centers, const float& radius, const unsigned int rings, const unsigned int sectors);
+    void internalDrawSphere(const Vector3& center, const float& radius, const unsigned int rings, const unsigned int sectors);
+
 protected:
 
     bool mLightEnabled;
     int  mPolygonMode;      //0: no cull, 1 front (CULL_CLOCKWISE), 2 back (CULL_ANTICLOCKWISE)
     bool mWireFrameEnabled;
+
+    helper::gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
 
 public:
     // getter & setter
@@ -184,8 +192,11 @@ public:
 
     int getPolygonMode() {return mPolygonMode;}
     bool getWireFrameEnabled() {return mWireFrameEnabled;}
-
 };
+
+//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_DRAWTOOLGL_CPP)
+//extern template class SOFA_CORE_API BasicShapesGL_Sphere < sofa::defaulttype::Vector3 >;
+//#endif // defined(SOFA_EXTERN_TEMPLATE)
 
 }//namespace visual
 

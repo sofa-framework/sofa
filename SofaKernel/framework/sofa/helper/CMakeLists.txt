@@ -233,6 +233,8 @@ if(NOT SOFA_NO_OPENGL)
         system/glu.h
         gl/Axis.h
         gl/BasicShapes.h
+        gl/BasicShapesGL.h
+        gl/BasicShapesGL.inl
         gl/Cylinder.h
         gl/Texture.h
         gl/Trackball.h
@@ -242,6 +244,7 @@ if(NOT SOFA_NO_OPENGL)
     )
     list(APPEND SOURCE_FILES
         gl/Axis.cpp
+        gl/BasicShapesGL.cpp
         gl/Cylinder.cpp
         gl/glText.cpp
         gl/Capture.cpp

@@ -1687,6 +1687,8 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
     connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
     connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
+
+    sofa::core::visual::VisualParams* vparams = core::visual::VisualParams::defaultInstance();
 }
 
 //------------------------------------

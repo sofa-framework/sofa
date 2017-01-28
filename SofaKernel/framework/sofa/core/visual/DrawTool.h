@@ -58,6 +58,8 @@ public:
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
 
+    virtual void init() = 0;
+
     /// @name Primitive rendering methods
     /// @{
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour) = 0 ;
