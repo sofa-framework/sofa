@@ -28,6 +28,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <cmath>
+#include <map>
 
 namespace sofa
 {
@@ -42,22 +43,42 @@ template<class VertexType>
 class BasicShapesGL_Sphere
 {
 public:
-    //typedef helper::fixed_array<SReal, 3> Vector3;
+    struct GLBuffer
+    {
+        GLuint VBO, IBO;
+        GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize, indicesSize;
+    };
+    struct SphereDescription
+    {
+        SphereDescription(unsigned int r, unsigned int s) : rings(r), sectors(s) {}
 
-    GLuint m_VBO, m_IBO;
-    GLuint m_normalsBufferSize, m_verticesBufferSize, m_texcoordsBufferSize, m_indicesSize;
+        bool operator< (const SphereDescription& d) const
+            {
+                return this->rings < d.rings || (this->rings == d.rings && this->sectors < d.sectors);
+            }
+
+        unsigned int rings;
+        unsigned int sectors;
+    };
 
     BasicShapesGL_Sphere();
     virtual ~BasicShapesGL_Sphere();
 
-    void init(const unsigned int rings, const unsigned int sectors);
-    void draw(const VertexType& center, const float& radius);
-    void draw(const helper::vector<VertexType>& centers, const float& radius);
-    void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radius);
+    void init();
+
+    void draw(const VertexType& center, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
+    void draw(const helper::vector<VertexType>& centers, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
+    void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
 
 private:
-    void internalDraw(const VertexType& center, const float& radius);
+    void generateBuffer(const SphereDescription& desc, GLBuffer& buffer);
+    void checkBuffers(const SphereDescription& desc);
 
+    void beforeDraw(const GLBuffer &buffer);
+    void internalDraw(const GLBuffer &buffer, const VertexType& center, const float& radius);
+    void afterDraw(const GLBuffer &buffer);
+
+    std::map<SphereDescription, GLBuffer> m_mapBuffers;
 
 };
 
