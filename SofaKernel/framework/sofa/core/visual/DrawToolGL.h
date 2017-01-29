@@ -181,6 +181,7 @@ protected:
     bool mWireFrameEnabled;
 
     helper::gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
+    helper::gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
 
 public:
     // getter & setter

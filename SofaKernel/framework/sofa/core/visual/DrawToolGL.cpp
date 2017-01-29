@@ -42,6 +42,7 @@ namespace gl
 {
 
 template class SOFA_CORE_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
 
 } // namespace gl
 
@@ -352,7 +353,8 @@ void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, const std::vect
     setMaterial(colour);
     //for (unsigned int i=0; i<points.size(); ++i)
     //    drawSphere(points[i], radius[i]);
-    m_sphereUtil.draw(points, radius);
+    m_fakeSphereUtil.draw(points, radius);
+//    m_sphereUtil.draw(points, radius);
     //internalDrawSpheres(points, radius[0], 32, 16);
 
     resetMaterial(colour);

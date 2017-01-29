@@ -27,6 +27,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/gl/GLSLShader.h>
 #include <cmath>
 #include <map>
 
@@ -39,15 +40,27 @@ namespace helper
 namespace gl
 {
 
-template<class VertexType>
-class BasicShapesGL_Sphere
+class BasicShapesGL
 {
 public:
-    struct GLBuffer
+    struct GLBuffers
     {
         GLuint VBO, IBO;
         GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize, indicesSize;
     };
+    struct CustomGLBuffer
+    {
+        GLuint VBO;
+        GLuint bufferSize;
+    };
+};
+
+template<class VertexType>
+class BasicShapesGL_Sphere : public BasicShapesGL
+{
+    typedef BasicShapesGL Inherit;
+    typedef Inherit::GLBuffers GLBuffers;
+public:
     struct SphereDescription
     {
         SphereDescription(unsigned int r, unsigned int s) : rings(r), sectors(s) {}
@@ -71,20 +84,54 @@ public:
     void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
 
 private:
-    void generateBuffer(const SphereDescription& desc, GLBuffer& buffer);
+    void generateBuffer(const SphereDescription& desc, GLBuffers& buffer);
     void checkBuffers(const SphereDescription& desc);
 
-    void beforeDraw(const GLBuffer &buffer);
-    void internalDraw(const GLBuffer &buffer, const VertexType& center, const float& radius);
-    void afterDraw(const GLBuffer &buffer);
+    void beforeDraw(const GLBuffers &buffer);
+    void internalDraw(const GLBuffers &buffer, const VertexType& center, const float& radius);
+    void afterDraw(const GLBuffers &buffer);
 
-    std::map<SphereDescription, GLBuffer> m_mapBuffers;
+    std::map<SphereDescription, GLBuffers> m_mapBuffers;
+
+};
+
+
+template<class VertexType>
+class BasicShapesGL_FakeSphere : public BasicShapesGL
+{
+    typedef BasicShapesGL Inherit;
+    typedef Inherit::GLBuffers GLBuffers;
+public:
+    BasicShapesGL_FakeSphere();
+    virtual ~BasicShapesGL_FakeSphere();
+
+    void init();
+
+    void draw(const VertexType& center, const float& radius);
+    void draw(const helper::vector<VertexType>& centers, const float& radius);
+    void draw(const helper::vector<VertexType>& centers, const std::vector<float>& radii);
+
+private:
+    void generateBuffer(const std::vector<VertexType> &positions, const std::vector<float>& radii);
+
+    GLBuffers m_buffer;
+    CustomGLBuffer m_radiusBuffer;
+    GLint m_radiusLocation;
+
+    GLSLShader* m_shader;
+    bool b_isInit;
+
+    void beforeDraw();
+    void internalDraw();
+    void afterDraw();
 
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< float, 3 > >;
 extern template class SOFA_HELPER_API BasicShapesGL_Sphere<helper::fixed_array< double, 3 > >;
+extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< float, 3 > >;
+extern template class SOFA_HELPER_API BasicShapesGL_FakeSphere<helper::fixed_array< double, 3 > >;
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_BASICSHAPESGL_CPP)
 
 } //gl

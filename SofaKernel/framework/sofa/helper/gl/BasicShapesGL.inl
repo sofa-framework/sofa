@@ -41,10 +41,10 @@ BasicShapesGL_Sphere<VertexType>::BasicShapesGL_Sphere()
 template<class VertexType>
 BasicShapesGL_Sphere<VertexType>::~BasicShapesGL_Sphere()
 {
-    typename std::map<SphereDescription, GLBuffer>::const_iterator it;
+    typename std::map<SphereDescription, GLBuffers>::const_iterator it;
     for(it = m_mapBuffers.begin(); it != m_mapBuffers.end() ; ++it)
     {
-        const GLBuffer& buffer = it->second;
+        const GLBuffers& buffer = it->second;
         glDeleteBuffers(1, &buffer.VBO);
         glDeleteBuffers(1, &buffer.IBO);
     }
@@ -52,7 +52,7 @@ BasicShapesGL_Sphere<VertexType>::~BasicShapesGL_Sphere()
 
 // http://stackoverflow.com/questions/5988686/creating-a-3d-sphere-in-opengl-using-visual-c
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &desc, GLBuffer &buffer)
+void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &desc, GLBuffers &buffer)
 {
     glGenBuffers(1, &buffer.VBO);
     glGenBuffers(1, &buffer.IBO);
@@ -68,7 +68,7 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     std::vector<GLfloat> vertices;
     std::vector<GLfloat> normals;
     std::vector<GLfloat> texcoords;
-    std::vector<GLushort> indices;
+    std::vector<GLuint> indices;
 
     vertices.resize(desc.rings * desc.sectors * 3);
     normals.resize(desc.rings * desc.sectors * 3);
@@ -77,7 +77,7 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     std::vector<GLfloat>::iterator v = vertices.begin();
     std::vector<GLfloat>::iterator n = normals.begin();
     std::vector<GLfloat>::iterator t = texcoords.begin();
-    std::vector<GLushort>::iterator i = indices.begin();
+    std::vector<GLuint>::iterator i = indices.begin();
 
     for (r = 0; r < desc.rings; r++)
     {
@@ -148,19 +148,19 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
 }
 
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::internalDraw(const GLBuffer &buffer, const VertexType& center, const float& radius)
+void BasicShapesGL_Sphere<VertexType>::internalDraw(const GLBuffers &buffer, const VertexType& center, const float& radius)
 {
     glPushMatrix();
     glTranslatef(center[0], center[1], center[2]);
     glScalef(radius, radius, radius);
 
-    glDrawElements(GL_QUADS, buffer.indicesSize, GL_UNSIGNED_SHORT, (void*)0);
+    glDrawElements(GL_QUADS, buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
 
     glPopMatrix();
 }
 
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::beforeDraw(const GLBuffer& buffer)
+void BasicShapesGL_Sphere<VertexType>::beforeDraw(const GLBuffers& buffer)
 {
     glMatrixMode(GL_MODELVIEW);
 
@@ -173,7 +173,7 @@ void BasicShapesGL_Sphere<VertexType>::beforeDraw(const GLBuffer& buffer)
 }
 
 template<class VertexType>
-void BasicShapesGL_Sphere<VertexType>::afterDraw(const GLBuffer &/* buffer */)
+void BasicShapesGL_Sphere<VertexType>::afterDraw(const GLBuffers &/* buffer */)
 {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
@@ -186,7 +186,7 @@ void BasicShapesGL_Sphere<VertexType>::checkBuffers(const SphereDescription& des
 {
     if(m_mapBuffers.find(desc) == m_mapBuffers.end())
     {
-        GLBuffer glbuffer;
+        GLBuffers glbuffer;
         generateBuffer(desc, glbuffer);
         m_mapBuffers[desc] = glbuffer;
     }
@@ -236,6 +236,246 @@ void BasicShapesGL_Sphere<VertexType>::draw(const helper::vector<VertexType>& ce
     }
 
     afterDraw(m_mapBuffers[desc]);
+}
+
+//////////////////////////////////////////////////////////////////////
+template<class VertexType>
+BasicShapesGL_FakeSphere<VertexType>::BasicShapesGL_FakeSphere()
+    : m_shader(NULL)
+    , b_isInit(false)
+{
+}
+
+template<class VertexType>
+BasicShapesGL_FakeSphere<VertexType>::~BasicShapesGL_FakeSphere()
+{
+    glDeleteBuffers(1, &m_buffer.VBO);
+    glDeleteBuffers(1, &m_buffer.IBO);
+    glDeleteBuffers(1, &m_radiusBuffer.VBO);
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::init()
+{
+    if(! b_isInit )
+    {
+        if (!sofa::helper::gl::GLSLShader::InitGLSL())
+        {
+            std::cerr << "InitGLSL failed" << std::endl;
+            return;
+        }
+
+        std::string vertexShaderPath = "/Volumes/Storage/Work/Sofa/src/master_fredroy/share/shaders/generateSphere.vert";
+        std::string fragmentShaderPath = "/Volumes/Storage/Work/Sofa/src/master_fredroy/share/shaders/generateSphere.frag";
+
+        m_shader = new GLSLShader();
+        m_shader->SetVertexShaderFileName(vertexShaderPath);
+        m_shader->SetFragmentShaderFileName(fragmentShaderPath);
+        m_shader->InitShaders();
+        b_isInit = true;
+
+        m_shader->TurnOn();
+        m_radiusLocation =  m_shader->GetAttributeVariable("a_radius");
+        m_shader->TurnOff();
+
+        glGenBuffers(1, &m_buffer.VBO);
+        glGenBuffers(1, &m_buffer.IBO);
+        glGenBuffers(1, &m_radiusBuffer.VBO);
+    }
+
+}
+
+// http://stackoverflow.com/questions/5988686/creating-a-3d-sphere-in-opengl-using-visual-c
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<VertexType>& positions, const std::vector<float>& radii)
+{
+//    const float radius = 1;
+
+    std::vector<GLfloat> vertices;
+    std::vector<GLfloat> texcoords;
+    std::vector<GLuint> indices;
+    std::vector<GLfloat> glradii;
+
+    vertices.resize(positions.size() * 4 * 3);
+    indices.resize(positions.size() * 4);
+    texcoords.resize(positions.size() * 4 * 2);
+    glradii.resize(positions.size() * 4);
+    std::vector<GLfloat>::iterator v = vertices.begin();
+    std::vector<GLuint>::iterator i = indices.begin();
+    std::vector<GLfloat>::iterator t = texcoords.begin();
+    std::vector<GLfloat>::iterator r = glradii.begin();
+
+    //assert positions size and radius ?
+    for (unsigned int p=0 ; p<positions.size() ; p++)
+    {
+        const VertexType& vertex = positions[p];
+        //Should try to avoid this test...
+        const float& radius = (p < radii.size() ) ? radii[p] : radii[0];
+
+        *v++ = vertex[0];
+        *v++ = vertex[1];
+        *v++ = vertex[2];
+
+        *v++ = vertex[0];
+        *v++ = vertex[1];
+        *v++ = vertex[2];
+
+        *v++ = vertex[0];
+        *v++ = vertex[1];
+        *v++ = vertex[2];
+
+        *v++ = vertex[0];
+        *v++ = vertex[1];
+        *v++ = vertex[2];
+
+        *t++ = -1.0;
+        *t++ = -1.0;
+
+        *t++ = 1.0;
+        *t++ = -1.0;
+
+        *t++ = 1.0;
+        *t++ = 1.0;
+
+        *t++ = -1.0;
+        *t++ = 1.0;
+
+        *i++ = 4*p + 0;
+        *i++ = 4*p + 1;
+        *i++ = 4*p + 2;
+        *i++ = 4*p + 3;
+
+        *r++ = radius;
+        *r++ = radius;
+        *r++ = radius;
+        *r++ = radius;
+    }
+
+    //Generate PositionVBO
+    m_buffer.verticesBufferSize = (vertices.size()*sizeof(vertices[0]));
+    m_buffer.normalsBufferSize = 0;
+    m_buffer.texcoordsBufferSize = (texcoords.size()*sizeof(texcoords[0]));
+    m_buffer.totalSize = m_buffer.verticesBufferSize + m_buffer.normalsBufferSize
+                     + m_buffer.texcoordsBufferSize;
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
+    glBufferData(GL_ARRAY_BUFFER,
+        m_buffer.totalSize,
+        NULL,
+        GL_DYNAMIC_DRAW);
+    glBufferSubDataARB(GL_ARRAY_BUFFER,
+        0,
+        m_buffer.verticesBufferSize,
+        &(vertices[0]));
+    glBufferSubData(GL_ARRAY_BUFFER,
+        m_buffer.verticesBufferSize,
+        m_buffer.texcoordsBufferSize,
+        &(texcoords[0]));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //Radius buffer
+    m_radiusBuffer.bufferSize = glradii.size()*sizeof(glradii[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_radiusBuffer.VBO);
+    glBufferData(GL_ARRAY_BUFFER,
+        m_radiusBuffer.bufferSize,
+        NULL,
+        GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER,
+        0,
+        m_radiusBuffer.bufferSize,
+        &(glradii[0]));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    //IBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer.IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(indices[0]), &(indices[0]), GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    m_buffer.indicesSize = indices.size();
+
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::beforeDraw()
+{
+    glMatrixMode(GL_MODELVIEW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_radiusBuffer.VBO);
+    glVertexAttribPointer(m_radiusLocation, 1, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0);
+    glEnableVertexAttribArray(m_radiusLocation);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer.IBO);
+    glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
+    glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + m_buffer.verticesBufferSize);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::internalDraw()
+{
+    m_shader->TurnOn();
+
+    glPushMatrix();
+    glDrawElements(GL_QUADS, m_buffer.indicesSize, GL_UNSIGNED_INT, (void*)0);
+    glPopMatrix();
+    m_shader->TurnOff();
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::afterDraw()
+{
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableVertexAttribArray(m_radiusLocation);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::draw(const VertexType& center, const float& radius)
+{
+    init();
+    std::vector<VertexType> centers;
+    centers.push_back(center);
+    std::vector<float> radii;
+    radii.push_back(radius);
+    generateBuffer(centers, radii);
+
+    beforeDraw();
+    internalDraw();
+    afterDraw();
+
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>& centers, const float& radius)
+{
+    init();
+    std::vector<float> radii;
+    radii.push_back(radius);
+    generateBuffer(centers, radii);
+
+    beforeDraw();
+    internalDraw();
+    afterDraw();
+}
+
+template<class VertexType>
+void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>& centers, const std::vector<float>& radii)
+{
+    init();
+
+    generateBuffer(centers, radii);
+
+    beforeDraw();
+
+    internalDraw();
+
+    afterDraw();
 }
 
 
