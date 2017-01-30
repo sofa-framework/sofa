@@ -166,7 +166,7 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 
 ## sofa/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa" COMPONENT headers)
 # make sure everyone in the build tree can see <sofa/config.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
@@ -178,7 +178,7 @@ set(SOFAFRAMEWORK_VERSION "17.dev.0")
 set(SOFA_VERSION "999999")
 set(SOFA_VERSION_STR "\"devel\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa COMPONENT headers)
 
 
 ## Subdirectories
@@ -224,10 +224,10 @@ sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
 # Build tree
 configure_file(CMakeParseLibraryList.cmake ${CMAKE_BINARY_DIR}/cmake/CMakeParseLibraryList.cmake COPYONLY)
 # Install tree
-install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/SofaFramework)
+install(FILES CMakeParseLibraryList.cmake DESTINATION lib/cmake/SofaFramework COMPONENT headers)
 
 ## SofaMacros.cmake
 # Build tree
 configure_file(SofaMacros.cmake ${CMAKE_BINARY_DIR}/cmake/SofaMacros.cmake COPYONLY)
 # Install tree
-install(FILES SofaMacros.cmake DESTINATION lib/cmake/SofaFramework)
+install(FILES SofaMacros.cmake DESTINATION lib/cmake/SofaFramework COMPONENT headers)

@@ -155,7 +155,7 @@ endforeach()
 
 ## SofaGuiConfig/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})

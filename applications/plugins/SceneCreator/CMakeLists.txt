@@ -23,7 +23,7 @@ find_package(SofaMisc REQUIRED)
 
 ## SceneCreator/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h" DESTINATION "include/SceneCreator")
+install(FILES "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h" DESTINATION "include/SceneCreator" COMPONENT headers)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaComponentMisc SofaSimulationGraph SofaLoader SofaEngine SofaSparseSolver)

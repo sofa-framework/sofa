@@ -41,21 +41,21 @@ endmacro()
 macro(sofa_write_package_config_files package_name version)
 
     ## <package_name>Targets.cmake
-    install(EXPORT ${package_name}Targets DESTINATION lib/cmake/${package_name})
+    install(EXPORT ${package_name}Targets DESTINATION lib/cmake/${package_name} COMPONENT headers)
 
     ## <package_name>ConfigVersion.cmake
     set(filename ${package_name}ConfigVersion.cmake)
     write_basic_package_version_file(${filename} VERSION ${version} COMPATIBILITY ExactVersion)
     configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}"
                    "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION lib/cmake/${package_name})
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION lib/cmake/${package_name} COMPONENT headers)
 
     ### <package_name>Config.cmake
     configure_package_config_file(${package_name}Config.cmake.in
                                   "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
                                   INSTALL_DESTINATION lib/cmake/${package_name})
     install(FILES "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
-            DESTINATION lib/cmake/${package_name})
+            DESTINATION lib/cmake/${package_name} COMPONENT headers)
 
 endmacro()
 
@@ -208,7 +208,8 @@ macro(sofa_set_python_directory plugin_name directory)
         file(RELATIVE_PATH script "${CMAKE_CURRENT_SOURCE_DIR}/${directory}" "${python_file}")
         get_filename_component(path ${script} DIRECTORY)
         install(FILES ${directory}/${script}
-                DESTINATION "lib/python2.7/site-packages/${path}")
+                DESTINATION "lib/python2.7/site-packages/${path}"
+                COMPONENT headers)
     endforeach()
 
     ## Python configuration file (build tree)
@@ -219,7 +220,8 @@ macro(sofa_set_python_directory plugin_name directory)
          "lib/python2.7/site-packages")
      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
              DESTINATION "etc/sofa/python.d"
-             RENAME "${plugin_name}")
+             RENAME "${plugin_name}"
+             COMPONENT headers)
 endmacro()
 
 macro(sofa_add_plugin directory plugin_name)

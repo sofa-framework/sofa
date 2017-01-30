@@ -349,11 +349,11 @@ endif()
 ## when installing, keep an eye on options/params/sources used for compilation
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
-install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
+install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
+install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
 ## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
 ## build directory, this one contains relative paths to the installed resource directory.
@@ -379,6 +379,36 @@ SET(CPACK_PACKAGE_VERSION "17.dev.0")
 SET(CPACK_PACKAGE_VERSION_MAJOR "17")
 SET(CPACK_PACKAGE_VERSION_MINOR "dev")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Sofa_v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+SET(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
+
+set(CPACK_COMPONENTS_ALL applications headers libraries resources)
+
+set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "runSofa Application")
+set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+set(CPACK_COMPONENT_RESOURCES_DISPLAY_NAME "Resources")
+
+set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
+set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
+set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+set(CPACK_COMPONENT_HEADERS_GROUP "Development")
+
+IF(WIN32 AND NOT UNIX)
+  # There is a bug in NSI that does not handle full unix paths properly. Make
+  # sure there is at least one set of four (4) backlasshes.
+  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
+  SET(CPACK_NSIS_DISPLAY_NAME "Sofa v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+  SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+  SET(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
+ELSE(WIN32 AND NOT UNIX)
+  SET(CPACK_STRIP_FILES "bin/runSofa")
+  SET(CPACK_SOURCE_STRIP_FILES "")
+ENDIF(WIN32 AND NOT UNIX)
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
