@@ -126,6 +126,7 @@ void GLSLShader::AddDefineMacro(const std::string &name, const std::string &valu
     AddHeader("#define " + name + " " + value);
 }
 
+///	This function loads and returns a text file for our shaders
 void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
 {
     //std::cout << "Shader " << GetShaderStageName(target) << " = " << filename << std::endl;
@@ -141,6 +142,16 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
     }
 }
 
+void GLSLShader::SetShaderFromString(GLint target, const std::string& shaderContent)
+{
+    if (shaderContent.empty())
+    {
+        m_hShaderContents.erase(target);
+    }
+    else {
+        m_hShaderContents[target] = shaderContent;
+    }
+}
 
 ///	This function loads and returns a text file for our shaders
 std::string GLSLShader::LoadTextFile(const std::string& strFile)
@@ -238,14 +249,15 @@ std::string GLSLShader::GetShaderStageName(GLint target)
     return shaderStage;
 }
 
+
 ///	This function compiles a shader and check the log
-bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const std::string& header)
+bool GLSLShader::CompileShader(GLint target, const std::string& shaderContent, const std::string& header)
 {
     if (!GLSLIsSupported) return false;
-    std::string source = LoadTextFile(fileName);
 
     std::string shaderStage = GetShaderStageName(target);
 
+    std::string source = shaderContent;
     source = CombineHeaders(header, shaderStage + std::string("Shader"), source);
 
     GLhandleARB shader = glCreateShaderObjectARB(target);
@@ -258,14 +270,13 @@ bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const 
 
     GLint compiled = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
-    if (!compiled) std::cerr << "ERROR: Compilation of "<<shaderStage<<" shader failed:"<<std::endl;
+    if (!compiled) std::cerr << "ERROR: Compilation of " << shaderStage << " shader failed:" << std::endl;
     //     else std::cout << "Compilation of "<<shaderStage<<" shader OK" << std::endl;
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
-        std::cerr << "File: " << fileName << std::endl;
         if (!header.empty()) std::cerr << "Header:\n" << header << std::endl;
-        GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
+        GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
         std::cerr << logString << std::endl;
         free(logString);
@@ -274,7 +285,22 @@ bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const 
         m_hShaders[target] = shader;
     else
         glDeleteObjectARB(shader);
-    return (compiled!=0);
+    return (compiled != 0);
+}
+
+///	This function compiles a shader from a file and check the log
+bool GLSLShader::CompileShaderFromFile(GLint target, const std::string& fileName, const std::string& header)
+{
+    if (!GLSLIsSupported) return false;
+    std::string fileContent = LoadTextFile(fileName);
+
+    if (!CompileShader(target, fileContent, header))
+    {
+        std::cerr << "From File: " << fileName << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 ///	This function loads a vertex and fragment shader file
@@ -282,10 +308,14 @@ void GLSLShader::InitShaders()
 {
     if (!GLSLIsSupported) return;
     // Make sure the user passed in at least a vertex and fragment shader file
-    if(!GetVertexShaderFileName().length() || !GetFragmentShaderFileName().length())
+    if( !GetVertexShaderFileName().length() || !GetFragmentShaderFileName().length() )
     {
-        std::cerr << "GLSLShader requires setting a VertexShader and a FragmentShader" << std::endl;
-        return;
+        if(m_hShaderContents.find(GL_VERTEX_SHADER_ARB) == m_hShaderContents.end()
+            || m_hShaderContents.find(GL_FRAGMENT_SHADER_ARB) == m_hShaderContents.end())
+        {
+            std::cerr << "GLSLShader requires setting a VertexShader and a FragmentShader" << std::endl;
+            return;
+        }
     }
 
     // If any of our shader pointers are set, let's free them first.
@@ -294,10 +324,16 @@ void GLSLShader::InitShaders()
 
     bool ready = true;
 
-    // Now we load and compile the shaders from their respective files
+    // Now we load and compile the shaders from their respective files...
     for (std::map<GLint,std::string>::const_iterator it = m_hFileNames.begin(), itend = m_hFileNames.end(); it != itend; ++it)
     {
-        ready &= CompileShader( it->first, it->second, header );
+        ready &= CompileShaderFromFile( it->first, it->second, header );
+    }
+
+    //... or from their contents directly
+    for (std::map<GLint, std::string>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+    {
+        ready &= CompileShader(it->first, it->second, header);
     }
 
     if (!ready)
@@ -349,7 +385,7 @@ void GLSLShader::InitShaders()
 std::string GLSLShader::GetShaderFileName(GLint type) const
 {
     std::map<GLint,std::string>::const_iterator it = m_hFileNames.find(type);
-    return ((it != m_hFileNames.end()) ? it->second : 0);
+    return ((it != m_hFileNames.end()) ? it->second : std::string());
 }
 
 GLhandleARB GLSLShader::GetShaderID(GLint type) const

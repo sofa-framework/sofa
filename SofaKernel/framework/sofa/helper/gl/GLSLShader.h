@@ -79,16 +79,23 @@ public:
     void AddDefineMacro(const std::string &name, const std::string &value);
 
     void SetShaderFileName(GLint target, const std::string& fileName);
+    void SetShaderFromString(GLint target, const std::string& shaderContent);
+
     void SetVertexShaderFileName(const std::string& fileName)   { SetShaderFileName(GL_VERTEX_SHADER_ARB, fileName); }
+    void SetVertexShaderFromString(const std::string& string) { SetShaderFromString(GL_VERTEX_SHADER_ARB, string); }
     void SetFragmentShaderFileName(const std::string& fileName) { SetShaderFileName(GL_FRAGMENT_SHADER_ARB, fileName); }
+    void SetFragmentShaderFromString(const std::string& string) { SetShaderFromString(GL_FRAGMENT_SHADER_ARB, string); }
 #ifdef GL_GEOMETRY_SHADER_EXT
     void SetGeometryShaderFileName(const std::string& fileName) { SetShaderFileName(GL_GEOMETRY_SHADER_EXT, fileName); }
+    void SetGeometryShaderFromString(const std::string& string) { SetShaderFromString(GL_GEOMETRY_SHADER_EXT, string); }
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
     void SetTessellationControlShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_CONTROL_SHADER, fileName); }
+    void SetTessellationControlShaderFromString(const std::string& string) { SetShaderFromString(GL_TESS_CONTROL_SHADER, string); }
 #endif
 #ifdef GL_TESS_EVALUATION_SHADER
     void SetTessellationEvaluationShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_EVALUATION_SHADER, fileName); }
+    void SetTessellationEvaluationShaderFromString(const std::string& string) { SetShaderFromString(GL_TESS_EVALUATION_SHADER, string); }
 #endif
 
     std::string GetShaderStageName(GLint target);
@@ -230,11 +237,14 @@ public:
 
 protected:
 
-    bool CompileShader(GLint target, const std::string& fileName, const std::string& header);
+    bool CompileShader(GLint target, const std::string& shaderContent, const std::string& header);
+    bool CompileShaderFromFile(GLint target, const std::string& fileName, const std::string& header);
 
     std::string header;
 
     std::map<GLint, std::string> m_hFileNames;
+    std::map<GLint, std::string> m_hShaderContents;
+
     std::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader
