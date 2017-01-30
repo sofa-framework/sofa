@@ -132,24 +132,30 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
     //std::cout << "Shader " << GetShaderStageName(target) << " = " << filename << std::endl;
     if (filename.empty())
     {
-        if(m_filelistener)
-            FileMonitor::removeFileListener(m_hFileNames[target], m_filelistener.get()) ;
-        m_hFileNames.erase(target);
+        if(m_filelistener && !m_hShaderContents[target].filename.empty())
+            FileMonitor::removeFileListener(m_hShaderContents[target].filename, m_filelistener.get()) ;
+        m_hShaderContents.erase(target);
     }else{
-        m_hFileNames[target] = filename;
+        ShaderContents sc; 
+        sc.filename = filename;
+        sc.text = LoadTextFile(filename);
+        m_hShaderContents[target] = sc;
         if(m_filelistener)
             FileMonitor::addFile(filename, m_filelistener.get()) ;
     }
 }
 
-void GLSLShader::SetShaderFromString(GLint target, const std::string& shaderContent)
+void GLSLShader::SetShaderFromString(GLint target, const std::string& str)
 {
-    if (shaderContent.empty())
+    if (str.empty())
     {
         m_hShaderContents.erase(target);
     }
     else {
-        m_hShaderContents[target] = shaderContent;
+        ShaderContents sc;
+        sc.filename = "";
+        sc.text = str;
+        m_hShaderContents[target] = sc;
     }
 }
 
@@ -249,15 +255,28 @@ std::string GLSLShader::GetShaderStageName(GLint target)
     return shaderStage;
 }
 
-
 ///	This function compiles a shader and check the log
-bool GLSLShader::CompileShader(GLint target, const std::string& shaderContent, const std::string& header)
+bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent, const std::string& header)
 {
     if (!GLSLIsSupported) return false;
 
     std::string shaderStage = GetShaderStageName(target);
 
-    std::string source = shaderContent;
+    std::string source;
+    //to get sure that the file has been loaded
+    if(shaderContent.text.empty())
+    {
+        if(!shaderContent.filename.empty())
+            source = LoadTextFile(shaderContent.filename);
+        else
+        {
+            std::cerr << "No content has been given." << std::endl;
+            return false;
+        }
+    }
+    else
+        source = shaderContent.text;
+
     source = CombineHeaders(header, shaderStage + std::string("Shader"), source);
 
     GLhandleARB shader = glCreateShaderObjectARB(target);
@@ -275,6 +294,8 @@ bool GLSLShader::CompileShader(GLint target, const std::string& shaderContent, c
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
+        if(!shaderContent.filename.empty())
+            std::cerr << "From File: " << shaderContent.filename << std::endl;
         if (!header.empty()) std::cerr << "Header:\n" << header << std::endl;
         GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
@@ -286,21 +307,6 @@ bool GLSLShader::CompileShader(GLint target, const std::string& shaderContent, c
     else
         glDeleteObjectARB(shader);
     return (compiled != 0);
-}
-
-///	This function compiles a shader from a file and check the log
-bool GLSLShader::CompileShaderFromFile(GLint target, const std::string& fileName, const std::string& header)
-{
-    if (!GLSLIsSupported) return false;
-    std::string fileContent = LoadTextFile(fileName);
-
-    if (!CompileShader(target, fileContent, header))
-    {
-        std::cerr << "From File: " << fileName << std::endl;
-        return false;
-    }
-
-    return true;
 }
 
 ///	This function loads a vertex and fragment shader file
@@ -325,13 +331,18 @@ void GLSLShader::InitShaders()
     bool ready = true;
 
     // Now we load and compile the shaders from their respective files...
-    for (std::map<GLint,std::string>::const_iterator it = m_hFileNames.begin(), itend = m_hFileNames.end(); it != itend; ++it)
-    {
-        ready &= CompileShaderFromFile( it->first, it->second, header );
-    }
+    //for (std::map<GLint,std::string>::const_iterator it = m_hFileNames.begin(), itend = m_hFileNames.end(); it != itend; ++it)
+    //{
+    //    ready &= CompileShaderFromFile( it->first, it->second, header );
+    //}
 
-    //... or from their contents directly
-    for (std::map<GLint, std::string>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+    ////... or from their contents directly
+    //for (std::map<GLint, std::string>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+    //{
+    //    ready &= CompileShader(it->first, it->second, header);
+    //}
+
+    for (std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
     {
         ready &= CompileShader(it->first, it->second, header);
     }
@@ -374,8 +385,12 @@ void GLSLShader::InitShaders()
         glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
         std::cerr << logString << std::endl;
         free(logString);
-        for (std::map<GLint,std::string>::const_iterator it = m_hFileNames.begin(), itend = m_hFileNames.end(); it != itend; ++it)
-            std::cerr << GetShaderStageName(it->first) << " shader file: " << it->second << std::endl;
+        for (std::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+            if(!it->second.filename.empty())
+                std::cerr << GetShaderStageName(it->first) << " shader file: " << it->second.filename << std::endl;
+            else
+                std::cerr << GetShaderStageName(it->first) << " , check your source file (not an external shader file)" << std::endl;
+
     }
 
     // Now, let's turn off the shader initially.
@@ -384,8 +399,14 @@ void GLSLShader::InitShaders()
 
 std::string GLSLShader::GetShaderFileName(GLint type) const
 {
-    std::map<GLint,std::string>::const_iterator it = m_hFileNames.find(type);
-    return ((it != m_hFileNames.end()) ? it->second : std::string());
+    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    return ((it != m_hShaderContents.end()) ? it->second.filename : std::string());
+}
+
+bool GLSLShader::IsSet(GLint type) const
+{
+    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    return it != m_hShaderContents.end();
 }
 
 GLhandleARB GLSLShader::GetShaderID(GLint type) const

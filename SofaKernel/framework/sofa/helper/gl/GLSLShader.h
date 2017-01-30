@@ -143,6 +143,7 @@ public:
     bool        IsReady() const { return m_hProgramObject != 0; }
     GLhandleARB GetProgram() const	{	return m_hProgramObject; }
     std::string GetShaderFileName(GLint type) const;
+    bool        IsSet(GLint type) const;
     GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
     std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
     GLhandleARB GetVertexShaderID        () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
@@ -236,14 +237,25 @@ public:
 #endif
 
 protected:
+    struct ShaderContents
+    {
+        std::string filename;
+        std::string text;
 
-    bool CompileShader(GLint target, const std::string& shaderContent, const std::string& header);
-    bool CompileShaderFromFile(GLint target, const std::string& fileName, const std::string& header);
+        ShaderContents()
+            :filename(""), text("")
+        {}
+
+    };
+
+    bool CompileShader(GLint target, const ShaderContents& shaderContent, const std::string& header);
 
     std::string header;
 
-    std::map<GLint, std::string> m_hFileNames;
-    std::map<GLint, std::string> m_hShaderContents;
+    std::map<GLint, ShaderContents> m_hShaderContents;
+
+    //std::map<GLint, std::string> m_hFileNames;
+    //std::map<GLint, std::string> m_hShaderContents;
 
     std::map<GLint, GLhandleARB> m_hShaders;
 
