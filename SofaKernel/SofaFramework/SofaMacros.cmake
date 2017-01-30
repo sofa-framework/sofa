@@ -1,4 +1,7 @@
 include(CMakePackageConfigHelpers)
+include(CMakeParseLibraryList)
+
+
 
 # sofa_write_package_config_files(Foo <version> <build-include-dirs>)
 #
@@ -27,17 +30,6 @@ include(CMakePackageConfigHelpers)
 # endif()
 #
 # check_required_components(Foo Qux)
-
-macro(sofa_install_targets package_name the_targets install_include_subdir)
-
-    install(TARGETS ${the_targets}
-            EXPORT ${package_name}Targets
-            RUNTIME DESTINATION bin COMPONENT Runtime
-            LIBRARY DESTINATION lib COMPONENT Runtime
-            ARCHIVE DESTINATION lib COMPONENT Runtime
-            PUBLIC_HEADER DESTINATION include/${install_include_subdir} COMPONENT Development)
-endmacro()
-
 macro(sofa_write_package_config_files package_name version)
 
     ## <package_name>Targets.cmake
@@ -57,11 +49,6 @@ macro(sofa_write_package_config_files package_name version)
     install(FILES "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
             DESTINATION lib/cmake/${package_name} COMPONENT headers)
 
-endmacro()
-
-macro(sofa_create_package package_name version the_targets include_subdir)
-    sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
-    sofa_write_package_config_files("${package_name}" "${version}")
 endmacro()
 
 
@@ -103,9 +90,6 @@ endmacro()
 # sofa_create_target( PNG MyNamespace "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}" )
 # target_link_libraries( myLib PUBLIC ${PNG_Target} )
 #
-
-include(CMakeParseLibraryList)
-
 macro(sofa_create_target TARGETNAME NAMESPACE LIBRARY_PATH INCLUDE_DIRS)
     # message("TARGETNAME ${TARGETNAME}")
     set(NAMESPACE_TARGETNAME "${NAMESPACE}::${TARGETNAME}")
@@ -158,9 +142,7 @@ endmacro()
 
 
 
-
 macro(sofa_add_generic directory name type)
-
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
 
         string(TOUPPER ${type}_${name} option)
@@ -188,6 +170,8 @@ macro(sofa_add_generic directory name type)
         message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
     endif()
 endmacro()
+
+
 
 # Declare a (unique, TODO?) directory containing the python scripts of
 # a plugin.  This macro:
@@ -224,9 +208,12 @@ macro(sofa_set_python_directory plugin_name directory)
              COMPONENT headers)
 endmacro()
 
+
+
 macro(sofa_add_plugin directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
 endmacro()
+
 
 
 macro(sofa_add_application directory app_name)
@@ -234,11 +221,6 @@ macro(sofa_add_application directory app_name)
 endmacro()
 
 
-# Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_get_libraries library)
-    file(GLOB ABS_LIB "${library}*")
-    install(FILES ${ABS_LIB} DESTINATION lib)
-endmacro()
 
 
 
@@ -247,6 +229,76 @@ endmacro()
 #################### INSTALL MACROS ######################
 ##########################################################
 # move them in a specific file?
+
+
+
+macro(sofa_install_targets package_name the_targets install_include_subdir)
+    install(TARGETS ${the_targets}
+            EXPORT ${package_name}Targets
+            RUNTIME DESTINATION bin COMPONENT applications
+            LIBRARY DESTINATION lib COMPONENT libraries
+            ARCHIVE DESTINATION lib COMPONENT libraries
+            PUBLIC_HEADER DESTINATION include/${install_include_subdir} COMPONENT headers)
+endmacro()
+
+
+
+macro(sofa_create_package package_name version the_targets include_subdir)
+    sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
+    sofa_write_package_config_files("${package_name}" "${version}")
+endmacro()
+
+
+
+# Get path of all library versions (involving symbolic links) for a specified library
+macro(sofa_install_get_libraries library)
+    file(GLOB STATIC_LIBS "${library}*${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    file(GLOB SHARED_LIBS "${library}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    message("SHARED: ${library}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
+    install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
+endmacro()
+
+
+
+macro(sofa_install_extlib target)
+    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+
+    get_filename_component(LIB_NAME ${target_location} NAME_WE)
+    get_filename_component(LIB_PATH ${target_location} PATH)
+
+    file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    file(GLOB STATIC_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_STATIC_LIBRARY_SUFFIX}")
+
+#        message("SHARED_LIB = ${SHARED_LIB}")
+#        message("STATIC_LIB = ${STATIC_LIB}")
+
+    install(FILES ${SHARED_LIB} DESTINATION bin COMPONENT applications)
+    install(FILES ${STATIC_LIB} DESTINATION lib COMPONENT libraries)
+endmacro()
+
+
+
+macro(sofa_copy_extlib target)
+    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+
+    get_filename_component(LIB_NAME ${target_location} NAME_WE)
+    get_filename_component(LIB_PATH ${target_location} PATH)
+
+    file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+        endforeach()
+    else()                      # Single-config generator (nmake)
+        file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    endif()
+endmacro()
+
+
+
+
 
 
 ## to store which sources have been used for installed binaries

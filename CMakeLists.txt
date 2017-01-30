@@ -185,25 +185,7 @@ if(MSVC)
         list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
 
-    if(CMAKE_CL_64)
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win64/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win64/*.lib")
-    else()
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win32/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win32/*.lib")
-    endif()
-    ## Copy DLLs to the build tree
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    endif()
-    ## Install DLLs
-    install(FILES ${DLLS} DESTINATION ${LIBRARY_OUTPUT_DIRECTORY})
-    install(FILES ${LIBS} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
 ### Mask
