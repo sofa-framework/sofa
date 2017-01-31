@@ -54,7 +54,7 @@ TEST(QuaterTest, EulerAngles)
 
 }
 
-/* Following unit test restults has been checked with Matlab 2016a.
+/* Following unit test results have been checked with Matlab 2016a.
  * Note: ambiguous result with rotate and invrotate.
  */
 
@@ -518,9 +518,9 @@ TEST(QuaterTest, QuaterdCreateQuaterFromEuler)
     sofa::defaulttype::Vec3d euler(1.570796326794897, 0.523598775598299, 1.047197551196598);
     Quater<double> quat = Quater<double>::createQuaterFromEuler(euler);
 
-    EXPECT_NEAR(0.183012701892219, quat[0], errorThreshold);
+    EXPECT_NEAR(0.500000000000000, quat[0], errorThreshold);
     EXPECT_NEAR(0.500000000000000, quat[1], errorThreshold);
-    EXPECT_NEAR(0.500000000000000, quat[2], errorThreshold);
+    EXPECT_NEAR(0.183012701892219, quat[2], errorThreshold);
     EXPECT_NEAR(0.683012701892219, quat[3], errorThreshold);
 
 }

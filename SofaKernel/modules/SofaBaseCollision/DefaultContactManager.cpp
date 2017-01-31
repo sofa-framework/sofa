@@ -57,7 +57,7 @@ DefaultContactManager::~DefaultContactManager()
 
 sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(core::collision::Pipeline *pipeline)
 {
-    helper::set<std::string> listResponse;
+    std::set<std::string> listResponse;
     if (pipeline) listResponse=pipeline->getResponseList();
     else
     {

@@ -118,7 +118,6 @@ set(HEADER_FILES
     utils/map.h
     utils/minres.h
     utils/nan.h
-    utils/pair.h
     utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h

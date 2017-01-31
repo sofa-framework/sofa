@@ -59,6 +59,8 @@ public:
     virtual void formatMessage(const Message& m,std::ostream& out);
 
     RichConsoleStyleMessageFormatter();
+private:
+    bool m_showFileInfo ;
 };
 
 /// Singleton based façade to RichConsoleStyleMessageFormatter.

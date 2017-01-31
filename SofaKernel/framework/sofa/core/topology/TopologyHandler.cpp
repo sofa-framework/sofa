@@ -40,8 +40,8 @@ void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology:
     if(!this->isTopologyDataRegistered())
         return;
 
-    sofa::helper::list<const core::topology::TopologyChange *>::iterator changeIt;
-    sofa::helper::list<const core::topology::TopologyChange *> _changeList = _topologyChangeEvents;
+    std::list<const core::topology::TopologyChange *>::iterator changeIt;
+    std::list<const core::topology::TopologyChange *> _changeList = _topologyChangeEvents;
 
     this->setDataSetArraySize(_dataSize);
 

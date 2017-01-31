@@ -201,7 +201,7 @@ protected:
     ///Name of element (corresponding with the shader)
     Data<unsigned int> indexShader;
     ///Shader to use the element with
-    helper::set<OglShader*> shaders;
+    std::set<OglShader*> shaders;
 public:
     OglShaderElement();
     virtual ~OglShaderElement() {}

@@ -532,11 +532,13 @@ SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< UncoupledConstraintCorrection< Vec1dTypes > >()
+        .add< UncoupledConstraintCorrection< Vec2dTypes > >()
         .add< UncoupledConstraintCorrection< Vec3dTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< UncoupledConstraintCorrection< Vec1fTypes > >()
+        .add< UncoupledConstraintCorrection< Vec2fTypes > >()
         .add< UncoupledConstraintCorrection< Vec3fTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
         //TODO(dmarchal) There is no Rigid3fTypes template specizaliation while there is one for Rigid3d...
@@ -547,11 +549,13 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
 
 #ifndef SOFA_FLOAT
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1dTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2dTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3dTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1fTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2fTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3fTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3fTypes >;
 #endif
