@@ -20,11 +20,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/gl/GLSLShader.h>
+
 #include <cstdlib>
 #include <cmath>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -129,7 +132,6 @@ void GLSLShader::AddDefineMacro(const std::string &name, const std::string &valu
 ///	This function loads and returns a text file for our shaders
 void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
 {
-    //std::cout << "Shader " << GetShaderStageName(target) << " = " << filename << std::endl;
     if (filename.empty())
     {
         if(m_filelistener && !m_hShaderContents[target].filename.empty())
@@ -270,7 +272,7 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
             source = LoadTextFile(shaderContent.filename);
         else
         {
-            std::cerr << "No content has been given." << std::endl;
+            msg_error("GLSLShader") << "No content has been given.";
             return false;
         }
     }
@@ -289,20 +291,23 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
 
     GLint compiled = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
-    if (!compiled) std::cerr << "ERROR: Compilation of " << shaderStage << " shader failed:" << std::endl;
-    //     else std::cout << "Compilation of "<<shaderStage<<" shader OK" << std::endl;
+    if (!compiled)
+        msg_error("GLSLShader") << "ERROR: Compilation of " << shaderStage << " shader failed:";
+
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
         if(!shaderContent.filename.empty())
-            std::cerr << "From File: " << shaderContent.filename << std::endl;
+            msg_error("GLSLShader") << "From File: " << shaderContent.filename;
         else
-            std::cerr << "From Source code (no filename given)." << std::endl;
+            msg_error("GLSLShader") << "From Source code (no filename given).";
 
-        if (!header.empty()) std::cerr << "Header:\n" << header << std::endl;
+        if (!header.empty()) 
+            msg_error("GLSLShader") << "Header:\n" << header;
+
         GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
-        std::cerr << logString << std::endl;
+        msg_error("GLSLShader") << logString;
         free(logString);
     }
     if (compiled)
@@ -322,7 +327,7 @@ void GLSLShader::InitShaders()
         if(m_hShaderContents.find(GL_VERTEX_SHADER_ARB) == m_hShaderContents.end()
             || m_hShaderContents.find(GL_FRAGMENT_SHADER_ARB) == m_hShaderContents.end())
         {
-            std::cerr << "GLSLShader requires setting a VertexShader and a FragmentShader" << std::endl;
+            msg_error("GLSLShader") << "GLSLShader requires setting a VertexShader and a FragmentShader";
             return;
         }
     }
@@ -352,7 +357,7 @@ void GLSLShader::InitShaders()
 
     if (!ready)
     {
-        std::cerr << "SHADER compilation failed.\n";
+        msg_error("GLSLShader") << "SHADER compilation failed.";
         return;
     }
 
@@ -379,20 +384,21 @@ void GLSLShader::InitShaders()
 
     GLint linked = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_LINK_STATUS_ARB, &linked);
-    if (!linked) std::cerr << "ERROR: Link of program shader failed:\n"<<std::endl;
-//     else std::cout << "Link of program shader OK" << std::endl;
+    if (!linked) 
+        msg_error("GLSLShader") << "ERROR: Link of program shader failed:";
+
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
         GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
         glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
-        std::cerr << logString << std::endl;
+        msg_error("GLSLShader") << logString;
         free(logString);
         for (std::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
             if(!it->second.filename.empty())
-                std::cerr << GetShaderStageName(it->first) << " shader file: " << it->second.filename << std::endl;
+                msg_error("GLSLShader") << GetShaderStageName(it->first) << " shader file: " << it->second.filename ;
             else
-                std::cerr << GetShaderStageName(it->first) << " , check your source file (not an external shader file)" << std::endl;
+                msg_error("GLSLShader") << GetShaderStageName(it->first) << " , check your source file (not an external shader file)" ;
 
     }
 

@@ -3,7 +3,7 @@
 
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/system/FileRepository.h>
-#include "test.glsl"
+#include "test.cppglsl"
 
 using sofa::helper::Utils;
 
