@@ -296,6 +296,9 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
     {
         if(!shaderContent.filename.empty())
             std::cerr << "From File: " << shaderContent.filename << std::endl;
+        else
+            std::cerr << "From Source code (no filename given)." << std::endl;
+
         if (!header.empty()) std::cerr << "Header:\n" << header << std::endl;
         GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
@@ -407,6 +410,17 @@ bool GLSLShader::IsSet(GLint type) const
 {
     std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return it != m_hShaderContents.end();
+}
+
+std::string GLSLShader::GetShaderString(GLint type) const
+{
+    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    return ((it != m_hShaderContents.end()) ? it->second.text : std::string());
+}
+
+std::string GLSLShader::GetHeader() const
+{
+    return this->header;
 }
 
 GLhandleARB GLSLShader::GetShaderID(GLint type) const

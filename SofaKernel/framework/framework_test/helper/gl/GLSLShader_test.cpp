@@ -7,6 +7,7 @@
 
 using sofa::helper::Utils;
 
+/// NOTE: We can only test non-OPenGL operations as the context is not created
 
 struct GLSLShader_test : public ::testing::Test
 {
@@ -95,4 +96,44 @@ TEST(GLSLShader_test, GLSLShader_SetStrings)
 #ifdef GL_TESS_EVALUATION_SHADER
     EXPECT_TRUE(glshader.IsSet(GL_TESS_EVALUATION_SHADER));
 #endif
+}
+
+TEST(GLSLShader_test, GLSLShader_AddHeader)
+{
+    sofa::helper::gl::GLSLShader glshader;
+
+    std::string header = "#HEADER#";    
+    std::string expectedHeader = "#HEADER#\n";
+
+    glshader.AddHeader(header);
+    EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader) == 0);
+}
+
+TEST(GLSLShader_test, GLSLShader_SetStage)
+{
+    sofa::helper::gl::GLSLShader glshader;
+    EXPECT_TRUE(glshader.GetShaderStageName(GL_VERTEX_SHADER_ARB).compare("Vertex") == 0);
+    EXPECT_TRUE(glshader.GetShaderStageName(GL_FRAGMENT_SHADER_ARB).compare("Fragment") == 0);
+    EXPECT_TRUE(glshader.GetShaderStageName(GL_GEOMETRY_SHADER_EXT).compare("Geometry") == 0);
+    EXPECT_TRUE(glshader.GetShaderStageName(GL_TESS_CONTROL_SHADER).compare("TessellationControl") == 0);
+    EXPECT_TRUE(glshader.GetShaderStageName(GL_TESS_EVALUATION_SHADER).compare("TessellationEvaluation") == 0);
+    EXPECT_TRUE(glshader.GetShaderStageName(123456789).compare("Unknown") == 0);
+}
+
+TEST(GLSLShader_test, GLSLShader_AddDefineMacro)
+{
+    sofa::helper::gl::GLSLShader glshader;
+
+    std::string define1 = "NUMBER_OF_THINGS";
+    std::string value1 = "5";
+    std::string define2 = "NUMBER_OF_STUFF";
+    std::string value2 = "42";
+    std::string expectedHeader1 = "#define NUMBER_OF_THINGS 5\n";
+    std::string expectedHeader2 = "#define NUMBER_OF_THINGS 5\n#define NUMBER_OF_STUFF 42\n";
+
+    glshader.AddDefineMacro(define1, value1);
+    std::cout << glshader.GetHeader() << std::endl;
+    EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader1) == 0);
+    glshader.AddDefineMacro(define2, value2);
+    EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader2) == 0);
 }

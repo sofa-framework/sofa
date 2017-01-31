@@ -143,6 +143,9 @@ public:
     bool        IsReady() const { return m_hProgramObject != 0; }
     GLhandleARB GetProgram() const	{	return m_hProgramObject; }
     std::string GetShaderFileName(GLint type) const;
+    std::string GetShaderString(GLint type) const;
+    std::string GetHeader() const;
+
     bool        IsSet(GLint type) const;
     GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
     std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
@@ -237,6 +240,7 @@ public:
 #endif
 
 protected:
+    /// A shader is a source code, as such it can be loaded either directly by its source or a filename (containing the source)
     struct ShaderContents
     {
         std::string filename;
@@ -253,10 +257,7 @@ protected:
     std::string header;
 
     std::map<GLint, ShaderContents> m_hShaderContents;
-
-    //std::map<GLint, std::string> m_hFileNames;
-    //std::map<GLint, std::string> m_hShaderContents;
-
+    
     std::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader
