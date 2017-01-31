@@ -50,7 +50,7 @@ public:
 
     /// Inherited from FileEventListener
     void fileHasChanged(const std::string&){
-        /// We recompiling & re-initializing all the shaders...
+        /// We are recompiling & re-initializing all the shaders...
         /// If this become a bottleneck we can do finer grain updates to
         /// speed up the thing.
         m_glslshader->InitShaders() ;
@@ -225,15 +225,6 @@ std::string CombineHeaders(std::string header, const std::string &shaderStage, s
             out << source.substr(spos);
     }
     return out.str();
-    /*
-        if (spos == 0)
-            source = header + source;
-        else if (spos == std::string::npos)
-            source = source + "\n" + header;
-        else
-            source = source.substr(0, spos) + header + source.substr(spos);
-    */
-    return source;
 }
 
 std::string GLSLShader::GetShaderStageName(GLint target)
@@ -337,18 +328,6 @@ void GLSLShader::InitShaders()
         Release();
 
     bool ready = true;
-
-    // Now we load and compile the shaders from their respective files...
-    //for (std::map<GLint,std::string>::const_iterator it = m_hFileNames.begin(), itend = m_hFileNames.end(); it != itend; ++it)
-    //{
-    //    ready &= CompileShaderFromFile( it->first, it->second, header );
-    //}
-
-    ////... or from their contents directly
-    //for (std::map<GLint, std::string>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
-    //{
-    //    ready &= CompileShader(it->first, it->second, header);
-    //}
 
     for (std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
     {
