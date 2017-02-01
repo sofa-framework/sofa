@@ -134,6 +134,34 @@ struct BaseObjectDescription_test: public Sofa_test<>
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)3) ;
     }
 
+    void checkGetAttributeAsInt()
+    {
+        BaseObjectDescription objectDescription("theName", "theType");
+        size_t numattr=objectDescription.getAttributeMap().size() ;
+
+        objectDescription.setAttribute("anAttribute", "true") ;
+        EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+1) ;
+
+        objectDescription.setAttribute("aFirstIntAttribute", "234") ;
+        EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+2) ;
+
+        objectDescription.setAttribute("aSecondIntAttribute", "-234") ;
+        EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+2) ;
+
+        objectDescription.setAttribute("aFirstNonIntAttribute", "1,0") ;
+        EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+3) ;
+
+        objectDescription.setAttribute("aSecondNonIntAttribute", "1.0") ;
+        EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+4) ;
+
+        EXPECT_EQ( objectDescription.getAttributeAsInt("aFirstIntAttribute", 1234), 234) ;
+        EXPECT_EQ( objectDescription.getAttributeAsInt("aSecondIntAttribute", 1234), -234) ;
+
+        EXPECT_EQ( objectDescription.getAttributeAsInt("aFirstNonIntAttribute", -1234.0), -1234.0) ;
+        EXPECT_EQ( objectDescription.getAttributeAsInt("aSecondNonIntAttribute", -1234.0), -1234.0) ;
+        EXPECT_EQ( objectDescription.getErrors().size(), (size_t)2) << "If this fails this means that one of the three previous "
+                                                               "conversion succeded while it shouldn't";
+    }
 };
 
 
@@ -148,6 +176,11 @@ TEST_F(BaseObjectDescription_test, checkSetGetAttribute)
 }
 
 TEST_F(BaseObjectDescription_test ,  checkGetAttributeAsFloat)
+{
+    this->checkGetAttributeAsFloat();
+}
+
+TEST_F(BaseObjectDescription_test ,  checkGetAttributeAsInt)
 {
     this->checkGetAttributeAsFloat();
 }
