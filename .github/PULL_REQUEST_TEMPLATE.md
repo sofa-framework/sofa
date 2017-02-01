@@ -3,7 +3,7 @@
 
 
 
-_<!--- Please leave this at the end of your message -->_
+<!--- Please leave this at the end of your message -->
 This PR: 
 - [ ] builds with SUCCESS for all platforms on the CI.
 - [ ] does not generate new warnings nor unit test failures.

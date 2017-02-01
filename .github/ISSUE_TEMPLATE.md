@@ -3,4 +3,4 @@
 
 
 
-Suggested labels: _<!--- Add your labels here if you can't select them yourself -->_
+Suggested labels: <!--- see https://github.com/sofa-framework/sofa/labels -->
