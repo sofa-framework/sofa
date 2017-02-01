@@ -107,6 +107,9 @@ public:
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
+    /// Get an attribute given its name (return defaultVal if not present)
+    virtual float getAttributeAsFloat(const std::string& attr, const float defaultVal=0.0);
+
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);
 
