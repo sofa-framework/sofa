@@ -289,7 +289,17 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        int newsize = arg->getAttributeAsInt("size", 0) ;
+        if(newsize>=0)
+        {
+            resize(newsize) ;
+        }
+        else
+        {
+            msg_warning(this) << "The attribute 'size' cannot have a negative value.  "
+                                 "The value "<<newsize<<" is ignored."
+                                 "To remove this warning you need to fix your scene.";
+        }
     }
 
     if (arg->getAttribute("scale") != NULL)

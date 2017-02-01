@@ -69,10 +69,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
-        obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
+        obj->setUseNormals(arg->getAttributeAsInt("normals", 1)!=0);
 
     if (arg->getAttribute("castshadow")!=NULL)
-        obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
+        obj->setCastShadow(arg->getAttributeAsInt("castshadow", 1)!=0);
 
     if (arg->getAttribute("flip")!=NULL)
         obj->flipFaces();
