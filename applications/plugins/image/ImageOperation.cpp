@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_IMAGEFILTER_CPP
+#define SOFA_IMAGE_IMAGEOPERATION_CPP
 
 #include "ImageOperation.h"
 #include <sofa/core/ObjectFactory.h>

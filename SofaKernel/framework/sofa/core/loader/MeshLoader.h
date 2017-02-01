@@ -68,17 +68,6 @@ public:
 
     virtual void reinit();
 
-    /// Apply translation vector to the position.
-    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
-
-    /// Apply rotation using Euler Angles in degree.
-    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
-
-    /// Apply rotation using quaternion.
-    virtual void applyRotation (const defaulttype::Quat q);
-
-    /// Apply Scale to the positions
-    virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
 
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);
@@ -134,7 +123,7 @@ public:
     Data< Vector3 > d_translation;
     Data< Vector3 > d_rotation;
     Data< Vector3 > d_scale;
-    Data< sofa::defaulttype::Matrix4 > d_transformation;
+    Data< defaulttype::Matrix4 > d_transformation;
 
 
    virtual void updateMesh();
@@ -144,6 +133,8 @@ public:
 
 protected:
 
+    /// to be able to call reinit w/o applying several time the same transform
+    defaulttype::Matrix4 d_previousTransformation;
 
 
     void addPosition(helper::vector< sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
