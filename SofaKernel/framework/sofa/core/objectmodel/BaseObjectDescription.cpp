@@ -111,8 +111,7 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
         return it->second.c_str();
 }
 
-/// Get an attribute given its name (return defaultVal if not present)
-/// send a message if there the attribute cannot be fully parsed.
+/// Docs is in .h
 float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
 {
     AttributeMap::iterator it = attributes.find(attr);
@@ -129,8 +128,35 @@ float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const 
     /// It is important to check that the attribute was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
     if(end !=  attrstr+strlen(attrstr)){
-        errors.push_back("unable to parse the a float from attribute '"+attr+"'='"+it->second.c_str()+"'");
+        std::stringstream msg;
+        msg << "Unable to parse a float value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
         return defaultVal ;
+    }
+
+    return retval ;
+}
+
+/// Docs is in .h
+int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return defaultVal;
+
+    const char* attrstr=it->second.c_str();
+    char* end=nullptr;
+    int retval = strtol(attrstr, &end, 10);
+
+    /// It is important to check that the attribute was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if(end !=  attrstr+strlen(attrstr)){
+        std::stringstream msg;
+        msg << "Unable to parse an integer value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
+        return defaultVal;
     }
 
     return retval ;
