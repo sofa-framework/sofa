@@ -253,7 +253,7 @@ class Model:
         def __init__(self):
             self.solid = None # a Model.Solid object
             self.mesh = None  # a Model.Mesh object
-            self.group = None # the vertex indices of the group
+            self.group = None # the name of the group defined in the mesh
 
     class SurfaceLink:
         def __init__(self,objXml=None):
