@@ -24,6 +24,8 @@
 
 #include <sofa/helper/gl/BasicShapesGL.h>
 
+#include <sofa/helper/gl/shaders/generateSphere.cppglsl>
+
 namespace sofa
 {
 
@@ -42,7 +44,7 @@ template<class VertexType>
 BasicShapesGL_Sphere<VertexType>::~BasicShapesGL_Sphere()
 {
     typename std::map<SphereDescription, GLBuffers>::const_iterator it;
-    for(it = m_mapBuffers.begin(); it != m_mapBuffers.end() ; ++it)
+    for (it = m_mapBuffers.begin(); it != m_mapBuffers.end(); ++it)
     {
         const GLBuffers& buffer = it->second;
         glDeleteBuffers(1, &buffer.VBO);
@@ -57,8 +59,6 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
     glGenBuffers(1, &buffer.VBO);
     glGenBuffers(1, &buffer.IBO);
 
-    //int rings = 32;
-    //int sectors = 16;
     float radius = 1.0;
 
     float const R = 1. / (float)(desc.rings - 1);
@@ -137,7 +137,7 @@ void BasicShapesGL_Sphere<VertexType>::generateBuffer(const SphereDescription &d
         &(texcoords[0]));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
+
     //IBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(indices[0]), &(indices[0]), GL_DYNAMIC_DRAW);
@@ -184,7 +184,7 @@ void BasicShapesGL_Sphere<VertexType>::afterDraw(const GLBuffers &/* buffer */)
 template<class VertexType>
 void BasicShapesGL_Sphere<VertexType>::checkBuffers(const SphereDescription& desc)
 {
-    if(m_mapBuffers.find(desc) == m_mapBuffers.end())
+    if (m_mapBuffers.find(desc) == m_mapBuffers.end())
     {
         GLBuffers glbuffer;
         generateBuffer(desc, glbuffer);
@@ -254,28 +254,28 @@ BasicShapesGL_FakeSphere<VertexType>::~BasicShapesGL_FakeSphere()
     glDeleteBuffers(1, &m_radiusBuffer.VBO);
 }
 
+///
 template<class VertexType>
 void BasicShapesGL_FakeSphere<VertexType>::init()
 {
-    if(! b_isInit )
+    if (!b_isInit)
     {
         if (!sofa::helper::gl::GLSLShader::InitGLSL())
         {
             std::cerr << "InitGLSL failed" << std::endl;
             return;
         }
-
-        std::string vertexShaderPath = "/Volumes/Storage/Work/Sofa/src/master_fredroy/share/shaders/generateSphere.vert";
-        std::string fragmentShaderPath = "/Volumes/Storage/Work/Sofa/src/master_fredroy/share/shaders/generateSphere.frag";
+        std::string vertexShaderContent = sofa::helper::gl::generateSphereVS;
+        std::string fragmentShaderContent = sofa::helper::gl::generateSphereFS;
 
         m_shader = new GLSLShader();
-        m_shader->SetVertexShaderFileName(vertexShaderPath);
-        m_shader->SetFragmentShaderFileName(fragmentShaderPath);
+        m_shader->SetVertexShaderFromString(vertexShaderContent);
+        m_shader->SetFragmentShaderFromString(fragmentShaderContent);
         m_shader->InitShaders();
         b_isInit = true;
 
         m_shader->TurnOn();
-        m_radiusLocation =  m_shader->GetAttributeVariable("a_radius");
+        m_radiusLocation = m_shader->GetAttributeVariable("a_radius");
         m_shader->TurnOff();
 
         glGenBuffers(1, &m_buffer.VBO);
@@ -289,7 +289,7 @@ void BasicShapesGL_FakeSphere<VertexType>::init()
 template<class VertexType>
 void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<VertexType>& positions, const std::vector<float>& radii)
 {
-//    const float radius = 1;
+    //    const float radius = 1;
 
     std::vector<GLfloat> vertices;
     std::vector<GLfloat> texcoords;
@@ -306,11 +306,11 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
     std::vector<GLfloat>::iterator r = glradii.begin();
 
     //assert positions size and radius ?
-    for (unsigned int p=0 ; p<positions.size() ; p++)
+    for (unsigned int p = 0; p<positions.size(); p++)
     {
         const VertexType& vertex = positions[p];
         //Should try to avoid this test...
-        const float& radius = (p < radii.size() ) ? radii[p] : radii[0];
+        const float& radius = (p < radii.size()) ? radii[p] : radii[0];
 
         *v++ = vertex[0];
         *v++ = vertex[1];
@@ -340,10 +340,10 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
         *t++ = -1.0;
         *t++ = 1.0;
 
-        *i++ = 4*p + 0;
-        *i++ = 4*p + 1;
-        *i++ = 4*p + 2;
-        *i++ = 4*p + 3;
+        *i++ = 4 * p + 0;
+        *i++ = 4 * p + 1;
+        *i++ = 4 * p + 2;
+        *i++ = 4 * p + 3;
 
         *r++ = radius;
         *r++ = radius;
@@ -356,7 +356,7 @@ void BasicShapesGL_FakeSphere<VertexType>::generateBuffer(const std::vector<Vert
     m_buffer.normalsBufferSize = 0;
     m_buffer.texcoordsBufferSize = (texcoords.size()*sizeof(texcoords[0]));
     m_buffer.totalSize = m_buffer.verticesBufferSize + m_buffer.normalsBufferSize
-                     + m_buffer.texcoordsBufferSize;
+        + m_buffer.texcoordsBufferSize;
 
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
     glBufferData(GL_ARRAY_BUFFER,
@@ -479,9 +479,11 @@ void BasicShapesGL_FakeSphere<VertexType>::draw(const helper::vector<VertexType>
 }
 
 
-} //gl
-} //helper
-} //sofa
+} // namespace gl
+
+} // namespace helper
+
+} // namespace sofa
 
 
 #endif // SOFA_HELPER_GL_BASICSHAPESGL_INL

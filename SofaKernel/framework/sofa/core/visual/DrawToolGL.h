@@ -86,6 +86,8 @@ public:
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour);
 
     virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16);
 

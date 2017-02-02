@@ -46,7 +46,8 @@ public:
     struct GLBuffers
     {
         GLuint VBO, IBO;
-        GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize, indicesSize;
+        GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
+        GLuint indicesSize;
     };
     struct CustomGLBuffer
     {
@@ -77,7 +78,7 @@ public:
     BasicShapesGL_Sphere();
     virtual ~BasicShapesGL_Sphere();
 
-    void init();
+    void init() {}
 
     void draw(const VertexType& center, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);
     void draw(const helper::vector<VertexType>& centers, const float& radius, const unsigned int rings = 32, const unsigned int sectors = 16);

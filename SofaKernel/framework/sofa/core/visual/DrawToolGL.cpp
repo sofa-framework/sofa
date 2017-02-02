@@ -73,7 +73,7 @@ DrawToolGL::~DrawToolGL()
 
 void DrawToolGL::init()
 {
-    //m_sphereUtil.init(32, 16);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,10 +338,8 @@ void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientatio
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    //for (unsigned int i = 0; i<points.size(); ++i)
-    //    drawSphere(points[i], radius);
+
     m_sphereUtil.draw(points, radius);
-    //this->internalDrawSpheres(points, radius, 32, 16);
 
     resetMaterial(colour);
 }
@@ -351,11 +349,29 @@ void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, c
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    //for (unsigned int i=0; i<points.size(); ++i)
-    //    drawSphere(points[i], radius[i]);
+
+    m_sphereUtil.draw(points, radius);
+
+    resetMaterial(colour);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
     m_fakeSphereUtil.draw(points, radius);
-//    m_sphereUtil.draw(points, radius);
-    //internalDrawSpheres(points, radius[0], 32, 16);
+
+    resetMaterial(colour);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
+    m_fakeSphereUtil.draw(points, radius);
 
     resetMaterial(colour);
 }

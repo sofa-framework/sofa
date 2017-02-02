@@ -222,6 +222,13 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
 
+if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+    list(APPEND HEADER_FILES system/FileRepository.h)
+    list(APPEND SOURCE_FILES system/FileRepository.cpp)
+endif()
+
+set(SHADER_FILES "")
+
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES
         gl/Capture.h
@@ -270,6 +277,9 @@ if(NOT SOFA_NO_OPENGL)
             gl/FrameBufferObject.cpp
             gl/GLSLShader.cpp
         )
+        list(APPEND SHADER_FILES
+            gl/shaders/generateSphere.cppglsl
+        )
     endif()
 
 endif()
@@ -289,7 +299,7 @@ if(PS3)
 endif()
 
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
