@@ -630,7 +630,7 @@ class Behavior:
 
     def write(self, filenamePrefix=None, directory=""):
         filename = self.getFilename(filenamePrefix,directory)
-        volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
+        volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if len(self.sampler.position)>0 and isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
         data = {'type': self.type, 'volumeDim': str(volumeDim), 'inputVolume': SofaPython.Tools.listListToStr(self.sampler.volume), 'position': SofaPython.Tools.listListToStr(self.sampler.position),
                 'indices': self.mapping.indices, 'weights': self.mapping.weights,
                 'weightGradients': self.mapping.weightGradients, 'weightHessians': self.mapping.weightHessians}
