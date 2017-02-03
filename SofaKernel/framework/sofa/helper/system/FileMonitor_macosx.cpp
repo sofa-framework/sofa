@@ -16,6 +16,7 @@ using namespace std ;
 #include <list>
 #include <string>
 #include <map>
+#include <sys/time.h>
 
 //////////////////// OSX Header ///////////////////////////////////////////////
 //#include <sys/attr.h>
@@ -155,26 +156,55 @@ int FileMonitor::addFile(const std::string& directoryname, const std::string& fi
     return addFile(directoryname+filename,listener);
 }
 
+/* This flag controls termination of the main loop. */
+volatile sig_atomic_t keep_going = 1;
+
+/* The signal handler just clears the flag and re-enables itself. */
+void catch_alarm (int sig)
+{
+//    printf("TIMEOUT!!!!!!!!!!!!!!!!!!\n");
+    keep_going = 0;
+}
+
 int FileMonitor::updates(int timeout)
 {
-    // update FSEventStreams
-//printf("update streams...\n");
-//fflush(stdout);
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode,
-                       0,
-                       false);
-    //CFRunLoopRun();
 
-    // check file changes
-    for(ListOfMonitors::iterator it_monitor=monitors.begin(); it_monitor!=monitors.end(); it_monitor++)
+    if (timeout>0)
     {
-        if (!(*it_monitor)->update())
-        {
-  //          printf("FileListener::fileHasChanged(%s) called...\n",it_monitor->m_filename.c_str());
-            (*it_monitor)->m_listener->fileHasChanged((*it_monitor)->m_filename);
-        }
-    }
+        keep_going = 1;
+        /* Establish a handler for SIGALRM signals. */
+        signal (SIGALRM, catch_alarm);
 
+        /* Set an alarm to go off in a little while. */
+        alarm (timeout);
+    }
+    else
+    {
+        keep_going = 0;
+    }
+    /* Check the flag once in a while to see when to quit. */
+    // check file changes
+    do{
+        // update FSEventStreams
+        //printf("update streams...\n");
+        //fflush(stdout);
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode,
+                           0,
+                           false);
+        for(ListOfMonitors::iterator it_monitor=monitors.begin(); it_monitor!=monitors.end(); it_monitor++)
+        {
+            if (!(*it_monitor)->update())
+            {
+//                printf("FileListener::fileHasChanged(%s) called...\n",(*it_monitor)->m_filename.c_str());
+                (*it_monitor)->m_listener->fileHasChanged((*it_monitor)->m_filename);
+                keep_going = 0; // we're done
+            }
+        }
+        if (keep_going) usleep(10000);
+    }
+    while (keep_going);
+
+    alarm(0);
     return 0;
 }
 
