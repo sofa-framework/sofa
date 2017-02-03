@@ -57,10 +57,10 @@ public:
     //@{
     typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
-    typedef typename BaseShapeFunction::VReal VReal;
-    typedef typename BaseShapeFunction::VecVReal VecVReal;
-    typedef typename BaseShapeFunction::VRef VRef;
-    typedef typename BaseShapeFunction::VecVRef VecVRef;
+    typedef BaseShapeFunction::VReal VReal;
+    typedef BaseShapeFunction::VecVReal VecVReal;
+    typedef BaseShapeFunction::VRef VRef;
+    typedef BaseShapeFunction::VecVRef VecVRef;
     //@}
 
     Data< VTransform > d_inputTransforms;   ///< parent transforms from another GP sampler

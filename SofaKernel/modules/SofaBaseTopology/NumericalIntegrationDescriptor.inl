@@ -48,9 +48,9 @@ typename NumericalIntegrationDescriptor<Real,N>::QuadraturePointArray NumericalI
 
 }
 template< typename Real, int N>
-sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::QuadratureMethod>  NumericalIntegrationDescriptor<Real,N>::getQuadratureMethods() const 
+std::set<typename NumericalIntegrationDescriptor<Real,N>::QuadratureMethod>  NumericalIntegrationDescriptor<Real,N>::getQuadratureMethods() const
 {
-	sofa::helper::set<QuadratureMethod>  qmset;
+    std::set<QuadratureMethod>  qmset;
 	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
 	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
 		qmset.insert((*it).first.first);
@@ -58,9 +58,9 @@ sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::QuadratureMet
 	return(qmset);
 }
 template< typename Real, int N>
-sofa::helper::set<typename NumericalIntegrationDescriptor<Real,N>::IntegrationOrder>  NumericalIntegrationDescriptor<Real,N>::getIntegrationOrders(const QuadratureMethod qt) const
+std::set<typename NumericalIntegrationDescriptor<Real,N>::IntegrationOrder>  NumericalIntegrationDescriptor<Real,N>::getIntegrationOrders(const QuadratureMethod qt) const
 {
-	sofa::helper::set<IntegrationOrder>  ioset;
+    std::set<IntegrationOrder>  ioset;
 	typename std::map<QuadratureMethodKey, QuadraturePointArray>::const_iterator it;
 	for (it=quadratureMap.begin();it!=quadratureMap.end();it++) {
 		if (((*it).first.first)==qt){

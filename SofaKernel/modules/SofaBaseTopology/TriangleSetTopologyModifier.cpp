@@ -719,7 +719,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
 #endif
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
  //   for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
 	 for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
     {

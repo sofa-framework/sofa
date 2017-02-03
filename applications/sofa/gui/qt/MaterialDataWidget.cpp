@@ -242,6 +242,7 @@ bool MaterialDataWidget::createWidgets()
 void MaterialDataWidget::setDataReadOnly(bool readOnly)
 {
     _nameEdit->setReadOnly(readOnly);
+    _nameEdit->setEnabled(!readOnly);
     _ambientPicker->setEnabled(!readOnly);
     _ambientCheckBox->setEnabled(!readOnly);
     _emissivePicker->setEnabled(!readOnly);

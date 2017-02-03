@@ -78,7 +78,7 @@ protected:
 	// map used to store the Bernstein coefficient given a Triangle Bezier Index
 	std::map<TriangleBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Triangle used in the draw function
-	sofa::helper::set<std::pair<Edge,bool> > bezierTriangleEdgeSet;
+    std::set<std::pair<Edge,bool> > bezierTriangleEdgeSet;
 
 
 	/// constructor 

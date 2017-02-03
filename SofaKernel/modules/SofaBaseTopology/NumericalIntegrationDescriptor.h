@@ -65,9 +65,9 @@ public:
 	/// returns the set of quadrature points associated with a given quadrature method and integration order
 	QuadraturePointArray getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const;
 	/// returns all the indices corresponding to all available quadrature methods
-	sofa::helper::set<QuadratureMethod> getQuadratureMethods() const;
+    std::set<QuadratureMethod> getQuadratureMethods() const;
 	/// returns the quadrature integration orders available for a given method
-	sofa::helper::set<IntegrationOrder> getIntegrationOrders(const QuadratureMethod qt) const;
+    std::set<IntegrationOrder> getIntegrationOrders(const QuadratureMethod qt) const;
 	/// add a quadrature method in the map
 	void addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa);
 };

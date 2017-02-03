@@ -160,7 +160,7 @@ public:
     Data<int> merge_spatial_step;
     Data<int> merge_local_levels;
 
-    Data < helper::set<int> > constraintGroups;
+    Data < std::set<int> > constraintGroups;
 
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 

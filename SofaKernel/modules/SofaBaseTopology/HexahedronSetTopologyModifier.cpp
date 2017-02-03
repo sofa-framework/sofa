@@ -712,7 +712,7 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isHexahedronTopologyDirty()) // hexahedron Data has not been touched
         return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {

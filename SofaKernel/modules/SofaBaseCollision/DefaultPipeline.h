@@ -39,16 +39,16 @@ class SOFA_BASE_COLLISION_API DefaultPipeline : public sofa::simulation::Pipelin
 public:
     SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
 
-    Data<bool> bVerbose;
-    Data<bool> bDraw;
-    Data<int> depth;
+    Data<bool> d_doPrintInfoMessage;
+    Data<bool> d_doDebugDraw;
+    Data<int>  d_depth;
 protected:
     DefaultPipeline();
 public:
     void draw(const core::visual::VisualParams* vparams);
 
     /// get the set of response available with the current collision pipeline
-    helper::set< std::string > getResponseList() const;
+    std::set< std::string > getResponseList() const;
 protected:
     // -- Pipeline interface
 

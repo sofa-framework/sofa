@@ -75,7 +75,7 @@ bool TagSet::includes(const TagSet& t) const
     }
 #if 1
     // Simple but not optimal version
-    for (sofa::helper::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
+    for (std::set<Tag>::const_iterator first2 = t.begin(), last2 = t.end();
         first2 != last2; ++first2)
     {
         Tag t2 = *first2;
@@ -96,8 +96,8 @@ bool TagSet::includes(const TagSet& t) const
     // First test : no negative tag from t should appear as positive in this
     if (t.begin()->negative())
     {
-        sofa::helper::set<Tag>::const_reverse_iterator first1, last1;
-        sofa::helper::set<Tag>::const_iterator first2, last2;
+        std::set<Tag>::const_reverse_iterator first1, last1;
+        std::set<Tag>::const_iterator first2, last2;
         first1 = this->rbegin(); last1 = this->rend();
         first2 = t.begin(); last2 = t.end();
         for (; first2 != last2; ++first1)
@@ -116,8 +116,8 @@ bool TagSet::includes(const TagSet& t) const
     // Second test : all positive tags from t should appear as positive in this
     if (!t.rbegin()->negative())
     {
-        sofa::helper::set<Tag>::const_iterator first1, last1;
-        sofa::helper::set<Tag>::const_iterator first2, last2;
+        std::set<Tag>::const_iterator first1, last1;
+        std::set<Tag>::const_iterator first2, last2;
         first1 = this->lower_bound(Tag(0)); last1 = this->end();
         first2 = t.lower_bound(Tag(0)); last2 = t.end();
         //for(; first1 != last1 && first1->negative(); ++first1); // skip negative tags in this
