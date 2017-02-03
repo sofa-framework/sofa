@@ -466,16 +466,6 @@ public:
 
     Data< sofa::defaulttype::BoundingBox > f_bbox;
 
-    /// This one indicates the level at which a message is emmited.
-    Data<int> d_msgLevel;
-
-    /// This one indicates the level at which a message is recorded into the internal log.
-    Data<int> d_logLevel;
-
-    /// This one indicates the number of messages the log can stores.
-    Data<int> d_logSize;
-
-
     /// @name casting
     ///   trivial cast to a few base components
     ///   through virtual functions

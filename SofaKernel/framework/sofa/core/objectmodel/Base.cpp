@@ -50,9 +50,6 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
-    , d_msgLevel(initData(&d_msgLevel, 3, "messageLevel", "specify which kind of message should be emitted. (default=Info)"))
-    , d_logLevel(initData(&d_logLevel, 3, "loggingLevel", "specify which kind of message should be recorded in the component history. (default = Info)"))
-    , d_logSize(initData(&d_logSize, 20, "loggingSize", "specify the number of message this component can stores in its history. (default = 20)"))
 {
     name.setOwnerClass("Base");
     name.setAutoLink(false);
