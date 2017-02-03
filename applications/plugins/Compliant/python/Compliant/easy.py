@@ -280,11 +280,14 @@ class Mapping(object):
 
         input = ' '.join( [x.getLinkPath() for x in self.input] )
         output = self.output.getLinkPath()
+
+        template = kwargs['template']
         
         # create wrapped mapping
         self.obj = node.createObject('PythonMultiMapping',
                                      input = input,
-                                     output = output)
+                                     output = output,
+                                     template = template)
         
         # find source/dest scalar types
         source = self.obj.getFrom()
