@@ -325,7 +325,7 @@ TEST(LoggingTest, checkBaseObjectQueueSize)
     for(unsigned int i=0;i<20;i++){
         c.emitMessages();
     }
-    EXPECT_EQ(c.getLoggedMessages().size(), c.d_logSize.getValue());
+    EXPECT_EQ(c.getLoggedMessages().size(), 20);
 }
 
 

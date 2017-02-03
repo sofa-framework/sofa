@@ -29,6 +29,7 @@ using sofa::helper::logging::Message ;
 #include <string.h>
 #include <sstream>
 
+#define ERROR_LOG_SIZE 100
 
 namespace sofa
 {
@@ -65,11 +66,7 @@ Base::Base()
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
 
-    d_msgLevel.setOwnerClass("Base");
-    d_msgLevel.setAutoLink(false);
 
-    d_logLevel.setOwnerClass("Base");
-    d_logLevel.setAutoLink(false);
 }
 
 Base::~Base()
@@ -312,7 +309,7 @@ void Base::clearOutputs()
 
 void Base::addMessage(const Message &m) const
 {
-    if(m_messageslog.size() >= d_logSize.getValue() ){
+    if(m_messageslog.size() >= ERROR_LOG_SIZE ){
         m_messageslog.pop_front();
     }
     m_messageslog.push_back(m) ;
