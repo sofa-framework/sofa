@@ -157,7 +157,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        vparams->drawTool()->drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawFakeSpheres(points, radius, Vec<4,float>(getColor4f()));
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }
