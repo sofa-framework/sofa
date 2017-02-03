@@ -244,7 +244,7 @@ class Model:
         """ Skinning definition, vertices index influenced by bone with weight
         """
         def __init__(self):
-            self.solid = None    # id of the parent bone
+            self.solid = None    # id of the parent bone # WARNING it rather seems to be directly a pointer to the Solid
             self.mesh = None     # the target mesh
             self.index = list()  # indices of target mesh
             self.weight = list() # weights for these vertices with respect with this bone
