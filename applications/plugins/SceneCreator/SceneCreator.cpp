@@ -512,6 +512,17 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    if (parent == NULL){
+        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
@@ -572,6 +583,17 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    if (parent == NULL){
+        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
@@ -630,6 +652,17 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
                                 const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    if (parent == NULL){
+        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
