@@ -49,7 +49,8 @@ CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
       d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
       d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
       d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder")),
-      d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+      d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis")),
+      d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
 {
 }
 
@@ -57,8 +58,29 @@ CylinderGridTopology::CylinderGridTopology()
     : d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder")),
       d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder")),
       d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder")),
-      d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))
+      d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis")),
+      d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
 {
+}
+
+void CylinderGridTopology::init()
+{
+    if (d_computePointList.getValue())
+    {
+        int nbPoints= this->getNbPoints();
+        // put the result in seqPoints
+        SeqPoints& seq_P= *(seqPoints.beginEdit());
+        seq_P.resize(nbPoints);
+
+        for (int i=0; i<nbPoints; i++)
+        {
+            seq_P[i] = this->getPoint(i);
+        }
+
+        seqPoints.endEdit();
+    }
+
+    Inherit1::init();
 }
 
 void CylinderGridTopology::setCenter(SReal x, SReal y, SReal z)

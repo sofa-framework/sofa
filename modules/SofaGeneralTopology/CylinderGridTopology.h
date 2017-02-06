@@ -44,6 +44,8 @@ protected:
     CylinderGridTopology(int nx, int ny, int nz);
     CylinderGridTopology();
 public:
+    virtual void init();
+
     unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
     Vector3 getPoint(int i) const;
     Vector3 getPoint(int x, int y, int z) const;
@@ -61,6 +63,8 @@ protected:
     Data< Vector3 > d_center;
     Data< Vector3 > d_axis;
     Data< SReal > d_radius, d_length;
+
+    Data<bool> d_computePointList;
 };
 
 } // namespace topology
