@@ -48,6 +48,21 @@ def scaleOffset(scale, offset):
 
 
 
+def numpy_property(attr_name, attr_data, index = 0):
+    '''easily bind data properties as attributes'''
+
+    def getter(self):
+        obj = getattr(self, attr_name)
+        return numpy_data(obj, attr_data)[index]
+
+    def setter(self, value):
+        obj = getattr(self, attr_name)
+        numpy_data(obj, attr_data)[index] = value
+        
+    return property(getter, setter)
+
+
+
 class MechanicalObject(object):
     '''state vector view for a mechanical object'''
     
