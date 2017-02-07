@@ -88,6 +88,21 @@ struct SE3 {
 	}
 
 
+	// aliases
+	static quat orient(const coord_type& at) {
+		return rotation(at);
+	}
+
+	static vec3 pos(const coord_type& at) {
+		return translation(at);
+	}
+
+    // apply rigid transformation to a vector
+    static vec3 apply(const coord_type& g, const vec3& x) {
+        return orient(g) * x + pos(g);
+    }
+    
+
 	// standard coordinates for SE(3) tangent vectors are body and
 	// spatial coordinates. SOFA uses its own custom coordinate system,
 	// so here are a couple of conversion routines.
