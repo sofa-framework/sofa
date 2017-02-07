@@ -6,8 +6,10 @@
 ### Environment
 
 
-
 ### New features for users
+* [SceneCreator]
+    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
+
 
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 
