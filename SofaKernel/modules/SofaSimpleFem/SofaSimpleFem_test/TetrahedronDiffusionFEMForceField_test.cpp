@@ -138,7 +138,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
         typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
         if(grid)
         {
-            grid->setNumVertices(beamResolution);
+            grid->setSize(beamResolution);
             grid->setPos(0.0, beamDimension[0], 0.0, beamDimension[1], 0.0, beamDimension[2]);
         }
 

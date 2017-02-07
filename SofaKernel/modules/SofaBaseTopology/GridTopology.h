@@ -68,6 +68,13 @@ protected:
     GridTopology(int nx, int ny, int nz);
     /// Constructor with grid size by Vec3
     GridTopology(Vec3i nXnYnZ );
+
+    /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
+    virtual void setNbGridPoints();
+
+    // Method to create grid texture coordinates, should be overwritten by children
+    virtual void createTexCoords(){}
+
 public:
     /// BaseObject method should be overwritten by children
     virtual void init();
@@ -83,17 +90,17 @@ public:
      * */
     void setSize(int nx, int ny, int nz);
 
-    /// Set grid resolution, given the number of vertices
-    void setNumVertices( Vec3i nXnYnZ );
-    /// Set grid resolution, given the number of vertices
-    void setNumVertices(int nx, int ny, int nz);
+    /** \brief Set grid resolution in the 3 directions, similar to \sa setSize(int nx, int ny, int nz)
+     * @param Vec3i nXnYnZ resolution in 3D
+     * */
+    void setSize( Vec3i nXnYnZ );
 
     /// Set grid x resolution, @param value
-    void setNx(int value) { (*d_n.beginEdit())[0] = value; setSize(); }
+    void setNx(int value) { (*d_n.beginEdit())[0] = value; setNbGridPoints(); }
     /// Set grid y resolution, @param value
-    void setNy(int value) { (*d_n.beginEdit())[1] = value; setSize(); }
+    void setNy(int value) { (*d_n.beginEdit())[1] = value; setNbGridPoints(); }
     /// Set grid z resolution, @param value
-    void setNz(int value) { (*d_n.beginEdit())[2] = value; setSize(); }
+    void setNz(int value) { (*d_n.beginEdit())[2] = value; setNbGridPoints(); }
 
     /// Get X grid resolution, @return int
     int getNx() const { return d_n.getValue()[0]; }
@@ -117,7 +124,7 @@ public:
             d_n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
         }
 
-        this->setSize();
+        this->setNbGridPoints();
     }
 
 
@@ -141,16 +148,11 @@ public:
     int hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
-    // Method to create grid texture coordinates, should be overwritten by children
-    virtual void createTexCoords(){}
-
 protected:
     /// Data storing the size of the grid in the 3 directions
     Data< Vec3i > d_n;
 
     Data <bool> d_createTexCoords;
-
-    virtual void setSize();
 };
 
 } // namespace topology

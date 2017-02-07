@@ -129,7 +129,7 @@ void RegularGridTopology::init()
         grid[1]= (int)ceil((max.getValue()[1]-min.getValue()[1]) / w)+1;
         grid[2]= (int)ceil((max.getValue()[2]-min.getValue()[2]) / w)+1;
         d_n.setValue(grid);
-        setSize();
+        setNbGridPoints();
         sout << "Grid size: " << d_n.getValue() << sendl;
     }
 

@@ -144,7 +144,7 @@ GridTopology::GridTopology()
     : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
-    setSize();
+    setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
@@ -179,22 +179,17 @@ void GridTopology::setSize(int nx, int ny, int nz)
     if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
-    setSize();
+    setNbGridPoints();
 }
 
-void GridTopology::setNumVertices(int nx, int ny, int nz)
-{
-    setSize(nx,ny,nz);
-}
-
-void GridTopology::setNumVertices(Vec3i n)
+void GridTopology::setSize(Vec3i n)
 {
     setSize(n[0],n[1],n[2]);
 }
 
-void GridTopology::setSize()
+void GridTopology::setNbGridPoints()
 {
-    this->nbPoints = d_n.getValue()[0]*d_n.getValue()[1]*d_n.getValue()[2];
+    this->setNbPoints(d_n.getValue()[0]*d_n.getValue()[1]*d_n.getValue()[2]);
 }
 
 
