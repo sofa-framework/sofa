@@ -2614,9 +2614,10 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
 
     for (unsigned int i=0; i<list_n.size(); i++)
     { //loop on the nodes on which we assign the identity blocks
+        unsigned int node= list_n[i];
+
         for(unsigned int j=0; j<N; j++)
         {   //identity block
-            unsigned int node= list_n[i];
             typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(N*node + j);
             Deriv d;
             d[j]=1.0;
