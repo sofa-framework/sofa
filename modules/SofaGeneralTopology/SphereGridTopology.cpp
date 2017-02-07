@@ -76,14 +76,14 @@ void SphereGridTopology::setRadius(SReal radius)
 
 unsigned SphereGridTopology::getIndex( int i, int j, int k ) const
 {
-    return n.getValue()[0]* ( n.getValue()[1]*k + j ) + i;
+    return d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i;
 }
 
 Vector3 SphereGridTopology::getPoint(int i) const
 {
-    int x = i%n.getValue()[0]; i/=n.getValue()[0];
-    int y = i%n.getValue()[1]; i/=n.getValue()[1];
-    int z = i%n.getValue()[2]; i/=n.getValue()[2];
+    int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
+    int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
+    int z = i%d_n.getValue()[2]; i/=d_n.getValue()[2];
     return getPoint(x,y,z);
 }
 

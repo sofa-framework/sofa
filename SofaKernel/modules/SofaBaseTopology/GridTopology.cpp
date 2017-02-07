@@ -43,7 +43,7 @@ int GridTopologyClass = core::RegisterObject("Base class fo a regular grid in 3D
 GridTopology::GridUpdate::GridUpdate(GridTopology *t):
     topology(t)
 {
-    addInput(&t->n);
+    addInput(&t->d_n);
     addOutput(&t->seqEdges);
     addOutput(&t->seqQuads);
     addOutput(&t->seqHexahedra);
@@ -60,7 +60,7 @@ void GridTopology::GridUpdate::update()
 void GridTopology::GridUpdate::updateEdges()
 {
     SeqEdges& edges = *topology->seqEdges.beginEdit();
-    const Vec3i& n = topology->n.getValue();
+    const Vec3i& n = topology->d_n.getValue();
     edges.clear();
     edges.reserve( (n[0]-1)*n[1]*n[2] +
             n[0]*(n[1]-1)*n[2] +
@@ -86,7 +86,7 @@ void GridTopology::GridUpdate::updateEdges()
 void GridTopology::GridUpdate::updateQuads()
 {
     SeqQuads& quads = *topology->seqQuads.beginEdit();
-    const Vec3i& n = topology->n.getValue();
+    const Vec3i& n = topology->d_n.getValue();
     quads.clear();
     quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
     // quads along XY plane
@@ -120,7 +120,7 @@ void GridTopology::GridUpdate::updateQuads()
 void GridTopology::GridUpdate::updateHexas()
 {
     SeqHexahedra& hexahedra = *topology->seqHexahedra.beginEdit();
-    const Vec3i& n = topology->n.getValue();
+    const Vec3i& n = topology->d_n.getValue();
     hexahedra.clear();
     hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
     for (int z=0; z<n[2]-1; z++)
@@ -141,8 +141,8 @@ void GridTopology::GridUpdate::updateHexas()
 }
 
 GridTopology::GridTopology()
-    : n(initData(&n,Vec3i(2,2,2),"n","grid resolution"))
-    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution"))
+    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     setSize();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
@@ -150,24 +150,24 @@ GridTopology::GridTopology()
 }
 
 GridTopology::GridTopology(int _nx, int _ny, int _nz)
-    : n(initData(&n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
-    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    : d_n(initData(&d_n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
+    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     nbPoints = _nx*_ny*_nz;
-    this->n.setValue(Vec3i(_nx,_ny,_nz));
+    this->d_n.setValue(Vec3i(_nx,_ny,_nz));
 }
 
 GridTopology::GridTopology( Vec3i np )
-    : n(initData(&n,np,"n","grid resolution"))
-    , p_createTexCoords(initData(&p_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    : d_n(initData(&d_n,np,"n","grid resolution"))
+    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     nbPoints = np[0]*np[1]*np[2];
-    this->n.setValue(np);
+    this->d_n.setValue(np);
 }
 
 void GridTopology::init()
 {
-    if (p_createTexCoords.getValue())
+    if (d_createTexCoords.getValue())
         this->createTexCoords();
 
     this->reinit();
@@ -176,9 +176,9 @@ void GridTopology::init()
 void GridTopology::setSize(int nx, int ny, int nz)
 {
 //    std::cerr<<"GridTopology::setSize(int nx, int ny, int nz), n = "<< n.getValue() << std::endl;
-    if (nx == this->n.getValue()[0] && ny == this->n.getValue()[1] && nz == this->n.getValue()[2])
+    if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
         return;
-    this->n.setValue(Vec3i(nx,ny,nz));
+    this->d_n.setValue(Vec3i(nx,ny,nz));
     setSize();
 }
 
@@ -194,14 +194,14 @@ void GridTopology::setNumVertices(Vec3i n)
 
 void GridTopology::setSize()
 {
-    this->nbPoints = n.getValue()[0]*n.getValue()[1]*n.getValue()[2];
+    this->nbPoints = d_n.getValue()[0]*d_n.getValue()[1]*d_n.getValue()[2];
 }
 
 
 GridTopology::Hexa GridTopology::getHexaCopy(int i)
 {
-    int x = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
-    int y = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
+    int x = i%(d_n.getValue()[0]-1); i/=(d_n.getValue()[0]-1);
+    int y = i%(d_n.getValue()[1]-1); i/=(d_n.getValue()[1]-1);
     int z = i;
     return getHexahedron(x,y,z);
 }
@@ -223,27 +223,27 @@ GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 
 GridTopology::Quad GridTopology::getQuadCopy(int i)
 {
-    if (n.getValue()[0] == 1)
+    if (d_n.getValue()[0] == 1)
     {
-        int y = i%(n.getValue()[1]-1);
-        i/=(n.getValue()[1]-1);
-        int z = i%(n.getValue()[2]-1);
+        int y = i%(d_n.getValue()[1]-1);
+        i/=(d_n.getValue()[1]-1);
+        int z = i%(d_n.getValue()[2]-1);
 
         return getQuad(1,y,z);
     }
-    else if (n.getValue()[1] == 1)
+    else if (d_n.getValue()[1] == 1)
     {
-        int x = i%(n.getValue()[0]-1);
-        i/=(n.getValue()[0]-1);
-        int z = i%(n.getValue()[2]-1);
+        int x = i%(d_n.getValue()[0]-1);
+        i/=(d_n.getValue()[0]-1);
+        int z = i%(d_n.getValue()[2]-1);
 
         return getQuad(x,1,z);
     }
     else
     {
-        int x = i%(n.getValue()[0]-1);
-        i/=(n.getValue()[0]-1);
-        int y = i%(n.getValue()[1]-1);
+        int x = i%(d_n.getValue()[0]-1);
+        i/=(d_n.getValue()[0]-1);
+        int y = i%(d_n.getValue()[1]-1);
 
         return getQuad(x,y,1);
     }
@@ -251,10 +251,10 @@ GridTopology::Quad GridTopology::getQuadCopy(int i)
 
 GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
 {
-    if (n.getValue()[2] == 1)
+    if (d_n.getValue()[2] == 1)
         return Quad(point(x, y, 1), point(x+1, y, 1),
                 point(x+1, y+1, 1), point(x, y+1, 1));
-    else if (n.getValue()[1] == 1)
+    else if (d_n.getValue()[1] == 1)
         return Quad(point(x, 1, z), point(x+1, 1, z),
                 point(x+1, 1, z+1), point(x, 1, z+1));
     else

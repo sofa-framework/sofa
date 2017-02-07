@@ -62,21 +62,48 @@ private:
         GridTopology* topology;
     };
 protected:
+    /// Default constructor
     GridTopology();
+    /// Constructor with grid size by int
     GridTopology(int nx, int ny, int nz);
+    /// Constructor with grid size by Vec3
     GridTopology(Vec3i nXnYnZ );
 public:
+    /// BaseObject method should be overwritten by children
     virtual void init();
 
     /// BaseObject method should be overwritten by children
     virtual void reinit(){}
 
-    /// Set grid resolution, given the number of vertices
+
+    /** \brief Set grid resolution in the 3 directions
+     * @param nx x resolution
+     * @param ny y resolution
+     * @param nz z resolution
+     * */
     void setSize(int nx, int ny, int nz);
-    /// set grid resolution, given the number of vertices
+
+    /// Set grid resolution, given the number of vertices
     void setNumVertices( Vec3i nXnYnZ );
     /// Set grid resolution, given the number of vertices
     void setNumVertices(int nx, int ny, int nz);
+
+    /// Set grid x resolution, @param value
+    void setNx(int value) { (*d_n.beginEdit())[0] = value; setSize(); }
+    /// Set grid y resolution, @param value
+    void setNy(int value) { (*d_n.beginEdit())[1] = value; setSize(); }
+    /// Set grid z resolution, @param value
+    void setNz(int value) { (*d_n.beginEdit())[2] = value; setSize(); }
+
+    /// Get X grid resolution, @return int
+    int getNx() const { return d_n.getValue()[0]; }
+    /// Get Y grid resolution, @return int
+    int getNy() const { return d_n.getValue()[1]; }
+    /// Get Z grid resolution, @return int
+    int getNz() const { return d_n.getValue()[2]; }
+
+
+
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
@@ -87,34 +114,15 @@ public:
             const char* nx = arg->getAttribute("nx");
             const char* ny = arg->getAttribute("ny");
             const char* nz = arg->getAttribute("nz");
-            n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
+            d_n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
         }
 
         this->setSize();
     }
 
-    int getNx() const { return n.getValue()[0]; }
-    int getNy() const { return n.getValue()[1]; }
-    int getNz() const { return n.getValue()[2]; }
 
-    void setNx(int n_) { (*n.beginEdit())[0] = n_; setSize(); }
-    void setNy(int n_) { (*n.beginEdit())[1] = n_; setSize(); }
-    void setNz(int n_) { (*n.beginEdit())[2] = n_; setSize(); }
+    virtual int getNbHexahedra() { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
 
-    //int getNbPoints() const { return n.getValue()[0]*n.getValue()[1]*n.getValue()[2]; }
-
-    virtual int getNbHexahedra() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
-
-    /*
-    int getNbQuads() {
-    if (n.getValue()[2] == 1)
-    return (n.getValue()[0]-1)*(n.getValue()[1]-1);
-    else if (n.getValue()[1] == 1)
-    return (n.getValue()[0]-1)*(n.getValue()[2]-1);
-    else
-    return (n.getValue()[1]-1)*(n.getValue()[2]-1);
-    }
-    */
 
     Hexa getHexaCopy(int i);
     using MeshTopology::getHexahedron;
@@ -129,16 +137,18 @@ public:
     using MeshTopology::getQuad;
     Quad getQuad(int x, int y, int z);
 
-    int point(int x, int y, int z) const { return x+n.getValue()[0]*(y+n.getValue()[1]*z); }
-    int hexa(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
+    int point(int x, int y, int z) const { return x+d_n.getValue()[0]*(y+d_n.getValue()[1]*z); }
+    int hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
     // Method to create grid texture coordinates, should be overwritten by children
     virtual void createTexCoords(){}
 
 protected:
-    Data< Vec3i > n;
-    Data <bool> p_createTexCoords;
+    /// Data storing the size of the grid in the 3 directions
+    Data< Vec3i > d_n;
+
+    Data <bool> d_createTexCoords;
 
     virtual void setSize();
 };
