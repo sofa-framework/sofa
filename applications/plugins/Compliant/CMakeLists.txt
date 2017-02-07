@@ -218,8 +218,7 @@ set(SOURCE_FILES
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
     utils/nlnscg.cpp
-    utils/sub_kkt.cpp
-)
+    utils/sub_kkt.cpp)
 
 
 
