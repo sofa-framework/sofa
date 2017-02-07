@@ -68,6 +68,7 @@ public:
 
     virtual void clear();
 
+    virtual void cheapClear();
     // setting the global matrix for the system. Its size must have the sum of all real Mechanical state
     virtual void setGlobalMatrix(defaulttype::BaseMatrix* matrix);
 
