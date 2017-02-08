@@ -54,7 +54,8 @@ CylinderGridTopology::CylinderGridTopology(int nx, int ny, int nz)
 }
 
 CylinderGridTopology::CylinderGridTopology()
-    : d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    : GridTopology()
+    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
     , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
     , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
     , d_length(initData(&d_length,(SReal)1.0,"length", "Length of the cylinder along its axis"))

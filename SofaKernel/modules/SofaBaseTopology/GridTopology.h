@@ -34,7 +34,8 @@ namespace component
 namespace topology
 {
 
-/** Define a regular grid topology, with no spatial information.
+/** \brief
+ * Define a regular grid topology, with no spatial information.
   */
 class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
@@ -62,6 +63,7 @@ private:
     private:
         GridTopology* topology;
     };
+
 protected:
     /// Default constructor
     GridTopology();
@@ -137,7 +139,7 @@ public:
     /// get Z from Point index @param i, will call @sa getPoint
     SReal getPZ(int i) const { return getPoint(i)[2]; }
 
-
+    /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         this->MeshTopology::parse(arg);
@@ -154,24 +156,26 @@ public:
     }
 
 
+    /// Overload Method from @sa MeshTopology::getNbHexahedra
     virtual int getNbHexahedra() { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    /// Overload Method from @sa MeshTopology::getQuad
+    Quad getQuad(int x, int y, int z);
 
 
-    Hexa getHexaCopy(int i);
-    using MeshTopology::getHexahedron;
     Hexa getHexahedron(int x, int y, int z);
+    Hexa getHexaCopy(int i);
+    Quad getQuadCopy(int i);
 
 #ifndef SOFA_NEW_HEXA
     Cube getCubeCopy(int i) { return getHexaCopy(i); }
     Cube getCube(int x, int y, int z) { return getHexahedron(x,y,z); }
 #endif
 
-    Quad getQuadCopy(int i);
-    using MeshTopology::getQuad;
-    Quad getQuad(int x, int y, int z);
-
-    int point(int x, int y, int z) const { return x+d_n.getValue()[0]*(y+d_n.getValue()[1]*z); }
+    /// Get Point index in Grid, will call method @sa getIndex
+    int point(int x, int y, int z) const { return getIndex(x,y,z); }
+    /// Get Hexa index in Grid
     int hexa(int x, int y, int z) const { return x+(d_n.getValue()[0]-1)*(y+(d_n.getValue()[1]-1)*z); }
+    /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
 protected:
