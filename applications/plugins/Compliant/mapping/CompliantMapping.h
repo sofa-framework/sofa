@@ -498,13 +498,92 @@ public:
         
     }
 
-    
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/,
-                          core::MultiVecDerivId /*inForce*/,
-                          core::ConstMultiVecDerivId /*outForce*/) {
+    template<class U>
+    using vec = Eigen::Matrix<U, Eigen::Dynamic, 1>;
+    mutable vec<SReal> rhs, res;
 
-        // TODO
-        throw not_implemented(__func__);
+
+    template<std::size_t I>
+    void fetch_rhs(vec<SReal>& rhs, unsigned& off, core::ConstMultiVecDerivId in_vel_id, SReal kfactor) {
+
+        for(unsigned i = 0, n = std::get<I>(from_models).size(); i < n; ++i) {
+            auto* in_vel_data = in_vel_id[std::get<I>(from_models)[i]].read();
+            auto in_vel_view = data_view(in_vel_data);
+
+            using real_type = typename input_type<I>::Real;
+            
+            const real_type* ptr = reinterpret_cast<const real_type*>(in_vel_view.data());
+            const std::size_t size = in_vel_view.size() * input_type<I>::deriv_total_size;
+
+            // view mstate vector as eigen type            
+            Eigen::Map<const vec<real_type>> map(ptr, size);
+            
+            rhs.segment(off, map.size()) = (kfactor * map).template cast<SReal>();
+            off += map.size();
+        }
+        
+    }
+
+    template<std::size_t I>
+    void dispatch_res(core::MultiVecDerivId in_vel_id, unsigned& off, const vec<SReal>& res) {
+
+        for(unsigned i = 0, n = std::get<I>(from_models).size(); i < n; ++i) {
+            auto* in_vel_data = in_vel_id[std::get<I>(from_models)[i]].write();
+            auto in_vel_view = data_view(in_vel_data);
+
+            using real_type = typename input_type<I>::Real;
+            
+            real_type* ptr = reinterpret_cast<real_type*>(in_vel_view.data());
+            const std::size_t size = in_vel_view.size() * input_type<I>::deriv_total_size;
+
+            // view mstate vector as eigen type
+            Eigen::Map<vec<real_type>> map(ptr, size);
+            
+            map = res.segment(off, map.size()).template cast<real_type>();
+            off += map.size();
+        }
+        
+    }
+
+
+    template<std::size_t ... I>
+    void apply_DJT(core::MultiVecDerivId in_vel_id, SReal kfactor, seq<I...> ) {
+
+        const auto& cm = geometric.compressedMatrix;
+        assert(cm.rows() == cm.cols());
+        
+        if( !cm.nonZeros() ) return;
+
+        rhs.resize( cm.rows() );
+        res.resize( cm.rows() );
+
+        {
+            unsigned off = 0;
+            const int expand[] = {
+                (fetch_rhs<I>(rhs, off, in_vel_id, kfactor), 0)...
+            }; (void) expand;
+
+            assert(off == (unsigned)cm.rows());
+        }
+
+        res.noalias() = cm * rhs;
+        
+        {
+            unsigned off = 0;
+            const int expand[] = {
+                (dispatch_res<I>(in_vel_id, off, res), 0)...
+            }; (void) expand;
+            assert(off == (unsigned)cm.rows());
+        }
+
+        
+    }
+    
+    
+    virtual void applyDJT(const core::MechanicalParams* mparams,
+                          core::MultiVecDerivId in_vel_id,
+                          core::ConstMultiVecDerivId /*out_force_id*/) {
+        apply_DJT(in_vel_id, mparams->kFactor(), make_sequence<T...>() );
     }
 
     
