@@ -39,8 +39,8 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(SphereGridTopology)
 
-int SphereGridTopologyClass = core::RegisterObject("Cylinder grid in 3D")
-        .addAlias("CylinderGrid")
+int SphereGridTopologyClass = core::RegisterObject("Sphere grid in 3D")
+        .addAlias("SphereGrid")
         .add< SphereGridTopology >()
         ;
 
@@ -53,7 +53,8 @@ SphereGridTopology::SphereGridTopology(int nx, int ny, int nz)
 }
 
 SphereGridTopology::SphereGridTopology()
-    : d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
+    : GridTopology()
+    , d_center(initData(&d_center,Vector3(0.0f,0.0f,0.0f),"center", "Center of the cylinder"))
     , d_axis(initData(&d_axis,Vector3(0.0f,0.0f,1.0f),"axis", "Main direction of the cylinder"))
     , d_radius(initData(&d_radius,(SReal)1.0,"radius", "Radius of the cylinder"))
 {
