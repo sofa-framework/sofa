@@ -70,21 +70,15 @@ public:
     }
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-
-
+    /** \brief Overload method of @sa GridTopology::getPointInGrid.
+     * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+     * */
+    Vector3 getPointInGrid(int i, int j, int k) const;
 
     const Vector3& getP0() const { return p0.getValue(); }
     const Vector3& getDx() const { return dx; }
     const Vector3& getDy() const { return dy; }
     const Vector3& getDz() const { return dz; }
-
-    unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
-    Vector3 getPoint(int i) const;
-    Vector3 getPoint(int x, int y, int z) const ;
-    bool hasPos()  const { return true; }
-    SReal getPX(int i)  const { return getPoint(i)[0]; }
-    SReal getPY(int i) const { return getPoint(i)[1]; }
-    SReal getPZ(int i) const { return getPoint(i)[2]; }
 
 
     unsigned getCubeIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid cube
@@ -120,9 +114,7 @@ public:
 
     virtual void createTexCoords();
 
-protected:
-
-    Data<bool> computeHexaList, computeQuadList, computeEdgeList, computePointList;
+protected:    
     Data< Vector3 > min, max;
     /// Position of point 0
     Data< Vector3 > p0;

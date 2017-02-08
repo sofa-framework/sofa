@@ -74,20 +74,16 @@ void SphereGridTopology::setRadius(SReal radius)
     d_radius.setValue(radius);
 }
 
-unsigned SphereGridTopology::getIndex( int i, int j, int k ) const
-{
-    return d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i;
-}
 
 Vector3 SphereGridTopology::getPoint(int i) const
 {
     int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
     int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
     int z = i%d_n.getValue()[2]; i/=d_n.getValue()[2];
-    return getPoint(x,y,z);
+    return getPointInGrid(x,y,z);
 }
 
-Vector3 SphereGridTopology::getPoint(int x, int y, int z) const
+Vector3 SphereGridTopology::getPointInGrid(int i, int j, int k) const
 {
     //return p0+dx*x+dy*y+dz*z;
     SReal r = d_radius.getValue();
@@ -103,7 +99,7 @@ Vector3 SphereGridTopology::getPoint(int x, int y, int z) const
     int ny = getNy();
     int nz = getNz();
     // coordonate on a square
-    Vector3 p(x*2*r/(nx-1) - r, y*2*r/(ny-1) - r, z*2*r/(nz-1) - r);
+    Vector3 p(i*2*r/(nx-1) - r, j*2*r/(ny-1) - r, k*2*r/(nz-1) - r);
     // scale it to be on a circle
     if (p.norm() > 0.0000001){
         SReal maxVal = helper::rmax(helper::rabs(p[0]),helper::rabs(p[1]));

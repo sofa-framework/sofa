@@ -42,6 +42,7 @@ public:
     SOFA_CLASS(GridTopology,MeshTopology);
     typedef sofa::defaulttype::Vec3i Vec3i;
     typedef sofa::defaulttype::Vector2 Vector2;
+    typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
     friend class GridUpdate;
 private:
@@ -72,8 +73,16 @@ protected:
     /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
     virtual void setNbGridPoints();
 
-    // Method to create grid texture coordinates, should be overwritten by children
+    /// Method to create grid texture coordinates, should be overwritten by children
     virtual void createTexCoords(){}
+    /// Method to compute Hexa list, called if \sa d_computeHexaList is true at init. Should be overwritten by children.
+    virtual void computeHexaList();
+    /// Method to compute Quad list, called if \sa d_computeQuadList is true at init. Should be overwritten by children.
+    virtual void computeQuadList();
+    /// Method to compute Edge list, called if \sa d_computeEdgeList is true at init. Should be overwritten by children.
+    virtual void computeEdgeList();
+    /// Method to compute Point list, called if \sa d_computePointList is true at init. Should be overwritten by children.
+    virtual void computePointList();
 
 public:
     /// BaseObject method should be overwritten by children
@@ -95,11 +104,11 @@ public:
      * */
     void setSize( Vec3i nXnYnZ );
 
-    /// Set grid x resolution, @param value
+    /// Set grid X resolution, @param value
     void setNx(int value) { (*d_n.beginEdit())[0] = value; setNbGridPoints(); }
-    /// Set grid y resolution, @param value
+    /// Set grid Y resolution, @param value
     void setNy(int value) { (*d_n.beginEdit())[1] = value; setNbGridPoints(); }
-    /// Set grid z resolution, @param value
+    /// Set grid Z resolution, @param value
     void setNz(int value) { (*d_n.beginEdit())[2] = value; setNbGridPoints(); }
 
     /// Get X grid resolution, @return int
@@ -109,7 +118,24 @@ public:
     /// Get Z grid resolution, @return int
     int getNz() const { return d_n.getValue()[2]; }
 
+    /// Get the one-dimensional index of a grid point given its @param i @param j @param k indices
+    unsigned getIndex( int i, int j, int k ) const;
 
+    /// Overwrite from @sa MeshTopology::hasPos always @return bool true
+    bool hasPos()  const { return true; }
+
+    /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
+    virtual Vector3 getPoint(int i) const;
+
+    /// Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
+    virtual Vector3 getPointInGrid(int i, int j, int k) const;
+
+    /// get X from Point index @param i, will call @sa getPoint
+    SReal getPX(int i)  const { return getPoint(i)[0]; }
+    /// get Y from Point index @param i, will call @sa getPoint
+    SReal getPY(int i) const { return getPoint(i)[1]; }
+    /// get Z from Point index @param i, will call @sa getPoint
+    SReal getPZ(int i) const { return getPoint(i)[2]; }
 
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
@@ -150,9 +176,12 @@ public:
 
 protected:
     /// Data storing the size of the grid in the 3 directions
-    Data< Vec3i > d_n;
+    Data<Vec3i> d_n;
 
-    Data <bool> d_createTexCoords;
+    /// Data bool to set option to compute topological elements
+    Data<bool> d_computeHexaList, d_computeQuadList, d_computeEdgeList, d_computePointList;
+    /// Data bool to set option to compute texcoords
+    Data<bool> d_createTexCoords;
 };
 
 } // namespace topology

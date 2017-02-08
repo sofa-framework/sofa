@@ -22,6 +22,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -142,6 +143,10 @@ void GridTopology::GridUpdate::updateHexas()
 
 GridTopology::GridTopology()
     : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution"))
+    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
+    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
+    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
+    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     setNbGridPoints();
@@ -151,6 +156,10 @@ GridTopology::GridTopology()
 
 GridTopology::GridTopology(int _nx, int _ny, int _nz)
     : d_n(initData(&d_n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
+    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
+    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
+    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
+    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     nbPoints = _nx*_ny*_nz;
@@ -159,6 +168,10 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
 
 GridTopology::GridTopology( Vec3i np )
     : d_n(initData(&d_n,np,"n","grid resolution"))
+    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
+    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
+    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
+    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
 {
     nbPoints = np[0]*np[1]*np[2];
@@ -170,12 +183,23 @@ void GridTopology::init()
     if (d_createTexCoords.getValue())
         this->createTexCoords();
 
-    this->reinit();
+    if (d_computeHexaList.getValue())
+        this->computeHexaList();
+
+    if (d_computeQuadList.getValue())
+        this->computeQuadList();
+
+    if (d_computeEdgeList.getValue())
+        this->computeEdgeList();
+
+    if (d_computePointList.getValue())
+        this->computePointList();
+
+    Inherit1::init();
 }
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
-//    std::cerr<<"GridTopology::setSize(int nx, int ny, int nz), n = "<< n.getValue() << std::endl;
     if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
@@ -190,6 +214,65 @@ void GridTopology::setSize(Vec3i n)
 void GridTopology::setNbGridPoints()
 {
     this->setNbPoints(d_n.getValue()[0]*d_n.getValue()[1]*d_n.getValue()[2]);
+}
+
+
+void GridTopology::computeHexaList()
+{
+    updateHexahedra();
+}
+
+void GridTopology::computeQuadList()
+{
+//    updateQuads();
+//    const SeqQuads seq_quads= this->getQuads();
+//    sout<<"Init: Number of Quads ="<<seq_quads.size()<<sendl;
+}
+
+void GridTopology::computeEdgeList()
+{
+    //updateEdges();
+//    const SeqLines seq_l=this->getLines();
+//    sout<<"Init: Number of Lines ="<<seq_l.size()<<sendl;
+}
+
+void GridTopology::computePointList()
+{
+    int nbPoints= this->getNbPoints();
+    // put the result in seqPoints
+    SeqPoints& seq_P= *(seqPoints.beginEdit());
+    seq_P.resize(nbPoints);
+
+    for (int i=0; i<nbPoints; i++)
+    {
+        seq_P[i] = this->getPoint(i);
+    }
+
+    seqPoints.endEdit();
+}
+
+unsigned GridTopology::getIndex( int i, int j, int k ) const
+{
+    return d_n.getValue()[0]* ( d_n.getValue()[1]*k + j ) + i;
+}
+
+
+sofa::defaulttype::Vector3 GridTopology::getPoint(int i) const
+{
+    int x = i%d_n.getValue()[0]; i/=d_n.getValue()[0];
+    int y = i%d_n.getValue()[1]; i/=d_n.getValue()[1];
+    int z = i;
+
+    return getPointInGrid(x,y,z);
+}
+
+sofa::defaulttype::Vector3 GridTopology::getPointInGrid(int i, int j, int k) const
+{
+    unsigned int id = this->getIndex(i, j, k);
+    if (id < seqPoints.getValue().size())
+        return seqPoints.getValue()[id];
+    else
+        return sofa::defaulttype::Vector3();
 }
 
 
