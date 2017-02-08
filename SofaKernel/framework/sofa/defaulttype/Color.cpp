@@ -55,20 +55,20 @@ bool isValidEncoding(const std::string& s)
     return true;
 }
 
-template<>
-TRGBAColor<float>::TRGBAColor()
+
+RGBAColor::RGBAColor()
 {
 
 }
 
-template<>
-TRGBAColor<float>::TRGBAColor(const Vec4f& c) : Vec4f(c)
+
+RGBAColor::RGBAColor(const Vec4f& c) : Vec4f(c)
 {
 
 }
 
-template<>
-TRGBAColor<float>::TRGBAColor(const float pr, const float pg, const float pb, const float pa)
+
+RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
 {
     r(pr);
     g(pg);
@@ -76,8 +76,8 @@ TRGBAColor<float>::TRGBAColor(const float pr, const float pg, const float pb, co
     a(pa);
 }
 
-template<>
-bool TRGBAColor<float>::read(const std::string& str, TRGBAColor<float>& color)
+
+bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     if (str.empty())
         return true;
@@ -140,45 +140,44 @@ bool TRGBAColor<float>::read(const std::string& str, TRGBAColor<float>& color)
     return true ;
 }
 
-template<>
-TRGBAColor<float> TRGBAColor<float>::fromString(const std::string& c)
+
+RGBAColor RGBAColor::fromString(const std::string& c)
 {
-    TRGBAColor<float> color(1.0,1.0,1.0,1.0) ;
-    if( !TRGBAColor<float>::read(c, color) ){
-        msg_info("TRGBAColor") << "Unable to scan color from string '" << c << "'" ;
+    RGBAColor color(1.0,1.0,1.0,1.0) ;
+    if( !RGBAColor::read(c, color) ){
+        msg_info("RGBAColor") << "Unable to scan color from string '" << c << "'" ;
     }
     return color;
 }
 
-template<>
-TRGBAColor<float> TRGBAColor<float>::fromDouble(const float r, const float g, const float b, const float a)
+
+RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, const float a)
 {
-    return TRGBAColor<float>(r,g,b,a);
+    return RGBAColor(r,g,b,a);
 }
 
-template<>
-TRGBAColor<float> TRGBAColor<float>::fromVec4(const Vec4d& color)
+
+RGBAColor RGBAColor::fromVec4(const Vec4d& color)
 {
-    return TRGBAColor<float>(color) ;
+    return RGBAColor(color) ;
 }
 
-template<>
-TRGBAColor<float> TRGBAColor<float>::fromVec4(const Vec4f& color)
+
+RGBAColor RGBAColor::fromVec4(const Vec4f& color)
 {
-    return TRGBAColor<float>(color.x(), color.y(), color.z(), color.w()) ;
+    return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
 }
 
-std::istream& operator>>(std::istream& i, TRGBAColor<float>& t)
+std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;
     std::getline(i, s);
-    if(!TRGBAColor<float>::read(s, t)){
+    if(!RGBAColor::read(s, t)){
         i.setstate(std::ios::failbit) ;
     }
 
     return i;
 }
-
 
 } // namespace defaulttype
 } // namespace sofa

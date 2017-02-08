@@ -39,59 +39,52 @@ namespace defaulttype
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
-template<typename T>
-class SOFA_DEFAULTTYPE_API TRGBAColor : public Vec<4, T>
+class SOFA_DEFAULTTYPE_API RGBAColor : public Vec<4, float>
 {
 public:
-    static TRGBAColor<T> fromString(const std::string& str) ;
-    static TRGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
-    static TRGBAColor fromVec4(const Vec4d& color) ;
-    static TRGBAColor fromVec4(const Vec4f& color) ;
-    static bool read(const std::string& str, TRGBAColor& color) ;
+    static RGBAColor fromString(const std::string& str) ;
+    static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
+    static RGBAColor fromVec4(const Vec4d& color) ;
+    static RGBAColor fromVec4(const Vec4f& color) ;
+    static bool read(const std::string& str, RGBAColor& color) ;
 
-    static TRGBAColor white()  { return TRGBAColor(1.0,1.0,1.0,1.0); }
-    static TRGBAColor black()  { return TRGBAColor(0.0,0.0,0.0,1.0); }
-    static TRGBAColor red()    { return TRGBAColor(1.0,0.0,0.0,1.0); }
-    static TRGBAColor green()  { return TRGBAColor(0.0,1.0,0.0,1.0); }
-    static TRGBAColor blue()   { return TRGBAColor(0.0,0.0,1.0,1.0); }
-    static TRGBAColor cyan()   { return TRGBAColor(0.0,1.0,1.0,1.0); }
-    static TRGBAColor magenta() { return TRGBAColor(1.0,0.0,1.0,1.0); }
-    static TRGBAColor yellow()  { return TRGBAColor(1.0,1.0,0.0,1.0); }
-    static TRGBAColor gray()    { return TRGBAColor(0.5,0.5,0.5,1.0); }
+    static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
+    static RGBAColor black()  { return RGBAColor(0.0,0.0,0.0,1.0); }
+    static RGBAColor red()    { return RGBAColor(1.0,0.0,0.0,1.0); }
+    static RGBAColor green()  { return RGBAColor(0.0,1.0,0.0,1.0); }
+    static RGBAColor blue()   { return RGBAColor(0.0,0.0,1.0,1.0); }
+    static RGBAColor cyan()   { return RGBAColor(0.0,1.0,1.0,1.0); }
+    static RGBAColor magenta() { return RGBAColor(1.0,0.0,1.0,1.0); }
+    static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
+    static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
 
-    using Vec<4,T>::x ;
-    using Vec<4,T>::y ;
-    using Vec<4,T>::z ;
-    using Vec<4,T>::w ;
+    using Vec<4,float>::x ;
+    using Vec<4,float>::y ;
+    using Vec<4,float>::z ;
+    using Vec<4,float>::w ;
 
-    float& r(){ return x() ; }
-    float& g(){ return y() ; }
-    float& b(){ return z() ; }
-    float& a(){ return w() ; }
-    const float& r() const { return x() ; }
-    const float& g() const { return y() ; }
-    const float& b() const { return z() ; }
-    const float& a() const { return w() ; }
+    inline float& r(){ return x() ; }
+    inline float& g(){ return y() ; }
+    inline float& b(){ return z() ; }
+    inline float& a(){ return w() ; }
+    inline const float& r() const { return x() ; }
+    inline const float& g() const { return y() ; }
+    inline const float& b() const { return z() ; }
+    inline const float& a() const { return w() ; }
 
-    void r(const float r){ x()=r; }
-    void g(const float r){ y()=r; }
-    void b(const float r){ z()=r; }
-    void a(const float r){ w()=r; }
+    inline void r(const float r){ x()=r; }
+    inline void g(const float r){ y()=r; }
+    inline void b(const float r){ z()=r; }
+    inline void a(const float r){ w()=r; }
 
-    friend std::istream& operator>>(std::istream& i, TRGBAColor<float>& t) ;
+    friend std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
-    TRGBAColor() ;
-    TRGBAColor(const  Vec4f&) ;
-    TRGBAColor(const float r, const float g, const float b, const float a) ;
+    RGBAColor() ;
+    RGBAColor(const  Vec4f&) ;
+    RGBAColor(const float r, const float g, const float b, const float a) ;
 
 };
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_DEFAULTTYPE_COLOR_CPP)
-extern template class SOFA_DEFAULTTYPE_API TRGBAColor<float> ;
-#endif
-
-typedef TRGBAColor<float> RGBAColor ;
 
 /*
 template<>
