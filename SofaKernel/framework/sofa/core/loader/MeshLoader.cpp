@@ -536,7 +536,6 @@ void MeshLoader::updateNormals()
         const sofa::defaulttype::Vec<3,SReal>  v3 = raPositions[raTriangles[i][2]];
         sofa::defaulttype::Vec<3,SReal> n = cross(v2-v1, v3-v1);
 
-        n.normalize();
         waNormals[raTriangles[i][0]] += n;
         waNormals[raTriangles[i][1]] += n;
         waNormals[raTriangles[i][2]] += n;
@@ -552,7 +551,7 @@ void MeshLoader::updateNormals()
         sofa::defaulttype::Vec<3,SReal> n2 = cross(v3-v2, v1-v2);
         sofa::defaulttype::Vec<3,SReal> n3 = cross(v4-v3, v2-v3);
         sofa::defaulttype::Vec<3,SReal> n4 = cross(v1-v4, v3-v4);
-        n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+
         waNormals[raQuads[i][0]] += n1;
         waNormals[raQuads[i][1]] += n2;
         waNormals[raQuads[i][2]] += n3;
