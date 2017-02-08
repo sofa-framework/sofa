@@ -77,7 +77,7 @@ public:
     inline void b(const float r){ z()=r; }
     inline void a(const float r){ w()=r; }
 
-    friend std::istream& operator>>(std::istream& i, RGBAColor& t) ;
+    friend SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
     RGBAColor() ;
@@ -85,13 +85,6 @@ public:
     RGBAColor(const float r, const float g, const float b, const float a) ;
 
 };
-
-/*
-template<>
-struct DataTypeInfo< TRGBAColor > : public FixedArrayTypeInfo<Vec4f>
-{
-    static std::string name() { std::ostringstream o; o << "TRGBAColor" << 4 << "f"; return o.str(); }
-};*/
 
 } // namespace defaulttype
 

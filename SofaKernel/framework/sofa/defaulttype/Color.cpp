@@ -168,7 +168,7 @@ RGBAColor RGBAColor::fromVec4(const Vec4f& color)
     return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
 }
 
-std::istream& operator>>(std::istream& i, RGBAColor& t)
+SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;
     std::getline(i, s);
