@@ -56,7 +56,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -74,7 +74,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -92,7 +92,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -110,7 +110,7 @@ extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -128,7 +128,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     else
     {
@@ -149,7 +149,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -201,7 +201,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
     if (!PyArg_ParseTuple(args, "sss",&controlID,&valueName,&value))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -218,7 +218,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -235,7 +235,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -253,7 +253,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -271,7 +271,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -289,7 +289,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -306,7 +306,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "iii",&x,&y,&delta))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -325,13 +325,13 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "OsO",&pySenderNode,&eventName,&pyData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseNode* senderBaseNode = ((PySPtr<Base>*)pySenderNode)->object->toBaseNode();
     if (!senderBaseNode)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     // TODO check pyData

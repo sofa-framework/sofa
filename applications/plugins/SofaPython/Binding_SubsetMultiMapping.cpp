@@ -35,7 +35,7 @@ extern "C" PyObject * SubsetMultiMapping3_to_3_addPoint(PyObject *self, PyObject
     if (!PyArg_ParseTuple(args, "Oi",&pyState,&index))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::BaseState* state=((PySPtr<sofa::core::objectmodel::Base>*)pyState)->object->toBaseState();
 
