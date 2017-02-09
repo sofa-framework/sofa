@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -65,6 +62,7 @@
 
 //Including Visual Models
 #include <SofaBaseVisual/VisualStyle.h>
+
 #ifndef SOFA_NO_OPENGL
 #include <SofaOpenglVisual/OglModel.h>
 #else
@@ -100,9 +98,16 @@ using sofa::component::odesolver::EulerSolver ;
 
 using sofa::component::loader::MeshObjLoader ;
 using sofa::component::topology::MeshTopology ;
+
 using sofa::component::topology::RegularGridTopology ;
 using sofa::component::topology::CylinderGridTopology ;
+
+
+#ifndef SOFA_NO_OPENGL
 using sofa::component::visualmodel::OglModel ;
+#else
+using sofa::component::visualmodel::VisualModelImpl;
+#endif
 
 using sofa::component::mapping::BarycentricMapping ;
 using sofa::component::mapping::RigidMapping ;
@@ -240,7 +245,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     else
     {
-        std::cerr << "Error: " << scheme << " Integration Scheme not recognized" << std::endl;
+        msg_error("SceneCreator") << scheme << " Integration Scheme not recognized.  " ;
     }
     return node;
 }
@@ -359,7 +364,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, Mech
         VisualNode->addObject(mapping);
     }
     else
-        std::cout << "Error: mapping visual not possible";
+        msg_error("SceneCreator") << "Visual Mapping creation not possible. Mapping should be Barycentric or Identity. Found MappingType enum: " << mappingT ;
 
     return VisualNode;
 }
@@ -507,6 +512,19 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << "Parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << "Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
@@ -567,6 +585,19 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)
@@ -625,6 +656,19 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
                                 const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
+    if (parent == NULL){
+        msg_warning("SceneCreator") << " Parent node is NULL. Returning Null Pointer." ;
+        return NULL;
+    }
+
+    // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
+    if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
+        msg_warning("SceneCreator") << " Grid Size has a non positive value. Returning Null Pointer." ;
+        return NULL;
+    }
+
     // Check rigid
     bool isRigid = false;
     if (totalMass < 0.0 || young < 0.0 || poisson < 0.0)

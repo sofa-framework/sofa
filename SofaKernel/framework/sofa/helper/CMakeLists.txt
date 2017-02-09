@@ -73,6 +73,7 @@ set(HEADER_FILES
     list.h
     map.h
     map_ptr_stable_compare.h
+    pair.h
     polygon_cube_intersection/polygon_cube_intersection.h
     polygon_cube_intersection/vec.h
     proximity.h
@@ -81,7 +82,6 @@ set(HEADER_FILES
     set.h
     stable_vector.h
     system/DynamicLibrary.h
-    system/FileRepository.h
     system/FileSystem.h
     system/Locale.h
     system/PipeProcess.h
@@ -99,6 +99,7 @@ set(HEADER_FILES
     system/thread/debug.h
     system/thread/thread_specific_ptr.h
     system/FileMonitor.h
+    system/FileRepository.h
     vector.h
     vectorData.h
     vectorLinks.h
@@ -171,7 +172,6 @@ set(SOURCE_FILES
     polygon_cube_intersection/polygon_cube_intersection.cpp
     proximity.cpp
     system/DynamicLibrary.cpp
-    system/FileRepository.cpp
     system/FileSystem.cpp
     system/Locale.cpp
     system/PipeProcess.cpp
@@ -182,6 +182,7 @@ set(SOURCE_FILES
     system/thread/CTime.cpp
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
+    system/FileRepository.cpp
     vector.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
@@ -338,7 +339,12 @@ if(SOFA-EXTERNAL_FFMPEG)
                 endif()
 
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
+if(APPLE)
+    # on macOS, -framework CoreServices is needed for FileMonitor
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
+endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")

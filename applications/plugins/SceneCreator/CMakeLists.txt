@@ -43,3 +43,8 @@ sofa_create_package(SceneCreator ${SCENECREATOR_VERSION} SceneCreator SceneCreat
 ## Add example project to use sceneCreator
 add_subdirectory(sceneCreatorExamples)
 
+## Add test project
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    add_subdirectory(SceneCreator_test)
+endif()

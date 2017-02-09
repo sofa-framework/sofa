@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -35,6 +32,9 @@
 #else
 #include <unistd.h>
 #endif
+
+#include <boost/filesystem.hpp>
+#include <boost/locale.hpp>
 
 #include <cstring>
 #include <cstdlib>
@@ -56,13 +56,13 @@ std::string cleanPath( const std::string& path )
 {
     std::string p = path;
     size_t pos = p.find("//");
-	size_t len = p.length();
+    size_t len = p.length();
     while( pos != std::string::npos )
     {
-		if ( pos == (len-1))
-			p.replace( pos, 2, "");
-		else
-			p.replace(pos,2,"/");
+        if ( pos == (len-1))
+            p.replace( pos, 2, "");
+        else
+            p.replace(pos,2,"/");
         pos = p.find("//");
     }
     return p;
@@ -108,18 +108,18 @@ FileRepository::~FileRepository()
 
 std::string FileRepository::cleanPath( const std::string& path )
 {
-	std::string p = path;
-	size_t pos = p.find("//");
-	size_t len = p.length();
-	while( pos != std::string::npos )
-	{
-		if ( pos == (len-2))
-			p.replace( pos, 2, "");
-		else
-			p.replace(pos,2,"/");
-		pos = p.find("//");
-	}
-	return p;
+    std::string p = path;
+    size_t pos = p.find("//");
+    size_t len = p.length();
+    while( pos != std::string::npos )
+    {
+        if ( pos == (len-2))
+            p.replace( pos, 2, "");
+        else
+            p.replace(pos,2,"/");
+        pos = p.find("//");
+    }
+    return p;
 }
 
 void FileRepository::addFirstPath(const std::string& p)
@@ -198,10 +198,11 @@ std::string FileRepository::getFirstPath()
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 {
     if (filename.empty()) return false; // no filename
-    struct stat s;
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
+    boost::filesystem::path::imbue( boost::locale::generator().generate("") );
+    boost::filesystem::path p(newfname);
     //std::cout << "Looking for " << newfname <<std::endl;
-    if (!stat(newfname.c_str(),&s))
+    if (boost::filesystem::exists(p))
     {
         // File found
         //std::cout << "File "<<filename<<" found in "<<path.substr(p0,p1-p0)<<std::endl;

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -35,7 +32,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     return PyInt_FromLong(obj->m1);
 }
@@ -46,7 +43,7 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index1 %d\n",(int)PyInt_AsLong(args));
     obj->m1=PyInt_AsLong(args);
@@ -59,7 +56,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyInt_FromLong(obj->m2);
 }
@@ -70,7 +67,7 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index2 %d\n",(int)PyInt_AsLong(args));
     obj->m2=PyInt_AsLong(args);
@@ -83,7 +80,7 @@ extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->ks);
 }
@@ -94,7 +91,7 @@ extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Ks %f\n",(float)PyFloat_AsDouble(args));
     obj->ks=PyFloat_AsDouble(args);
@@ -108,7 +105,7 @@ extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->kd);
 }
@@ -119,7 +116,7 @@ extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Kd %f\n",(float)PyFloat_AsDouble(args));
     obj->kd=PyFloat_AsDouble(args);
@@ -133,7 +130,7 @@ extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->initpos);
 }
@@ -144,7 +141,7 @@ extern "C" int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_L %f\n",(float)PyFloat_AsDouble(args));
     obj->initpos=PyFloat_AsDouble(args);

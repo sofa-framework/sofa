@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -70,18 +67,18 @@ using std::string ;
 using std::map ;
 using std::pair;
 
-using sofa::linearsolver::GraphScatteredMatrix ;
-using sofa::linearsolver::GraphScatteredVector ;
-using sofa::linearsolver::CGLinearSolver ;
+using sofa::component::linearsolver::GraphScatteredMatrix ;
+using sofa::component::linearsolver::GraphScatteredVector ;
+using sofa::component::linearsolver::CGLinearSolver ;
 
 using sofa::simulation::graph::DAGSimulation ;
 
 using sofa::component::mass::UniformMass ;
 using sofa::component::forcefield::PlaneForceField ;
 
-using sofa::container::MechanicalObject ;
+using sofa::component::container::MechanicalObject ;
 
-using sofa::odesolver::EulerImplicitSolver ;
+using sofa::component::odesolver::EulerImplicitSolver ;
 
 template <typename TDataType, typename TMassType>
 struct TypeTuple

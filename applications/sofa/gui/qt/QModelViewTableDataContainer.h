@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -395,7 +392,7 @@ public:
         wSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
-		wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        wDisplay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
@@ -422,12 +419,9 @@ public:
         if(displayDataWidget)
             propertyWidgetFlagOn = displayDataWidget->flag().PROPERTY_WIDGET_FLAG;
 
-		//if(isDisplayed() || propertyWidgetFlagOn)
-		{
-			processTableModifications(d);
-			fillTable(d);
-			rows = dataRows;
-		}
+        processTableModifications(d);
+        fillTable(d);
+        rows = dataRows;
 
         if(!propertyWidgetFlagOn)
             wDisplay->setChecked(dataRows < MAX_NUM_ELEM && dataRows != 0 );
@@ -440,8 +434,6 @@ public:
         if (readOnly)
         {
             wSize->setEnabled(false);
-
-            //wTableView->setEnabled(false);
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         }
         else
@@ -449,8 +441,6 @@ public:
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
                 parent->connect(wSize, SIGNAL( valueChanged(int) ), parent, SLOT( setWidgetDirty() ));
-                //_widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
-
 
                 if( FLAGS & TABLE_HORIZONTAL)
                     parent->connect(wSize, SIGNAL( valueChanged(int) ), wTableModel, SLOT(resizeTableH(int) ) );
@@ -461,12 +451,8 @@ public:
             {
                 wSize->setEnabled(false);
             }
-            parent->connect(wTableView, SIGNAL( activated(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( pressed(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
-            parent->connect(wTableView, SIGNAL( clicked(QModelIndex) ) , parent, SLOT(setWidgetDirty()) );
         }
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wTableView,   SLOT(setDisplayed(bool)));
-        parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent,   SLOT(setWidgetDirty()));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         parent->connect(wDisplay, SIGNAL( toggled(bool) ), parent, SLOT( updateWidgetValue() ));
 
@@ -483,10 +469,17 @@ public:
     void setReadOnly(bool readOnly)
     {
         wSize->setEnabled(!readOnly);
-        //wTableView->setEnabled(!readOnly);
         if (readOnly)
         {
+            wTableModel->setReadOnly(true);
             wTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+            QObject::disconnect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::disconnect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+        }else{
+            QObject::connect(wTableView, SIGNAL( activated(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( pressed(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
+            QObject::connect(wTableView, SIGNAL( clicked(QModelIndex) ) , widget, SLOT(setWidgetDirty()) );
         }
     }
 
@@ -866,12 +859,6 @@ public:
 };
 
 
-
-
-template<class T>
-class vector_data_trait < sofa::helper::deque<T> > : public vector_data_trait< std::deque<T> >
-{
-};
 
 } // namespace qt
 

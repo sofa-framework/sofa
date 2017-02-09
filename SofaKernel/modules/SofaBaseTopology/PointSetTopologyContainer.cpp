@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -156,7 +153,7 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEn
 }
 
 
-void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, sofa::helper::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
+void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
     // clear data stored by previous call of this function
     my_enginesList.clear();
@@ -170,13 +167,13 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     bool allDone = false;
 
     unsigned int cpt_security = 0;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> _engines;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it_engines;
+    std::list<sofa::core::topology::TopologyEngine *> _engines;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it_engines;
 
     while (!allDone && cpt_security < 1000)
     {
-        sofa::helper::list <sofa::core::objectmodel::DDGNode* > next_GraphLevel;
-        sofa::helper::list <sofa::core::topology::TopologyEngine *> next_enginesLevel;
+        std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
+        std::list<sofa::core::topology::TopologyEngine *> next_enginesLevel;
 
         // for drawing graph
         sofa::helper::vector <std::string> enginesNames;
@@ -251,7 +248,7 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
+    std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
 #ifndef NDEBUG
 //    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;

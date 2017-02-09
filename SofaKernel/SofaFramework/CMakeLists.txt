@@ -146,9 +146,9 @@ endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 ## Boost
-find_package(Boost COMPONENTS thread system date_time QUIET)
-
-set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+# optional boost libraries
+find_package(Boost REQUIRED system filesystem locale
+                   OPTIONAL_COMPONENTS thread date_time)
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
@@ -189,7 +189,7 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "16.dev.0")
+set(SOFAFRAMEWORK_VERSION "17.dev.0")
 
 ## sofa/version.h
 set(SOFA_VERSION "999999")
