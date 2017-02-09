@@ -41,7 +41,7 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     float scale=1.0f;
     if (arg->getAttribute("scale")!=NULL)
     {
-        scale = (float)atof(arg->getAttribute("scale"));
+        scale = arg->getAttributeAsFloat("scale", 1.0);
     }
 
     this->GridTopology::parse(arg);
@@ -52,14 +52,14 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         arg->getAttribute("ymax") != NULL &&
         arg->getAttribute("zmax") != NULL )
     {
-        const char* xmin = arg->getAttribute("xmin");
-        const char* ymin = arg->getAttribute("ymin");
-        const char* zmin = arg->getAttribute("zmin");
-        const char* xmax = arg->getAttribute("xmax");
-        const char* ymax = arg->getAttribute("ymax");
-        const char* zmax = arg->getAttribute("zmax");
-        d_min.setValue(Vector3((SReal)atof(xmin)*scale, (SReal)atof(ymin)*scale, (SReal)atof(zmin)*scale));
-        d_max.setValue(Vector3((SReal)atof(xmax)*scale, (SReal)atof(ymax)*scale, (SReal)atof(zmax)*scale));
+        float xmin = arg->getAttributeAsFloat("xmin",0);
+        float ymin = arg->getAttributeAsFloat("ymin",0);
+        float zmin = arg->getAttributeAsFloat("zmin",0);
+        float xmax = arg->getAttributeAsFloat("xmax",1);
+        float ymax = arg->getAttributeAsFloat("ymax",1);
+        float zmax = arg->getAttributeAsFloat("zmax",1);
+        d_min.setValue(Vector3((SReal)xmin*scale, (SReal)ymin*scale, (SReal)zmin*scale));
+        d_max.setValue(Vector3((SReal)xmax*scale, (SReal)ymax*scale, (SReal)zmax*scale));
     }
     this->setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 

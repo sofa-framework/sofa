@@ -46,7 +46,5 @@ add_subdirectory(sceneCreatorExamples)
 ## Add test project
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(SceneCreator_test)
-    endif()
+    add_subdirectory(SceneCreator_test)
 endif()

@@ -54,8 +54,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
         }
 
         PyErr_BadArgument();
-
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 
@@ -90,7 +89,7 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
         }
 
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     return SP_BUILD_PYPTR(Link,BaseLink,link,false);
@@ -171,7 +170,7 @@ extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
     if(!component)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();

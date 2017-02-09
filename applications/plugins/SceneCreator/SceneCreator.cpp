@@ -247,7 +247,7 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 
     else
     {
-        std::cerr << "Error: " << scheme << " Integration Scheme not recognized" << std::endl;
+        msg_error("SceneCreator") << scheme << " Integration Scheme not recognized.  " ;
     }
     return node;
 }
@@ -366,7 +366,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent, Mech
         VisualNode->addObject(mapping);
     }
     else
-        std::cerr << "Visual Mapping creation not possible. Mapping should be Barycentric or Identity. Found MappingType enum: " << mappingT << std::endl;
+        msg_error("SceneCreator") << "Visual Mapping creation not possible. Mapping should be Barycentric or Identity. Found MappingType enum: " << mappingT ;
 
     return VisualNode;
 }
@@ -514,14 +514,16 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
     if (parent == NULL){
-        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Parent node is NULL. Returning Null Pointer." ;
         return NULL;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
-        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Grid Size has a non positive value. Returning Null Pointer." ;
         return NULL;
     }
 
@@ -585,14 +587,16 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
     if (parent == NULL){
-        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
         return NULL;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
-        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
         return NULL;
     }
 
@@ -655,14 +659,16 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
     if (parent == NULL){
-        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Warning: parent node is NULL. Returning Null Pointer." ;
         return NULL;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
-        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << "Warning: Grid Size has a non positive value. Returning Null Pointer." ;
         return NULL;
     }
 
@@ -724,14 +730,16 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
                                 const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
+    //TODO(dmarchal): It is unclear to me if this message should be a msg_ (for end user)
+    // or dmsg_ for developpers.
     if (parent == NULL){
-        std::cerr << "Warning: parent node is NULL. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << " Parent node is NULL. Returning Null Pointer." ;
         return NULL;
     }
 
     // TODO: epernod: this should be tested in the regularGrid code to avoid crash.
     if (gridSize[0] < 1 || gridSize[1] < 1 || gridSize[2] < 1){
-        std::cerr << "Warning: Grid Size has a non positive value. Returning Null Pointer." << std::endl;
+        msg_warning("SceneCreator") << " Grid Size has a non positive value. Returning Null Pointer." ;
         return NULL;
     }
 

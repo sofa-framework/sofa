@@ -146,10 +146,10 @@ public:
 
         if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
         {
-            const char* nx = arg->getAttribute("nx");
-            const char* ny = arg->getAttribute("ny");
-            const char* nz = arg->getAttribute("nz");
-            d_n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
+            int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
+            int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
+            int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
+            d_n.setValue(Vec3i(nx,ny,nz));
         }
 
         this->setNbGridPoints();
