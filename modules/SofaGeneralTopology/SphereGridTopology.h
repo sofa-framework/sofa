@@ -69,7 +69,7 @@ public:
     /// Set Sphere radius from @param SReal
     void setRadius(SReal radius);
 
-protected:
+public:
     /// Data storing the center position
     Data< Vector3 > d_center;
     /// Data storing the axis direction

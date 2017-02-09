@@ -178,7 +178,7 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
-protected:
+public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;
 

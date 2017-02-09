@@ -123,7 +123,7 @@ public:
     /// Overload Method of @sa GridTopology::createTexCoords called at init if @sa d_createTexCoords is true
     virtual void createTexCoords();
 
-protected:    
+public:
     /// Data storing min and max 3D position of the grid bounding box
     Data< Vector3 > d_min, d_max;
 
@@ -133,6 +133,7 @@ protected:
     /// Data if > 0 : dimension of each cell in the created grid
     Data< SReal > d_cellWidth;
 
+protected:
     /// Distance between points in the grid. Must be perpendicular to each other
     Vector3 dx,dy,dz;
 

@@ -66,7 +66,7 @@ public:
     /// Set Cylinder length from @param SReal
     void setLength(SReal length);
 
-protected:
+public:
     /// Data storing the center position
     Data< Vector3 > d_center;
     /// Data storing the axis direction
