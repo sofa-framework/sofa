@@ -13,7 +13,14 @@ namespace forcefield
 {
 
 /** Stiffness uniformly applied to all the DOF.
-  Each dof represents a constraint violation, and undergoes force \f$ \lambda = -\frac{1}{c} ( x - d v ) \f$, where c is the Stiffness and d the damping ratio.
+
+  w = sum_i k x_i^2
+  f(x) = -k x
+  K(x) = -k
+
+  @author Matthieu Nesme
+  @date 2017
+
   */
 template<class TDataTypes>
 class UniformStiffness : public core::behavior::ForceField<TDataTypes>
@@ -49,6 +56,8 @@ public:
 
     /// Return a pointer to the Stiffness matrix
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
+
+    using Inherit1::addKToMatrix;
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
 

@@ -6,6 +6,7 @@ set(SOURCE_FILES
     core/loader/MeshLoader_test.cpp
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
+    core/objectmodel/BaseObjectDescription_test.cpp
     core/DataEngine_test.cpp
     core/TrackedData_test.cpp
     defaulttype/MatTypes_test.cpp
@@ -14,6 +15,7 @@ set(SOURCE_FILES
     helper/Utils_test.cpp
     helper/Quater_test.cpp
     helper/SVector_test.cpp
+    helper/gl/GLSLShader_test.cpp
     helper/io/MeshOBJ_test.cpp
     helper/io/MeshSTL_test.cpp
     helper/system/FileMonitor_test.cpp

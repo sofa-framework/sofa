@@ -52,10 +52,15 @@ public:
     SReal getPY(int i) const { return getPoint(i)[1]; }
     SReal getPZ(int i) const { return getPoint(i)[2]; }
 
+    void setCenter(SReal x, SReal y, SReal z);
+    void setAxis(SReal x, SReal y, SReal z);
+    void setRadius(SReal radius);
+    void setLength(SReal length);
+
 protected:
-    Data< Vector3 > center;
-    Data< Vector3 > axis;
-    Data< SReal > radius, length;
+    Data< Vector3 > d_center;
+    Data< Vector3 > d_axis;
+    Data< SReal > d_radius, d_length;
 };
 
 } // namespace topology
