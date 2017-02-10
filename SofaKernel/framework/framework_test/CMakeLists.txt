@@ -34,7 +34,7 @@ include_directories(${gtest_SOURCE_DIR}/include)
 add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} gtest_main SofaCore SofaTest)
+target_link_libraries(${PROJECT_NAME} gtest_main SofaCore SofaDefaultType SofaTest)
 #add_dependencies(${PROJECT_NAME} PluginA PluginB PluginC PluginD PluginE PluginF)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
