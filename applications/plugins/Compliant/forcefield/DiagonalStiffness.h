@@ -51,6 +51,8 @@ public:
     /// Return a pointer to the Stiffness matrix
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
 
+    using Inherit1::addKToMatrix;
+
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
 
     virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset );
