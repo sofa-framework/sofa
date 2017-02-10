@@ -64,13 +64,17 @@ SOFA_CORE_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
+    CleanupCheck() {
+        init();
+    }
+    
+    ~CleanupCheck() {
+        cleanup();
         if (core::isInitialized() && !core::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaCore", "sofa::core::cleanup()");
     }
 } check;
+
 
 } // namespace core
 

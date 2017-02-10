@@ -74,13 +74,18 @@ SOFA_SIMULATION_COMMON_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
+    CleanupCheck() {
+        init();
+    }
+    
+    ~CleanupCheck() {
+        cleanup();
         if (simulation::common::isInitialized() && !simulation::common::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaSimulationCommon", "sofa::simulation::common::cleanup()");
     }
 } check;
+
+
 
 } // namespace common
 
