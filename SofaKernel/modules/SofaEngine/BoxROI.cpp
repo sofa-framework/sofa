@@ -36,13 +36,14 @@ namespace engine
 namespace boxroi
 {
 
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(BoxROI)
 
-int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/tetrahedron) inside a given box")
+int BoxROIClass = core::RegisterObject("Find the primitives (vertex/edge/triangle/quad/tetrahedron/hexahedron) inside given boxes")
 #ifdef SOFA_WITH_DOUBLE
-        .add< BoxROI<Vec3dTypes> >()
+        .add< BoxROI<Vec3dTypes> >(true) //default
         .add< BoxROI<Rigid3dTypes> >()
         .add< BoxROI<Vec6dTypes> >()
 #endif //SOFA_WITH_DOUBLE

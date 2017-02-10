@@ -230,7 +230,9 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
 
 
 ////////////////////////////// RichConsoleStyleMessageFormatter Implementation /////////////////////
-RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){}
+RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){
+    m_showFileInfo=false;
+}
 
 void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostream& out)
 {
@@ -256,7 +258,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
 
-    if(m.fileInfo()){
+    if(m_showFileInfo && m.fileInfo()){
         std::stringstream buf;
         std::string emptyspace(psize, ' ') ;
         buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;

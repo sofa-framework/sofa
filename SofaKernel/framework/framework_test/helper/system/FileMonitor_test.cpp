@@ -59,10 +59,6 @@ void createAFilledFile(const string filename, unsigned int rep){
 
 void waitForFileEvents()
 {
-    // on osx there is a latency between 0.2 and 0.5s for file events...
-#ifdef __APPLE__
-	sleep(1);
-#endif
 	// on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
 	Sleep(100);
@@ -124,7 +120,7 @@ TEST(FileMonitor, addFileTwice_test)
     createAFilledFile(getPath("existing.txt"), 10) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
 
     // The listener should be notified 1 times with the same event.
     EXPECT_EQ( listener.m_files.size(), 1u) ;
@@ -149,7 +145,7 @@ TEST(FileMonitor, updateNoChange_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -160,13 +156,13 @@ TEST(FileMonitor, fileChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-	waitForFileEvents();
-	FileMonitor::updates(0) ;
+    //waitForFileEvents();
+    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -177,7 +173,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener.m_files.clear() ;
@@ -185,7 +181,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 200) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -198,7 +194,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -208,7 +204,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
@@ -223,7 +219,7 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -233,7 +229,7 @@ TEST(FileMonitor, listenerRemoved_test)
     FileMonitor::removeListener(&listener1) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
@@ -246,14 +242,14 @@ TEST(FileMonitor, fileChange2_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
-    waitForFileEvents();
-    FileMonitor::updates(0) ;
+    //waitForFileEvents();
+    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;

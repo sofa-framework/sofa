@@ -77,7 +77,7 @@ protected:
 	// map used to store the Bernstein coefficient given a Tetrahedron Bezier Index
 	std::map<TetrahedronBezierIndex,Real> bernsteinCoeffMap;
 	/// the list of edges of the Bezier Tetrahedron used in the draw function
-    sofa::helper::set<std::pair<Edge,size_t> > bezierTetrahedronEdgeSet;
+    std::set<std::pair<Edge,size_t> > bezierTetrahedronEdgeSet;
 
 
 

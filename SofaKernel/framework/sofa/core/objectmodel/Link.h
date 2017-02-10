@@ -248,7 +248,6 @@ public:
     /// while iterators are used (required to add/remove objects
     /// while visitors are in progress).
     typedef sofa::helper::stable_vector<TValueType> T;
-    //typedef ::boost::container::stable_vector<TValueType> T;
     static void clear(T& c)
     {
         c.clear();

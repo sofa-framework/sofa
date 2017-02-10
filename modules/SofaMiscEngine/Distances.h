@@ -225,7 +225,7 @@ private:
     /*************************/
     inline void findCorrespondingHexas ( helper::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
     inline void find1DCoord ( unsigned int& hexaID, const Coord& point );
-    void getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, helper::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const;
+    void getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, std::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const;
     void computeGradients ( const unsigned int mapIndex, helper::vector<double>& distances, VecCoord& gradients, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals );
     inline void addContribution ( double& valueWrite, int& nbTest, const helper::vector<double>& valueRead, const unsigned int& gridID, const int coeff );
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );

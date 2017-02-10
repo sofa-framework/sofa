@@ -354,47 +354,47 @@ void BaseMeshTopology::reOrientateTriangle(TriangleID /*id*/)
     serr<<"reOrientateTriangle() not supported." << sendl;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginChange() const
 {
     serr << "beginChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endChange() const
 {
     serr<<"endChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::beginStateChange() const
 {
     serr<<"beginStateChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
+std::list<const TopologyChange *>::const_iterator BaseMeshTopology::endStateChange() const
 {
     serr<<"endStateChange() not supported." << sendl;
-    sofa::helper::list<const TopologyChange *>::const_iterator l;
+    std::list<const TopologyChange *>::const_iterator l;
     return l;
 }
 
 
-sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator BaseMeshTopology::beginTopologyEngine() const
 {
     serr<<"beginTopologyEngine() not supported." << sendl;
-    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    std::list<TopologyEngine *>::const_iterator l;
     return l;
 }
 
 
-sofa::helper::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator BaseMeshTopology::endTopologyEngine() const
 {
     serr<<"endTopologyEngine() not supported." << sendl;
-    sofa::helper::list<TopologyEngine *>::const_iterator l;
+    std::list<TopologyEngine *>::const_iterator l;
     return l;
 }
 

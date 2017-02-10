@@ -52,6 +52,7 @@ int STLExporterClass = core::RegisterObject("Read State vectors from file at eac
 
 STLExporter::STLExporter()
     : stepCounter(0)
+    , maxStep(0)
     , stlFilename( initData(&stlFilename, "filename", "output STL file name"))
     , m_fileFormat( initData(&m_fileFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
     , m_position( initData(&m_position, "position", "points coordinates"))
@@ -61,6 +62,8 @@ STLExporter::STLExporter()
     , exportAtBegin( initData(&exportAtBegin, (bool)false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, (bool)false, "exportAtEnd", "export file when the simulation is finished"))
 {
+        this->addAlias(&m_triangle, "triangles");
+        this->addAlias(&m_quad, "quads");
 }
 
 STLExporter::~STLExporter()

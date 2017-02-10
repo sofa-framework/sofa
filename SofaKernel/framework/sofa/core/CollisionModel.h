@@ -296,7 +296,7 @@ public:
             return true;
         else
         {
-            helper::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
+            std::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
             for( ; it != itend ; ++it )
                 if( model->group.getValue().count(*it)>0 ) // both models are included in the same group -> do not collide
                     return false;
@@ -404,13 +404,13 @@ public:
 
 
     /// Return the group IDs containing this model.
-    const helper::set<int>& getGroups() const { return group.getValue(); }
+    const std::set<int>& getGroups() const { return group.getValue(); }
 
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
 
 	/// Set the group IDs to this model
-	void setGroups(const helper::set<int>& ids) { group.setValue(ids); }
+    void setGroups(const std::set<int>& ids) { group.setValue(ids); }
 
     /// @}
 
@@ -471,7 +471,7 @@ protected:
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)
-    Data< helper::set<int> > group;
+    Data< std::set<int> > group;
 
     /// Number of collision elements
     int size;

@@ -35,11 +35,13 @@ using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 template class SOFA_CORE_API ConstraintCorrection< Vec3dTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Vec1dTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec2dTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Rigid3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
 template class SOFA_CORE_API ConstraintCorrection< Vec3fTypes >;
+template class SOFA_CORE_API ConstraintCorrection< Vec2fTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Vec1fTypes >;
 template class SOFA_CORE_API ConstraintCorrection< Rigid3fTypes >;
 #endif

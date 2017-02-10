@@ -37,22 +37,26 @@ SOFA_DECL_CLASS(LinearSolverConstraintCorrection)
 int LinearSolverContactCorrectionClass = core::RegisterObject("")
 #ifndef SOFA_FLOAT
         .add< LinearSolverConstraintCorrection<Vec3dTypes> >()
+        .add< LinearSolverConstraintCorrection<Vec2dTypes> >()
         .add< LinearSolverConstraintCorrection<Vec1dTypes> >()
         .add< LinearSolverConstraintCorrection<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< LinearSolverConstraintCorrection<Vec3fTypes> >()
+        .add< LinearSolverConstraintCorrection<Vec2fTypes> >()
         .add< LinearSolverConstraintCorrection<Vec1fTypes> >()
         .add< LinearSolverConstraintCorrection<Rigid3fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3dTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2dTypes>;
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1dTypes>;
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec3fTypes>;
+template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec2fTypes>;
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Vec1fTypes>;
 template class SOFA_CONSTRAINT_API LinearSolverConstraintCorrection<Rigid3fTypes>;
 #endif

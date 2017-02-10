@@ -84,10 +84,10 @@ public:
 
         if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
         {
-            const char* nx = arg->getAttribute("nx");
-            const char* ny = arg->getAttribute("ny");
-            const char* nz = arg->getAttribute("nz");
-            n.setValue(Vec3i(atoi(nx),atoi(ny),atoi(nz)));
+            int nx = arg->getAttributeAsInt("nx", n.getValue().x());
+            int ny = arg->getAttributeAsInt("ny", n.getValue().y());
+            int nz = arg->getAttributeAsInt("nz", n.getValue().z());
+            n.setValue(Vec3i(nx,ny,nz));
         }
 
         this->setSize();

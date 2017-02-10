@@ -596,7 +596,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
 
 void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanicalState *dof,
         const std::list<unsigned int> &idxEquations, unsigned int constraintOffset,
-        SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed) const
+        SparseMatrixEigen& L, std::set< unsigned int > &dofUsed) const
 {
     const unsigned int dimensionDofs=dof->getDerivDimension();
     typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
@@ -816,7 +816,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         bool isPositionChangesUpdateVelocity,
         const SparseMatrixEigen  &invM_Ltrans,
         const VectorEigen  &c,
-        const sofa::helper::set< unsigned int > &dofUsed,
+        const std::set< unsigned int > &dofUsed,
         sofa::core::behavior::BaseMechanicalState* dofs) const
 {
 
