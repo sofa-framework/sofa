@@ -64,6 +64,9 @@ struct Listener : core::objectmodel::BaseObject {
 
 };
 
+
+static simulation::Node::SPtr instance;
+
 void Python_scene_test::run( const Python_test_data& data ) {
 
     msg_info("Python_scene_test") << "running "<< data.filepath;
@@ -76,13 +79,14 @@ void Python_scene_test::run( const Python_test_data& data ) {
     }
 
     simulation::Node::SPtr root = loader.loadSceneWithArguments(data.filepath.c_str(),data.arguments);
-	
+    instance = root;
+    
 	root->addObject( new Listener );
 
 	simulation::getSimulation()->init(root.get());
 
 	try {
-		while(true) {
+		while(root->isActive()) {
 			simulation::getSimulation()->animate(root.get(), root->getDt());
 		}
 	} catch( const result& test_result ) {
@@ -95,4 +99,24 @@ void Python_scene_test::run( const Python_test_data& data ) {
 } // namespace sofa
 
 
+extern "C" {
 
+    void finish() {
+	if(sofa::instance) sofa::instance->setActive(false);
+    }
+
+    void expect_true(bool test, const char* msg) {
+	EXPECT_TRUE(test) << msg;
+    }
+    
+    void assert_true(bool test, const char* msg) {
+        auto trigger = [&] {
+            ASSERT_TRUE(test) << msg;
+        };
+
+        trigger();
+        if(!test) finish();
+    }
+    
+
+}
