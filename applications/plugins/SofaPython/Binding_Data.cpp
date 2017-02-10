@@ -28,18 +28,8 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 
 
-#include "PythonFactory.h"
-
-#include <SofaDeformable/SpringForceField.h> // should not be here
-
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
-using namespace sofa::component::interactionforcefield;
-
-
-// TODO:
-// se servir du DataTypeInfo pour utiliser directement les bons type :-)
-// Il y a un seul type "Data" exposé en python, le transtypage est géré automatiquement
 
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
@@ -58,54 +48,6 @@ SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 PyObject *GetDataValuePython(BaseData* data)
 {
     // depending on the data type, we return the good python type (int, float, string, array, ...)
-
-
-    // special cases... from factory (e.g DisplayFlags, OptionsGroup)
-    {
-        PyObject* res = sofa::PythonFactory::toPython(data);
-        if( res ) return res;
-    }
-
-
-    // horrible special case that needs to be refactored
-    if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
-    {
-        // special type, a vector of LinearSpring objects
-
-        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-        const void* valueVoidPtr = data->getValueVoidPtr();
-        int rowWidth = typeinfo->size();
-        int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-
-        if (typeinfo->size(valueVoidPtr)==1)
-        {
-            // this type is NOT a vector; return directly the proper native type
-            const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[0];
-            LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
-            return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself
-        }
-        else
-        {
-            PyObject *rows = PyList_New(nbRows);
-            for (int i=0; i<nbRows; i++)
-            {
-                PyObject *row = PyList_New(rowWidth);
-                for (int j=0; j<rowWidth; j++)
-                {
-                    // build each value of the list
-                    const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[i*rowWidth+j];
-                    LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
-                    PyList_SetItem(row,j,SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true));
-                }
-                PyList_SetItem(rows,i,row);
-            }
-
-            return rows;
-        }
-
-    }
-
-
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -186,178 +128,7 @@ PyObject *GetDataValuePython(BaseData* data)
 }
 
 
-static bool SetDataValuePythonVectorLinearSpring(BaseData* data, PyObject* args,
-                                          Data<sofa::helper::vector<LinearSpring<SReal> > >* dataVectorLinearSpring) {
-    const bool isList = PyList_Check(args);
-
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-    const bool valid = (typeinfo && typeinfo->ValidInfo());
-        
-    const int rowWidth = valid ? typeinfo->size() : 1;
-    int nbRows = valid ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
-
-    // special type, a vector of LinearSpring objects
-
-    if (!isList)
-    {
-        // one value
-        // check the python object type
-        if (rowWidth*nbRows<1 || !PyObject_IsInstance(args,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
-        {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return false;
-        }
-
-        LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)args)->object);
-        sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-        (*vectorLinearSpring)[0].m1 = obj->m1;
-        (*vectorLinearSpring)[0].m2 = obj->m2;
-        (*vectorLinearSpring)[0].ks = obj->ks;
-        (*vectorLinearSpring)[0].kd = obj->kd;
-        (*vectorLinearSpring)[0].initpos = obj->initpos;
-
-        dataVectorLinearSpring->endEdit();
-
-        return true;
-    }
-    else
-    {
-        // values list
-        // is it a double-dimension list ?
-        //PyObject *firstRow = PyList_GetItem(args,0);
-
-        if (PyList_Check(PyList_GetItem(args,0)))
-        {
-            // two-dimension array!
-
-            // right number if rows ?
-            if (PyList_Size(args)!=nbRows)
-            {
-                // only a warning; do not raise an exception...
-                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                    if (PyList_Size(args)<nbRows)
-                        nbRows = PyList_Size(args);
-            }
-
-            sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-            // let's fill our rows!
-            for (int i=0; i<nbRows; i++)
-            {
-                PyObject *row = PyList_GetItem(args,i);
-
-                // right number if list members ?
-                int size = rowWidth;
-                if (PyList_Size(row)!=size)
-                {
-                    // only a warning; do not raise an exception...
-                    SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(row)<<"x"<<nbRows<<" dst="<<size<<"x"<<nbRows<<")" )
-                        if (PyList_Size(row)<size)
-                            size = PyList_Size(row);
-                }
-
-                // okay, let's set our list...
-                for (int j=0; j<size; j++)
-                {
-
-                    PyObject *listElt = PyList_GetItem(row,j);
-                    if(!PyObject_IsInstance(listElt,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
-                    {
-                        // type mismatch
-                        dataVectorLinearSpring->endEdit();
-                        PyErr_BadArgument();
-                        return false;
-                    }
-                    LinearSpring<SReal>* spring=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)listElt)->object);
-
-
-                    (*vectorLinearSpring)[j+i*rowWidth].m1 = spring->m1;
-                    (*vectorLinearSpring)[j+i*rowWidth].m2 = spring->m2;
-                    (*vectorLinearSpring)[j+i*rowWidth].ks = spring->ks;
-                    (*vectorLinearSpring)[j+i*rowWidth].kd = spring->kd;
-                    (*vectorLinearSpring)[j+i*rowWidth].initpos = spring->initpos;
-
-                }
-
-
-
-            }
-
-            dataVectorLinearSpring->endEdit();
-
-            return true;
-
-        }
-        else
-        {
-            // it is a one-dimension only array
-            // right number if list members ?
-            int size = rowWidth*nbRows;
-            if (PyList_Size(args)!=size)
-            {
-                // only a warning; do not raise an exception...
-                SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(args)<<" dst="<<size<<")" )
-                    if (PyList_Size(args)<size)
-                        size = PyList_Size(args);
-            }
-
-            sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-            // okay, let's set our list...
-            for (int i=0; i<size; i++)
-            {
-
-                PyObject *listElt = PyList_GetItem(args,i);
-
-                if(!PyObject_IsInstance(listElt,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
-                {
-                    // type mismatch
-                    dataVectorLinearSpring->endEdit();
-                    PyErr_BadArgument();
-                    return false;
-                }
-
-                LinearSpring<SReal>* spring=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)listElt)->object);
-
-                (*vectorLinearSpring)[i].m1 = spring->m1;
-                (*vectorLinearSpring)[i].m2 = spring->m2;
-                (*vectorLinearSpring)[i].ks = spring->ks;
-                (*vectorLinearSpring)[i].kd = spring->kd;
-                (*vectorLinearSpring)[i].initpos = spring->initpos;
-
-
-                /*
-                  if (PyFloat_Check(listElt))
-                  {
-                  // it's a scalar
-                  if (!typeinfo->Scalar())
-                  {
-                  // type mismatch
-                  PyErr_BadArgument();
-                  return false;
-                  }
-                  SReal value = PyFloat_AsDouble(listElt);
-                  void* editVoidPtr = data->beginEditVoidPtr();
-                  typeinfo->setScalarValue(editVoidPtr,i,value);
-                  data->endEditVoidPtr();
-                  }
-                */
-            }
-            dataVectorLinearSpring->endEdit();
-
-            return true;
-        }
-    }
-
-    PyErr_BadArgument();
-    return false;
-}
-
-
-
-static bool SetDataValuePythonList(BaseData* data, PyObject* args,
+static int SetDataValuePythonList(BaseData* data, PyObject* args,
                             const int rowWidth, int nbRows) {
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
         
@@ -365,7 +136,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
     if (PyList_Size(args)==0)
     {
         data->read("");
-        return true;
+        return 0;
     }
 
     // is it a double-dimension list ?
@@ -442,7 +213,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                     {
                         // type mismatch
                         PyErr_BadArgument();
-                        return false;
+                        return -1;
                     }
                 }
                 else if (PyFloat_Check(listElt))
@@ -452,7 +223,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                     {
                         // type mismatch
                         PyErr_BadArgument();
-                        return false;
+                        return -1;
                     }
                     SReal value = PyFloat_AsDouble(listElt);
                     typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
@@ -464,7 +235,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                     {
                         // type mismatch
                         PyErr_BadArgument();
-                        return false;
+                        return -1;
                     }
                     char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
                     typeinfo->setTextValue(editVoidPtr,i*rowWidth+j,str);
@@ -473,7 +244,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                 {
                     msg_warning("SetDataValuePython") << "Lists not yet supported...";
                     PyErr_BadArgument();
-                    return false;
+                    return -1;
                 }
             }
 
@@ -481,7 +252,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
 
         }
         data->endEditVoidPtr();
-        return true;
+        return 0;
 
     }
     else
@@ -540,7 +311,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return false;
+                    return -1;
                 }
             }
             else if (PyFloat_Check(listElt))
@@ -550,7 +321,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return false;
+                    return -1;
                 }
                 SReal value = PyFloat_AsDouble(listElt);
                 typeinfo->setScalarValue(editVoidPtr,i,value);
@@ -562,7 +333,7 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
                 {
                     // type mismatch
                     PyErr_BadArgument();
-                    return false;
+                    return -1;
                 }
                 char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
                 typeinfo->setTextValue(editVoidPtr,i,str);
@@ -571,81 +342,30 @@ static bool SetDataValuePythonList(BaseData* data, PyObject* args,
             {
                 msg_warning("SetDataValuePython") << "Lists not yet supported...";
                 PyErr_BadArgument();
-                return false;
+                return -1;
 
             }
         }
         data->endEditVoidPtr();
-        return true;
+        return 0;
     }
 
     // no idea whether this is reachable
     PyErr_BadArgument();
-    return false;
+    return -1;
 }
 
 
 
-bool SetDataValuePython(BaseData* data, PyObject* args)
+int SetDataValuePython(BaseData* data, PyObject* args)
 {
-    // de quel type est args ?
-    const bool isInt = PyInt_Check(args);
-    const bool isScalar = PyFloat_Check(args);
-    const bool isString = PyString_Check(args);
-    const bool isList = PyList_Check(args);
-    
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-    const bool valid = (typeinfo && typeinfo->ValidInfo());
-    
-    const int rowWidth = valid ? typeinfo->size() : 1;
-    const int nbRows = valid ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
 
-    
-    if ( Data<sofa::helper::vector<LinearSpring<SReal> > >*ptr =
-         dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
-    {
-        // who uses linear springs anyways lol
-        return SetDataValuePythonVectorLinearSpring(data, args, ptr);
-    }
+    // What is args' type ?
 
 
-    if (isInt)
+    // string
+    if (PyString_Check(args))
     {
-        // it's an int
-
-        if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
-        {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return false;
-        }
-        long value = PyInt_AsLong(args);
-        void* editVoidPtr = data->beginEditVoidPtr();
-        if (typeinfo->Scalar())
-            typeinfo->setScalarValue(editVoidPtr,0,(SReal)value); // cast int to float
-        else
-            typeinfo->setIntegerValue(editVoidPtr,0,value);
-        data->endEditVoidPtr();
-        return true;
-    }
-    else if (isScalar)
-    {
-        // it's a scalar
-        if (rowWidth*nbRows<1 || !typeinfo->Scalar())
-        {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return false;
-        }
-        SReal value = PyFloat_AsDouble(args);
-        void* editVoidPtr = data->beginEditVoidPtr();
-        typeinfo->setScalarValue(editVoidPtr,0,value);
-        data->endEditVoidPtr();
-        return true;
-    }
-    else if (isString)
-    {
-        // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
 
         if( strlen(str)>0u && str[0]=='@' ) // DataLink
@@ -657,16 +377,76 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         {
             data->read(str);
         }
-        return true;
+        return 0;
     }
-    else if (isList)
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    const bool valid = (typeinfo && typeinfo->ValidInfo());
+
+    const int rowWidth = valid ? typeinfo->size() : 1;
+    const int nbRows = valid ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
+
+
+    // int
+    if (PyInt_Check(args))
+    {
+        if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
+        {
+            // type mismatch or too long list
+            PyErr_BadArgument();
+            return -1;
+        }
+        long value = PyInt_AsLong(args);
+        void* editVoidPtr = data->beginEditVoidPtr();
+        if (typeinfo->Scalar())
+            typeinfo->setScalarValue(editVoidPtr,0,(SReal)value); // cast int to float
+        else
+            typeinfo->setIntegerValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
+        return 0;
+    }
+
+
+    // scalar
+    if (PyFloat_Check(args))
+    {
+        if (rowWidth*nbRows<1 || !typeinfo->Scalar())
+        {
+            // type mismatch or too long list
+            PyErr_BadArgument();
+            return -1;
+        }
+        SReal value = PyFloat_AsDouble(args);
+        void* editVoidPtr = data->beginEditVoidPtr();
+        typeinfo->setScalarValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
+        return 0;
+    }
+
+
+    // list
+    if ( PyList_Check(args))
     {
         return SetDataValuePythonList(data, args, rowWidth, nbRows);
     }
 
-    // bad luck yo
-    PyErr_BadArgument();    
-    return false;
+
+
+    // BaseData
+    if( BaseData* targetData = dynamic_cast<BaseData*>(((PySPtr<BaseData>*)args)->object.get()) )
+    {
+        // TODO improve data to data copy
+        SP_MESSAGE_WARNING( "Data to Data copy is using string serialization for now" );
+        data->read( targetData->getValueString() );
+        return 0;
+    }
+
+
+
+    // bad luck
+    SP_MESSAGE_ERROR( "argument type not supported" )
+    PyErr_BadArgument();
+    return -1;
 }
 
 
@@ -680,13 +460,7 @@ SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
-    if (SetDataValuePython(data,args))
-        return 0;   // OK
-
-
-    SP_MESSAGE_ERROR( "argument type not supported" )
-    PyErr_BadArgument();
-    return -1;
+    return SetDataValuePython(data,args);
 }
 
 // access ONE element of the vector
