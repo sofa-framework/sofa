@@ -16,7 +16,8 @@ namespace forcefield
 
     A simple diagonal Stiffness matrix. Entries are entered in @diagonal.
 
-    @author: Maxime Tournier
+    @author: Matthieu Nesme
+    @date 2017
 
   */
 template<class TDataTypes>
