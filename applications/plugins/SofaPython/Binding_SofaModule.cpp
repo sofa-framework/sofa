@@ -604,11 +604,12 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
                 }
             }
         }
-    }
-    else
-    {
-        SP_MESSAGE_WARNING( "Sofa_loadPlugin: cannot find plugin: " << pluginName );
-        PyErr_BadArgument();
+    } else {
+        std::stringstream ss;
+        ss << "cannot find plugin " << pluginName;
+
+        SP_MESSAGE_WARNING(ss.str());
+        PyErr_SetString(PyExc_EnvironmentError, ss.str().c_str());
         return NULL;
     }
 
