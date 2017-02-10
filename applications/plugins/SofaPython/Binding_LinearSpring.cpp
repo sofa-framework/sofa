@@ -32,7 +32,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     return PyInt_FromLong(obj->m1);
 }
@@ -43,7 +43,7 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index1 %d\n",(int)PyInt_AsLong(args));
     obj->m1=PyInt_AsLong(args);
@@ -56,7 +56,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyInt_FromLong(obj->m2);
 }
@@ -67,7 +67,7 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Index2 %d\n",(int)PyInt_AsLong(args));
     obj->m2=PyInt_AsLong(args);
@@ -80,7 +80,7 @@ extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->ks);
 }
@@ -91,7 +91,7 @@ extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Ks %f\n",(float)PyFloat_AsDouble(args));
     obj->ks=PyFloat_AsDouble(args);
@@ -105,7 +105,7 @@ extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->kd);
 }
@@ -116,7 +116,7 @@ extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_Kd %f\n",(float)PyFloat_AsDouble(args));
     obj->kd=PyFloat_AsDouble(args);
@@ -130,7 +130,7 @@ extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->initpos);
 }
@@ -141,7 +141,7 @@ extern "C" int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
 //    printf("***** DBG LinearSpring_setAttr_L %f\n",(float)PyFloat_AsDouble(args));
     obj->initpos=PyFloat_AsDouble(args);
