@@ -77,13 +77,13 @@ bool SceneCreator_test::createCubeSuccess()
     // Check MecaObj
     std::vector<MechanicalObject3*> mecaObjs;
     node->get<MechanicalObject3>(&mecaObjs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(mecaObjs.size(), 1);
+    EXPECT_EQ(mecaObjs.size(), 1u);
 
 
     // check Grid
     std::vector<RegularGridTopology*> grids;
     node->get<RegularGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     RegularGridTopology* grid = grids[0];
     EXPECT_NE(grid->getNbPoints(), 0);
@@ -93,7 +93,7 @@ bool SceneCreator_test::createCubeSuccess()
     // check FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
@@ -114,12 +114,12 @@ bool SceneCreator_test::createRigidCubeSuccess()
     // check Grid
     std::vector<RegularGridTopology*> grids;
     node->get<RegularGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     // check No FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(FEMs.size(), 0);
+    EXPECT_EQ(FEMs.size(), 0u);
 
     return true;
 }
@@ -172,13 +172,13 @@ bool SceneCreator_test::createCylinderSuccess()
     // Check MecaObj
     std::vector<MechanicalObject3*> mecaObjs;
     node->get<MechanicalObject3>(&mecaObjs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(mecaObjs.size(), 1);
+    EXPECT_EQ(mecaObjs.size(), 1u);
 
 
     // check Grid
     std::vector<CylinderGridTopology*> grids;
     node->get<CylinderGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     CylinderGridTopology* grid = grids[0];
     EXPECT_NE(grid->getNbPoints(), 0);
@@ -188,7 +188,7 @@ bool SceneCreator_test::createCylinderSuccess()
     // check FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
@@ -210,12 +210,12 @@ bool SceneCreator_test::createRigidCylinderSuccess()
     // check Grid
     std::vector<CylinderGridTopology*> grids;
     node->get<CylinderGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     // check No FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(FEMs.size(), 0);
+    EXPECT_EQ(FEMs.size(), 0u);
 
     return true;
 }
@@ -267,12 +267,12 @@ bool SceneCreator_test::createRigidPlaneSuccess()
     // check Grid
     std::vector<RegularGridTopology*> grids;
     node->get<RegularGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), 1u);
 
     // check No FEM
     std::vector<TriangularFEMForceField3*> FEMs;
     node->get<TriangularFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(FEMs.size(), 0);
+    EXPECT_EQ(FEMs.size(), 0u);
 
     return true;
 }
