@@ -38,3 +38,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 ## Install rules for the library; CMake package configurations files
 sofa_create_package(SceneCreator ${SCENECREATOR_VERSION} SceneCreator SceneCreator)
+
+
+## Add example project to use sceneCreator
+add_subdirectory(sceneCreatorExamples)
+
+## Add test project
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    add_subdirectory(SceneCreator_test)
+endif()

@@ -1,27 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -236,7 +230,9 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
 
 
 ////////////////////////////// RichConsoleStyleMessageFormatter Implementation /////////////////////
-RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){}
+RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){
+    m_showFileInfo=false;
+}
 
 void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostream& out)
 {
@@ -262,7 +258,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
 
-    if(m.fileInfo()){
+    if(m_showFileInfo && m.fileInfo()){
         std::stringstream buf;
         std::string emptyspace(psize, ' ') ;
         buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;
