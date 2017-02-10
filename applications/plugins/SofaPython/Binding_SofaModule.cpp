@@ -613,10 +613,8 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
         return NULL;
     }
 
-    Py_RETURN_NONE;
+    return PyString_FromString(path.c_str());
 }
-
-
 
 
 // Methods of the module
