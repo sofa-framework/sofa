@@ -556,6 +556,13 @@ const defaulttype::BaseMatrix* CompliantMapping<TOut (T...) >::getK() {
     else return nullptr;
 };
 
+template<class TOut, class ... T>
+void CompliantMapping<TOut (T...) >::assemble_gs(geometric_type& /*gs*/,
+                                                 deriv_view<TOut> /*out_force*/,
+                                                 view< coord_view<T> >... /*in_pos*/) {
+    // default is no gs
+}
+
 
 }
 }

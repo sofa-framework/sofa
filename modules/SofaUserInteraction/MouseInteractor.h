@@ -28,6 +28,7 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/simulation/Node.h>
 
+#include <mutex>
 
 namespace sofa
 {
@@ -59,6 +60,8 @@ struct BodyPicked
 
 class SOFA_USER_INTERACTION_API BaseMouseInteractor : public core::BehaviorModel
 {
+    using mutex_type = std::mutex;
+    mutex_type mutex;
 public:
     SOFA_ABSTRACT_CLASS(BaseMouseInteractor, core::BehaviorModel);
     typedef sofa::component::collision::RayModel MouseCollisionModel;
