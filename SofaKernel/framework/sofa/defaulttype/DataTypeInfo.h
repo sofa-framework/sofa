@@ -1279,11 +1279,6 @@ struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T
     static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
-template<class T, class Compare, class Alloc>
-struct DataTypeInfo< helper::set<T,Compare,Alloc> > : public SetTypeInfo<helper::set<T,Compare,Alloc> >
-{
-    static std::string name() { std::ostringstream o; o << "set<" << DataTypeName<T>::name() << ">"; return o.str(); }
-};
 
 } // namespace defaulttype
 

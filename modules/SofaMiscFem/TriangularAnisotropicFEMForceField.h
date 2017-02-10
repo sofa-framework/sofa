@@ -70,9 +70,6 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
 
-    static const int SMALL = 1;
-    static const int LARGE = 0;
-
     void init();
     void reinit();
     void draw(const core::visual::VisualParams* vparams);

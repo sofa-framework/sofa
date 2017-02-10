@@ -85,8 +85,8 @@ struct AssembledRigidRigidMappingTest : public Mapping_test<Mapping>
         
         typename Mapping::source_type src;
 
-        src.first() = 0;
-        src.second() = offset;
+        src.first = 0;
+        src.second = offset;
 
         // mapping parameters
         edit(this->mapping->source)->push_back(src);

@@ -80,11 +80,11 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 
         switch(ff->method)
         {
-        case SMALL :
+        case TriangularFEMForceField<DataTypes>::SMALL :
             ff->initSmall(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex, a, b, c);
             break;
-        case LARGE :
+        case TriangularFEMForceField<DataTypes>::LARGE :
             ff->initLarge(triangleIndex,a,b,c);
             ff->computeMaterialStiffness(triangleIndex, a, b, c);
             break;

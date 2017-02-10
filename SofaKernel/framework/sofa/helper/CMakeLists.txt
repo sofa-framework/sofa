@@ -73,6 +73,7 @@ set(HEADER_FILES
     list.h
     map.h
     map_ptr_stable_compare.h
+    pair.h
     polygon_cube_intersection/polygon_cube_intersection.h
     polygon_cube_intersection/vec.h
     proximity.h
@@ -98,6 +99,7 @@ set(HEADER_FILES
     system/thread/debug.h
     system/thread/thread_specific_ptr.h
     system/FileMonitor.h
+    system/FileRepository.h
     vector.h
     vectorData.h
     vectorLinks.h
@@ -180,6 +182,7 @@ set(SOURCE_FILES
     system/thread/CTime.cpp
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
+    system/FileRepository.cpp
     vector.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
@@ -217,11 +220,6 @@ endif()
 if(Boost_thread_FOUND)
     list(APPEND HEADER_FILES system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
-endif()
-
-if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
-    list(APPEND HEADER_FILES system/FileRepository.h)
-    list(APPEND SOURCE_FILES system/FileRepository.cpp)
 endif()
 
 if(NOT SOFA_NO_OPENGL)

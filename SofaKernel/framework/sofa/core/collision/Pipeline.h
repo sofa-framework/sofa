@@ -111,7 +111,7 @@ public:
     const NarrowPhaseDetection *getNarrowPhaseDetection() const;
 
     /// get the set of response available with the current collision pipeline
-    virtual helper::set< std::string > getResponseList() const=0;
+    virtual std::set< std::string > getResponseList() const=0;
 protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;

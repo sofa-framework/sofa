@@ -55,25 +55,33 @@ void PipelineImpl::init()
 {
     simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
     if(root == NULL) return;
+
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
     intersectionMethod = (intersectionMethods.empty() ? NULL : intersectionMethods[0]);
+
     broadPhaseDetections.clear();
     root->getTreeObjects<BroadPhaseDetection>(&broadPhaseDetections);
     broadPhaseDetection = (broadPhaseDetections.empty() ? NULL : broadPhaseDetections[0]);
+
     narrowPhaseDetections.clear();
     root->getTreeObjects<NarrowPhaseDetection>(&narrowPhaseDetections);
     narrowPhaseDetection = (narrowPhaseDetections.empty() ? NULL : narrowPhaseDetections[0]);
+
     contactManagers.clear();
     root->getTreeObjects<ContactManager>(&contactManagers);
     contactManager = (contactManagers.empty() ? NULL : contactManagers[0]);
+
     groupManagers.clear();
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
     groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
 
     if (intersectionMethod==NULL)
     {
-        serr <<"no intersectionMethod defined. Using DiscreteIntersection" << sendl;
+        msg_warning(this) <<"no intersection component defined. Switching to the DiscreteIntersection component.  \n"
+                            "To remove this warning, you can add an intersection component to your scene.  \n"
+                            "More details on the collision pipeline can be found at "
+                            "[sofadoc::Collision](https://www.sofa-framework.org/community/doc/using-sofa/specific-components/intersectionmethod/). ";
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
         sofa::core::objectmodel::BaseObject::SPtr obj = sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc);
         intersectionMethod = dynamic_cast<Intersection*>(obj.get());

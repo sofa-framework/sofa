@@ -6,8 +6,10 @@
 ### Environment
 
 
-
 ### New features for users
+* [SceneCreator]
+    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
+
 
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 
@@ -27,6 +29,7 @@
 
 ### Cleaning
 
+- Clean DefaultPipeline.cpp/h (API BREAKING) 
 - Clean the attributes names in BoxROI (API BREAKING)
 
 ### Moved files
@@ -67,7 +70,7 @@ ____________________________________________________________
 - class ExpectMessage and MessageAsATestFailure can be used to check that a component did or didn't send a message and generate a test failure.
 - FileMonitor is now implemented on MacOS & Windows (for live-coding features, for example)
 - RequiredPlugin: modified API to take a list of plugins to load
-
+- Implements the move semantics on sofa::helper::vector 
 
 ### Improvements
 
@@ -102,7 +105,6 @@ ____________________________________________________________
     - add LinearDiagonalCompliance component
     - fix use of VLA in python mappings
     - improve readme file
-
 
 ### Bug Fixes
 

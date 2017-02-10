@@ -970,7 +970,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!

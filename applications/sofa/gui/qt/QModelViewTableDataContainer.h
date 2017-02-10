@@ -860,12 +860,6 @@ public:
 
 
 
-
-template<class T>
-class vector_data_trait < sofa::helper::deque<T> > : public vector_data_trait< std::deque<T> >
-{
-};
-
 } // namespace qt
 
 } // namespace gui

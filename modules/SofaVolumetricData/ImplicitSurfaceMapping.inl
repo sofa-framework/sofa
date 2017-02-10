@@ -51,13 +51,13 @@ void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescript
 {
     this->Inherit::parse(arg);
     if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
-        this->setGridMin(atof(arg->getAttribute("minx","-100.0")),
-                atof(arg->getAttribute("miny","-100.0")),
-                atof(arg->getAttribute("minz","-100.0")));
+        this->setGridMin(arg->getAttributeAsFloat("minx",-100.0),
+                         arg->getAttributeAsFloat("miny",-100.0),
+                         arg->getAttributeAsFloat("minz",-100.0));
     if (arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
-        this->setGridMax(atof(arg->getAttribute("maxx","100.0")),
-                atof(arg->getAttribute("maxy","100.0")),
-                atof(arg->getAttribute("maxz","100.0")));
+        this->setGridMax(arg->getAttributeAsFloat("maxx",100.0),
+                         arg->getAttributeAsFloat("maxy",100.0),
+                         arg->getAttributeAsFloat("maxz",100.0));
 }
 
 template<class Real>

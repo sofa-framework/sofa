@@ -202,7 +202,7 @@ void MeshTetraStuffing::init()
                 helper::vector< collision::TriangleOctree::traceResult > results;
 #ifdef USE_OCTREE
                 octree.octreeRoot->traceAll(origin, direction, results);
-                helper::set< int > tris;
+                std::set< int > tris;
                 for (unsigned int i=0; i<results.size(); ++i)
                 {
                     if (tris.find(results[i].tid) != tris.end())
