@@ -11,4 +11,5 @@ This PR:
 - [ ] does not break API compatibility.
 - [ ] has been reviewed and agreed to be transitional.
 - [ ] is more than 1 week old.
-**Reviewers will merge only if all this checks are true.**
+
+**Reviewers will merge only if all these checks are true.**
