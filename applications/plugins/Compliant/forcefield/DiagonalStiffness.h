@@ -16,7 +16,8 @@ namespace forcefield
 
     A simple diagonal Stiffness matrix. Entries are entered in @diagonal.
 
-    @author: Maxime Tournier
+    @author: Matthieu Nesme
+    @date 2017
 
   */
 template<class TDataTypes>
@@ -49,6 +50,8 @@ public:
 
     /// Return a pointer to the Stiffness matrix
     virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
+
+    using Inherit1::addKToMatrix;
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
 

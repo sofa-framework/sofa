@@ -53,7 +53,7 @@ PyObject *GetLinkValuePython(BaseLink* link)
     return PyString_FromString(link->getValueString().c_str());
 }
 
-bool SetLinkValuePython(BaseLink* link, PyObject* args)
+int SetLinkValuePython(BaseLink* link, PyObject* args)
 {
     // only by string for now
 
@@ -63,10 +63,10 @@ bool SetLinkValuePython(BaseLink* link, PyObject* args)
         // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
         link->read(str);
-        return true;
+        return 0;
     }
 
-    return false;
+    return -1;
 }
 
 
