@@ -164,6 +164,8 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
 {
     nbPoints = _nx*_ny*_nz;
     this->d_n.setValue(Vec3i(_nx,_ny,_nz));
+
+    checkGridResolution();
 }
 
 GridTopology::GridTopology( Vec3i np )
@@ -176,10 +178,15 @@ GridTopology::GridTopology( Vec3i np )
 {
     nbPoints = np[0]*np[1]*np[2];
     this->d_n.setValue(np);
+
+    checkGridResolution();
 }
 
 void GridTopology::init()
 {
+    // first check resolution
+    checkGridResolution();
+
     if (d_createTexCoords.getValue())
         this->createTexCoords();
 
@@ -198,12 +205,34 @@ void GridTopology::init()
     Inherit1::init();
 }
 
+void GridTopology::reinit()
+{
+    checkGridResolution();
+}
+
 void GridTopology::setSize(int nx, int ny, int nz)
 {
     if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
     setNbGridPoints();
+
+    checkGridResolution();
+}
+
+void GridTopology::checkGridResolution()
+{
+    const Vec3i& _n = d_n.getValue();
+    if (_n[0] < 2 || _n[1] < 2 || _n[2] < 2)
+    {
+        msg_warning(this) << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
+                             "] is outside the validity range. At least a resolution of 2 is needed in each 3D direction."
+                             " Continuing with default value=[2; 2; 2]."
+                             " Set a valid grid resolution to remove this warning message.";
+        this->d_n.setValue(Vec3i(2,2,2));
+        setNbGridPoints();
+        computePointList();
+    }
 }
 
 void GridTopology::setSize(Vec3i n)

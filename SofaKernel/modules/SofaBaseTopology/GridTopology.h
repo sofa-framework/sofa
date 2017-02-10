@@ -86,12 +86,15 @@ protected:
     /// Method to compute Point list, called if \sa d_computePointList is true at init. Should be overwritten by children.
     virtual void computePointList();
 
+    /// Method that will check current grid resolution, if invalide, will set default value: [2; 2; 2]
+    void checkGridResolution();
+
 public:
     /// BaseObject method should be overwritten by children
     virtual void init();
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit(){}
+    virtual void reinit();
 
 
     /** \brief Set grid resolution in the 3 directions
