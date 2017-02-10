@@ -25,7 +25,7 @@
 
 ### Bug Fixes
 
-
+- [SofaPhysicsAPI] Fix compilation of the project
 
 ### Cleaning
 
