@@ -67,13 +67,17 @@ SOFA_SIMULATION_CORE_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
-    CleanupCheck() {}
-    ~CleanupCheck()
-    {
+    CleanupCheck() {
+        init();
+    }
+    
+    ~CleanupCheck() {
+        cleanup();
         if (simulation::core::isInitialized() && !simulation::core::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaSimulationCore", "sofa::simulation::core::cleanup()");
     }
 } check;
+
 
 } // namespace core
 
