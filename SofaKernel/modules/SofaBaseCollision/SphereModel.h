@@ -188,6 +188,7 @@ public:
     //TODO(dmarchal) guideline de sofa.
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
+    Data< bool > d_showImpostors;
 
 
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
