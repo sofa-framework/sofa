@@ -19,6 +19,16 @@ namespace helper
 namespace io
 {
 
+class SOFA_CIMGPLUGIN_API ImageCImgCreators
+{
+    std::vector<sofa::helper::io::Image::FactoryImage::Creator*> creators;
+public:
+    static std::vector<std::string> cimgSupportedExtensions;
+
+    ImageCImgCreators();
+
+};
+
 class SOFA_CIMGPLUGIN_API ImageCImg : public Image
 {
 public:
