@@ -48,7 +48,7 @@ static const SReal s_null_distance_epsilon = 1e-8;
 
 
 
-/** Maps point positions to length
+/** Maps point positions to the length of the polyline defined by these points and their topology (edges).
 
 @author Benjamin GILLES
   */
