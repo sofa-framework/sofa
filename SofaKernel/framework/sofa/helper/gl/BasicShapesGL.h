@@ -53,6 +53,7 @@ public:
     {
         GLuint VBO;
         GLuint bufferSize;
+        GLint location;
     };
 };
 
@@ -60,7 +61,6 @@ template<class VertexType>
 class BasicShapesGL_Sphere : public BasicShapesGL
 {
     typedef BasicShapesGL Inherit;
-    typedef Inherit::GLBuffers GLBuffers;
 public:
     struct SphereDescription
     {
@@ -101,7 +101,6 @@ template<class VertexType>
 class BasicShapesGL_FakeSphere : public BasicShapesGL
 {
     typedef BasicShapesGL Inherit;
-    typedef Inherit::GLBuffers GLBuffers;
 public:
     BasicShapesGL_FakeSphere();
     virtual ~BasicShapesGL_FakeSphere();
@@ -117,7 +116,6 @@ private:
 
     GLBuffers m_buffer;
     CustomGLBuffer m_radiusBuffer;
-    GLint m_radiusLocation;
 
     GLSLShader* m_shader;
     bool b_isInit;

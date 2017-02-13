@@ -275,7 +275,7 @@ void BasicShapesGL_FakeSphere<VertexType>::init()
         b_isInit = true;
 
         m_shader->TurnOn();
-        m_radiusLocation = m_shader->GetAttributeVariable("a_radius");
+        m_radiusBuffer.location = m_shader->GetAttributeVariable("a_radius");
         m_shader->TurnOff();
 
         glGenBuffers(1, &m_buffer.VBO);
@@ -401,8 +401,8 @@ void BasicShapesGL_FakeSphere<VertexType>::beforeDraw()
     glMatrixMode(GL_MODELVIEW);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_radiusBuffer.VBO);
-    glVertexAttribPointer(m_radiusLocation, 1, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0);
-    glEnableVertexAttribArray(m_radiusLocation);
+    glVertexAttribPointer(m_radiusBuffer.location, 1, GL_FLOAT, GL_FALSE, 0, (char*)NULL + 0);
+    glEnableVertexAttribArray(m_radiusBuffer.location);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer.VBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_buffer.IBO);
@@ -429,7 +429,7 @@ void BasicShapesGL_FakeSphere<VertexType>::afterDraw()
 {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableVertexAttribArray(m_radiusLocation);
+    glDisableVertexAttribArray(m_radiusBuffer.location);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
