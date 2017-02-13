@@ -20,13 +20,15 @@ set(SOURCE_FILES
     DiagonalStiffness_test.cpp
 )
 
-set(PYTHON_FILES
-    python/AffineMultiMapping.py
-    python/Example.py
-    python/GenerateRigid.py
-    python/LambdaPropagation.py
-    python/UniformCompliance.py
-    python/friction.py
+set(PYTHON_FILES    
+    python/scene_AffineMultiMapping.py
+    python/scene_lambda_propagation.py
+    python/scene_UniformCompliance.py
+    python/scene_example.py
+    python/scene_quaternion.py
+    python/test_GenerateRigid.py
+    python/scene_friction.py
+    python/scene_restitution.py
 )
 
 find_package(SofaPython QUIET)
