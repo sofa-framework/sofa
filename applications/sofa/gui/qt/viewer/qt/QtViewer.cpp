@@ -352,8 +352,6 @@ void QtViewer::initializeGL(void)
         //printf("GL initialized\n");
     }
 
-    vparams->drawTool()->init();
-
     // switch to preset view
     resetView();
 }
