@@ -260,13 +260,14 @@ protected:
     node_type::SPtr delta_node;
 
     // TODO correct real type
-    typedef container::MechanicalObject<ResponseDataTypes> delta_dofs_type;
+    typedef core::behavior::MechanicalState<ResponseDataTypes> delta_dofs_type;
     typename delta_dofs_type::SPtr delta_dofs;
 
 
     // the difference mapping used in the delta node (needed by update_node)
     typedef mapping::DifferenceMapping<ResponseDataTypes, ResponseDataTypes> delta_map_type;
     typename delta_map_type::SPtr deltaContactMap;
+    
     typedef mapping::DifferenceMultiMapping<ResponseDataTypes, ResponseDataTypes> delta_multimap_type;
     typename delta_multimap_type::SPtr deltaContactMultiMap;
 
@@ -280,6 +281,10 @@ protected:
     virtual void update_node() = 0;
 
 
+    template<class T>
+    static typename core::behavior::MechanicalState<T>::SPtr make_dofs() {
+        return core::objectmodel::New<container::MechanicalObject< T > >();
+    }
 
     /// @internal
     /// create main node / dof for Compliant Contact
@@ -294,7 +299,7 @@ protected:
         const size_t size = mappedContacts.size();
         assert( size );
 
-        delta_dofs = core::objectmodel::New<delta_dofs_type>();
+        delta_dofs = make_dofs<ResponseDataTypes>();
         delta_dofs->resize( size );
         
 //        delta_dofs->showObject.setValue(true);

@@ -63,7 +63,7 @@ protected:
 
     typename node_type::SPtr contact_node;
 
-    typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
+    typedef core::behavior::MechanicalState<defaulttype::Vec1Types> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
 
     typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
@@ -75,8 +75,9 @@ protected:
     typedef forcefield::UniformCompliance<defaulttype::Vec1Types> compliance_type;
     compliance_type::SPtr compliance;
 
+    // TODO why do we have friction stuff here? this should go elsewhere
     typename node_type::SPtr friction_node;
-    typedef container::MechanicalObject<defaulttype::Vec2Types> friction_dofs_type;
+    typedef core::behavior::MechanicalState<defaulttype::Vec2Types> friction_dofs_type;
     typename friction_dofs_type::SPtr friction_dofs;
     typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_map_type;
     typename friction_map_type::SPtr friction_map;
@@ -124,7 +125,7 @@ protected:
         contact_node->updateSimulationContext();
 
         // 1d contact dofs
-        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = this->template make_dofs<defaulttype::Vec1Types>();
         contact_dofs->resize( size );
         contact_node->addObject( contact_dofs.get() );
 
@@ -190,7 +191,7 @@ protected:
         friction_node->updateSimulationContext();
 
         // 2d friction dofs
-        friction_dofs = sofa::core::objectmodel::New<friction_dofs_type>();
+        friction_dofs = this->template make_dofs<defaulttype::Vec2Types>();
         friction_dofs->resize( size );
         friction_node->addObject( friction_dofs.get() );
 
