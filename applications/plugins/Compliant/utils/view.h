@@ -35,3 +35,11 @@ public:
     const T* data() const{ return m_data; }    
 };
     
+
+
+template<class U>
+using coord_view = view< typename U::Coord >;
+
+template<class U>
+using deriv_view = view< typename U::Deriv >;
+

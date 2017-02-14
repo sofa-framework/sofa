@@ -30,6 +30,8 @@ template<class T>
 class CompliantMapping;
 
 
+
+
 template<class TOut, class ... T>
 class CompliantMapping< TOut (T...) > : public core::BaseMapping {
 protected:
@@ -51,18 +53,10 @@ protected:
     using geometric_type = linearsolver::EigenBaseSparseMatrix<SReal>;
     geometric_type geometric;
 
-
     // helper types
     template<std::size_t I>
     using input_type = typename std::tuple_element<I, std::tuple<T...> >::type;
     
-    template<class U>
-    using coord_view = view< typename U::Coord >;
-
-    template<class U>
-    using deriv_view = view< typename U::Deriv >;
-    
-
     // input position view
     std::tuple< std::vector< coord_view<T> >... > in_pos;
 
