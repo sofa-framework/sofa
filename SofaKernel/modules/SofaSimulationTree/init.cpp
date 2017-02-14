@@ -67,19 +67,13 @@ SOFA_SIMULATION_TREE_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
-    CleanupCheck() {
-        init();
-    }
-
-    ~CleanupCheck() {
-        cleanup();
+    CleanupCheck() {}
+    ~CleanupCheck()
+    {
         if (simulation::tree::isInitialized() && !simulation::tree::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaSimulationTree", "sofa::simulation::tree::cleanup()");
     }
-    
 } check;
-
-
 
 } // namespace tree
 
