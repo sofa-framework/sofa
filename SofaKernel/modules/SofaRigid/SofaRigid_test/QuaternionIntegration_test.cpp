@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-/* Francois Faure, 2013 */
 #include <SofaTest/Mapping_test.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -46,7 +45,7 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
     QuaternionIntegrationTest()
         : dt(1) {
 
-        deriv.getVOrientation()[1] = 1;
+        deriv = data_types::randomDeriv(0, M_PI / 2);        
 
         // time integration
         coord += deriv * dt;
@@ -63,7 +62,7 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
         // std::clog << expected_angle << " " << angle << std::endl;
         
         // child coordinates given directly in parent frame
-        ASSERT_TRUE(this->isSmall(expected_angle - angle));
+        ASSERT_TRUE(this->isSmall(expected_angle - angle, 10));
     }
 
 };
