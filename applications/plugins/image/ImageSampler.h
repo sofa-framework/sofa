@@ -122,11 +122,18 @@ struct ImageSamplerSpecialization<defaulttype::Image<T>>
                         if(atcorners) pos[nb]=Coord(x-0.5,y-0.5,z-0.5);
                         else pos[nb]=Coord(x,y,z);
                         // edges
-                        if(x) if(img(x-1,y,z)) e.push_back(Edge(nb-1,nb));
-                        if(y) if(img(x,y-1,z)) e.push_back(Edge(pLine(x),nb));
-                        if(z) if(img(x,y,z-1)) e.push_back(Edge(pPlane(x,y),nb));
+                        if(x) if(img(x-1,y,z))
+                            if(!atcorners || inimg(x-1,y-1,z-1) || inimg(x-1,y,z-1) || inimg(x-1,y-1,z) || inimg(x-1,y,z)) // check that edge is surrounded by at least one non-empty voxel (corner method)
+                                e.push_back(Edge(nb-1,nb));
+                        if(y) if(img(x,y-1,z))
+                            if(!atcorners || inimg(x-1,y-1,z-1) || inimg(x,y-1,z-1) || inimg(x-1,y-1,z) || inimg(x,y-1,z)) // check that edge is surrounded by at least one non-empty voxel (corner method)
+                                e.push_back(Edge(pLine(x),nb));
+                        if(z) if(img(x,y,z-1))
+                            if(!atcorners || inimg(x-1,y-1,z-1) || inimg(x-1,y,z-1) || inimg(x,y-1,z-1) || inimg(x,y,z-1)) // check that edge is surrounded by at least one non-empty voxel (corner method)
+                                e.push_back(Edge(pPlane(x,y),nb));
                         // hexa
                         if(x && y && z) if(img(x-1,y,z) && img(x,y-1,z) && img(x,y,z-1) && img(x-1,y-1,z) && img(x-1,y,z-1)  && img(x,y-1,z-1)   && img(x-1,y-1,z-1) )
+                            if(!atcorners || inimg(x-1,y-1,z-1)) // check that input pixel is not empty for corner method (to avoid elements between non-empty voxels)
                                 h.push_back(Hexa(nb,pLine(x),pLine(x-1),nb-1,pPlane(x,y),pPlane(x,y-1),pPlane(x-1,y-1),pPlane(x-1,y) ));
 
                         nLine(x)=nb; nPlane(x,y)=nb;
