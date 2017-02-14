@@ -82,7 +82,7 @@ protected:
         // node->addChild( delta.node.get() );
 
         // TODO maybe remove this mapping level
-        contact_node = node_type::create( this->getName() + "_contact_frame" );
+        contact_node = node_type::create("");
 
         this->delta_node->addChild( contact_node.get() );
 

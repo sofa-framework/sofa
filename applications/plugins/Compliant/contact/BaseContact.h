@@ -286,7 +286,7 @@ protected:
     /// as a differencemapping
     void make_delta() {
 
-        delta_node = node_type::create( this->getName() + "_delta" );
+        delta_node = node_type::create("");
 
         // TODO vec3types according to the types in interaction !
 
@@ -295,7 +295,6 @@ protected:
         assert( size );
 
         delta_dofs = core::objectmodel::New<delta_dofs_type>();
-        delta_dofs->setName( this->model2->getName() + "_-_" + this->model1->getName()  );
         delta_dofs->resize( size );
         
 //        delta_dofs->showObject.setValue(true);
@@ -312,8 +311,6 @@ protected:
 
             copyPairs( *deltaContactMap->pairs.beginEdit() );
             deltaContactMap->pairs.endEdit();
-
-            deltaContactMap->setName( "delta_mapping" );
 
             delta_node->addObject( deltaContactMap.get() );
 
