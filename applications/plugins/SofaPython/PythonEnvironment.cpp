@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -104,6 +101,13 @@ try:\n\
 except:\n\
     pass");
 
+
+    // If the script directory is not available (e.g. if the interpreter is invoked interactively
+    // or if the script is read from standard input), path[0] is the empty string,
+    // which directs Python to search modules in the current directory first.
+    PyRun_SimpleString(std::string("sys.path.insert(0,\"\")").c_str());
+
+
     // Add the paths to the plugins' python modules to sys.path.  Those paths
     // are read from all the files in 'etc/sofa/python.d'
     std::string confDir = Utils::getSofaPathPrefix() + "/etc/sofa/python.d";
@@ -132,6 +136,8 @@ except:\n\
                 SP_MESSAGE_WARNING("no such directory: '" + path + "'");
         }
     }
+
+    PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
 }
 
 void PythonEnvironment::Release()
@@ -144,7 +150,9 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
     static std::set<std::string> addedPath;
     if (addedPath.find(path)==addedPath.end()) {
-        PyRun_SimpleString(std::string("sys.path.insert(0,\""+path+"\")").c_str());
+        // note not to insert at first 0 place
+        // an empty string must be at first so modules can be found in the current directory first.
+        PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
         SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
         addedPath.insert(path);
     }
@@ -210,7 +218,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 
 // some basic RAII stuff to handle init/termination cleanly
   namespace {
-	
+
     struct raii {
       raii() {
           // initialization is done when loading the plugin
@@ -222,7 +230,7 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
       ~raii() {
         PythonEnvironment::Release();
       }
-	  
+
     };
 
     static raii singleton;
@@ -266,13 +274,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 //    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
 
-    // temp: directory always added to environment;
-    // TODO: check if the path is already set to this directory...
-
-    // append current path to Python module search path...
-    std::string commandString = "sys.path.append(\""+dir+"\")";
-
-//    SP_MESSAGE_INFO( commandString.c_str() )
+    //    SP_MESSAGE_INFO( commandString.c_str() )
 
     if(!arguments.empty())
     {
@@ -299,12 +301,11 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     //  Py_BEGIN_ALLOW_THREADS
 
     PyRun_SimpleString("import sys");
-    PyRun_SimpleString(commandString.c_str());
 
     // Load the scene script
-	char* pythonFilename = strdup(filename);
+    char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-	free(pythonFilename);
+    free(pythonFilename);
 
     if( !scriptPyFile )
     {
@@ -315,10 +316,10 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-	std::string backupFileName;
+    std::string backupFileName;
     PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-	if(backupFileObject)
-		backupFileName = PyString_AsString(backupFileObject);
+    if(backupFileObject)
+        backupFileName = PyString_AsString(backupFileObject);
 
     PyObject* newFileObject = PyString_FromString(filename);
     PyDict_SetItemString(pDict, "__file__", newFileObject);

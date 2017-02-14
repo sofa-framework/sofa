@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -36,11 +33,20 @@
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <math.h>
-#include <boost/math/special_functions/erf.hpp>
 
 #include <iostream>
 #include <fstream>
+
+
+#if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
+   #include <boost/math/special_functions/erf.hpp>
+   #define ERFC(x) boost::math::erfc(x)
+#else
+   #define ERFC(x) std::erfc(x)
+#endif
+
+
+
 
 namespace sofa {
 
@@ -111,7 +117,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(sceneFilename.c_str()));
+        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
 
     }
 
@@ -171,7 +177,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * boost::math::erfc( temp );
+        theorX[0] = 1.0 * ERFC( temp );
     }
 
 
@@ -212,5 +218,7 @@ TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 
 
 } // namespace sofa
+
+#undef ERFC
 
 #endif /* SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H */

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(Flexible)
 
 set(FLEXIBLE_MAJOR_VERSION 0)
@@ -70,6 +70,7 @@ set(HEADER_FILES
     quadrature/BaseGaussPointSampler.h
     quadrature/GaussPointContainer.h
     quadrature/TopologyGaussPointSampler.h
+    quadrature/GaussPointSmoother.h
     shapeFunction/BarycentricShapeFunction.h
     shapeFunction/BaseShapeFunction.h
     shapeFunction/BezierShapeFunction.h
@@ -92,6 +93,8 @@ set(HEADER_FILES
     strainMapping/PrincipalStretchesMapping.h
     strainMapping/RelativeStrainJacobianBlock.h
     strainMapping/RelativeStrainMapping.h
+    strainMapping/LinearStrainJacobianBlock.h
+    strainMapping/LinearStrainMapping.h
     types/AffineComponents.h
     types/AffineTypes.h
     types/ComponentSpecializations.cpp.inl
@@ -147,6 +150,7 @@ set(SOURCE_FILES
     quadrature/BaseGaussPointSampler.cpp
     quadrature/GaussPointContainer.cpp
     quadrature/TopologyGaussPointSampler.cpp
+    quadrature/GaussPointSmoother.cpp
     shapeFunction/BarycentricShapeFunction.cpp
     shapeFunction/BaseShapeFunction.cpp
     shapeFunction/BezierShapeFunction.cpp
@@ -160,6 +164,7 @@ set(SOURCE_FILES
     strainMapping/PlasticStrainMapping.cpp
     strainMapping/PrincipalStretchesMapping.cpp
     strainMapping/RelativeStrainMapping.cpp
+    strainMapping/LinearStrainMapping.cpp
     types/AffineComponents.cpp
     types/DeformationGradientTypes.cpp
     types/QuadraticComponents.cpp
@@ -208,6 +213,9 @@ else()
 endif()
 
 
+set(README_FILES README_Flexible.txt)
+
+
 ## Flexible/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/Flexible/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "include/Flexible")
@@ -215,7 +223,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Flexible/config.h" DESTINATION "inclu
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
 set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_FLEXIBLE")
@@ -246,9 +254,9 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
 endif()
 
 
-if(UNIX)
-    target_link_libraries(${PROJECT_NAME} pthread)
-endif()
+#if(UNIX)
+#    target_link_libraries(${PROJECT_NAME} pthread)
+#endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -263,7 +271,7 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 ## Install rules for the library; CMake package configurations files
-sofa_create_package(Flexible ${FLEXIBLE_VERSION} Flexible Flexible)
+sofa_create_package(${PROJECT_NAME} ${FLEXIBLE_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})

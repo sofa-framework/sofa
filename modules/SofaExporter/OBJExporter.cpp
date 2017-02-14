@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -59,8 +56,6 @@ int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
 
 OBJExporter::OBJExporter()
     : stepCounter(0)
-    , outfile(NULL)
-    , mtlfile(NULL)
     , objFilename( initData(&objFilename, "filename", "output OBJ file name"))
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
@@ -72,10 +67,6 @@ OBJExporter::OBJExporter()
 
 OBJExporter::~OBJExporter()
 {
-    if (outfile)
-        delete outfile;
-    if (mtlfile)
-        delete mtlfile;
 }
 
 void OBJExporter::init()
@@ -97,20 +88,21 @@ void OBJExporter::writeOBJ()
     }
     if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
         filename += ".obj";
-    outfile = new std::ofstream(filename.c_str());
+    std::ofstream outfile(filename.c_str());
 
     std::string mtlfilename = objFilename.getFullPath();
     if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
         mtlfilename += ".mtl";
     else
         mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
-    mtlfile = new std::ofstream(mtlfilename.c_str());
-    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),outfile, mtlfile);
+    std::ofstream mtlfile(mtlfilename.c_str());
+    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
     context->executeVisitor(&exportOBJ);
-    outfile->close();
-    mtlfile->close();
+    outfile.close();
+    mtlfile.close();
 
-    sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
+    if( f_printLog.getValue() )
+        sout << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() << sendl;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
@@ -142,7 +134,7 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         }
     }
 
-    if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
+    if ( simulation::AnimateEndEvent::checkEventType(event))
     {
         if (maxStep == 0 || !activateExport) return;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -87,7 +84,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     core::MultiMapping<In,Out>* mapping; ///< the mapping to be tested
     helper::vector<InDOFs*>  inDofs;  ///< mapping input
     OutDOFs* outDofs; ///< mapping output
-    simulation::Node* root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Node::SPtr child; ///< Child node, created by setupScene
     helper::vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
@@ -106,7 +103,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     */
     void setupScene(int numParents)
     {
-        root = simulation->createNewGraph("root").get();
+        root = simulation->createNewGraph("root");
 
         /// Child node
         child = root->createChild("childNode");
@@ -170,7 +167,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         /// Init
-        sofa::simulation::getSimulation()->init(root);
+        sofa::simulation::getSimulation()->init(root.get());
 
         /// apply the mapping
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());

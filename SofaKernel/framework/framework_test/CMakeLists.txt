@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaFramework_test)
 
@@ -6,17 +6,29 @@ set(SOURCE_FILES
     core/loader/MeshLoader_test.cpp
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
+    core/objectmodel/BaseObjectDescription_test.cpp
     core/DataEngine_test.cpp
+    core/TrackedData_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp
+    helper/SVector_test.cpp
+    helper/gl/GLSLShader_test.cpp
+    helper/io/MeshOBJ_test.cpp
+    helper/io/MeshSTL_test.cpp
+    helper/system/FileMonitor_test.cpp
+    helper/system/FileRepository_test.cpp
     helper/system/FileSystem_test.cpp
     helper/system/atomic_test.cpp
     helper/logging/logging_test.cpp
     main.cpp
 )
+
+if(SOFA_HAVE_PNG)
+    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
+endif()
 
 include_directories(${gtest_SOURCE_DIR}/include)
 

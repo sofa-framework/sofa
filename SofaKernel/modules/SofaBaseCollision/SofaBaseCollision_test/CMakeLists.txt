@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaBaseCollision_test)
 
@@ -6,6 +6,7 @@ set(SOURCE_FILES
     BroadPhase_test.cpp
     OBB_test.cpp
     Sphere_test.cpp
+    DefaultPipeline_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

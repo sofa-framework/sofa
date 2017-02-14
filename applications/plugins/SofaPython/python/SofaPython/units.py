@@ -155,19 +155,6 @@ def force_to_SI( f, length_unit=None, mass_unit=None, time_unit=None ):
     time_unit = time_unit or local_time
     return f * length_unit * mass_unit / time_unit / time_unit
 
-# C = N.m = kg.m2/s2
-def torque_from_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
-    length_unit = length_unit or local_length
-    mass_unit = mass_unit or local_mass
-    time_unit = time_unit or local_time
-    return c / length_unit / length_unit / mass_unit * time_unit * time_unit
-
-def torque_to_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
-    length_unit = length_unit or local_length
-    mass_unit = mass_unit or local_mass
-    time_unit = time_unit or local_time
-    return c * length_unit * length_unit * mass_unit / time_unit / time_unit
-
 # Pa = N/m2 = kg/(m.s2)
 def pressure_from_SI( p, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
@@ -182,18 +169,25 @@ def pressure_to_SI( p, length_unit=None, mass_unit=None, time_unit=None ):
     return p * mass_unit / length_unit / time_unit / time_unit
 
 
-# J = N.m = kg.m2/s2
+# J = N.m = kg.m2/s2 = Pa.m3 = W.s
 def energy_from_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return e / length_unit / length_unit / mass_unit * time_unit * time_unit
 
+def torque_from_SI( t, length_unit=None, mass_unit=None, time_unit=None ):
+    return energy_from_SI( t, length_unit, mass_unit, time_unit )
+
+
 def energy_to_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return e * length_unit * length_unit * mass_unit / time_unit / time_unit
+
+def torque_to_SI( t, length_unit=None, mass_unit=None, time_unit=None ):
+    return energy_to_SI( t, length_unit, mass_unit, time_unit )
 
 # I = kg.m2
 def inertia_from_SI( i, length_unit=None, mass_unit=None ):
@@ -216,6 +210,24 @@ def damping_to_SI(d, mass_unit=None, time_unit=None):
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return d * mass_unit / time_unit
+
+# rad/s
+def angularvelocity_from_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v * time_unit
+
+def angularvelocity_to_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v / time_unit
+
+# rad/s2
+def angularacceleration_from_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v * time_unit * time_unit
+
+def angularacceleration_to_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v / (time_unit * time_unit )
 
 # MATERIAL
 

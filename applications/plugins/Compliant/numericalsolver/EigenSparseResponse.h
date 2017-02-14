@@ -59,7 +59,8 @@ protected:
 
 
 /// Solving the dynamics equation using a LDL^T Cholesky decomposition
-/// Working for any symmetric positive semidefinite matrix
+/// Working for any symmetric positive (semi)definite matrix
+/// @warning this sparse implementation from Eigen does not handle semidefinite matrices (only definite ones)
 /// (basically for any regular mechanical systems including rigids and deformables,
 /// it is why it is used by default)
 typedef Eigen::SimplicialLDLT< AssembledSystem::cmat > LDLTSparseLinearSolver;
@@ -68,6 +69,21 @@ class SOFA_Compliant_API LDLTResponse : public EigenSparseResponse< LDLTSparseLi
 public:
     SOFA_CLASS(LDLTResponse,SOFA_TEMPLATE2(EigenSparseResponse,LDLTSparseLinearSolver,true));
 };
+
+
+
+/// Solving the dynamics equation using a LLT Cholesky decomposition
+/// Working for any symmetric positive definite matrix
+/// (basically for any regular mechanical systems including rigids and deformables,
+/// it is why it is used by default)
+/// It does not handle semidefinite matrices but should be more efficient than LDLT
+typedef Eigen::SimplicialLLT< AssembledSystem::cmat > LLTSparseLinearSolver;
+class SOFA_Compliant_API LLTResponse : public EigenSparseResponse< LLTSparseLinearSolver,true>
+{
+public:
+    SOFA_CLASS(LLTResponse,SOFA_TEMPLATE2(EigenSparseResponse,LLTSparseLinearSolver,true));
+};
+
 
 
 /// Solving the dynamics equation using a LU factorization

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -87,6 +84,28 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
                 my_tinfo.shapeVector[j]= -cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/volume;
         }
 
+        /// compute the vertex stiffness of the linear elastic material, needed for addKToMatrix
+        for(j=0; j<4; ++j)
+        {
+            // the linear stiffness matrix using shape vectors and Lame coefficients
+            val=mu*dot(my_tinfo.shapeVector[j],my_tinfo.shapeVector[j]);
+            for(m=0; m<3; ++m)
+            {
+                for(n=m; n<3; ++n)
+                {
+                    my_tinfo.linearDfDxDiag[j][m][n]=lambda*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m]+
+                            mu*my_tinfo.shapeVector[j][n]*my_tinfo.shapeVector[j][m];
+
+                    if (m==n)
+                    {
+                        my_tinfo.linearDfDxDiag[j][m][m]+=(Real)val;
+                    } else
+                        my_tinfo.linearDfDxDiag[j][n][m]=my_tinfo.linearDfDxDiag[j][m][n];
+                }
+            }
+            //std::cout << "[ FTCFTetrahedronHandler ] vertex stiffness["<<j<<"]= "<<my_tinfo.linearDfDxDiag[j]<<std::endl;
+        }
+
         /// compute the edge stiffness of the linear elastic material
         for(j=0; j<6; ++j)
         {
@@ -97,7 +116,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
             // store the rest edge vector
             my_tinfo.restEdgeVector[j]=point[l]-point[k];
 
-            // the linear stiffness matrix using shape vectors and Lam� coefficients
+            // the linear stiffness matrix using shape vectors and Lame coefficients
             val=mu*dot(my_tinfo.shapeVector[l],my_tinfo.shapeVector[k]);
             for(m=0; m<3; ++m)
             {
@@ -112,8 +131,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
                     }
                 }
             }
-//						if (tetrahedronIndex==0)
-//			std::cerr<<" edge stiffness["<<j<<"]= "<<my_tinfo.linearDfDx[j]<<std::endl;
+            //std::cout << "[ FTCFTetrahedronHandler ] edge stiffness["<<j<<"]= "<<my_tinfo.linearDfDx[j]<<std::endl;
         }
 		if (ff->decompositionMethod==QR_DECOMPOSITION) {
 			// compute the rotation matrix of the initial tetrahedron for the QR decomposition
@@ -129,7 +147,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 }
 
 template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::FastTetrahedralCorotationalForceField()
-    : edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
+    : pointInfo(initData(&pointInfo, "pointInfo", "Internal point data"))
+    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , _initialPoints(0)
     , updateMatrix(true)
@@ -182,12 +201,18 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
 
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
     edgeInfo.createTopologicalEngine(_topology);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
+
+    helper::vector<PointRestInformation>& pointInf = *(pointInfo.beginEdit());
+    /// prepare to store info in the point array
+    pointInf.resize(_topology->getNbPoints());
+    pointInfo.createTopologicalEngine(_topology);
+    pointInfo.registerTopologicalData();
+    pointInfo.endEdit();
 
     if (_initialPoints.size() == 0)
     {
@@ -220,15 +245,21 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     int i;
     unsigned int j;
 
+    int nbPoints = _topology->getNbPoints();
     int nbEdges=_topology->getNbEdges();
     int nbTetrahedra=_topology->getNbTetrahedra();
 
+    //PointRestInformation *pinfo;
     EdgeRestInformation *einfo;
     TetrahedronRestInformation *tetinfo;
 
     helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
     helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::PointRestInformation>& pointInf = *(pointInfo.beginEdit());
 
+    for (i = 0; i < nbPoints; i++) {
+        pointInf[i].v = i;
+    }
 
     for(i=0; i<nbEdges; i++ )
     {
@@ -247,8 +278,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
 
         for (j=0; j<4; ++j)
         {
-            tetinfo->v[j]=ta[j];
-        }
+            //tetinfo->v[j]=ta[j];
+            tetinfo->pointInfo[j] = &pointInf[ta[j]];
+        }                
+
         for (j=0; j<6; ++j)
         {
             /// store the pointer to the local edge information
@@ -325,7 +358,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 
         for (j=0; j<6; ++j)
         {
-            dp[j]=x[tetinfo->v[edgesInTetrahedronArray[j][1]]]-x[tetinfo->v[edgesInTetrahedronArray[j][0]]];
+            dp[j]=x[tetinfo->pointInfo[edgesInTetrahedronArray[j][1]]->v]-x[tetinfo->pointInfo[edgesInTetrahedronArray[j][0]]->v];
         }
 
         if (decompositionMethod==POLAR_DECOMPOSITION)
@@ -392,7 +425,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
         }
         for (j=0; j<4; ++j)
         {
-            f[tetinfo->v[j]]+=R*force[j];
+            f[tetinfo->pointInfo[j]->v]+=R*force[j];
         }
 
 
@@ -409,6 +442,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
 template <class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
+    std::cout << "[" << this->getName() << "]: calling addDForce " << std::endl;
     VecDeriv& df       = *(datadF.beginEdit());
     const VecCoord& dx =   datadX.getValue()  ;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -484,6 +518,118 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     datadF.endEdit();
 }
 
+template<class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r)
+        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+    else serr<<"addKToMatrix found no valid matrix accessor." << sendl;
+}
+
+
+template<class DataTypes>
+void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal kFactor, unsigned int &offset)
+{
+    std::cout << "[" << this->getName() << "]: calling addKToMatrix " << std::endl;
+    unsigned int j;
+    int i, matCol, matRow;
+    int nbEdges=_topology->getNbEdges();
+    int nbPoints=_topology->getNbPoints();
+    int nbTetrahedra=_topology->getNbTetrahedra();
+
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<PointRestInformation>& pointInf = *(pointInfo.beginEdit());
+
+    TetrahedronRestInformation *tetinfo;
+    EdgeRestInformation *einfo;
+    PointRestInformation *pinfo;
+
+    Mat3x3 tmp;
+
+    if (updateMatrix==true) {
+        /// if not done in addDForce: update off-diagonal blocks ("edges") of each element matrix
+        updateMatrix=false;
+        // reset all edge matrices
+        for(einfo=&edgeInf[0],i=0; i<nbEdges; i++,einfo++ )
+        {
+            einfo->DfDx.clear();
+        }
+
+        for(i=0; i<nbTetrahedra; i++ )
+        {
+            tetinfo=&tetrahedronInf[i];
+
+            for (j=0; j<6; ++j)
+            {
+                einfo=tetinfo->edgeInfo[j];
+                // test if the tetrahedron edge has the same orientation as the global edge
+                tmp=tetinfo->linearDfDx[j]*tetinfo->rotation;
+
+                if (tetinfo->edgeOrientation[j]==1) {
+                    // store the two edge matrices since the stiffness sub-matrix is not symmetric
+                    einfo->DfDx+=tetinfo->rotation.transposed()*tmp;
+                }
+                else {
+                    einfo->DfDx+= tmp.transposed()*tetinfo->rotation;
+                }
+
+            }
+        }
+    }
+
+    /// must update point data since these are not computed in addDForce
+    for (pinfo=&pointInf[0], i=0; i < nbPoints; i++, pinfo++)
+        pinfo->DfDx.clear();
+
+    for(i=0; i<nbTetrahedra; i++ ) {
+        tetinfo=&tetrahedronInf[i];
+        for (j = 0; j < 4; ++j) {
+            pinfo=tetinfo->pointInfo[j];
+            tmp = tetinfo->rotation.transposed() * tetinfo->linearDfDxDiag[j] * tetinfo->rotation;
+            pinfo->DfDx+=tmp;
+        }
+    }
+
+    /// construct the diagonal blocks from point data
+    for (i=0; i<nbPoints; i++) {
+        pinfo = &pointInf[i];
+        int v = pinfo->v;
+
+        for (int m = 0; m < 3; m++) {
+            matRow = offset + 3*v + m;
+            for (int n = 0; n < 3; n++) {
+                matCol = offset + 3*v + n;
+                mat->add(matRow, matCol, -kFactor*pinfo->DfDx[m][n]);
+            }
+        }
+    }
+
+    /// construct the off-diagonal blocks from edge data
+    for(i=0; i<nbEdges; i++ )
+    {
+        einfo=&edgeInf[i];
+
+        int v0=einfo->v[0];
+        int v1=einfo->v[1];
+
+        for (int m = 0; m < 3; m++) {
+            matRow = offset + 3*v0 + m;
+            for (int n = 0; n < 3; n++) {
+                matCol = offset + 3*v1 + n;
+                mat->add(matRow, matCol, -kFactor*einfo->DfDx[n][m]);
+                mat->add(matCol, matRow, -kFactor*einfo->DfDx[n][m]);
+
+            }
+        }
+    }
+
+    tetrahedronInfo.endEdit();
+    edgeInfo.endEdit();
+    pointInfo.endEdit();
+    //std::cout << this->getName() << " M = " << *mat << std::endl;
+}
 
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::updateLameCoefficients()

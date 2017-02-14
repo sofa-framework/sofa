@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 set(SOFA_KERNEL_MODULES_SOURCE_DIR ${SOFA_KERNEL_SOURCE_DIR}/modules)
 set(SOFA_EXT_MODULES_SOURCE_DIR ..)
@@ -20,6 +20,7 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_te
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaComponentBase/SofaComponentBase_test tests/SofaComponentBase)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test tests/SofaBoundaryCondition)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaConstraint/SofaConstraint_test tests/SofaConstraint)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaOpenglVisual/SofaOpenglVisual_test tests/SofaOpenglVisual)
 # add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralDeformable/SofaGeneralDeformable_test tests/SofaGeneralDeformable)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralEngine/SofaGeneralEngine_test tests/SofaGeneralEngine)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralExplicitOdeSolver/SofaGeneralExplicitOdeSolver_test tests/SofaGeneralExplicitOdeSolver)

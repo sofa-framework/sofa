@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 # Check if Qt(4/5) is present
 set(SOFA_HAVE_QT_LIBRARIES 1)
@@ -11,7 +11,7 @@ if(NOT Qt5Core_FOUND)
 endif()
 
 if(SOFA_HAVE_QT_LIBRARIES)
-	sofa_add_application(Modeler Modeler ON)
+        sofa_add_application(Modeler Modeler ON)
 endif()
 
 sofa_add_application(GenerateRigid GenerateRigid)
