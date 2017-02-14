@@ -123,6 +123,28 @@ extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 }
 
 
+extern "C" PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+
+    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    
+    Py_RETURN_NONE;
+}
+
+
+extern "C" PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+
+    // note: the position delta must be set in dx beforehand
+    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    
+    Py_RETURN_NONE;
+}
+
+
+
 
 // TODO inefficient
 // have a look to how to directly bind Eigen sparse matrices
@@ -164,6 +186,8 @@ SP_CLASS_METHOD(BaseMapping,setFrom)
 SP_CLASS_METHOD(BaseMapping,setTo)
 SP_CLASS_METHOD(BaseMapping,apply)
 SP_CLASS_METHOD(BaseMapping,applyJ)
+SP_CLASS_METHOD(BaseMapping,applyJT)
+SP_CLASS_METHOD(BaseMapping,applyDJT)
 SP_CLASS_METHOD(BaseMapping,getJs)
 SP_CLASS_METHODS_END
 
