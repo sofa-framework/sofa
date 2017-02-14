@@ -76,28 +76,22 @@ SOFA_HELPER_API void printLibraryNotCleanedUpWarning(const std::string& library,
               << cleanupFunction << " has never been called, see sofa/helper/init.h)";
 }
 
-
-
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
     CleanupCheck()
     {
-        init();
         // to make sure the static variable is created before this
         // and so will be deleted after (at least in c++11)
         // such as an eventual message is possible during this' destructor
         logging::MessageDispatcher::getHandlers();
-        // max: wth is this supposed to mean?
     }
     ~CleanupCheck()
     {
-        cleanup();
         if (helper::isInitialized() && !helper::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaHelper", "sofa::helper::cleanup()");
     }
 } check;
-
 
 } // namespace helper
 

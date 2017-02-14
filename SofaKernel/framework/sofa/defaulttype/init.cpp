@@ -63,17 +63,13 @@ SOFA_DEFAULTTYPE_API bool isCleanedUp()
 // Detect missing cleanup() call.
 static const struct CleanupCheck
 {
-    CleanupCheck() {
-        init();
-    }
-    
-    ~CleanupCheck() {
-        cleanup();
+    CleanupCheck() {}
+    ~CleanupCheck()
+    {
         if (defaulttype::isInitialized() && !defaulttype::isCleanedUp())
             helper::printLibraryNotCleanedUpWarning("SofaDefaultType", "sofa::defaulttype::cleanup()");
     }
 } check;
-
 
 } // namespace defaulttype
 
