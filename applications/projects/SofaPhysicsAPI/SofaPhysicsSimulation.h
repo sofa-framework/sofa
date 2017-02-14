@@ -15,7 +15,7 @@
 #include <map>
 
 
-class SofaPhysicsSimulation
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsSimulation
 {
 public:
     SofaPhysicsSimulation(bool useGUI_ = false, int GUIFramerate_ = 0);
