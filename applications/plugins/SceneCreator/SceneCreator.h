@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <Eigen/Core>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #ifdef SOFA_HAVE_METIS
 #include <SofaSparseSolver/SparseLDLSolver.h>
@@ -199,6 +200,9 @@ typedef Eigen::VectorXd Vector;
 #else
 typedef Eigen::VectorXf Vector;
 #endif
+
+typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
+typedef Eigen::SparseMatrix<SReal, Eigen::RowMajor> SparseMatrix;
 
 /// Get a state vector from the scene graph. Includes only the independent state values, or also the mapped ones, depending on the flag.
 SOFA_SceneCreator_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
