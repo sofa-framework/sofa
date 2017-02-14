@@ -269,7 +269,7 @@ public:
     /// to convert a BaseTopologyObject-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::topology::BaseTopologyObject* obj)
     {
-        return toPython( s_boundTypes[BaseTopologyObject], obj, &SP_SOFAPYTYPEOBJECT(BaseTopologyObject) );
+        return toPython( s_boundComponents[BaseTopologyObject], obj, &SP_SOFAPYTYPEOBJECT(BaseTopologyObject) );
     }
 
     /// to convert a VisualModel-inherited object to its corresponding pyObject
