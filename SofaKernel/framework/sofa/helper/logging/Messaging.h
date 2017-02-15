@@ -81,6 +81,8 @@
 #define nmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::null()
 
+#define WITH_SOFA_DEVTOOLS 1
+
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef WITH_SOFA_DEVTOOLS

@@ -163,8 +163,7 @@ signals:
 
 protected slots:
     //update the tables of value at each step of the simulation
-    void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
-    void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
+    void clearWarnings() {node->clearWarnings(); messageEdit->clear();}
 
 protected:
     void updateConsole();  //update the console log of warnings and outputs
@@ -175,10 +174,8 @@ protected:
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
 
-    QWidget* outputTab;
-    QTextEdit *logOutputEdit;
-    QWidget *warningTab;
-    QTextEdit *logWarningEdit;
+    QWidget *messageTab;
+    QTextEdit *messageEdit;
 
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;

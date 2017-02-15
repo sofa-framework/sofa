@@ -166,8 +166,6 @@ TEST(LoggingTest, emptyMessage)
 
 
 
-
-
 class MyComponent : public sofa::core::objectmodel::BaseObject
 {
 public:
@@ -186,15 +184,6 @@ public:
         msg_warning(this) << "a warning message" ;
         msg_error(this) << "an error message" ;
     }
-
-    /*void emitMessagesAboveLevel(Message::Type m_messageLevel){
-        msg_info(this) << "an info message" ;
-        msg_warning(this) << "a warning message" ;
-        msg_error(this) < "an error message" ;
-    }*/
-
-
-
 };
 
 TEST(LoggingTest, checkBaseObjectSerr)
@@ -328,9 +317,39 @@ TEST(LoggingTest, checkBaseObjectQueueSize)
     EXPECT_EQ(c.getLoggedMessages().size(), 100u);
 }
 
+TEST(LoggingTest, checkBaseObjectSoutSerr)
+{
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    MyComponent c;
+
+    c.emitSerrSoutMessages();
+
+    /// Well serr message are routed through warning while
+    /// Sout are routed to the Info ones.
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Error}).empty());
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Fatal}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Warning}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Error,
+                                              Message::Warning,
+                                              Message::Fatal}).empty());
+
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Deprecated}).empty());
+    EXPECT_TRUE(c.getLoggedMessagesAsString({Message::Advice}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info}).empty());
+    EXPECT_FALSE(c.getLoggedMessagesAsString({Message::Info,
+                                              Message::Deprecated,
+                                              Message::Advice}).empty());
+
+}
+
 
 #undef MESSAGING_H
-#define WITH_SOFA_DEVTOOLS
+#ifndef WITH_SOFA_DEVTOOLS
+   #define WITH_SOFA_DEVTOOLS
+#endif
 #undef dmsg_info
 #undef dmsg_deprecated
 #undef dmsg_error

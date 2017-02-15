@@ -90,6 +90,8 @@ public:
                 return *this;
             }
 
+            Message getMessage()const { return m_message; }
+
         private:
 
             Message m_message;

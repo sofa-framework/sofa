@@ -43,8 +43,9 @@ namespace percomponentloggingmessagehandler
 
 void PerComponentLoggingMessageHandler::process(Message& m)
 {
-    if(m.componentInfo())
+    if(m.componentInfo()){
         m.componentInfo()->m_component->addMessage(m) ;
+    }
 }
 
 PerComponentLoggingMessageHandler::PerComponentLoggingMessageHandler()

@@ -27,10 +27,15 @@
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include "iconmultinode.xpm"
 #include "iconnode.xpm"
+#include "iconinfo.xpm"
 #include "iconwarning.xpm"
+#include "iconerror.xpm"
 #include "icondata.xpm"
 #include "iconsleep.xpm"
 
+
+#include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::Message ;
 
 namespace sofa
 {
@@ -62,15 +67,15 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
     if (obj->toBaseNode())
     {
         if (obj->toBaseNode()->getContext()->isSleeping())
-		{
-			static QPixmap pixNode((const char**)iconsleep_xpm);
-			return &pixNode;
-		}
-		else
-		{
-			static QPixmap pixNode((const char**)iconnode_xpm);
-			return &pixNode;
-		}
+        {
+            static QPixmap pixNode((const char**)iconsleep_xpm);
+            return &pixNode;
+        }
+        else
+        {
+            static QPixmap pixNode((const char**)iconnode_xpm);
+            return &pixNode;
+        }
         //flags |= 1 << NODE;
     }
     else if (obj->toBaseObject())
@@ -173,7 +178,28 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
     return pixmaps[flags];
 }
 
+void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
+{
+    QPixmap* pix = getPixmap(object);
+    if (pix)
+        item->setIcon(0, QIcon(*pix));
 
+    if (object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0)
+    {
+        static QPixmap pixInfo((const char**)iconinfo_xpm);
+        item->setIcon(0, QIcon(pixInfo));
+    }
+    if (object->countLoggedMessages({Message::Warning})!=0)
+    {
+        static QPixmap pixWarning((const char**)iconwarning_xpm);
+        item->setIcon(0, QIcon(pixWarning));
+    }
+    if (object->countLoggedMessages({Message::Error, Message::Fatal})!=0)
+    {
+        static QPixmap pixError((const char**)iconerror_xpm);
+        item->setIcon(0, QIcon(pixError));
+    }
+}
 
 /*****************************************************************************************************************/
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
@@ -255,19 +281,8 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
             return;
         }
 
-        //item->setDropEnabled(true);
         item->setText(0, child->getName().c_str());
-        if (child->getWarnings().empty())
-        {
-            QPixmap* pix = getPixmap(child);
-            if (pix)
-                item->setIcon(0, QIcon(*pix));
-        }
-        else
-        {
-            static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setIcon(0, QIcon(pixWarning));
-        }
+        setMessageIconFrom(item, child);
 
         item->setExpanded(true);
         items[child] = item;
@@ -325,6 +340,8 @@ void GraphListenerQListView::moveChild(Node* previous, Node* parent, Node* child
     }
 }
 
+
+
 /*****************************************************************************************************************/
 void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObject* object)
 {
@@ -365,19 +382,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
         }
         item->setText(0, name.c_str());
 
-        if (object->getWarnings().empty())
-        {
-            QPixmap* pix = getPixmap(object);
-            if (pix)
-                item->setIcon(0, QIcon(*pix));
-
-        }
-        else
-        {
-            static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setIcon(0, QIcon(pixWarning));
-        }
-
+        setMessageIconFrom(item, object);
 
         items[object] = item;
     }
@@ -469,19 +474,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
         }
         item->setText(0, name.c_str());
 
-        if (slave->getWarnings().empty())
-        {
-            QPixmap* pix = getPixmap(slave);
-            if (pix)
-                item->setIcon(0, QIcon(*pix));
-
-        }
-        else
-        {
-            static QPixmap pixWarning((const char**)iconwarning_xpm);
-            item->setIcon(0, QIcon(pixWarning));
-        }
-
+        setMessageIconFrom(item, slave);
 
         items[slave] = item;
     }
@@ -536,13 +529,13 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
 /*****************************************************************************************************************/
 void GraphListenerQListView::sleepChanged(Node* node)
 {
-	if (items.count(node))
+    if (items.count(node))
     {
         QTreeWidgetItem* item = items[node];
         QPixmap* pix = getPixmap(node);
         if (pix)
             item->setIcon(0, QIcon(*pix));
-	}
+    }
 }
 
 /*****************************************************************************************************************/

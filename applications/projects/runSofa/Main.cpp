@@ -92,6 +92,9 @@ using sofa::helper::logging::ConsoleMessageHandler ;
 #include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
+
 #ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
 #endif // SOFA_HAVE_GLUT_GUI
@@ -315,6 +318,8 @@ int main(int argc, char** argv)
     else{
         msg_warning("") << "Invalid argument ‘" << messageHandler << "‘ for ‘--formatting‘";
     }
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32

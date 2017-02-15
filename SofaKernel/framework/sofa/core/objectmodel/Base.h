@@ -120,6 +120,16 @@ namespace core
 namespace objectmodel
 {
 
+
+/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
+/// Indicate the state of an object.
+enum class ComponentState {
+    Undefined,
+    Valid,
+    Invalid
+};
+
+
 /**
  *  \brief Base class for everything
  *
@@ -333,9 +343,6 @@ public:
 
     /// @}
 
-    /// @name logs
-    ///   Messages and warnings logging
-    /// @{
 
 private:
     /// effective ostringstream for logging
@@ -353,20 +360,28 @@ public:
     /// runs the stream processing
     mutable helper::system::SofaEndl<Base> sendl;
 
-
-    const std::string& getWarnings() const;
-    const std::string& getOutputs() const;
-
-    void clearWarnings();
-    void clearOutputs();
+    ////////////// DEPRECATED /////////////////////////////////////////////////////////////////////////////
+    const std::string getWarnings() const;  /// use getLoggedMessageAsString() or getLoggedMessage instead.
+    const std::string getOutputs() const;   /// use getLoggedMessageAsString() or getLoggedMessage instead.
+    void clearWarnings();                   /// use clearLoggedMessages() instead
+    void clearOutputs();                    /// use clearLoggedMessages() instead
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
+    size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t) const ;
     const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
-    /// @}
+    const std::string getLoggedMessagesAsString(sofa::helper::logging::Message::TypeSet t) const ;
+
+    void clearLoggedMessages() const ;
+
+    ComponentState getComponentState() const { return m_componentstate ; }
+    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
 
 protected:
+    mutable ComponentState m_componentstate { ComponentState::Undefined } ;
+
     /// Helper method used by initData()
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags );
@@ -443,9 +458,6 @@ public:
     }
 
 protected:
-    std::string warnings;
-    std::string outputs;
-
     /// List of fields (Data instances)
     VecData m_vecData;
     /// name -> Data multi-map (includes names and aliases)

@@ -31,6 +31,7 @@
 #include <cstring>
 #include <sofa/helper/helper.h>
 #include <sstream>
+#include <set>
 
 #include <boost/shared_ptr.hpp>
 
@@ -124,6 +125,7 @@ public:
 
     /// possible levels of messages (ordered)
     enum Type {Info=0, Advice, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
+    typedef std::set<Type> TypeSet;
 
     /// class of messages
     enum Class {Dev, Runtime, Log, CEmpty, ClassCount};
@@ -143,6 +145,9 @@ public:
     Class                    context() const  { return m_class; }
     Type                     type() const     { return m_type; }
     const std::string&       sender() const   { return m_sender; }
+
+    const std::string messageAsString() const  { return m_stream.str(); }
+
 
     bool empty() const;
 
