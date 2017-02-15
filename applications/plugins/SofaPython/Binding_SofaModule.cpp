@@ -291,10 +291,12 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 {
     char* meshFilename;
     double density;
-    double sx,sy,sz;
-    double rx,ry,rz;
-    if (!PyArg_ParseTuple(args, "sddddddd",&meshFilename,&density,&sx,&sy,&sz,&rx,&ry,&rz))
-    {
+    double sx = 1, sy = 1, sz = 1;
+    double rx = 0, ry = 0, rz = 0;
+    
+    if (!PyArg_ParseTuple(args, "sd|dddddd", &meshFilename, &density,
+                          &sx, &sy, &sz,
+                          &rx, &ry, &rz)) {
         PyErr_BadArgument();
         return NULL;
     }
