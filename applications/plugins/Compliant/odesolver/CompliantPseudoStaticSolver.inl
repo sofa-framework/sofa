@@ -29,11 +29,13 @@ CompliantPseudoStaticSolver<CompliantOdeSolver>::CompliantPseudoStaticSolver()
                    "(output) last velocity square norm"))
 {
     d_lastVelocity.setReadOnly(true);
+    this->addAlias( &d_threshold, "precision" );
 }
 
 template< typename CompliantOdeSolver >
 void CompliantPseudoStaticSolver<CompliantOdeSolver>::init()
 {
+
     // clamp velocityFactor [0,1]
     d_velocityFactor.setValue( helper::rclamp<SReal>( d_velocityFactor.getValue(), 0, 1 ) );
 
