@@ -163,7 +163,7 @@ signals:
 
 protected slots:
     //update the tables of value at each step of the simulation
-    void clearWarnings() {node->clearWarnings(); messageEdit->clear();}
+    void clearMessages() ;
 
 protected:
     void updateConsole();  //update the console log of warnings and outputs
@@ -179,6 +179,7 @@ protected:
 
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;
+    int m_numMessages;
 
     //Widget specific to Node:
     //Transformation widget: translation, rotation, scale ( only experimental and deactivated)

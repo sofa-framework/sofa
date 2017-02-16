@@ -59,6 +59,56 @@ static int hexval(char c)
     else return 0;
 }
 
+const std::string getClass(core::objectmodel::Base* obj){
+    if (obj->toBaseNode())
+    {
+        return "Node";
+    }
+    if (obj->toBaseObject())
+    {
+        if (obj->toContextObject())
+            return "Context";
+        if (obj->toBehaviorModel())
+            return "BehaviorModel";
+        if (obj->toCollisionModel())
+            return "CollisionModel";
+        if (obj->toBaseMechanicalState())
+            return "MechanicalModel";
+        if (obj->toBaseProjectiveConstraintSet())
+            return "ProjectiveConstraintSet";
+        if (obj->toBaseConstraintSet())
+            return "BaseConstraintSet";
+        if (obj->toBaseInteractionForceField() &&
+                obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
+            return "InteractionForceField";
+        if (obj->toBaseForceField())
+            return "ForceField";
+        if (obj->toBaseAnimationLoop()
+                || obj->toOdeSolver())
+            return "Solver";
+        if (obj->toPipeline()
+                || obj->toIntersection()
+                || obj->toDetection()
+                || obj->toContactManager()
+                || obj->toCollisionGroupManager())
+            return "Collision";
+        if (obj->toBaseMapping())
+            return "Mapping";
+        if (obj->toBaseMass())
+            return "Mass";
+        if (obj->toTopology ()
+                || obj->toBaseTopologyObject() )
+            return "Topology";
+        if (obj->toBaseLoader())
+            return "Loader";
+        if (obj->toConfigurationSetting())
+            return "Configuration";
+        if (obj->toVisualModel())
+            return "Visual";
+    }
+    return "Other";
+}
+
 QPixmap* getPixmap(core::objectmodel::Base* obj)
 {
     using namespace sofa::simulation::Colors;
@@ -76,7 +126,6 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             static QPixmap pixNode((const char**)iconnode_xpm);
             return &pixNode;
         }
-        //flags |= 1 << NODE;
     }
     else if (obj->toBaseObject())
     {
@@ -93,25 +142,25 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
         if (obj->toBaseConstraintSet())
             flags |= 1 << CONSTRAINTSET;
         if (obj->toBaseInteractionForceField() &&
-            obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
+                obj->toBaseInteractionForceField()->getMechModel1()!=obj->toBaseInteractionForceField()->getMechModel2())
             flags |= 1 << IFFIELD;
         else if (obj->toBaseForceField())
             flags |= 1 << FFIELD;
         if (obj->toBaseAnimationLoop()
-            || obj->toOdeSolver())
+                || obj->toOdeSolver())
             flags |= 1 << SOLVER;
         if (obj->toPipeline()
-            || obj->toIntersection()
-            || obj->toDetection()
-            || obj->toContactManager()
-            || obj->toCollisionGroupManager())
+                || obj->toIntersection()
+                || obj->toDetection()
+                || obj->toContactManager()
+                || obj->toCollisionGroupManager())
             flags |= 1 << COLLISION;
         if (obj->toBaseMapping())
             flags |= 1 << ((obj->toBaseMapping())->isMechanical()?MMAPPING:MAPPING);
         if (obj->toBaseMass())
             flags |= 1 << MASS;
         if (obj->toTopology ()
-            || obj->toBaseTopologyObject() )
+                || obj->toBaseTopologyObject() )
             flags |= 1 << TOPOLOGY;
         if (obj->toBaseLoader())
             flags |= 1 << LOADER;
@@ -184,6 +233,8 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
     if (pix)
         item->setIcon(0, QIcon(*pix));
 
+    item->setToolTip(0, QString::fromStdString(getClass(object)));
+
     if (object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0)
     {
         static QPixmap pixInfo((const char**)iconinfo_xpm);
@@ -204,12 +255,12 @@ void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
 /*****************************************************************************************************************/
 QTreeWidgetItem* GraphListenerQListView::createItem(QTreeWidgetItem* parent)
 {
-//    QTreeWidgetItem* last = parent->firstChild();
-//    if (last == NULL)
-//        return new QTreeWidgetItem(parent);
-//    while (last->nextSibling()!=NULL)
-//        last = last->nextSibling();
-//    return new QTreeWidgetItem(parent, last);
+    //    QTreeWidgetItem* last = parent->firstChild();
+    //    if (last == NULL)
+    //        return new QTreeWidgetItem(parent);
+    //    while (last->nextSibling()!=NULL)
+    //        last = last->nextSibling();
+    //    return new QTreeWidgetItem(parent, last);
     if(parent->childCount() == 0)
         return new QTreeWidgetItem(parent);
     return new QTreeWidgetItem(parent, parent->child(parent->childCount()-1));
@@ -243,7 +294,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
 
             // Node with multiple parents
             if (parent &&
-                parent != findObject(item->parent()) )
+                    parent != findObject(item->parent()) )
             {
                 // check that the multinode have not been added yet
                 // i.e. verify that all every item equivalent to current 'item' (in nodeWithMultipleParents) do not have the same 'parent'
@@ -253,8 +304,8 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
                 {
                     QTreeWidgetItem* itemNew = createItem(items[parent]);
                     //itemNew->setDropEnabled(true);
-    //                QString name=QString("MultiNode ") + QString(child->getName().c_str());
-    //                itemNew->setText(0, name);
+                    //                QString name=QString("MultiNode ") + QString(child->getName().c_str());
+                    //                itemNew->setText(0, name);
                     itemNew->setText(0, child->getName().c_str());
                     nodeWithMultipleParents.insert(std::make_pair(item, itemNew));
                     itemNew->setIcon(0, QIcon(pixMultiNode));
@@ -262,7 +313,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
                     // this is one more parent, the first child item must be displayed as a multinode
                     {
                         item->setIcon(0, QIcon(pixMultiNode));
-    //                    item->setText(0, QString("MultiNode ") + item->text(0) );
+                        //                    item->setText(0, QString("MultiNode ") + item->text(0) );
                     }
                 }
             }
@@ -333,9 +384,9 @@ void GraphListenerQListView::moveChild(Node* previous, Node* parent, Node* child
         QTreeWidgetItem* itemChild = items[child];
         QTreeWidgetItem* itemPrevious = items[previous];
         QTreeWidgetItem* itemParent = items[parent];
-//        itemPrevious->takeItem(itemChild);
+        //        itemPrevious->takeItem(itemChild);
         itemPrevious->removeChild(itemChild);
-//        itemParent->insertItem(itemChild);
+        //        itemParent->insertItem(itemChild);
         itemParent->addChild(itemChild);
     }
 }
@@ -352,7 +403,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
         if (item->treeWidget() == NULL)
         {
             if (items.count(parent))
-//                items[parent]->insertItem(item);
+                //                items[parent]->insertItem(item);
                 items[parent]->addChild(item);
             else
             {
@@ -410,8 +461,8 @@ void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::obje
     {
         QTreeWidgetItem* itemObject = items[object];
         QTreeWidgetItem* itemPrevious = items[previous];
-//        itemPrevious->takeItem(itemObject);
-         itemPrevious->removeChild(itemObject);
+        //        itemPrevious->takeItem(itemObject);
+        itemPrevious->removeChild(itemObject);
         return;
     }
     if (!items.count(object) || !items.count(previous))
@@ -427,9 +478,9 @@ void GraphListenerQListView::moveObject(Node* previous, Node* parent, core::obje
         QTreeWidgetItem* itemObject = items[object];
         QTreeWidgetItem* itemPrevious = items[previous];
         QTreeWidgetItem* itemParent = items[parent];
-//        itemPrevious->takeItem(itemObject);
+        //        itemPrevious->takeItem(itemObject);
         itemPrevious->removeChild(itemObject);
-//        itemParent->insertItem(itemObject);
+        //        itemParent->insertItem(itemObject);
         itemParent->addChild(itemObject);
     }
 }
@@ -444,7 +495,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
         if (item->treeWidget() == NULL)
         {
             if (items.count(master))
-//                items[master]->insertItem(item);
+                //                items[master]->insertItem(item);
                 items[master]->addChild(item);
             else
             {
@@ -502,7 +553,7 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
     {
         QTreeWidgetItem* itemSlave = items[slave];
         QTreeWidgetItem* itemPrevious = items[previous];
-//        itemPrevious->takeItem(itemSlave);
+        //        itemPrevious->takeItem(itemSlave);
         itemPrevious->removeChild(itemSlave);
         return;
     }
@@ -519,9 +570,9 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
         QTreeWidgetItem* itemSlave = items[slave];
         QTreeWidgetItem* itemPrevious = items[previous];
         QTreeWidgetItem* itemMaster = items[master];
-//        itemPrevious->takeItem(itemSlave);
+        //        itemPrevious->takeItem(itemSlave);
         itemPrevious->removeChild(itemSlave);
-//        itemMaster->insertItem(itemSlave);
+        //        itemMaster->insertItem(itemSlave);
         itemMaster->addChild(itemSlave);
     }
 }
@@ -611,8 +662,8 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
     {
         const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
         for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
-                it != fields.end();
-                ++it)
+             it != fields.end();
+             ++it)
         {
             data = (*it);
             if(datas.count(data))
@@ -635,8 +686,8 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
     {
         const sofa::core::objectmodel::Base::VecData& fields = parent->getDataFields();
         for( sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin();
-                it!=fields.end();
-                ++it)
+             it!=fields.end();
+             ++it)
         {
             data = (*it);
             if(!datas.count(data))
@@ -648,7 +699,7 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
                 datas.insert(std::pair<BaseData*,QTreeWidgetItem*>(data,new_item));
                 new_item->setText(0, name.c_str());
                 new_item->setIcon(0, QIcon(pixData));
-//                widget->ensureItemVisible(new_item);
+                //                widget->ensureItemVisible(new_item);
                 widget->scrollToItem(new_item);
                 name.clear();
             }

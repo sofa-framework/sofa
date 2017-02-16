@@ -323,7 +323,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             updateConsole();
             if (messageTab)
             {
-                dialogTab->addTab(messageTab, QString("Messages"));
+                std::stringstream tmp;
+                int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                                                             Message::Error, Message::Warning, Message::Fatal});
+                tmp << "Messages(" << numMessages << ")" ;
+                dialogTab->addTab(messageTab, QString::fromStdString(tmp.str()));
             }
         }
 
@@ -347,6 +351,21 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         resize( QSize(450, 130).expandedTo(minimumSizeHint()) );
     }
 }
+
+void ModifyObject::clearMessages()
+{
+    node->clearWarnings();
+    messageEdit->clear();
+
+    std::stringstream tmp;
+    int numMessages = node->countLoggedMessages({Message::Info, Message::Advice, Message::Deprecated,
+                                                 Message::Error, Message::Warning, Message::Fatal});
+    tmp << "Messages(" << numMessages << ")" ;
+
+    dialogTab->setTabText(dialogTab->indexOf(messageTab), QString::fromStdString(tmp.str()));
+}
+
+
 
 void ModifyObject::createDialog(core::objectmodel::BaseData* data)
 {
@@ -442,7 +461,7 @@ void ModifyObject::updateConsole()
         buttonClearWarnings->setObjectName("buttonClearWarnings");
         tabLayout->addWidget(buttonClearWarnings);
         buttonClearWarnings->setText( tr("&Clear"));
-        connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearWarnings()));
+        connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearMessages()));
 
         messageEdit = new QTextEdit( messageTab);
         messageEdit->setObjectName("WarningEdit");
@@ -456,12 +475,14 @@ void ModifyObject::updateConsole()
         std::stringstream tmp;
         tmp << "<table>";
         tmp << "<tr><td><td><td><td>" ;
+        m_numMessages = 0 ;
         for(const Message& message : node->getLoggedMessages())
         {
             tmp << "<tr>";
             tmp << "<td>["<<toHtmlString(message.type())<<"]</td>" ;
             tmp << "<td><i>" << message.messageAsString() << "</i></td>" ;
             tmp << "</tr>" ;
+            m_numMessages++;
         }
         tmp << "</table>";
 
