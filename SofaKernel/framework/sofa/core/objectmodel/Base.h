@@ -120,9 +120,12 @@ namespace core
 namespace objectmodel
 {
 
+enum class InfoMessageLevel { MUTED, LOW, HIGH } ;
 
-
-
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_BASE_CPP)
+extern template class SOFA_CORE_API TData< InfoMessageLevel >;
+extern template class SOFA_CORE_API Data< InfoMessageLevel >;
+#endif
 
 /**
  *  \brief Base class for everything
@@ -135,6 +138,7 @@ namespace objectmodel
 class SOFA_CORE_API Base
 {
 public:
+
     typedef Base* Ptr;
     typedef boost::intrusive_ptr<Base> SPtr;
 
@@ -461,7 +465,9 @@ public:
     /// Name of the object.
     Data<std::string> name;
 
+
     Data<bool> f_printLog;
+    Data<InfoMessageLevel> d_infoMsgLevel;
 
     Data< sofa::core::objectmodel::TagSet > f_tags;
 
@@ -475,6 +481,7 @@ public:
     /// @{
     ///
 public:
+
 
 
 #define SOFA_BASE_CAST_DEFINITION(NAMESPACE,CLASSNAME) \

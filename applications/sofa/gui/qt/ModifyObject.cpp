@@ -474,14 +474,14 @@ void ModifyObject::updateConsole()
     {
         std::stringstream tmp;
         tmp << "<table>";
-        tmp << "<tr><td><td><td><td>" ;
+        tmp << "<tr><td><td><td><td><td></td>" ;
         m_numMessages = 0 ;
         for(const Message& message : node->getLoggedMessages())
         {
             tmp << "<tr>";
             tmp << "<td>["<<toHtmlString(message.type())<<"]</td>" ;
             tmp << "<td><i>" << message.messageAsString() << "</i></td>" ;
-            tmp << "</tr>" ;
+            tmp << "<td><a href='http://www.sofa-framework.org/suggest.php?commit=aaa11&branch=origin/master&'>Suggest a better message.</a> </td></tr>" ;
             m_numMessages++;
         }
         tmp << "</table>";

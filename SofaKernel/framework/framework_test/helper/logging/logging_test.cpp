@@ -163,13 +163,20 @@ TEST(LoggingTest, emptyMessage)
     msg_info("");
     EXPECT_EQ( h.numMessages(), 1u );
 }
+#include <string>
+#include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::TData ;
 
 
 
 class MyComponent : public sofa::core::objectmodel::BaseObject
 {
 public:
-    MyComponent() {}
+
+    MyComponent()
+    {
+
+    }
 
     void emitSerrSoutMessages(){
         f_printLog.setValue(true); // to print sout
@@ -185,6 +192,9 @@ public:
         msg_error(this) << "an error message" ;
     }
 };
+
+
+
 
 TEST(LoggingTest, checkBaseObjectSerr)
 {

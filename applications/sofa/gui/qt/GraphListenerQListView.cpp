@@ -48,7 +48,7 @@ namespace qt
 //***********************************************************************************************************
 
 static const int iconWidth=8;
-static const int iconHeight=10;
+static const int iconHeight=16;
 static const int iconMargin=6;
 
 static int hexval(char c)
@@ -109,7 +109,9 @@ const std::string getClass(core::objectmodel::Base* obj){
     return "Other";
 }
 
-QPixmap* getPixmap(core::objectmodel::Base* obj)
+
+
+QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
 {
     using namespace sofa::simulation::Colors;
     unsigned int flags=0;
@@ -173,6 +175,15 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
     }
     else return NULL;
 
+    if(haveInfo)
+        flags |= 1 << (ALLCOLORS+1) ;
+
+    if(haveWarning)
+        flags |= 1 << (ALLCOLORS+1) ;
+
+    if(haveErrors)
+        flags |= 1 << (ALLCOLORS+1) ;
+
     static std::map<unsigned int, QPixmap*> pixmaps;
     if (!pixmaps.count(flags))
     {
@@ -191,34 +202,63 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             for (int x=0 ; x < nx ; x++)
                 img->setPixel(x,y,qRgba(0,0,0,0));
 
-        for (int y=0 ; y < iconHeight ; y++)
+        // left Line
+        for (int y=iconMargin ; y < iconHeight ; y++)
             img->setPixel(0,y,qRgba(0,0,0,255));
+
         nc = 0;
         for (int i=0; i<ALLCOLORS; i++)
             if (flags & (1<<i))
             {
                 int x0 = 1+iconWidth*nc;
                 int x1 = x0+iconWidth-1;
-                //QColor c(COLOR[i]);
                 const char* color = COLOR[i];
-                //c.setAlpha(255);
                 int r = (hexval(color[1])*16+hexval(color[2]));
                 int g = (hexval(color[3])*16+hexval(color[4]));
                 int b = (hexval(color[5])*16+hexval(color[6]));
                 int a = 255;
                 for (int x=x0; x <=x1 ; x++)
                 {
-                    img->setPixel(x,0,qRgba(0,0,0,255));
+                    img->setPixel(x,iconMargin-1,qRgba(0,0,0,255));
                     img->setPixel(x,iconHeight-1,qRgba(0,0,0,255));
-                    for (int y=1 ; y < iconHeight-1 ; y++)
-                        //img->setPixel(x,y,c.value());
+                    for (int y=iconMargin ; y < iconHeight-1 ; y++)
                         img->setPixel(x,y,qRgba(r,g,b,a));
                 }
-                //bitBlt(img,nimg*(iconWidth+2),0,classIcons,iconMargin,iconPos[i],iconWidth,iconHeight);
                 ++nc;
             }
-        for (int y=0 ; y < iconHeight ; y++)
+
+        // right line Line
+        for (int y=iconMargin ; y < iconHeight ; y++)
             img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
+
+        static QPixmap pixInfo((const char**)iconinfo_xpm);
+        static QImage imgInfo8 = pixInfo.scaledToWidth(16).toImage();
+
+        static QPixmap pixError((const char**)iconerror_xpm);
+        static QImage imgError8 = pixError.scaledToWidth(16).toImage();
+
+        static QPixmap pixWarning((const char**)iconwarning_xpm);
+        static QImage imgWarning8 = pixWarning.scaledToWidth(16).toImage();
+
+
+        QImage* overlaysymbol=nullptr;
+        if( haveInfo )
+            overlaysymbol = &imgInfo8 ;
+        if( haveWarning )
+            overlaysymbol = &imgWarning8 ;
+        if( haveErrors )
+            overlaysymbol = &imgError8 ;
+
+        if(overlaysymbol){
+            for (int x=0;x<16;x++)
+            {
+                for(int y=0;y<16;y++)
+                {
+                    if(overlaysymbol->pixelColor(x,y).alpha()==255)
+                        img->setPixel(x, y,  overlaysymbol->pixel(x,y) );
+                }
+            }
+        }
 
         pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
 
@@ -229,27 +269,13 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
 
 void setMessageIconFrom(QTreeWidgetItem* item, Base* object)
 {
-    QPixmap* pix = getPixmap(object);
+    bool haveInfos = object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0;
+    bool haveWarnings = object->countLoggedMessages({Message::Warning})!=0;
+    bool haveErrors = object->countLoggedMessages({Message::Error, Message::Fatal})!=0;
+
+    QPixmap* pix = getPixmap(object, haveInfos, haveWarnings, haveErrors);
     if (pix)
         item->setIcon(0, QIcon(*pix));
-
-    item->setToolTip(0, QString::fromStdString(getClass(object)));
-
-    if (object->countLoggedMessages({Message::Info, Message::Deprecated, Message::Advice})!=0)
-    {
-        static QPixmap pixInfo((const char**)iconinfo_xpm);
-        item->setIcon(0, QIcon(pixInfo));
-    }
-    if (object->countLoggedMessages({Message::Warning})!=0)
-    {
-        static QPixmap pixWarning((const char**)iconwarning_xpm);
-        item->setIcon(0, QIcon(pixWarning));
-    }
-    if (object->countLoggedMessages({Message::Error, Message::Fatal})!=0)
-    {
-        static QPixmap pixError((const char**)iconerror_xpm);
-        item->setIcon(0, QIcon(pixError));
-    }
 }
 
 /*****************************************************************************************************************/
@@ -583,7 +609,7 @@ void GraphListenerQListView::sleepChanged(Node* node)
     if (items.count(node))
     {
         QTreeWidgetItem* item = items[node];
-        QPixmap* pix = getPixmap(node);
+        QPixmap* pix = getPixmap(node,false,false,false);
         if (pix)
             item->setIcon(0, QIcon(*pix));
     }
