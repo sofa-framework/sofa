@@ -121,13 +121,7 @@ namespace objectmodel
 {
 
 
-/// enum class is a C++ x11 feature (http://en.cppreference.com/w/cpp/language/enum),
-/// Indicate the state of an object.
-enum class ComponentState {
-    Undefined,
-    Valid,
-    Invalid
-};
+
 
 
 /**
@@ -352,7 +346,7 @@ private:
 public:
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
-    mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
+    mutable helper::system::SofaOStream<helper::logging::Message::Error> serr;
     /// write into component buffer.
     /// Message is processed by message handlers only if printLog==true
     /// /// default message type = Info
@@ -370,18 +364,13 @@ public:
     void processStream(std::ostream& out);
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
-    size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t) const ;
+    size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
     const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
-    const std::string getLoggedMessagesAsString(sofa::helper::logging::Message::TypeSet t) const ;
+    const std::string getLoggedMessagesAsString(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
 
     void clearLoggedMessages() const ;
 
-    ComponentState getComponentState() const { return m_componentstate ; }
-    bool isComponentStateValid() const { return m_componentstate != ComponentState::Invalid; }
-
 protected:
-    mutable ComponentState m_componentstate { ComponentState::Undefined } ;
-
     /// Helper method used by initData()
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags );

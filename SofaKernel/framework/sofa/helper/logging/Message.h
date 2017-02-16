@@ -126,6 +126,7 @@ public:
     /// possible levels of messages (ordered)
     enum Type {Info=0, Advice, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
     typedef std::set<Type> TypeSet;
+    static TypeSet AnyTypes ;
 
     /// class of messages
     enum Class {Dev, Runtime, Log, CEmpty, ClassCount};

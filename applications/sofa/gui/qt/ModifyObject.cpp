@@ -436,7 +436,7 @@ const std::string toHtmlString(const Message::Type t)
     case Message::Deprecated:
         return "<font color='grey'>Deprecated</font>";
     case Message::Warning:
-        return "<font color='yellow'>Warning</font>";
+        return "<font color='darkcyan'>Warning</font>";
     case Message::Error:
         return "<font color='red'>Error</font>";
     case Message::Fatal:

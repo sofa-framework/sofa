@@ -39,6 +39,8 @@ namespace helper
 namespace logging
 {
 
+Message::TypeSet Message::AnyTypes = {Type::Info,Type::Advice,Type::Deprecated,
+                                      Type::Warning,Type::Error,Type::Fatal};
 
 
 Message Message::emptyMsg(CEmpty, TEmpty, "", EmptyFileInfo) ;
