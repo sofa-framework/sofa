@@ -19,14 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef BINDING_BASEDATA_H
-#define BINDING_BASEDATA_H
+#ifndef BINDING_VECTORLINEARSPRINGDATA_H
+#define BINDING_VECTORLINEARSPRINGDATA_H
 
 #include "PythonMacros.h"
 
-SP_DECLARE_CLASS_TYPE(Data)
+SP_DECLARE_CLASS_TYPE(VectorLinearSpringData)
 
-PyObject *GetDataValuePython(sofa::core::objectmodel::BaseData* data);
-int SetDataValuePython(sofa::core::objectmodel::BaseData* data, PyObject* value);
-
-#endif // BINDING_BASEDATA_H
+#endif // BINDING_VECTORLINEARSPRINGDATA_H
