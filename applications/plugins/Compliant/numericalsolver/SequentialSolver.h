@@ -78,14 +78,15 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
         bool activated; // is the constraint activated, otherwise its lambda is forced to be 0
 	};
 	
-	typedef std::vector<block> blocks_type;
+	using blocks_type = std::vector<block>;
 	blocks_type blocks;
-
+    
     void fetch_blocks(const system_type& system);
 
     vec diagonal;
-	typedef Eigen::Map< vec > chunk_type;    
-
+    
+	using chunk_type = Eigen::Map< vec >;
+    using const_chunk_type = Eigen::Map< const vec >;    
 
 };
 

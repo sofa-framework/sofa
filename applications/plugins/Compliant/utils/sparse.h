@@ -101,12 +101,15 @@ static void fast_prod_impl(ResultType& res, const Lhs& lhs, const Rhs& rhs, bool
                 const Index i = lhsIt.index();
                 const Scalar x = lhsIt.value();
 
+                const Scalar val = x * y;
+                if(!val) continue;
+                
                 if(values[i] == flag){
-                    values[i] = x * y;
+                    values[i] = val;
                     indices[nnz] = i;
                     ++nnz;
                 } else {
-                    values[i] += x * y;
+                    values[i] += val;
                 }
             }
         }

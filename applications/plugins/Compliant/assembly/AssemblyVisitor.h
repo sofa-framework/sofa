@@ -337,6 +337,9 @@ struct AssemblyVisitor::process_helper {
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
+        if( zero(Jc) ) {
+            std::cerr << "zero mapping concatenation! " << "dofs: " << curr->getPathName() << std::endl;
+        }
 //        if( zero(Jc) && curr->getSize() !=0 )  {
 //            // If the dof size is null, let's consider it is not a big deal.
 //            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically

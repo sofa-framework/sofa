@@ -160,19 +160,55 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
             SReal& d = diagonal(off);
             d = sparse_dot(JP, off, mapping_response, off);
 
-            // add diagonal C block
-            for(rmat::InnerIterator it(system.C, off); it; ++it) {
-				
-				// paranoia, i has it
-				assert( it.col() >= int(b.offset) );
-				assert( it.col() < int(b.offset + b.size) );
+            // TODO is this the fastest?
+            const SReal c = system.C.coeff(off, off);
+            
+            d += c;
+            
+            // sanity check
+            if( d <= 0 ){
+                
+                // empty constraint row, this is an error
+                const SReal norm = system.J.row(off).norm();
+                if( norm == 0 ) {
+                    serr << "zero constraint row: " << off << sendl;
+                    simulation::Node* node = 0;
+                    
+                    if(b.projector) {
+                        node = dynamic_cast<simulation::Node*>(b.projector->getContext());
+                    } else {
+                        unsigned tmp = 0;
+                        for(const auto& c : system.compliant) {
+                            const unsigned size = c->getMatrixSize();
+                            if( (tmp + size) > off) {
+                                node = dynamic_cast<simulation::Node*>(c->getContext());
+                                break;
+                            } else {
+                                tmp += size;
+                            }
+                        }
+                        assert( tmp == system.n );
+                        assert( off < system.n );
+                    }
+                    
+                    assert(node);
+                    if( node ) {
+                        auto mapping = node->mechanicalMapping.get();
+                        serr << "mapping: " << node->mechanicalMapping->getPathName() << sendl;
 
-                if( it.col() == it.row() ) {
-                    d += it.value();
-                    break;
+                    }
+                    
+                    assert(false && "empty constraint row");
                 }
 
-			}
+                // constraint row got zero-ed after fixed-constraint projection:
+                // flag as disabled
+                assert( c >= 0 );
+                assert(JP.row(off).norm() == 0);
+                
+                d = -1;
+            }
+            
 		}
 
         // TODO homogenize friction constraints
@@ -240,12 +276,15 @@ SReal BaseSequentialSolver::step(vec& lambda,
             error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
             error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
 
-            // solve for lambda changes
-            // std::cout << damping << std::endl;
+            const const_chunk_type diag_chunk(&diagonal(b.offset), b.size);
             
-            delta_chunk = error_chunk.array() / 
-                (diagonal.segment(b.offset, b.size).array() + damping);
-                        
+            // solve for lambda changes w/ jacobi iteration
+            delta_chunk = error_chunk.array() / (diag_chunk.array() + damping);
+            assert( !has_nan(delta_chunk) );
+            
+            // handle disabled constraints
+            delta_chunk.array() *= (diag_chunk.array() > 0).template cast<SReal>();
+            
             // backup old lambdas
             error_chunk = lambda_chunk;
 
