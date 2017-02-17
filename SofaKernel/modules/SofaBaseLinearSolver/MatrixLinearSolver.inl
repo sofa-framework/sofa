@@ -165,9 +165,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
             simulation::common::MechanicalOperations mops(mparams, this->getContext());
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
-//            currentGroup->matrixAccessor.clear();
-            currentGroup->matrixAccessor.cheapClear();
-
+            currentGroup->matrixAccessor.clear();
 
             //unsigned int nbRow=0, nbCol=0;
             //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
