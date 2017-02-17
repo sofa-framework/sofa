@@ -62,6 +62,8 @@ Base::Base()
     name.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
+    d_infoMsgLevel.setOwnerClass("Base");
+    d_infoMsgLevel.setAutoLink(false);
     f_tags.setOwnerClass("Base");
     f_tags.setAutoLink(false);
     f_bbox.setOwnerClass("Base");
@@ -254,7 +256,7 @@ void Base::processStream(std::ostream& out)
     }
     else if (sout==out)
     {
-        if (f_printLog.getValue())
+        if (d_infoMsgLevel.getValue()!=InfoMessageLevel::MUTED)
         {
             addMessage( (MessageDispatcher::log(sout.messageClass(),
                                                   sout.messageType(), this,
