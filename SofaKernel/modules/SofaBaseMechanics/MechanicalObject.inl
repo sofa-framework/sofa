@@ -1,27 +1,24 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
- *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
@@ -292,38 +289,58 @@ void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDes
 
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        int newsize = arg->getAttributeAsInt("size", 1) ;
+        if(newsize>=0)
+        {
+            resize(newsize) ;
+        }
+        else
+        {
+            msg_warning(this) << "The attribute 'size' cannot have a negative value.  "
+                                 "The value "<<newsize<<" is ignored. Current value is " <<getSize()<< ".  "
+                                 "To remove this warning you need to fix your scene.";
+        }
     }
 
     if (arg->getAttribute("scale") != NULL)
     {
-        SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
+        SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
     if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
     {
-        scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
+        scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
+                               (SReal)arg->getAttributeAsFloat("sy",1.0),
+                               (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
     if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
     {
-        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
+        rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
+                                  (SReal)arg->getAttributeAsFloat("ry",0.0),
+                                  (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
     if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
     {
-        translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
+                                     (Real)arg->getAttributeAsFloat("dy",0.0),
+                                     (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
     {
-        rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
+        rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("ry2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
     if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
     {
-        translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
+        translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dy2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
 
 

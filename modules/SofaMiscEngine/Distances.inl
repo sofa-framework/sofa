@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -288,7 +285,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         distanceMap[mapIndex][i] = -1.0;
 
     queue<Distance> hexasBeingParsed;
-    helper::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
+    std::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
     defaulttype::Vector3 baryC;
     const Coord& offSet = offset.getValue();
@@ -317,14 +314,14 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         const Coord hexaIDpos = hexaGeoAlgo->computeHexahedronRestCenter ( hexaID );
 
         // Propagate
-        helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
+        std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hexaID, neighbors );
 
         unsigned int hexaID1;
         find1DCoord(hexaID1, hexaGeoAlgo->computeHexahedronRestCenter(hexaID));
         double densityValue1 = densityValues[hexaID1];
 
-        for ( helper::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
+        for ( std::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
         {
             Distance newDist;
             double stiffCoeff = 1.0;
@@ -604,7 +601,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, hel
         }
 
         Coord grad;
-        helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
+        std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hID, neighbors );
 
         unsigned int gridID = hexaGeoAlgo->getRegularGridIndexFromTopoIndex ( hID );
@@ -695,7 +692,7 @@ void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& po
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, helper::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const
+void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, std::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const
 {
     const core::topology::BaseMeshTopology::EdgesInHexahedron& edgeSet = hexaContainer->getEdgesInHexahedron ( hexaID );
     for ( unsigned int i = 0; i < edgeSet.size(); i++ )

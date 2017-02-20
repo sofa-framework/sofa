@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -82,16 +79,23 @@ public:
     void AddDefineMacro(const std::string &name, const std::string &value);
 
     void SetShaderFileName(GLint target, const std::string& fileName);
+    void SetShaderFromString(GLint target, const std::string& shaderContent);
+
     void SetVertexShaderFileName(const std::string& fileName)   { SetShaderFileName(GL_VERTEX_SHADER_ARB, fileName); }
+    void SetVertexShaderFromString(const std::string& string) { SetShaderFromString(GL_VERTEX_SHADER_ARB, string); }
     void SetFragmentShaderFileName(const std::string& fileName) { SetShaderFileName(GL_FRAGMENT_SHADER_ARB, fileName); }
+    void SetFragmentShaderFromString(const std::string& string) { SetShaderFromString(GL_FRAGMENT_SHADER_ARB, string); }
 #ifdef GL_GEOMETRY_SHADER_EXT
     void SetGeometryShaderFileName(const std::string& fileName) { SetShaderFileName(GL_GEOMETRY_SHADER_EXT, fileName); }
+    void SetGeometryShaderFromString(const std::string& string) { SetShaderFromString(GL_GEOMETRY_SHADER_EXT, string); }
 #endif
 #ifdef GL_TESS_CONTROL_SHADER
     void SetTessellationControlShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_CONTROL_SHADER, fileName); }
+    void SetTessellationControlShaderFromString(const std::string& string) { SetShaderFromString(GL_TESS_CONTROL_SHADER, string); }
 #endif
 #ifdef GL_TESS_EVALUATION_SHADER
     void SetTessellationEvaluationShaderFileName(const std::string& fileName) { SetShaderFileName(GL_TESS_EVALUATION_SHADER, fileName); }
+    void SetTessellationEvaluationShaderFromString(const std::string& string) { SetShaderFromString(GL_TESS_EVALUATION_SHADER, string); }
 #endif
 
     std::string GetShaderStageName(GLint target);
@@ -139,6 +143,10 @@ public:
     bool        IsReady() const { return m_hProgramObject != 0; }
     GLhandleARB GetProgram() const	{	return m_hProgramObject; }
     std::string GetShaderFileName(GLint type) const;
+    std::string GetShaderString(GLint type) const;
+    std::string GetHeader() const;
+
+    bool        IsSet(GLint type) const;
     GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
     std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
     GLhandleARB GetVertexShaderID        () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
@@ -232,12 +240,24 @@ public:
 #endif
 
 protected:
+    /// A shader is a source code, as such it can be loaded either directly by its source or a filename (containing the source)
+    struct ShaderContents
+    {
+        std::string filename;
+        std::string text;
 
-    bool CompileShader(GLint target, const std::string& fileName, const std::string& header);
+        ShaderContents()
+            :filename(""), text("")
+        {}
+
+    };
+
+    bool CompileShader(GLint target, const ShaderContents& shaderContent, const std::string& header);
 
     std::string header;
 
-    std::map<GLint, std::string> m_hFileNames;
+    std::map<GLint, ShaderContents> m_hShaderContents;
+    
     std::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader

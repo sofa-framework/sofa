@@ -22,7 +22,8 @@ class SOFA_Compliant_API NNCGSolver : public SequentialSolver {
 	virtual void solve_impl(vec& x,
 							const system_type& system,
 							const vec& rhs, 
-							bool correct) const;
+							bool correct,
+                            real damping) const;
 
 	
 	Data<bool> verbose;

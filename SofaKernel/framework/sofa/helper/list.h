@@ -1,130 +1,71 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #ifndef SOFA_HELPER_LIST_H
 #define SOFA_HELPER_LIST_H
 
+
 #include <sofa/helper/helper.h>
 
-#include <list>
+#include <map>
 #include <iostream>
-#include <sstream>
 #include <string>
 
-namespace sofa
+
+/// adding string serialization to std::list to make it compatible with Data
+/// \todo: refactoring of the containers required
+/// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
+
+
+namespace std
 {
 
-namespace helper
+/// Output stream
+template<class T>
+std::ostream& operator<< ( std::ostream& os, const std::list<T>& l )
 {
+    if( !l.empty() )
+    {
+        typename std::list<T>::const_iterator i=l.begin(), iend=l.end();
+        os << *i;
+        ++i;
+        for( ; i!=iend; ++i )
+            os << ' ' << *i;
+    }
+    return os;
+}
 
-//======================================================================
-///	Same as std::list, + input/output operators
-///
-///   \see sofa::helper::set
-///
-//======================================================================
-
-template< class T, class Alloc = std::allocator<T> >
-class list: public std::list<T, Alloc>
+/// Input stream
+template<class T>
+std::istream& operator>> ( std::istream& in, std::list<T>& l )
 {
-public:
-
-    /// size_type
-    typedef typename std::list<T,Alloc>::size_type size_type;
-    /// reference to a value (read-write)
-    typedef typename std::list<T,Alloc>::reference reference;
-    /// const reference to a value (read only)
-    typedef typename std::list<T,Alloc>::const_reference const_reference;
-    /// iterator
-    typedef typename std::list<T,Alloc>::iterator iterator;
-    /// const iterator
-    typedef typename std::list<T,Alloc>::const_iterator const_iterator;
-
-    /// Basic constructor
-    list() {}
-    /// Constructor by copy
-    list(const std::list<T, Alloc>& x): std::list<T,Alloc>(x) {}
-    /// Constructor
-    list<T, Alloc>& operator=(const std::list<T, Alloc>& x)
-    {
-        std::list<T,Alloc>::operator = (x);
-        return (*this);
-    }
+    T t;
+    l.clear();
+    while(in>>t)
+        l.push_back(t);
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
+}
 
 
-#ifdef __STL_MEMBER_TEMPLATES
-    /// Constructor
-    template <class InputIterator>
-    list(InputIterator first, InputIterator last): std::list<T,Alloc>(first,last) {}
-#else /* __STL_MEMBER_TEMPLATES */
-    /// Constructor
-    list(const_iterator first, const_iterator last): std::list<T,Alloc>(first,last) {}
-#endif /* __STL_MEMBER_TEMPLATES */
-
-    std::ostream& write(std::ostream& os) const
-    {
-        if( !this->empty() )
-        {
-            const_iterator i=this->begin();
-            os << *i;
-            ++i;
-            for( ; i!=this->end(); ++i )
-                os << ' ' << *i;
-        }
-        return os;
-    }
-
-    std::istream& read(std::istream& in)
-    {
-        T t = T();
-        this->clear();
-        while(in>>t)
-        {
-            this->push_back(t);
-        }
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-        return in;
-    }
-
-    /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const list<T,Alloc>& vec )
-    {
-        return vec.write(os);
-    }
-
-
-    /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, list<T,Alloc>& vec )
-    {
-        return vec.read(in);
-    }
-
-};
-
-
-} // namespace helper
-
-} // namespace sofa
+} // namespace std
 
 #endif

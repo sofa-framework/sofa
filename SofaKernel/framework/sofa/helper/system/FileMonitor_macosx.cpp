@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 // TO BE DONE USING THE SPECIFIC API... OR FIND A CROSS PLATEFORM LIBRARY.
 
 // let's use FSEvent API for this...
@@ -16,6 +37,7 @@ using namespace std ;
 #include <list>
 #include <string>
 #include <map>
+#include <sys/time.h>
 
 //////////////////// OSX Header ///////////////////////////////////////////////
 //#include <sys/attr.h>
@@ -155,26 +177,55 @@ int FileMonitor::addFile(const std::string& directoryname, const std::string& fi
     return addFile(directoryname+filename,listener);
 }
 
+/* This flag controls termination of the main loop. */
+volatile sig_atomic_t keep_going = 1;
+
+/* The signal handler just clears the flag and re-enables itself. */
+void catch_alarm (int sig)
+{
+//    printf("TIMEOUT!!!!!!!!!!!!!!!!!!\n");
+    keep_going = 0;
+}
+
 int FileMonitor::updates(int timeout)
 {
-    // update FSEventStreams
-//printf("update streams...\n");
-//fflush(stdout);
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode,
-                       0,
-                       false);
-    //CFRunLoopRun();
 
-    // check file changes
-    for(ListOfMonitors::iterator it_monitor=monitors.begin(); it_monitor!=monitors.end(); it_monitor++)
+    if (timeout>0)
     {
-        if (!(*it_monitor)->update())
-        {
-  //          printf("FileListener::fileHasChanged(%s) called...\n",it_monitor->m_filename.c_str());
-            (*it_monitor)->m_listener->fileHasChanged((*it_monitor)->m_filename);
-        }
-    }
+        keep_going = 1;
+        /* Establish a handler for SIGALRM signals. */
+        signal (SIGALRM, catch_alarm);
 
+        /* Set an alarm to go off in a little while. */
+        alarm (timeout);
+    }
+    else
+    {
+        keep_going = 0;
+    }
+    /* Check the flag once in a while to see when to quit. */
+    // check file changes
+    do{
+        // update FSEventStreams
+        //printf("update streams...\n");
+        //fflush(stdout);
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode,
+                           0,
+                           false);
+        for(ListOfMonitors::iterator it_monitor=monitors.begin(); it_monitor!=monitors.end(); it_monitor++)
+        {
+            if (!(*it_monitor)->update())
+            {
+//                printf("FileListener::fileHasChanged(%s) called...\n",(*it_monitor)->m_filename.c_str());
+                (*it_monitor)->m_listener->fileHasChanged((*it_monitor)->m_filename);
+                keep_going = 0; // we're done
+            }
+        }
+        if (keep_going) usleep(10000);
+    }
+    while (keep_going);
+
+    alarm(0);
     return 0;
 }
 

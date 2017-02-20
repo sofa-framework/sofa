@@ -38,13 +38,30 @@ Before creating any issue or pull request, please read carefully [our CONTRIBUTI
 
 # Information
 
-Authors: See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
+**Authors**
+See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
 
-Licence: See [LICENCE.txt](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt)
+**Licence**
+SOFA is LGPL, except:
+- applications/projects (GPL)
+- applications/sofa (GPL)
+- applications/tutorials (GPL)
+- applications/plugins/OptiTrackNatNet (GPL)
+- applications/plugins/SofaPML (GPL)
+- applications/plugins/Registration (QPL)
+- sub-directories with a license file specifying a different license
 
-Contact information: contact@sofa-framework.org
+LGPL refers to the GNU Lesser General Public License as published by the Free Software
+Foundation; either version 2.1 of the License, or (at your option) any later 
+version.
+
+GPL refers to the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version.
+
+**Contact information**
+contact@sofa-framework.org
 
 -----------------------------------------------------------------------------
 
 SOFA, Simulation Open-Framework Architecture  
-(c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH
+(c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH

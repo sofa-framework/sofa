@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -108,7 +105,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
     if (!node || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     bool warning = true;
@@ -247,7 +244,7 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->addObject(object);
 
@@ -277,7 +274,7 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->removeObject(object);
 
@@ -297,7 +294,7 @@ extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->addChild(child);
     Py_RETURN_NONE;
@@ -313,7 +310,7 @@ extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->removeChild(child);
     Py_RETURN_NONE;
@@ -329,7 +326,7 @@ extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->moveChild(child);
     Py_RETURN_NONE;
@@ -350,7 +347,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&eventName,&pyUserData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -364,7 +361,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -378,7 +375,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);

@@ -42,7 +42,7 @@ void CoulombConstraint<DataTypes>::project( SReal* out, unsigned n, unsigned /*i
         view_type view(&out[ N*i]);
         view = proj(view, normal, gamma);
         
-        // zero remaining elements
+        // zero remaining coordinates (e.g. for rigids)
         // TODO even when not correcting ?
         for(unsigned j = 3; j < N; ++j) {
             out[ N*i + j ] = 0;
@@ -51,10 +51,6 @@ void CoulombConstraint<DataTypes>::project( SReal* out, unsigned n, unsigned /*i
     
     return;
     
-    // TODO FIXME why do we only consider the first contact ?!
-    
-    // By construction the first component is aligned with the normal
-
     // no attractive force
     if( out[0] < 0 )
     {

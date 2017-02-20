@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
  #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
@@ -38,10 +59,6 @@ void createAFilledFile(const string filename, unsigned int rep){
 
 void waitForFileEvents()
 {
-    // on osx there is a latency between 0.2 and 0.5s for file events...
-#ifdef __APPLE__
-	sleep(1);
-#endif
 	// on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
 	Sleep(100);
@@ -103,7 +120,7 @@ TEST(FileMonitor, addFileTwice_test)
     createAFilledFile(getPath("existing.txt"), 10) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
 
     // The listener should be notified 1 times with the same event.
     EXPECT_EQ( listener.m_files.size(), 1u) ;
@@ -128,7 +145,7 @@ TEST(FileMonitor, updateNoChange_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -139,13 +156,13 @@ TEST(FileMonitor, fileChange_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-	waitForFileEvents();
-	FileMonitor::updates(0) ;
+    //waitForFileEvents();
+    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -156,7 +173,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener.m_files.clear() ;
@@ -164,7 +181,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 200) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -177,7 +194,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -187,7 +204,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
@@ -202,7 +219,7 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    FileMonitor::updates(0) ;
+    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -212,7 +229,7 @@ TEST(FileMonitor, listenerRemoved_test)
     FileMonitor::removeListener(&listener1) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
 
@@ -225,14 +242,14 @@ TEST(FileMonitor, fileChange2_test)
     MyFileListener listener ;
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
-    waitForFileEvents();
-    FileMonitor::updates(0) ;
+    //waitForFileEvents();
+    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
 
     waitForFileEvents();
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
