@@ -47,7 +47,6 @@ class Base; // forward declaration
 } // namespace core
 }
 
-
 namespace sofa
 {
 
@@ -56,6 +55,8 @@ namespace helper
 
 namespace logging
 {
+
+inline bool notMuted(const std::string&){ return false; }
 
 static const char * s_unknownFile = "unknown-file";
 

@@ -374,6 +374,10 @@ public:
 
     void clearLoggedMessages() const ;
 
+    inline bool notMuted() const { return d_infoMsgLevel.getValue() == InfoMessageLevel::MUTED ; }
+    inline bool lowVerbosity() const { return d_infoMsgLevel.getValue() >= InfoMessageLevel::LOW; }
+    inline bool highVerbosity() const { return d_infoMsgLevel.getValue() == InfoMessageLevel::HIGH; }
+
 protected:
     /// Helper method used by initData()
     void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false );
@@ -533,14 +537,22 @@ public:
     /// @}
 };
 
-
-
-
-
 } // namespace objectmodel
 
 } // namespace core
 
 } // namespace sofa
 
+/// This allow an object to be muted.
+namespace sofa
+{
+namespace helper
+{
+namespace logging
+{
+    inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+    inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
+}
+}
+}
 #endif

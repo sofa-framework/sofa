@@ -138,8 +138,8 @@
 #define TWO_FUNC_RECOMPOSER(argsWithParentheses) TWO_FUNC_CHOOSER argsWithParentheses
 
 /// THE INFO BEAST
-#define MSGINFO_1(x) oldmsg_info(x)
-#define MSGINFO_0()  oldmsg_info(this)
+#define MSGINFO_1(x) if( sofa::helper::logging::notMuted(x) ) oldmsg_info(x)
+#define MSGINFO_0()  if( sofa::helper::logging::notMuted(this) ) oldmsg_info(this)
 
 #define MSGINFO_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, MSGINFO_1, ))
 #define MSGINFO_NO_ARG_EXPANDER() ,MSGINFO_0
@@ -197,8 +197,8 @@
 
 
 /// THE ADVICE BEAST
-#define MSGADVICE_1(x) oldmsg_advice(x)
-#define MSGADVICE_0()  oldmsg_advice(this)
+#define MSGADVICE_1(x) if( sofa::helper::logging::notMuted(x) ) oldmsg_advice(x)
+#define MSGADVICE_0()  if( sofa::helper::logging::notMuted(x) ) oldmsg_advice(this)
 
 #define MSGADVICE_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, MSGADVICE_1, ))
 #define MSGADVICE_NO_ARG_EXPANDER() ,MSGADVICE_0
