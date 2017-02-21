@@ -182,9 +182,6 @@ bool LCPConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/
         }
         else
         {
-            // warning _A has been being suppr... need to be allocated
-            //
-            //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
             sofa::helper::vector<double>& graph_error = graph["Error"];
             graph_error.clear();
             sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");

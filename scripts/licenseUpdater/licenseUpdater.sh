@@ -134,7 +134,10 @@ main() {
             case "$current_license" in
                 "none")
                     # add new license header
-                    printf "$LICENSE_HEADER\n$(cat "$file")" > "$file"
+                    file_before=`cat "$file"`
+                    echo "${LICENSE_HEADER}" > "$file"
+                    echo "${file_before}" >> "$file"
+                    # echo "$file set to $LICENSE"
                     ;;
                 "multiple")
                     echo "WARNING: $file not changed. Licence detected: multiple"
