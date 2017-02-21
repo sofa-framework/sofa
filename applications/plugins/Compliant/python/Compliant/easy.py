@@ -1,3 +1,4 @@
+import Sofa
 
 from ctypes import *
 from ctypes.util import find_library
@@ -142,17 +143,9 @@ class SparseMatrix(Structure):
                 dll.eigen_sparse_matrix_assign(pointer(self), pointer(eig))
                 
 
-# we need a few c functions
-def load_dll():
-    try:
-        dll_name = find_library('Compliant') or 'libCompliant.so'
-        return CDLL(dll_name)
-    except OSError:
-        dll_name = find_library('Compliant_d') or 'libCompliant_d.so'
-        return CDLL(dll_name)
         
-
-dll = load_dll()
+dll_path = Sofa.loadPlugin('Compliant')
+dll = CDLL(dll_path)
 dll.eigen_sparse_matrix_assign.restype = None
 dll.eigen_sparse_matrix_assign.argtypes = (POINTER(SparseMatrix), POINTER(SparseMatrix))
     
