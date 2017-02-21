@@ -164,13 +164,15 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
     unsigned int height = 600;
     unsigned int bpp = 3;
     unsigned int totalsize = width*height*bpp;
+    unsigned int halfTotalsize = totalsize * 0.5;
 
     unsigned char* imgdata = new unsigned char[totalsize];
     //half image (800x300) is black the other one is white
-    std::fill(imgdata, imgdata + (800*300*3), 0);
-    std::fill(imgdata + (800 * 300 * 3), imgdata + (800 * 600 * 3), 255);
+    std::fill(imgdata, imgdata + halfTotalsize, 0);
+    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
 
 
+    //images are RGB
     if(checkExtension("png"))
     {
         ImageCImgTestData imgBW("imagetest_blackwhite.png", width, height, bpp, imgdata);
@@ -193,5 +195,40 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
     }
 }
 
+
+TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
+{
+    unsigned int width = 800;
+    unsigned int height = 600;
+    unsigned int bpp = 3;
+    unsigned int totalsize = width*height*bpp;
+    unsigned int halfTotalsize = totalsize * 0.5;
+
+    unsigned char* imgdata = new unsigned char[totalsize];
+    //half image (800x300) is black the other one is white
+    std::fill(imgdata, imgdata + halfTotalsize, 0);
+    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
+
+    //image is RGB
+    sofa::helper::io::ImageCImg img;
+    bool isLoaded = img.load("imagetest_blackwhite.png");
+    ASSERT_TRUE(isLoaded);
+
+    bool isWritten = img.save(sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png");
+    ASSERT_TRUE(isWritten);
+
+    //image is now grayscale (CImg wrote using only 1 byte per pixel, as it is Black&White)
+    bpp = 1;
+    totalsize = width*height*bpp;
+    halfTotalsize = totalsize * 0.5;
+
+    delete[] imgdata;
+    imgdata = new unsigned char[totalsize];
+    std::fill(imgdata, imgdata + halfTotalsize, 0);
+    std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
+
+    ImageCImgTestData imgBW("output_bw.png", width, height, bpp, imgdata);
+    imgBW.testBench();
+}
 
 }// namespace sofa

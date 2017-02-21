@@ -115,7 +115,8 @@ bool ImageCImg::load(std::string filename)
         return false;
     }
 
-    //flip image on X axis
+    //flip image on Y axis
+    //Cimg up to down, Sofa down to up
     cimgImage.mirror("y");
 
     init(width, height, 1, 1, dataType, channelFormat);
@@ -158,6 +159,11 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     for(unsigned int xy=0 ; xy < totalSize ; xy++)
             for(unsigned int c=0 ; c < channelsNb ; c++)
                 cimgImage[xy + c*totalSize] = data[xy * channelsNb + c];
+
+    //flip image on Y axis
+    //Cimg up to down, Sofa down to up
+    cimgImage.mirror("y");
+
     try
     {
         if(ext.empty())
@@ -168,12 +174,15 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
         }
         else
             cimgImage.save(filename.c_str());
+
+        res = true;
     }
     catch(cimg_library::CImgIOException e)
     {
         msg_error("ImageCImg") << "Caught exception while saving: " << e.what();
-        return false;
+        res = false;
     }
+
     return res;
 }
 
