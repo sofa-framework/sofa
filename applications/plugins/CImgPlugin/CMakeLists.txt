@@ -69,6 +69,13 @@ else()
     message(STATUS "CImgPlugin: Did not find zlib library (required for PNG Image Format)")
 endif()
 
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(CImgPlugin_test)
+    endif()
+endif()
+
 configure_file(CImgPlugin.h.in CImgPlugin/CImgPlugin.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin")
 
