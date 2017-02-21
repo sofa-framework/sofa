@@ -9,6 +9,9 @@
 #include <vector>
 
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/logging/MessageDispatcher.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 
 namespace sofa
 {
@@ -34,6 +37,9 @@ class SOFA_CIMGPLUGIN_API ImageCImg : public Image
 public:
     ImageCImg ()
     {
+        helper::logging::MessageDispatcher::clearHandlers() ;
+        helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
+        helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
     }
 
     ImageCImg (const std::string &filename)

@@ -54,6 +54,8 @@ void ImageCImg::setCimgCreators()
 
 bool ImageCImg::load(std::string filename)
 {
+     cimg_library::cimg::exception_mode(0);
+
     //msg_info("ImageCImg") << "Using CImgPlugin for " << filename;
 
     m_bLoaded = 0;
@@ -64,7 +66,16 @@ bool ImageCImg::load(std::string filename)
         return false;
     }
 
-    cimg_library::CImg<unsigned char> cimgImage(filename.c_str());
+    cimg_library::CImg<unsigned char> cimgImage;
+    try
+    {
+        cimgImage.load(filename.c_str());
+    }
+    catch(cimg_library::CImgIOException e)
+    {
+        msg_error("ImageCImg") << "Caught exception while loading: " << e.what();
+        return false;
+    }
 
     unsigned int width, height, depth, channels;
     width = cimgImage.width();
@@ -147,17 +158,22 @@ bool ImageCImg::save(std::string filename, int /* compression_level */)
     for(unsigned int xy=0 ; xy < totalSize ; xy++)
             for(unsigned int c=0 ; c < channelsNb ; c++)
                 cimgImage[xy + c*totalSize] = data[xy * channelsNb + c];
-
-    if(ext.empty())
+    try
     {
-        msg_error("ImageCImg") << "Cannot recognize extension or file format not supported,"
-                               << "image will be saved as a PNG file.";
-        cimgImage.save_png(filename.c_str());
+        if(ext.empty())
+        {
+            msg_error("ImageCImg") << "Cannot recognize extension or file format not supported,"
+                                   << "image will be saved as a PNG file.";
+            cimgImage.save_png(filename.c_str());
+        }
+        else
+            cimgImage.save(filename.c_str());
     }
-    else
-        cimgImage.save(filename.c_str());
-
-
+    catch(cimg_library::CImgIOException e)
+    {
+        msg_error("ImageCImg") << "Caught exception while saving: " << e.what();
+        return false;
+    }
     return res;
 }
 
