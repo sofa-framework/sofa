@@ -37,7 +37,8 @@ using namespace core::behavior;
                          "print debug stuff")),
           constraint_forces(initData(&constraint_forces,
                                      "constraint_forces",
-                                     "add constraint forces to mstate's 'force' vector at compliance levels at the end of the time step. (0->do nothing, 1->add to existing forces, 2->clear existing forces, 3-> clear existing forces and propagate constraint forces toward independent dofs) ")),
+                                     "add constraint forces to mstate's 'force' vector at compliance levels at the end of the time step."
+                                     "(0->do nothing, 1->add to existing forces, 2->clear existing forces, 3-> clear existing forces and propagate constraint forces toward independent dofs) ")),
           alpha( initData(&alpha,
                           SReal(1),
                           "implicitVelocity",

@@ -198,7 +198,7 @@ void ModulusSolver::solve(vec& res,
     unsigned k;
     const unsigned kmax = iterations.getValue();
 
-    const bool use_accel = anderson.getValue();
+//    const bool use_accel = anderson.getValue();
     
     for(k = 0; k < kmax; ++k) {
         old = y.tail(sys.n);

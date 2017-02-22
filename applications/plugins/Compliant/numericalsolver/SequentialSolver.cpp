@@ -400,7 +400,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
 	for(k = 0; k < max; ++k) {
         old = lambda;
         
-        real estimate2 = step( lambda, net, sys, constant, error, delta, correct, damping );
+        /*real estimate2 = */step( lambda, net, sys, constant, error, delta, correct, damping );
 
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 		
