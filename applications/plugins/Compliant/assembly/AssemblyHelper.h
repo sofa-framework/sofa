@@ -71,6 +71,24 @@ static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
 }
 
 
+// hopefully avoids a temporary alloc/dealloc for product
+template<class LValue, class LHS, class RHS>
+static void add_prod_mask(LValue& lval,
+                          const LHS& lhs, const RHS& rhs,
+                          const std::vector<bool>& res_mask, unsigned res_block_size) {
+    helper::ScopedAdvancedTimer advancedTimer("add_prod_mask");
+    
+    if( empty(lval) ) {
+        sparse::fast_prod_mask(lval, lhs, rhs, res_mask, res_block_size);
+        // lval = lhs * rhs;
+    } else {
+        // paranoia, i has it
+        sparse::fast_add_prod_mask(lval, lhs, rhs, res_mask, res_block_size);
+        // lval = lval + lhs * rhs;
+    }
+}
+
+
 template<class dofs_type>
 static std::string pretty(dofs_type* dofs) {
     return dofs->getContext()->getName() + " / " + dofs->getName();

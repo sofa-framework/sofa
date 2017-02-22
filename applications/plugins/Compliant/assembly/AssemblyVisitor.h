@@ -105,6 +105,7 @@ public:
 		
 		// TODO SPtr here ?
 		dofs_type* dofs;
+        
 
 		typedef std::map< dofs_type*, mapped> map_type;
 		map_type map;
@@ -318,9 +319,15 @@ struct AssemblyVisitor::process_helper {
                 if(!empty(Jp) ){
                     // scoped::timer step("mapping matrix product");
 
+#ifdef SOFA_USE_MASK
+                    // note: Jp is already masked
+                    const std::vector<bool>& child_mask = curr->forceMask.getEntries();
+                    add_prod_mask(Jc, *jc, Jp, child_mask, curr->getDerivDimension() ); 
+#else                    
                     // TODO optimize this, it is the most costly part
                     add_prod(Jc, *jc, Jp ); // full mapping
-
+#endif
+                    
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
