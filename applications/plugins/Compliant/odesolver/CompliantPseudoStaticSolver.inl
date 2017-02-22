@@ -81,7 +81,7 @@ void CompliantPseudoStaticSolver<CompliantOdeSolver>::solve(const core::ExecPara
 
     d_lastVelocity.setValue(lastVelocity);
 
-    if( printLog ) sout<<i+1<<" iterations"<<sendl;
+    dmsg_info() <<i+1<<" iterations" ;
 
 }
 

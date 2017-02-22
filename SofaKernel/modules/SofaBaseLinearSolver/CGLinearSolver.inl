@@ -59,9 +59,9 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     timeStamp = 1.0 / (SReal)sofa::helper::system::thread::CTime::getRefTicksPerSec();
 #endif
 
-	f_maxIter.setRequired(true);
-	f_tolerance.setRequired(true);
-	f_smallDenominatorThreshold.setRequired(true);
+    f_maxIter.setRequired(true);
+    f_tolerance.setRequired(true);
+    f_smallDenominatorThreshold.setRequired(true);
 }
 
 template<class TMatrix, class TVector>
@@ -111,8 +111,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
 
-    if( verbose )
-        sout<<"CGLinearSolver, b = "<< b <<sendl;
+    msg_info_when(verbose) <<" CGLinearSolver, b = "<< b ;
+
 
     if( f_warmStart.getValue() )
     {

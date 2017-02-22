@@ -74,7 +74,7 @@ void OglLabel::init()
         }
         else
         {
-            if (f_printLog.getValue()) sout << "Background color is " << backgroundSetting->color.getValue() << sendl;
+            msg_info() << " background color is " << backgroundSetting->color.getValue() ;
         }
     }
 
@@ -157,7 +157,7 @@ void OglLabel::setColor(float r, float g, float b, float a)
     this->b = b;
     this->a = a;
 
-    if (f_printLog.getValue()) sout << "Set color to: " << r << ", " << g << ", " << b << ", " << a << sendl;
+    msg_info() << " set color to: " << r << ", " << g << ", " << b << ", " << a ;
 }
 
 static int hexval(char c)

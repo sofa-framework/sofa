@@ -107,10 +107,10 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
-	
+
     virtual void resizeOut()
     {
-        if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
+        dmsg_info() << " entering into function" ;
 
         unsigned int size = this->fromModel->getSize();
 
@@ -124,7 +124,7 @@ public:
     //Pierre-Luc : I added this function to be able to use the mapping functionnalities without using the whole component
     virtual void initJacobianBlock( helper::vector<BlockType>& /*jacobianBlock*/)
     {
-        std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;
+        dmsg_warning() << " calling an unimplemented method." ;
     }
 
     /** @name Mapping functions */
@@ -175,7 +175,7 @@ public:
 
     virtual void apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
-        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+        dmsg_info() << " calling apply() " ;
 
         const InVecCoord&  in = dIn.getValue();
 
@@ -187,7 +187,7 @@ public:
 
     virtual void applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
     {
-        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJ"<<std::endl;
+        dmsg_info() << " calling applyJ";
 
         const InVecDeriv&  in = dIn.getValue();
 
@@ -204,12 +204,12 @@ public:
             out[i]=OutDeriv();
             jacobianBlock[i].addmult(out[i],in[i]);
         }
-		dOut.endEdit();
+        dOut.endEdit();
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
-        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+        dmsg_info() << " calling apply";
 
         helper::ReadAccessor<Data<InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

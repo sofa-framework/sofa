@@ -329,8 +329,9 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( Real ) (mparams->dt());
-        if ( this->f_printLog.getValue() )
-            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg<<sendl;
+
+        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg ;
+
         for ( unsigned int i=0; i<v.size(); i++ )
         {
             v[i] += hg;
@@ -366,8 +367,8 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     ( theGravity, g[0], g[1], g[2] );
     const MassType& m = d_mass.getValue();
     Deriv mg = theGravity * m;
-    if ( this->f_printLog.getValue() )
-        serr<<"UniformMass::addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg<<sendl;
+
+    dmsg_info() <<" addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg;
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES

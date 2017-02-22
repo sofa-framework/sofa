@@ -60,6 +60,7 @@ namespace component
 namespace container
 {
 
+//TODO(dmarchal) remove or uncomment this code.
 // ==========================================================================
 // Init Specializations (initialization from GaussPointSampler)
 /*
@@ -133,7 +134,7 @@ int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state 
         .add< MechanicalObject<F332fTypes> >()
         .add< MechanicalObject<F221fTypes> >()
 #endif
-		;
+        ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API MechanicalObject<F331dTypes>;

@@ -48,9 +48,9 @@ using namespace core::behavior;
                          "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
 
           stabilization_damping(initData(&stabilization_damping,
-									   SReal(1e-7),
-									   "stabilization_damping",
-									   "stabilization damping hint to relax infeasible problems"))
+                                       SReal(1e-7),
+                                       "stabilization_damping",
+                                       "stabilization damping hint to relax infeasible problems"))
 
           , formulation(initData(&formulation,
             "formulation",
@@ -549,11 +549,9 @@ using namespace core::behavior;
 
         // debugging
         if( debug.getValue() ) sys.debug();
-        if( f_printLog.getValue() )
-        {
-            sout << "dynamics size m: " <<sys.m<< sendl;
-            sout << "constraint size n: " <<sys.n<< sendl;
-        }
+
+        dmsg_info() << "dynamics size m: " << sys.m << "  \n"
+                    << "constraint size n: " <<sys.n ;
 
         // look for violated and active constraints
         // must be performed after assembly and before system factorization
@@ -610,7 +608,7 @@ using namespace core::behavior;
                 rhs_dynamics( sop, rhs, sys, _ck, posId, velId );
 
                 kkt->solve(x, sys, rhs);
-				
+
                 if( debug.getValue() ) {
                     sout << "dynamics rhs:" << std::endl
                               << rhs.transpose() << std::endl

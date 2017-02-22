@@ -106,7 +106,6 @@ Node::Node(const std::string& name)
 {
     _context = this;
     setName(name);
-    //f_printLog.setValue(true);
 }
 
 
@@ -839,8 +838,8 @@ void Node::updateVisualContext()
 void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 {
     if (!this->isActive()) return;
-	// if the current node is sleeping and the visitor can't access it, don't do anything
-	if (this->isSleeping() && !action->canAccessSleepingNode) return;
+    // if the current node is sleeping and the visitor can't access it, don't do anything
+    if (this->isSleeping() && !action->canAccessSleepingNode) return;
 
     if (!action->execParams()->checkValidStorage())
     {
@@ -1056,11 +1055,11 @@ Node::SPtr Node::create( const std::string& name )
 
 void Node::setSleeping(bool val)
 {
-	if (val != d_isSleeping.getValue())
-	{
-		d_isSleeping.setValue(val);
-		notifySleepChanged();
-	}
+    if (val != d_isSleeping.getValue())
+    {
+        d_isSleeping.setValue(val);
+        notifySleepChanged();
+    }
 }
 
 SOFA_DECL_CLASS(Node)

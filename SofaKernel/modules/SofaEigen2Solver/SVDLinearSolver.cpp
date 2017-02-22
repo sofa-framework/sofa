@@ -84,10 +84,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             m(i,j) = M[i][j];
         rhs(i) = b[i];
     }
-    if(verbose)
-    {
-        serr << "SVDLinearSolver<TMatrix,TVector>::solve, Here is the matrix m:" << sendl << m << sendl;
-    }
+
+    msg_info_when(verbose) << "solve, Here is the matrix m:  "
+                           << m ;
 
     /// Compute the SVD decomposition and the condition number
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);

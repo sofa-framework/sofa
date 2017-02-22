@@ -139,8 +139,8 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     /* // no init: the constraint problem has already been solved in the simulation...
     for(i=0; i<dim; )
     {
-    	res[i]->init(i, w, force);
-    	i += res[i]->nbLines;
+        res[i]->init(i, w, force);
+        i += res[i]->nbLines;
     }
      */
 
@@ -571,7 +571,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         // SWAP BUFFER:
         bufCP1 = !bufCP1;
     }
-    
+
     ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
 #if !defined(WIN32) && !defined(_XBOX)
@@ -600,11 +600,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 #endif
 
-    debug = this->f_printLog.getValue();
-
-    if (debug)
-        sout << "ConstraintAnimationLoop::step is called" << sendl;
-
+    dmsg_info() << " step is called" ;
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
@@ -792,11 +788,11 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     graphs->clear();
     /*	for(j=0; j<dim; j++)
     {
-    	std::ostringstream oss;
-    	oss << "f" << j;
+        std::ostringstream oss;
+        oss << "f" << j;
 
-    	sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
-    	graph_force.clear();
+        sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+        graph_force.clear();
     }	*/
     _graphForces.endEdit();
 

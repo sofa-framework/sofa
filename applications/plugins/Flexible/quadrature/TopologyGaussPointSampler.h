@@ -355,8 +355,7 @@ protected:
 
         }
 
-        if(this->f_printLog.getValue()) if(pos.size())    std::cout<<"TopologyGaussPointSampler: "<< pos.size() <<" generated samples"<<std::endl;
-
+        msg_info_when(pos.size()!=0) << " topologyGaussPointSampler: "<< pos.size() <<" generated samples" ;
     }
 
 
