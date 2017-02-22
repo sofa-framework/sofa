@@ -194,8 +194,7 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
                     assert(node);
                     if( node ) {
                         auto mapping = node->mechanicalMapping.get();
-                        serr << "mapping: " << node->mechanicalMapping->getPathName() << sendl;
-
+                        serr << "mapping: " << mapping->getPathName() << sendl;
                     }
                     
                     assert(false && "empty constraint row");
