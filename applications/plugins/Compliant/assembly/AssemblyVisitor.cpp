@@ -52,7 +52,7 @@ AssemblyVisitor::chunk::chunk()
 
 // pretty prints a mapping
 static inline std::string mapping_name(simulation::Node* node) {
-	return node->mechanicalMapping->getName() + " (class: " + node->mechanicalMapping->getClassName() + ") ";
+    return node->mechanicalMapping->getName() + " (class: " + node->mechanicalMapping->getClassName() + ", node: " + node->getPathName() + ") ";
 }
 
 // mapping informations as a map (parent dofs -> J matrix )
