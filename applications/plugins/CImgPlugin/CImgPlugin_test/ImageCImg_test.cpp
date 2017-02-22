@@ -72,7 +72,7 @@ protected:
     struct ImageCImgTestData
     {
         //used to compare lossy images
-        static constexpr float PIXEL_TOLERANCE = 1; //1 pixel of difference on the average of the image
+        static constexpr float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
 
         std::string filename;
         unsigned int width;
@@ -101,7 +101,7 @@ protected:
                 float totalRef = std::accumulate(data, data + total, 0, std::plus<unsigned int>());
                 float totalTest = std::accumulate(testdata, testdata + total, 0, std::plus<unsigned int>());
 
-                res = abs(totalRef - totalTest)/total < PIXEL_TOLERANCE;
+                res = fabs(totalRef - totalTest)/total < PIXEL_TOLERANCE;
 
             }
             else
@@ -162,7 +162,7 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
 {
     unsigned int width = 800;
     unsigned int height = 600;
-    unsigned int bpp = 3;
+    unsigned int bpp = 3;//images are RGB
     unsigned int totalsize = width*height*bpp;
     unsigned int halfTotalsize = totalsize * 0.5;
 
@@ -171,8 +171,6 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
     std::fill(imgdata, imgdata + halfTotalsize, 0);
     std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
 
-
-    //images are RGB
     if(checkExtension("png"))
     {
         ImageCImgTestData imgBW("imagetest_blackwhite.png", width, height, bpp, imgdata);
@@ -200,7 +198,7 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 {
     unsigned int width = 800;
     unsigned int height = 600;
-    unsigned int bpp = 3;
+    unsigned int bpp = 3;//image is RGB
     unsigned int totalsize = width*height*bpp;
     unsigned int halfTotalsize = totalsize * 0.5;
 
@@ -209,7 +207,6 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
     std::fill(imgdata, imgdata + halfTotalsize, 0);
     std::fill(imgdata + halfTotalsize , imgdata + totalsize, 255);
 
-    //image is RGB
     sofa::helper::io::ImageCImg img;
     bool isLoaded = img.load("imagetest_blackwhite.png");
     ASSERT_TRUE(isLoaded);
