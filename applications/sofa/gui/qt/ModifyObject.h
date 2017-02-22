@@ -47,6 +47,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QTextBrowser>
 
 
 namespace sofa
@@ -140,6 +141,7 @@ public:
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 public slots:
+    void openExternalBrowser(const QUrl &link);
     void reject   ();
     void accept   ();
     void closeNow () {emit(reject());} //called from outside to close the current widget
@@ -175,7 +177,7 @@ protected:
     const ModifyObjectFlags dialogFlags_;
 
     QWidget *messageTab;
-    QTextEdit *messageEdit;
+    QTextBrowser *messageEdit;
 
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;

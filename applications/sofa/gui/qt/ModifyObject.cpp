@@ -25,7 +25,8 @@
 #include "QDisplayDataWidget.h"
 #include "QDataDescriptionWidget.h"
 #include "QTabulationModifyObject.h"
-
+#include <QTextBrowser>
+#include <QDesktopServices>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #ifdef SOFA_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
@@ -447,6 +448,26 @@ const std::string toHtmlString(const Message::Type t)
     return "Undefine";
 }
 
+class ClickableTextEdit : public QTextEdit
+{
+public:
+    Q_OBJECT
+
+public:
+    ClickableTextEdit(QWidget* w) : QTextEdit(w) {
+
+    }
+
+
+};
+
+
+
+void ModifyObject::openExternalBrowser(const QUrl &link)
+{
+    QDesktopServices::openUrl(link) ;
+}
+
 //******************************************************************************************
 void ModifyObject::updateConsole()
 {
@@ -463,10 +484,13 @@ void ModifyObject::updateConsole()
         buttonClearWarnings->setText( tr("&Clear"));
         connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearMessages()));
 
-        messageEdit = new QTextEdit( messageTab);
+        messageEdit = new QTextBrowser(messageTab);
+        messageEdit->backwardAvailable(false);
+        connect(messageEdit, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(openExternalBrowser(const QUrl&)));
         messageEdit->setObjectName("WarningEdit");
+        messageEdit->setOpenExternalLinks(false);
+        messageEdit->setOpenLinks(false);
         tabLayout->addWidget( messageEdit );
-
         messageEdit->setReadOnly(true);
     }
 
