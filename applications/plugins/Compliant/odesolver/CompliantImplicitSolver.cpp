@@ -545,7 +545,8 @@ using namespace core::behavior;
         // stiffness depends on its child force
         compute_forces( sop, f, &_ck );
 
-        // assemble system
+        // assemble system. note: we need to assemble after compute_forces since
+        // it depends on masks
         perform_assembly( &sop.mparams(), sys );
 
         // debugging
