@@ -110,6 +110,208 @@ bool save_metaimage(const CImgList<T>& img,const char *const headerFilename, con
 }
 
 
+
+
+
+
+#ifdef SOFA_HAVE_ZLIB
+
+static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=0, float *const rotation=0)
+{
+        char item[1024] = {0}, tmp1[64]={0}, tmp2[64]={0};
+        gzgets(file, item, 63);
+        out[0] = out[1] = out[2] = out[3] = out[5] = 1; out[4] = out[6] = out[7] = -1;
+        if(cimg::strncasecmp(item, "#INRIMAGE-4#{",13)!=0)
+                throw CImgIOException("CImg<T>::load_gz_inr() : INRIMAGE-4 header not found.");
+
+        //gzread returns 0 for EOF
+        gzgets(file, item, 63);
+        while( !gzeof(file) && std::strncmp(item, "##}",3)) {
+                std::sscanf(item," XDIM%*[^0-9]%d", out);
+                std::sscanf(item," YDIM%*[^0-9]%d", out+1);
+                std::sscanf(item," ZDIM%*[^0-9]%d", out+2);
+                std::sscanf(item," VDIM%*[^0-9]%d", out+3);
+                std::sscanf(item," PIXSIZE%*[^0-9]%d", out+6);
+                if (voxsize) {
+                        std::sscanf(item," VX%*[^0-9.+-]%f", voxsize);
+                        std::sscanf(item," VY%*[^0-9.+-]%f", voxsize+1);
+                        std::sscanf(item," VZ%*[^0-9.+-]%f", voxsize+2);
+                }
+                if (std::sscanf(item," CPU%*[ =]%s", tmp1)) out[7] = cimg::strncasecmp(tmp1,"sun",3)?0:1;
+                switch (std::sscanf(item," TYPE%*[ =]%s %s", tmp1, tmp2)) {
+                        case 0 : break;
+                        case 2 : out[5] = cimg::strncasecmp(tmp1,"unsigned",8)?1:0; std::strncpy(tmp1,tmp2,sizeof(tmp1)-1);
+                        case 1:
+                                if (!cimg::strncasecmp(tmp1,"int",3)	|| !cimg::strncasecmp(tmp1,"fixed",5))	out[4] = 0;
+                                if (!cimg::strncasecmp(tmp1,"float",5) || !cimg::strncasecmp(tmp1,"double",6))	out[4] = 1;
+                                if (!cimg::strncasecmp(tmp1,"packed",6))										out[4] = 2;
+                                if (out[4]>=0) break;
+                        default:
+                                if (isspace(item[0]) ) break;
+                    throw CImgIOException("CImg<T>::load_gz_inr() : Invalid pixel type '%s' defined in header.",
+                                tmp2);
+                }
+                if(translation) std::sscanf(item," TX%*[^0-9.+-]%f", translation);
+                if(translation) std::sscanf(item," TY%*[^0-9.+-]%f", translation+1);
+                if(translation) std::sscanf(item," TZ%*[^0-9.+-]%f", translation+2);
+                if(rotation) std::sscanf(item," RX%*[^0-9.+-]%f", rotation);
+                if(rotation) std::sscanf(item," RY%*[^0-9.+-]%f", rotation+1);
+                if(rotation) std::sscanf(item," RZ%*[^0-9.+-]%f", rotation+2);
+                gzgets(file, item, 63);
+        }
+      if(out[0]<0 || out[1]<0 || out[2]<0 || out[3]<0)
+        throw CImgIOException("CImg<T>::load_gz_inr() : Invalid dimensions (%d,%d,%d,%d) defined in header.",
+                              out[0],out[1],out[2],out[3]);
+      if(out[4]<0 || out[5]<0)
+        throw CImgIOException("CImg<T>::load_gz_inr() : Incomplete pixel type defined in header.");
+      if(out[6]<0)
+        throw CImgIOException("CImg<T>::load_gz_inr() : Incomplete PIXSIZE field defined in header.");
+      if(out[7]<0)
+        throw CImgIOException("CImg<T>::load_gz_inr() : Big/Little Endian coding type undefined in header.");
+
+}
+
+
+template<typename T>
+inline int fread_gz(T *const ptr, const unsigned int nmemb, gzFile stream)
+{
+    if (!ptr || !stream)
+        throw CImgArgumentException("cimg::fread_gz() : Invalid reading request of %u %s%s from file %p to buffer %p.",
+                                    nmemb,cimg::type<T>::string(),nmemb>1?"s":"",stream,ptr);
+    if (!nmemb) return 0;
+    const unsigned long wlimitT = 63*1024*1024, wlimit = wlimitT/sizeof(T);
+    unsigned long to_read = nmemb, al_read = 0, l_to_read = 0, l_al_read = 0;
+    do {
+        l_to_read = to_read<wlimit?to_read:wlimit;
+        l_al_read = (unsigned long)gzread(stream,(void*)(ptr + al_read),l_to_read*sizeof(T))/sizeof(T);
+        al_read+=l_al_read;
+        to_read-=l_al_read;
+    } while (l_to_read==l_al_read && to_read>0);
+    if (to_read>0)
+        std::cout << "Warning: cimg::fread_gz() : Only " << al_read << "/" << nmemb << " bytes could be read from file." << std::endl;
+    return (int)al_read;
+}
+
+template<typename T>
+CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxsize, float *const translation=0, float *const rotation=0)
+{
+#define _cimg_load_gz_inr_case(Tf,sign,pixsize,Ts) \
+     if (!loaded && fopt[6]==pixsize && fopt[4]==Tf && fopt[5]==sign) { \
+        Ts *xval, *const val = new Ts[fopt[0]*fopt[3]]; \
+        cimg_forYZ(*newImage,y,z) { \
+            fread_gz(val,fopt[0]*fopt[3],nfile); \
+            if (fopt[7]!=endian) cimg::invert_endianness(val,fopt[0]*fopt[3]); \
+            xval = val; cimg_forX(*newImage,x) cimg_forC(*newImage,c) (*newImage)(x,y,z,c) = (T)*(xval++); \
+          } \
+        delete[] val; \
+        loaded = true; \
+      }
+
+        if(!file && !filename)
+        throw CImgIOException("CImg<T>::load_gz_inr() : Filename not specified.");
+        gzFile nfile = file ? file : gzopen(filename, "rb");
+        int fopt[8], endian = cimg::endianness() ? 1 : 0;
+        bool loaded = false;
+        if (voxsize) voxsize[0] = voxsize[1] = voxsize[2] = 1;
+        _load_gz_inr_header(nfile, fopt, voxsize, translation, rotation);
+        CImg<T>* newImage = new CImg<T>(fopt[0], fopt[1], fopt[2], fopt[3]);
+    _cimg_load_gz_inr_case(0,0,8,unsigned char);
+    _cimg_load_gz_inr_case(0,1,8,char);
+    _cimg_load_gz_inr_case(0,0,16,unsigned short);
+    _cimg_load_gz_inr_case(0,1,16,short);
+    _cimg_load_gz_inr_case(0,0,32,unsigned int);
+    _cimg_load_gz_inr_case(0,1,32,int);
+    _cimg_load_gz_inr_case(1,0,32,float);
+    _cimg_load_gz_inr_case(1,1,32,float);
+    _cimg_load_gz_inr_case(1,0,64,double);
+    _cimg_load_gz_inr_case(1,1,64,double);
+        if (!loaded) {
+                if (!file) gzclose(nfile);
+        throw CImgIOException("load_gz_inr() : Unknown pixel type defined in file '%s'.",
+                              filename?filename:"(gzfile)");
+        }
+        if (!file) gzclose(nfile);
+        return *newImage;
+}
+
+#endif // SOFA_HAVE_ZLIB
+
+
+
+template<typename Tin,typename Tout>
+inline int readAndConvert(CImgList<Tout>& img, const char* filename, const bool isCompressed=false, const bool invert_endianness=false)
+{
+    const unsigned int nb = (unsigned)(img(0).width()*img(0).height()*img(0).depth()*img(0).spectrum()); // number of values to read per image
+
+#ifdef SOFA_HAVE_ZLIB
+    if(isCompressed)
+    {
+        gzFile file = gzopen(filename, "rb");
+        if(!file) return 0;
+        Tin *const buffer = new Tin[nb];
+        cimglist_for(img,l)
+        {
+            fread_gz(buffer,nb,file);
+            if (invert_endianness) cimg::invert_endianness(buffer,nb);
+            cimg_foroff(img(l),off) img(l)._data[off] = (Tout)(buffer[off]);
+        }
+        delete[] buffer;
+        gzclose(file);
+    }
+    else
+#endif // SOFA_HAVE_ZLIB
+    {
+        std::FILE *const file = std::fopen(filename,"rb");
+        if(!file) return 0;
+        Tin *const buffer = new Tin[nb];
+        cimglist_for(img,l)
+        {
+            cimg::fread(buffer,nb,file);
+            if (invert_endianness) cimg::invert_endianness(buffer,nb);
+            cimg_foroff(img(l),off) img(l)._data[off] = (Tout)(buffer[off]);
+        }
+        delete[] buffer;
+        cimg::fclose(file);
+    }
+
+    return 1;
+}
+
+
+template<typename Tout>
+inline int read(CImgList<Tout>& img, const char* filename, const bool isCompressed=false, const bool invert_endianness=false)
+{
+    const unsigned int nb = (unsigned)(img(0).width()*img(0).height()*img(0).depth()*img(0).spectrum()); // number of values to read per image
+
+#ifdef SOFA_HAVE_ZLIB
+    if(isCompressed)
+    {
+        gzFile file = gzopen(filename, "rb");
+        if(!file) return 0;
+        cimglist_for(img,l)
+        {
+            fread_gz(img(l)._data,nb,file);
+            if (invert_endianness) cimg::invert_endianness(img(l)._data,nb);
+        }
+        gzclose(file);
+    }
+    else
+#endif // SOFA_HAVE_ZLIB
+    {
+        std::FILE *const file = std::fopen(filename,"rb");
+        if(!file) return 0;
+        cimglist_for(img,l)
+        {
+            cimg::fread(img(l)._data,nb,file);
+            if (invert_endianness) cimg::invert_endianness(img(l)._data,nb);
+        }
+        cimg::fclose(file);
+    }
+
+    return 1;
+}
+
+
 template<typename T,typename F>
 CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, F *const translation=0, F *const affine=0, F *const offsetT=0, F *const scaleT=0, int *const isPerspective=0)
 {
@@ -214,250 +416,28 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     }
 
     ret.assign(dim[3],dim[0],dim[1],dim[2],nbchannels);
-    unsigned int nb = dim[0]*dim[1]*dim[2]*nbchannels;
-    std::FILE *const nfile = std::fopen(imageFilename.c_str(),"rb");
-    if(!nfile) return ret;
+    bool isCompressed = imageFilename.find(".gz")!=std::string::npos;
 
-    if(inputType==std::string(cimg::type<T>::string()))
-    {
-        cimglist_for(ret,l)  cimg::fread(ret(l)._data,nb,nfile);
-    }
+    if(inputType==std::string(cimg::type<T>::string()))        read<T>(ret,imageFilename.c_str(),isCompressed);
     else
     {
-//        // get file size for verifications
-//        fseek( nfile, 0, SEEK_END );  // set the file pointer to end of file
-//        const size_t filesize = ftell( nfile ); // get the file size (position of last pos)
-//        rewind( nfile );  // return to begin of file
-
-
-
-        if(inputType==std::string("char"))
-        {
-//            if( filesize != nb*sizeof(char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            char *const buffer = new char[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("double"))
-        {
-//            if( filesize != nb*sizeof(double) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            double *const buffer = new double[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("float"))
-        {
-//            if( filesize != nb*sizeof(float) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            float *const buffer = new float[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("int"))
-        {
-//            if( filesize != nb*sizeof(int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            int *const buffer = new int[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("long"))
-        {
-//            if( filesize != nb*sizeof(long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            long *const buffer = new long[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("short"))
-        {
-//            if( filesize != nb*sizeof(short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            short *const buffer = new short[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("unsigned char"))
-        {
-//            if( filesize != nb*sizeof(unsigned char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            unsigned char *const buffer = new unsigned char[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("unsigned int"))
-        {
-//            if( filesize != nb*sizeof(unsigned int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            unsigned int *const buffer = new unsigned int[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("unsigned long"))
-        {
-//            if( filesize != nb*sizeof(unsigned long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            unsigned long *const buffer = new unsigned long[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("unsigned short"))
-        {
-//            if( filesize != nb*sizeof(unsigned short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            unsigned short *const buffer = new unsigned short[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
-        else if(inputType==std::string("bool"))
-        {
-//            if( filesize != nb*sizeof(bool) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
-            bool *const buffer = new bool[dim[3]*nb];
-            cimg::fread(buffer,dim[3]*nb,nfile);
-            //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
-            cimglist_for(ret,l) cimg_foroff(ret(l),off) ret(l)._data[off] = (T)(buffer[off+l*nb]);
-            delete[] buffer;
-        }
+        if(inputType==std::string("char"))                  readAndConvert<char,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("double"))           readAndConvert<double,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("float"))            readAndConvert<float,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("int"))              readAndConvert<int,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("long"))             readAndConvert<long,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("short"))            readAndConvert<short,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("unsigned char"))    readAndConvert<unsigned char,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("unsigned int"))     readAndConvert<unsigned int,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("unsigned long"))    readAndConvert<unsigned long,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("unsigned short"))   readAndConvert<unsigned short,T>(ret,imageFilename.c_str(),isCompressed);
+        else if(inputType==std::string("bool"))             readAndConvert<bool,T>(ret,imageFilename.c_str(),isCompressed);
     }
-    cimg::fclose(nfile);
 
     return ret;
 }
 
 
-
-#ifdef SOFA_HAVE_ZLIB
-
-static inline void _load_gz_inr_header(gzFile file, int out[8], float *const voxsize, float *const translation=0, float *const rotation=0)
-{
-	char item[1024] = {0}, tmp1[64]={0}, tmp2[64]={0};
-	gzgets(file, item, 63);
-	out[0] = out[1] = out[2] = out[3] = out[5] = 1; out[4] = out[6] = out[7] = -1;
-	if(cimg::strncasecmp(item, "#INRIMAGE-4#{",13)!=0)
-		throw CImgIOException("CImg<T>::load_gz_inr() : INRIMAGE-4 header not found.");
-
-	//gzread returns 0 for EOF
-	gzgets(file, item, 63);
-	while( !gzeof(file) && std::strncmp(item, "##}",3)) {
-		std::sscanf(item," XDIM%*[^0-9]%d", out);
-		std::sscanf(item," YDIM%*[^0-9]%d", out+1);
-		std::sscanf(item," ZDIM%*[^0-9]%d", out+2);
-		std::sscanf(item," VDIM%*[^0-9]%d", out+3);
-		std::sscanf(item," PIXSIZE%*[^0-9]%d", out+6);
-		if (voxsize) {
-			std::sscanf(item," VX%*[^0-9.+-]%f", voxsize);
-			std::sscanf(item," VY%*[^0-9.+-]%f", voxsize+1);
-			std::sscanf(item," VZ%*[^0-9.+-]%f", voxsize+2);
-		}
-		if (std::sscanf(item," CPU%*[ =]%s", tmp1)) out[7] = cimg::strncasecmp(tmp1,"sun",3)?0:1;
-		switch (std::sscanf(item," TYPE%*[ =]%s %s", tmp1, tmp2)) {
-			case 0 : break;
-			case 2 : out[5] = cimg::strncasecmp(tmp1,"unsigned",8)?1:0; std::strncpy(tmp1,tmp2,sizeof(tmp1)-1);
-			case 1:
-				if (!cimg::strncasecmp(tmp1,"int",3)	|| !cimg::strncasecmp(tmp1,"fixed",5))	out[4] = 0;
-				if (!cimg::strncasecmp(tmp1,"float",5) || !cimg::strncasecmp(tmp1,"double",6))	out[4] = 1;
-				if (!cimg::strncasecmp(tmp1,"packed",6))										out[4] = 2;
-				if (out[4]>=0) break;
-			default:
-				if (isspace(item[0]) ) break;
-	            throw CImgIOException("CImg<T>::load_gz_inr() : Invalid pixel type '%s' defined in header.",
-                                tmp2);
-		}
-		if(translation) std::sscanf(item," TX%*[^0-9.+-]%f", translation);
-		if(translation) std::sscanf(item," TY%*[^0-9.+-]%f", translation+1);
-		if(translation) std::sscanf(item," TZ%*[^0-9.+-]%f", translation+2);
-		if(rotation) std::sscanf(item," RX%*[^0-9.+-]%f", rotation);
-		if(rotation) std::sscanf(item," RY%*[^0-9.+-]%f", rotation+1);
-		if(rotation) std::sscanf(item," RZ%*[^0-9.+-]%f", rotation+2);
-		gzgets(file, item, 63);
-	}
-      if(out[0]<0 || out[1]<0 || out[2]<0 || out[3]<0)
-        throw CImgIOException("CImg<T>::load_gz_inr() : Invalid dimensions (%d,%d,%d,%d) defined in header.",
-                              out[0],out[1],out[2],out[3]);
-      if(out[4]<0 || out[5]<0)
-        throw CImgIOException("CImg<T>::load_gz_inr() : Incomplete pixel type defined in header.");
-      if(out[6]<0)
-        throw CImgIOException("CImg<T>::load_gz_inr() : Incomplete PIXSIZE field defined in header.");
-      if(out[7]<0)
-        throw CImgIOException("CImg<T>::load_gz_inr() : Big/Little Endian coding type undefined in header.");
-
-}
-
-template<typename T>
-inline int fread_gz(T *const ptr, const unsigned int nmemb, gzFile stream)
-{
-     if (!ptr || nmemb<=0 || !stream)
-        throw CImgArgumentException("cimg::fread_gz() : Invalid reading request of %u %s%s from file %p to buffer %p.",
-                                    nmemb,cimg::type<T>::string(),nmemb>1?"s":"",stream,ptr);
-
-	  const unsigned long wlimitTbytes = 63*1024*1024;
-      unsigned int objToRead = nmemb, bytesToRead = objToRead*sizeof(T), bytesAlreadyRead=0, currentBytesToRead = 0, bytesJustRead = 0;
-      do {
-       currentBytesToRead = bytesToRead < wlimitTbytes ? bytesToRead : wlimitTbytes;
-		bytesJustRead = (unsigned int) gzread(stream, (void*)(ptr+bytesAlreadyRead), currentBytesToRead);
-        bytesAlreadyRead+=bytesJustRead;
-        bytesToRead-=bytesJustRead;
-      } while (currentBytesToRead==bytesJustRead && bytesToRead>0);
-      if (bytesToRead>0)
-		  std::cout << "Warning: cimg::fread_gz() : Only " << bytesAlreadyRead << "/" << bytesToRead << " bytes could be read from file." << std::endl;
-      return bytesAlreadyRead;
-}
-
-template<typename T>
-CImg<T>& _load_gz_inr(gzFile file, const char *const filename, float *const voxsize, float *const translation=0, float *const rotation=0)
-{
-#define _cimg_load_gz_inr_case(Tf,sign,pixsize,Ts) \
-     if (!loaded && fopt[6]==pixsize && fopt[4]==Tf && fopt[5]==sign) { \
-        Ts *xval, *const val = new Ts[fopt[0]*fopt[3]]; \
-        cimg_forYZ(*newImage,y,z) { \
-            fread_gz(val,fopt[0]*fopt[3],nfile); \
-            if (fopt[7]!=endian) cimg::invert_endianness(val,fopt[0]*fopt[3]); \
-            xval = val; cimg_forX(*newImage,x) cimg_forC(*newImage,c) (*newImage)(x,y,z,c) = (T)*(xval++); \
-          } \
-        delete[] val; \
-        loaded = true; \
-      }
-
-	if(!file && !filename)
-        throw CImgIOException("CImg<T>::load_gz_inr() : Filename not specified.");
-	gzFile nfile = file ? file : gzopen(filename, "rb");
-	int fopt[8], endian = cimg::endianness() ? 1 : 0;
-	bool loaded = false;
-	if (voxsize) voxsize[0] = voxsize[1] = voxsize[2] = 1;
-	_load_gz_inr_header(nfile, fopt, voxsize, translation, rotation);
-	CImg<T>* newImage = new CImg<T>(fopt[0], fopt[1], fopt[2], fopt[3]);
-    _cimg_load_gz_inr_case(0,0,8,unsigned char);
-    _cimg_load_gz_inr_case(0,1,8,char);
-    _cimg_load_gz_inr_case(0,0,16,unsigned short);
-    _cimg_load_gz_inr_case(0,1,16,short);
-    _cimg_load_gz_inr_case(0,0,32,unsigned int);
-    _cimg_load_gz_inr_case(0,1,32,int);
-    _cimg_load_gz_inr_case(1,0,32,float);
-    _cimg_load_gz_inr_case(1,1,32,float);
-    _cimg_load_gz_inr_case(1,0,64,double);
-    _cimg_load_gz_inr_case(1,1,64,double);
-	if (!loaded) {
-		if (!file) gzclose(nfile);
-        throw CImgIOException("load_gz_inr() : Unknown pixel type defined in file '%s'.",
-                              filename?filename:"(gzfile)");
-	}
-	if (!file) gzclose(nfile);
-	return *newImage;
-}
-
-#endif // SOFA_HAVE_ZLIB
 
 /// Copy subImage in largeImage at the given pixel position (in the large image pixel coordinates)
 /// @warning for now both image must have the same type and same spectrum size @todo: improve this
