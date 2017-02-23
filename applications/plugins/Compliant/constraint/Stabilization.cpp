@@ -77,7 +77,8 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
 
 
-void Stabilization::filterConstraints( helper::vector<bool>*& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Stabilization::filterConstraints( helper::vector<bool>*& /*activateMask*/,
+                                       const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // All the constraints remain active
     // but non-violated constraint must not be stabilized
@@ -89,20 +90,16 @@ void Stabilization::filterConstraints( helper::vector<bool>*& activateMask, cons
     mask_type& mask = *this->mask.beginWriteOnly();
     mask.resize( n );
 
-    SReal* violation = new SReal[size];
-    mstate->copyToBuffer(violation, posId.getId(mstate.get()), size);
+    std::vector<SReal> violation(size);
+    mstate->copyToBuffer(violation.data(), posId.getId(mstate.get()), size);
 
-    for( unsigned block=0 ; block<n ; ++block )
-    {
+    for(unsigned block = 0; block < n; ++block) {
         unsigned line = block*dim; // first constraint line
         mask[block] = ( violation[line]<0 ); // violated constraint
     }
 
     this->mask.endEdit();
-
-    delete [] violation;
-
-    activateMask = &mask;
+    // activateMask = &mask;
 }
 
 
