@@ -86,7 +86,7 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
         if( !notempty((*js)[i]) )
         {
-            msg_warning("AssemblyVisitor") << "Empty mapping block for " << mapping_name(node) << " (is mapping Jacobian matrix assembled?)";
+            msg_warning("AssemblyVisitor") << "Empty mapping block for " << mapping_name(node) << " parent: " << i << " (is mapping Jacobian matrix assembled?)";
             continue;
         }
 
