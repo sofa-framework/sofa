@@ -25,15 +25,17 @@
 #include "../types/AffineTypes.h"
 
 
-#include "../deformationMapping/ImageDeformation.h"
 #include "../engine/ComputeWeightEngine.h"
 #include "../engine/ComputeDualQuatEngine.h"
-#include "../mass/MassFromDensity.h"
 #include "../quadrature/GaussPointContainer.h"
-#include "../quadrature/ImageGaussPointSampler.h"
 #include "../quadrature/TopologyGaussPointSampler.h"
-#include "../shapeFunction/ShapeFunctionDiscretizer.h"
+#ifdef SOFA_HAVE_IMAGE
+#include "../mass/MassFromDensity.h"
+#include "../deformationMapping/ImageDeformation.h"
+#include "../quadrature/ImageGaussPointSampler.h"
 #include "../shapeFunction/ImageShapeFunctionSelectNode.h"
+#include "../shapeFunction/ShapeFunctionDiscretizer.h"
+#endif
 
 
 
@@ -61,12 +63,15 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
     {
         DataEngine_test<DataEngineType>::init();
 
+#ifdef SOFA_HAVE_IMAGE
+
         const DDGLinkContainer& parent_inputs = this->m_engineInput->DDGNode::getInputs();
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
             core::objectmodel::BaseData* data = static_cast<core::objectmodel::BaseData*>(parent_inputs[i]);
 
             const defaulttype::AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+
 
             if( typeinfo->name().find("Image") != std::string::npos || typeinfo->name().find("BranchingImage") != std::string::npos )
             {
@@ -80,6 +85,7 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
                 }
             }
         }
+#endif
 
 
         if( this->root ) modeling::initScene(this->root);
@@ -99,13 +105,15 @@ struct FlexibleDataEngine_test : public DataEngine_test<DataEngineType>
 typedef testing::Types<
 TestDataEngine< component::engine::ComputeDualQuatEngine<defaulttype::Rigid3Types> >
 ,TestDataEngine< component::engine::GaussPointContainer >
+,TestDataEngine< component::engine::TopologyGaussPointSampler >
+,TestDataEngine< component::engine::ComputeWeightEngine >
+#ifdef SOFA_HAVE_IMAGE
 ,TestDataEngine< component::engine::ImageShapeFunctionSelectNode<defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::ImageDeformation<defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::MassFromDensity<defaulttype::Affine3Types,defaulttype::ImageUC> >
-,TestDataEngine< component::engine::TopologyGaussPointSampler >
 ,TestDataEngine< component::engine::ShapeFunctionDiscretizer<defaulttype::ImageUC> >
-,TestDataEngine< component::engine::ComputeWeightEngine >
 ,TestDataEngine< component::engine::ImageGaussPointSampler<defaulttype::Image<SReal>,defaulttype::ImageUC> >
+#endif
 > TestTypes; // the types to instanciate.
 
 
@@ -132,6 +140,50 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         tested->m_engineInput->f_inputVolume.setValue( helper::vector<SReal>(1,1) );
     }
 };
+
+
+/// specific scene for TopologyGaussPointSampler
+template<>
+struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::TopologyGaussPointSampler > > >
+{
+    typedef FlexibleDataEngine_test< TestDataEngine< component::engine::TopologyGaussPointSampler > > TestDataEngineType;
+    static void run( TestDataEngineType* tested )
+    {
+        tested->openScene( std::string(FLEXIBLE_TEST_SCENES_DIR) + "/Engine1.scn" );
+
+        simulation::Node::SPtr childNode = tested->root->getChild("child");
+
+        childNode->addObject( tested->m_engine );
+        childNode->addObject( tested->m_engineInput );
+
+        tested->m_engineInput->f_inPosition.setParent( "@../mesh.position" );
+    }
+};
+
+
+/// specific scene for ComputeWeightEngine
+template<>
+struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::ComputeWeightEngine > > >
+{
+    typedef FlexibleDataEngine_test< TestDataEngine< component::engine::ComputeWeightEngine > > TestDataEngineType;
+    static void run( TestDataEngineType* tested )
+    {
+        tested->openScene( std::string(FLEXIBLE_TEST_SCENES_DIR) + "/Engine2.scn" );
+
+        tested->root->addObject( tested->m_engine );
+        tested->root->addObject( tested->m_engineInput );
+
+        tested->m_engineInput->l_visualModel.setPath( "@/Visual" );
+        tested->m_engineInput->l_shapeFunction.setPath( "@/SF" );
+        tested->m_engine->l_visualModel.setPath( "@/Visual" );
+        tested->m_engine->l_shapeFunction.setPath( "@/SF" );
+    }
+};
+
+
+
+
+#ifdef SOFA_HAVE_IMAGE
 
 /// specific scene for ImageDeformation
 template<>
@@ -173,26 +225,6 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
 
 
 
-/// specific scene for TopologyGaussPointSampler
-template<>
-struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::TopologyGaussPointSampler > > >
-{
-    typedef FlexibleDataEngine_test< TestDataEngine< component::engine::TopologyGaussPointSampler > > TestDataEngineType;
-    static void run( TestDataEngineType* tested )
-    {
-        tested->openScene( std::string(FLEXIBLE_TEST_SCENES_DIR) + "/Engine1.scn" );
-
-        simulation::Node::SPtr childNode = tested->root->getChild("child");
-
-        childNode->addObject( tested->m_engine );
-        childNode->addObject( tested->m_engineInput );
-
-        tested->m_engineInput->f_inPosition.setParent( "@../mesh.position" );
-    }
-};
-
-
-
 /// specific scene for ShapeFunctionDiscretizer
 template<>
 struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::ShapeFunctionDiscretizer<defaulttype::ImageUC> > > >
@@ -208,27 +240,6 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         childNode->addObject( tested->m_engineInput );
     }
 };
-
-
-/// specific scene for ComputeWeightEngine
-template<>
-struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::ComputeWeightEngine > > >
-{
-    typedef FlexibleDataEngine_test< TestDataEngine< component::engine::ComputeWeightEngine > > TestDataEngineType;
-    static void run( TestDataEngineType* tested )
-    {
-        tested->openScene( std::string(FLEXIBLE_TEST_SCENES_DIR) + "/Engine2.scn" );
-
-        tested->root->addObject( tested->m_engine );
-        tested->root->addObject( tested->m_engineInput );
-
-        tested->m_engineInput->l_visualModel.setPath( "@/Visual" );
-        tested->m_engineInput->l_shapeFunction.setPath( "@/SF" );
-        tested->m_engine->l_visualModel.setPath( "@/Visual" );
-        tested->m_engine->l_shapeFunction.setPath( "@/SF" );
-    }
-};
-
 
 
 
@@ -254,7 +265,7 @@ struct SpecificTest<FlexibleDataEngine_test< TestDataEngine< component::engine::
         tested->m_engine->f_order.setValue(1);
     }
 };
-
+#endif
 
 
 

@@ -72,7 +72,7 @@ def createBarycentricFrame( parentNode, name ):
     node.createObject('MechanicalObject', template='Affine', name='dofs', position=dofPosition, showObject='true,', showObjectScale='0.5')
     node.createObject('UniformMass', template='Affine',totalMass='0.01')
     #Constraint
-    node.createObject('BoxROI', name='roi', template='Vec3d', box="-1 -2 -1.2 1 2 -0.8", drawBoxes='true', drawSize=1)
+    node.createObject('BoxROI', name='roi', template='Vec3d', position="@dofs.position", box="-1 -2 -1.2 1 2 -0.8", drawBoxes='true', drawSize=1)
     node.createObject('FixedConstraint', indices="@[-1].indices")
 
     #Shape function
@@ -115,7 +115,7 @@ def createVoronoiFrame( parentNode, name ):
     #Uniform Mass
     node.createObject('UniformMass', template='Affine',totalMass='0.01')
     #Constraint
-    node.createObject('BoxROI', name='roi', template='Vec3d', box="-1 -2.0 -1.2 1 2.0 -0.8", drawBoxes='true', drawSize=1)
+    node.createObject('BoxROI', name='roi', template='Vec3d', position="@dofs.position", box="-1 -2.0 -1.2 1 2.0 -0.8", drawBoxes='true', drawSize=1)
     node.createObject('FixedConstraint', indices="@[-1].indices")
 
     #Gauss point sampling
