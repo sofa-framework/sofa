@@ -1,22 +1,34 @@
+import Sofa
+
+from SofaTest import gtest
 from Compliant import StructuralAPI as api
+
+import math
+
+
 
 class Script(api.Script):
 
     def onEndAnimationStep(self, dt):
-        print(self.dofs.force)
 
+        force = self.dofs.force[0][1]
+        
+        if self.node.getTime() > 1:
 
-
-
+            ok = math.fabs(force) == 9.81
+            gtest.assert_true( ok, 'contact force error' )
+            gtest.finish()
+            
+            
 def createScene(node):
 
     node.createObject('RequiredPlugin', pluginName = 'Compliant')
 
-    ode = node.createObject('CompliantImplicitSolver') # , constraint_forces = 'propagate')
-    ode.debug = True
+    ode = node.createObject('CompliantImplicitSolver', constraint_forces = 'propagate')
+    # ode.debug = True
     
     num = node.createObject('SequentialSolver', iterations = 5, precision = 0)
-    num.debug = True
+    # num.debug = True
     
     # a point mass
     point = node.createChild('point')
@@ -42,3 +54,4 @@ def createScene(node):
 
     script = Script(node.createChild('post'))
     script.dofs = dofs
+    script.node = node
