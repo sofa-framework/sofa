@@ -724,6 +724,12 @@ extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
 }
 
 
+// returns the number of times the Data was modified
+extern "C" PyObject * Data_getCounter(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    return PyInt_FromLong( data->getCounter() );
+}
 
 
 SP_CLASS_METHODS_BEGIN(Data)
@@ -739,6 +745,7 @@ SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHOD(Data,getValueVoidPtr)
+SP_CLASS_METHOD(Data,getCounter)
 SP_CLASS_METHODS_END
 
 
