@@ -590,10 +590,8 @@ using namespace core::behavior;
                 kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 
                 if( debug.getValue() ) {
-                    serr << "correction rhs:" << std::endl
-                              << rhs.transpose() << std::endl
-                              << "solution:" << std::endl
-                              << x.transpose() << sendl;
+                    serr << "correction rhs: " << rhs.transpose() << sendl;
+                    serr << "solution: " << x.transpose() << sendl;
                 }
 
                 _vstab.realloc( &sop.vop ); // a temporary multivec not to modify velocity
@@ -613,11 +611,10 @@ using namespace core::behavior;
                 kkt->solve(x, sys, rhs);
 				
                 if( debug.getValue() ) {
-                    sout << "dynamics rhs:" << std::endl
-                              << rhs.transpose() << std::endl
-                              << "solution:" << std::endl
-                              << x.transpose() << sendl;
+                    serr << "dynamics rhs: " << rhs.transpose() << sendl;
+                    serr << "solution: " << x.transpose() << sendl;
                 }
+                
                 if( storeDSol ) {
                     dynamics_rhs = rhs;
                     dynamics_solution = x;
