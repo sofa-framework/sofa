@@ -33,7 +33,7 @@ def im(q):
 
 def angle(q):
     """get angle in rad"""
-    return 2.0* math.acos(re(q)) if re(q) < 1. else 2.
+    return 2.0* math.acos(re(q))
 
 # TODO optimize
 def prod(a, b):
@@ -227,7 +227,7 @@ def axisToQuat(axis, phi):
 def quatToAxis(q):
     """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
     """
-    sine  = math.sin( math.acos(q[3]) ) if q[3] < 1. else 0.
+    sine  = math.sin( math.acos(q[3]) )
 
     if (math.fabs(sine) < sys.float_info.epsilon) :
         axis = [0.0,1.0,0.0]
