@@ -364,7 +364,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
         return NULL;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
-    down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
@@ -378,7 +378,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
         return NULL;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
-    down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+    node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
 }
 
