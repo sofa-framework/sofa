@@ -93,15 +93,15 @@ namespace sofa {
 
                 void updateForceMask() {
 
-                    ForceMask &mask = *this->maskFrom;
+                    auto& mask = *this->maskFrom;
                     mask.assign(mask.size(), false);
                     
                     const auto& cm = jacobian.compressedMatrix;
                     
                     for(unsigned i = 0, n = this->maskTo->size(); i < n; ++i) {
 
-                        for(unsigned k = 0; k < TOut::deriv_total_size; ++k) {
-                            const unsigned row = i * TOut::deriv_total_size + k;
+                        for(unsigned k = 0; k < Out::deriv_total_size; ++k) {
+                            const unsigned row = i * Out::deriv_total_size + k;
 
                             using eigen_type = typename jacobian_type::CompressedMatrix;
                             using iterator_type = typename eigen_type::InnerIterator;
@@ -109,7 +109,7 @@ namespace sofa {
                             for(iterator_type it(cm, row); it; ++it) {
                                 const unsigned col = it.col();
                                 // TODO that makes a good lot of integer divisions :-/
-                                const unsigned src_index = col / TIn::deriv_total_size;
+                                const unsigned src_index = col / In::deriv_total_size;
                                 mask.insertEntry(src_index);
                             }
                             
