@@ -214,6 +214,9 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
         
     }
 
+    if(debug.getValue() ) {
+        serr << "diagonal: " << diagonal.transpose() << sendl;
+    }
 }
 
 
@@ -266,21 +269,20 @@ SReal BaseSequentialSolver::step(vec& lambda,
         chunk_type delta_chunk(&delta(b.offset), b.size);
 
         // if the constraint is activated, solve it
-        if( b.activated )
-        {
+        if( b.activated ) {
             chunk_type error_chunk(&error(b.offset), b.size);
 
             // update error
             error_chunk.noalias() = rhs.segment(b.offset, b.size);
             error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
             error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
-
+            
             const const_chunk_type diag_chunk(&diagonal(b.offset), b.size);
             
             // solve for lambda changes w/ jacobi iteration
             delta_chunk = error_chunk.array() / (diag_chunk.array() + damping);
             assert( !has_nan(delta_chunk) );
-            
+
             // handle disabled constraints
             delta_chunk.array() *= (diag_chunk.array() > 0).template cast<SReal>();
             
@@ -298,13 +300,11 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
             }
 
-	    // recompute deltas from projected lambdas
-	    delta_chunk = lambda_chunk - error_chunk;
+            // recompute deltas from projected lambdas
+            delta_chunk = lambda_chunk - error_chunk;
 
-        }
-        else // deactivated constraint
-        {
-            // force lambda to be 0
+        } else {
+            // deactivated constraint: force lambda to be 0
             delta_chunk = -lambda_chunk;
             lambda_chunk.setZero();
         }
@@ -382,7 +382,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
     vec delta = vec::Zero(sys.n);
 	
 	// lcp rhs 
-    vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
+    const vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
 	
 	// lcp error
     vec error = vec::Zero(sys.n);
@@ -411,6 +411,11 @@ void BaseSequentialSolver::solve_impl(vec& res,
 
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
+
+    if(debug.getValue() ) {
+        serr << "lcp rhs: " << constant.transpose() << sendl;
+        serr << "lcp lambda: " << lambda.transpose() << sendl;        
+    }
 
     
     if( this->f_printLog.getValue() )
@@ -700,7 +705,6 @@ void SequentialSolver::fetch_unilateral_blocks(const system_type& system)
 
                 assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
                 b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
-
                 blocks.push_back( b );
                 off += dim;
             }
