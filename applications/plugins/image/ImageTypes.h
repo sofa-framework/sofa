@@ -448,6 +448,10 @@ public:
     virtual Coord toImageInt(const Coord& p) const { Coord p2 = toImage(p); return Coord( helper::round(p2.x()),helper::round(p2.y()),helper::round(p2.z()) );}		// space coord to rounded image transform
     virtual Real toImageInt(const Real& p) const { return helper::round(toImage(p));}		// time to rounded image index transform
 
+    virtual const Coord& getTranslation() const = 0;
+    virtual const Coord& getRotation() const = 0;
+    virtual const Coord& getScale() const = 0;
+
     virtual void update()=0;
 
 };
@@ -880,6 +884,10 @@ public:
         return get_slicedModels(index,axis,roi);
     }
 
+    // returns the transformed parameters (for the widget)
+    Coord get_transformTranslation() const { return transform->getTranslation(); }
+    Coord get_transformRotation() const { return transform->getRotation(); }
+    Coord get_transformScale() const { return transform->getScale(); }
 
     // returns the transformed point (for the widget)
     Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
