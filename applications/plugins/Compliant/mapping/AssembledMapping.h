@@ -91,8 +91,7 @@ namespace sofa {
 				}
 
 
-                void updateForceMask() {
-
+                void update_force_mask_from_jacobian() {
                     auto& mask = *this->maskFrom;
                     mask.assign(mask.size(), false);
                     
