@@ -38,6 +38,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>
@@ -841,6 +842,9 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
+            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->searchUp<sofa::component::visualmodel::VisualStyle>();
+            if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
+
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
             //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
             //            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
