@@ -9,12 +9,14 @@ set(HEADER_FILES
     config.h
     CompliantAttachPerformer.h
     CompliantAttachPerformer.inl
+    CompliantAttachButtonSetting.h
 )
 
 set(SOURCE_FILES
     initCompliant_gui.cpp
     CompliantAttachPerformer.cpp
     QCompliantMouseOperations.cpp
+    CompliantAttachButtonSetting.cpp
 )
 
 find_package(SofaGui QUIET)

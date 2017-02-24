@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_CompliantAttachBUTTON_H
 
-#include <Compliant/config.h>
+#include <Compliant/Compliant_gui/config.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
@@ -38,7 +38,7 @@ namespace configurationsetting
 /**
  * Mouse using multi mapping based modelisation rather than interaction force field (not only for compliant)
  */
-class SOFA_Compliant_API CompliantAttachButtonSetting: public MouseButtonSetting
+class SOFA_Compliant_gui_API CompliantAttachButtonSetting: public MouseButtonSetting
 {
 public:
     SOFA_CLASS(CompliantAttachButtonSetting,MouseButtonSetting);
