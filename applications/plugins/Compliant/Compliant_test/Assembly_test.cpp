@@ -40,8 +40,14 @@ struct Assembly_test : public CompliantSolver_test
     /// @warning the scene must be initialized
     static SparseMatrix getAssembledImplicitMatrix( Node::SPtr node, const core::MechanicalParams* mparams )
     {
+
+        // make sure masks are propagated
+        simulation::MechanicalComputeForceVisitor cfVisitor(mparams, core::VecId::force() );
+        node->getContext()->executeVisitor( &cfVisitor );
+        
         simulation::AssemblyVisitor assemblyVisitor(mparams);
         node->getContext()->executeVisitor( &assemblyVisitor );
+        
         component::linearsolver::AssembledSystem sys;
         assemblyVisitor.assemble(sys); // assemble system
         
