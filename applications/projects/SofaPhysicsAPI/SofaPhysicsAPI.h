@@ -31,7 +31,7 @@ public:
     /// Load an XML file containing the main scene description
     bool load(const char* filename);
 
-    virtual void APIName();
+    virtual const char* APIName();
 
     virtual void createScene();
 

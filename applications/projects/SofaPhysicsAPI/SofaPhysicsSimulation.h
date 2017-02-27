@@ -21,7 +21,7 @@ public:
     SofaPhysicsSimulation(bool useGUI_ = false, int GUIFramerate_ = 0);
     virtual ~SofaPhysicsSimulation();
 
-    void APIName();
+    const char* APIName();
 
     bool load(const char* filename);
     void createScene();

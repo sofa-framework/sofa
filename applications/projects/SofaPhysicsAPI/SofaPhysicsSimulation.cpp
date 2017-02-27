@@ -37,7 +37,7 @@ SofaPhysicsAPI::~SofaPhysicsAPI()
     delete impl;
 }
 
-void SofaPhysicsAPI::APIName()
+const char *SofaPhysicsAPI::APIName()
 {
     return impl->APIName();
 }
@@ -250,9 +250,9 @@ SofaPhysicsSimulation::~SofaPhysicsSimulation()
     }
 }
 
-void SofaPhysicsSimulation::APIName()
+const char *SofaPhysicsSimulation::APIName()
 {
-    std::cout << "SofaPhysicsSimulation API" << std::endl;
+    return "SofaPhysicsSimulation API";
 }
 
 bool SofaPhysicsSimulation::load(const char* cfilename)
