@@ -120,13 +120,6 @@ namespace core
 namespace objectmodel
 {
 
-enum class InfoMessageLevel { MUTED, LOW, HIGH } ;
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_BASE_CPP)
-extern template class SOFA_CORE_API TData< InfoMessageLevel >;
-extern template class SOFA_CORE_API Data< InfoMessageLevel >;
-#endif
-
 /**
  *  \brief Base class for everything
  *
@@ -374,9 +367,7 @@ public:
 
     void clearLoggedMessages() const ;
 
-    inline bool notMuted() const { return d_infoMsgLevel.getValue() == InfoMessageLevel::MUTED ; }
-    inline bool lowVerbosity() const { return d_infoMsgLevel.getValue() >= InfoMessageLevel::LOW; }
-    inline bool highVerbosity() const { return d_infoMsgLevel.getValue() == InfoMessageLevel::HIGH; }
+    inline bool notMuted() const { return f_printLog.getValue(); }
 
 protected:
     /// Helper method used by initData()
@@ -471,7 +462,6 @@ public:
 
 
     Data<bool> f_printLog;
-    Data<InfoMessageLevel> d_infoMsgLevel;
 
     Data< sofa::core::objectmodel::TagSet > f_tags;
 

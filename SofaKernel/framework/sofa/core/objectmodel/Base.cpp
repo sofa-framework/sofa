@@ -52,8 +52,7 @@ Base::Base()
     , serr(_serr)
     , sout(_sout)
     , name(initData(&name,unnamed_label,"name","object name"))
-    , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
-    , d_infoMsgLevel(initData(&d_infoMsgLevel, InfoMessageLevel::MUTED, "msgInfoLevel", "Specify the amount of info messages emitted by the component among {Muted, Low, High}. (default=Muted)"))
+    , f_printLog(initData(&f_printLog, false, "printLog", "if true, emits extra messages at runtime."))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
 {
@@ -62,8 +61,6 @@ Base::Base()
     name.setReadOnly(true);
     f_printLog.setOwnerClass("Base");
     f_printLog.setAutoLink(false);
-    d_infoMsgLevel.setOwnerClass("Base");
-    d_infoMsgLevel.setAutoLink(false);
     f_tags.setOwnerClass("Base");
     f_tags.setAutoLink(false);
     f_bbox.setOwnerClass("Base");
@@ -256,7 +253,7 @@ void Base::processStream(std::ostream& out)
     }
     else if (sout==out)
     {
-        if (d_infoMsgLevel.getValue()!=InfoMessageLevel::MUTED)
+        if (f_printLog.getValue())
         {
             addMessage( (MessageDispatcher::log(sout.messageClass(),
                                                   sout.messageType(), this,
@@ -528,27 +525,6 @@ void  Base::parse ( BaseObjectDescription* arg )
         parseField(attrName, it.second);
     }
     updateLinks(false);
-
-    const char* printLog=arg->getAttribute("printLog", nullptr);
-    msg_deprecated_when(printLog) << "The 'printLog' attribute is deprecated and replaced with 'msgInfoLevel'. \n"
-                                     "Using deperecated attribute may result in lower performances.  \n"
-                                     "To remove this message you need to replace the lines with 'printLog=1' to msgInfoLevel='Low'." ;
-
-
-    if(f_printLog.isSet())
-    {
-        /// Both are set we send a warning message.
-        if(d_infoMsgLevel.isSet())
-            msg_warning() << "You cannot use 'printLog' and 'msgInfoLevel' at the same time.  \n"
-                             "To remove this message you need to remove the use of printLogs in your scene." ;
-
-        /// Only printLog is set... we copy its value into the new InfoMessageLevel system.
-        if( f_printLog.getValue() )
-            d_infoMsgLevel.setValue(InfoMessageLevel::LOW) ;
-    }
-
-    f_printLog.setValue( d_infoMsgLevel.getValue() != InfoMessageLevel::MUTED );
-
 }
 
 /// Update pointers in case the pointed-to objects have appeared
@@ -635,49 +611,6 @@ void  Base::writeDatas (std::ostream& out, const std::string& separator)
         }
     }
 }
-
-template<>
-bool TData<InfoMessageLevel>::read(const std::string& str)
-{
-    if(str=="Muted"){
-        virtualSetValue(InfoMessageLevel::MUTED) ;
-        return true;
-    }else if(str=="Low"){
-        virtualSetValue(InfoMessageLevel::LOW) ;
-        return true;
-    }else if(str=="High"){
-        virtualSetValue(InfoMessageLevel::HIGH) ;
-        return true;
-    }
-    return false;
-}
-
-
-template<>
-std::string TData<InfoMessageLevel>::getValueString() const
-{
-    switch(virtualGetValue())
-    {
-        case InfoMessageLevel::MUTED:
-            return "Muted";
-        case InfoMessageLevel::LOW:
-            return "Low";
-        case InfoMessageLevel::HIGH:
-            return "High";
-    }
-    assert(true & "This shouldn't happen") ;
-    return "";
-}
-
-
-template<>
-void TData<InfoMessageLevel>::printValue(std::ostream& out) const
-{
-    out << this->getValueString() ;
-}
-
-template class SOFA_CORE_API TData< InfoMessageLevel >;
-template class SOFA_CORE_API Data< InfoMessageLevel >;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// DEPRECATED SECTION ///////////////////////////////////////////////////
