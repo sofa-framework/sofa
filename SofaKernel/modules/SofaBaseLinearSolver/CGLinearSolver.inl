@@ -105,7 +105,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     Vector& q = *vtmp.createTempVector();
     Vector& r = *vtmp.createTempVector();
 
-    const bool printLog = this->f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
 
     // -- solve the system using a conjugate gradient solution
@@ -242,17 +241,13 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
 
     // x is the solution of the system
-    if( printLog )
-    {
 #ifdef DISPLAY_TIME
-        std::cerr<<"CGLinearSolver::solve, CG = "<<time1<<" build = "<<time2<<std::endl;
+    dmsg_info() << " solve, CG = "<<time1<<" build = "<< time2 ;
 #endif
-        sout<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
-    }
-    if( verbose )
-    {
-        sout<<"CGLinearSolver::solve, solution = "<<x<<sendl;
-    }
+
+    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond ;
+    dmsg_info_when( verbose ) <<"solve, solution = "<< x ;
+
     vtmp.deleteTempVector(&p);
     vtmp.deleteTempVector(&q);
     vtmp.deleteTempVector(&r);

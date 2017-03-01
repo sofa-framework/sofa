@@ -1767,11 +1767,10 @@ void VisualModelImpl::handleTopologyChange()
 
             if (mstate)
             {
-                if (this->f_printLog.getValue())
-                {
-                    sout << "VisualModel: oldsize    " << this->getSize()  << sendl;
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-                }
+
+                dmsg_info() << " changing size.  " << "  \n"
+                            << " oldsize    " << this->getSize() << "  \n"
+                            << " copying " << mstate->getSize() << " points from mechanical state.";
 
                 vertices.resize(mstate->getSize());
 

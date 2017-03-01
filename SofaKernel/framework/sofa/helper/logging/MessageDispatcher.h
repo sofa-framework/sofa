@@ -29,6 +29,7 @@
 #include <sofa/helper/helper.h>
 #include "Message.h"
 #include <vector>
+#include <sofa/helper/system/SofaOStream.h>
 
 namespace sofa
 {
@@ -150,6 +151,7 @@ public:
         ~MessageDispatcher();
 
 };
+
 
 
 } // logging

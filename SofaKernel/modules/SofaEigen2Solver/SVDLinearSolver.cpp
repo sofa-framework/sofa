@@ -72,7 +72,6 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     CTime timer;
     double time1 = (double) timer.getTime();
 #endif
-    const bool printLog = this->f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
 
     /// Convert the matrix and the right-hand vector to Eigen objects
@@ -91,14 +90,18 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     /// Compute the SVD decomposition and the condition number
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(m, Eigen::ComputeThinU | Eigen::ComputeThinV);
     f_conditionNumber.setValue( (Real)(svd.singularValues()(0) / svd.singularValues()(M.rowSize()-1)) );
-    if(printLog)
-    {
-        serr << "SVDLinearSolver<TMatrix,TVector>::solve, the singular values are:" << sendl << svd.singularValues() << sendl;
-    }
+
+
+
     if(verbose)
     {
-        serr << "Its left singular vectors are the columns of the thin U matrix:" << sendl << svd.matrixU() << sendl;
-        serr << "Its right singular vectors are the columns of the thin V matrix:" << sendl << svd.matrixV() << sendl;
+        msg_info() << "solve, the singular values are:" << sendl << svd.singularValues()  << "  \n"
+                   << "Its left singular vectors are the columns of the thin U matrix:  \n"
+                   << svd.matrixU() << "  \n"
+                   << "Its right singular vectors are the columns of the thin V matrix:  \n"
+                   << svd.matrixV() ;
+    }else{
+        msg_info() << "solve, the singular values are:" << sendl << svd.singularValues()  << "  \n" ;
     }
 
     /// Solve the equation system and copy the solution to the SOFA vector
@@ -121,15 +124,13 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         x[i] = (Real) solution(i);
     }
 
-    if( printLog )
-    {
 #ifdef DISPLAY_TIME
         time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
-        std::cerr<<"SVDLinearSolver::solve, SVD = "<<time1<<std::endl;
+        dmsg_info << " solve, SVD = "<<time1;
 #endif
-        serr << "SVDLinearSolver<TMatrix,TVector>::solve, rhs vector = " << sendl << rhs.transpose() << sendl;
-        serr << "SVDLinearSolver<TMatrix,TVector>::solve, solution = " << sendl << x << sendl;
-        serr << "SVDLinearSolver<TMatrix,TVector>::solve, verification, mx - b = " << sendl << (m * solution - rhs ).transpose() << sendl;
+        dmsg_info << "solve, rhs vector = " << sendl << rhs.transpose() << sendl;
+                  << " solution =   \n" << sendl << x << sendl;
+                  << " verification, mx - b = " << sendl << (m * solution - rhs ).transpose() << sendl;
     }
 }
 
