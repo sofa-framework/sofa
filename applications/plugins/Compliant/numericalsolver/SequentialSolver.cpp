@@ -276,6 +276,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
             error_chunk.noalias() = rhs.segment(b.offset, b.size);
             error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
             error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
+            error_chunk.noalias() -= damping * lambda_chunk;
             
             const const_chunk_type diag_chunk(&diagonal(b.offset), b.size);
             
@@ -397,6 +398,8 @@ void BaseSequentialSolver::solve_impl(vec& res,
 	unsigned k = 0, max = iterations.getValue();
 	vec old;
 
+    SReal cv = 0;
+    
 	for(k = 0; k < max; ++k) {
         old = lambda;
         
@@ -405,22 +408,36 @@ void BaseSequentialSolver::solve_impl(vec& res,
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 		
 		// stop if we only gain one significant digit after precision
-        SReal error = (old - lambda).norm();
-		if( error < epsilon ) break;
+        cv = (old - lambda).norm();
+		if( cv < epsilon ) break;
 	}
 
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
     if(debug.getValue() ) {
+        serr << "lcp pass: " << (correct ? "correct" : "dynamics") << sendl;
         serr << "lcp rhs: " << constant.transpose() << sendl;
-        serr << "lcp lambda: " << lambda.transpose() << sendl;        
+        serr << "lcp lambda: " << lambda.transpose() << sendl;
+
+        // only make sense when all constraints are unilateral
+        const SReal unilateral_error =
+            (JP * (mapping_response * lambda)
+             + sys.C * lambda
+             + damping * lambda
+             - constant).array().max(0).matrix().norm();
+        
+        serr << "unilateral error: " << unilateral_error << sendl;
+        
+        std::cout << std::endl;
     }
 
     
-    if( this->f_printLog.getValue() )
-        serr << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
-	
+    if( this->f_printLog.getValue() ) {
+        serr << "iterations: " << k << ", error: " << cv << sendl;
+
+        
+    }
 
 }
 
