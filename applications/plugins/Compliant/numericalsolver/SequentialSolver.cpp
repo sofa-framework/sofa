@@ -16,7 +16,8 @@ namespace linearsolver {
 
 
 BaseSequentialSolver::BaseSequentialSolver()
-	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
+	: omega(initData(&omega, (SReal)1.0, "omega",
+                     "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
 {}
 
 
@@ -31,15 +32,13 @@ void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 	
 	unsigned off = 0;
 
-    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
-    {
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i) {
 		system_type::dofs_type* const dofs = system.compliant[i];
         const system_type::constraint_type& constraint = system.constraints[i];
 
         const unsigned dim = dofs->getDerivDimension();
 
-        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
-        {
+        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k) {
             block b;
 
             b.offset = off;
@@ -253,10 +252,8 @@ SReal BaseSequentialSolver::step(vec& lambda,
                                  bool correct,
                                  real damping ) const {
 
-	// TODO size asserts
-	// error norm2 estimate (seems conservative and much cheaper to
-	// compute anyways)
-	real estimate = 0;
+    // fix-point error squared-norm: ||f(x) - x||^2
+    real error_squared = 0;
 
     SReal omega = this->omega.getValue();
 		
@@ -311,9 +308,8 @@ SReal BaseSequentialSolver::step(vec& lambda,
             lambda_chunk.setZero();
         }
 
-		// we estimate the total lambda change. since GS convergence
-		// is linear, this can give an idea about current precision.
-		estimate += delta_chunk.squaredNorm();
+        // update fixpoint error
+		error_squared += delta_chunk.squaredNorm();
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
@@ -325,12 +321,12 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
-	// TODO is this needed to avoid error accumulation ?
-	// net.noalias() = mapping_response * lambda;
+	// TODO is this needed to avoid error accumulation? apparently not, but
+	// would be nice to have a paranoid flag to control it
 
-	// TODO flag to return real residual estimate !! otherwise
-	// convergence plots are not fair.
-	return estimate;
+    // net.noalias() = mapping_response * lambda;
+    
+	return error_squared;
 }
 
 void BaseSequentialSolver::solve(vec& res,
@@ -392,27 +388,28 @@ void BaseSequentialSolver::solve_impl(vec& res,
 	const real epsilon = relative.getValue() ? 
 		constant.norm() * precision.getValue() : precision.getValue();
 
+    // TODO remove bench solvers and provide python bindings/callbacks  
 	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
 	vec old;
 
+    // convergence error
     SReal cv = 0;
     
 	for(k = 0; k < max; ++k) {
         old = lambda;
         
-        /*real estimate2 = */step( lambda, net, sys, constant, error, delta, correct, damping );
+        const SReal cv_squared = step( lambda, net, sys, constant, error, delta, correct, damping );
 
+        // TODO remove bench solvers and provide python bindings/callbacks
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 		
-		// stop if we only gain one significant digit after precision
-        cv = (old - lambda).norm();
+        cv = std::sqrt( cv_squared );
 		if( cv < epsilon ) break;
 	}
-
+    
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
@@ -430,7 +427,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
         
         serr << "unilateral error: " << unilateral_error << sendl;
         
-        std::cout << std::endl;
+        serr << sendl;
     }
 
     
