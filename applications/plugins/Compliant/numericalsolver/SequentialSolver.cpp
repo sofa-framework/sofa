@@ -142,12 +142,13 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
     if( !n ) return;
     
     diagonal.resize( system.n );
-    
-    // compute mapping_response = Hinv * J^T
-    sub.solve_opt( *response, mapping_response, system.J );  
 
     // project constraint matrix
     JP = system.J * system.P;
+
+    // compute mapping_response = Hinv * J^T
+    sub.solve_opt( *response, mapping_response, JP );  
+    
 
 	// build blocks and factorize
 	for(unsigned i = 0; i < n; ++i) {
@@ -325,7 +326,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	// TODO is this needed to avoid error accumulation ?
-	// net = mapping_response * lambda;
+	// net.noalias() = mapping_response * lambda;
 
 	// TODO flag to return real residual estimate !! otherwise
 	// convergence plots are not fair.
@@ -425,7 +426,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
             (JP * (mapping_response * lambda)
              + sys.C * lambda
              + damping * lambda
-             - constant).array().max(0).matrix().norm();
+             - constant).array().min(lambda.array()).matrix().norm();
         
         serr << "unilateral error: " << unilateral_error << sendl;
         
