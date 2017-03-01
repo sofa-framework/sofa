@@ -43,7 +43,8 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 MeshSampler<DataTypes>::MeshSampler()
-    : number(initData(&number, (unsigned int)1, "number", "Sample number"))
+    : DataEngine()
+    , number(initData(&number, (unsigned int)1, "number", "Sample number"))
     , position(initData(&position,"position","Input positions."))
     , f_edges(initData(&f_edges,"edges","Input edges for geodesic sampling (Euclidean distances are used if not specified)."))
     , maxIter(initData(&maxIter, (unsigned int)100, "maxIter", "Max number of Lloyd iterations."))
@@ -71,6 +72,12 @@ void MeshSampler<DataTypes>::update()
 {
     sofa::helper::ReadAccessor< Data< VecCoord > > pos = this->position;
 
+    number.updateIfDirty();
+    f_edges.updateIfDirty();
+    maxIter.updateIfDirty();
+
+    cleanDirty();
+
     VVI ngb;    if(this->f_edges.getValue().size()!=0) computeNeighbors(ngb); // one ring neighbors from edges
     VI voronoi;
     VD distances;
@@ -85,14 +92,13 @@ void MeshSampler<DataTypes>::update()
         if(!LLoyd(distances,voronoi,ngb)) break;
         count++;
     }
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": Lloyd relaxation done in "<<count<<" iterations\n";
+    dmsg_info() <<this->getPathName()<<": Lloyd relaxation done in "<<count<<" iterations" ;
 
     // get export position from indices
     sofa::helper::WriteOnlyAccessor< Data< VI > > ind = this->outputIndices;
     sofa::helper::WriteOnlyAccessor< Data< VecCoord > > outPos = this->outputPosition;
     outPos.resize(ind.size());		for (unsigned int i=0; i<ind.size(); ++i)  outPos[i]=pos[ind[i]];
 
-    cleanDirty();
 }
 
 template <class DataTypes>
@@ -131,7 +137,7 @@ void MeshSampler<DataTypes>::farthestPointSampling(VD& distances,VI& voronoi,con
         computeDistances( distances, voronoi, ngb);
     }
 
-    if (this->f_printLog.getValue()) std::cout<<this->getName()<<": farthestPointSampling done\n";
+    dmsg_info() <<this->getPathName()<<": farthestPointSampling done" ;
 }
 
 template <class DataTypes>

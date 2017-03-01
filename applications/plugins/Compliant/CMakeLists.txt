@@ -41,6 +41,10 @@ set(HEADER_FILES
     forcefield/PotentialEnergy.h
     forcefield/UniformLinearPotentialEnergy.h
     forcefield/CompliantPenaltyForceField.h
+    forcefield/UniformStiffness.h
+    forcefield/UniformStiffness.inl
+    forcefield/DiagonalStiffness.h
+    forcefield/DiagonalStiffness.inl
     mapping/AdditionMapping.h
     mapping/AffineMultiMapping.h
     mapping/AssembledMapping.h
@@ -156,6 +160,8 @@ set(SOURCE_FILES
     forcefield/PotentialEnergy.cpp
     forcefield/UniformLinearPotentialEnergy.cpp
     forcefield/CompliantPenaltyForceField.cpp
+    forcefield/UniformStiffness.cpp
+    forcefield/DiagonalStiffness.cpp
     initCompliant.cpp
     mapping/AdditionMapping.cpp
     mapping/AffineMultiMapping.cpp

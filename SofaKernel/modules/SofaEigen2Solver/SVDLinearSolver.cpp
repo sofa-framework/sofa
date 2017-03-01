@@ -126,12 +126,11 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 #ifdef DISPLAY_TIME
         time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
-        dmsg_info << " solve, SVD = "<<time1;
+        dmsg_info() << " solve, SVD = "<<time1;
 #endif
-        dmsg_info << "solve, rhs vector = " << sendl << rhs.transpose() << sendl;
-                  << " solution =   \n" << sendl << x << sendl;
-                  << " verification, mx - b = " << sendl << (m * solution - rhs ).transpose() << sendl;
-    }
+        dmsg_info() << "solve, rhs vector = " << msgendl << rhs.transpose() << msgendl
+                    << " solution =   \n" << msgendl << x << msgendl
+                    << " verification, mx - b = " << msgendl << (m * solution - rhs ).transpose() << msgendl;
 }
 
 

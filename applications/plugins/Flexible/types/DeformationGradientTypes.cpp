@@ -83,7 +83,7 @@ void MechanicalObject<F331Types>::init()
         if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
         x0.endEdit();
 
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+        if(notMuted())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
         reinit();
     }
 }
@@ -107,7 +107,7 @@ void MechanicalObject<F332Types>::init()
         if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
         x0.endEdit();
 
-        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+        if(notMuted())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
         reinit();
     }
 }

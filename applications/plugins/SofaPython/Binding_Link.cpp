@@ -53,7 +53,7 @@ PyObject *GetLinkValuePython(BaseLink* link)
     return PyString_FromString(link->getValueString().c_str());
 }
 
-bool SetLinkValuePython(BaseLink* link, PyObject* args)
+int SetLinkValuePython(BaseLink* link, PyObject* args)
 {
     // only by string for now
 
@@ -63,10 +63,10 @@ bool SetLinkValuePython(BaseLink* link, PyObject* args)
         // it's a string
         char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
         link->read(str);
-        return true;
+        return 0;
     }
 
-    return false;
+    return -1;
 }
 
 
@@ -80,13 +80,7 @@ SP_CLASS_ATTR_GET(Link,value)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
-    if (SetLinkValuePython(link,args))
-        return 0;   // OK
-
-
-    SP_MESSAGE_ERROR( "argument type not supported" )
-    PyErr_BadArgument();
-    return -1;
+    return SetLinkValuePython(link,args);
 }
 
 //// access ONE element of the vector
@@ -198,3 +192,4 @@ SP_CLASS_ATTR(Link,value)
 SP_CLASS_ATTRS_END
 
 SP_CLASS_TYPE_BASE_PTR_ATTR(Link,BaseLink)
+

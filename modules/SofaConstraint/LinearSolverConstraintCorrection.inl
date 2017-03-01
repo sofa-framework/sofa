@@ -148,7 +148,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
 
-#if 0 // refMinv is not use in normal case    
+#if 0 // refMinv is not use in normal case
     if (refMinv.rowSize() > 0)			// What's for ??
     {
         std::cout<<"refMinv.rowSize() > 0"<<std::endl;
@@ -483,7 +483,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         v[i] = v_free[i] + dvi;
         dx[i] = dxi;
 
-        if (this->f_printLog.getValue()) std::cout << "dx[" << i << "] = " << dx[i] << std::endl;
+        msg_info() << "dx[" << i << "] = " << dx[i] ;
     }
 
 
@@ -697,7 +697,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     ///////// new : precalcul des liste d'indice ///////
     Vec_I_list_dof.clear(); // clear = the list is filled during the block compliance computation
 
-	// Resize   
+    // Resize
     unsigned int maxIdConstraint = 0;
     for (MatrixDerivRowConstIterator rowIt = constraints.begin(); rowIt != rowItEnd; ++rowIt)
     {

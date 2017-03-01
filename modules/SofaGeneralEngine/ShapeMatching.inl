@@ -127,20 +127,16 @@ void ShapeMatching<DataTypes>::update()
     VI::const_iterator it, itEnd;
     size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
 
-    if (this->f_printLog.getValue())
-    {
-        std::cout<<"ShapeMatching: #clusters="<<nbc<<std::endl;
-        std::cout<<"ShapeMatching: #restpos="<<nbp<<std::endl;
-        std::cout<<"ShapeMatching: #pos="<<currentPositions.size()<<std::endl;
-    }
+    msg_info() << "#clusters=" << nbc << msgendl
+               << " #restpos=" << nbp << msgendl
+               << " #pos=" << currentPositions.size() ;
 
     if(!nbc || !nbp  || !currentPositions.size()) return;
 
     //if mechanical state or cluster have changed, we must compute again xcm0
     if(oldRestPositionSize != nbp+nbf || oldfixedweight != this->fixedweight.getValue() || clusterdirty)
     {
-        if (this->f_printLog.getValue())
-            std:: cout<<"shape matching: update Xcm0"<<std::endl;
+        dmsg_info() <<"shape matching: update Xcm0" ;
 
         T.resize(nbc);
         Qxinv.resize(nbc);

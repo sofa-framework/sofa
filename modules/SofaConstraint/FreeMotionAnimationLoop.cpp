@@ -164,21 +164,18 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-    if (f_printLog.getValue())
-        serr << "updatePos called" << sendl;
+    dmsg_info() << "updatePos called" ;
 
     AdvancedTimer::stepBegin("UpdatePosition");
     this->gnode->execute(&beh);
     AdvancedTimer::stepEnd("UpdatePosition");
 
-    if (f_printLog.getValue())
-        serr << "updatePos performed - beginVisitor called" << sendl;
+    dmsg_info() << "updatePos performed - beginVisitor called" ;
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
     this->gnode->execute(&beginVisitor);
 
-    if (f_printLog.getValue())
-        serr << "beginVisitor performed - SolveVisitor for freeMotion is called" << sendl;
+    dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
     // Free Motion
     AdvancedTimer::stepBegin("FreeMotion");
@@ -188,13 +185,12 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     mop.propagateXAndV(freePos, freeVel, true); // apply projective constraints
 
-    if (f_printLog.getValue())
-        serr << " SolveVisitor for freeMotion performed" << sendl;
+    dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
     if (displayTime.getValue())
     {
-        sout << " >>>>> Begin display FreeMotionAnimationLoop time" << sendl;
-        sout <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" << sendl;
+        msg_info() << " >>>>> Begin display FreeMotionAnimationLoop time  " << msgendl
+                   <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" ;
 
         time = (double)CTime::getTime();
     }

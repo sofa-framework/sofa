@@ -225,7 +225,7 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
     else Voronoi(ptIndices , distances, voronoi);
 
 
-    if (this->f_printLog.getValue())
+    if (notMuted())
     {
         std::stringstream tmp;
         for (unsigned int i=0; i<nbp; i++)

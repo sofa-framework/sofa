@@ -80,6 +80,8 @@
 
 #include "MessageDispatcher.h"
 
+#define msgendl "  \n"
+
 #define nmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::null()
 #define nmsg_advice(emitter) sofa::helper::logging::MessageDispatcher::null()

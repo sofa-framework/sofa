@@ -91,7 +91,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateIndex(const size_t parentSize, const size_t childSize)
 {
-    if(this->f_printLog.getValue())
+    if(notMuted())
         std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
 
     this->f_index_parentToChild.clear();
@@ -122,8 +122,8 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex(const size_t parent
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
-{    
-    if(this->f_printLog.getValue())
+{
+    if(notMoted())
     {
         std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
     }
@@ -133,7 +133,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
     this->f_index_parentToChild.clear();
     this->f_index_parentToChild.resize(parentSize);
 
-    if(this->f_printLog.getValue())
+    if(notMuted())
     {
         std::cout << "parent size : " << parentSize << std::endl;
         std::cout << "child size : " << childSize << std::endl;

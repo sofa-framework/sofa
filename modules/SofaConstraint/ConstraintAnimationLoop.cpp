@@ -222,11 +222,9 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
         }
     }
 
-    if (m_printLog)
-    {
-        std::cout << "------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = "
-                << error << " ------" << std::endl;
-    }
+    msg_info("ConstraintAnimationLoop") << "------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = "
+               << error << " ------" << msgendl;
+
 }
 
 
@@ -265,7 +263,7 @@ ConstraintAnimationLoop::ConstraintAnimationLoop(simulation::Node* gnode)
 
     timer = 0;
 
-    std::cerr << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." << std::endl;
+    msg_deprecated("ConstraintAnimationLoop") << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." ;
 }
 
 ConstraintAnimationLoop::~ConstraintAnimationLoop()

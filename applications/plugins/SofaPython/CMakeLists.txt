@@ -40,6 +40,7 @@ set(HEADER_FILES
 #    Binding_SubsetMultiMapping.h
     Binding_Topology.h
     Binding_Vector.h
+    Binding_VectorLinearSpringData.h
     Binding_VisualModel.h
     PythonCommon.h
     PythonEnvironment.h
@@ -90,6 +91,7 @@ set(SOURCE_FILES
 #    Binding_SubsetMultiMapping.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
+    Binding_VectorLinearSpringData.cpp
     Binding_VisualModel.cpp
     PythonEnvironment.cpp
     PythonFactory.cpp

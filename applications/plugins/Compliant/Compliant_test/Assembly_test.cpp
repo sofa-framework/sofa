@@ -44,7 +44,7 @@ struct Assembly_test : public CompliantSolver_test
         node->getContext()->executeVisitor( &assemblyVisitor );
         component::linearsolver::AssembledSystem sys;
         assemblyVisitor.assemble(sys); // assemble system
-        
+
         return sys.H;
     }
 
@@ -410,7 +410,6 @@ struct Assembly_test : public CompliantSolver_test
         // The solver
         complianceSolver = addNew<OdeSolver>(solverObject);
         complianceSolver->storeDynamicsSolution(true);
-//        complianceSolver->f_printLog.setValue(true);
 //        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);

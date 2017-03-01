@@ -92,20 +92,17 @@ OglModel::OglModel()
     sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
     blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
     blendEquationOptions->setSelectedItem(0);
-    //this->f_printLog.setValue(true);
     blendEquation.endEdit();
 
     // alpha blend values
     sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
     sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     sourceFactorOptions->setSelectedItem(2);
-    //this->f_printLog.setValue(true);
     sourceFactor.endEdit();
 
     sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
     destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     destFactorOptions->setSelectedItem(3);
-    //this->f_printLog.setValue(true);
     destFactor.endEdit();
 
     sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
@@ -275,7 +272,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
-        //Disable lighting if we draw points 
+        //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
         glColor4fv(diffuse.ptr());
         glDrawArrays(GL_POINTS, 0, vertices.size());
@@ -584,12 +581,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     {
         glLineWidth(lineWidth.getValue());
     }
-    
+
     if (pointSize.isSet())
     {
         glPointSize(pointSize.getValue());
     }
-    
+
     if (pointSmooth.getValue())
     {
         glEnable(GL_POINT_SMOOTH);
@@ -602,7 +599,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     }
 
     drawGroups(transparent);
-    
+
     if (lineSmooth.getValue())
     {
         glDisable(GL_LINE_SMOOTH);
@@ -835,18 +832,18 @@ void OglModel::initVisual()
     canUseVBO = false;
 #else
 #if !defined(PS3)
-	static bool vboAvailable = false; // check the vbo availability
+    static bool vboAvailable = false; // check the vbo availability
 
-	static bool init = false;
-	if(!init)
+    static bool init = false;
+    if(!init)
     {
         vboAvailable = CanUseGlExtension( "GL_ARB_vertex_buffer_object" );
-		init = true;
-	}
+        init = true;
+    }
 
     canUseVBO = vboAvailable;
 #elif PS3
-	canUseVBO = true;
+    canUseVBO = true;
 #endif
 
     if (useVBO.getValue() && !canUseVBO)

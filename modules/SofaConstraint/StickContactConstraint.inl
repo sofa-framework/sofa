@@ -129,11 +129,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         ++OUTSIZE;
     }
 
-    if (OUTSIZE<SIZE && this->f_printLog.getValue())
-    {
-        // DUPLICATED CONTACTS FOUND
-        sout << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." << sendl;
-    }
+    // DUPLICATED CONTACTS FOUND
+    msg_info_when(OUTSIZE<SIZE) << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." ;
 
 }
 
@@ -226,7 +223,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 
             m_constraint->addContact(o->normal, o->point[0], o->point[1], distance, index1, index2, o->point[0], o->point[1], OUTSIZE, 0);
             ++OUTSIZE;
-    	}
+        }
         // Update mappings
         mapper1.update();
         mapper2.update();
@@ -241,9 +238,9 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-	sout << "->createResponse(" << group->getName() << ")" << sendl;
+    sout << "->createResponse(" << group->getName() << ")" << sendl;
     if (!contacts.empty() || !keepAlive())
-	{
+    {
         activateMappers();
         int i = 0;
         for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
@@ -261,7 +258,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 
             //m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
-	}
+    }
 
     if (m_constraint!=NULL)
     {
@@ -283,7 +280,7 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
-	sout << "->removeResponse()" << sendl;
+    sout << "->removeResponse()" << sendl;
     if (m_constraint)
     {
         //mapper1.resize(0);

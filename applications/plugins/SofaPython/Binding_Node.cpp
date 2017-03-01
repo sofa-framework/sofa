@@ -105,7 +105,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
     if (!node || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     bool warning = true;
@@ -244,7 +244,7 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->addObject(object);
 
@@ -274,7 +274,7 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->removeObject(object);
 
@@ -294,7 +294,7 @@ extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->addChild(child);
     Py_RETURN_NONE;
@@ -310,7 +310,7 @@ extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->removeChild(child);
     Py_RETURN_NONE;
@@ -326,7 +326,7 @@ extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->moveChild(child);
     Py_RETURN_NONE;
@@ -347,7 +347,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&eventName,&pyUserData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -361,7 +361,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -375,7 +375,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);

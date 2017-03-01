@@ -54,8 +54,7 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
         }
 
         PyErr_BadArgument();
-
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 
@@ -90,7 +89,7 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
         }
 
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     return SP_BUILD_PYPTR(Link,BaseLink,link,false);
@@ -105,12 +104,18 @@ extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
     // see if a Data field has this name...
-    BaseData * data = obj->findData(attrName);
-    if (data) return GetDataValuePython(data); // we have our data... let's create the right Python type....
+    if( BaseData * data = obj->findData(attrName) )
+    {
+        // special cases... from factory (e.g DisplayFlags, OptionsGroup)
+        if( PyObject* res = sofa::PythonFactory::toPython(data) )
+            return res;
+        else // the data type is not known by the factory, let's create the right Python type....
+            return GetDataValuePython(data);
+    }
 
     // see if a Link has this name...
-    BaseLink * link = obj->findLink(attrName);
-    if (link) return GetLinkValuePython(link); // we have our link... let's create the right Python type....
+    if( BaseLink * link = obj->findLink(attrName) )
+        return GetLinkValuePython(link); // we have our link... let's create the right Python type....
 
     //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
     return PyObject_GenericGetAttr(o,attr_name);
@@ -122,20 +127,18 @@ extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
     Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
     char *attrName = PyString_AsString(attr_name);
 
-//    printf("Base_SetAttr name=%s\n",dataName);
-    BaseData * data = obj->findData(attrName);
-    if (data)
+//    printf("Base_SetAttr name=%s\n",attrName);
+    if (BaseData * data = obj->findData(attrName))
     {
-        if (SetDataValuePython(data,v)) return 0;
-        else return -1;
+        // data types in Factory can have a specific setter
+        if( PyObject* pyData = sofa::PythonFactory::toPython(data) )
+            return PyObject_SetAttrString( pyData, "value", v );
+        else // the data type is not known by the factory, let's use the default implementation
+            return SetDataValuePython(data,v);
     }
 
-    BaseLink * link = obj->findLink(attrName);
-    if (link)
-    {
-        if (SetLinkValuePython(link,v)) return 0;
-        else return -1;
-    }
+    if (BaseLink * link = obj->findLink(attrName))
+        return SetLinkValuePython(link,v);
 
     return PyObject_GenericSetAttr(o,attr_name,v);
 }
@@ -171,7 +174,7 @@ extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
     if(!component)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();

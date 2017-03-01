@@ -6,8 +6,10 @@
 ### Environment
 
 
-
 ### New features for users
+* [SceneCreator]
+    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
+
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 - Minor improvement on the way warning/error message are presented to the users in runSofa. 
   A single panel is now used instead of of two, it is always displayed, the Panel name also contains the 
