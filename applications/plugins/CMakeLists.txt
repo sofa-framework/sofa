@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.1)
 add_subdirectory(../../extlibs/CImg extlibs/CImg)
 
 find_package(SofaFramework)
-sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI)
+
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
