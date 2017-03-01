@@ -587,5 +587,5 @@ class SceneDisplay(BaseScene):
         for solid in model.solids.values():
             if printLog:
                 Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
-            color = getValueByTag(self.param.colorByTag, solid.tags)
+            color = solid.getValueByTag(self.param.colorByTag)
             insertVisual(self.node, solid, color)
