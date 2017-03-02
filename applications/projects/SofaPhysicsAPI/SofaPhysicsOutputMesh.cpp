@@ -122,6 +122,7 @@ using namespace sofa::core::objectmodel;
 
 
 SofaPhysicsOutputMesh::Impl::Impl()
+	: sObj(NULL)
 {
 }
 
@@ -131,6 +132,9 @@ SofaPhysicsOutputMesh::Impl::~Impl()
 
 void SofaPhysicsOutputMesh::Impl::setObject(SofaOutputMesh* o)
 {
+	if (!sObj)
+		return;
+
     sObj = o;
     sVA.clear();
     sofa::core::objectmodel::BaseContext* context = sObj->getContext();
