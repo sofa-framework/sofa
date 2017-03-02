@@ -167,9 +167,10 @@ protected:
         {
             compliance->compliance.setValue( this->compliance_value.getValue() );
             compliance->damping.setValue( this->damping_ratio.getValue() );
-            compliance->reinit();
         }
 
+        // don't forget reinit as dofs size may have changed !
+        compliance->reinit();
 
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
