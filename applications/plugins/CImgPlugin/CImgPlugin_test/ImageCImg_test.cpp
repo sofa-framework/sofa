@@ -43,6 +43,9 @@ using sofa::helper::logging::MainCountingMessageHandler ;
 namespace sofa {
 
 
+//used to compare lossy images
+const float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
+
 class ImageCImg_test : public ::testing::Test
 {
 protected:
@@ -71,9 +74,6 @@ protected:
 
     struct ImageCImgTestData
     {
-        //used to compare lossy images
-        static constexpr float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
-
         std::string filename;
         unsigned int width;
         unsigned int height;
