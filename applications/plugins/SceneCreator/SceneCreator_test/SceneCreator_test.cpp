@@ -19,7 +19,7 @@ using sofa::component::topology::SphereGridTopology;
 using sofa::core::objectmodel::BaseContext;
 using sofa::defaulttype::Vec3Types;
 
-typedef sofa::component::container::MechanicalObject<defaulttype::Vec3Types>      MechanicalObject3;
+typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
 typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
 typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
