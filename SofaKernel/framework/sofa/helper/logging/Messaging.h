@@ -200,7 +200,7 @@
 
 /// THE ADVICE BEAST
 #define MSGADVICE_1(x) if( sofa::helper::logging::notMuted(x) ) oldmsg_advice(x)
-#define MSGADVICE_0()  if( sofa::helper::logging::notMuted(x) ) oldmsg_advice(this)
+#define MSGADVICE_0()  if( sofa::helper::logging::notMuted(this) ) oldmsg_advice(this)
 
 #define MSGADVICE_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, MSGADVICE_1, ))
 #define MSGADVICE_NO_ARG_EXPANDER() ,MSGADVICE_0
@@ -214,8 +214,8 @@
 /// THESE MACRO BEASTS ARE FOR AUTOMATIC DETECTION OF MACRO NO or ONE ARGUMENTS
 
 /// THE INFO BEAST
-#define DMSGINFO_1(x) olddmsg_info(x)
-#define DMSGINFO_0()  olddmsg_info(this)
+#define DMSGINFO_1(x) if( sofa::helper::logging::notMuted(x) ) olddmsg_info(x)
+#define DMSGINFO_0()  if( sofa::helper::logging::notMuted(this) ) olddmsg_info(this)
 
 #define DMSGINFO_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, DMSGINFO_1, ))
 #define DMSGINFO_NO_ARG_EXPANDER() ,DMSGINFO_0
@@ -273,8 +273,8 @@
 
 
 /// THE ADVICE BEAST
-#define DMSGADVICE_1(x) olddmsg_advice(x)
-#define DMSGADVICE_0()  olddmsg_advice(this)
+#define DMSGADVICE_1(x) if( sofa::helper::logging::notMuted(x) ) olddmsg_advice(x)
+#define DMSGADVICE_0()  if( sofa::helper::logging::notMuted(this) ) olddmsg_advice(this)
 
 #define DMSGADVICE_CHOOSE_FROM_ARG_COUNT(...) TWO_FUNC_RECOMPOSER((__VA_ARGS__, DMSGADVICE_1, ))
 #define DMSGADVICE_NO_ARG_EXPANDER() ,DMSGADVICE_0
