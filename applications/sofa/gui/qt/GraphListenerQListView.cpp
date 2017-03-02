@@ -254,7 +254,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
             {
                 for(int y=0;y<16;y++)
                 {
-                    if(overlaysymbol->pixelColor(x,y).alpha()==255)
+                    if( qAlpha(overlaysymbol->pixel(x,y)) == 255 )
                         img->setPixel(x, y,  overlaysymbol->pixel(x,y) );
                 }
             }
