@@ -58,6 +58,8 @@ public:
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
 
+    virtual void init() = 0;
+
     /// @name Primitive rendering methods
     /// @{
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour) = 0 ;
@@ -94,6 +96,8 @@ public:
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0 ;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0;
 
     virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16) = 0 ;
 
