@@ -731,6 +731,11 @@ extern "C" PyObject * Data_getCounter(PyObject * self, PyObject * /*args*/)
     return PyInt_FromLong( data->getCounter() );
 }
 
+extern "C" PyObject * Data_isDirty(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    return PyBool_FromLong( data->isDirty() );
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -746,6 +751,7 @@ SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHOD(Data,getCounter)
+SP_CLASS_METHOD(Data,isDirty)
 SP_CLASS_METHODS_END
 
 
