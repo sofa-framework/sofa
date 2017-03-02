@@ -320,6 +320,11 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
     if( node->mechanicalState->getSize()==0 ) return;
 
+    // if the mask filters every dofs, the mstate is not considered as mechanical
+    const sofa::core::behavior::BaseMechanicalState::ForceMask::InternalStorage& mask = node->mechanicalState->forceMask.getEntries();
+    if( std::find(mask.begin(), mask.end(), true) == mask.end() ) return;
+
+
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
 
