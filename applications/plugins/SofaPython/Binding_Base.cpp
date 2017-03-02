@@ -186,6 +186,17 @@ extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
     return pyDict;
 }
 
+
+// down cast to the lower type known by the factory
+// there is maybe a more pythonish way to do so? :)
+extern "C" PyObject * Base_downCast(PyObject *self, PyObject * /*args*/)
+{
+    Base* component = ((PySPtr<Base>*)self)->object.get();
+    return sofa::PythonFactory::toPython(component);
+}
+
+
+
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD(Base,findData)
 SP_CLASS_METHOD(Base,findLink)
@@ -193,6 +204,7 @@ SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
 SP_CLASS_METHOD(Base,getDataFields)
+SP_CLASS_METHOD(Base,downCast)
 SP_CLASS_METHODS_END
 
 //SP_CLASS_DATA_ATTRIBUTE(Base,name)
