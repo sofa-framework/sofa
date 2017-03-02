@@ -485,7 +485,7 @@ void ModifyObject::updateConsole()
         connect( buttonClearWarnings, SIGNAL( clicked()), this, SLOT( clearMessages()));
 
         messageEdit = new QTextBrowser(messageTab);
-        messageEdit->backwardAvailable(false);
+        //messageEdit->backwardAvailable(false);
         connect(messageEdit, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(openExternalBrowser(const QUrl&)));
         messageEdit->setObjectName("WarningEdit");
         messageEdit->setOpenExternalLinks(false);
