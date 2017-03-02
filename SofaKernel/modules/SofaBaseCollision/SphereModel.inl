@@ -52,6 +52,7 @@ template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius"))
+    , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(NULL)
 {
     enum_type = SPHERE_TYPE;
@@ -61,6 +62,7 @@ template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
     , defaultRadius(initData(&defaultRadius,(SReal)(1.0), "radius","Default Radius. (default=1.0)"))
+    , d_showImpostors(initData(&d_showImpostors, true, "showImpostors", "Draw spheres as impostors instead of \"real\" spheres"))
     , mstate(_mstate)
 {
     enum_type = SPHERE_TYPE;
@@ -157,7 +159,10 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
 
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
-        vparams->drawTool()->drawSpheres(points, radius, Vec<4,float>(getColor4f()));
+        if(d_showImpostors.getValue())
+            vparams->drawTool()->drawFakeSpheres(points, radius, Vec<4,float>(getColor4f()));
+        else
+            vparams->drawTool()->drawSpheres(points, radius, Vec<4, float>(getColor4f()));
         vparams->drawTool()->setLightingEnabled(false); //Disable lightning
 
     }

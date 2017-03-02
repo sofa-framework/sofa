@@ -81,6 +81,8 @@
 
 #include <SofaGeneralTopology/CylinderGridTopology.h>
 
+#include <SofaBaseLinearSolver/FullVector.h>
+
 namespace sofa
 {
 namespace modeling {
@@ -101,6 +103,11 @@ using sofa::component::topology::MeshTopology ;
 
 using sofa::component::topology::RegularGridTopology ;
 using sofa::component::topology::CylinderGridTopology ;
+
+
+/// Dense state vector deriving from BaseVector, used to access data in the scene graph
+typedef component::linearsolver::FullVector<SReal> FullVector;
+
 
 
 #ifndef SOFA_NO_OPENGL
@@ -130,7 +137,7 @@ using sofa::core::objectmodel::New ;
 using sofa::helper::system::DataRepository ;
 
 
-/////////////////// INSTANTIATE THE DIFFERENT TEMPLATE WE NEED TO USE ///////////////////////////
+/////////////////// ALIAS FOR THE DIFFERENT TEMPLATE WE NEED TO USE ///////////////////////////
 typedef CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >    CGLinearSolverGraph;
 typedef UniformMass<Vec3Types, SReal>                                   UniformMass3;
 typedef StiffSpringForceField<Vec3Types >                               StiffSpringForceField3;
@@ -715,18 +722,6 @@ simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::s
     return addPlane(parent, objectName, gridSize, -1.f, -1.f, -1.f, translation, rotation, scale);
 }
 
-
-//template<class Component>
-//typename Component::SPtr addNew( Node::SPtr parentNode, std::string name="")
-//{
-//    typename Component::SPtr component = New<Component>();
-//    parentNode->addObject(component);
-//    component->setName(parentNode->getName()+"_"+name);
-//    return component;
-//}
-
-
-
 /// Create a stiff string
 Node::SPtr massSpringString
 (
@@ -788,8 +783,6 @@ Node::SPtr initSofa()
     setSimulation(new simulation::graph::DAGSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
-//    root = modeling::newRoot();
-//    root->setName("Solver_test_scene_root");
 }
 
 
