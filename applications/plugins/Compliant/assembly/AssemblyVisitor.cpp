@@ -81,8 +81,9 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		// parent dofs
 		dofs_type* p = safe_cast<dofs_type>(from[i]);
 
-		// skip non-mechanical dofs
-        if(!p || p->getSize()==0 ) continue;
+        // skip non-mechanical dofs
+        // or this mechanical object is out of scope (ie not in the sub-graph controled by this solver)
+        if( !p || chunks.find( p ) == chunks.end() ) continue;
 
         if( !notempty((*js)[i]) )
         {
@@ -377,17 +378,19 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 
     helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
 
-    chunks_type::iterator cit = chunks.find( node->mechanicalState );
+    chunks_type::const_iterator cit = chunks.find( node->mechanicalState );
     // this mstate was ignored in fill_prefix (e.g. it is empty or completely masked out)
     if( cit == chunks.end() ) return;
-    chunk& c = cit->second;
+    const chunk& c = cit->second;
 
 	for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end();
 	    it != end; ++it) {
 
-        chunks_type::iterator cit = chunks.find( it->first );
-        if( cit == chunks.end() ) continue; // this mechanical object is out of scope (ie not in the sub-graph controled by this solver)
-        chunk& p = cit->second;
+        assert( chunks.find( it->first ) != chunks.end() &&
+                "this mstate is either non-mechanical or out of the solver's scope and should not have been considered by the mapping "
+                "-> sounds like there was a problem during the assembly" );
+
+        const chunk& p = chunks[it->first];
 
 		edge e;
 		e.data = &it->second;
@@ -446,7 +449,7 @@ struct AssemblyVisitor::propagation_helper {
 
     void operator()( unsigned v ) const {
 
-		chunk* c = g[v].data;
+        const chunk* c = g[v].data;
 
         // if the current child is a mechanical dof
         // or if the current mapping is bringing geometric stiffness
