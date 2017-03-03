@@ -57,7 +57,7 @@ public:
 protected:
 
     typedef MultiLink<DataEngineMonitor, core::DataEngine, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkEngines;
-    typedef typename LinkEngines::Container VecEngines;
+    typedef LinkEngines::Container VecEngines;
     typedef std::unique_ptr<core::DataTrackerFunctor<DataEngineMonitor> > DataTrackerFunctorSPtr;
 
     LinkEngines l_engines;
