@@ -318,11 +318,15 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 	assert( node->mechanicalState );
     assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
 
-    if( node->mechanicalState->getSize()==0 ) return;
+    // should this mstate be ignored?
+    {
+        // is it empty?
+        if( node->mechanicalState->getSize()==0 ) return;
 
-    // if the mask filters every dofs, the mstate is not considered as mechanical
-    const sofa::core::behavior::BaseMechanicalState::ForceMask::InternalStorage& mask = node->mechanicalState->forceMask.getEntries();
-    if( std::find(mask.begin(), mask.end(), true) == mask.end() ) return;
+        // does the mask filter every dofs?
+        const sofa::core::behavior::BaseMechanicalState::ForceMask::InternalStorage& mask = node->mechanicalState->forceMask.getEntries();
+        if( std::find(mask.begin(), mask.end(), true) == mask.end() ) return;
+    }
 
 
 	// fill chunk for current dof
@@ -381,8 +385,9 @@ void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 	for(chunk::map_type::const_iterator it = c.map.begin(), end = c.map.end();
 	    it != end; ++it) {
 
-        if( chunks.find(it->first) == chunks.end() ) continue; // this mechanical object is out of scope (ie not in the sub-graph controled by this solver)
-        chunk& p = chunks[it->first];
+        chunks_type::iterator cit = chunks.find( it->first );
+        if( cit == chunks.end() ) continue; // this mechanical object is out of scope (ie not in the sub-graph controled by this solver)
+        chunk& p = cit->second;
 
 		edge e;
 		e.data = &it->second;
