@@ -97,7 +97,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     {
         msg_info() << "solve, the singular values are:" << sendl << svd.singularValues()  << msgendl
                    << "Its left singular vectors are the columns of the thin U matrix: " << msgendl
-                   << svd.matrixU() << msgendl;
+                   << svd.matrixU() << msgendl
                    << "Its right singular vectors are the columns of the thin V matrix:" msgendl
                    << svd.matrixV() ;
     }else{
