@@ -339,7 +339,7 @@ class RigidBody(SingleMechanicalObject):
             self.node = node.createChild( name )
             self.frame = Frame.Frame( offset ) # store the offset, relative position to its reference
             self.dofs = self.node.createObject('MechanicalObject', template="Rigid3"+template_suffix, name='dofs')
-            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
+            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), applyRestPosition=True, geometricStiffness=geometric_stiffness)
             self.mapping.mapForces = isMechanical
             self.mapping.mapConstraints = isMechanical
             self.mapping.mapMasses = isMechanical
