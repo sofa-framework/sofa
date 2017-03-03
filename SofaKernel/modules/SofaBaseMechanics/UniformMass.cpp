@@ -180,7 +180,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                             for (int i = 0; i < 3; ++i)
                             {
                                 if( fscanf(file, "%lf", &(center[i])) < 1 ){
-                                    msg_error(this) << "error reading file '" << filename << "'.\n";
+                                    msg_error(this) << "error reading file '" << filename << "'.";
                                 }
                             }
                         }
@@ -193,15 +193,15 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                                     m.mass = mass;
                             }
                             else
-                                msg_error(this) << "error reading file '" << filename <<  "'."
-                                                "Unable to decode command 'mass'        \n";
+                                msg_error(this) << "error reading file '" << filename <<  "'." << msgendl
+                                                << "Unable to decode command 'mass'";
                         }
                         else if (!strcmp(cmd,"volm"))
                         {
                             double tmp;
                             if( fscanf(file, "%lf", &(tmp)) < 1 )
-                                msg_error(this) << "error reading file '" << filename << "'.\n"
-                                                   "Unable to decode command 'volm'.\n";
+                                msg_error(this) << "error reading file '" << filename << "'." << msgendl
+                                                << "Unable to decode command 'volm'." << msgendl;
                             m.volume = tmp ;
                         }
                         else if (!strcmp(cmd,"frme"))
@@ -210,8 +210,8 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                             for (int i = 0; i < 4; ++i)
                             {
                                 if( fscanf(file, "%lf", &(orient[i])) < 1 )
-                                    msg_error(this) << "error reading file '" << filename << "'.\n"
-                                                       "Unable to decode command 'frme' at index " << i << "\n";
+                                    msg_error(this) << "error reading file '" << filename << "'." << msgendl
+                                                    << "Unable to decode command 'frme' at index " << i ;
                             }
                             orient.normalize();
                         }
