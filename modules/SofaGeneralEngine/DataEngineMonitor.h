@@ -63,7 +63,10 @@ protected:
     LinkEngines l_engines;
     std::vector< DataTrackerFunctorSPtr > m_trackers;
 
-    std::map< core::DataTrackerFunctor<DataEngineMonitor>*, core::DataEngine*> m_trackerToEngine;
+    std::map< core::DataTrackerFunctor<DataEngineMonitor>*, core::DataEngine*> m_inputTrackerToEngine;
+    std::map< core::DataTrackerFunctor<DataEngineMonitor>*, core::DataEngine*> m_outputTrackerToEngine;
+
+    bool m_isInitialized;
 
 };
 
