@@ -187,7 +187,7 @@ extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
 }
 
 
-// down cast to the lower type known by the factory
+// down cast to the lowest type known by the factory
 // there is maybe a more pythonish way to do so? :)
 extern "C" PyObject * Base_downCast(PyObject *self, PyObject * /*args*/)
 {
