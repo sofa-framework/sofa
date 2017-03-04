@@ -219,8 +219,8 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                         {
                             Vec3d gravity;
                             if( fscanf(file, "%lf %lf %lf\n", &(gravity.x()), &(gravity.y()), &(gravity.z())) < 3 )
-                                msg_warning(this) << "error reading file '" << filename << "'.\n"
-                                                  " Unable to decode command 'gravity'. \n";
+                                msg_warning(this) << "error reading file '" << filename << "'." << msgendl
+                                                  << " Unable to decode command 'gravity'.";
                         }
                         else if (!strcmp(cmd,"visc"))
                         {
