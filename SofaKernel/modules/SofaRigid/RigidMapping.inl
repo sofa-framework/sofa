@@ -490,7 +490,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
 
-    dmsg_info() << "J on mapped DOFs == " << in << "  \n"
+    dmsg_info() << "J on mapped DOFs == " << in << msgendl
                 << "J on input  DOFs == " << out ;
 
     const unsigned int numDofs = this->getFromModel()->getSize();

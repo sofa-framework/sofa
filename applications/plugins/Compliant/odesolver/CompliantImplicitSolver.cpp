@@ -550,7 +550,7 @@ using namespace core::behavior;
         // debugging
         if( debug.getValue() ) sys.debug();
 
-        dmsg_info() << "dynamics size m: " << sys.m << "  \n"
+        dmsg_info() << "dynamics size m: " << sys.m << msgendl
                     << "constraint size n: " <<sys.n ;
 
         // look for violated and active constraints

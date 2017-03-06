@@ -366,9 +366,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         J_1.invert(J);
         J_1t.transpose(J_1);
 
-        dmsg_info_when(verbose) << "J = " << J << "  \n"
-                                << "invJ = "  << J_1 << "  \n"
-                                << "detJ = " << detJ << "  \n";
+        dmsg_info_when(verbose) << "J = " << J << msgendl
+                                << "invJ = "  << J_1 << msgendl
+                                << "detJ = " << detJ << msgendl;
     }
 //     else
 //         sout << "Hexa "<<elementIndice<<" is NOT a parallelepiped."<<sendl;
@@ -403,9 +403,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     J_1.invert(J);
                     J_1t.transpose(J_1);
 
-                    dmsg_info_when(verbose) << "J = " << J << "  \n"
-                                            << "invJ = "  << J_1 << "  \n"
-                                            << "detJ = " << detJ << "  \n";
+                    dmsg_info_when(verbose) << "J = " << J << msgendl
+                                            << "invJ = "  << J_1 << msgendl
+                                            << "detJ = " << detJ << msgendl;
                 }
                 Real qx[8];
                 Real qy[8];
@@ -553,7 +553,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     if (verbose)
     {
         std::stringstream tmp;
-        tmp <<"============================ computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX====  \n";
+        tmp <<"============================ computeElementStiffness:  Element "<<"   ===STIFNESSMATRIX====" << msgendl;
         for(int inode=0; inode<8; inode++)
         {
             for(int icomp=0; icomp<3; icomp++)
@@ -573,7 +573,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             }
             tmp<<"  "<<sendl;
         }
-        tmp<<"===============================================================  \n";
+        tmp<<"===============================================================" << msgendl;
         msg_info() << tmp.str() ;
     }
 }

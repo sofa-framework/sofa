@@ -582,11 +582,11 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)
 {
-    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while \n"
-                         " the current object is not based on a Rigid template. It is thus ignored.      \n"
-                         "To remove this warning you can: \n"
-                         "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>.\n"
-                         "  - use a Rigid mechanical object instead of a VecXX one. " ;
+    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<
+                         " the current object is not based on a Rigid template. It is thus ignored. " << msgendl <<
+                         "To remove this warning you can: " << msgendl <<
+                         "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>." << msgendl <<
+                         "  - use a Rigid mechanical object instead of a VecXX one." ;
 }
 
 } // namespace mass
