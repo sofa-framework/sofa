@@ -27,6 +27,6 @@
 SP_DECLARE_CLASS_TYPE(Data)
 
 PyObject *GetDataValuePython(sofa::core::objectmodel::BaseData* data);
-bool SetDataValuePython(sofa::core::objectmodel::BaseData* data, PyObject* value);
+int SetDataValuePython(sofa::core::objectmodel::BaseData* data, PyObject* value);
 
 #endif // BINDING_BASEDATA_H
