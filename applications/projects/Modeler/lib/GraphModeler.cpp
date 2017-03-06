@@ -464,8 +464,8 @@ void GraphModeler::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
     if(object == NULL)
         return;
 
-	if(propertyWidget)
-		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+    if(propertyWidget)
+        propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
 }
 
 void GraphModeler::doubleClick(QTreeWidgetItem *item, int /* column */)
@@ -871,8 +871,9 @@ void GraphModeler::loadPreset(Node *parent, std::string presetFile,
     }
 
 
+    msg_warning_when(!newXML->init(), "GraphModeler")
+            << "Objects initialization failed.";
 
-    if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
     Node *presetNode = dynamic_cast<Node*> ( newXML->getObject() );
     if (presetNode) addNode(parent,presetNode);
 }

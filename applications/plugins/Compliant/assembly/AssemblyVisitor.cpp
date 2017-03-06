@@ -179,7 +179,7 @@ const defaulttype::BaseMatrix* AssemblyVisitor::compliance(simulation::Node* nod
 // geometric stiffness matrix
 const defaulttype::BaseMatrix* AssemblyVisitor::geometricStiffness(simulation::Node* node)
 {
-//    std::cerr<<"AssemblyVisitor::geometricStiffness "<<node->getName()<<" "<<node->mechanicalMapping->getName()<<std::endl;
+//    msg_info()<<"AssemblyVisitor::geometricStiffness "<<node->getName()<<" "<<node->mechanicalMapping->getName()<<std::endl;
 
     core::BaseMapping* mapping = node->mechanicalMapping;
     if( mapping )
@@ -218,7 +218,7 @@ void AssemblyVisitor::interactionForceField(simulation::Node* node)
                 interactionForceFieldList.push_back( InteractionForceField(bigSqmat.compressedMatrix,ffield) );
 
 
-//            std::cerr<<"AssemblyVisitor::interactionForceField "<<ffield->getMechModel1()->getName()<<" "<<ffield->getMechModel2()->getName()<<" "<<bigSqmat<<std::endl;
+//            msg_info()<<"AssemblyVisitor::interactionForceField "<<ffield->getMechModel1()->getName()<<" "<<ffield->getMechModel2()->getName()<<" "<<bigSqmat<<std::endl;
         }
     }
 }
@@ -239,7 +239,7 @@ AssemblyVisitor::rmat AssemblyVisitor::odeMatrix(simulation::Node* node)
 
         if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-//            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
+//            msg_info()<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
 
             typedef EigenBaseSparseMatrix<SReal> BigSqmat;
             unsigned bigsize = ffield->getMechModel1()->getMatrixSize() + ffield->getMechModel2()->getMatrixSize();
@@ -257,7 +257,7 @@ AssemblyVisitor::rmat AssemblyVisitor::odeMatrix(simulation::Node* node)
                 interactionForceFieldList.push_back( InteractionForceField(bigSqmat.compressedMatrix,ffield) );
 
 
-//            std::cerr<<"AssemblyVisitor::odeMatrix "<<ffield->getName()<<" "<<bigSqmat<<std::endl;
+//            msg_info()<<"AssemblyVisitor::odeMatrix "<<ffield->getName()<<" "<<bigSqmat<<std::endl;
         }
         else
         {
@@ -724,13 +724,13 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
         if( boost::out_degree(prefix[i],graph) == 1 ) // simple mapping
         {
-//            std::cerr<<"simple mapping "<<c.dofs->getName()<<std::endl;
+//            msg_info()<<"simple mapping "<<c.dofs->getName()<<std::endl;
             // add the geometric stiffness to its only parent that will map it to the master level
             graph_type::out_edge_iterator parentIterator = boost::out_edges(prefix[i],graph).first;
             chunk* p = graph[ boost::target(*parentIterator, graph) ].data;
             add(p->H, mparams->kFactor() * *Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
 
-//            std::cerr<<"Assembly: "<<c.Ktilde<<std::endl;
+//            msg_info()<<"Assembly: "<<c.Ktilde<<std::endl;
         }
         else // multimapping
         {
@@ -738,18 +738,18 @@ void AssemblyVisitor::assemble(system_type& res) const {
             // by mapping with the specific jacobian from master to the (current-1) level
 
 
-//            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
+//            msg_info()<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
             const rmat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ c.dofs ];
 
 
 
-            //std::cerr<<geometricStiffnessJc<<std::endl;
-//            std::cerr<<*Ktilde<<std::endl;
-//            std::cerr<<Ktilde->nonZeros()<<std::endl;
+            //msg_info()<<geometricStiffnessJc<<std::endl;
+//            msg_info()<<*Ktilde<<std::endl;
+//            msg_info()<<Ktilde->nonZeros()<<std::endl;
 
-//            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
+//            msg_info()<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
             add_ltdl(res.H, geometricStiffnessJc, mparams->kFactor() * *Ktilde);
         }

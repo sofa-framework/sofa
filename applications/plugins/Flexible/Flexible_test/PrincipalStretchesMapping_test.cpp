@@ -33,8 +33,9 @@ namespace sofa {
                 {
                     if( tmp.getStrain()[j] == min && min != std::numeric_limits<Real>::max() )
                     {
-                        msg_warning("PrincipalStretchesJacobianBlockTester") << "Several strain components are identical, the test cannot find the comparison order, try with another data set.";
-                        std::cerr<<tmp.getStrain()<<std::endl;
+                        msg_warning("PrincipalStretchesJacobianBlockTester")
+                                << "Several strain components are identical, the test cannot find the comparison order, try with another data set." << msgendl
+                                << "strain is: " << tmp.getStrain() ;
                     }
 
                     if( tmp.getStrain()[j] < min )
@@ -157,7 +158,7 @@ namespace sofa {
             OutVecCoord expectedChildCoords(1);
             for( unsigned int i=0 ; i<In::material_dimensions ; ++i )
                 expectedChildCoords[0].getVec()[i] = strain[i][i];
-            
+
             return Inherited::runTest( rotation, strain, expectedChildCoords );
         }
 

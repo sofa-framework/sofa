@@ -175,7 +175,7 @@ void GridTopology::init()
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
-//    std::cerr<<"GridTopology::setSize(int nx, int ny, int nz), n = "<< n.getValue() << std::endl;
+//    msg_info()<<"GridTopology::setSize(int nx, int ny, int nz), n = "<< n.getValue() << std::endl;
     if (nx == this->n.getValue()[0] && ny == this->n.getValue()[1] && nz == this->n.getValue()[2])
         return;
     this->n.setValue(Vec3i(nx,ny,nz));

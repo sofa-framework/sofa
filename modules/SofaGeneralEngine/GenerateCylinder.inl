@@ -682,7 +682,7 @@ void GenerateCylinder<DataTypes>::update()
 					posTmp2[2]=outTrian[(*itt)[(i+2)%3]][2];
 					pos=(outTrian[(*itt)[i]]+ctheta*posTmp+ctheta*posTmp2)/(1+2*ctheta);
 					outTrian.push_back(pos);
-			//		std::cerr<<" central point norm ="<<sqrt(pos[0]*pos[0]+pos[1]*pos[1])<<std::endl;
+			//		msg_info()<<" central point norm ="<<sqrt(pos[0]*pos[0]+pos[1]*pos[1])<<std::endl;
 					bezierTriangleWeight.push_back((Real)(1+2*ctheta)/3.0f);
 				} else{
 					outTrian.push_back((outTrian[(*itt)[0]]+outTrian[(*itt)[1]]+outTrian[(*itt)[2]])/3.0f);

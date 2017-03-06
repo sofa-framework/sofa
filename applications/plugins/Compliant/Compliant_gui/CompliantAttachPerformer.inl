@@ -125,7 +125,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     if (picked.body)  // picked a collision element: create a MechanicalState mapped under the collision model, to store the picked point - NOT TESTED YET !!!!
     {
-//        std::cerr<<"mapped\n";
+//        msg_info()<<"mapped\n";
 
         pickedNode = down_cast<simulation::Node>(picked.body->getContext());
 
@@ -173,7 +173,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     }
     else // picked an existing particle
     {
-//        std::cerr<<"Already\n";
+//        msg_info()<<"Already\n";
 
 
 //        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
@@ -279,7 +279,7 @@ void CompliantAttachPerformer<DataTypes>::start()
         _vm->m_triangles.endEdit();
         interactionNode->addObject( _vm );
         _vm->setName("mouse");
-//        std::cerr<<"mouse: "<<interactionNode->getPathName()<<std::endl;
+//        msg_info()<<"mouse: "<<interactionNode->getPathName()<<std::endl;
     }
 
 
@@ -319,7 +319,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();
-    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
+    //    msg_info()<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
     }
 
 

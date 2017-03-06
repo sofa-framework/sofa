@@ -105,10 +105,10 @@ protected:
 //        DestMultiVecId v(core::VecDerivId::velocity());
 //        MyVecId vid = v.getId(this->mstate1.get());
 
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
+//        msg_info()<<SOFA_CLASS_METHOD<<"dof1 "<<this->mstate1->getName()<<"  ";this->mstate1->writeVec(core::VecId::velocity(),std::cerr);msg_info()<<std::endl;
 
 //        MyVecId vid2 = v.getId(this->mstate2.get());
-//        std::cerr<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);std::cerr<<std::endl;
+//        msg_info()<<SOFA_CLASS_METHOD<<"dof2 "<<this->mstate2->getName()<<"  ";this->mstate2->writeVec(core::VecId::velocity(),std::cerr);msg_info()<<std::endl;
 
 
 

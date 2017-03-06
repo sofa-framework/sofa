@@ -675,12 +675,12 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     systemLHVector_buf = linearsolvers[0]->getSystemLHBaseVector();
 
     // systemRHVector_buf is set to constraint_force;
-    //std::cerr<<"WARNING: resize is called"<<std::endl;
+    //msg_info()<<"WARNING: resize is called"<<std::endl;
     const unsigned int derivDim = Deriv::size();
     const unsigned int systemSize = this->mstate->getSize() * derivDim;
     systemRHVector_buf->resize(systemSize) ;
     systemLHVector_buf->resize(systemSize) ;
-    //std::cerr<<"resize ok"<<std::endl;
+    //msg_info()<<"resize ok"<<std::endl;
 
 
 

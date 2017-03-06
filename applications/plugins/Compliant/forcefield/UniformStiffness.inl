@@ -88,7 +88,7 @@ void UniformStiffness<DataTypes>::reinit()
 	}
     else matB.compressedMatrix.resize(0,0);
 	
-//    std::cerr<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
+//    msg_info()<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
 }
 
 template<class DataTypes>

@@ -44,11 +44,11 @@ GNode::GNode(const std::string& name, GNode* parent)
 
 GNode::~GNode()
 {
-	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-		GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
-		gnode->l_parent.remove(this);
-	}
+        GNode::SPtr gnode = sofa::core::objectmodel::SPtr_static_cast<GNode>(*it);
+        gnode->l_parent.remove(this);
+    }
 }
 
 /// Create, add, then return the new child of this Node
@@ -388,7 +388,7 @@ void GNode::updateContext()
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
+            msg_info()<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() ;
         }
         copyContext(*parent());
     }
@@ -401,7 +401,7 @@ void GNode::updateSimulationContext()
     {
         if( debug_ )
         {
-            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() << std::endl;
+            msg_info()<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *parent()->getContext() ;
         }
         copySimulationContext(*parent());
     }

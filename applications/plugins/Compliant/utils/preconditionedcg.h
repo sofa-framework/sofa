@@ -20,7 +20,7 @@ struct preconditionedcg
     template<class Matrix, class Preconditioner>
     static void solve(vec& x, const Matrix& A, const Preconditioner& P, const vec& b, params& p)
     {
-//        std::cerr<<"PCG: "<<(A(P(b))-b).norm()<<std::endl;
+//        msg_info()<<"PCG: "<<(A(P(b))-b).norm()<<std::endl;
 
 
         vec residual = b;

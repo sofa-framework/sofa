@@ -671,7 +671,7 @@ void RealGUI::lmlOpen ( const char* filename )
         simulation::getSimulation()->init ( root );
     }
     else
-        std::cerr<<"You must load the pml file before the lml file"<<endl;
+        msg_info()<<"You must load the pml file before the lml file"<<endl;
 }
 #endif
 
@@ -763,7 +763,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {
-        std::cerr<<"Failed to load "<<filename.c_str()<<std::endl;
+        msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
         return;
     }
     setScene ( mSimulation, filename.c_str(), temporaryFile );
@@ -1312,7 +1312,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
     if(mViewer != NULL)
         delete old;
     else
-        std::cerr<<"ERROR when registerViewer, the viewer is NULL"<<std::endl;
+        msg_error("RealGUI")<<"when registerViewer, the viewer is NULL";
 }
 
 //------------------------------------
@@ -1630,7 +1630,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 {
     if(_viewer == NULL)
     {
-        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
+        msg_error("RealGUI")<<"when initViewer, the viewer is NULL";
         return;
     }
     init(); //init data member from RealGUI for the viewer initialisation in the GUI

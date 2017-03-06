@@ -66,7 +66,7 @@ protected:
     void runRegressionScene( const std::string& testScene, unsigned nbsteps, double epsilon )
     {
 
-        std::cerr<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps<<std::endl;
+        msg_info("Regression_test")<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps;
 
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
@@ -102,7 +102,8 @@ protected:
         }
         else // create reference
         {
-            std::cerr<<"REGRESSION TEST : WARNING a reference is not existing and is created now, \""<<testScene<<".reference*\" files should be added to the repository "<<std::endl;
+            msg_warning("Regression_test")<<"a reference is not existing and is created now, \""<<testScene
+                      <<".reference*\" files should be added to the repository ";
 
 
             // just to create an empty file to know it is already init
@@ -160,7 +161,7 @@ protected:
 
         if (helper::system::FileSystem::exists(regression_scene_list) && !helper::system::FileSystem::isDirectory(regression_scene_list))
         {
-            std::cerr<<"Regression_test : testing list "<<regression_scene_list<<std::endl;
+            msg_info("Regression_test")<<"testing list "<<regression_scene_list;
 
             // parser le fichier -> (file,nb time steps,epsilon)
             std::ifstream iniFileStream(regression_scene_list.c_str());
@@ -196,7 +197,7 @@ protected:
             const std::string pluginPath = pluginsDirectory + "/" + *i;
             if (helper::system::FileSystem::isDirectory(pluginPath))
             {
-//                std::cerr<<"Regression_test : testing plugin/project "<<pluginPath<<std::endl;
+//                msg_info()<<"Regression_test : testing plugin/project "<<pluginPath<<std::endl;
 
                 const std::string testDir = pluginPath + "/" + *i + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))

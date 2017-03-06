@@ -579,12 +579,12 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
             x = vec::Zero(sys.size());
             sys.copyFromMultiVec( residual, _err );      // just the ode part
 
-            if(debug.getValue()) std::cerr<<"CompliantNLImplicitSolver::solve, residual= "<<residual.transpose()<<"\n";
+            if(debug.getValue()) msg_info()<<"CompliantNLImplicitSolver::solve, residual= "<<residual.transpose()<<"\n";
 
             kkt->solve(x, sys, residual);
 
 
-            if(debug.getValue()) std::cerr<<"CompliantNLImplicitSolver::solve, sol= "<<x.transpose()<<"\n";
+            if(debug.getValue()) msg_info()<<"CompliantNLImplicitSolver::solve, sol= "<<x.transpose()<<"\n";
 
 
             // the solution given by the newton iteration needs to be projected
@@ -631,7 +631,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
                 if( resnorm>resnormit )
                 {
-//                    std::cerr<<"NO SUBSTEPS : "<<resnorm<<" "<<resnormit<<std::endl;
+//                    msg_info()<<"NO SUBSTEPS : "<<resnorm<<" "<<resnormit<<std::endl;
                     // there is now way to improve convergence
                     // removing "correction"
                     sys.addToMultiVec( newV, -x );
@@ -659,7 +659,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
                      resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints.get());
                      if( resnorm>prevresnorm )
                      {
-//                         std::cerr<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
+//                         msg_info()<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
                          sys.addToMultiVec( newV, -x );
 
                          if( sys.n )
@@ -690,12 +690,12 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
         {
             // fail-safe solution computed by first guess
             sop.vop.v_eq( velId, _vfirstguess );
-//            std::cerr<<"DID NOT CONVERGE "<<resnorm<<" "<<resnormold<<std::endl;
+//            msg_info()<<"DID NOT CONVERGE "<<resnorm<<" "<<resnormold<<std::endl;
             if( sys.n ) v_eq_all( &sop.mparams(), lagrange, _lambdafirstguess );
         }
 //        else
 //        {
-////            std::cerr<<"CONVERGE "<<num<<" "<<resnorm<<" "<<resnormold<<std::endl;
+////            msg_info()<<"CONVERGE "<<num<<" "<<resnorm<<" "<<resnormold<<std::endl;
 //            set_state_lambda( sys, x.tail(sys.n) ); // setting lambda
 //        }
 
@@ -769,9 +769,9 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
     {
         if( debug.getValue() )
         {
-            std::cerr<<SOFA_CLASS_METHOD<<"Roundoff problem (slope="<<slope<<")\n";
+            msg_info()<<SOFA_CLASS_METHOD<<"Roundoff problem (slope="<<slope<<")\n";
             //        return true; // it won't converge anyway
-            std::cerr<<SOFA_CLASS_METHOD<<"Trying failsafe sub-stepping (step="<<alamin<<")\n";
+            msg_info()<<SOFA_CLASS_METHOD<<"Trying failsafe sub-stepping (step="<<alamin<<")\n";
         }
 
         // hack not to perform to much sub-steps
@@ -787,7 +787,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 
         if( resnorm>resnormold )
         {
-//            std::cerr<<"NO SUBSTEPS : "<<resnorm<<" "<<resnormold<<std::endl;
+//            msg_info()<<"NO SUBSTEPS : "<<resnorm<<" "<<resnormold<<std::endl;
             // there is now way to improve convergence
             // removing "correction"
             sys.copyToMultiVec( newV, xold );
@@ -808,7 +808,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
              resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get());
              if( resnorm>prevresnorm )
              {
-//                 std::cerr<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
+//                 msg_info()<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
 
                  x = xold+alamin*i*p;
                  sys.copyToMultiVec( newV, x );
@@ -816,7 +816,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 
                  resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get()); // needs to be performed again to have right forces
 
-//                 std::cerr<<"Newton sub-steps: "<<i*newtonStepLength.getValue()<<std::endl;
+//                 msg_info()<<"Newton sub-steps: "<<i*newtonStepLength.getValue()<<std::endl;
 
                  break;
              }
@@ -838,11 +838,11 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
         sys.copyToCompliantMultiVec( lagrange, x );
 
         resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get());
-//        std::cerr<<SOFA_CLASS_METHOD<<"alam = "<<alam<<" "<<resnorm<<" "<<resnormold<<" "<<resnormold+ALF*alam*slope<<std::endl;
+//        msg_info()<<SOFA_CLASS_METHOD<<"alam = "<<alam<<" "<<resnorm<<" "<<resnormold<<" "<<resnormold+ALF*alam*slope<<std::endl;
 
         if (resnorm <= resnormold+ALF*alam*slope)
                 {
-//                    /*if( alam!=1 ) */std::cerr<<SOFA_CLASS_METHOD<<"resnorm <= resnormold "<<resnorm<<" "<<resnormold<<" "<<resnormold+ALF*alam*slope<<std::endl;
+//                    /*if( alam!=1 ) */msg_info()<<SOFA_CLASS_METHOD<<"resnorm <= resnormold "<<resnorm<<" "<<resnormold<<" "<<resnormold+ALF*alam*slope<<std::endl;
                     return false;
                 }
         else if (alam < alamin)
@@ -851,7 +851,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 //            sys.copyToCompliantMultiVec( lagrange, xold );
             // convergence is achieved, no need for updating internal force, no jacobian will be evaluated
             resnorm = resnormold;
-//            std::cerr<<SOFA_CLASS_METHOD<<"alam < alamin "<<alam<<" "<<alamin<<std::endl;
+//            msg_info()<<SOFA_CLASS_METHOD<<"alam < alamin "<<alam<<" "<<alamin<<std::endl;
             return true;
 
             // hack that seems more stable
@@ -894,7 +894,7 @@ void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::beha
         return CompliantImplicitSolver::compute_forces( sop, f, f_k );
 //    else
 //    {
-//        std::cerr<<SOFA_CLASS_METHOD<<"Static solver does not work!\n";
+//        msg_info()<<SOFA_CLASS_METHOD<<"Static solver does not work!\n";
 
 ////        scoped::timer step("implicit rhs computation");
 
@@ -986,7 +986,7 @@ void CompliantNLImplicitSolver::firstGuess( SolverOperations& sop, core::MultiVe
             break;
         }
 
-//            std::cerr<<"CompliantNLImplicitSolver::firstGuess lambdas : "<< x.tail(sys.n).transpose() <<std::endl;
+//            msg_info()<<"CompliantNLImplicitSolver::firstGuess lambdas : "<< x.tail(sys.n).transpose() <<std::endl;
 
         this->clear_constraints();
 

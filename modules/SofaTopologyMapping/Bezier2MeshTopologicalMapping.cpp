@@ -196,7 +196,7 @@ void Bezier2MeshTopologicalMapping::init()
 			}
 //			std::cerr << std::endl;
 	//		for(j=0;j<tesselatedTriangleIndices.size();++j)
-		//		std::cerr<< (sofa::defaulttype::Vec<3,size_t >)(tesselatedTriangleIndices[j])<<std::endl;
+		//		msg_info()<< (sofa::defaulttype::Vec<3,size_t >)(tesselatedTriangleIndices[j])<<std::endl;
 
 			// store the edge point
 			if (bezierTesselation>1) {
@@ -251,7 +251,7 @@ void Bezier2MeshTopologicalMapping::init()
 			// save the global indices of each tessellated triangle for the computation of normals
 			globalIndexTesselatedBezierTriangleArray[i]=macroTriangleIndexArray;
 	
-//			std::cerr<< macroTriangleIndexArray<<std::endl;
+//			msg_info()<< macroTriangleIndexArray<<std::endl;
 			// now add subtriangles to the list
 			for (j=0;j<sta.size();++j,++rank){
 				for(k=0;k<3;++k){

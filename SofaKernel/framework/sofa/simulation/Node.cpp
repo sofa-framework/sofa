@@ -667,10 +667,10 @@ core::visual::VisualLoop* Node::getVisualLoop() const
 /// Find a child node given its name
 Node* Node::getChild(const std::string& name) const
 {
-//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name << endl;
+//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name ;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-//        cerr<<"Node::getChild, see " << (*it)->getName() << endl;
+//        cerr<<"Node::getChild, see " << (*it)->getName() ;
         if ((*it)->getName() == name)
             return it->get();
     }
@@ -809,7 +809,7 @@ void Node::updateContext()
 {
     updateSimulationContext();
     updateVisualContext();
-    if ( debug_ ) std::cerr<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) msg_info()<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 void Node::updateSimulationContext()
@@ -831,7 +831,7 @@ void Node::updateVisualContext()
         contextObject[i]->apply();
     }
 
-    if ( debug_ ) std::cerr<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+    if ( debug_ ) msg_info()<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 /// Execute a recursive action starting from this node
@@ -1025,7 +1025,7 @@ void Node::sortComponents()
         addObject(component_from_vertex[*ii]);
         //cerr << component_from_vertex[*ii]->getName() << " ";
     }
-    //cerr << endl;
+    //cerr ;
 
 }
 

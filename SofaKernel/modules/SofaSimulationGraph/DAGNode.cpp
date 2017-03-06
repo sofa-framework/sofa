@@ -45,11 +45,11 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
 
 DAGNode::~DAGNode()
 {
-	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-		DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
-		dagnode->l_parents.remove(this);
-	}
+        DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+        dagnode->l_parents.remove(this);
+    }
 }
 
 /// Create, add, then return the new child of this Node
@@ -170,7 +170,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 #ifdef DEBUG_GETOBJECT
     std::string cname = class_info.name();
     if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "DAGNode: search for object of type " << class_info.name() << std::endl;
+        std::cout << "DAGNode: search for object of type " << class_info.name() ;
     std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
     bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
 #endif
@@ -182,13 +182,13 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             {
 #ifdef DEBUG_GETOBJECT
                 if (isg)
-                    std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+                    std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
 #endif
                 result = class_info.dynamicCast(obj);
                 if (result != NULL)
                 {
 #ifdef DEBUG_GETOBJECT
-                    std::cout << "DAGNode: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+                    std::cout << "DAGNode: found object " << (obj)->getName() << " of type " << (obj)->getClassName() ;
 #endif
                     break;
                 }
@@ -455,25 +455,25 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 /// Execute a recursive action starting from this node
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-	if( precomputedOrder && !_precomputedTraversalOrder.empty() )
+    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
-//        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
+//        msg_info()<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
         for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
-		{
-			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
-				action->processNodeTopDown( *it );
-		}
+        {
+            if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+                action->processNodeTopDown( *it );
+        }
 
         for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
-		{
-			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
-	            action->processNodeBottomUp( *it );
-		}
+        {
+            if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+                action->processNodeBottomUp( *it );
+        }
     }
     else
     {
-//        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
+//        msg_info()<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
 
         // WARNING: do not store the traversal infos in the DAGNode, as several visitors could traversed the graph simultaneously
@@ -538,8 +538,8 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         return;
     }
 
-	if( this->isSleeping() && !action->canAccessSleepingNode )
-	{
+    if( this->isSleeping() && !action->canAccessSleepingNode )
+    {
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
@@ -581,7 +581,7 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
-//        std::cout << "...pruned (all parents pruned)" << std::endl;
+//        std::cout << "...pruned (all parents pruned)" ;
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
             for(unsigned int i = child.size(); i>0;)
@@ -660,8 +660,8 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
         return;
     }
 
-	if( this->isSleeping() && !action->canAccessSleepingNode )
-	{
+    if( this->isSleeping() && !action->canAccessSleepingNode )
+    {
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
         return;
@@ -709,7 +709,7 @@ void DAGNode::updateContext()
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() << std::endl;
+            msg_info()<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my context from exactly ?
@@ -726,7 +726,7 @@ void DAGNode::updateSimulationContext()
     {
         if( debug_ )
         {
-            std::cerr<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() << std::endl;
+            msg_info()<<"DAGNode::updateContext, node = "<<getName()<<", incoming context = "<< firstParent->getContext() ;
         }
         // TODO
         // ahem.... not sure here... which parent should I copy my simulation context from exactly ?
