@@ -371,7 +371,11 @@ class Model:
                 surfaceLink = Model.SurfaceLink(c)
                 surfaces=c.findall("surface")
                 for i,s in enumerate(surfaces):
-                    surfaceLink.surfaces[i] = Model.Surface()
+                    # a surfaceLink has at least two surfaces (initialized to None)
+                    if i>= 2:
+                        surfaceLink.surfaces.append( Model.Surface() )
+                    else:
+                        surfaceLink.surfaces[i] = Model.Surface()
                     if s.attrib["solid"] in self.solids:
                         surfaceLink.surfaces[i].solid = self.solids[s.attrib["solid"]]
                     else:
