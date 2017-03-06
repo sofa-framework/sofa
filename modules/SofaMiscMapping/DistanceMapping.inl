@@ -509,9 +509,10 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
     helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     const SeqEdges& links = edgeContainer->getEdges();
 
+    unsigned size = this->getFromModels().size();
 
     unsigned totalInSize = 0;
-    for( unsigned i=0 ; i<this->getFromModels().size() ; ++i )
+    for( unsigned i=0 ; i<size ; ++i )
     {
         size_t insize = inPos[i]->size();
         static_cast<SparseMatrixEigen*>(baseMatrices[i])->resizeBlocks(out.size(),insize);
@@ -555,21 +556,23 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
                 gap[i]=p;
         }
 
+        // do not forget to beginRow of every Jacobians
+        for( size_t k=0 ; k<size; ++k)
+        {
+            static_cast<SparseMatrixEigen*>(baseMatrices[k])->beginRow(i);;
+        }
+
         SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
         SparseMatrixEigen* J1 = static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]]);
-
-        J0->beginRow(i);
-        J1->beginRow(i);
         for(unsigned k=0; k<In::spatial_dimensions; k++ )
         {
             J0->insertBack( i, pair0[1]*Nin+k, -gap[k] );
             J1->insertBack( i, pair1[1]*Nin+k,  gap[k] );
         }
-
     }
 
 
-    for( unsigned i=0 ; i<baseMatrices.size() ; ++i )
+    for( unsigned i=0 ; i<size ; ++i )
     {
         baseMatrices[i]->compress();
     }

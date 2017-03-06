@@ -111,11 +111,6 @@ struct DistanceMultiMappingTest : public MultiMapping_test<DistanceMultiMapping>
 
     bool test(unsigned nbParents)
     {
-//        // we need to increase the error for avoiding numerical problem
-//        this->errorMax *= 1000;
-//        this->deltaRange.first = this->errorMax*100;
-//        this->deltaRange.second = this->errorMax*1000;
-
         this->setupScene(nbParents); // nbParents parents, 1 child
 
         DistanceMultiMapping* map = static_cast<DistanceMultiMapping*>( this->mapping );
@@ -176,6 +171,11 @@ TYPED_TEST( DistanceMultiMappingTest , twoParents )
 TYPED_TEST( DistanceMultiMappingTest , threeParents )
 {
     ASSERT_TRUE(this->test(3));
+}
+
+TYPED_TEST( DistanceMultiMappingTest , fourParents )
+{
+    ASSERT_TRUE(this->test(4));
 }
 
 } // namespace
