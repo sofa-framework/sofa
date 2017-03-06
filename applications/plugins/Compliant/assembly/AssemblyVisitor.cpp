@@ -542,8 +542,8 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
             if( itoff != offsets.end() ) Jp1 = shift_right<rmat>( itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
         }
 
-        if( !empty(Jp0) ) add( it->J, shift_left<rmat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
-        if( !empty(Jp1) ) add( it->J, shift_left<rmat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
+        if( !empty(Jp0) ) add<rmat,rmat>( it->J, shift_left<rmat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
+        if( !empty(Jp1) ) add<rmat,rmat>( it->J, shift_left<rmat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
     }
 
 	return res;
