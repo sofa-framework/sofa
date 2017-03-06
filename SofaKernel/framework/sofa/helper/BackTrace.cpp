@@ -128,7 +128,7 @@ void BackTrace::dump()
     for (i = 0; i < frames; i++)
     {
         SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
-        msg_info() << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec ;
+        std::cerr << (frames - i - 1) << ": " << symbol->Name << " - 0x" << std::hex << symbol->Address << std::dec ;
     }
 
     free(symbol);
