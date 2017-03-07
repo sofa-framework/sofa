@@ -261,10 +261,17 @@ class Solver(object):
 
 class Mapping(object):
     '''a nice mapping wrapper class for PythonMultiMapping'''
-    
+
+    _instances_ = set()
+
+    def release(self):
+        del Mapping._instances_[self]
     
     def __init__(self, node, **kwargs):
         '''you need to provide at least input/output kwargs'''
+
+        # note: you need to 'release' to allow gc
+        Mapping._instances_.add(self)
         
         self.node = node
 
