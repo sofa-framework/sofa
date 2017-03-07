@@ -140,6 +140,14 @@ except:\n\
     }
 
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
+
+    PyRun_SimpleString("from SofaPython.reloadhack import ImportFrame");
+    PyRun_SimpleString("reloadingframe=ImportFrame()");
+}
+
+void PythonEnvironment::ReInit()
+{
+    PyRun_SimpleString("reloadingframe.uninstall()");
 }
 
 void PythonEnvironment::Release()

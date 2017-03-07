@@ -40,6 +40,7 @@ class SOFA_SOFAPYTHON_API PythonEnvironment
 {
 public:
     static void     Init();
+    static void     ReInit();
     static void     Release();
 
     /// Add a path to sys.path, the list of search path for Python modules.

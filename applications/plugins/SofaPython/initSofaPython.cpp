@@ -39,8 +39,7 @@ SOFA_SOFAPYTHON_API void initExternalModule()
 SOFA_SOFAPYTHON_API void reinitExternalModule()
 {
     std::cout << "REINIT" << std::endl;
-    sofa::simulation::PythonEnvironment::Release();
-    sofa::simulation::PythonEnvironment::Init();
+    sofa::simulation::PythonEnvironment::ReInit();
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleName()
