@@ -846,6 +846,33 @@ Vec<N,real> operator*(const float& a, const Vec<N,real>& V)
     return V * a;
 }
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_DEFAULTTYPE_CPP)
+extern template class Vec<1,float>;
+extern template class Vec<1,int>;
+extern template class Vec<1,float>;
+extern template class Vec<1,unsigned>;
+
+extern template class Vec<2,float>;
+extern template class Vec<2,int>;
+extern template class Vec<2,float>;
+extern template class Vec<2,unsigned>;
+
+extern template class Vec<3,float>;
+extern template class Vec<3,int>;
+extern template class Vec<3,float>;
+extern template class Vec<3,unsigned>;
+
+extern template class Vec<4,float>;
+extern template class Vec<4,int>;
+extern template class Vec<4,float>;
+extern template class Vec<4,unsigned>;
+
+extern template class Vec<6,float>;
+extern template class Vec<6,int>;
+extern template class Vec<6,float>;
+extern template class Vec<6,unsigned>;
+#endif //
+
 typedef Vec<1,float> Vec1f;
 typedef Vec<1,double> Vec1d;
 typedef Vec<1,int> Vec1i;

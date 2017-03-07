@@ -36,10 +36,10 @@ set(SOURCE_FILES
     BaseMatrix.cpp
     BoundingBox.cpp
     Frame.cpp
-    # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
     Color.cpp
+    Vec.cpp
     init.cpp
 )
 
