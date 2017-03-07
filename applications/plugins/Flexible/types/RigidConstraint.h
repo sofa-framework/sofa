@@ -58,7 +58,6 @@ public:
     typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
-    typedef typename DataTypes::Real Real;
 
     typedef helper::vector<unsigned int> Indices;
 
