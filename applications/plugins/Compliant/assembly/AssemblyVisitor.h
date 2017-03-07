@@ -312,7 +312,7 @@ struct AssemblyVisitor::process_helper {
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
-                    Jp = shift_right<rmat>( find(offsets, pdofs), p->size, size_m);
+                    shift_right<rmat>( Jp, find(offsets, pdofs), p->size, size_m);
                 }
 
                 // Jp can be empty for multinodes, when a child is mapped only from a subset of its parents

@@ -69,6 +69,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
+    typedef typename DataTypes::Real Real;
     typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename MatrixDeriv::RowType MatrixDerivRowType;
     typedef Data<VecCoord> DataVecCoord;
@@ -77,7 +78,7 @@ public:
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef helper::vector<unsigned int> Indices;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
-    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearsolver::EigenBaseSparseMatrix<Real> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix of a particle displacement to the plane
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block

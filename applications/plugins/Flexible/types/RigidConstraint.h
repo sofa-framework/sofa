@@ -61,7 +61,7 @@ public:
 
     typedef helper::vector<unsigned int> Indices;
 
-    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearsolver::EigenBaseSparseMatrix<Real> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block

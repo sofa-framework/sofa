@@ -44,15 +44,6 @@ bool empty(const Matrix& m) {
 //}
 
 
-template<class LValue, class RValue>
-static void add(LValue& lval, const RValue& rval) {
-    if( empty(lval) ) {
-        lval = rval;
-    } else {
-        // paranoia, i has it
-        lval += rval;
-    }
-}
 
 // hopefully avoids a temporary alloc/dealloc for product
 template<class LValue, class LHS, class RHS>
@@ -97,8 +88,8 @@ static std::string pretty(dofs_type* dofs) {
 
 // right-shift matrix, size x (off + size) matrix: (0, id)
 template<class mat>
-static mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
-    mat res( size, total_cols);
+static void shift_right(mat &res, unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
+    res.resize( size, total_cols);
     assert( total_cols >= (off + size) );
 
     res.reserve( size );
@@ -108,8 +99,6 @@ static mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal v
         res.insertBack(i, off + i) = value;
     }
     res.finalize();
-
-    return res;
 }
 
 // left-shift matrix, (off + size) x size matrix: (0 ; id)
@@ -125,7 +114,6 @@ static mat shift_left(unsigned off, unsigned size, unsigned total_rows, SReal va
         res.insertBack(off + i, i) = value;
     }
     res.finalize();
-
     return res;
 }
 
