@@ -23,11 +23,8 @@
 #define SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_H
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <map>
 #include <Eigen/Sparse>
 
 #ifdef _OPENMP
@@ -340,32 +337,8 @@ public:
 
     static const char* Name();
 
-    // sparse solver support
-protected:
-    typedef Eigen::SimplicialCholesky<Eigen::SparseMatrix<Real> >  SimplicialCholesky;
-    SimplicialCholesky cholesky; ///< used to factorize the matrix and solve systems using Cholesky method, for symmetric positive definite matrices only.
+
 public:
-    /// Try to compute the LDLT decomposition, and return true if success. The matrix is unchanged.
-    bool choleskyDecompose()
-    {
-        compress();
-        cholesky.compute(compressedMatrix);
-        if( !cholesky.succeeded() )
-        {
-            std::cerr<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    /// Solve Ax=b, where A is this matrix. WARNING: ldltDecompose() must be called first. x and b can be the same vector.
-    void choleskySolve( VectorEigen& x, const VectorEigen& b ) const
-    {
-        x=b;
-        // solve the equation
-        cholesky.solveInPlace(x);
-    }
-
 
     /// View this matrix as a MultiMatrix
     class MatrixAccessor: public core::behavior::MultiMatrixAccessor
