@@ -113,7 +113,7 @@ AssemblyVisitor::rmat AssemblyVisitor::proj(simulation::Node* node) {
 	unsigned size = node->mechanicalState->getMatrixSize();
 
 	// identity matrix TODO alloc ?
-    tmp_p.compressedMatrix = shift_right<rmat>(0, size, size);
+    shift_right<rmat>(tmp_p.compressedMatrix, 0, size, size);
 
 	for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
 		node->projectiveConstraintSet[i]->projectMatrix(&tmp_p, 0);
@@ -535,15 +535,16 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
         if( empty(Jp0) ) {
             offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel1());
-            if( itoff != offsets.end() ) Jp0 = shift_right<rmat>( itoff->second, it->ff->getMechModel1()->getMatrixSize(), size_m);
+            if( itoff != offsets.end() ) shift_right<rmat>( Jp0, itoff->second, it->ff->getMechModel1()->getMatrixSize(), size_m);
         }
         if( empty(Jp1) ) {
             offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel2());
-            if( itoff != offsets.end() ) Jp1 = shift_right<rmat>( itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
+            if( itoff != offsets.end() ) shift_right<rmat>( Jp1, itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
         }
 
-        if( !empty(Jp0) ) add<rmat,rmat>( it->J, shift_left<rmat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
-        if( !empty(Jp1) ) add<rmat,rmat>( it->J, shift_left<rmat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
+        // TODO both have cmat to rmat cast
+        if( !empty(Jp0) ) it->J += rmat(shift_left<rmat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0);
+        if( !empty(Jp1) ) it->J += rmat(shift_left<rmat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1);
     }
 
 	return res;
@@ -579,122 +580,31 @@ inline void AssemblyVisitor::add_ltdl(rmat& res, const rmat& l, const rmat& d)  
 
 
 
-enum {
-    METHOD_DEFAULT,
-    METHOD_TRIPLETS,            // triplets seems fastest (for me) but
-                                // might use too much memory
-    METHOD_COEFREF,
-    METHOD_DENSEMATRIX,
-    METHOD_NOMULT
-};
-
-template<int Method = METHOD_NOMULT> struct add_shifted;
-
 typedef AssembledSystem::rmat rmat;
 
-template<> struct add_shifted<METHOD_TRIPLETS> {
-    typedef Eigen::Triplet<SReal> Triplet;
 
-    
-    rmat& result;
-    std::vector<Triplet> triplets;
-    
-    add_shifted(rmat& result) : result(result) {
-        triplets.reserve(result.nonZeros() + result.rows());
-
-        // don't forget to add prior values since we will overwrite
-        // result in the dtor
-        add_shifted_right<Triplet, rmat>( triplets, result, 0);
-    }
-    
-    ~add_shifted() {
-        result.setFromTriplets( triplets.begin(), triplets.end() );
-    }
-
-    template<class Matrix>
-    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
-        add_shifted_right<Triplet, rmat>( triplets, chunk, off, factor);
-    }
-
-};
-
-
-
-
-
-template<> struct add_shifted<METHOD_COEFREF> {
+struct add_shifted {
 
     rmat& result;
-    add_shifted(rmat& result) : result(result) { }
-    
-    template<class Matrix>
-    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
-        add_shifted_right<rmat>( result, chunk, off, factor );
-    }
+    static rmat shift; // shared temporary matrix (note the fact it is static would not help for multithreading)
 
-};
-
-
-template<> struct add_shifted<METHOD_DENSEMATRIX> {
-
-    typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
-
-    rmat& result;
-
-    DenseMat dense;
-    
-    add_shifted(rmat& result)
-        : result(result),
-          dense( DenseMat::Zero(result.rows(), result.cols())) {
-
-    }
-    
-    template<class Matrix>
-    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
-        add_shifted_right<DenseMat,rmat>( dense, chunk, off, factor);
-    }
-
-    ~add_shifted() {
-        convertDenseToSparse( result, dense );
-    }
-
-};
-
-template<> struct add_shifted<METHOD_DEFAULT> {
-    rmat& result;
     add_shifted(rmat& result)
         : result(result) {
+
+        // ideal would be somewhere between n and n^2 (TODO we should add a parameter)
+        result.reserve( result.rows() );
 
     }
 
     // TODO optimize shift creation
     template<class Matrix>
     void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
-        const rmat shift = shift_right<rmat>(off, chunk.cols(), result.cols(), factor);
-        
-        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) + chunk * shift;
+        shift_right<rmat>(shift, off, chunk.cols(), result.cols(), factor);
+        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) + rmat( chunk * shift );
     }
 
 };
-
-// barely faster than DEFAULT
-template<> struct add_shifted<METHOD_NOMULT> {
-    rmat& result;
-    add_shifted(rmat& result)
-        : result(result) {
-
-        // ideal would be somewhere between n and n^2 (TODO we should add a parameter)
-        result.reserve( result.rows() );
-    }
-
-    template<class Matrix>
-    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
-        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) +
-            shifted_matrix( chunk, off, result.cols(), factor);
-    }
-
-};
-
+rmat add_shifted::shift;
 
 
 // produce actual system assembly
@@ -737,7 +647,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
             // add the geometric stiffness to its only parent that will map it to the master level
             graph_type::out_edge_iterator parentIterator = boost::out_edges(prefix[i],graph).first;
             chunk* p = graph[ boost::target(*parentIterator, graph) ].data;
-            add(p->H, mparams->kFactor() * *Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
+            p->H += mparams->kFactor() * *Ktilde; // todo how to include rayleigh damping for geometric stiffness?
 
 //            std::cerr<<"Assembly: "<<c.Ktilde<<std::endl;
         }
@@ -779,9 +689,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
 	unsigned off_m = 0;
 	unsigned off_c = 0;
 
-    typedef add_shifted<> add_type;
 
-    add_type add_H(res.H), add_P(res.P), add_C(res.C);
+    add_shifted add_H(res.H), add_P(res.P), add_C(res.C);
 
     const SReal c_factor = 1.0 /
         ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
