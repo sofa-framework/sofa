@@ -846,7 +846,7 @@ Vec<N,real> operator*(const float& a, const Vec<N,real>& V)
     return V * a;
 }
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_DEFAULTTYPE_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_DEFAULTTYPE_VEC_CPP)
 extern template class Vec<1,float>;
 extern template class Vec<1,int>;
 extern template class Vec<1,float>;
