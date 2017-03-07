@@ -19,12 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_HELPER_GL_DRAWTOOLGL_CPP
 
 #include <sofa/core/visual/DrawToolGL.h>
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/helper/gl/BasicShapesGL.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
@@ -33,6 +34,19 @@
 
 namespace sofa
 {
+
+namespace helper
+{
+
+namespace gl
+{
+
+template class SOFA_CORE_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
+
+} // namespace gl
+
+} // namespace helper
 
 namespace core
 {
@@ -54,6 +68,10 @@ DrawToolGL::DrawToolGL()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DrawToolGL::~DrawToolGL()
+{
+}
+
+void DrawToolGL::init()
 {
 
 }
@@ -320,8 +338,8 @@ void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientatio
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    for (unsigned int i=0; i<points.size(); ++i)
-        drawSphere(points[i], radius);
+
+    m_sphereUtil.draw(points, radius);
 
     resetMaterial(colour);
 }
@@ -331,8 +349,29 @@ void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, c
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    for (unsigned int i=0; i<points.size(); ++i)
-        drawSphere(points[i], radius[i]);
+
+    m_sphereUtil.draw(points, radius);
+
+    resetMaterial(colour);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
+    m_fakeSphereUtil.draw(points, radius);
+
+    resetMaterial(colour);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
+    m_fakeSphereUtil.draw(points, radius);
 
     resetMaterial(colour);
 }
@@ -758,20 +797,20 @@ void DrawToolGL::drawScaledTetrahedra(const std::vector<Vector3> &points, const 
         Vector3 np1 = ((p1 - center)*scale) + center;
         Vector3 np2 = ((p2 - center)*scale) + center;
         Vector3 np3 = ((p3 - center)*scale) + center;
-        
+
         //this->drawTetrahedron(p0,p1,p2,p3,colour); // not recommanded as it will call glBegin/glEnd <number of tetra> times
         this->drawTriangle(np0, np1, np2, cross((p1 - p0), (p2 - p0)), colour);
         this->drawTriangle(np0, np1, np3, cross((p1 - p0), (p3 - p0)), colour);
         this->drawTriangle(np0, np2, np3, cross((p2 - p0), (p3 - p0)), colour);
         this->drawTriangle(np1, np2, np3, cross((p2 - p1), (p3 - p1)), colour);
-    } 
+    }
     glEnd();
     resetMaterial(colour);
 }
 
 
 void DrawToolGL::drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-                                const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, 
+                                const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7,
                                 const Vec4f &colour)
 {
     //{{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}}
@@ -791,7 +830,7 @@ void DrawToolGL::drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vect
 void DrawToolGL::drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour)
 {
     setMaterial(colour);
-    
+
     glBegin(GL_QUADS);
     for (std::vector<Vector3>::const_iterator it = points.begin(), end = points.end(); it != end;)
     {

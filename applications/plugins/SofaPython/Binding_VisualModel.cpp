@@ -39,7 +39,7 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
         if (!PyArg_ParseTuple(args, "iiii",&ir,&ig,&ib,&ia))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         r = (double)ir;
         g = (double)ig;
@@ -58,7 +58,7 @@ extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     std::ofstream outfile(filename);
