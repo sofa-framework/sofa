@@ -93,13 +93,16 @@ void PythonEnvironment::Init()
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
     // ocarre: may crash on some configurations, we have to find a fix
+
+    // see? http://stackoverflow.com/questions/7676314/py-initialize-py-finalize-not-working-twice-with-numpy
+#ifdef MAYBE
     PyRun_SimpleString("\
 try:\n\
     import numpy\n\
     numpy.finfo(float)\n\
 except:\n\
     pass");
-
+#endif
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
