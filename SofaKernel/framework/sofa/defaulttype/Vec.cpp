@@ -34,27 +34,27 @@ namespace defaulttype
 
  template class Vec<1,float>;
  template class Vec<1,int>;
- template class Vec<1,float>;
+ template class Vec<1,double>;
  template class Vec<1,unsigned>;
 
  template class Vec<2,float>;
  template class Vec<2,int>;
- template class Vec<2,float>;
+ template class Vec<2,double>;
  template class Vec<2,unsigned>;
 
  template class Vec<3,float>;
  template class Vec<3,int>;
- template class Vec<3,float>;
+ template class Vec<3,double>;
  template class Vec<3,unsigned>;
 
  template class Vec<4,float>;
  template class Vec<4,int>;
- template class Vec<4,float>;
+ template class Vec<4,double>;
  template class Vec<4,unsigned>;
 
  template class Vec<6,float>;
  template class Vec<6,int>;
- template class Vec<6,float>;
+ template class Vec<6,double>;
  template class Vec<6,unsigned>;
 
 
