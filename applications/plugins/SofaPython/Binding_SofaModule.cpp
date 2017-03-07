@@ -211,7 +211,7 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
     for (int i = 0; i < 3; ++i){
         if (color[i] < 00.f || color[i] > 1.0) {
             PyErr_BadArgument();
-            return 0;
+            return NULL;
         }
     }
 
