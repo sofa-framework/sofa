@@ -86,6 +86,7 @@ public:
 
 TEST(LoggingTest, noHandler)
 {
+    // This test does not test anything, except the absence of crash
     MessageDispatcher::clearHandlers() ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
@@ -109,7 +110,7 @@ TEST(LoggingTest, oneHandler)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 4u ) ;
+    EXPECT_EQ( h.numMessages() , 4u ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
@@ -299,7 +300,6 @@ TEST(LoggingTest, checkBaseObjectSerr)
 
 }
 
-
 TEST(LoggingTest, checkBaseObjectMsgAPI)
 {
     MessageDispatcher::clearHandlers() ;
@@ -308,6 +308,8 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
 
 
     MyComponent c;
+
+    c.f_printLog.setValue(true);
 
     c.emitMessages() ;
     EXPECT_EQ(h.numMessages(), 3u);
@@ -332,6 +334,40 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
     EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
 }
 
+TEST(LoggingTest, checkBaseObjectMsgAPInoPrintLog)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+
+    MyComponent c;
+
+    c.f_printLog.setValue(false);
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 2u);
+    EXPECT_EQ(c.getLoggedMessages().size(), 0u) ;
+
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 4u);
+
+    std::stringstream s;
+    s << "============= Back log ==============" << std::endl ;
+    for(auto& message : c.getLoggedMessages()){
+        s << message << std::endl ;
+    }
+    s << "=====================================" << std::endl ; ;
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+
+    msg_info(&c) << "A fourth message ";
+
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+}
+
 
 TEST(LoggingTest, checkBaseObjectQueueSize)
 {
@@ -340,6 +376,7 @@ TEST(LoggingTest, checkBaseObjectQueueSize)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     MyComponent c;
+    c.f_printLog.setValue(true);
 
     /// Filling the internal message queue.
     for(unsigned int i=0;i<100;i++){
@@ -355,7 +392,6 @@ TEST(LoggingTest, checkBaseObjectSoutSerr)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     MyComponent c;
-
     c.emitSerrSoutMessages();
 
     /// Well serr message are routed through warning while
