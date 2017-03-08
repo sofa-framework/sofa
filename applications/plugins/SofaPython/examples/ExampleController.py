@@ -1,6 +1,5 @@
 import Sofa
 import sys
-import test
 
 ############################################################################################
 # this is a PythonScriptController example script
