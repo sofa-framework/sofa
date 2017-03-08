@@ -140,6 +140,11 @@ tests-get()
 print-summary() {
     echo "Testing summary:"
     echo "- $(count-test-suites) test suite(s)"
+    echo "- $(tests-get tests) test(s)"
+    echo "- $(tests-get disabled) disabled test(s)"
+    echo "- $(tests-get failures) failure(s)"
+    echo "- $(tests-get errors) error(s)"
+
     local crashes='$(count-crashes)'
     echo "- $(count-crashes) crash(es)"
     if [[ "$crashes" != 0 ]]; then
@@ -161,13 +166,13 @@ print-summary() {
                         echo "Error: unexpected value in $output_dir/$test/status.txt: $status"
                         ;;
                 esac
+                last_run_line_number="$(grep -n "\[ RUN      \]" "$output_dir/$test/output.txt" | tail -1 | tr ":" "\n" | head -1)"
+                while read log_line; do
+                    echo "      $log_line"
+                done < <(tail --lines=+"$last_run_line_number" "$output_dir/$test/output.txt")
             fi
         done < "$output_dir/tests.txt"
     fi
-    echo "- $(tests-get tests) test(s)"
-    echo "- $(tests-get failures) failure(s)"
-    echo "- $(tests-get disabled) disabled test(s)"
-    echo "- $(tests-get errors) error(s)"
 }
 
 if [[ "$command" = run ]]; then
