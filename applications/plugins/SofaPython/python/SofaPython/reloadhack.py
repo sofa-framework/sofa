@@ -13,6 +13,9 @@ class ImportFrame(object):
            When the frame is uninstalled...all the module loaded between the construction
            and un-installation are remove from the list of loaded modules forcing a reload
            when needed further.
+           
+           WARNING, it is not possible to reload numpy this way... so we
+           need to import it before.
         """
         def __init__(self):
                 self.existingModules = sys.modules.copy()
@@ -20,15 +23,20 @@ class ImportFrame(object):
                 __builtin__.__import__ = self.doImport
                 self.moduleSet = {}
 
-        def doImport(self, a,b,c,d):
-                mod = apply(self.realImport, (a,b,c,d))
-                self.moduleSet[a] = (a,b,c,d)
-                return mod
+        def doImport(self, *args, **kwargs):
+		mod = apply(self.realImport, args, kwargs)
+		# This is a hack to exclude numpy from the reloading process.
+		if args[0] == "numpy":
+			if not args[0] in self.existingModules:
+				self.existingModules[args[0]] = sys.modules[args[0]]
+
+		self.moduleSet[args[0]] = (args, kwargs)
+		return mod
 
         def uninstall(self):
                 removed=[]
                 for name in self.moduleSet:
-                        if not self.existingModules.has_key(name):
+                        if not self.existingModules.has_key(name) and name in sys.modules:
                                 del(sys.modules[name])
                                 removed.append(name)
                 for name in removed:
