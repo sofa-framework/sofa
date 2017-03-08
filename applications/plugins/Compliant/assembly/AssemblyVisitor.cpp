@@ -557,15 +557,11 @@ inline const AssemblyVisitor::rmat& AssemblyVisitor::ltdl(const rmat& l, const r
 {
     scoped::timer advancedTimer("assembly: ltdl");
 
-//#ifdef _OPENMP
-//    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
-//#else
     sparse::fast_prod(tmp1, d, l);
     tmp3 = l.transpose();
     sparse::fast_prod(tmp2, tmp3, tmp1);
     
     return tmp2;
-//#endif
 }
 
 

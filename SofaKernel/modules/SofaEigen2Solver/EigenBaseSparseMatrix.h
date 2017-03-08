@@ -27,12 +27,6 @@
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
 
-#ifdef _OPENMP
-#include "EigenBaseSparseMatrix_MT.h"
-#endif
-
-
-
 
 namespace sofa
 {
@@ -306,17 +300,6 @@ public:
         result = compressedMatrix * data;
     }
 
-    /// Matrix-vector product openmp multithreaded
-    void mult_MT( VectorEigen& result, const VectorEigen& data )
-    {
-        compress();
-#ifdef _OPENMP
-        result = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, data );
-#else
-        result = compressedMatrix * data;
-#endif
-    }
-
     /// Matrix-Vector product (dense vector with contiguous memory layout)
     template<class V1, class V2>
     void multVector( V1& output, const V2& input ){
@@ -406,38 +389,11 @@ public:
       res.compressedMatrix = compressedMatrix * rhs.compressedMatrix;
     }
 
-    /// EigenBaseSparseMatrix multiplication (openmp multithreaded version)
-    /// @warning res MUST NOT be the same variable as this or rhs
-    void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
-    {
-    #ifdef _OPENMP
-        assert( &res != this );
-        assert( &res != &rhs );
-        ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
-        ((EigenBaseSparseMatrix<Real>*)&rhs)->compress();  /// \warning this violates the const-ness of the parameter
-        conservative_sparse_sparse_product_selector_MT<CompressedMatrix,CompressedMatrix,CompressedMatrix>::run(compressedMatrix, rhs.compressedMatrix, res.compressedMatrix);
-    #else
-        mul( res, rhs );
-    #endif
-    }
-
     /// Sparse x Dense Matrix product
     void mul( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         res = compressedMatrix * rhs;
     }
-
-    /// Sparse x Dense Matrix product openmp multithreaded
-    void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
-    {
-        compress();
-#ifdef _OPENMP
-        res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
-#else
-        res = compressedMatrix * rhs;
-#endif
-    }
-
 
 };
 

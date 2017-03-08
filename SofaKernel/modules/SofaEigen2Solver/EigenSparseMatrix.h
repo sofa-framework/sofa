@@ -321,10 +321,6 @@ public:
 
     }
 
-#ifdef _OPENMP
-#define EIGENSPARSEMATRIX_PARALLEL
-#endif
-
 protected:
 
 	// max: factored out the two exact same implementations for
@@ -338,12 +334,6 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
-            else
-                map(result).noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
-#else
             if( alias(result, data) ) {
                 this->map(result) = (this->compressedMatrix *
                                      this->map(data).template cast<Real>()).template cast<OutReal>();
@@ -351,7 +341,6 @@ protected:
                 this->map(result).noalias() = (this->compressedMatrix *
                                                this->map(data).template cast<Real>()).template cast<OutReal>();
             }
-#endif
 			
 			return;
 		}
@@ -365,11 +354,7 @@ protected:
 		}
 		
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
-#else
         aux2.noalias() = this->compressedMatrix * aux1;
-#endif
 
         // convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
@@ -388,15 +373,6 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
-            else
-            {
-                typename map_traits<OutType>::map_type r = map(result);
-                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
-            }
-#else
 			// TODO multiply only the smallest dimension by fact 
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
@@ -404,8 +380,7 @@ protected:
                 typename map_traits<OutType>::map_type r = map(result);
                 r.noalias() += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             }
-#endif
-			
+
 			return;
 		}
 
@@ -418,11 +393,7 @@ protected:
 		}
         
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
-#else
         aux2.noalias() = this->compressedMatrix * aux1;
-#endif
         
         // convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
@@ -440,14 +411,6 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
-            else {
-                typename map_traits<InType>::map_type r = map(result);
-                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
-            }
-#else
             // TODO multiply only the smallest dimension by fact
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
@@ -455,8 +418,7 @@ protected:
                 typename map_traits<InType>::map_type r = map(result);
                 r.noalias() += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             }
-#endif
-			
+
 			return;
 		}
 
@@ -470,11 +432,7 @@ protected:
 		}
 		
 		// compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
-#else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
-#endif
 
 		// convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
