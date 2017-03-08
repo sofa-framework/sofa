@@ -8,7 +8,10 @@
 
 ### New features for users
 * [SceneCreator]
-    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
+    * New methods to add basic 3D object: Cube, Cylinder, Sphere and Plane. In rigid or deformable.
+
+* [GeneralTopology]
+    * SphereGridTopology component to create sphere grids, similar to CylinderGridTopology.
 
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 - Minor improvement on the way warning/error message are presented to the users in runSofa. 
@@ -29,7 +32,7 @@
 
 ### Bug Fixes
 
-
+- [SofaPhysicsAPI] Fix compilation of the project
 
 ### Cleaning
 

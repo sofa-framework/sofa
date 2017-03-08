@@ -39,19 +39,6 @@ extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * GridTopology_setNumVertices(PyObject *self, PyObject * args)
-{
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
-    int nx,ny,nz;
-    if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
-    {
-        PyErr_BadArgument();
-        return NULL;
-    }
-    obj->setNumVertices(nx,ny,nz);
-    Py_RETURN_NONE;
-}
-
 extern "C" PyObject * GridTopology_getNx(PyObject *self, PyObject * /*args*/)
 {
     GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
@@ -114,7 +101,6 @@ extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 
 SP_CLASS_METHODS_BEGIN(GridTopology)
 SP_CLASS_METHOD(GridTopology,setSize)
-SP_CLASS_METHOD(GridTopology,setNumVertices)
 SP_CLASS_METHOD(GridTopology,getNx)
 SP_CLASS_METHOD(GridTopology,getNy)
 SP_CLASS_METHOD(GridTopology,getNz)

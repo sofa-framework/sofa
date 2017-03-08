@@ -25,11 +25,10 @@
 #include "SofaPhysicsAPI.h"
 
 #include <SofaBaseVisual/VisualModelImpl.h>
-#include <SofaOpenglVisual/OglTetrahedralModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/Shader.h>
 
-class SofaPhysicsOutputMesh::Impl
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsOutputMesh::Impl
 {
 public:
 
