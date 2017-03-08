@@ -25,6 +25,7 @@ set(HEADER_FILES
     Binding_Context.h
     Binding_Data.h
     Binding_DataEngine.h
+    Binding_DataFileName.h
     Binding_DataFileNameVector.h
     Binding_DisplayFlagsData.h
     Binding_OptionsGroupData.h
@@ -79,6 +80,7 @@ set(SOURCE_FILES
     Binding_Context.cpp
     Binding_Data.cpp
     Binding_DataEngine.cpp
+    Binding_DataFileName.cpp
     Binding_DataFileNameVector.cpp
     Binding_DisplayFlagsData.cpp
     Binding_OptionsGroupData.cpp
