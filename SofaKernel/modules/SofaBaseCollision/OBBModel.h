@@ -30,7 +30,6 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/accessor.h>
-#include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseCollision/CubeModel.h>
 //#include <SofaBaseCollision/Intersector.h>
 

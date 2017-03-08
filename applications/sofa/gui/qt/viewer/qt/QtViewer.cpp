@@ -352,8 +352,6 @@ void QtViewer::initializeGL(void)
         //printf("GL initialized\n");
     }
 
-
-
     // switch to preset view
     resetView();
 }

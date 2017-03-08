@@ -151,7 +151,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                 const unsigned i = it->second[w];
 
                 const source_type& s = src[i];
-                assert( it->first == s.first() );
+                assert( it->first == s.first );
 
                 const typename TOut::Deriv& lambda = out_force[i];
                 const typename TOut::Deriv::Vec3& f = lambda.getLinear();
@@ -210,13 +210,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     //         const typename TOut::Deriv& lambda = out_force[i];
     //         const typename TOut::Deriv::Vec3& f = lambda.getLinear();
 
-    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
-    //         const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first ].getOrientation();
+    //         const typename TOut::Deriv::Vec3& t = s.second.getCenter();
 
     //         const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
-    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first() ].getAngular();
+    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first ].getAngular();
             
-    //         lvalue[s.first()].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
+    //         lvalue[s.first].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
     //     }
       
     // }

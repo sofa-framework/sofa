@@ -1,9 +1,29 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFAPHYSICSSIMULATION_IMPL_H
 #define SOFAPHYSICSSIMULATION_IMPL_H
 
 #include "SofaPhysicsAPI.h"
 #include "SofaPhysicsOutputMesh_impl.h"
-#include "SofaPhysicsOutputMesh_Tetrahedron_impl.h"
 #include "SofaPhysicsDataMonitor_impl.h"
 #include "SofaPhysicsDataController_impl.h"
 
@@ -15,13 +35,18 @@
 
 #include <map>
 
-class SofaPhysicsSimulation::Impl
+
+class SOFA_SOFAPHYSICSAPI_API SofaPhysicsSimulation
 {
 public:
-    Impl(bool useGUI_ = false, int GUIFramerate_ = 0);
-    ~Impl();
+    SofaPhysicsSimulation(bool useGUI_ = false, int GUIFramerate_ = 0);
+    virtual ~SofaPhysicsSimulation();
+
+    const char* APIName();
 
     bool load(const char* filename);
+    void createScene();
+
     void start();
     void stop();
     void step();
@@ -31,9 +56,8 @@ public:
     void drawGL();
 
     unsigned int getNbOutputMeshes();
-    unsigned int getNbOutputMeshTetrahedrons();
+    SofaPhysicsOutputMesh** getOutputMesh(unsigned int meshID);
     SofaPhysicsOutputMesh** getOutputMeshes();
-    SofaPhysicsOutputMeshTetrahedron** getOutputMeshTetrahedrons();
 
     bool isAnimated() const;
     void setAnimated(bool val);
@@ -42,6 +66,8 @@ public:
     void   setTimeStep(double dt);
     double getTime() const;
     double getCurrentFPS() const;
+    double* getGravity() const;
+    void setGravity(double* gravity);
 
     unsigned int getNbDataMonitors();
     SofaPhysicsDataMonitor** getDataMonitors();
@@ -53,8 +79,6 @@ public:
     typedef SofaPhysicsDataMonitor::Impl::SofaDataMonitor SofaDataMonitor;
     typedef SofaPhysicsDataController::Impl::SofaDataController SofaDataController;
     typedef SofaPhysicsOutputMesh::Impl::SofaVisualOutputMesh SofaVisualOutputMesh;
-    typedef SofaPhysicsOutputMeshTetrahedron::Impl::SofaOutputMeshTetrahedron SofaOutputMeshTetrahedron;
-    //typedef SofaPhysicsOutputMesh::Impl::SofaOutputMeshTetra SofaOutputMeshTetra;
 
 protected:
 
@@ -64,11 +88,10 @@ protected:
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     std::map<SofaOutputMesh*, SofaPhysicsOutputMesh*> outputMeshMap;
-    std::map<SofaOutputMeshTetrahedron*, SofaPhysicsOutputMeshTetrahedron*> outputMeshMapTetrahedron;
+
     std::vector<SofaOutputMesh*> sofaOutputMeshes;
-    std::vector<SofaOutputMeshTetrahedron*> sofaOutputMeshTetrahedrons;
+
     std::vector<SofaPhysicsOutputMesh*> outputMeshes;
-    std::vector<SofaPhysicsOutputMeshTetrahedron*> outputMeshTetrahedrons;
 
     std::vector<SofaDataMonitor*> sofaDataMonitors;
     std::vector<SofaPhysicsDataMonitor*> dataMonitors;
@@ -101,6 +124,8 @@ protected:
     void endStep();
     void calcProjection();
 
+    virtual void createScene_impl();
+
 public:
 
     const char* getSceneFileName() const
@@ -114,6 +139,11 @@ public:
     sofa::simulation::Node* getScene() const
     {
         return m_RootNode.get();
+    }
+
+    sofa::simulation::Node::SPtr getRootNode() const
+    {
+        return m_RootNode;
     }
 
 };

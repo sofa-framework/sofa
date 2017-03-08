@@ -56,8 +56,9 @@ void DiagonalCompliance<DataTypes>::reinit()
         {
             for(unsigned int j = 0; j < m; ++j)
             {
+                const SReal& c = diag[i][j];
                 matC.beginRow(row);
-                matC.insertBack(row, row, diag[i][j]);
+                if(c) matC.insertBack(row, row, c);
 
                 ++row;
             }
@@ -75,9 +76,10 @@ void DiagonalCompliance<DataTypes>::reinit()
         {
             for(unsigned int j = 0; j < m; ++j)
             {
+                const SReal& c = diag[i][j];
                 // the stiffness df/dx is the opposite of the inverse compliance
-                Real k = diag[i][j] > std::numeric_limits<Real>::epsilon() ?
-                        (diag[i][j] < 1 / std::numeric_limits<Real>::epsilon() ? -1 / diag[i][j] : 0 ) : // if the compliance is really large, let's consider the stiffness is null
+                Real k = c > std::numeric_limits<Real>::epsilon() ?
+                        (c < 1 / std::numeric_limits<Real>::epsilon() ? -1 / c : 0 ) : // if the compliance is really large, let's consider the stiffness is null
                         -1 / std::numeric_limits<Real>::epsilon(); // if the compliance is too small, we have to take a huge stiffness in the numerical limits
 
                 matK.beginRow(row);
@@ -97,7 +99,7 @@ void DiagonalCompliance<DataTypes>::reinit()
         for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
 			const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
 			
-			const SReal d = damping.getValue()[index];
+            const SReal& d = damping.getValue()[index];
 
             matB.beginRow(i);
             matB.insertBack(i, i, -d);
@@ -121,7 +123,7 @@ SReal DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalP
     {
         for( unsigned int j=0 ; j<m ; ++j )
         {
-            Real compliance = diag[i][j];
+            const Real& compliance = diag[i][j];
             Real k = compliance > s_complianceEpsilon ?
                     1. / compliance :
                     1. / s_complianceEpsilon;

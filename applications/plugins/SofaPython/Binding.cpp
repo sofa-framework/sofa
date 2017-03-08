@@ -29,6 +29,7 @@
 #include "Binding_OptionsGroupData.h"
 #include "Binding_DataFileName.h"
 #include "Binding_DataFileNameVector.h"
+#include "Binding_VectorLinearSpringData.h"
 #include "Binding_Link.h"
 #include "Binding_Base.h"
 #include "Binding_BaseObject.h"
@@ -82,6 +83,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(DataFileName,sofa::core::objectmodel::DataFileName)
     SP_ADD_CLASS_IN_FACTORY(DataFileNameVector,sofa::core::objectmodel::DataFileNameVector)
     SP_ADD_CLASS_IN_SOFAMODULE(PointAncestorElem)
+    SP_ADD_CLASS_IN_FACTORY(VectorLinearSpringData,sofa::core::objectmodel::Data<sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<SReal>>>)
 
     SP_ADD_CLASS_IN_SOFAMODULE(Link)
 
