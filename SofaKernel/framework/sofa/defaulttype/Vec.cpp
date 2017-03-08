@@ -32,11 +32,6 @@ namespace sofa
 namespace defaulttype
 {
 
- template class Vec<1,float>;
- template class Vec<1,int>;
- template class Vec<1,double>;
- template class Vec<1,unsigned>;
-
  template class Vec<2,float>;
  template class Vec<2,int>;
  template class Vec<2,double>;
