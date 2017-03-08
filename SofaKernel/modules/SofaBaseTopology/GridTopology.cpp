@@ -212,7 +212,7 @@ void GridTopology::reinit()
 
 void GridTopology::setSize(int nx, int ny, int nz)
 {
-    if (nx == this->n.getValue()[0] && ny == this->n.getValue()[1] && nz == this->n.getValue()[2])
+    if (nx == this->d_n.getValue()[0] && ny == this->d_n.getValue()[1] && nz == this->d_n.getValue()[2])
         return;
     this->d_n.setValue(Vec3i(nx,ny,nz));
     setNbGridPoints();
