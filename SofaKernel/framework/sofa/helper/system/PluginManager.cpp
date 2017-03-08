@@ -59,7 +59,6 @@ bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
 
 const char* Plugin::GetModuleComponentList::symbol    = "getModuleComponentList";
 const char* Plugin::InitExternalModule::symbol        = "initExternalModule";
-const char* Plugin::ReInitExternalModule::symbol      = "reinitExternalModule";
 const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";
 const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
@@ -146,7 +145,6 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
             if (errlog) (*errlog) << msg << std::endl;
             return false;
         }
-        getPluginEntry(p.reinitExternalModule, d);
         getPluginEntry(p.getModuleName,d);
         getPluginEntry(p.getModuleDescription,d);
         getPluginEntry(p.getModuleLicense,d);
@@ -237,25 +235,14 @@ void PluginManager::init()
     }
 }
 
-void PluginManager::reinit()
-{
-    PluginMap::iterator iter;
-    for( iter = m_pluginMap.begin(); iter!= m_pluginMap.end(); ++iter)
-    {
-        Plugin& plugin = iter->second;
-        plugin.reinitExternalModule();
-    }
-}
-
-
 void PluginManager::init(const std::string& pluginPath)
 {
-    PluginMap::iterator iter = m_pluginMap.find(pluginPath);
-    if(m_pluginMap.end() != iter)
-    {
+	PluginMap::iterator iter = m_pluginMap.find(pluginPath);
+	if(m_pluginMap.end() != iter)
+	{
         Plugin& plugin = iter->second;
         plugin.initExternalModule();
-    }
+	}
 }
 
 
@@ -266,8 +253,8 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
 #ifdef SOFA_LIBSUFFIX
     name += sofa_tostring(SOFA_LIBSUFFIX);
 #endif
-#if defined(_DEBUG) && defined(_MSC_VER)
-     name += "_d";
+#if defined(_DEBUG) && defined(_MSC_VER) 
+	 name += "_d";
 #endif
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
