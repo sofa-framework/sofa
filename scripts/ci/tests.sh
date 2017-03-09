@@ -166,7 +166,7 @@ count-test-suites() {
     list-tests | wc -w | tr -d ' '
 }
 count-test-reports() {
-    ls "$output_dir/reports/"*.xml 2> /dev/null | wc -l | tr -d ' '
+    ls "$output_dir/reports/" --ignore="*subtest*" 2> /dev/null | wc -l | tr -d ' '
 }
 count-crashes() {
     echo "$(( $(count-test-suites) - $(count-test-reports) ))"
@@ -203,13 +203,12 @@ print-summary() {
     echo "- $(tests-get tests) test(s)"
     echo "- $(tests-get disabled) disabled test(s)"
     echo "- $(tests-get failures) failure(s)"
-    echo "- $(tests-get errors) error(s)"
 
-    local crashes='$(count-crashes)'
-    echo "- $(count-crashes) crash(es)"
-    if [[ "$crashes" != 0 ]]; then
+    local errors='$(tests-get errors)'
+    echo "- $(tests-get errors) error(s)"
+    if [[ "$errors" != 0 ]]; then
         while read test; do
-            if [[ ! -e "$output_dir/$test/report.xml" ]]; then
+            if [[ ! -e "$output_dir/$test/report.xml" ]]; then # this test crashed
                 local status="$(cat "$output_dir/$test/status.txt")"
                 case "$status" in
                     "timeout")
