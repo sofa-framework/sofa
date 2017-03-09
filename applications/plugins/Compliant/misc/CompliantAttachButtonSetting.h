@@ -25,6 +25,7 @@
 #include <Compliant/config.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
+#include <functional>
 
 namespace sofa
 {
@@ -45,12 +46,15 @@ public:
 protected:
     CompliantAttachButtonSetting();
 public:
+    virtual void init() { if( s_initFunction != nullptr ) s_initFunction(this); }
     std::string getOperationType() {return  "CompliantAttach";}
     Data<SReal> compliance;
     Data<bool> isCompliance;
     Data<SReal> arrowSize;
     Data<defaulttype::Vec<4,SReal> > color;
     Data<bool> visualmodel;
+
+    static std::function<void(CompliantAttachButtonSetting*)> s_initFunction;
 };
 
 }

@@ -33,6 +33,8 @@ namespace component
 namespace configurationsetting
 {
 
+std::function<void(CompliantAttachButtonSetting*)> CompliantAttachButtonSetting::s_initFunction = nullptr;
+
 SOFA_DECL_CLASS(CompliantAttachButtonSetting)
 int CompliantAttachButtonSettingClass = core::RegisterObject("CompliantAttach (CompliantAttachButtonSetting)")
         .add< CompliantAttachButtonSetting >()
