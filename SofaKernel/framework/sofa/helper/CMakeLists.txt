@@ -105,6 +105,7 @@ set(HEADER_FILES
     vectorLinks.h
     vector_algebra.h
     vector_device.h
+    types/Color.h
     logging/Messaging.h
     logging/Message.h
     logging/MessageDispatcher.h
@@ -122,7 +123,6 @@ set(HEADER_FILES
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
     logging/RichConsoleStyleMessageFormatter.h
-
 )
 
 set(SOURCE_FILES
@@ -184,6 +184,7 @@ set(SOURCE_FILES
     system/thread/debug.cpp
     system/FileRepository.cpp
     vector.cpp
+    types/Color.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ClangMessageHandler.cpp

@@ -38,7 +38,6 @@ set(SOURCE_FILES
     Frame.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
-    Color.cpp
     Vec.cpp
     init.cpp
 )
