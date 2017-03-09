@@ -40,7 +40,7 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
         else m_factorized = true;
     }
 
-    msg_info() << "factor: ";
+    msg_info() << "factor: " << H;
 
     if( symmetric ) tmp = H.triangularView< Eigen::Lower >(); // only copy the triangular part (default to Lower)
     else tmp = H; // TODO there IS a temporary here, from rmat to cmat. Explicit copy is needed for iterative solvers
