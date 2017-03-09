@@ -26,7 +26,7 @@
 
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/BasicShapesGL.h>
 

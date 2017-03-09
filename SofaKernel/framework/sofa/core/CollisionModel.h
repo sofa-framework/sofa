@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

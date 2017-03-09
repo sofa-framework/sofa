@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

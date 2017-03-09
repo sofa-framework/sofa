@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

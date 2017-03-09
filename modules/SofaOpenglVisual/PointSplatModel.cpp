@@ -36,7 +36,7 @@
 
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

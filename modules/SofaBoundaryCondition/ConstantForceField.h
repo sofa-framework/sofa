@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

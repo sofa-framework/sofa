@@ -52,6 +52,9 @@ public:
     static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
     static RGBAColor fromVec4(const Vec4d& color) ;
     static RGBAColor fromVec4(const Vec4f& color) ;
+
+    static RGBAColor fromHSVA(float h, float s, float v, float a) ;
+
     static bool read(const std::string& str, RGBAColor& color) ;
 
     static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }

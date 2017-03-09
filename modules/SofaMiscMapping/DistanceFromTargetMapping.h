@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

@@ -29,7 +29,7 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
-    Color.h
+    RGBAColor.h
 )
 
 set(SOURCE_FILES
@@ -38,7 +38,6 @@ set(SOURCE_FILES
     Frame.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
-    Vec.cpp
     init.cpp
 )
 

@@ -29,7 +29,7 @@
 #include <SofaOpenglVisual/OglColorMap.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {

@@ -24,7 +24,7 @@
 #define SOFA_CORE_LOADER_MATERIAL_H_
 
 #include <sofa/core/core.h>
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/system/FileRepository.h>
 

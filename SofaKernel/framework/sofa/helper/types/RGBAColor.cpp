@@ -23,7 +23,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/types/Color.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -166,6 +166,36 @@ RGBAColor RGBAColor::fromVec4(const Vec4d& color)
 RGBAColor RGBAColor::fromVec4(const Vec4f& color)
 {
     return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
+}
+
+RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
+{
+    // H [0, 360] S, V and A [0.0, 1.0].
+    RGBAColor rgba;
+
+    int i = (int)floor(h/60.0f) % 6;
+    float f = h/60.0f - floor(h/60.0f);
+    float p = v * (float)(1 - s);
+    float q = v * (float)(1 - s * f);
+    float t = v * (float)(1 - (1 - f) * s);
+    rgba[3]=a;
+    switch (i)
+    {
+    case 0:
+        rgba[0]=v; rgba[1]=t; rgba[2]=p;
+        break;
+    case 1: rgba[0]=q; rgba[1]=v; rgba[2]=p;
+        break;
+    case 2: rgba[0]=p; rgba[1]=v; rgba[2]=t;
+        break;
+    case 3: rgba[0]=p; rgba[1]=q; rgba[2]=v;
+        break;
+    case 4: rgba[0]=t; rgba[1]=p; rgba[2]=v;
+        break;
+    case 5: rgba[0]=v; rgba[1]=p; rgba[2]=q;
+    }
+
+    return rgba;
 }
 
 SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)

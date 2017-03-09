@@ -105,7 +105,7 @@ set(HEADER_FILES
     vectorLinks.h
     vector_algebra.h
     vector_device.h
-    types/Color.h
+    types/RGBAColor.h
     logging/Messaging.h
     logging/Message.h
     logging/MessageDispatcher.h
@@ -184,7 +184,7 @@ set(SOURCE_FILES
     system/thread/debug.cpp
     system/FileRepository.cpp
     vector.cpp
-    types/Color.cpp
+    types/RGBAColor.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ClangMessageHandler.cpp
