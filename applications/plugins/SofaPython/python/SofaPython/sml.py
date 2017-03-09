@@ -60,6 +60,8 @@ class Model:
                 self.index=list()
                 self.data=dict()
                 self.tags=set()
+            def __len__(self):
+                return len(self.index)
 
         def __init__(self, meshXml=None):
             self.id=None
