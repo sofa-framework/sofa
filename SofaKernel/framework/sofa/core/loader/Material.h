@@ -24,7 +24,7 @@
 #define SOFA_CORE_LOADER_MATERIAL_H_
 
 #include <sofa/core/core.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Color.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -41,10 +41,10 @@ class Material
 {
 public:
     std::string 	name;		/* name of material */
-    defaulttype::Vec4f  diffuse ;	/* diffuse component */
-    defaulttype::Vec4f  ambient ;	/* ambient component */
-    defaulttype::Vec4f  specular;	/* specular component */
-    defaulttype::Vec4f  emissive;	/* emmissive component */
+    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
+    defaulttype::RGBAColor  ambient ;	/* ambient component */
+    defaulttype::RGBAColor  specular;	/* specular component */
+    defaulttype::RGBAColor  emissive;	/* emmissive component */
     float  shininess;	/* specular exponent */
     bool   useDiffuse;
     bool   useSpecular;
@@ -59,10 +59,10 @@ public:
 
     void setColor(float r, float g, float b, float a)
     {
-        ambient = defaulttype::Vec4f(r*0.2f,g*0.2f,b*0.2f,a);
-        diffuse = defaulttype::Vec4f(r,g,b,a);
-        specular = defaulttype::Vec4f(r,g,b,a);
-        emissive = defaulttype::Vec4f(r,g,b,a);
+        ambient = defaulttype::RGBAColor(r*0.2f,g*0.2f,b*0.2f,a);
+        diffuse = defaulttype::RGBAColor(r,g,b,a);
+        specular = defaulttype::RGBAColor(r,g,b,a);
+        emissive = defaulttype::RGBAColor(r,g,b,a);
     }
 
     inline friend std::ostream& operator << (std::ostream& out, const Material& m )
@@ -113,10 +113,10 @@ public:
 
     Material()
     {
-        ambient =  defaulttype::Vec4f( 0.2f,0.2f,0.2f,1.0f);
-        diffuse =  defaulttype::Vec4f( 0.75f,0.75f,0.75f,1.0f);
-        specular =  defaulttype::Vec4f( 1.0f,1.0f,1.0f,1.0f);
-        emissive =  defaulttype::Vec4f( 0.0f,0.0f,0.0f,0.0f);
+        ambient =  defaulttype::RGBAColor( 0.2f,0.2f,0.2f,1.0f);
+        diffuse =  defaulttype::RGBAColor( 0.75f,0.75f,0.75f,1.0f);
+        specular =  defaulttype::RGBAColor( 1.0f,1.0f,1.0f,1.0f);
+        emissive =  defaulttype::RGBAColor( 0.0f,0.0f,0.0f,0.0f);
 
         shininess =  45.0f;
         name = "Default";
