@@ -463,7 +463,8 @@ RegisterObject::operator int()
         {
             if (reg.creatorMap.find(itc->first) != reg.creatorMap.end())
             {
-                msg_warning("ObjectFactory") << "Class already registered: " << itc->first << " ("<<entry.className<<")";
+                msg_warning("ObjectFactory") << "Class already registered: \"" << itc->first << "\" ("<<entry.className<<") will be overloaded by the new implementation";
+                reg.creatorMap[itc->first] = itc->second;
             }
             else
             {
