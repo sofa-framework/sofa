@@ -23,7 +23,7 @@
 #include "QCompliantMouseOperations.h"
 #include <sofa/gui/qt/QDisplayDataWidget.h>
 #include <sofa/gui/qt/DataWidget.h>
-#include "CompliantAttachButtonSetting.h"
+#include "../misc/CompliantAttachButtonSetting.h"
 
 #ifdef SOFA_QT4
 #include <QVBoxLayout>

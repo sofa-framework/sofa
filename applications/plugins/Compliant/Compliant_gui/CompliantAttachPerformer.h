@@ -33,7 +33,7 @@
 
 #include <SofaOpenglVisual/OglModel.h>
 
-#include "CompliantAttachButtonSetting.h"
+#include "../misc/CompliantAttachButtonSetting.h"
 
 
 namespace sofa
