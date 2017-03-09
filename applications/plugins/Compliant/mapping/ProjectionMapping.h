@@ -91,12 +91,13 @@ protected:
 					   const typename self::in_pos_type& in ) {
         const helper::vector<set_type>& s = set.getValue();
         const helper::vector<SReal>& off = offset.getValue();
-		
-		assert(s.size() == out.size());	
+
+        // resize stuff
+        this->toModel->resize(s.size());
 
 		for( unsigned i = 0, n = s.size(); i < n; ++i) {
 			
-			SReal delta = off.empty() ? 0 : off[ std::min<int>(off.size() - 1, i) ];
+			const SReal delta = off.empty() ? 0 : off[ std::min<int>(off.size() - 1, i) ];
 			
             utils::map(out[i])(0) = utils::map(in[s[i].first]).dot( utils::map(s[i].second ) ) - delta;
 		}
