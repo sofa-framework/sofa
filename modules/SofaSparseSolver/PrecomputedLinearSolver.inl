@@ -209,7 +209,8 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
         core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
         //TODO get the m b k factor from euler
 
-        std::cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
+        msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
+                       "correction is not implemented. You first need to save the matrix into a file. " ;
         setSystemMBKMatrix(&mparams);
     }
 

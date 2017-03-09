@@ -16,52 +16,52 @@ namespace mapping
 {
 
 
-/**  
+/**
      Provides an implementation basis for assembled, sparse multi
      mappings.
 
      TODO: add .inl to minimize bloat / compilation times
-     
+
      @author: maxime.tournier@inria.fr
 */
 
 template <class TIn, class TOut >
 class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 {
-	typedef AssembledMultiMapping self;
+    typedef AssembledMultiMapping self;
   public:
-	SOFA_CLASS(SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
-	
-	typedef core::MultiMapping<TIn, TOut> Inherit;
-	typedef TIn In;
-	typedef TOut Out;
-	typedef typename Out::VecCoord OutVecCoord;
-	typedef typename Out::VecDeriv OutVecDeriv;
-	typedef typename Out::Coord OutCoord;
-	typedef typename Out::Deriv OutDeriv;
-	typedef typename Out::MatrixDeriv OutMatrixDeriv;
-	typedef typename Out::Real Real;
+    SOFA_CLASS(SOFA_TEMPLATE2(AssembledMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+
+    typedef core::MultiMapping<TIn, TOut> Inherit;
+    typedef TIn In;
+    typedef TOut Out;
+    typedef typename Out::VecCoord OutVecCoord;
+    typedef typename Out::VecDeriv OutVecDeriv;
+    typedef typename Out::Coord OutCoord;
+    typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real Real;
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
-	typedef typename In::Deriv InDeriv;
-	typedef typename In::MatrixDeriv InMatrixDeriv;
-	typedef typename In::Coord InCoord;
-	typedef typename In::VecCoord InVecCoord;
-	typedef typename In::VecDeriv InVecDeriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename In::Coord InCoord;
+    typedef typename In::VecCoord InVecCoord;
+    typedef typename In::VecDeriv InVecDeriv;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
-	typedef linearsolver::EigenSparseMatrix<TIn,TOut>  SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut>  SparseMatrixEigen;
 
-	typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
-	typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
+    typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
+    typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
 
 
-	virtual void init() {
-		assert( (this->getTo().size() == 1) && 
-		        "sorry, multi mapping to multiple output dofs unimplemented" );
-		
+    virtual void init() {
+        assert( (this->getTo().size() == 1) &&
+                "sorry, multi mapping to multiple output dofs unimplemented" );
+
         Inherit::init();
-	}
+    }
 
     void update() {
         this->reinit();
@@ -73,7 +73,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
     geometric_type geometric;
-    
+
     virtual const defaulttype::BaseMatrix* getK() {
         if( geometric.compressedMatrix.nonZeros() ) return &geometric;
         else return NULL;
@@ -82,17 +82,17 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId force ) {
 
-		const unsigned n = this->getFrom().size();
+        const unsigned n = this->getFrom().size();
 
         helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
-        
-		for( unsigned i = 0; i < n; ++i ) {
+
+        for( unsigned i = 0; i < n; ++i ) {
             const core::State<TIn>* from = this->getFromModels()[i];
             const_in_coord_type in_pos( *pos[from].read() );
-			in_vec.push_back( in_pos );
-		}
+            in_vec.push_back( in_pos );
+        }
 
         const core::State<TOut>* to = this->getToModels()[0];
         const_out_deriv_type out_force( *force[to].read() );
@@ -100,25 +100,25 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
         this->assemble_geometric(in_vec, out_force);
     }
 
-	
-	virtual void apply(const core::MechanicalParams* , 
-	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
-	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
-		alloc();
-	
-		const unsigned n = this->getFrom().size();
+
+    virtual void apply(const core::MechanicalParams* ,
+                       const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+                       const helper::vector<const InDataVecCoord*>& dataVecInPos) {
+        alloc();
+
+        const unsigned n = this->getFrom().size();
 
         helper::vector<in_pos_type> in_vec; in_vec.reserve(n);
 
-		for( unsigned i = 0; i < n; ++i ) {
-			in_vec.push_back( in_pos_type(dataVecInPos[i]) );
-		}
-		
-		out_pos_type out(dataVecOutPos[0]);
-		
-		apply(out, in_vec);
-		assemble(in_vec);
-	}
+        for( unsigned i = 0; i < n; ++i ) {
+            in_vec.push_back( in_pos_type(dataVecInPos[i]) );
+        }
+
+        out_pos_type out(dataVecOutPos[0]);
+
+        apply(out, in_vec);
+        assemble(in_vec);
+    }
 
 
 
@@ -148,25 +148,27 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     }
 
-    void debug() {
-		std::cerr << this->getClassName() << std::endl;
-		for( unsigned i = 0, n = js.size(); i < n; ++i) {
-			std::cerr << "from: " <<  this->getFrom()[i]->getContext()->getName() 
-					  << "/" << this->getFrom()[i]->getName() << std::endl;
-		}
-		std::cerr << "to: " << this->getTo()[0]->getContext()->getName() << "/" << this->getTo()[0]->getName() << std::endl;
-		std::cerr << std::endl;
-	}
+    void debug()
+    {
+        std::stringstream tmp;
+        tmp << this->getClassName() << msgendl;
+        for( unsigned i = 0, n = js.size(); i < n; ++i) {
+            tmp << "from: " <<  this->getFrom()[i]->getContext()->getName()
+                << "/" << this->getFrom()[i]->getName() << msgendl;
+        }
+        tmp << "to: " << this->getTo()[0]->getContext()->getName() << "/" << this->getTo()[0]->getName() ;
+        msg_info() << tmp ;
+    }
 
-	virtual void applyJT(const core::MechanicalParams*,
-						 const helper::vector< InDataVecDeriv*>& outDeriv, 
-	                     const helper::vector<const OutDataVecDeriv*>& inDeriv) {
-		for( unsigned i = 0, n = js.size(); i < n; ++i) {
-			if( jacobian(i).rowSize() > 0 ) {
-				jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
-			}
-		}
-	}
+    virtual void applyJT(const core::MechanicalParams*,
+                         const helper::vector< InDataVecDeriv*>& outDeriv,
+                         const helper::vector<const OutDataVecDeriv*>& inDeriv) {
+        for( unsigned i = 0, n = js.size(); i < n; ++i) {
+            if( jacobian(i).rowSize() > 0 ) {
+                jacobian(i).addMultTranspose(*outDeriv[i], *inDeriv[0]);
+            }
+        }
+    }
 
     virtual void applyDJT(const core::MechanicalParams* mparams,
                           core::MultiVecDerivId inForce,
@@ -208,12 +210,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     }
 
     virtual void applyJT( const core::ConstraintParams*,
-						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
-						  const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
-		// throw std::logic_error("not implemented");
-	}
+                          const helper::vector< typename self::InDataMatrixDeriv* >& ,
+                          const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
+        // throw std::logic_error("not implemented");
+    }
 
-	
+
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
 
         if( js.empty() )
@@ -221,25 +223,25 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
             serr << "empty js for " << this->getPathName() << sendl;
             assert(false);
         }
-		
-		return &js;
+
+        return &js;
     }
- 
-    
+
+
   protected:
-	typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
+    typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
 
-	
+
   // returns the i-th jacobian matrix
-	jacobian_type& jacobian(unsigned i) {
-		assert( i < js.size() );
-		assert( dynamic_cast<jacobian_type*>(js[i]) );
-	
-		return *static_cast<jacobian_type*>(js[i]);
-	}
+    jacobian_type& jacobian(unsigned i) {
+        assert( i < js.size() );
+        assert( dynamic_cast<jacobian_type*>(js[i]) );
+
+        return *static_cast<jacobian_type*>(js[i]);
+    }
 
 
-	enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+    enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
 
     // let's do this once and for all
@@ -251,12 +253,12 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     typedef helper::ReadAccessor< Data< typename self::InVecDeriv > > const_in_deriv_type;
     typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > in_deriv_type;
-    
+
     typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > const_out_deriv_type;
     typedef helper::WriteAccessor< Data< typename self::OutVecDeriv > > out_deriv_type;
 
 
-	// TODO rename in_coord_type/out_coord_type
+    // TODO rename in_coord_type/out_coord_type
     typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
     typedef helper::WriteOnlyAccessor< Data< typename self::OutVecCoord > > out_pos_type;
 
@@ -265,27 +267,27 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > in_force_type;
     typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > out_force_type;
-	
-	
-	// perform a jacobian blocs assembly
-	// TODO pass out value as well ?
+
+
+    // perform a jacobian blocs assembly
+    // TODO pass out value as well ?
     virtual void assemble( const helper::vector<in_pos_type>& in ) = 0;
 
     virtual void assemble_geometric( const helper::vector<const_in_coord_type>& /*in*/,
                                      const const_out_deriv_type& /*out*/) { }
-    
+
     using Inherit::apply;
-	// perform mapping operation on positions
-    virtual void apply(out_pos_type& out, 
+    // perform mapping operation on positions
+    virtual void apply(out_pos_type& out,
                        const helper::vector<in_pos_type>& in ) = 0;
 
   protected:
 
-	// allocate jacobians
-	virtual void alloc() {
-		
-		const unsigned n = this->getFrom().size();
-		if( n != js.size() ) {
+    // allocate jacobians
+    virtual void alloc() {
+
+        const unsigned n = this->getFrom().size();
+        if( n != js.size() ) {
             release();
 
             // alloc
@@ -294,40 +296,40 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
                 for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
             }
-		}
-	}
+        }
+    }
 
-	// delete jacobians
+    // delete jacobians
     void release() {
         for( unsigned i = 0, n = js.size(); i < n; ++i) {
-			delete js[i];
-			js[i] = 0;
-		}
-	}
+            delete js[i];
+            js[i] = 0;
+        }
+    }
 
-	
+
     typedef helper::vector< sofa::defaulttype::BaseMatrix* > js_type;
-	js_type js;
+    js_type js;
 
 
   protected:
-	
-	core::behavior::BaseMechanicalState* from(unsigned i) {
-		// TODO assert
+
+    core::behavior::BaseMechanicalState* from(unsigned i) {
+        // TODO assert
         return this->getFrom()[i]->toBaseMechanicalState();
-	}
+    }
 
-	core::behavior::BaseMechanicalState* to(unsigned i = 0) {
-		// TODO assert
+    core::behavior::BaseMechanicalState* to(unsigned i = 0) {
+        // TODO assert
         return this->getTo()[i]->toBaseMechanicalState();
-	}
+    }
 
-	
+
   public:
-	
+
     virtual ~AssembledMultiMapping() {
-		release();
-	}
+        release();
+    }
 
 
 };

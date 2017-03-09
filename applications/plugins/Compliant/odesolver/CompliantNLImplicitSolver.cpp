@@ -677,8 +677,9 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
             }
 
-            if( debug.getValue() ) {
-//                std::cerr << "next residual= " << resnorm << endl; //":\t" << residual.transpose() << std::endl;
+            if( debug.getValue() )
+            {
+                // msg_info() << "next residual= " << resnorm << endl; //":\t" << residual.transpose() ;
                 cerr<<"end of iteration " << num << " ==================================== " << endl;
             }
 

@@ -641,7 +641,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     std::string scene = "PML/default.scn";
     if ( !sofa::helper::system::DataRepository.findFile ( scene ) )
     {
-        std::cerr << "File " << scene << " not found " << std::endl;
+        msg_info("RealGUI") << "File '" << scene << "' not found " ;
         return;
     }
     this->unloadScene();
@@ -1007,7 +1007,7 @@ void RealGUI::fileReload()
 
     if ( filename.empty() )
     {
-        std::cerr << "Reload failed: no file loaded.\n";
+        msg_error("RealGUI") << "Reload failed: no file loaded.";
         return;
     }
 

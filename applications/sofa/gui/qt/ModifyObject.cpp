@@ -178,7 +178,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             core::objectmodel::BaseData* data=*it;
             if (!data)
             {
-                std::cerr << "ERROR: NULL Data in " << node->getName() << std::endl;
+                dmsg_error("ModifyObject") << "NULL Data in '" << node->getName() << "'" ;
                 continue;
             }
 
@@ -186,7 +186,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (!data->getGroup())
             {
-                std::cerr << "ERROR: NULL group for Data " << data->getName() << " in " << node->getName() << std::endl;
+                dmsg_error("ModifyObject") << "NULL group for Data (" << data->getName() << "() in (" << node->getName() << "'";
                 continue;
             }
 

@@ -24,8 +24,9 @@ void AnalysisSolver::init() {
     solvers.clear();
     this->getContext()->get<KKTSolver>( &solvers, core::objectmodel::BaseContext::Local );
 
-    if( solvers.size() < 2 ) {
-        std::cerr << "warning: no other kkt solvers found" << std::endl;
+    if( solvers.size() < 2 )
+    {
+        msg_warning() << "No other kkt solvers found." ;
     } else {
         std::cout << "AnalysisSolver: dynamics/correction will use "
                   << solvers.back()->getName()

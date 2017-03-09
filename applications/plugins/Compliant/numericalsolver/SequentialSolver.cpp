@@ -63,8 +63,8 @@ void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& sch
 
 #ifndef NDEBUG
     if( inv.info() != Eigen::Success ){
-        std::cerr << SOFA_CLASS_METHOD<<"non invertible block Schur." << std::endl;
-        std::cerr << schur << std::endl;
+        msg_error(SOFA_CLASS_METHOD) << "non invertible block Schur." << msgendl
+                                     << schur ;
     }
 #endif
 }
@@ -251,7 +251,7 @@ SReal BaseSequentialSolver::step(vec& lambda,
         // fix net to avoid error accumulations ?
     }
 
-    // std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
+    // msg_info() << "sanity check: " << (net - mapping_response * lambda).norm() ;
 
     // TODO is this needed to avoid error accumulation ?
     // net = mapping_response * lambda;

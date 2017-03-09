@@ -1136,7 +1136,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             viewerExtension = ".view";
         }
 
-        //        std::cerr << "viewFile = " << viewFile << std::endl;
+        // msg_error("SofaModeler") << "viewFile = " << viewFile ;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
@@ -1233,6 +1233,7 @@ void SofaModeler::redirectStdout()
 
     if (p->waitForStarted(-1))
     {
+        /// This one probably does not need to be replaced with msg_* API
         std::cout << "FROM SOFA [OUT] >> " << QString(p->readAllStandardOutput()).toStdString() << std::endl;
     }
 }
@@ -1246,6 +1247,7 @@ void SofaModeler::redirectStderr()
     }
     if (p->waitForStarted(-1))
     {
+        /// This one probably does not need to be replaced with msg_* API
         std::cerr << "FROM SOFA [ERR] >> " << QString(p->readAllStandardError()).toStdString() << std::endl;
     }
 }

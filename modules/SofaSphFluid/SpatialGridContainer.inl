@@ -289,7 +289,7 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
     int x2,y2,z2;
     if (r > GRIDDIM)
     {
-        std::cerr << "Distance too large in SpatialGrid::computeField ("<<r<<" > "<<GRIDDIM<<")\n";
+        dmsg_info("SpatalGrid") << "Distance too large in computeField ("<<r<<" > "<<GRIDDIM<<")" ;
         return;
     }
     //std::cout << "accumulate particles with radius "<<dist<<std::endl;

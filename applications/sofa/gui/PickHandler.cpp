@@ -476,7 +476,8 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());
-    else std::cerr << "ERROR: root node not found." << std::endl;
+    else
+        dmsg_error("PickHandler") << "Root node not found.";
 
     picker.getClosestParticle( result.mstate, result.indexCollisionElement, result.point, result.rayLength );
 

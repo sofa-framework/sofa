@@ -212,7 +212,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         parent = group;
         if (parent!=NULL)
         {
-            //std::cerr << "Attaching contact response to "<<parent->getName()<<std::endl;
+            //msg_error() << "Attaching contact response to "<<parent->getName() ;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -226,7 +226,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         if (parent!=NULL)
         {
-            //std::cerr << "Removing contact response from "<<parent->getName()<<std::endl;
+            //msg_error()<< "Removing contact response from "<<parent->getName();
             parent->removeObject(this);
             parent->removeObject(ff);
         }

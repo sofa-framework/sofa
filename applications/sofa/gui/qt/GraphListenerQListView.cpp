@@ -310,7 +310,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
                 items[parent]->insertChild(0, item);
             else
             {
-                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
                 return;
             }
         }
@@ -354,7 +354,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
             item = createItem(items[parent]);
         else
         {
-            std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+            dmsg_error("GraphListenerQListView") << "Unknown parent node '"<<parent->getName()<<"'";
             return;
         }
 
@@ -433,7 +433,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
                 items[parent]->addChild(item);
             else
             {
-                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
                 return;
             }
         }
@@ -445,7 +445,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
             item = createItem(items[parent]);
         else
         {
-            std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+            dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
             return;
         }
         std::string name = sofa::helper::gettypename(typeid(*object));
@@ -525,7 +525,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
                 items[master]->addChild(item);
             else
             {
-                std::cerr << "Graph -> QT ERROR: Unknown master node "<<master->getName()<<std::endl;
+                dmsg_error("GraphListenerQListView") << "Unknown master node '"<<master->getName()<<"'";
                 return;
             }
         }
@@ -537,7 +537,7 @@ void GraphListenerQListView::addSlave(core::objectmodel::BaseObject* master, cor
             item = createItem(items[master]);
         else
         {
-            std::cerr << "Graph -> QT ERROR: Unknown master node "<<master->getName()<<std::endl;
+            dmsg_error("GraphListenerQListView") << "Unknown master node '"<<master->getName()<<"'";
             return;
         }
         std::string name = sofa::helper::gettypename(typeid(*slave));

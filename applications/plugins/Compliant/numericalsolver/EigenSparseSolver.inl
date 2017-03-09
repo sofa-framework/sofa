@@ -25,7 +25,7 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
     cmat schur;
 
     cmat tmp;
-    
+
     SubKKT sub;
 
     bool m_trackSparsityPattern;
@@ -50,8 +50,9 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
         // the conversion from rmat to cmat needs to be explicit for iterative solvers
         compute( tmp );
 
-        if( solver.info() != Eigen::Success ) {
-            std::cerr << "EigenSparseSolver non invertible matrix" << std::endl;
+        if( solver.info() != Eigen::Success )
+        {
+             msg_error("EigenSparseSolver")  << "Non invertible matrix.";
         }
     }
 
@@ -178,10 +179,10 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
             // TODO hide this somewhere
             pimpl->tmp = sys.J;
             pimpl->schur = sys.C.transpose();
-            
+
             sparse::fast_add_prod(pimpl->schur, pimpl->tmp, pimpl->PHinvPJT);
         }
-    
+
         if( debug.getValue() ){
             typedef AssembledSystem::dmat dmat;
             serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
@@ -223,7 +224,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
     if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
 
     pimpl->sub.solve( *pimpl, res, tmp );
-    
+
 }
 
 template<class LinearSolver,bool symmetric>
@@ -243,7 +244,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
 
     // in place solve
     pimpl->sub.solve(*response, free, rhs.head(sys.m));
-    
+
     if( debug.getValue() ){
         serr << "solve, free motion solution = " << free.transpose() << sendl
             // << "solve, verification = " << (sys.H * free).transpose() << sendl;
@@ -252,32 +253,32 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
              << ", rhs.size = " << rhs.size() << sendl;
 
     }
-    
+
     res.head( sys.m ) = free;
-    
+
     if( sys.n ) {
 
         vec tmp = rhs.tail( sys.n ) - pimpl->PHinvPJT.transpose() * rhs.head( sys.m );
-        
+
         // lambdas
         res.tail( sys.n ) = pimpl->solver.solve( tmp );
-        
+
         // constraint forces
         res.head( sys.m ) += pimpl->PHinvPJT * res.tail( sys.n );
-        
+
         if( debug.getValue() ){
             serr << "solve, free motion constraint error= "
                  << -tmp.transpose() << sendl
-                
+
                  << "solve, lambda = "
                  << res.tail(sys.n).transpose() << sendl
-                
+
                  << "solve, constraint forces = "
                  << (pimpl->PHinvPJT * res.tail( sys.n)).transpose() << sendl;
         }
     }
 
-} 
+}
 
 
 

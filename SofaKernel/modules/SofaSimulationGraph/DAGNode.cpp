@@ -217,7 +217,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             }
             break;
         case SearchRoot:
-            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
+            dmsg_error("DAGNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
             break;
         }
     }
@@ -281,7 +281,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         }
         else if (pend < path.length())
         {
-            //std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
+            //dmsg_error("DAGNode") << "Child node "<<name<<" not found in "<<getPathName();
             return NULL;
         }
         else
@@ -289,7 +289,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == NULL)
             {
-                //std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
+                //dmsg_error("DAGNode") << "ERROR: object "<<name<<" not found in "<<getPathName();
                 return NULL;
             }
             else
@@ -297,7 +297,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
                 void* result = class_info.dynamicCast(obj);
                 if (result == NULL)
                 {
-                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    dmsg_error("DAGNode") << "Object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name() ;
                     return NULL;
                 }
                 else

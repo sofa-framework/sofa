@@ -174,7 +174,11 @@ BaseObject::SPtr GraphModeler::addComponent(Node::SPtr parent, const ClassEntry:
     {
         if (templateName.empty())
         {
-            if (entry->creatorMap.find(entry->defaultTemplate) == entry->creatorMap.end()) { std::cerr << "Error: No template specified" << std::endl; return object;}
+            if (entry->creatorMap.find(entry->defaultTemplate) == entry->creatorMap.end())
+            {
+                msg_error("GraphModeler") << "No template specified." ;
+                return object;
+            }
 
             c=entry->creatorMap.find(entry->defaultTemplate)->second;
             templateUsed=entry->defaultTemplate;
