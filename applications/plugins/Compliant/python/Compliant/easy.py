@@ -278,10 +278,17 @@ class Mapping(object):
         self.input = list(kwargs['input'])
         self.output = kwargs['output']
 
+        in_templates = set()
+        for i in self.input:
+            in_templates.add(i.getTemplateName())
+
+        if len(in_templates) != 1: 
+            raise Exception('input dofs must have the same template')
+
+        template = '{0},{1}'.format( next(iter(in_templates)), self.output.getTemplateName() )
+        
         input = ' '.join( [x.getLinkPath() for x in self.input] )
         output = self.output.getLinkPath()
-
-        template = kwargs['template']
         
         # create wrapped mapping
         self.obj = node.createObject('PythonMultiMapping',
