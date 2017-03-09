@@ -45,7 +45,7 @@ using sofa::defaulttype::Vec4f;
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public Vec<4, float>
+class SOFA_HELPER_API RGBAColor : public Vec<4, float>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;

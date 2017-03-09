@@ -23,9 +23,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_DEFAULTTYPE_COLOR_CPP
-
-#include <sofa/defaulttype/Color.h>
+#include <sofa/helper/types/Color.h>
 
 namespace sofa
 {
@@ -170,7 +168,7 @@ RGBAColor RGBAColor::fromVec4(const Vec4f& color)
     return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
 }
 
-SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
+SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;
     std::getline(i, s);
