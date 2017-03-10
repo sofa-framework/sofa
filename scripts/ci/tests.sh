@@ -75,9 +75,8 @@ run-single-test-subtests() {
     IFS=''; while read line; do
         if echo "$line" | grep -q "^.*\." ; then
             local current_test="$(echo "$line" | grep -o "^.*\.")"
-        elif echo "$line" | grep -q "^  .*" ; then
-            local current_subtest="$(echo "$line" | grep -o "[^ ]*")"
-            mkdir -p "$output_dir/$test/$current_test$current_subtest"
+        elif echo "$line" | grep -q "^  [^ ]*" ; then
+            local current_subtest="$(echo "$line" | grep -o "[^ ]*" | head -1)"
             echo "$current_test$current_subtest" >> "$output_dir/$test/subtests.txt"
         fi
     done < "$output_dir/$test/subtests.tmp.txt"
@@ -90,6 +89,7 @@ run-single-test-subtests() {
         local output_file="$output_dir/$test/$subtest/report.xml"
         local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file --gtest_filter=$subtest 2>&1"
 
+        mkdir -p "$output_dir/$test/$subtest"
         echo "$test_cmd" >> "$output_dir/$test/$subtest/command.txt"
         bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt"
         pipestatus="${PIPESTATUS[0]}"
