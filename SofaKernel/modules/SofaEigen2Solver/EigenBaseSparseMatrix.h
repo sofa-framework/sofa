@@ -119,13 +119,14 @@ public:
 
     void setIdentity()
     {
+        assert( rowSize()==colSize() );
         clear();
         for( Index i=0; i<rowSize(); i++ )
         {
-            if( i==colSize() ) break;
-            add(i,i,1.0);
+            beginRow(i);
+            compressedMatrix.insertBack(i,i) = 1.0;
         }
-        compress();
+        finalize();
     }
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
