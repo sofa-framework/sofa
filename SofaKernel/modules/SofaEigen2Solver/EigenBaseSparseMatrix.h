@@ -26,6 +26,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
+#include "config.h"
 
 
 namespace sofa
@@ -128,7 +129,7 @@ public:
     }
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
-    void add( Index row, Index col, double value ){
+    inline void add( Index row, Index col, double value ){
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
@@ -139,12 +140,12 @@ public:
 
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
     /// @warning the line must be created previously with "beginRow"
-    void insertBack( Index row, Index col, Real value){
+    inline void insertBack( Index row, Index col, Real value){
         if( value!=0.0 ) compressedMatrix.insertBack(row,col) = value;
     }
 
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
-    Real& coeffRef( Index i, Index j ){
+    inline Real& coeffRef( Index i, Index j ){
         return compressedMatrix.coeffRef(i,j);
     }
 
@@ -165,7 +166,7 @@ public:
 
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow, Index nbCol)
+    inline void resize(Index nbRow, Index nbCol)
     {
         compressedMatrix.resize(nbRow,nbCol);
     }
@@ -173,13 +174,13 @@ public:
 
 
     /// number of rows
-    Index rowSize(void) const
+    inline Index rowSize(void) const
     {
         return compressedMatrix.rows();
     }
 
     /// number of columns
-    Index colSize(void) const
+    inline Index colSize(void) const
     {
         return compressedMatrix.cols();
     }
@@ -189,7 +190,7 @@ public:
         compressedMatrix.reserve(reserveSize);
     }
 
-    SReal element(Index i, Index j) const
+    inline SReal element(Index i, Index j) const
     {
         return (SReal)compressedMatrix.coeff(i,j);
     }
@@ -399,6 +400,12 @@ public:
 
 template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "EigenBaseSparseMatrixd"; }
 template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "EigenBaseSparseMatrixf"; }
+
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_CPP)
+extern template class SOFA_EIGEN2_SOLVER_API EigenBaseSparseMatrix<float>;
+extern template class SOFA_EIGEN2_SOLVER_API EigenBaseSparseMatrix<double>;
+#endif
 
 
 
