@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
+#include <thread>
 
 #include <iostream>
 using std::endl ;
@@ -131,6 +132,57 @@ TEST(LoggingTest, duplicatedHandler)
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h.numMessages() == 4u) ;
+}
+
+void f1()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread1") << "Hello world" ;
+        msg_warning("Thread1") << "Hello world" ;
+        msg_error("Thread1") << "Hello world" ;
+    }
+}
+
+void f2()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread2") << "Hello world" ;
+        msg_warning("Thread2") << "Hello world" ;
+        msg_error("Thread2") << "Hello world" ;
+    }
+}
+
+void f3()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread3") << "Hello world" ;
+        msg_warning("Thread3") << "Hello world" ;
+        msg_error("Thread3") << "Hello world" ;
+    }
+}
+
+
+TEST(LoggingTest, threadingTests)
+{
+    MessageDispatcher::clearHandlers() ;
+
+    CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
+    // First add is expected to return the handler ID.
+    EXPECT_TRUE(MessageDispatcher::addHandler(&mh) == 0) ;
+
+    std::thread t1(f1);
+    std::thread t1bis(f1);
+    std::thread t2(f2);
+    std::thread t3(f3);
+
+    t1.join();
+    t1bis.join();
+    t2.join();
+    t3.join();
+
+    EXPECT_EQ( mh.getMessageCountFor(Message::Info), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Warning), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Error), 400000) ;
 }
 
 
