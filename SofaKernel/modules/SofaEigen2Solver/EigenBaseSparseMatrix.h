@@ -134,7 +134,21 @@ public:
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
-    void beginRow(Index index)
+    /// beginRowSafe can be call only on row where you are inserting (contrarily to beginRow)
+    void beginRowSafe(Index index)
+    {
+        const size_t size = compressedMatrix.data().size();
+        typename CompressedMatrix::StorageIndex* outerIndex = compressedMatrix.outerIndexPtr();
+
+        // go back until the last filled column
+        for( Index i = index ; i>=0 && outerIndex[i]==0 ; --i )
+            outerIndex[i] = size;
+
+        compressedMatrix.startVec(index);
+    }
+
+    /// beginRow must be call for each row
+    inline void beginRow(Index index)
     {
         compressedMatrix.startVec(index);
     }
