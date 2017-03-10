@@ -266,7 +266,17 @@ class Mapping(object):
 
     def release(self):
         del Mapping._instances_[self]
-    
+
+
+    def set_callback(self, name, cb):
+        set_opaque(self.obj, name, cb)
+        self._refs_[name] = cb
+
+    def __del__(self):
+        for k, v in self._refs_.iteritems():
+            set_opaque(self.obj, k, type(v)(None))
+
+        
     def __init__(self, node, **kwargs):
         '''you need to provide at least input/output kwargs'''
 
@@ -309,7 +319,7 @@ class Mapping(object):
         cls = type(self)
 
         # keep a handle to avoid gc
-        self._refs = []
+        self._refs_ = {}
                 
         # setup callbacks
         if cls.apply is not Mapping.apply:
@@ -319,8 +329,7 @@ class Mapping(object):
                 self.apply( output.contents.numpy(), tuple(inputs[i].numpy() for i in range(n) ) )
                 return
             
-            set_opaque(self.obj, 'apply_callback', cb)
-            self._refs.append(cb)
+            self.set_callback('apply_callback', cb)
 
         if cls.jacobian is not Mapping.jacobian:
 
@@ -334,8 +343,7 @@ class Mapping(object):
                     self.jacobian(js, inputs)
                     return
 
-            set_opaque(self.obj, 'jacobian_callback', cb)
-            self._refs.append(cb)
+            self.set_callback('jacobian_callback', cb)
 
 
         if cls.geometric_stiffness is not Mapping.geometric_stiffness:
@@ -349,8 +357,7 @@ class Mapping(object):
                     self.geometric_stiffness(gs, inputs, force.contents.numpy())
                     return 
 
-            set_opaque(self.obj, 'gs_callback', cb)
-            self._refs.append(cb)
+            self.set_callback('gs_callback', cb)
 
 
         if cls.draw is not Mapping.draw:
@@ -359,9 +366,8 @@ class Mapping(object):
             def cb():
                 self.draw()
                 
-            set_opaque(self.obj, 'draw_callback', cb)
-            self._refs.append(cb)
-        
+            self.set_callback('draw_callback', cb)
+
         
     def apply(self, out, at):
         '''apply mapping to at putting result in out: out = self(at)
