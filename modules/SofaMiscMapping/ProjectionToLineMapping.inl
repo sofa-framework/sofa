@@ -88,7 +88,7 @@ void ProjectionToTargetLineMapping<TIn, TOut>::reinit()
             }
         }
     }
-    jacobian.compress();
+    jacobian.finalize();
 
     this->Inherit::reinit();
 }
@@ -322,8 +322,8 @@ void ProjectionToLineMultiMapping<TIn, TOut>::apply(const core::MechanicalParams
         }
     }
 
-    jacobian0.compress();
-    jacobian1.compress();
+    jacobian0.finalize();
+    jacobian1.finalize();
 
 }
 

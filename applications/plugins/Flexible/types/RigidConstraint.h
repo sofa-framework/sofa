@@ -167,7 +167,7 @@ public:
             else jacobian.insertBackBlock(i,i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
             i++;
         }
-        jacobian.compress();
+        jacobian.finalize();
 
         SparseMatrix J;
         J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state

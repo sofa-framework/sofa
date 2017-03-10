@@ -305,7 +305,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             }
             mb.endBlockRow();
         }
-        mb.compress();
+        mb.finalize();
 
 
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
@@ -397,7 +397,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             }
 
         }
-        mb.compress();
+        mb.finalize();
 
         ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
     }

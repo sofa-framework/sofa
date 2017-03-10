@@ -322,7 +322,7 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
             }
             _J.endBlockRow();
         }
-         _J.compress();
+         _J.finalize();
     }
     outData.endEdit(mparams);
 }

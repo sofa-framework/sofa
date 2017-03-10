@@ -349,7 +349,7 @@ public:
         K.resizeBlocks(size,size);
         for(size_t i=0; i<jacobian.size(); i++)
             K.insertBackBlock( i, i, jacobian[i].getK(childForce[i]) );
-        K.compress();
+        K.finalize();
     }
 
 
@@ -399,7 +399,7 @@ protected:
         eigenJacobian.resizeBlocks(outsize,insize);
         for(size_t i=0; i<jacobian.size(); i++)
             eigenJacobian.insertBackBlock( i, i, jacobian[i].getJ() );
-        eigenJacobian.compress();
+        eigenJacobian.finalize();
     }
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix

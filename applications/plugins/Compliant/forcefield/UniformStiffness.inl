@@ -48,7 +48,7 @@ void UniformStiffness<DataTypes>::reinit()
             matC.beginRow(i);
             matC.insertBack(i, i, compliance);
         }
-        matC.compressedMatrix.finalize();
+        matC.finalize();
     }
     else matC.compressedMatrix.resize(0,0);
 
@@ -64,7 +64,7 @@ void UniformStiffness<DataTypes>::reinit()
                 matK.insertBack(i, i, -k);
             }
 
-            matK.compressedMatrix.finalize();
+            matK.finalize();
         }
 
 //    }
@@ -84,7 +84,7 @@ void UniformStiffness<DataTypes>::reinit()
             matB.insertBack(i, i, -d);
 		}
 
-		matB.compressedMatrix.finalize();
+        matB.finalize();
 	}
     else matB.compressedMatrix.resize(0,0);
 	

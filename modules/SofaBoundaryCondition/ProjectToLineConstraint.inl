@@ -200,7 +200,7 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
         }
         i++;
     }
-    jacobian.compress();
+    jacobian.finalize();
 //    cerr<<"ProjectToLineConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 }

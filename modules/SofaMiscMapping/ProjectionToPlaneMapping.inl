@@ -93,7 +93,7 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::reinit()
             }
         }
     }
-    jacobian.compress();
+    jacobian.finalize();
 
     this->Inherit::reinit();
 }
@@ -356,8 +356,8 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::apply(const core::MechanicalParam
         }
     }
 
-    jacobian0.compress();
-    jacobian1.compress();
+    jacobian0.finalize();
+    jacobian1.finalize();
 
 }
 

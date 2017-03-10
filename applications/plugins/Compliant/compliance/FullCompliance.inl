@@ -94,7 +94,7 @@ void FullCompliance<DataTypes>::reinit()
             matB.beginRow(i);
             matB.insertBack(i, i, -d);
         }
-        matB.compressedMatrix.finalize();
+        matB.finalize();
     }
     else matB.compressedMatrix.resize(0,0);
 }

@@ -145,6 +145,13 @@ public:
         if( value!=0.0 ) compressedMatrix.insertBack(row,col) = value;
     }
 
+
+    /// Must be called after inserting a set of non zero entries using the low level compressed API
+    inline void finalize(){
+        compressedMatrix.finalize();
+    }
+
+
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
     inline Real& coeffRef( Index i, Index j ){
         return compressedMatrix.coeffRef(i,j);

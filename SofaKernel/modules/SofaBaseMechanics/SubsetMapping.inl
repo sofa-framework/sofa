@@ -355,7 +355,7 @@ const typename SubsetMapping<TIn, TOut>::js_type* SubsetMapping<TIn, TOut>::getJ
                 eigen.insertBack( i*NOut+j, indices[i]*NIn+j ,(SReal)1. );
             }
         }
-        eigen.compress();
+        eigen.finalize();
     }
 
     js.resize( 1 );

@@ -325,7 +325,7 @@ protected:
             J.endBlockRow();
         }
 
-        J.compress();
+        J.finalize();
     }
 
 

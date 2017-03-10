@@ -184,7 +184,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, target positions = " << positions << endl;
 //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, out = " << out << endl;
 
-    jacobian.compress();
+    jacobian.finalize();
 //    serr << "apply, jacobian: " << sendl << jacobian << sendl;
 
 }

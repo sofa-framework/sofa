@@ -170,13 +170,13 @@ public:
         K.resizeBlocks(size,size);
         for(unsigned int i=0; i<size; i++)
             K.insertBackBlock( i, i, _materialBlocks[i].getK() );
-        K.compress();
+        K.finalize();
 
         linearsolver::EigenSparseMatrix<defaulttype::F331Types,defaulttype::E331Types> Jstrain;
         Jstrain.resizeBlocks(size,size);
         for(size_t i=0; i<size; i++)
             Jstrain.insertBackBlock( i, i, _strainJacobianBlocks[i].getJ() );
-        Jstrain.compress();
+        Jstrain.finalize();
 
 //        m_linearDeformationMapping->getJ(core::MechanicalParams::defaultInstance()); // to update J
 //        const linearsolver::EigenSparseMatrix<DataTypes,defaulttype::F331Types> &Jdefo = m_linearDeformationMapping->eigenJacobian;
@@ -194,7 +194,7 @@ public:
                 Jdefo.createBlock( index[i][j], linearDeformationJacobianBlocks[i][j].getJ());
             Jdefo.endBlockRow();
         }
-        Jdefo.compress();
+        Jdefo.finalize();
 
 
         m_assembledK.compressedMatrix = Jdefo.compressedMatrix.transpose() * Jstrain.compressedMatrix.transpose() * K.compressedMatrix * Jstrain.compressedMatrix * Jdefo.compressedMatrix;

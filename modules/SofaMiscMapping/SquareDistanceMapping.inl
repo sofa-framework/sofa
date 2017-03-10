@@ -169,7 +169,7 @@ void SquareDistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mp
         }
     }
 
-    jacobian.compress();
+    jacobian.finalize();
 }
 
 
