@@ -14,7 +14,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    EigenBaseSparseMatrix.cpp
     EigenMatrixManipulator.cpp
     EigenVector.cpp
     SVDLinearSolver.cpp

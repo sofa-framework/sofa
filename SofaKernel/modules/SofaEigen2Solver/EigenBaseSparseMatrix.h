@@ -424,12 +424,6 @@ template<> inline const char* EigenBaseSparseMatrix<double>::Name() { return "Ei
 template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "EigenBaseSparseMatrixf"; }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_EigenBaseSparseMatrix_CPP)
-extern template class SOFA_EIGEN2_SOLVER_API EigenBaseSparseMatrix<float>;
-extern template class SOFA_EIGEN2_SOLVER_API EigenBaseSparseMatrix<double>;
-#endif
-
-
 
 } // namespace linearsolver
 
