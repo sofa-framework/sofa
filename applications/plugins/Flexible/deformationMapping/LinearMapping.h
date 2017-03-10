@@ -180,7 +180,8 @@ public :
 
     virtual void initJacobianBlocks(const InVecCoord& inCoord, const OutVecCoord& outCoord)
     {
-        dmsg_info() << SOFA_CLASS_METHOD ;
+        if(this->f_printLog.getValue())
+            std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
 
         unsigned int cSize = this->f_pos0.getValue().size();
         this->jacobian.resize(cSize);

@@ -87,16 +87,16 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-        msg_info_when(debug, "CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100")
-                   <<"time step : " << dt << msgendl
-                   << "initial positions : " << x0.transpose() << msgendl
-                   << "initial velocities: " << v0.transpose() << msgendl
-                   << "new positions : " << x1.transpose() << msgendl
-                   << "new velocities: " << v1.transpose() << msgendl
-                   << "new forces: " << f1.transpose() << msgendl
-                   << "new positions  after backward integration: " << x2.transpose() << msgendl
-                   << "new velocities after backward integration: " << v2.transpose() << msgendl;
-
+        if( debug ){
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, time step : " << dt << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial positions : " << x0.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial velocities: " << v0.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions : " << x1.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities: " << v1.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new forces: " << f1.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions  after backward integration: " << x2.transpose() << std::endl;
+            std::cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities after backward integration: " << v2.transpose() << std::endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision );
@@ -166,13 +166,13 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         Vector x2 = x1 - v1 * dt;
 
         if( debug ){
-        msg_info("CompliantImplicitSolver_test")<<"initial positions : " << x0.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"initial velocities: " << v0.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"new positions : " << x1.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"new velocities: " << v1.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"new forces: " << f1.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"new positions  after backward integration: " << x2.transpose() ;
-        msg_info("CompliantImplicitSolver_test")<<"new velocities after backward integration: " << v2.transpose() ;
+        std::cerr<<"CompliantImplicitSolver_test, initial positions : " << x0.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, initial velocities: " << v0.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, new positions : " << x1.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, new velocities: " << v1.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, new forces: " << f1.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << std::endl;
+        std::cerr<<"CompliantImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << std::endl;
         }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );

@@ -24,7 +24,7 @@ void CompliantJacobiPreconditioner::compute( const AssembledSystem::rmat& H )
 
 void CompliantJacobiPreconditioner::apply( AssembledSystem::vec& res, const AssembledSystem::vec& v )
 {
-//    msg_info()<<SOFA_CLASS_METHOD<<std::endl;
+//    std::cerr<<SOFA_CLASS_METHOD<<std::endl;
     res.resize( v.size() );
     res = m_diagonal_inv.asDiagonal() * v;
 }

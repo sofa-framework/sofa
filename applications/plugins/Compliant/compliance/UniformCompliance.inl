@@ -106,7 +106,7 @@ void UniformCompliance<DataTypes>::reinit()
 	}
     else matB.compressedMatrix.resize(0,0);
 	
-//    msg_info()<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
+//    std::cerr<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
 }
 
 template<class DataTypes>

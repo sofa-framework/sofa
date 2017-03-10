@@ -13,15 +13,15 @@ void AssembledSystem::reset(unsigned m, unsigned n) {
     this->n = n;
     this->dt = 0;
 
-    if( !m ) return;
+	if( !m ) return;
 
-    H.resize(m, m);
-    P.resize(m, m);
-
-    if( n ) {
-        J.resize(n, m);
-        C.resize(n, n);
-    }
+	H.resize(m, m); 
+	P.resize(m, m); 
+			
+	if( n ) {
+		J.resize(n, m);
+		C.resize(n, n);
+	}
 
     constraints.clear();
     master.clear();
@@ -29,28 +29,31 @@ void AssembledSystem::reset(unsigned m, unsigned n) {
     isPIdentity = true;
 }
 
-AssembledSystem::AssembledSystem(unsigned m, unsigned n)
-    : m(m),
-      n(n),
-      dt(0)
+AssembledSystem::AssembledSystem(unsigned m, unsigned n) 
+	: m(m), 
+	  n(n),
+	  dt(0)
 {
     reset(m, n);
 }
 
 unsigned AssembledSystem::size() const { return m + n; }
-
+			
 
 void AssembledSystem::debug(SReal /*thres*/) const {
+	
+	std::cerr << "H:" << std::endl
+	          << H << std::endl
+	          << "P:" << std::endl
+	          << P << std::endl;
+	if( n ) { 
+			
+		std::cerr << "J:" << std::endl 
+		          << J << std::endl
+		          << "C:" << std::endl
+		          << C << std::endl;
+	}
 
-    msg_info("AssembledSystem") << "H:" << msgendl
-                                << H << msgendl
-                                << "P:" << msgendl
-                                << P ;
-
-    msg_info_when( n, "AssembledSystem" )  << "J:" << msgendl
-                                           << J << msgendl
-                                           << "C:" << msgendl
-                                           << C << msgendl;
 }
 
 

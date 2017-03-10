@@ -40,14 +40,15 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
         else m_factorized = true;
     }
 
-    msg_info() << "factor: " << H;
+    if( this->f_printLog.getValue() ) serr<<"factor: "<<H<<sendl;
+
 
     if( symmetric ) tmp = H.triangularView< Eigen::Lower >(); // only copy the triangular part (default to Lower)
     else tmp = H; // TODO there IS a temporary here, from rmat to cmat. Explicit copy is needed for iterative solvers
 
 
     compute( tmp );
-
+	
     if( response.info() != Eigen::Success )
     {
         // try to regularize
@@ -68,7 +69,7 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H) {
         }
         else
             serr << "non invertible matrix" << sendl;
-    }
+	}
 
     assert( response.info() == Eigen::Success );
 
@@ -99,13 +100,13 @@ void EigenSparseResponse<LinearSolver,symmetric>::compute(const cmat& M)
 
 template<class LinearSolver,bool symmetric>
 void EigenSparseResponse<LinearSolver,symmetric>::solve(cmat& res, const cmat& M) const {
-    res = response.solve( M );
+	res = response.solve( M );
 }
 
 
 template<class LinearSolver,bool symmetric>
 void EigenSparseResponse<LinearSolver,symmetric>::solve(vec& res, const vec& x) const {
-    res = response.solve( x );
+	res = response.solve( x );
 }
 
 

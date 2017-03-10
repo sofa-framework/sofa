@@ -106,7 +106,7 @@ public:
 
     //        if( _instanciationNumber == 0 ) // only the first one (last bwdInit called) will call the mass removal
     //        {
-    //    //        msg_info()<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
+    //    //        std::cerr<<SOFA_CLASS_METHOD<<"removing child masses"<<std::endl;
 
     //            // visitor to delete child mass
     //            RemoveChildMassVisitor removeChildMassVisitor( core::ExecParams::defaultInstance() );

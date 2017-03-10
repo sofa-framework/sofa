@@ -13,10 +13,10 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-
+			
 
 BaseSequentialSolver::BaseSequentialSolver()
-    : omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
+	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
 {}
 
 
@@ -28,12 +28,12 @@ void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 
     // TODO don't free memory ?
     blocks.clear();
-
-    unsigned off = 0;
+	
+	unsigned off = 0;
 
     for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
     {
-        system_type::dofs_type* const dofs = system.compliant[i];
+		system_type::dofs_type* const dofs = system.compliant[i];
         const system_type::constraint_type& constraint = system.constraints[i];
 
         const unsigned dim = dofs->getDerivDimension();
@@ -59,12 +59,12 @@ void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 
 // TODO optimize remaining allocs
 void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
-    inv.compute( schur );
+	inv.compute( schur );
 
 #ifndef NDEBUG
     if( inv.info() != Eigen::Success ){
-        msg_error(SOFA_CLASS_METHOD) << "non invertible block Schur." << msgendl
-                                     << schur ;
+        std::cerr << SOFA_CLASS_METHOD<<"non invertible block Schur." << std::endl;
+        std::cerr << schur << std::endl;
     }
 #endif
 }
@@ -76,65 +76,65 @@ void BaseSequentialSolver::factor(const system_type& system) {
 }
 
 void BaseSequentialSolver::factor_impl(const system_type& system) {
-    scoped::timer timer("system factorization");
+	scoped::timer timer("system factorization");
+ 
+	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
 
-    Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
-
-    // response matrix
-    assert( response );
+	// response matrix
+	assert( response );
 
 
     SubKKT::projected_primal(sub, system);
 
     sub.factor(*response);
-
-    // compute block responses
-    const unsigned n = blocks.size();
-
+	
+	// compute block responses
+	const unsigned n = blocks.size();
+	
     if( !n ) return;
 
-    blocks_inv.resize( n );
+	blocks_inv.resize( n );
 
 
     sub.solve_opt( *response, mapping_response, system.J );  // mapping_response = PHinv(JP)^T
 
     JP = system.J * system.P;
 
-    // to avoid allocating matrices for each block, could be a vec instead ?
+	// to avoid allocating matrices for each block, could be a vec instead ?
     dmat storage;
 
-    // build blocks and factorize
-    for(unsigned i = 0; i < n; ++i) {
-        const block& b = blocks[i];
-
-        // resize storage if needed TODO alloc max size only once
+	// build blocks and factorize
+	for(unsigned i = 0; i < n; ++i) {
+		const block& b = blocks[i];
+		
+		// resize storage if needed TODO alloc max size only once
         if( (dmat::Index)b.size > storage.rows() ) storage.resize(b.size, b.size);
-
-        // view on storage
-        schur_type schur(storage.data(), b.size, b.size);
-
-        // temporary sparse mat, difficult to remove :-/
+		
+		// view on storage
+		schur_type schur(storage.data(), b.size, b.size);
+		
+		// temporary sparse mat, difficult to remove :-/
         static cmat tmp; // try to improve matrix allocation
         tmp = JP.middleRows(b.offset, b.size) *
             mapping_response.middleCols(b.offset, b.size);
-
-        // fill constraint block
+		
+		// fill constraint block
         schur = tmp;
-
-        // real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
-        // assert( std::sqrt(symmetry) < 1e-8 );
-
-        // add diagonal C block
-        for( unsigned r = 0; r < b.size; ++r) {
+		
+		// real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
+		// assert( std::sqrt(symmetry) < 1e-8 );
+		
+		// add diagonal C block
+		for( unsigned r = 0; r < b.size; ++r) {
             for(rmat::InnerIterator it(system.C, b.offset + r); it; ++it) {
-
-                // paranoia, i has it
-                assert( it.col() >= int(b.offset) );
-                assert( it.col() < int(b.offset + b.size) );
-
-                schur(r, it.col() - int(b.offset)) += it.value();
-            }
-        }
+				
+				// paranoia, i has it
+				assert( it.col() >= int(b.offset) );
+				assert( it.col() < int(b.offset + b.size) );
+				
+				schur(r, it.col() - int(b.offset)) += it.value();
+			}
+		}
 
         factor_block( blocks_inv[i], schur );
     }
@@ -143,60 +143,60 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
 
 // TODO make sure this does not cause any alloc
 void BaseSequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
-    assert( !has_nan(rhs.eval()) );
-    result = rhs;
+	assert( !has_nan(rhs.eval()) );
+	result = rhs;
 
     bool ret = inv.solveInPlace(result);
     assert( !has_nan(result.eval()) );
     assert( ret );
 
-    (void) ret;
+	(void) ret;
 }
 
 
 
 void BaseSequentialSolver::init() {
-
+	
     IterativeSolver::init();
 
-    // let's find a response
-    response = this->getContext()->get<Response>( core::objectmodel::BaseContext::Local );
+	// let's find a response 
+	response = this->getContext()->get<Response>( core::objectmodel::BaseContext::Local );
 
-    // fallback in case we missed
-    if( !response ) {
+	// fallback in case we missed
+	if( !response ) {
         response = new LDLTResponse();
         response->setName("response");
         this->getContext()->addObject( response );
         serr << "fallback Response: "
                   << response->getClassName()
                   << " added to the scene" << sendl;
-    }
+	}
 
 }
 
 
 // this is where the magic happens
 SReal BaseSequentialSolver::step(vec& lambda,
-                                 vec& net,
+                                 vec& net, 
                                  const system_type& sys,
                                  const vec& rhs,
                                  vec& error, vec& delta,
                                  bool correct,
                                  real /*damping*/ ) const {
 
-    // TODO size asserts
-
-    // error norm2 estimate (seems conservative and much cheaper to
-    // compute anyways)
-    real estimate = 0;
+	// TODO size asserts
+	
+	// error norm2 estimate (seems conservative and much cheaper to
+	// compute anyways)
+	real estimate = 0;
 
     SReal omega = this->omega.getValue();
-
-    // inner loop
-    for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
-
-        const block& b = blocks[i];
-
+		
+	// inner loop
+	for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
+			
+		const block& b = blocks[i];
+			 
         // data chunks
         chunk_type lambda_chunk(&lambda(b.offset), b.size);
         chunk_type delta_chunk(&delta(b.offset), b.size);
@@ -239,26 +239,26 @@ SReal BaseSequentialSolver::step(vec& lambda,
             lambda_chunk.setZero();
         }
 
-        // we estimate the total lambda change. since GS convergence
-        // is linear, this can give an idea about current precision.
-        estimate += delta_chunk.squaredNorm();
+		// we estimate the total lambda change. since GS convergence
+		// is linear, this can give an idea about current precision.
+		estimate += delta_chunk.squaredNorm();
 
-        // incrementally update net forces, we only do fresh
-        // computation after the loop to keep perfs decent
+		// incrementally update net forces, we only do fresh
+		// computation after the loop to keep perfs decent
         net.noalias() += mapping_response.middleCols(b.offset, b.size) * delta_chunk;
-        // net.noalias() = mapping_response * lambda;
+		// net.noalias() = mapping_response * lambda;
 
         // fix net to avoid error accumulations ?
-    }
+	}
 
-    // msg_info() << "sanity check: " << (net - mapping_response * lambda).norm() ;
+	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
-    // TODO is this needed to avoid error accumulation ?
-    // net = mapping_response * lambda;
+	// TODO is this needed to avoid error accumulation ?
+	// net = mapping_response * lambda;
 
-    // TODO flag to return real residual estimate !! otherwise
-    // convergence plots are not fair.
-    return estimate;
+	// TODO flag to return real residual estimate !! otherwise
+	// convergence plots are not fair.
+	return estimate;
 }
 
 void BaseSequentialSolver::solve(vec& res,
@@ -280,16 +280,16 @@ void BaseSequentialSolver::solve_impl(vec& res,
                                       const vec& rhs,
                                       bool correct,
                                       real damping) const {
-    assert( response );
+	assert( response );
 
-    // reset bench if needed
-    if( this->bench ) {
-        bench->clear();
-        bench->restart();
-    }
+	// reset bench if needed
+	if( this->bench ) {
+		bench->clear();
+		bench->restart();
+	}
 
 
-    // free velocity
+	// free velocity
     vec free_res( sys.m );
     sub.solve(*response, free_res, rhs.head( sys.m ));
 
@@ -305,41 +305,46 @@ void BaseSequentialSolver::solve_impl(vec& res,
     // lagrange multipliers TODO reuse res.tail( sys.n ) ?
     vec lambda = res.tail(sys.n);
 
-    // net constraint velocity correction
-    vec net = mapping_response * lambda;
-
-    // lambda change work vector
+	// net constraint velocity correction
+	vec net = mapping_response * lambda;
+	
+	// lambda change work vector
     vec delta = vec::Zero(sys.n);
-
-    // lcp rhs
+	
+	// lcp rhs 
     vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
-
-    // lcp error
+	
+	// lcp error
     vec error = vec::Zero(sys.n);
+	
+	const real epsilon = relative.getValue() ? 
+		constant.norm() * precision.getValue() : precision.getValue();
 
-    const real epsilon = relative.getValue() ?
-        constant.norm() * precision.getValue() : precision.getValue();
-
-    if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
+	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 
 
-    // outer loop
-    unsigned k = 0, max = iterations.getValue();
+	// outer loop
+	unsigned k = 0, max = iterations.getValue();
 //	vec primal;
-    for(k = 0; k < max; ++k) {
+	for(k = 0; k < max; ++k) {
 
         real estimate2 = step( lambda, net, sys, constant, error, delta, correct, damping );
 
-        if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-
-        // stop if we only gain one significant digit after precision
-        if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
-    }
+		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
+		
+		// stop if we only gain one significant digit after precision
+		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
+	}
 
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
-    msg_info() << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
+
+
+    if( this->f_printLog.getValue() )
+        serr << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
+	
+
 }
 
 
@@ -566,7 +571,7 @@ void SequentialSolver::correct(vec& res,
 void SequentialSolver::solve_local(vec& res,
                                    const system_type& sys,
                                    const vec& rhs,
-                                   bool correct,
+                                   bool correct, 
                                    real damping) const {
 
     if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )

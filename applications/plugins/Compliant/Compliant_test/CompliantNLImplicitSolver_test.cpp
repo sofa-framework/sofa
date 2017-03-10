@@ -168,14 +168,15 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-        msg_info_when(debug,"CompliantNLImplicitSolver_test")
-                << "initial positions : " << x0.transpose() << msgendl
-                << "initial velocities: " << v0.transpose() << msgendl
-                << "new positions     : " << x1.transpose() << msgendl
-                << "new velocities    : " << v1.transpose() << msgendl
-                << "new forces        : " << f1.transpose() << msgendl
-                << "new positions  after backward integration: " << x2.transpose() << msgendl
-                << "new velocities after backward integration: " << v2.transpose() << msgendl;
+        if( debug ){
+            std::cerr<<"CompliantNLImplicitSolver_test, initial positions : " << x0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, initial velocities: " << v0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions     : " << x1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities    : " << v1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new forces        : " << f1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << std::endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( x1(3)>1.0 ); // the spring should not get inversed
@@ -252,14 +253,15 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-        msg_info_when(debug, "CompliantNLImplicitSolver_test")
-                    << "initial positions : " << x0.transpose() << msgendl
-                    << "initial velocities: " << v0.transpose() << msgendl
-                    << "new positions     : " << x1.transpose() << msgendl
-                    << "new velocities    : " << v1.transpose() << msgendl
-                    << "new forces        : " << f1.transpose() << msgendl
-                    << "new positions  after backward integration: " << x2.transpose() << msgendl
-                    << "new velocities after backward integration: " << v2.transpose() << msgendl;
+        if( debug ){
+            std::cerr<<"CompliantNLImplicitSolver_test, initial positions : " << x0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, initial velocities: " << v0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions : " << x1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities: " << v1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new forces: " << f1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << std::endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision );
@@ -347,15 +349,15 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-
-        msg_info_when(debug,"CompliantNLImplicitSolver_test")
-                << "initial positions : " << x0.transpose() << msgendl
-                << "initial velocities: " << v0.transpose() << msgendl
-                << "new positions     : " << x1.transpose() << msgendl
-                << "new velocities    : " << v1.transpose() << msgendl
-                << "new forces        : " << f1.transpose() << msgendl
-                << "new positions  after backward integration: " << x2.transpose() << msgendl
-                << "new velocities after backward integration: " << v2.transpose() << msgendl;
+        if( debug ){
+            std::cerr<<"CompliantNLImplicitSolver_test, initial positions : " << x0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, initial velocities: " << v0.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions : " << x1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities: " << v1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new forces: " << f1.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << std::endl;
+            std::cerr<<"CompliantNLImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << std::endl;
+        }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
         ASSERT_TRUE( (v2-v0).lpNorm<Eigen::Infinity>() < precision*10 );

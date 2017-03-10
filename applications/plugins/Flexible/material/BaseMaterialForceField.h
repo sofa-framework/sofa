@@ -96,15 +96,12 @@ public:
         // init material
         material.resize( this->mstate->getSize() );
 
-        msg_info() <<SOFA_CLASS_METHOD<<" "<<material.size() ;
+        if(this->f_printLog.getValue()) std::cout<<SOFA_CLASS_METHOD<<" "<<material.size()<<std::endl;
 
         // retrieve volume integrals
         engine::BaseGaussPointSampler* sampler=NULL;
         this->getContext()->get(sampler,core::objectmodel::BaseContext::SearchUp);
-        if( !sampler ) {
-            serr<<"Gauss point sampler not found -> use unit volumes"<< sendl;
-            for(unsigned int i=0; i<material.size(); i++) material[i].volume=NULL;
-        }
+        if( !sampler ) { serr<<"Gauss point sampler not found -> use unit volumes"<< sendl; for(unsigned int i=0; i<material.size(); i++) material[i].volume=NULL; }
         else for(unsigned int i=0; i<material.size(); i++) material[i].volume=&sampler->f_volume.getValue()[i];
 
         reinit();
@@ -146,16 +143,8 @@ public:
     using Inherit::addForce;
     virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const helper::vector<SReal> /*_vol*/)
     {
-        dmsg_warning() << " Calling an unimplemented function. " ;
+        std::cout << "Do nothing" << std::endl;
     }
-
-    Real calcW(const VecCoord&  x){
-        Real W=0;
-        for(unsigned int i=0; i<material.size(); i++)
-            W+=material[i].getPotentialEnergy(x[i]);
-        return W;
-    }
-
 
     virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
@@ -178,7 +167,11 @@ public:
             updateB();
         }
 
-        msg_info() << ":addForce, potentialEnergy=" << calcW(x) ;
+        if(this->f_printLog.getValue())
+        {
+            Real W=0;  for(unsigned int i=0; i<material.size(); i++) W+=material[i].getPotentialEnergy(x[i]);
+            std::cout<<this->getName()<<":addForce, potentialEnergy="<<W<<std::endl;
+        }
     }
 
     virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv& _dx )
@@ -202,7 +195,6 @@ public:
 
         _df.endEdit();
     }
-
 
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)

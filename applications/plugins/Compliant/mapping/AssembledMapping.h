@@ -7,19 +7,19 @@
 #include <Compliant/config.h>
 
 namespace sofa {
-    namespace component {
-        namespace mapping {
+	namespace component {
+		namespace mapping {
 
-            // assembled mapping base class: derived classes only need to
-            // implement apply and assemble
-            template<class In, class Out>
-            class AssembledMapping : public core::Mapping<In, Out> {
+			// assembled mapping base class: derived classes only need to
+			// implement apply and assemble
+			template<class In, class Out>
+			class AssembledMapping : public core::Mapping<In, Out> {
 
-                typedef AssembledMapping self;
+				typedef AssembledMapping self;
                 typedef typename core::Mapping<In, Out> base;
-
+	
                 typedef helper::vector<sofa::defaulttype::BaseMatrix*> js_type;
-                js_type js;
+				js_type js;
 
 
             protected:
@@ -32,9 +32,9 @@ namespace sofa {
 
 
 
-            public:
+			public:
 
-                SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
+				SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(AssembledMapping,In,Out), SOFA_TEMPLATE2(core::Mapping,In,Out));
 
                 typedef typename Out::Real Real; // used in Mapping_test
 
@@ -46,57 +46,56 @@ namespace sofa {
                     if (this->f_applyRestPosition.getValue())
                         base::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
                 }
+	
+				const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
+					assert( !js.empty() );
+					return &js;
+				}
 
-                const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() {
-                    assert( !js.empty() );
-                    return &js;
-                }
-
-                const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
-
-                virtual void apply(const core::MechanicalParams*,
-                                   Data<typename self::OutVecCoord>& out,
-                                   const Data<typename self::InVecCoord>& in) {
-                    out_pos_type out_pos(out);
-                    in_pos_type in_pos(in);
-
-                    apply(out_pos, in_pos);
-                    assemble( in_pos );
-                }
-
-                virtual void applyJ(const core::MechanicalParams*,
-                                    Data<typename self::OutVecDeriv>& out,
-                                    const Data<typename self::InVecDeriv>& in) {
-                    if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+				const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
+	
+				virtual void apply(const core::MechanicalParams*,
+				                   Data<typename self::OutVecCoord>& out, 
+				                   const Data<typename self::InVecCoord>& in) {
+					out_pos_type out_pos(out);
+					in_pos_type in_pos(in);
+	  
+					apply(out_pos, in_pos);
+					assemble( in_pos );
+				}
+	
+				virtual void applyJ(const core::MechanicalParams*,
+				                    Data<typename self::OutVecDeriv>& out, 
+				                    const Data<typename self::InVecDeriv>& in) {
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
                         jacobian.mult(out, in);
                     }
-                }
+				}
 
-                void debug() {
-                    msg_info() << this->getClassName()
-                               << msgendl
-                               << "from: " <<  this->getFromModel()->getContext()->getName()
-                               << "/" << this->getFromModel()->getName()
-                               << msgendl
-                               << "to: " <<  this->getToModel()->getContext()->getName()
-                               << "/" << this->getToModel()->getName() ;
-                }
+				void debug() {
+					std::cerr << this->getClassName() << std::endl;
+					std::cerr << "from: " <<  this->getFromModel()->getContext()->getName() 
+							  << "/" << this->getFromModel()->getName() << std::endl;
+					std::cerr << "to: " <<  this->getToModel()->getContext()->getName() 
+							  << "/" << this->getToModel()->getName() << std::endl;
+					std::cerr << std::endl;
+				}
 
-                virtual void applyJT(const core::MechanicalParams*,
-                                     Data<typename self::InVecDeriv>& in,
-                                     const Data<typename self::OutVecDeriv>& out) {
-                    // debug();
-                    if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+				virtual void applyJT(const core::MechanicalParams*,			     
+				                     Data<typename self::InVecDeriv>& in, 
+				                     const Data<typename self::OutVecDeriv>& out) {
+					// debug();
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
                         jacobian.addMultTranspose(in, out);
                     }
-                }
+				}
 
-                virtual void applyJT(const core::ConstraintParams*,
-                                     Data< typename self::InMatrixDeriv>& ,
-                                     const Data<typename self::OutMatrixDeriv>& ) {
-                    // throw std::logic_error("not implemented");
-                    // if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
-                }
+				virtual void applyJT(const core::ConstraintParams*,
+				                     Data< typename self::InMatrixDeriv>& , 
+				                     const Data<typename self::OutMatrixDeriv>& ) {
+					// throw std::logic_error("not implemented");
+					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+				}
 
 
                 virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) {
@@ -120,7 +119,7 @@ namespace sofa {
 
                         const Data<typename self::InVecDeriv>& inDx =
                             *mparams->readDx(this->fromModel);
-
+                        
 //                        const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
 
@@ -130,64 +129,64 @@ namespace sofa {
                                           mparams->kFactor());
                     }
 
-
+                    
                 }
+                
 
-
-            protected:
-                enum {Nin = In::deriv_total_size,
+			protected:
+				enum {Nin = In::deriv_total_size,
                       Nout = Out::deriv_total_size };
 
-                typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
-
+				typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
+                
                 typedef helper::WriteOnlyAccessor< Data< typename self::OutVecCoord > > out_pos_type;
 
                 typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > out_force_type;
 
                 typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > in_vel_type;
+                
+				in_pos_type in_pos() {
 
-                in_pos_type in_pos() {
-
-                    const core::State<In>* fromModel = this->getFromModel();
-                    assert( fromModel );
-
-                    core::ConstMultiVecCoordId inPos = core::ConstVecCoordId::position();
-
-                    const typename self::InDataVecCoord* in = inPos[fromModel].read();
-
-                    return *in;
-                }
+					const core::State<In>* fromModel = this->getFromModel();
+					assert( fromModel );
+					
+					core::ConstMultiVecCoordId inPos = core::ConstVecCoordId::position();
+	  
+					const typename self::InDataVecCoord* in = inPos[fromModel].read();
+					
+					return *in;
+				}
 
 
                 out_force_type out_force( core::ConstMultiVecDerivId outForce ) {
 
-                    const core::State<Out>* toModel = this->getToModel();
+					const core::State<Out>* toModel = this->getToModel();
                     assert( toModel );
+	  
+					const typename self::OutDataVecDeriv* out = outForce[toModel].read();
+					
+					return *out;
+				}
 
-                    const typename self::OutDataVecDeriv* out = outForce[toModel].read();
-
-                    return *out;
-                }
 
 
-
-                virtual void assemble( const in_pos_type& in ) = 0;
+				virtual void assemble( const in_pos_type& in ) = 0;
                 virtual void assemble_geometric( const in_pos_type& /*in*/,
                                                  const out_force_type& /*out*/) { }
-
+                
                 using core::Mapping<In, Out>::apply;
-                virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
-
-                typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
-                jacobian_type jacobian;
+				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
+	
+				typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
+				jacobian_type jacobian;
 
                 typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
                 geometric_type geometric;
 
-            };
+			};
 
-        }
-    }
+		}
+	}
 }
 
 
