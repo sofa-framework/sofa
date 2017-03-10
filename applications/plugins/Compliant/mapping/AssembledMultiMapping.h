@@ -157,7 +157,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
                 << "/" << this->getFrom()[i]->getName() << msgendl;
         }
         tmp << "to: " << this->getTo()[0]->getContext()->getName() << "/" << this->getTo()[0]->getName() ;
-        msg_info() << tmp ;
+        msg_info() << tmp.str() ;
     }
 
     virtual void applyJT(const core::MechanicalParams*,
