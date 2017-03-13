@@ -47,14 +47,16 @@ protected:
     CompliantAttachButtonSetting();
 public:
     virtual void init() { if( s_initFunction != nullptr ) s_initFunction(this); }
+    virtual void reinit() { if( s_reinitFunction != nullptr ) s_reinitFunction(this); }
     std::string getOperationType() {return  "CompliantAttach";}
     Data<SReal> compliance;
     Data<bool> isCompliance;
-    Data<SReal> arrowSize;
-    Data<defaulttype::Vec<4,SReal> > color;
+    Data<float> arrowSize;
+    Data<defaulttype::Vec4f> color;
     Data<bool> visualmodel;
 
     static std::function<void(CompliantAttachButtonSetting*)> s_initFunction;
+    static std::function<void(CompliantAttachButtonSetting*)> s_reinitFunction;
 };
 
 }
