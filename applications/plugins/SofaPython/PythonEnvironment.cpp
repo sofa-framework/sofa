@@ -299,6 +299,15 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     //  Py_BEGIN_ALLOW_THREADS
 
+
+    // unloading already imported modules to force reloading them (and use their eventual modifications)
+    PyRun_SimpleString( "from SofaPython.moduleReload import ModuleImport\n"
+                        "try:\n"
+                        "    __SofaPython_moduleImport__.unload()\n"
+                        "except NameError:\n"
+                        "    __SofaPython_moduleImport__ = ModuleImport()\n" );
+
+
     PyRun_SimpleString("import sys");
 
     // Load the scene script
