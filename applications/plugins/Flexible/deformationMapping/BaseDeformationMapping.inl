@@ -429,7 +429,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
         J.endBlockRow();
     }
 
-    J.compress();
+    J.finalize();
 
     //    maskedEigenJacobian.resize(0,0);
 }
@@ -478,7 +478,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
 
     for(size_t i=0; i<in.size(); i++)
         K.insertBackBlock(i,i,diagonalBlocks[i]);
-    K.compress();
+    K.finalize();
 }
 
 template <class JacobianBlockType>

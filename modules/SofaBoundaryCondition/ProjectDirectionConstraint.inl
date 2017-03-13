@@ -199,7 +199,7 @@ void  ProjectDirectionConstraint<DataTypes>::reinit()
         }
         i++;
     }
-    jacobian.compress();
+    jacobian.finalize();
 //    cerr<<"ProjectDirectionConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 

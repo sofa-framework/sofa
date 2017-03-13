@@ -330,7 +330,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
         eigenJacobian1.endBlockRow();
     }
 
-    eigenJacobian1.compress();
+    eigenJacobian1.finalize();
 
 //    maskedEigenJacobian1.resize(0,0);
 }
@@ -350,7 +350,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
         eigenJacobian2.endBlockRow();
     }
 
-    eigenJacobian2.compress();
+    eigenJacobian2.finalize();
 
 //    maskedEigenJacobian2.resize(0,0);
 }

@@ -59,7 +59,7 @@ void DiagonalStiffness<DataTypes>::reinit()
                 ++row;
             }
         }
-        matC.compress();
+        matC.finalize();
     }
     else matC.compressedMatrix.resize(0,0);
 
@@ -79,7 +79,7 @@ void DiagonalStiffness<DataTypes>::reinit()
                 ++row;
             }
         }
-        matK.compress();
+        matK.finalize();
 //    }
 //    else matK.compressedMatrix.resize(0,0);
 
@@ -96,7 +96,7 @@ void DiagonalStiffness<DataTypes>::reinit()
             if(d) matB.insertBack(i, i, -d);
         }
 
-        matB.compressedMatrix.finalize();
+        matB.finalize();
     }
     else matB.compressedMatrix.resize(0,0);
 

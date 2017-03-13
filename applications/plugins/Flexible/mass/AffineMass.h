@@ -83,7 +83,6 @@ public:
             MassMatrix& massMatrix = *d_massMatrix.beginWriteOnly();
             massMatrix.resize(this->mstate->getMatrixSize(),this->mstate->getMatrixSize());
             massMatrix.setIdentity();
-            massMatrix.compress();
             d_massMatrix.endEdit();
 
     //        // perform assembly

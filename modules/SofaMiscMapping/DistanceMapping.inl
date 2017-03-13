@@ -179,7 +179,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
         }
     }
 
-    jacobian.compress();
+    jacobian.finalize();
 //    serr<<"apply, jacobian: "<<std::endl<< jacobian << sendl;
 
 }
@@ -556,14 +556,13 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
                 gap[i]=p;
         }
 
-        // do not forget to beginRow of every Jacobians
-        for( size_t k=0 ; k<size; ++k)
-        {
-            static_cast<SparseMatrixEigen*>(baseMatrices[k])->beginRow(i);;
-        }
 
         SparseMatrixEigen* J0 = static_cast<SparseMatrixEigen*>(baseMatrices[pair0[0]]);
         SparseMatrixEigen* J1 = static_cast<SparseMatrixEigen*>(baseMatrices[pair1[0]]);
+
+        J0->beginRowSafe(i);
+        J1->beginRowSafe(i);
+
         for(unsigned k=0; k<In::spatial_dimensions; k++ )
         {
             J0->insertBack( i, pair0[1]*Nin+k, -gap[k] );
@@ -574,7 +573,7 @@ void DistanceMultiMapping<TIn, TOut>::apply(const helper::vector<OutVecCoord*>& 
 
     for( unsigned i=0 ; i<size ; ++i )
     {
-        baseMatrices[i]->compress();
+        static_cast<SparseMatrixEigen*>(baseMatrices[i])->finalize();
     }
 
 }

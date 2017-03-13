@@ -118,33 +118,55 @@ public:
 
     void setIdentity()
     {
+        assert( rowSize()==colSize() );
         clear();
         for( Index i=0; i<rowSize(); i++ )
         {
-            if( i==colSize() ) break;
-            add(i,i,1.0);
+            beginRow(i);
+            compressedMatrix.insertBack(i,i) = 1.0;
         }
-        compress();
+        finalize();
     }
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress().
-    void add( Index row, Index col, double value ){
+    inline void add( Index row, Index col, double value ){
         if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
-    void beginRow(Index index)
+    /// beginRowSafe can be call only on row where you are inserting (contrarily to beginRow)
+    void beginRowSafe(Index index)
+    {
+        const size_t size = compressedMatrix.data().size();
+        typename CompressedMatrix::StorageIndex* outerIndex = compressedMatrix.outerIndexPtr();
+
+        // go back until the last filled column
+        for( Index i = index ; i>=0 && outerIndex[i]==0 ; --i )
+            outerIndex[i] = size;
+
+        compressedMatrix.startVec(index);
+    }
+
+    /// beginRow must be call for each row
+    inline void beginRow(Index index)
     {
         compressedMatrix.startVec(index);
     }
 
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
     /// @warning the line must be created previously with "beginRow"
-    void insertBack( Index row, Index col, Real value){
+    inline void insertBack( Index row, Index col, Real value){
         if( value!=0.0 ) compressedMatrix.insertBack(row,col) = value;
     }
 
+
+    /// Must be called after inserting a set of non zero entries using the low level compressed API
+    inline void finalize(){
+        compressedMatrix.finalize();
+    }
+
+
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
-    Real& coeffRef( Index i, Index j ){
+    inline Real& coeffRef( Index i, Index j ){
         return compressedMatrix.coeffRef(i,j);
     }
 
@@ -165,7 +187,7 @@ public:
 
 
     /// Resize the matrix without preserving the data (the matrix is set to zero)
-    void resize(Index nbRow, Index nbCol)
+    inline void resize(Index nbRow, Index nbCol)
     {
         compressedMatrix.resize(nbRow,nbCol);
     }
@@ -173,13 +195,13 @@ public:
 
 
     /// number of rows
-    Index rowSize(void) const
+    inline Index rowSize(void) const
     {
         return compressedMatrix.rows();
     }
 
     /// number of columns
-    Index colSize(void) const
+    inline Index colSize(void) const
     {
         return compressedMatrix.cols();
     }
@@ -189,7 +211,7 @@ public:
         compressedMatrix.reserve(reserveSize);
     }
 
-    SReal element(Index i, Index j) const
+    inline SReal element(Index i, Index j) const
     {
         return (SReal)compressedMatrix.coeff(i,j);
     }

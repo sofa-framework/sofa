@@ -352,7 +352,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ1(SparseJMatrixEigen1& _J, c
 		// Block writing end
 		_J.endBlockRow();		
 	}
-    _J.compress();
+    _J.finalize();
 }
 
 template <class I1, class I2, class O>
@@ -384,7 +384,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ2(SparseJMatrixEigen2& _J, c
 		// Block writing end
 		_J.endBlockRow();
 	}
-	_J.compress();
+    _J.finalize();
 }
 
 template <class I1, class I2, class O>
