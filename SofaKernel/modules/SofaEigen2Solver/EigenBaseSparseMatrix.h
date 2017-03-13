@@ -26,7 +26,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <Eigen/Sparse>
-#include "config.h"
 
 
 namespace sofa
