@@ -300,9 +300,16 @@ class Quaternion(np.ndarray):
         q = self if self.real >= 0 else -self
         
         half_angle = math.acos( min(q.real, 1.0) )
-        axis = q.imag / math.sin( half_angle ) if half_angle > Quaternion.epsilon else None
 
-        return axis, 2 * half_angle
+        if half_angle > Quaternion.epsilon:
+            return q.imag / math.sin(half_angle), 2 * half_angle
+
+        norm = q.imag.norm()
+        if norm > Quaternion.epsilon:
+            sign = 1.0 if half_angle > 0 else -1.0
+            return q.imag * (sign / norm), 2 * half_angle
+        
+        return None, 2 * half_angle
     
 
     def angle(self):
