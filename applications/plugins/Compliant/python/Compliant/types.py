@@ -73,9 +73,13 @@ class Rigid3(np.ndarray):
     def __new__(cls, *args):
         return np.ndarray.__new__(cls, 7)
         
-    def __init__(self, **kwargs):
-        self[-1] = 1
-        self[:6] = 0
+    def __init__(self, value = None, **kwargs):
+        '''construct a rigid transform from given value, identity if none'''
+        if value is None:
+            self[-1] = 1
+            self[:6] = 0
+        else:
+            self[:] = value
 
         for k, v in kwargs.iteritems(): setattr(self, k, v)
 
@@ -146,11 +150,14 @@ class Quaternion(np.ndarray):
     def __new__(cls, *args):
         return np.ndarray.__new__(cls, 4)
         
-    def __init__(self):
-        '''identity quaternion'''
-        self.real = 1
-        self.imag = 0
-        
+    def __init__(self, value = None):
+        '''construct a quaternion with given values, identity by default'''
+        if value is None:
+            self.real = 1
+            self.imag = 0
+        else:
+            self[:] = value
+            
     def inv(self):
         '''inverse'''
         return self.conj() / self.dot(self)
