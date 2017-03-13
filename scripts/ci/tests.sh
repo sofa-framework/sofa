@@ -102,9 +102,9 @@ run-single-test-subtests() {
             echo "$0: error: $subtest ended with code $pipestatus" >&2
             # Write the XML output by hand
             echo '<?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="1" failures="0" disabled="0" errors="1" time="0.002" name="AllTests">
-    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="0.002">
-        <testcase name="'"$subtest_name"'" type_param="" status="run" time="0.002" classname="'"$test_name"'">
+<testsuites tests="1" failures="0" disabled="0" errors="1" time="1" name="AllTests">
+    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="1">
+        <testcase name="'"$subtest_name"'" type_param="" status="run" time="1" classname="'"$test_name"'">
             <error message="[CRASH] '"$subtest"' ended with code '"$pipestatus"'">
 <![CDATA['"$(cat $output_dir/$test/$subtest/output.txt)"']]>
             </error>
