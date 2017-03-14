@@ -69,6 +69,9 @@ else()
     message(STATUS "CImgPlugin: Did not find zlib library (required for PNG Image Format)")
 endif()
 
+#Remove CImg sys calls
+SET(CIMG_CFLAGS "${CIMG_CFLAGS} -Dcimg_no_system_calls")
+
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
     if(SofaTest_FOUND)
