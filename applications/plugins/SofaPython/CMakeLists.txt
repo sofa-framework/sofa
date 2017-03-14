@@ -97,6 +97,7 @@ set(SOURCE_FILES
     PythonFactory.cpp
     PythonMacros.cpp
     PythonMainScriptController.cpp
+    PythonModuleReload.cpp
     PythonScriptController.cpp
     PythonScriptControllerHelper.cpp
     PythonScriptEvent.cpp
