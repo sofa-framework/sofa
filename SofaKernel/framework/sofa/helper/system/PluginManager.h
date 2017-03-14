@@ -52,18 +52,6 @@ public:
         InitExternalModule():func(0) {}
     } InitExternalModule;
 
-    typedef struct ReInitExternalModule
-    {
-        static const char* symbol;
-        typedef void (*FuncPtr) ();
-        FuncPtr func;
-        void operator() ()
-        {
-            if (func) return func();
-        }
-        ReInitExternalModule():func(0) {}
-    } ReInitExternalModule;
-
     typedef struct GetModuleName
     {
         static const char* symbol;
@@ -131,7 +119,6 @@ public:
     } GetModuleVersion;
 
     InitExternalModule     initExternalModule;
-    ReInitExternalModule   reinitExternalModule;
     GetModuleName          getModuleName;
     GetModuleDescription   getModuleDescription;
     GetModuleLicense       getModuleLicense;
@@ -155,7 +142,7 @@ public:
     bool unloadPlugin(const std::string& path, std::ostream* errlog=NULL);
 
     void init();
-    void init(const std::string& pluginPath);
+	void init(const std::string& pluginPath);
 
     std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);

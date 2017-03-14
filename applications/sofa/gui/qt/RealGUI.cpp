@@ -22,8 +22,6 @@
 #include "RealGUI.h"
 #include "ImageQt.h"
 
-#include <sofa/helper/system/PluginManager.h>
-
 #ifdef SOFA_PML
 #  include <sofa/filemanager/sofapml/PMLReader.h>
 #  include <sofa/filemanager/sofapml/LMLReader.h>
@@ -761,7 +759,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-
     mSimulation = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )

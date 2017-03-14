@@ -237,13 +237,15 @@ void PluginManager::init()
 
 void PluginManager::init(const std::string& pluginPath)
 {
-    PluginMap::iterator iter = m_pluginMap.find(pluginPath);
-    if(m_pluginMap.end() != iter)
-    {
+	PluginMap::iterator iter = m_pluginMap.find(pluginPath);
+	if(m_pluginMap.end() != iter)
+	{
         Plugin& plugin = iter->second;
         plugin.initExternalModule();
-    }
+	}
 }
+
+
 
 std::string PluginManager::findPlugin(const std::string& pluginName, bool ignoreCase)
 {
@@ -251,8 +253,8 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
 #ifdef SOFA_LIBSUFFIX
     name += sofa_tostring(SOFA_LIBSUFFIX);
 #endif
-#if defined(_DEBUG) && defined(_MSC_VER)
-     name += "_d";
+#if defined(_DEBUG) && defined(_MSC_VER) 
+	 name += "_d";
 #endif
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
