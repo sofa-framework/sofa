@@ -30,17 +30,16 @@ set(HEADER_FILES
     defaulttype.h
     init.h
     RGBAColor.h
+
 )
 
 set(SOURCE_FILES
-    BaseMatrix.cpp
     BoundingBox.cpp
     Frame.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
     init.cpp
 )
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)

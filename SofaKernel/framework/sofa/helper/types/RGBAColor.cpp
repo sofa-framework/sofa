@@ -27,9 +27,7 @@
 
 namespace sofa
 {
-namespace helper
-{
-namespace types
+namespace defaulttype
 {
 
 int hexval(char c)
@@ -198,7 +196,7 @@ RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
     return rgba;
 }
 
-SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)
+SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 {
     std::string s;
     std::getline(i, s);
@@ -209,7 +207,6 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)
     return i;
 }
 
-} // namespace types
 } // namespace helper
 } // namespace sofa
 

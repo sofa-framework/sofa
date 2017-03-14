@@ -23,8 +23,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_COLOR_H
-#define SOFA_HELPER_COLOR_H
+#ifndef SOFA_HELPER_TYPES_COLOR_H
+#define SOFA_HELPER_TYPES_COLOR_H
 #include <string>
 
 #include <sofa/helper/helper.h>
@@ -32,10 +32,7 @@
 namespace sofa
 {
 
-namespace helper
-{
-
-namespace types
+namespace defaulttype
 {
 
 using sofa::defaulttype::Vec;
@@ -86,7 +83,7 @@ public:
     inline void b(const float r){ z()=r; }
     inline void a(const float r){ w()=r; }
 
-    friend SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
+    friend SOFA_DEFAULTTYPE_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
     RGBAColor() ;
@@ -95,9 +92,7 @@ public:
 
 };
 
-} // namespace types
-
-} // namespace helper
+}
 
 } // namespace sofa
 

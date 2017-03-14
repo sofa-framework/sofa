@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/gl.h>
-#include <sofa/helper/types/RGBAColor.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <cmath>
 
 namespace sofa
@@ -32,7 +32,7 @@ namespace helper
 
 namespace gl
 {
-using sofa::helper::types::RGBAColor ;
+using sofa::defaulttype::RGBAColor ;
 
 void Color::setHSVA( float h, float s, float v, float a )
 {

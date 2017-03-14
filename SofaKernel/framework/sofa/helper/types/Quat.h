@@ -19,49 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_COLOR_H
-#define SOFA_HELPER_GL_COLOR_H
+#ifndef SOFA_DEFAULTTYPE_QUAT_H
+#define SOFA_DEFAULTTYPE_QUAT_H
 
-#ifndef SOFA_NO_OPENGL
-
-#include <sofa/helper/helper.h>
-
-/// Forward declaration
-namespace sofa {
-    namespace defaultype{
-            class RGBAColor;
-    }
-}
-
+#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace defaulttype
 {
+typedef helper::Quater<double> Quatd; ///< alias
+typedef helper::Quater<float>  Quatf; ///< alias
+#ifdef SOFA_FLOAT
+typedef Quatf Quat; ///< alias
+#else
+typedef Quatd Quat; ///< alias
+#endif
+typedef Quat Quaternion; ///< alias
 
-namespace gl
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+template<class T>
+struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
-
-class SOFA_HELPER_API Color
-{
-public:
-    static void set(const sofa::defaultype::RGBAColor& color) ;
-
-    static void setHSVA( float h, float s, float v, float a );
-    static void getHSVA( float* rgba, float h, float s, float v, float a );
-
-private:
-    Color();
-    ~Color();
+    static std::string name() { std::ostringstream o; o << "Quater<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
-} // namespace gl
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
-} // namespace helper
+template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
+template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
+
+/// \endcond
+
+} // namespace defaulttype
 
 } // namespace sofa
 
-#endif /* SOFA_NO_OPENGL */
-
 #endif
+
