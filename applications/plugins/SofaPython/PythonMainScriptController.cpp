@@ -132,6 +132,8 @@ void PythonMainScriptController::script_createGraph(sofa::simulation::Node *node
 
 void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
 {
+    PythonEnvironment::setUpEnvironmentInSofaScene(node) ;
+
     // no ScriptController::parse for a PythonMainScriptController
     // so call these functions here
     script_onLoaded( down_cast<simulation::Node>(getContext()) );

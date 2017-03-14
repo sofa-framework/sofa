@@ -253,6 +253,7 @@ void PythonScriptController::script_onLoaded(Node *node)
 
 void PythonScriptController::script_createGraph(Node *node)
 {
+    PythonEnvironment::setUpEnvironmentInSofaScene(node) ;
     SP_CALL_MODULEFUNC(m_Func_createGraph, "(O)", sofa::PythonFactory::toPython(node))
 }
 

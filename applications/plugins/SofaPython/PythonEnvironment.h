@@ -29,6 +29,9 @@
 #include <SofaPython/config.h>
 #include <vector>
 #include <string>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/Data.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -36,9 +39,23 @@ namespace sofa
 namespace simulation
 {
 
-class SOFA_SOFAPYTHON_API PythonEnvironment
+using sofa::core::objectmodel::Data ;
+using sofa::core::objectmodel::BaseObject ;
+using sofa::simulation::Node ;
+
+class SOFA_SOFAPYTHON_API PythonEnvironment : public BaseObject
 {
 public:
+    SOFA_CLASS(PythonEnvironment, BaseObject);
+
+    Data<bool> d_deepreload ;
+
+    PythonEnvironment();
+    virtual ~PythonEnvironment(){}
+    void cleanup();
+
+public:
+    static void     setUpEnvironmentInSofaScene(Node* node) ;
     static void     Init();
     static void     ReInit();
     static void     Release();

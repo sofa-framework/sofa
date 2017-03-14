@@ -157,8 +157,6 @@ public:
     void init();
     void init(const std::string& pluginPath);
 
-    void reinit();
-
     std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);
 

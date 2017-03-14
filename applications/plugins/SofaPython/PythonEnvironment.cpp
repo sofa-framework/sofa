@@ -26,8 +26,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/Node.h>
 
+#include <sofa/simulation/Node.h>
+using sofa::core::objectmodel::BaseNode ;
+
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Utils.h>
 
 #if __linux__
@@ -46,6 +50,31 @@ namespace sofa
 
 namespace simulation
 {
+
+PythonEnvironment::PythonEnvironment()
+    : BaseObject(),
+      d_deepreload(initData(&d_deepreload, true, "deepreload",
+                                    "Set this attribute to true or false to activate/deactivate the "
+                                    "reload of imported python modules when the scene is "
+                                    "cleaned"))
+{
+
+}
+
+void PythonEnvironment::cleanup()
+{
+    if(d_deepreload.getValue())
+    {
+        std::cout << "CLEANING THE SCENE...FLUSHING THE MODULE CACHE. " << std::endl;
+        PyRun_SimpleString("__SofaPython_mainenvironment__.uninstall()");
+    }
+}
+
+int PythonEnvironmentClass = sofa::core::RegisterObject("The python environment shared by all the python scripts")
+        .add< PythonEnvironment >()
+        ;
+
+SOFA_DECL_CLASS(PythonEnvironment)
 
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
@@ -140,6 +169,8 @@ except:\n\
     PyRun_SimpleString("from SofaPython.reloadhack import ImportFrame");
     PyRun_SimpleString("__SofaPython_mainenvironment__=ImportFrame()");
 }
+
+
 
 void PythonEnvironment::ReInit()
 {
@@ -254,6 +285,20 @@ std::string PythonEnvironment::getError()
 
     return error;
 }
+
+void PythonEnvironment::setUpEnvironmentInSofaScene(Node* node)
+{
+    Node* root=static_cast<Node*>(node->getRoot()) ;
+
+    /// This have a linear complexity in term of object in the root.
+    if( ! root->getNodeObject<PythonEnvironment>() )
+    {
+        PythonEnvironment::SPtr p = sofa::core::objectmodel::New<PythonEnvironment>();
+        p->setName("");
+        root->addObject(p);
+    }
+}
+
 
 bool PythonEnvironment::runString(const std::string& script)
 {
