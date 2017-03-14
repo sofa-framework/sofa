@@ -135,11 +135,11 @@ except:\n\
         }
     }
 
-    // general sofa-python stuff (e.g. to be able to reload modules)
-    PyRun_SimpleString("import SofaPython");
-
     // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
+
+    // general sofa-python stuff (e.g. to be able to reload modules)
+    PyRun_SimpleString("import SofaPython");
 }
 
 void PythonEnvironment::Release()

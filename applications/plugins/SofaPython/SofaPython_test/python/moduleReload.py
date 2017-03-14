@@ -8,7 +8,7 @@ unloadingModules = counter%3==0
 
 
 # forcing the already loaded modules to be unloaded
-# once if a while
+# once in a while
 if unloadingModules:
     SofaPython.unloadModules()
 
@@ -26,10 +26,13 @@ try:
 except:
     previousNumber = currentNumber-1 if unloadingModules else currentNumber
 
-
+import numpy
 
 
 def createScene(node):
+
+    # just to call numpy code which has a particular import
+    x = np.array([[currentNumber, currentNumber, currentNumber], [currentNumber, currentNumber, currentNumber]])
 
     node.createObject('PythonScriptController', classname='VerifController')
 
