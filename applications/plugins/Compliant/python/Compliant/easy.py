@@ -62,6 +62,7 @@ def Eigen(t):
     return Vector
 
 
+
 class ScipyMatrix(Structure):
     '''all the data needed to alias a matrix in scipy'''
     
@@ -74,9 +75,14 @@ class ScipyMatrix(Structure):
                 ('size', c_size_t))
 
 
+dll.eigen_sizeof.restype = c_size_t
+dll.eigen_sizeof.argtypes = ()
+
+
 class SparseMatrix(Structure):
     '''an opaque c type for eigen sparse matrices'''
     
+    _fields_ = (('__bytes__', c_char * dll.eigen_sizeof() ), )
     
     def to_scipy(self):
         '''construct a scipy view of the eigen matrix
@@ -87,21 +93,20 @@ class SparseMatrix(Structure):
 
         # fetch data from eigen matrix
         data = ScipyMatrix()
-        dll.eigen_to_scipy(data, self)
+        dll.eigen_to_scipy(byref(data), byref(self))
+        
+        # needed: outer_index, data.values, data.size, data.indices, outer_size, inner_size
+        outer_index = np.ctypeslib.as_array(data.outer_index, (data.rows + 1,) )
+        shape = (data.rows, data.cols)
 
-        try:
-            # needed: outer_index, data.values, data.size, data.indices, outer_size, inner_size
-            outer_index = np.ctypeslib.as_array(data.outer_index, (data.outer_size + 1,) )
-
-            values = np.ctypeslib.as_array(data.values, (data.size,) )
-            inner_indices = np.ctypeslib.as_array(data.indices, (data.size,) )
-
-            return sp.sparse.csr_matrix( (values, inner_indices, outer_index),
-                                         (data.outer_size, data.inner_size))
-        except (ValueError, AttributeError):
-            # zero matrix: return empty view
-            shape = (data.rows, data.cols)
+        if not data.values:
             return sp.sparse.csr_matrix( shape )
+
+        values = np.ctypeslib.as_array(data.values, (data.size,) )
+        inner_indices = np.ctypeslib.as_array(data.indices, (data.size,) )
+
+        return sp.sparse.csr_matrix( (values, inner_indices, outer_index), shape)
+
 
 
     def from_scipy(self, s):
@@ -132,13 +137,14 @@ class SparseMatrix(Structure):
         '''
 
         handle = self.to_scipy()
-
-        data = handle.data
+        data = handle.data.ctypes.data
+        
         try:
             yield handle
         finally:
-            # data pointer changed:
-            if handle.data != data:
+            new = handle.data.ctypes.data
+            if new != data:
+                # data pointer changed: assign back to eigen
                 self.from_scipy(handle)
                 
 
@@ -212,7 +218,11 @@ class System(Structure):
 
 class Solver(object):
 
+    _instances_ = set()
 
+    def release(self):
+        del Solver._instances_[self]
+    
     class Data(Structure):
         
         _fields_ = (('sys', POINTER(System)),
@@ -231,9 +241,15 @@ class Solver(object):
                 
         
     def factor(self, view): pass
+    
     def solve(self, res, view, rhs): pass
+
+    def correct(self, res, view, rhs, damping):
+        self.solve(res, view, rhs)
     
     def __init__(self, node):
+        Solver._instances_.add(self)
+        
         self.node = node
         self.obj = node.createObject('PythonSolver')
 
@@ -246,15 +262,23 @@ class Solver(object):
 
         @callback(None, POINTER(vec), POINTER(Solver.Data), POINTER(vec))
         def solve(res, data, rhs):
-            # TODO detect resizes for output vector
+            # TODO detect resizes for output vector?
             with data.contents.view() as view:
                 return self.solve(res.contents.numpy(), view, rhs.contents.numpy())
-        
+
+        @callback(None, POINTER(vec), POINTER(Solver.Data), POINTER(vec), c_double)
+        def correct(res, data, rhs, damping):
+            # TODO detect resizes for output vector?
+            with data.contents.view() as view:
+                return self.correct(res.contents.numpy(), view, rhs.contents.numpy(), damping)
+
+            
         set_opaque(self.obj, 'factor_callback', factor)
-        set_opaque(self.obj, 'solve_callback', solve)        
+        set_opaque(self.obj, 'solve_callback', solve)
+        set_opaque(self.obj, 'correct_callback', correct)                
 
         # keep refs to prevent gc
-        self.handles = [factor, solve]
+        self.handles = [factor, solve, correct]
         
 
 class Mapping(object):

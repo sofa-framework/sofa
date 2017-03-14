@@ -61,9 +61,8 @@ public:
     };
 
     scipy_csr_matrix<U> to_scipy() const {
-
         scipy_csr_matrix<U> res;
-            
+
         res.rows = this->m_outerSize;
         res.cols = this->m_innerSize;
 
@@ -79,9 +78,14 @@ public:
 
 
 using real = double;
-
+#include <iostream>
 extern "C" {
 
+
+    std::size_t eigen_sizeof() {
+        return sizeof(eigen_csr_matrix<real>);
+    }
+    
     void eigen_to_scipy(scipy_csr_matrix<real>* dst, const eigen_csr_matrix<real>* src) {
         *dst = src->to_scipy();
     }

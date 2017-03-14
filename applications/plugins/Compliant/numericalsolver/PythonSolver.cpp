@@ -12,7 +12,8 @@ static int PythonSolverClass = core::RegisterObject("Python solver").add< Python
 
 PythonSolver::PythonSolver()
     : factor_callback(initData(&factor_callback, "factor_callback", "durrr")),
-      solve_callback(initData(&solve_callback, "solve_callback", "durrr"))      
+      solve_callback(initData(&solve_callback, "solve_callback", "durrr")),
+      correct_callback(initData(&correct_callback, "correct_callback", "durrr"))            
 {
     
 }
@@ -65,6 +66,7 @@ void PythonSolver::factor(const system_type& sys) {
 
     python::vec<block> pyblocks = python::vec<block>::map(blocks);
     data_type data = {&sys, &pyblocks, project};
+
     factor_callback.getValue().data(&data);
 }
 
@@ -82,6 +84,23 @@ void PythonSolver::solve(vec& x,
     data_type data = {&sys, &pyblocks, project};
     solve_callback.getValue().data(&x, &data, &rhs);
 }
+
+
+void PythonSolver::correct(vec& x,
+                           const system_type& sys,
+                           const vec& rhs,
+                           real damping) const {
+    
+    if(!correct_callback.getValue()) {
+        serr << "correct callback not set, aborting" << sendl;
+        return;
+    }
+
+    python::vec<block> pyblocks = python::vec<block>::map(blocks);
+    data_type data = {&sys, &pyblocks, project};
+    correct_callback.getValue().data(&x, &data, &rhs, damping);
+}
+
 
 
 

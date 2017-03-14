@@ -26,10 +26,12 @@ class SOFA_Compliant_API PythonSolver : public KKTSolver {
     
     typedef void(*factor_callback_type)(const data_type* data);
     typedef void(*solve_callback_type)(vec* res, const data_type* data, const vec* rhs);
+    typedef void(*correct_callback_type)(vec* res, const data_type* data, const vec* rhs, double damping);    
     
-    // TODO correct + damping
+    // TODO correction damping
     Data< python::opaque< factor_callback_type > > factor_callback;
-    Data< python::opaque< solve_callback_type > > solve_callback;    
+    Data< python::opaque< solve_callback_type > > solve_callback;
+    Data< python::opaque< correct_callback_type > > correct_callback;    
 
 protected:
     static void fetch_blocks(std::vector<block>& res, const system_type& sys);
@@ -45,6 +47,12 @@ public:
                        const system_type& system,
                        const vec& rhs) const;
 
+    virtual void correct(vec& x,
+                         const system_type& system,
+                         const vec& rhs,
+                         real damping) const;
+
+    
 };
     
 }
