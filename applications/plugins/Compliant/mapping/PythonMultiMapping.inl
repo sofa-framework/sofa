@@ -63,11 +63,13 @@ void PythonMultiMapping<TIn, TOut>::assemble( const helper::vector<typename self
     at.resize(in.size());
     js.resize(in.size());
     
-
     for(unsigned i = 0, n = in.size(); i < n; ++i) {
         at[i] = in_vec::map(in[i].ref());
 
         const int rows = this->to()->getMatrixSize(), cols = this->from(i)->getMatrixSize();
+
+        assert(rows); assert(cols);
+
         this->jacobian(i).compressedMatrix.resize(rows, cols);
         
         js[i] = &this->jacobian(i).compressedMatrix;
@@ -92,8 +94,10 @@ void PythonMultiMapping<TIn, TOut>::apply(typename self::out_pos_type& out,
     for(unsigned i = 0, n = in.size(); i < n; ++i) {
         at[i] = in_vec::map(in[i].ref());
     }
-    
+
     out_vec to = out_vec::map(out.ref());
+    assert(out.size());
+    
     apply_callback.getValue().data(&to, at.data(), in.size());
     
 }

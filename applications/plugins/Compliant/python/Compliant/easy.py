@@ -1,3 +1,4 @@
+from __future__ import print_function, absolute_import
 import Sofa
 
 from ctypes import *
@@ -11,6 +12,10 @@ from SofaPython import SofaNumpy as sofa_numpy
 
 from collections import namedtuple
 from contextlib import contextmanager
+
+dll_path = Sofa.loadPlugin('Compliant')
+dll = CDLL(dll_path)
+
 
 def set_opaque(obj, name, value):
     '''set an opaque data to ctypes value'''
@@ -57,70 +62,65 @@ def Eigen(t):
     return Vector
 
 
-class CompressedStorage(Structure):
-    '''struct mirroring eigen sparse matrices internal storage'''
-    _fields_ = (('values', POINTER(c_double)),
+class ScipyMatrix(Structure):
+    '''all the data needed to alias a matrix in scipy'''
+    
+    _fields_ = (('rows', c_size_t),
+                ('cols', c_size_t),
+                ('outer_index', POINTER(c_int)),
+                ('inner_nonzero', POINTER(c_int)),
+                ('values', POINTER(c_double)),
                 ('indices', POINTER(c_int)),
-                ('size', c_size_t),
-                ('allocated_size', c_size_t))
+                ('size', c_size_t))
 
 
 class SparseMatrix(Structure):
-    '''struct mirroring eigen sparse matrices'''
+    '''an opaque c type for eigen sparse matrices'''
     
-    _fields_ = (('options', c_int), # warning: this is actually a bool (rvalue) + enum (options)
-                ('outer_size', c_int),
-                ('inner_size', c_int),
-                ('outer_index', POINTER(c_int)),
-                ('inner_nonzero', POINTER(c_int)),
-                ('data', CompressedStorage))
-
-
-    def _to_scipy(self):
+    
+    def to_scipy(self):
         '''construct a scipy view of the eigen matrix
 
         warning: if the scipy view reallocates, it will no longer
         alias the eigen matrix. use the provided view context instead
-
         '''
-        try:
-            outer_index = np.ctypeslib.as_array(self.outer_index, (self.outer_size + 1,) )
 
-            values = np.ctypeslib.as_array(self.data.values, (self.data.size,) )
-            # array(self.data.values, self.data.size))
-            inner_indices = np.ctypeslib.as_array(self.data.indices, (self.data.size,) )
+        # fetch data from eigen matrix
+        data = ScipyMatrix()
+        dll.eigen_to_scipy(data, self)
+
+        try:
+            # needed: outer_index, data.values, data.size, data.indices, outer_size, inner_size
+            outer_index = np.ctypeslib.as_array(data.outer_index, (data.outer_size + 1,) )
+
+            values = np.ctypeslib.as_array(data.values, (data.size,) )
+            inner_indices = np.ctypeslib.as_array(data.indices, (data.size,) )
 
             return sp.sparse.csr_matrix( (values, inner_indices, outer_index),
-                                         (self.outer_size, self.inner_size))
+                                         (data.outer_size, data.inner_size))
         except (ValueError, AttributeError):
             # zero matrix: return empty view
-            shape = (self.outer_size, self.inner_size)
+            shape = (data.rows, data.cols)
             return sp.sparse.csr_matrix( shape )
 
 
-    @staticmethod
-    def from_scipy(s):
-        '''construct a (fake) eigen sparse matrix using data pointers from a scipy sparse matrix
-
-        use dll.eigen_sparse_matrix_assign to assign
-
-        '''
-        res = SparseMatrix()
-
+    def from_scipy(self, s):
+        '''assign eigen matrix from scipy matrix'''
+        
+        data = ScipyMatrix()
         values, inner_indices, outer_index = s.data, s.indices, s.indptr
 
-        res.options = 0    
-        res.outer_size, res.inner_size = s.shape
+        data.rows, data.cols = s.shape
 
-        res.outer_index = outer_index.ctypes.data_as(POINTER(c_int))
-        res.inner_nonzero = None
+        data.outer_index = outer_index.ctypes.data_as(POINTER(c_int))
+        data.inner_nonzero = None
 
-        res.data.values = values.ctypes.data_as(POINTER(c_double))
-        res.data.indices = inner_indices.ctypes.data_as(POINTER(c_int))
-        res.data.size = values.size
-        res.data.allocated_size = values.size
+        data.values = values.ctypes.data_as(POINTER(c_double))
+        data.indices = inner_indices.ctypes.data_as(POINTER(c_int))
+        data.size = values.size
 
-        return res
+        dll.eigen_from_scipy(self, data)
+        
 
     
     @contextmanager
@@ -131,24 +131,22 @@ class SparseMatrix(Structure):
         automatically reassign the view to the eigen sparse matrix.
         '''
 
-        handle = self._to_scipy()
-        
+        handle = self.to_scipy()
+
+        data = handle.data
         try:
             yield handle
         finally:
-            eig = SparseMatrix.from_scipy(handle)
-
-            if not self.data.values or (addressof(self.data.values.contents) !=
-                                        addressof(eig.data.values.contents)):
-                dll.eigen_sparse_matrix_assign(pointer(self), pointer(eig))
+            # data pointer changed:
+            if handle.data != data:
+                self.from_scipy(handle)
                 
 
-        
-dll_path = Sofa.loadPlugin('Compliant')
-dll = CDLL(dll_path)
-dll.eigen_sparse_matrix_assign.restype = None
-dll.eigen_sparse_matrix_assign.argtypes = (POINTER(SparseMatrix), POINTER(SparseMatrix))
-    
+dll.eigen_to_scipy.restype = None
+dll.eigen_to_scipy.argtypes = (POINTER(ScipyMatrix), POINTER(SparseMatrix))
+
+dll.eigen_from_scipy.restype = None
+dll.eigen_from_scipy.argtypes = (POINTER(SparseMatrix), POINTER(ScipyMatrix))
 
 
 def callback(restype, *args):
@@ -335,9 +333,8 @@ class Mapping(object):
 
             @callback(None, POINTER( POINTER(SparseMatrix) ), POINTER(Vec(in_type)), c_size_t)
             def cb(js, inputs, n):
-
-                ctx = tuple( js[i].contents.view() for i in range(n) )
-                inputs = tuple(inputs[i].numpy() for i in range(n) )
+                ctx = tuple( js[i].contents.view() for i in xrange(n) )
+                inputs = tuple(inputs[i].numpy() for i in xrange(n) )
 
                 with nested( ctx ) as js:
                     self.jacobian(js, inputs)

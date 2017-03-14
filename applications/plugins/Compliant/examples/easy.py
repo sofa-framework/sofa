@@ -85,11 +85,9 @@ def particle(node, position):
 def createScene(node):
     node.createObject('RequiredPlugin', pluginName = 'Compliant')
     
-    node.createObject('EulerImplicitSolver')
-    node.createObject('CGLinearSolver')
-
-    # node.createObject('CompliantImplicitSolver')
-    # node.createObject('LDLTSolver')
+    node.createObject('CompliantAttachButtonSetting')
+    node.createObject('CompliantImplicitSolver')
+    node.createObject('LDLTSolver')
     
     n1 = node.createChild('p1')
 
@@ -101,12 +99,10 @@ def createScene(node):
     d2 = particle(n2, [0.5, 0, 0])
     
     n3 = node.createChild('child')
-    d3 = n3.createObject('MechanicalObject', template = 'Vec1', name = 'dofs')
+    d3 = n3.createObject('MechanicalObject', template = 'Vec1', name = 'dofs', size = 1)
 
     # our mapping is here
-    dist = DistanceMapping(n3,
-                           input = tool.multi_mapping_input(n3, d1, d2),
-                           output = '@dofs')
+    dist = DistanceMapping(n3, input = [d1, d2], output = d3)
     dist.rest_length = 1
 
     # put a forcefield on mapping output
