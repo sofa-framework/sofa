@@ -6,7 +6,7 @@
 #include <sofa/simulation/Simulation.h>
 
 #include <sofa/helper/logging/Messaging.h>
-
+#include <sofa/helper/system/FileSystem.h>
 
 namespace sofa {
 
@@ -33,6 +33,41 @@ void Python_test::run( const Python_test_data& data ) {
 
     ASSERT_TRUE( loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) );
 
+}
+
+
+static bool ends_with(const std::string& suffix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t ls = suffix.length();
+    
+    if(lf < ls) return false;
+    
+    return (0 == full.compare(lf - ls, ls, suffix));
+}
+
+static bool starts_with(const std::string& prefix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t lp = prefix.length();
+    
+    if(lf < lp) return false;
+    
+    return (0 == full.compare(0, lp, prefix));
+}
+
+
+
+
+void Python_test_list::addTestDir(const std::string& dir, const std::string& prefix) {
+
+    std::vector<std::string> files;
+    helper::system::FileSystem::listDirectory(dir, files);
+    
+    for(const std::string& file : files) {
+        if( starts_with(prefix, file) && ends_with(".py", file) ) {
+            addTest(file, dir);
+        }
+    }
+    
 }
 
 
