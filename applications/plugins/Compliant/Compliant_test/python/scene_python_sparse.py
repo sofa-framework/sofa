@@ -7,19 +7,9 @@ import math
 import numpy as np
 
 from Compliant import mapping, easy
+from SofaTest import gtest
 
-try:
-    from SofaTest import gtest
-except:
-    class gtest(object):
-        @staticmethod
-        def assert_true(x, msg):
-            assert x, msg
 
-        @staticmethod
-        def finish():
-            import sys
-            sys.exit(0)
 
 def particle(node, position):
     '''construct a particle under given node'''
@@ -51,9 +41,6 @@ class Solver(easy.Solver):
         
         
 def createScene(node):
-    node.createObject('RequiredPlugin', pluginName = 'Compliant')
-    
-    node.createObject('CompliantAttachButtonSetting')
     node.createObject('CompliantImplicitSolver')
 
     solver = Solver(node)
