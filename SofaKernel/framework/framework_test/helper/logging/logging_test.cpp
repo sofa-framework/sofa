@@ -167,6 +167,8 @@ TEST(LoggingTest, threadingTests)
     MessageDispatcher::clearHandlers() ;
 
     CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
+    mh.reset();
+
     // First add is expected to return the handler ID.
     EXPECT_TRUE(MessageDispatcher::addHandler(&mh) == 0) ;
 
