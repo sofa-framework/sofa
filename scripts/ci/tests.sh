@@ -115,7 +115,7 @@ run-single-test-subtests() {
 
         if [ -f "$output_file" ]; then
             fix-test-report "$output_file"
-            cp "$output_file" "$output_dir/reports/"$test"_subtest"$i".xml"
+            cp "$output_file" "$output_dir/reports/"$test"_subtest"$(printf "%03d" $i)".xml"
         else
             echo "$0: error: $test subtest $subtest ended with code $(cat $output_dir/$test/$subtest/status.txt)" >&2
         fi
