@@ -25,7 +25,6 @@
 #include <cstring>
 #include <algorithm>
 #include <numeric>
-
 #include <gtest/gtest.h>
 
 #include <SofaTest/TestMessageHandler.h>
@@ -145,7 +144,7 @@ protected:
 
 TEST_F(ImageCImg_test, ImageCImg_NoFile)
 {
-    /// This generate a test failure if no error message is generated.
+    /// This generates a test failure if no error message is generated.
     ExpectMessage raii(Message::Error) ;
 
     sofa::helper::io::ImageCImg imgNoFile;
@@ -213,11 +212,6 @@ TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 
     bool isWritten = img.save(sofa::helper::system::DataRepository.getFirstPath() + "/output_bw.png");
     ASSERT_TRUE(isWritten);
-
-    //image is now grayscale (CImg wrote using only 1 byte per pixel, as it is Black&White)
-    bpp = 1;
-    totalsize = width*height*bpp;
-    halfTotalsize = totalsize * 0.5;
 
     delete[] imgdata;
     imgdata = new unsigned char[totalsize];
