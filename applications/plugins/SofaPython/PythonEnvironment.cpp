@@ -100,7 +100,6 @@ try:\n\
 except:\n\
     pass");
 
-
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
     // which directs Python to search modules in the current directory first.
@@ -136,6 +135,10 @@ except:\n\
         }
     }
 
+    // general sofa-python stuff (e.g. to be able to reload modules)
+    PyRun_SimpleString("import SofaPython");
+
+    // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
 }
 
@@ -298,17 +301,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     }
 
     //  Py_BEGIN_ALLOW_THREADS
-
-
-    // unloading already imported modules to force reloading them (and use their eventual modifications)
-    PyRun_SimpleString( "from SofaPython.moduleReload import ModuleImport\n"
-                        "try:\n"
-                        "    __SofaPython_moduleImport__.unload()\n"
-                        "except NameError:\n"
-                        "    __SofaPython_moduleImport__ = ModuleImport()\n" );
-
-
-    PyRun_SimpleString("import sys");
 
     // Load the scene script
     char* pythonFilename = strdup(filename);
