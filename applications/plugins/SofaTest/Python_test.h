@@ -34,6 +34,7 @@ protected:
     }
 
 
+    /// add all the python test files in `dir` starting with `prefix`
     void addTestDir(const std::string& dir, const std::string& prefix = "test_");
     
 

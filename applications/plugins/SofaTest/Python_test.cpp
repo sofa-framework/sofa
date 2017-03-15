@@ -3,7 +3,9 @@
 #include "Python_test.h"
 
 #include <sofa/helper/system/PluginManager.h>
+
 #include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -100,7 +102,7 @@ struct Listener : core::objectmodel::BaseObject {
 };
 
 
-static simulation::Node::SPtr instance;
+static simulation::Node::SPtr root;
 
 void Python_scene_test::run( const Python_test_data& data ) {
 
@@ -113,8 +115,11 @@ void Python_scene_test::run( const Python_test_data& data ) {
         ASSERT_TRUE(scriptFound);
     }
 
-    simulation::Node::SPtr root = loader.loadSceneWithArguments(data.filepath.c_str(),data.arguments);
-    instance = root;
+    simulation::setSimulation( new sofa::simulation::graph::DAGSimulation() );
+
+    loader.loadSceneWithArguments(data.filepath.c_str(),
+                                  data.arguments,
+                                  &root);
     
 	root->addObject( new Listener );
 
@@ -137,7 +142,9 @@ void Python_scene_test::run( const Python_test_data& data ) {
 extern "C" {
 
     void finish() {
-	if(sofa::instance) sofa::instance->setActive(false);
+        if(sofa::root) {
+            sofa::root->setActive(false);
+        }
     }
 
     void expect_true(bool test, const char* msg) {
