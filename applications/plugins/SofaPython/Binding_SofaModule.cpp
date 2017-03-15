@@ -576,8 +576,9 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
         arguments.push_back( PyString_AsString(PyTuple_GetItem(args,i)) );
 
     sofa::simulation::SceneLoaderPY loader;
-    sofa::simulation::Node::SPtr node = loader.loadSceneWithArguments(filename,arguments);
-    return sofa::PythonFactory::toPython(node.get());
+    sofa::simulation::Node::SPtr root;
+    loader.loadSceneWithArguments(filename, arguments, &root);
+    return sofa::PythonFactory::toPython(root.get());
 }
 
 
