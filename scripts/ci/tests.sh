@@ -73,11 +73,11 @@ run-single-test-subtests() {
     # List all the subtests in this test
     bash -c "$build_dir/bin/$test --gtest_list_tests > $output_dir/$test/subtests.tmp.txt"
     IFS=''; while read line; do
-        if echo "$line" | grep -q "^.*\." ; then
-            local current_test="$(echo "$line" | grep -o "^.*\.")"
-        elif echo "$line" | grep -q "^  [^ ]*" ; then
-            local current_subtest="$(echo "$line" | grep -o "[^ ]*" | head -1)"
-            echo "$current_test$current_subtest" >> "$output_dir/$test/subtests.txt"
+        if echo "$line" | grep -q "^  [^ ][^ ]*" ; then
+            local current_subtest="$(echo "$line" | sed 's/^  \([^ ][^ ]*\).*/\1/g')"
+            echo "$current_test.$current_subtest" >> "$output_dir/$test/subtests.txt"
+        else
+            local current_test="$(echo "$line" | sed 's/\..*//g')"
         fi
     done < "$output_dir/$test/subtests.tmp.txt"
     rm -f "$output_dir/$test/subtests.tmp.txt"
