@@ -225,12 +225,6 @@ print-summary() {
                         echo "Error: unexpected value in $output_dir/$test/status.txt: $status"
                         ;;
                 esac
-                last_run_line_number="$(grep -n "\[ RUN      \]" "$output_dir/$test/output.txt" | tail -1 | tr ":" "\n" | head -1)"
-                tail --lines=+"$last_run_line_number" "$output_dir/$test/output.txt" > "$output_dir/$test/last_run_output.tmp"
-                while read log_line; do
-                    echo "      $log_line"
-                done < "$output_dir/$test/last_run_output.tmp"
-                rm -f "$output_dir/$test/last_run_output.tmp"
             fi
         done < "$output_dir/tests.txt"
     fi
