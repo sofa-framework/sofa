@@ -147,6 +147,17 @@ SOFA_SceneCreator_API simulation::Node::SPtr addRigidCylinder(simulation::Node::
                                                               const Deriv3 &rotation=Deriv3(),
                                                               const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
 
+SOFA_SceneCreator_API simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::string& objectName,
+                                                         const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                         const Deriv3& axis = Deriv3(0, 1, 0), SReal radius = 1.0,
+                                                         SReal totalMass = 1.0, SReal young = 300, SReal poisson = 0.3,
+                                                         const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
+SOFA_SceneCreator_API simulation::Node::SPtr addRigidSphere(simulation::Node::SPtr parent, const std::string& objectName,
+                                                              const Deriv3& gridSize=Deriv3(10, 10, 10),
+                                                              const Deriv3& axis = Deriv3(0, 1, 0), SReal radius = 1.0,
+                                                              const Deriv3& translation=Deriv3(), const Deriv3 &rotation=Deriv3(), const Deriv3 &scale=Deriv3(1.0, 1.0, 1.0));
+
 
 SOFA_SceneCreator_API simulation::Node::SPtr addPlane(simulation::Node::SPtr parent,
                                                       const std::string& objectName,

@@ -64,6 +64,20 @@ void fallingCylinderExample(sofa::simulation::Node::SPtr root)
                                   sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(40, 0, 40));
 }
 
+void fallingSphereExample(sofa::simulation::Node::SPtr root)
+{
+    //Add objects
+    for (unsigned int i=0; i<10; ++i)
+        sofa::modeling::addSphere(root, "sphereFEM_"+ std::to_string(i), sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                  sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
+                                  10, 1000, 0.45,
+                                  sofa::defaulttype::Vec3Types::Deriv(0, (i+1)*5, 0));
+
+    // Add floor
+    sofa::modeling::addRigidPlane(root, "Floor", sofa::defaulttype::Vec3Types::Deriv(50, 1, 50),
+                                  sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(0, 0, 0), sofa::defaulttype::Vec3Types::Deriv(40, 0, 40));
+}
+
 
 void fallingDrapExample(sofa::simulation::Node::SPtr root)
 {
@@ -121,6 +135,9 @@ int main(int argc, char** argv)
         fallingCylinderExample(root);
         break;
     case 2:
+        fallingSphereExample(root);
+        break;
+    case 3:
         fallingDrapExample(root);
         break;
     default:

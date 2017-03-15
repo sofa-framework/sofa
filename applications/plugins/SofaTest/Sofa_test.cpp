@@ -23,17 +23,22 @@
 #include "Sofa_test.h"
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
 #include "TestMessageHandler.h"
 
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::FileSystem;
+
+#include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
+
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace;
+
 
 namespace sofa {
 
@@ -45,6 +50,7 @@ namespace {
       raii() {
             helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
             helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
+            BackTrace::autodump() ;
       }
     } singleton;
 }

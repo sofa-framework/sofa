@@ -59,6 +59,7 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
        // Load the scene from the xml file
        std::string fileName = std::string(SOFAMISCTOPOLOGY_TEST_SCENES_DIR) + "/" + "IncisionTrianglesProcess.scn";
+       std::cout << fileName.c_str() << std::endl;
        root = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
 
        // Test if root is not null
