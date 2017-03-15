@@ -27,6 +27,7 @@
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
 #include "PythonFactory.h"
+#include "PythonEnvironment.h"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -566,7 +567,7 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() ) // no filename
         Py_RETURN_NONE;
 
-    std::vector<std::string> arguments;;
+    std::vector<std::string> arguments;
     for( size_t i=1 ; i<argSize ; i++ )
         arguments.push_back( PyString_AsString(PyTuple_GetItem(args,i)) );
 
@@ -616,6 +617,19 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 }
 
 
+extern "C" PyObject * Sofa_setAutomaticModuleReload(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyReload;
+    if (!PyArg_ParseTuple(args, "O", &pyReload) || !PyBool_Check(pyReload) )
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    sofa::simulation::PythonEnvironment::setAutomaticModuleReload( pyReload==Py_True );
+
+    Py_RETURN_NONE;
+}
 
 
 // Methods of the module
@@ -642,6 +656,7 @@ SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
+SP_MODULE_METHOD(Sofa,setAutomaticModuleReload)
 SP_MODULE_METHODS_END
 
 
