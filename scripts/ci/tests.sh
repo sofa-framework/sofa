@@ -204,8 +204,8 @@ print-summary() {
     echo "- $(tests-get disabled) disabled test(s)"
     echo "- $(tests-get failures) failure(s)"
 
-    local errors='$(tests-get errors)'
-    echo "- $(tests-get errors) error(s)"
+    local errors="$(tests-get errors)"
+    echo "- $errors error(s)"
     if [[ "$errors" != 0 ]]; then
         while read test; do
             if [[ ! -e "$output_dir/$test/report.xml" ]]; then # this test crashed
