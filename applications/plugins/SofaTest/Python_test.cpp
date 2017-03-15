@@ -115,8 +115,10 @@ void Python_scene_test::run( const Python_test_data& data ) {
         ASSERT_TRUE(scriptFound);
     }
 
-    simulation::setSimulation( new sofa::simulation::graph::DAGSimulation() );
-
+    if( !simulation::getSimulation() ) {
+        simulation::setSimulation( new sofa::simulation::graph::DAGSimulation() );
+    }
+    
     loader.loadSceneWithArguments(data.filepath.c_str(),
                                   data.arguments,
                                   &root);
