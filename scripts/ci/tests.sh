@@ -88,13 +88,27 @@ run-single-test-subtests() {
     while read subtest; do
         local output_file="$output_dir/$test/$subtest/report.xml"
         local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file --gtest_filter=$subtest 2>&1"
-
         mkdir -p "$output_dir/$test/$subtest"
         echo "$test_cmd" >> "$output_dir/$test/$subtest/command.txt"
-        bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt"
-        pipestatus="${PIPESTATUS[0]}"
-        echo "$pipestatus" > "$output_dir/$test/$subtest/status.txt"
 
+        if [[ $(uname) = Darwin ]]; then
+            if [ -e "/usr/local/bin/gdate" ]; then
+                date_nanosec_cmd="/usr/local/bin/gdate +%s%N"
+            else
+                date_nanosec_cmd="date +%s000000000" # fallback: seconds * 1000000000
+            fi
+        else
+            date_nanosec_cmd="date +%s%N"
+        fi
+
+        begin_millisec="$(($(bash -c $date_nanosec_cmd)/1000000))"
+        bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt" ; pipestatus="${PIPESTATUS[0]}"
+        end_millisec="$(($(bash -c $date_nanosec_cmd)/1000000))"
+
+        elapsed_millisec="$(($end_millisec - $begin_millisec))"
+        elapsed_sec="$(($elapsed_millisec/1000)).$(printf "%03d" $elapsed_millisec)"
+
+        echo "$pipestatus" > "$output_dir/$test/$subtest/status.txt"
         if [ $pipestatus -gt 1 ]; then # this subtest crashed (0:OK 1:failure >1:crash)
             IFS='.' read -r -a array <<< "$subtest"
             test_name="${array[0]}"
@@ -102,9 +116,9 @@ run-single-test-subtests() {
             echo "$0: error: $subtest ended with code $pipestatus" >&2
             # Write the XML output by hand
             echo '<?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="1" failures="0" disabled="0" errors="1" time="1" name="AllTests">
-    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="1">
-        <testcase name="'"$subtest_name"'" type_param="" status="run" time="1" classname="'"$test_name"'">
+<testsuites tests="1" failures="0" disabled="0" errors="1" time="-'"$elapsed_sec"'" name="AllTests">
+    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="-'"$elapsed_sec"'">
+        <testcase name="'"$subtest_name"'" type_param="" status="run" time="-'"$elapsed_sec"'" classname="'"$test_name"'">
             <error message="[CRASH] '"$subtest"' ended with code '"$pipestatus"'">
 <![CDATA['"$(cat $output_dir/$test/$subtest/output.txt)"']]>
             </error>
