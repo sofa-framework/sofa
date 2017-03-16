@@ -28,6 +28,7 @@ public:
     void checkEquality() ;
     void checkGetSet() ;
     void checkColorDataField() ;
+    void checkConstructors() ;
 };
 
 void Color_Test::SetUp()
@@ -121,6 +122,13 @@ void Color_Test::checkCreateFromDouble()
     EXPECT_EQ( RGBAColor::fromVec4(tt), RGBAColor(2,3,4,5)) ;
 }
 
+
+void Color_Test::checkConstructors()
+{
+    EXPECT_EQ( RGBAColor(sofa::defaulttype::Vec<4,float>(1,2,3,4)), RGBAColor(1,2,3,4) ) ;
+}
+
+
 void Color_Test::checkGetSet()
 {
     RGBAColor a;
@@ -153,7 +161,6 @@ void Color_Test::checkColorDataField()
 
     std::stringstream tmp;
     tmp << color ;
-
     EXPECT_TRUE(color.read(tmp.str()));
     EXPECT_EQ(color.getValue(), RGBAColor(0.0,0.0,1.0,1.0));
 }

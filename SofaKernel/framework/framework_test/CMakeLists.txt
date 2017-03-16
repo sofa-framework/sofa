@@ -11,7 +11,7 @@ set(SOURCE_FILES
     core/TrackedData_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
-    defaulttype/Color_test.cpp
+    helper/types/Color_test.cpp
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp

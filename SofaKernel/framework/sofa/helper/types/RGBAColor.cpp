@@ -87,17 +87,14 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
     float r,g,b,a=1.0;
     if (str[0]>='0' && str[0]<='9')
     {
-        std::cout << "MINCE: (" << str << ")" << std::endl ;
         std::istringstream iss(str);
         iss >> r >> g >> b ;
         if(iss.fail()){
-            std::cout << "MINCE A" << std::endl ;
             return false;
         }
         if(!iss.eof()){
             iss >> a;
             if(iss.fail() || !iss.eof()){
-                std::cout << "MINCE B" << std::endl ;
                 return false;
             }
         }
