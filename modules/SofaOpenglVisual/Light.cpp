@@ -635,7 +635,7 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
         const auto& col = d_color.getValue();
 
         glDisable(GL_LIGHTING);
-        glColor3fv((float*)col.ptr());
+        glColor3fv((float*)col.data());
 
         glPushMatrix();
         glTranslated(pos[0], pos[1], pos[2]);

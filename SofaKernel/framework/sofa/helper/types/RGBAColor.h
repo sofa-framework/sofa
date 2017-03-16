@@ -23,12 +23,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_COLOR_H
-#define SOFA_HELPER_COLOR_H
+#ifndef SOFA_RGBAHELPER_COLOR_H
+#define SOFA_RGBAHELPER_COLOR_H
+#include <iostream>
+
 #include <string>
 
 #include <sofa/helper/helper.h>
-#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/fixed_array.h>
+
 namespace sofa
 {
 
@@ -38,20 +41,18 @@ namespace helper
 namespace types
 {
 
-using sofa::defaulttype::Vec;
-using sofa::defaulttype::Vec4d;
-using sofa::defaulttype::Vec4f;
+#define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
 
 /**
- *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
+ *  \brief encode a 4 RGBA component color
  */
-class SOFA_HELPER_API RGBAColor : public Vec<4, float>
+class SOFA_HELPER_API RGBAColor : public fixed_array<float, 4>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
     static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
-    static RGBAColor fromVec4(const Vec4d& color) ;
-    static RGBAColor fromVec4(const Vec4f& color) ;
+    static RGBAColor fromVec4(const fixed_array<float, 4>& color) ;
+    static RGBAColor fromVec4(const fixed_array<double, 4>& color) ;
 
     static RGBAColor fromHSVA(float h, float s, float v, float a) ;
 
@@ -67,30 +68,42 @@ public:
     static RGBAColor yellow()  { return RGBAColor(1.0,1.0,0.0,1.0); }
     static RGBAColor gray()    { return RGBAColor(0.5,0.5,0.5,1.0); }
 
-    using Vec<4,float>::x ;
-    using Vec<4,float>::y ;
-    using Vec<4,float>::z ;
-    using Vec<4,float>::w ;
+    inline float& r(){ return this->elems[0] ; }
+    inline float& g(){ return this->elems[1] ; }
+    inline float& b(){ return this->elems[2] ; }
+    inline float& a(){ return this->elems[3] ; }
+    inline const float& r() const { return this->elems[0] ; }
+    inline const float& g() const { return this->elems[1] ; }
+    inline const float& b() const { return this->elems[2] ; }
+    inline const float& a() const { return this->elems[3] ; }
 
-    inline float& r(){ return x() ; }
-    inline float& g(){ return y() ; }
-    inline float& b(){ return z() ; }
-    inline float& a(){ return w() ; }
-    inline const float& r() const { return x() ; }
-    inline const float& g() const { return y() ; }
-    inline const float& b() const { return z() ; }
-    inline const float& a() const { return w() ; }
+    inline void r(const float r){ this->elems[0]=r; }
+    inline void g(const float g){ this->elems[1]=g; }
+    inline void b(const float b){ this->elems[2]=b; }
+    inline void a(const float a){ this->elems[3]=a; }
 
-    inline void r(const float r){ x()=r; }
-    inline void g(const float r){ y()=r; }
-    inline void b(const float r){ z()=r; }
-    inline void a(const float r){ w()=r; }
+    void set(float r, float g, float b, float a) ;
 
+    bool operator==(const fixed_array<float,4>& b) const
+    {
+        for (int i=0; i<4; i++)
+            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return false;
+        return true;
+    }
+
+    bool operator!=(const fixed_array<float,4>& b) const
+    {
+        for (int i=0; i<4; i++)
+            if ( fabs( this->elems[i] - b[i] ) > RGBACOLOR_EQUALITY_THRESHOLD ) return true;
+        return false;
+    }
+
+    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
     RGBAColor() ;
-    RGBAColor(const  Vec4f&) ;
+    RGBAColor(const fixed_array<float, 4>&) ;
     RGBAColor(const float r, const float g, const float b, const float a) ;
 
 };

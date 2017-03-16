@@ -22,6 +22,7 @@
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <cmath>
 
 namespace sofa

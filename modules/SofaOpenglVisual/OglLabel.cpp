@@ -111,9 +111,9 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
     // vparams->drawTool()->setPolygonMode(1,true);
 
     // color of the text
-    glColor4fv( color.getValue().ptr() );
+    glColor4fv( color.getValue().data() );
 
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color.getValue().ptr() );
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color.getValue().data() );
     static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
     static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);

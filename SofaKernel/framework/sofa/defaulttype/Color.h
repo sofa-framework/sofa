@@ -19,51 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_GL_COLOR_H
-#define SOFA_HELPER_GL_COLOR_H
+#ifndef SOFA_DEFAULTTYPE_COLOR_H
+#define SOFA_DEFAULTTYPE_COLOR_H
 
-#ifndef SOFA_NO_OPENGL
+#include <functional>
+#include <limits>
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/types/RGBAColor.h>
 
-/// Forward declaration
-namespace sofa {
-    namespace helper {
-        namespace types {
-            class RGBAColor;
-        }
-    }
-}
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 
 namespace sofa
 {
 
-namespace helper
+namespace defaulttype
 {
-
-namespace gl
-{
-
-class SOFA_HELPER_API Color
-{
-public:
-    static void set(const sofa::helper::types::RGBAColor& color) ;
-
-    static void setHSVA( float h, float s, float v, float a );
-    static void getHSVA( float* rgba, float h, float s, float v, float a );
-
-private:
-    Color();
-    ~Color();
-};
-
-} // namespace gl
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif /* SOFA_NO_OPENGL */
+    using sofa::helper::types::RGBAColor ;
+}
+}
 
 #endif
+

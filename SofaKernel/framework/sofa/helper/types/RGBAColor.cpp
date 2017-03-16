@@ -24,7 +24,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/types/RGBAColor.h>
-
+#include <sofa/helper/logging/Messaging.h>
+#include <sstream>
 namespace sofa
 {
 namespace helper
@@ -62,10 +63,11 @@ RGBAColor::RGBAColor()
 }
 
 
-RGBAColor::RGBAColor(const Vec4f& c) : Vec4f(c)
+RGBAColor::RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c)
 {
 
 }
+
 
 
 RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
@@ -85,14 +87,19 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
     float r,g,b,a=1.0;
     if (str[0]>='0' && str[0]<='9')
     {
+        std::cout << "MINCE: (" << str << ")" << std::endl ;
         std::istringstream iss(str);
         iss >> r >> g >> b ;
-        if(iss.fail())
+        if(iss.fail()){
+            std::cout << "MINCE A" << std::endl ;
             return false;
+        }
         if(!iss.eof()){
             iss >> a;
-            if(iss.fail() || !iss.eof())
+            if(iss.fail() || !iss.eof()){
+                std::cout << "MINCE B" << std::endl ;
                 return false;
+            }
         }
     }
     else if (str[0]=='#' && str.length()>=7)
@@ -141,6 +148,15 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
 }
 
 
+void RGBAColor::set(float r, float g, float b, float a)
+{
+    this->elems[0]=r;
+    this->elems[1]=g;
+    this->elems[2]=b;
+    this->elems[3]=a;
+}
+
+
 RGBAColor RGBAColor::fromString(const std::string& c)
 {
     RGBAColor color(1.0,1.0,1.0,1.0) ;
@@ -157,15 +173,15 @@ RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, con
 }
 
 
-RGBAColor RGBAColor::fromVec4(const Vec4d& color)
+RGBAColor RGBAColor::fromVec4(const fixed_array<float, 4>& color)
 {
     return RGBAColor(color) ;
 }
 
 
-RGBAColor RGBAColor::fromVec4(const Vec4f& color)
+RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
 {
-    return RGBAColor(color.x(), color.y(), color.z(), color.w()) ;
+    return RGBAColor(color[0], color[1], color[2], color[3]) ;
 }
 
 RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
@@ -208,6 +224,16 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)
 
     return i;
 }
+
+/// Write to an output stream
+SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
+{
+    for( int i=0; i<3; ++i )
+        out<<v[i]<<" ";
+    out<<v[3];
+    return out;
+}
+
 
 } // namespace types
 } // namespace helper

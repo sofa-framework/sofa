@@ -56,8 +56,6 @@ using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-      //This field should support the color="red" api.
       color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
       // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))

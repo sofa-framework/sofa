@@ -317,7 +317,9 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
         vertices.push_back(v0);
         vertices.push_back(v1);
     }
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+
+    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
+    vparams->drawTool()->drawLines(vertices,5,sofa::defaulttype::Vec4f(springColor.getValue()));
 
     vparams->drawTool()->restoreLastState();
 }

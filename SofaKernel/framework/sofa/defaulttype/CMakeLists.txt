@@ -29,13 +29,14 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
-    RGBAColor.h
+    Color.h
 )
 
 set(SOURCE_FILES
     BaseMatrix.cpp
     BoundingBox.cpp
     Frame.cpp
+    # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
     init.cpp
