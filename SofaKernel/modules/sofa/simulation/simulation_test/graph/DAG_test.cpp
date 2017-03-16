@@ -317,7 +317,7 @@ Expected output: RABCDEEDCBAR
         D
         |
         E
-*//
+*/
 
         Dummy::SPtr dummyA = sofa::core::objectmodel::New<Dummy>("obj");
         A->addObject(dummyA);
