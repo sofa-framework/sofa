@@ -343,8 +343,8 @@ public:
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
         for( size_type i=0; i<N-1; i++ )
-            out<<a.elems[i]<<" ";
-        out<<a.elems[N-1]<<" ";
+            out << a.elems[i]<<" ";
+        out << a.elems[N-1];
         return out;
     }
 
