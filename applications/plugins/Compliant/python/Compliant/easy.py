@@ -210,6 +210,9 @@ class System(Structure):
 
     class View(namedtuple('System', 'm n dt H C J P')): pass
 
+    def size(self):
+        return self.m + self.n
+    
     @contextmanager
     def view(self):
         with self.H.view() as H, self.C.view() as C, self.J.view() as J, self.P.view() as P:
