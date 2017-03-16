@@ -39,8 +39,11 @@ public:
 
         new (&this->m_data) eigen_compressed_storage(source->storage);
     }
-        
-    struct eigen_compressed_storage : eigen_csr_matrix::Storage {
+
+
+    using eigen_compressed_storage_base = typename eigen_csr_matrix::Storage;
+    
+    struct eigen_compressed_storage : eigen_compressed_storage_base {
 
         eigen_compressed_storage(const typename scipy_csr_matrix<U>::storage_type& source) {
             this->m_values = source.values;
