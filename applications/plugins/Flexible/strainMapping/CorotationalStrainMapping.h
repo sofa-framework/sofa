@@ -69,7 +69,8 @@ public:
     //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
     virtual void initJacobianBlock( helper::vector<BlockType>& jacobianBlock )
     {
-        dmsg_info() << SOFA_CLASS_METHOD ;
+        if(this->f_printLog.getValue()==true)
+            std::cout << SOFA_CLASS_METHOD << std::endl;
 
         switch( f_method.getValue().getSelectedId() )
         {
@@ -187,7 +188,7 @@ protected:
 
     virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, helper::vector<BlockType>& jacobianBlock)
     {
-        dmsg_info() << " calling apply" ;
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
         typename Inherit::OutVecCoord& out = *dOut.beginWriteOnly();
         const typename Inherit::InVecCoord&  in  =  dIn.getValue();
@@ -262,7 +263,7 @@ protected:
 
     virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
-        dmsg_info() << " calling apply";
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
         helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));

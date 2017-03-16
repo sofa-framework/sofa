@@ -85,7 +85,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::load(const char *filename)
 #endif
     if (!fp.findFile(command,""))
     {
-        std::cerr << "Simulation : Error : php not found in your PATH environment" << std::endl;
+        msg_error("SceneLoaderPHP") << "Php not found in your PATH environment." ;
         return NULL;
     }
 
@@ -93,7 +93,7 @@ sofa::simulation::Node::SPtr SceneLoaderPHP::load(const char *filename)
 
     if(error != "")
     {
-        std::cerr << "Simulation : load : "<< error << std::endl;
+        msg_error("SceneLoaderPHP") << error ;
         if (out == "")
             return NULL;
     }

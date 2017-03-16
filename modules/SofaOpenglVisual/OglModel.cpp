@@ -808,7 +808,7 @@ bool OglModel::loadTextures()
 //            if (!img)
 //            {
 //                std::cout <<  std::endl;
-//               std::cerr << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
+//               msg_error() << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
 //               return false;
 //            }
 //            helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());

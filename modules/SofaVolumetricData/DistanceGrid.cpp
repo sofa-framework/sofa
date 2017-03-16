@@ -977,7 +977,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 }
                 else if (fmm_status[ind] != FMM_KNOWN_OUT)
                 {
-                    //std::cerr << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind]<<std::endl;
+                    //msg_error() << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind] ;
                 }
             }
     msg_info("DistanceGrid")<< "FMM: DONE. "<< nbin << " points inside ( " << (nbin*100)/size() <<" % )";

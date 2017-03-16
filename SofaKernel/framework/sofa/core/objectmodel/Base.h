@@ -343,7 +343,7 @@ private:
 public:
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
-    mutable helper::system::SofaOStream<helper::logging::Message::Error> serr;
+    mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
     /// write into component buffer.
     /// Message is processed by message handlers only if printLog==true
     /// /// default message type = Info

@@ -88,7 +88,7 @@ public:
 
     virtual void resizeOut()
     {
-         dmsg_info() << " calling resizeOut()" ;
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
         const VecVRef& indices = this->d_index.getValue();
         const VecVReal& w = this->d_w.getValue();
@@ -133,7 +133,7 @@ public:
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<VecCoord>& dOut, const Data<VecCoord>& dIn)
     {
-        dmsg_info() << " calling apply()";
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
         VecCoord& out = *dOut.beginWriteOnly();
         const VecCoord& in = dIn.getValue();

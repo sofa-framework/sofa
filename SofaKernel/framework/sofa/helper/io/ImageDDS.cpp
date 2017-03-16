@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/io/ImageDDS.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
@@ -141,11 +142,11 @@ struct DDSHeader
 bool ImageDDS::load(const std::string &filename)
 {
     FILE *file = fopen(filename.c_str(), "rb");
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 
     if (!file)
     {
-        std::cerr << "ImageDDS::load: Cannot open file " << filename << std::endl;
+        msg_error("ImageDDS") << "load: Cannot open file '" << filename << "'";
         return false;
     }
 
@@ -154,7 +155,7 @@ bool ImageDDS::load(const std::string &filename)
     if (!fread(&header, sizeof(header), 1, file))
     {
         fclose(file);
-        std::cerr << "ImageDDS::load: Cannot read the DDS header from " << filename << std::endl;
+        msg_error("ImageDDS") << "load: Cannot read the DDS header from '" << filename << "'";
         return false;
     }
 
@@ -162,7 +163,7 @@ bool ImageDDS::load(const std::string &filename)
     if (header.dwMagic != DDS_MAGIC)
     {
         fclose(file);
-        std::cerr << "ImageDDS::load: File " << filename << " is not of the DDS format." << std::endl;
+        msg_error("ImageDDS") << "load: File '" << filename << "' is not of the DDS format.";
         return false;
     }
 
@@ -309,7 +310,7 @@ bool ImageDDS::load(const std::string &filename)
         if (error)
         {
             fclose(file);
-            std::cerr << "ImageDDS::load: File " << filename << " has unknown or unsupported format." << std::endl;
+            msg_error("ImageDDS") << "load: File '" << filename << "' has unknown or unsupported format.";
             return false;
         }
     }
@@ -326,16 +327,16 @@ bool ImageDDS::load(const std::string &filename)
     fclose(file);
     if (read != size)
     {
-        std::cerr << "ImageDDS::load: Cannot read file " + filename + ", a part of the file is missing." << std::endl;
-		return false; // "
+        msg_error("ImageDDS") << "load: Cannot read file '" + filename + "', a part of the file is missing.";
+        return false; // "
     }
 
-    std::cout << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
-            << ", Size: " << getWidth() << "x" << getHeight() << "x" << getDepth()
-            << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
-            << ", Mipmaps: " << getMipmapCount() << std::endl;
+    msg_info("ImageDDS") << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
+                         << ", Size: " << getWidth() << "x" << getHeight() << "x" << getDepth()
+                         << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
+                         << ", Mipmaps: " << getMipmapCount() ;
 
-	m_bLoaded = 1;
+    m_bLoaded = 1;
     return true;
 }
 
@@ -433,7 +434,7 @@ bool ImageDDS::save(const std::string &filename, int)
     header.ddpfPixelFormat = pixelFormatTable[getDataType()][getChannelFormat()];
     if (!header.ddpfPixelFormat.dwSize)
     {
-        std::cerr << "ImageDDS::save: Cannot save file " << filename << ", the image format is unsupported." << std::endl;
+        msg_error("ImageDDS") << "save: Cannot save file '" << filename << "', the image format is unsupported." ;
         return false;
     }
 
@@ -451,7 +452,7 @@ bool ImageDDS::save(const std::string &filename, int)
     FILE *file = fopen(filename.c_str(), "wb");
     if (!file)
     {
-        std::cerr << "ImageDDS::save: Cannot open file " << filename << " for writing." << std::endl;
+        msg_error("ImageDDS") << "save: Cannot open file '" << filename << "' for writing." ;
         return false;
     }
 
@@ -461,7 +462,7 @@ bool ImageDDS::save(const std::string &filename, int)
     fclose(file);
     if (!isWriteOk)
     {
-        std::cerr << "ImageDDS::save: Cannot write to file" << filename << std::endl;
+        msg_error("ImageDDS") << "save: Cannot write to file '" << filename << "'";
     }
     return isWriteOk;
 }

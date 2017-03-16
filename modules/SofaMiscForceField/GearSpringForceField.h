@@ -140,7 +140,7 @@ public:
                     in>>s.Ratio;
                 else
                 {
-                    std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
+                    msg_error("GearSpring")<<"parsing Spring : Unknown Attribute "<<str;
                     return in;
                 }
 

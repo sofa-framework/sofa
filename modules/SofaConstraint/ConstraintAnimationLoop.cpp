@@ -153,7 +153,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
             //1. nbLines provide the dimension of the constraint  (max=6)
             //debug
             // int a=_constraintsResolutions.size();
-            //std::cerr<<"&&"<<a<<"&&"<<std::endl;
+            //msg_info()<<"&&"<<a<<"&&"<<std::endl;
             //end debug
             nb = _constraintsResolutions[j]->nbLines;
 
@@ -857,8 +857,8 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                 ///////////// debug //////////
                 /*		if (i<3 && j<3)
                 {
-                std::cerr<<".............. iteration "<<i<< std::endl;
-                std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
+                msg_info()<<".............. iteration "<<i<< std::endl;
+                msg_info()<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
                 }*/
                 //////////////////////////////
 

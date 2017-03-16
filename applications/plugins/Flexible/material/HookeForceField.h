@@ -22,11 +22,10 @@
 #ifndef SOFA_HookeFORCEFIELD_H
 #define SOFA_HookeFORCEFIELD_H
 
-#include <sofa/helper/logging/Messaging.h>
-
 #include <Flexible/config.h>
 #include "BaseMaterialForceField.h"
 #include "HookeMaterialBlock.inl"
+
 
 namespace sofa
 {
@@ -79,7 +78,8 @@ public:
     //Pierre-Luc : I added this function to be able to evaluate forces without using visitors
     virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const helper::vector<SReal> _vol)
      {
-         dmsg_info() << SOFA_CLASS_METHOD ;
+         if(this->f_printLog.getValue()==true)
+             std::cout << SOFA_CLASS_METHOD << std::endl;
 
          typename Inherit::VecDeriv&  f = *_f.beginEdit();
          const typename Inherit::VecCoord&  x = _x.getValue();

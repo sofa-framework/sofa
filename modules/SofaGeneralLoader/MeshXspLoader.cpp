@@ -190,7 +190,7 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
         }
         else		// it's an unknown keyword
         {
-            std::cerr << "Unknown MassSpring keyword:" << cmd;
+            msg_error("MeshXspLoader") << "Unknown MassSpring keyword '" << cmd << "'.";
             d_positions.endEdit();
             d_edges.endEdit();
             gravity.endEdit();

@@ -101,7 +101,7 @@ bool ObjectElement::initNode()
     }
 //     if (!unused.empty())
 //     {
-//         std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
+//         msg_warning("XML") << "Unused attribute(s) in "<<getFullName()<<" :"<<unused";
 //     }
 
     return true;

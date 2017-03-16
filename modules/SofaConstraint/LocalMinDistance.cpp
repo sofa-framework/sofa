@@ -1660,7 +1660,7 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
         }
     }
     //else
-    //	std::cerr<<"WARNING nMean is null"<<std::endl;
+    //	msg_info()<<"WARNING nMean is null"<<std::endl;
 
 
 

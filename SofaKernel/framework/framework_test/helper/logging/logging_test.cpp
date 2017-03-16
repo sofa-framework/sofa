@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
+#include <thread>
 
 #include <iostream>
 using std::endl ;
@@ -86,6 +87,7 @@ public:
 
 TEST(LoggingTest, noHandler)
 {
+    // This test does not test anything, except the absence of crash
     MessageDispatcher::clearHandlers() ;
 
     msg_info("") << " info message with conversion" << 1.5 << "\n" ;
@@ -109,7 +111,7 @@ TEST(LoggingTest, oneHandler)
     msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
-    EXPECT_TRUE( h.numMessages() == 4u ) ;
+    EXPECT_EQ( h.numMessages() , 4u ) ;
 }
 
 TEST(LoggingTest, duplicatedHandler)
@@ -130,6 +132,59 @@ TEST(LoggingTest, duplicatedHandler)
     msg_error("") << " error message with conversion" << 1.5 << "\n" ;
 
     EXPECT_TRUE( h.numMessages() == 4u) ;
+}
+
+void f1()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread1") << "Hello world" ;
+        msg_warning("Thread1") << "Hello world" ;
+        msg_error("Thread1") << "Hello world" ;
+    }
+}
+
+void f2()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread2") << "Hello world" ;
+        msg_warning("Thread2") << "Hello world" ;
+        msg_error("Thread2") << "Hello world" ;
+    }
+}
+
+void f3()
+{
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("Thread3") << "Hello world" ;
+        msg_warning("Thread3") << "Hello world" ;
+        msg_error("Thread3") << "Hello world" ;
+    }
+}
+
+
+TEST(LoggingTest, threadingTests)
+{
+    MessageDispatcher::clearHandlers() ;
+
+    CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
+    mh.reset();
+
+    // First add is expected to return the handler ID.
+    EXPECT_TRUE(MessageDispatcher::addHandler(&mh) == 0) ;
+
+    std::thread t1(f1);
+    std::thread t1bis(f1);
+    std::thread t2(f2);
+    std::thread t3(f3);
+
+    t1.join();
+    t1bis.join();
+    t2.join();
+    t3.join();
+
+    EXPECT_EQ( mh.getMessageCountFor(Message::Info), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Warning), 400000) ;
+    EXPECT_EQ( mh.getMessageCountFor(Message::Error), 400000) ;
 }
 
 
@@ -299,7 +354,6 @@ TEST(LoggingTest, checkBaseObjectSerr)
 
 }
 
-
 TEST(LoggingTest, checkBaseObjectMsgAPI)
 {
     MessageDispatcher::clearHandlers() ;
@@ -308,6 +362,8 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
 
 
     MyComponent c;
+
+    c.f_printLog.setValue(true);
 
     c.emitMessages() ;
     EXPECT_EQ(h.numMessages(), 3u);
@@ -332,6 +388,40 @@ TEST(LoggingTest, checkBaseObjectMsgAPI)
     EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
 }
 
+TEST(LoggingTest, checkBaseObjectMsgAPInoPrintLog)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+
+    MyComponent c;
+
+    c.f_printLog.setValue(false);
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 2u);
+    EXPECT_EQ(c.getLoggedMessages().size(), 0u) ;
+
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 4u);
+
+    std::stringstream s;
+    s << "============= Back log ==============" << std::endl ;
+    for(auto& message : c.getLoggedMessages()){
+        s << message << std::endl ;
+    }
+    s << "=====================================" << std::endl ; ;
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+
+    msg_info(&c) << "A fourth message ";
+
+    EXPECT_EQ(c.getLoggedMessages().size(), 2u) << s.str();
+}
+
 
 TEST(LoggingTest, checkBaseObjectQueueSize)
 {
@@ -340,6 +430,7 @@ TEST(LoggingTest, checkBaseObjectQueueSize)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     MyComponent c;
+    c.f_printLog.setValue(true);
 
     /// Filling the internal message queue.
     for(unsigned int i=0;i<100;i++){
@@ -355,7 +446,6 @@ TEST(LoggingTest, checkBaseObjectSoutSerr)
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
     MyComponent c;
-
     c.emitSerrSoutMessages();
 
     /// Well serr message are routed through warning while

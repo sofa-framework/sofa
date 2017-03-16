@@ -124,31 +124,31 @@ static std::vector<MessageHandler*> setDefaultMessageHandler()
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(s_dispatchermutex) ;
 
     return s_messagedispatcher.getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(s_dispatchermutex) ;
 
     return s_messagedispatcher.addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(s_dispatchermutex) ;
 
     return s_messagedispatcher.rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(s_dispatchermutex) ;
 
     s_messagedispatcher.clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(s_dispatchermutex) ;
 
     s_messagedispatcher.process(m);
 }

@@ -60,7 +60,6 @@ namespace component
 namespace container
 {
 
-//TODO(dmarchal) remove or uncomment this code.
 // ==========================================================================
 // Init Specializations (initialization from GaussPointSampler)
 /*
@@ -83,7 +82,7 @@ void MechanicalObject<F331Types>::init()
         if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
         x0.endEdit();
 
-        if(notMuted())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
         reinit();
     }
 }
@@ -107,7 +106,7 @@ void MechanicalObject<F332Types>::init()
         if (restScale.getValue() != (Real)1) { Real s = (Real)restScale.getValue(); for (unsigned int i=0; i<x0_edit->size(); i++) (*x0_edit)[i] *= s;        }
         x0.endEdit();
 
-        if(notMuted())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
+        if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nbp <<" gauss points imported"<<std::endl;
         reinit();
     }
 }
@@ -134,7 +133,7 @@ int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state 
         .add< MechanicalObject<F332fTypes> >()
         .add< MechanicalObject<F221fTypes> >()
 #endif
-        ;
+		;
 
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API MechanicalObject<F331dTypes>;

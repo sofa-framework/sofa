@@ -210,7 +210,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     if (!selfCollision) mapper2.updateXfree();
 
 
-    //std::cerr<<" end activateMappers call"<<std::endl;
+    //msg_info()<<" end activateMappers call"<<std::endl;
 
 }
 

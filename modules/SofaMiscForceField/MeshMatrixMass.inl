@@ -167,8 +167,8 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 					}
 				}
 			}
-	//		std::cerr<<"Mass Matrix= "<<TetrahedronMass<<std::endl;
-	//		std::cerr<<"Lumped Mass Matrix= "<<lumpedVertexMass<<std::endl;
+	//		msg_info()<<"Mass Matrix= "<<TetrahedronMass<<std::endl;
+	//		msg_info()<<"Lumped Mass Matrix= "<<lumpedVertexMass<<std::endl;
 			// now updates the the mass matrix on each vertex.
             helper::vector<MassType>& my_vertexMassInfo = *MMM->vertexMassInfo.beginEdit();
 			for (j=0;j<nbControlPoints;j++) {
@@ -190,7 +190,7 @@ void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFun
 				for (k=j;k<nbControlPoints;k++,rank++) {
 					tbi2=tbiArray[k];
 					TetrahedronMass[rank]+=mass*topology::binomialVector<4,typename DataTypes::Real>(tbi1,tbi2);
-	//				std::cerr<<" tbi = "<<tbi1<<" "<<tbi2<<" ="<<TetrahedronMass[rank]<<std::endl;
+	//				msg_info()<<" tbi = "<<tbi1<<" "<<tbi2<<" ="<<TetrahedronMass[rank]<<std::endl;
 				}
 			}
 			// mass for mass lumping

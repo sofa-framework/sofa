@@ -56,7 +56,7 @@ namespace helper
 namespace logging
 {
 
-inline bool notMuted(const std::string&){ return false; }
+inline bool notMuted(const std::string&){ return true; }
 
 static const char * s_unknownFile = "unknown-file";
 
