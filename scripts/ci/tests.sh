@@ -63,6 +63,64 @@ fix-test-report() {
     # but the JUnit XML understood by Jenkins requires a '<skipped/>' element instead.
     # source: http://stackoverflow.com/a/14074664
     sed -i'.bak' 's:\(<testcase [^>]*status="notrun".*\)/>:\1><skipped/></testcase>:' "$1"
+    rm -f "$1.bak"
+}
+
+
+run-single-test-subtests() {
+    local test=$1
+
+    # List all the subtests in this test
+    bash -c "$build_dir/bin/$test --gtest_list_tests > $output_dir/$test/subtests.tmp.txt"
+    IFS=''; while read line; do
+        if echo "$line" | grep -q "^.*\." ; then
+            local current_test="$(echo "$line" | grep -o "^.*\.")"
+        elif echo "$line" | grep -q "^  [^ ]*" ; then
+            local current_subtest="$(echo "$line" | grep -o "[^ ]*" | head -1)"
+            echo "$current_test$current_subtest" >> "$output_dir/$test/subtests.txt"
+        fi
+    done < "$output_dir/$test/subtests.tmp.txt"
+    rm -f "$output_dir/$test/subtests.tmp.txt"
+
+    # Run the subtests
+    printf "\n\nRunning $test subtests\n"
+    local i=1;
+    while read subtest; do
+        local output_file="$output_dir/$test/$subtest/report.xml"
+        local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file --gtest_filter=$subtest 2>&1"
+
+        mkdir -p "$output_dir/$test/$subtest"
+        echo "$test_cmd" >> "$output_dir/$test/$subtest/command.txt"
+        bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt"
+        pipestatus="${PIPESTATUS[0]}"
+        echo "$pipestatus" > "$output_dir/$test/$subtest/status.txt"
+
+        if [ $pipestatus -gt 1 ]; then # this subtest crashed (0:OK 1:failure >1:crash)
+            IFS='.' read -r -a array <<< "$subtest"
+            test_name="${array[0]}"
+            subtest_name="${array[1]}"
+            echo "$0: error: $subtest ended with code $pipestatus" >&2
+            # Write the XML output by hand
+            echo '<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="1" failures="0" disabled="0" errors="1" time="1" name="AllTests">
+    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="1">
+        <testcase name="'"$subtest_name"'" type_param="" status="run" time="1" classname="'"$test_name"'">
+            <error message="[CRASH] '"$subtest"' ended with code '"$pipestatus"'">
+<![CDATA['"$(cat $output_dir/$test/$subtest/output.txt)"']]>
+            </error>
+        </testcase>
+    </testsuite>
+</testsuites>' > "$output_file"
+        fi
+
+        if [ -f "$output_file" ]; then
+            fix-test-report "$output_file"
+            cp "$output_file" "$output_dir/reports/"$test"_subtest"$i".xml"
+        else
+            echo "$0: error: $test subtest $subtest ended with code $(cat $output_dir/$test/$subtest/status.txt)" >&2
+        fi
+        i=$((i + 1))
+    done < "$output_dir/$test/subtests.txt"
 }
 
 run-single-test() {
@@ -92,6 +150,8 @@ run-single-test() {
         cp "$output_file" "$output_dir/reports/$test.xml"
     else
         echo "$0: error: $test ended with code $(cat $output_dir/$test/status.txt)" >&2
+        # Run each subtest of this test to avoid results loss
+        run-single-test-subtests "$test"
     fi
 }
 
@@ -106,7 +166,7 @@ count-test-suites() {
     list-tests | wc -w | tr -d ' '
 }
 count-test-reports() {
-    ls "$output_dir/reports/"*.xml 2> /dev/null | wc -l | tr -d ' '
+    ls "$output_dir/reports/" --ignore="*subtest*" 2> /dev/null | wc -l | tr -d ' '
 }
 count-crashes() {
     echo "$(( $(count-test-suites) - $(count-test-reports) ))"
@@ -140,11 +200,15 @@ tests-get()
 print-summary() {
     echo "Testing summary:"
     echo "- $(count-test-suites) test suite(s)"
-    local crashes='$(count-crashes)'
-    echo "- $(count-crashes) crash(es)"
-    if [[ "$crashes" != 0 ]]; then
+    echo "- $(tests-get tests) test(s)"
+    echo "- $(tests-get disabled) disabled test(s)"
+    echo "- $(tests-get failures) failure(s)"
+
+    local errors='$(tests-get errors)'
+    echo "- $(tests-get errors) error(s)"
+    if [[ "$errors" != 0 ]]; then
         while read test; do
-            if [[ ! -e "$output_dir/$test/report.xml" ]]; then
+            if [[ ! -e "$output_dir/$test/report.xml" ]]; then # this test crashed
                 local status="$(cat "$output_dir/$test/status.txt")"
                 case "$status" in
                     "timeout")
@@ -161,13 +225,15 @@ print-summary() {
                         echo "Error: unexpected value in $output_dir/$test/status.txt: $status"
                         ;;
                 esac
+                last_run_line_number="$(grep -n "\[ RUN      \]" "$output_dir/$test/output.txt" | tail -1 | tr ":" "\n" | head -1)"
+                tail --lines=+"$last_run_line_number" "$output_dir/$test/output.txt" > "$output_dir/$test/last_run_output.tmp"
+                while read log_line; do
+                    echo "      $log_line"
+                done < "$output_dir/$test/last_run_output.tmp"
+                rm -f "$output_dir/$test/last_run_output.tmp"
             fi
         done < "$output_dir/tests.txt"
     fi
-    echo "- $(tests-get tests) test(s)"
-    echo "- $(tests-get failures) failure(s)"
-    echo "- $(tests-get disabled) disabled test(s)"
-    echo "- $(tests-get errors) error(s)"
 }
 
 if [[ "$command" = run ]]; then
