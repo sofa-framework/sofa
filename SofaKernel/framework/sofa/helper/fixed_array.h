@@ -331,7 +331,7 @@ public:
     }
 
     // assign one value to all elements
-    void assign (const T& value)
+    inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
         for (size_type i=0; i<N; i++)
