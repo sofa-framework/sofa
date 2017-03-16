@@ -339,9 +339,10 @@ public:
             elems[i] = value;
     }
 
-    template<int NN = N, typename std::enable_if<NN>=1,int>::type = 0>
+    //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
+        static_assert(N>0, "Cannot create a zero size arrays") ;
         for( size_type i=0; i<N-1; i++ )
             out << a.elems[i]<<" ";
         out << a.elems[N-1];
