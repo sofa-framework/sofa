@@ -49,6 +49,7 @@ SOFA_DECL_CLASS(MeshObjLoader)
 
 int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >()
+        .addAlias("MeshOBJLoader")
         ;
 
 
