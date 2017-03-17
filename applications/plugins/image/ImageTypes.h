@@ -846,7 +846,7 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
-            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->searchUp<sofa::component::visualmodel::VisualStyle>();
+            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->template searchUp<sofa::component::visualmodel::VisualStyle>();
             if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
 
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
