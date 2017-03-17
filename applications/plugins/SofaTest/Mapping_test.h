@@ -316,7 +316,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         WriteInVecDeriv vin = inDofs->writeVelocities();
         copyToData( vin, vp );
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
-        WriteOutVecDeriv vout = outDofs->writeVelocities();
+        ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //          cout<<"child velocity vc = " << vc << endl;
 
@@ -394,7 +394,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( pin, xp1 );
         //            cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecCoord pout = outDofs->writePositions();
+        ReadOutVecCoord pout = outDofs->readPositions();
         copyFromData( xc1, pout );
         //            cout<<"old child positions xc = " << xc << endl;
         //            cout<<"new child positions xc1 = " << xc1 << endl;
@@ -472,6 +472,23 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                               << "dfp = " << fp12 << std::endl;
             }
         }
+
+
+        // =================== test updateForceMask
+        // propagate forces coming from all child, each parent receiving a force should be in the mask
+        copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
+        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        copyFromData( fp, inDofs->readForces() );
+        for( unsigned i=0; i<Np; i++ ) {
+            if( fp[i] != InDeriv() && !inDofs->forceMask.getEntry(i) ){
+                succeed = false;
+                ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents" << std::endl;
+                break;
+            }
+        }
+
+
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
