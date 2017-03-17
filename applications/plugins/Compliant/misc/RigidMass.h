@@ -53,8 +53,8 @@ public:
 
     enum {
         INERTIA_DISABLED = 0,
-        INERTIA_EXPLICIT,
-        INERTIA_IMPLICIT
+        INERTIA_EXPLICIT = 1,
+        INERTIA_IMPLICIT = 2,
     };
     
 	typedef SE3<real> se3;
@@ -62,7 +62,7 @@ public:
 	RigidMass() 
 		: mass(initData(&mass, "mass", "mass of each rigid body")),
 		  inertia(initData(&inertia, "inertia", "inertia of each rigid body")),
-          inertia_forces(initData(&inertia_forces, 0, "inertia_forces",
+          inertia_forces(initData(&inertia_forces, unsigned(0), "inertia_forces",
                                   "0: disabled, 1: explicit, 2: implicit (need non-symmetric solver, experimental)")),
           _draw(initData(&_draw, false, "draw", "debug drawing of the inertia matrix"))
     {
