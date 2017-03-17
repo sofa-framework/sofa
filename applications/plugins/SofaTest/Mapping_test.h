@@ -476,6 +476,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // =================== test updateForceMask
         // propagate forces coming from all child, each parent receiving a force should be in the mask
+        inDofs->forceMask.clear();
+        outDofs->forceMask.assign(outDofs->getSize(),true);
+        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
         copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
         for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
