@@ -274,6 +274,15 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;;
 
 
+        // =================== test updateForceMask
+        // ensure that each dof receiving a force is in the mask
+        for( unsigned i=0; i<xdof.size(); i++ ) {
+            if( newF[i] != Deriv() && !dof->forceMask.getEntry(i) ){
+                ADD_FAILURE() << "updateForceMask did not set mask to every dof influenced by the ForceField" << std::endl;
+                break;
+            }
+        }
+
 
     }
 
