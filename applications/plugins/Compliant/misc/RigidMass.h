@@ -48,15 +48,22 @@ public:
 	
 	Data<mass_type> mass;
 	Data<inertia_type> inertia;
-	Data<bool> inertia_forces;
+	Data<unsigned> inertia_forces;
     Data<bool> _draw;
-	
+
+    enum {
+        INERTIA_DISABLED = 0,
+        INERTIA_EXPLICIT,
+        INERTIA_IMPLICIT
+    };
+    
 	typedef SE3<real> se3;
 
 	RigidMass() 
 		: mass(initData(&mass, "mass", "mass of each rigid body")),
 		  inertia(initData(&inertia, "inertia", "inertia of each rigid body")),
-          inertia_forces(initData(&inertia_forces, false, "inertia_forces", "compute (explicit) inertia forces")),
+          inertia_forces(initData(&inertia_forces, 0, "inertia_forces",
+                                  "0: disabled, 1: explicit, 2: implicit (need non-symmetric solver, experimental)")),
           _draw(initData(&_draw, false, "draw", "debug drawing of the inertia matrix"))
     {
         _draw.setGroup("Visualization");
@@ -153,7 +160,7 @@ public:
 		
 			se3::map( f[i].getVCenter() ).template head<3>() += mass.getValue()[index] * g;
 			
-			if( inertia_forces.getValue() ) {
+			if( inertia_forces.getValue() == INERTIA_EXPLICIT ) {
 				// explicit inertia, based on usual formula
 				// see http://en.wikipedia.org/wiki/Newton-Euler_equations
 				typename se3::mat33 R = se3::rotation( x[i] ).toRotationMatrix();
@@ -251,7 +258,7 @@ public:
 		sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix( this->mstate );
 		const unsigned size = defaulttype::DataTypeInfo<typename DataTypes::Deriv>::size();
 
-        real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
+        const real mFactor = (real)mparams->mFactorIncludingRayleighDamping(this->rayleighMass.getValue());
 		
 		for(unsigned i = 0, n = this->mstate->getSize(); i < n; ++i) {
 
@@ -267,7 +274,22 @@ public:
 			typename se3::mat33 R = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] ).toRotationMatrix();
 			
 			typename se3::mat33 chunk = R * se3::map( inertia.getValue()[ index ] ).asDiagonal() * R.transpose();
-			
+
+
+            // TODO this is highly experimental 
+            // TODO what about addMDx ?
+            if(inertia_forces.getValue() == INERTIA_IMPLICIT) {
+                typename se3::vec3 omega =
+                    se3::map(this->mstate->read(core::ConstVecDerivId::velocity())->getValue()[i].getVOrientation());
+                
+                const real dt = this->getContext()->getDt();
+            
+                typename se3::vec3 mu = (chunk * omega);
+                typename se3::mat33 gs = se3::hat(mu);
+                
+                chunk -= dt * gs;
+            }
+            
 			// rotation
 			for(unsigned j = 0; j < 3; ++j) {
 				for(unsigned k = 0; k < 3; ++k) {
