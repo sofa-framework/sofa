@@ -322,7 +322,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 //            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecCoord pout = outDofs->writePositions();
+        ReadOutVecCoord pout = outDofs->readPositions();
         copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
@@ -369,18 +369,15 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         // =================== test updateForceMask
         // propagate forces coming from all child, each parent receiving a force should be in the mask
-        std::cerr<<"multimapping_test_updateForceMask "<<std::endl;
         for(Index i=0; i<Np.size(); i++) inDofs[i]->forceMask.clear();
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
-        std::cerr<<"multimapping_test_updateForceMask applied"<<std::endl;
         for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
         for(Index p=0; p<Np.size(); p++) {
             WriteInVecDeriv fin = inDofs[p]->writeForces();
             copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
         }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
-        std::cerr<<"multimapping_test_updateForceMask appliedJT"<<std::endl;
         for(Index i=0; i<Np.size(); i++)
         {
             copyFromData( fp[i], inDofs[i]->readForces() );
