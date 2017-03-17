@@ -1,9 +1,11 @@
 import numpy as np
 import math
 import sys
-
+from contextlib import contextmanager
 
 from numpy.linalg import norm
+
+GL = None
 
 def vec(*coords):
     return np.array(coords)
@@ -137,6 +139,22 @@ class Rigid3(np.ndarray):
         res.linear = self.orient.dlog().dot( self.orient.conj()( self.center ) )
 
         return res
+
+
+    @contextmanager
+    def gl_frame(self):
+        global GL
+        if GL is None: from OpenGL import GL
+        
+        GL.glPushMatrix()
+        try:
+            GL.glTranslate(*self.center)
+            axis, angle = self.orient.axis_angle()
+            if angle:
+                GL.glRotate(angle * deg, *axis)
+            yield
+        finally:
+            GL.glPopMatrix()
 
 
         
@@ -311,10 +329,10 @@ class Quaternion(np.ndarray):
         if half_angle > Quaternion.epsilon:
             return q.imag / math.sin(half_angle), 2 * half_angle
 
-        norm = q.imag.norm()
-        if norm > Quaternion.epsilon:
+        n = norm(q.imag)
+        if n > Quaternion.epsilon:
             sign = 1.0 if half_angle > 0 else -1.0
-            return q.imag * (sign / norm), 2 * half_angle
+            return q.imag * (sign / n), 2 * half_angle
         
         return None, 2 * half_angle
     
