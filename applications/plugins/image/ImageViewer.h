@@ -333,7 +333,7 @@ public:
         {
             for(unsigned int i=0;i<3;i++)
             {
-                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
+                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false,false,false);
                 cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
             }
             updateTextures();
