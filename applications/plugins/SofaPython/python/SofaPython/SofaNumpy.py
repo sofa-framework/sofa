@@ -32,8 +32,14 @@ def as_numpy( data ):
 
     # print (shape)
 
-    array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
-    return numpy.ctypeslib.as_array(array, shape )
+    # fold
+    array_type = reduce(lambda x, y: x * y, reversed(shape), type)
+    array = array_type.from_address(ptr)
+    return numpy.ctypeslib.as_array(array)
+
+    # https://github.com/numpy/numpy/issues/6511
+    # array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
+    # return numpy.ctypeslib.as_array(array, shape)
 
 
 # convenience
