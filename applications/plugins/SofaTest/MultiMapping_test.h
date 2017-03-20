@@ -367,6 +367,46 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
 
+        // ================ test getK()
+        InVecDeriv totalvp;
+        for( Index p=0; p<Np.size(); p++ ) {
+            for( Index pi=0; pi<vp[p].size(); pi++ ) {
+                totalvp.push_back(vp[p][pi]);
+            }
+        }
+        InVecDeriv Kv(totalvp.size());
+
+        const defaulttype::BaseMatrix* bk = mapping->getK();
+        // K can be null or empty for linear mappings
+        // still performing the test with a null Kv vector to check if the mapping is really linear
+        if( bk != NULL ){
+
+            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+            if( K == NULL ){
+                succeed = false;
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+            }
+
+            if( K->compressedMatrix.nonZeros() ) K->mult(Kv,totalvp);
+        }
+
+        // check that K.vp = dfp
+        for( Index p=0, offset=0; p<Np.size(); p++ ) {
+
+            InVecDeriv Kvp( Kv.begin()+offset, Kv.begin()+offset+fp12[p].size() );
+            offset+=fp12[p].size();
+
+            if( this->vectorMaxDiff(Kvp,fp12[p])>this->epsilon()*errorMax ){
+                succeed = false;
+                ADD_FAILURE() << "K test failed on parent "<< p << ", difference should be less than " << this->epsilon()*errorMax  << std::endl
+                              << "Kv    = " << Kvp << std::endl
+                              << "dfp = " << fp12[p] << std::endl;
+            }
+        }
+
+
         // =================== test updateForceMask
         // propagate forces coming from all child, each parent receiving a force should be in the mask
         for(Index i=0; i<Np.size(); i++) inDofs[i]->forceMask.clear();
