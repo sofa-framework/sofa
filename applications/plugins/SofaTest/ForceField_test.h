@@ -70,6 +70,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// @name Precision and control parameters
     /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
+    SReal errorFactorPotentialEnergy;  ///< The test for potential energy is successfull if the (infinite norm of the) difference is less than  errorFactorPotentialEnergy * errorMax *epsilon (default = 1)
     /**
      * @brief Minimum/Maximum amplitudes of the random perturbation used to check the stiffness using finite differences
      * @warning Should be more than errorMax/stiffness. This is not checked automatically.
@@ -92,6 +93,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     ForceField_test()
         : errorMax( 100 )
+        , errorFactorPotentialEnergy(1)
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
@@ -225,8 +227,8 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             }
 
             double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
-            if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
-                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorMax*this->epsilon() << ")" << std::endl
+            if( absoluteErrorPotentialEnergy> errorFactorPotentialEnergy*errorMax*this->epsilon() ){
+                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorFactorPotentialEnergy*errorMax*this->epsilon() << ")" << std::endl
                             << "dPotentialEnergy is " << differencePotentialEnergy << std::endl
                             << "-dX.F is " << expectedDifferencePotentialEnergy << std::endl
                             << "Failed seed number = " << BaseSofa_test::seed << std::endl;
