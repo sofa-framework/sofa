@@ -49,27 +49,33 @@ int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file
 MeshObjLoader::MeshObjLoader()
     : MeshLoader()
     , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
+    , d_handleSeams(initData(&d_handleSeams, (bool) false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , faceType(MeshObjLoader::TRIANGLE)
     , materials(initData(&materials,"materials","List of materials") )
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
     , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
+    , positionsList(initData(&positionsList,"positionsDefinition", "Vertex positions definition"))
     , texCoordsList(initData(&texCoordsList,"texcoordsDefinition", "Texture coordinates definition"))
     , normalsIndexList(initData(&normalsIndexList,"normalsIndex","List of normals of elements of the mesh loaded."))
     , normalsList(initData(&normalsList,"normalsDefinition","Normals definition"))
     , texCoords(initData(&texCoords,"texcoords","Texture coordinates of all faces, to be used as the parent data of a VisualModel texcoords data"))
     , computeMaterialFaces(initData(&computeMaterialFaces, false, "computeMaterialFaces", "True to activate export of Data instances containing list of face indices for each material"))
+    , d_vertPosIdx      (initData   (&d_vertPosIdx, "vertPosIdx", "If vertices have multiple normals/texcoords stores vertices position indices"))
+    , d_vertNormIdx     (initData   (&d_vertNormIdx, "vertNormIdx", "If vertices have multiple normals/texcoords stores vertices normal indices"))
 {
     faceList.setGroup("OBJ");
     texIndexList.setGroup("OBJ");
     texCoordsList.setGroup("OBJ");
     normalsIndexList.setGroup("OBJ");
     normalsList.setGroup("OBJ");
+    positionsList.setGroup("OBJ");
     //BUGFIX: data loaded from OBJ file should not be saved to XML
     faceList.setPersistent(false);
     texIndexList.setPersistent(false);
     texCoordsList.setPersistent(false);
     normalsIndexList.setPersistent(false);
     normalsList.setPersistent(false);
+    positionsList.setPersistent(false);
     texCoords.setPersistent(false);
     d_positions.setPersistent(false);
     d_normals.setPersistent(false);
@@ -79,7 +85,9 @@ MeshObjLoader::MeshObjLoader()
     d_edgesGroups.setPersistent(false);
     d_trianglesGroups.setPersistent(false);
     d_quadsGroups.setPersistent(false);
-
+    texCoords.setPersistent(false);
+    d_vertPosIdx.setPersistent(false);
+    d_vertNormIdx.setPersistent(false);
 }
 
 
@@ -142,6 +150,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
     dmsg_info() << " readOBJ";
 
+    const bool handleSeams = d_handleSeams.getValue();
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
     helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoordsList.beginEdit());
     helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(normalsList.beginEdit());
@@ -316,23 +325,32 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
             if (nodes.size() == 2) // Edge
             {
-                if (nodes[0]<nodes[1])
-                    addEdge(&my_edges, Edge(nodes[0], nodes[1]));
-                else
-                    addEdge(&my_edges, Edge(nodes[1], nodes[0]));
+                if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
+                {
+                    if (nodes[0]<nodes[1])
+                        addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+                    else
+                        addEdge(&my_edges, Edge(nodes[1], nodes[0]));
+                }
                 ++nbFaces[MeshObjLoader::EDGE];
                 faceType = MeshObjLoader::EDGE;
             }
             else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
             {
-                addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
+                {
+                    addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+                }
                 ++nbFaces[MeshObjLoader::QUAD];
                 faceType = MeshObjLoader::QUAD;
             }
             else // Triangulate
             {
-                for (size_t j=2; j<nodes.size(); j++)
-                    addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
+                if (!handleSeams) // we have to wait for renumbering vertices if we handle seams
+                {
+                    for (size_t j=2; j<nodes.size(); j++)
+                        addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
+                }
                 ++nbFaces[MeshObjLoader::TRIANGLE];
                 faceType = MeshObjLoader::TRIANGLE;
             }
@@ -352,49 +370,181 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             groupF0[ft] = nbFaces[ft];
         }
 
-
-    helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
-    helper::vector<sofa::defaulttype::Vector3>& vNormals   = *d_normals.beginEdit();
-    //helper::vector<sofa::defaulttype::Vector3>& vVertices  = *vertices.beginEdit();
-    size_t vertexCount = my_positions.size();
-    if( my_texCoords.size() > 0 )
-    {
-        vTexCoords.resize(vertexCount);
-    }
-    else
-    {
-        vTexCoords.resize(0);
-    }
-    if( my_normals.size() > 0 )
-    {
-        vNormals.resize(vertexCount);
-    }
-    else
-    {
-        vNormals.resize(0);
-    }
-    for (size_t fi=0; fi<my_faceList.size(); ++fi)
-    {
-        const helper::SVector<int>& nodes = my_faceList[fi];
-        const helper::SVector<int>& nIndices = my_normalsList[fi];
-        const helper::SVector<int>& tIndices = my_texturesList[fi];
-
-        for (size_t i = 0; i < nodes.size(); ++i)
+    if (!d_handleSeams.getValue())
+    { // default mode, vertices are never duplicated, only one texcoord and normal is used per vertex
+        helper::vector<sofa::defaulttype::Vector2>& vTexCoords = *texCoords.beginEdit();
+        helper::vector<sofa::defaulttype::Vector3>& vNormals   = *d_normals.beginEdit();
+        helper::vector<sofa::defaulttype::Vector3>& vVertices  = *d_positions.beginEdit();
+        vVertices = my_positions;
+        size_t vertexCount = my_positions.size();
+        if( my_texCoords.size() > 0 )
         {
-            unsigned int pi = nodes[i];
-            unsigned int ni = nIndices[i];
-            unsigned int ti = tIndices[i];
-            if (i >= vertexCount) continue;
-            if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::defaulttype::Vector2() ||
-                    (my_texCoords[ti]-vTexCoords[pi])*sofa::defaulttype::Vector2(-1,1) > 0))
-                vTexCoords[pi] = my_texCoords[ti];
-            if (ni < my_normals.size())
-                vNormals[pi] += my_normals[ni];
+            vTexCoords.resize(vertexCount);
+        }
+        else
+        {
+            vTexCoords.resize(0);
+        }
+        if( my_normals.size() > 0 )
+        {
+            vNormals.resize(vertexCount);
+        }
+        else
+        {
+            vNormals.resize(0);
+        }
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        {
+            const helper::SVector<int>& nodes = my_faceList[fi];
+            const helper::SVector<int>& nIndices = my_normalsList[fi];
+            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            for (size_t i = 0; i < nodes.size(); ++i)
+            {
+                unsigned int pi = nodes[i];
+                unsigned int ni = nIndices[i];
+                unsigned int ti = tIndices[i];
+                if (pi >= vertexCount) continue;
+                if (ti < my_texCoords.size() && (vTexCoords[pi] == sofa::defaulttype::Vector2() ||
+                                                 (my_texCoords[ti]-vTexCoords[pi])*sofa::defaulttype::Vector2(-1,1) > 0))
+                    vTexCoords[pi] = my_texCoords[ti];
+                if (ni < my_normals.size())
+                    vNormals[pi] += my_normals[ni];
+            }
+        }
+        for (size_t i=0; i<vNormals.size(); ++i)
+        {
+            vNormals[i].normalize();
         }
     }
-    for (size_t i=0; i<vNormals.size(); ++i)
-    {
-        vNormals[i].normalize();
+    else
+    { // handleSeam mode : vertices are duplicated in case they have different texcoords and/or normals
+        // This code was initially in VisualModelImpl::setMesh()
+        
+        int nbVIn = (int)my_positions.size();
+        // First we compute for each point how many pair of normal/texcoord indices are used
+        // The map store the final index of each combinaison
+        std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+        vertTexNormMap.resize(nbVIn);
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        {
+            const helper::SVector<int>& nodes = my_faceList[fi];
+            const helper::SVector<int>& nIndices = my_normalsList[fi];
+            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            for (size_t i = 0; i < nodes.size(); ++i)
+            {
+                unsigned int pi = nodes[i];
+                unsigned int ni = nIndices[i];
+                unsigned int ti = tIndices[i];
+                vertTexNormMap[pi][std::make_pair(ti, ni)] = 0;
+            }
+        }
+
+        // Then we can compute how many vertices are created
+        int nbVOut = 0;
+        bool vsplit = false;
+        for (int i = 0; i < nbVIn; i++)
+        {
+            int s = vertTexNormMap[i].size();
+            nbVOut += s;
+        }
+
+        sout << nbVIn << " input positions, " << nbVOut << " final vertices." << sendl;
+
+        if (nbVIn != nbVOut)
+            vsplit = true;
+
+        // Then we can create the final arrays
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3>>> vertices2 = d_positions;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3>>> vnormals = d_normals;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2>>> vtexcoords = texCoords;
+        helper::WriteAccessor<Data<helper::vector<int>>> vertPosIdx = d_vertPosIdx;
+        helper::WriteAccessor<Data<helper::vector<int>>> vertNormIdx = d_vertNormIdx;
+
+        vertices2.resize(nbVOut);
+        vnormals.resize(nbVOut);
+        vtexcoords.resize(nbVOut);
+        if (vsplit)
+        {
+            vertPosIdx.resize(nbVOut);
+            vertNormIdx.resize(nbVOut);
+        }
+
+        int nbNOut = 0; /// Number of different normals
+        for (int i = 0, j = 0; i < nbVIn; i++)
+        {
+            std::map<int, int> normMap;
+            for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+                 it != vertTexNormMap[i].end(); ++it)
+            {
+                int t = it->first.first;
+                int n = it->first.second;
+                if ( (unsigned)n < my_normals.size())
+                    vnormals[j] = my_normals[n];
+                if ((unsigned)t < my_texCoords.size())
+                    vtexcoords[j] = my_texCoords[t];
+                
+                vertices2[j] = my_positions[i];
+                if (vsplit)
+                {
+                    vertPosIdx[j] = i;
+                    if (normMap.count(n))
+                        vertNormIdx[j] = normMap[n];
+                    else
+                    {
+                        vertNormIdx[j] = nbNOut;
+                        normMap[n] = nbNOut++;
+                    }
+                }
+                it->second = j++;
+            }
+        }
+
+        if( vsplit && nbNOut == nbVOut )
+            vertNormIdx.resize(0);
+
+        // Then we create the triangles and quads
+        
+        for (size_t fi=0; fi<my_faceList.size(); ++fi)
+        {
+            const helper::SVector<int>& verts = my_faceList[fi];
+            const helper::SVector<int>& nIndices = my_normalsList[fi];
+            const helper::SVector<int>& tIndices = my_texturesList[fi];
+            std::vector<int> nodes;
+            nodes.resize(verts.size());
+            for (size_t i = 0; i < verts.size(); ++i)
+            {
+                unsigned int pi = verts[i];
+                unsigned int ni = nIndices[i];
+                unsigned int ti = tIndices[i];
+                nodes[i] = vertTexNormMap[pi][std::make_pair(ti, ni)];
+                if ((unsigned)nodes[i] >= (unsigned)nbVOut)
+                {
+                    serr << this->getPathName()<<" index "<<nodes[i]<<" out of range"<<sendl;
+                    nodes[i] = 0;
+                }
+            }
+
+            if (nodes.size() == 2) // Edge
+            {
+                if (nodes[0]<nodes[1])
+                    addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+                else
+                    addEdge(&my_edges, Edge(nodes[1], nodes[0]));
+            }
+            else if (nodes.size()==4 && !this->d_triangulate.getValue()) // Quad
+            {
+                addQuad(&my_quads, Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
+            }
+            else // Triangulate
+            {
+                for (size_t j=2; j<nodes.size(); j++)
+                    addTriangle(&my_triangles, Triangle(nodes[0], nodes[j-1], nodes[j]));
+            }
+        }
+        for (size_t i=0; i<vnormals.size(); ++i)
+        {
+            vnormals[i].normalize();
+        }
     }
 
 
