@@ -54,5 +54,6 @@ def vec_as_numpy( (ptr, size, typename) ):
     type = ctypeFromName.get(typename,None)
     if not type: raise Exception("can't map data of type " + typename)
 
-    array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
-    return numpy.ctypeslib.as_array(array, (size,) )
+    array_type = type * size
+    array = array_type.from_address(ptr)
+    return numpy.ctypeslib.as_array(array)
