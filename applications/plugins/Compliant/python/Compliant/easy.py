@@ -43,8 +43,7 @@ def Vec(t):
                     )
 
         def numpy(self):
-            shape = self.outer, self.inner
-            return np.ctypeslib.as_array(self.data, shape)
+            return np.ctypeslib.as_array( as_buffer(self.data, self.outer, self.inner) )
         
     return Vector
 
@@ -57,7 +56,7 @@ def Eigen(t):
                     ('size', c_int))
 
         def numpy(self):
-            return np.ctypeslib.as_array(self.data, (self.size,) )
+            return np.ctypeslib.as_array( as_buffer(self.data, self.size) )
         
     return Vector
 
@@ -78,6 +77,16 @@ class ScipyMatrix(Structure):
 dll.eigen_sizeof.restype = c_size_t
 dll.eigen_sizeof.argtypes = ()
 
+def as_buffer(ptr, *size):
+    addr = addressof(ptr.contents)
+    
+    buffer_type = type(ptr.contents)
+    
+    for s in reversed(size):
+        buffer_type = buffer_type * s
+        
+    return buffer_type.from_address(addr)
+
 
 class SparseMatrix(Structure):
     '''an opaque c type for eigen sparse matrices'''
@@ -96,14 +105,15 @@ class SparseMatrix(Structure):
         dll.eigen_to_scipy(byref(data), byref(self))
         
         # needed: outer_index, data.values, data.size, data.indices, outer_size, inner_size
-        outer_index = np.ctypeslib.as_array(data.outer_index, (data.rows + 1,) )
+        outer_index = np.ctypeslib.as_array( as_buffer(data.outer_index, data.rows + 1) )
+        
         shape = (data.rows, data.cols)
 
         if not data.values:
             return sp.sparse.csr_matrix( shape )
 
-        values = np.ctypeslib.as_array(data.values, (data.size,) )
-        inner_indices = np.ctypeslib.as_array(data.indices, (data.size,) )
+        values = np.ctypeslib.as_array( as_buffer(data.values, data.size) )
+        inner_indices = np.ctypeslib.as_array( as_buffer(data.indices, data.size) )
 
         return sp.sparse.csr_matrix( (values, inner_indices, outer_index), shape)
 
