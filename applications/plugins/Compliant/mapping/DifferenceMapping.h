@@ -243,10 +243,12 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 
             const pairs_type& p = pairs.getValue();
             assert( !p.empty() );
+
+            size_t size = p.size();
             
-            this->getToModels()[0]->resize( pairs.getValue().size());
+            this->getToModels()[0]->resize( size );
             
-            for( unsigned j = 0, m = p.size(); j < m; ++j) {
+            for( size_t j = 0 ; j < size ; ++j) {
                 out[j] = TIn::getCPos( in[1] [p[j][1]] ) - TIn::getCPos( in[0] [p[j][0]] );
             }
 
