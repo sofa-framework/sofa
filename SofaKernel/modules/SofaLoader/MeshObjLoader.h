@@ -60,14 +60,13 @@ protected:
     bool readMTL (const char* filename, helper::vector <sofa::helper::types::Material>& materials);
     void addGroup (const sofa::core::loader::PrimitiveGroup& g);
 
-    sofa::helper::types::Material material;
-
     Data<bool> d_handleSeams;
     Data<bool> loadMaterial;
     std::string textureName;
     FaceType faceType;
 
 public:
+    Data<sofa::helper::types::Material> d_material;
     Data <helper::vector <sofa::helper::types::Material> > materials;
     Data <helper::SVector <helper::SVector <int> > > faceList;
     Data <helper::SVector <helper::SVector <int> > > texIndexList;

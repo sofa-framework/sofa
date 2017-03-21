@@ -51,6 +51,7 @@ MeshObjLoader::MeshObjLoader()
     , loadMaterial(initData(&loadMaterial, (bool) true, "loadMaterial", "Load the related MTL file or use a default one?"))
     , d_handleSeams(initData(&d_handleSeams, (bool) false, "handleSeams", "Preserve UV and normal seams information (vertices with multiple UV and/or normals)"))
     , faceType(MeshObjLoader::TRIANGLE)
+    , d_material(initData(&d_material,"material","Default material") )
     , materials(initData(&materials,"materials","List of materials") )
     , faceList(initData(&faceList,"faceList","List of face definitions.") )
     , texIndexList(initData(&texIndexList,"texcoordsIndex","Indices of textures coordinates used in faces definition."))
@@ -155,6 +156,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoordsList.beginEdit());
     helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(normalsList.beginEdit());
 
+    Material& material = *(d_material.beginEdit());
     helper::vector<Material>& my_materials = *(materials.beginEdit());
     helper::SVector< helper::SVector <int> >& my_faceList = *(faceList.beginEdit() );
     helper::SVector< helper::SVector <int> >& my_normalsList = *(normalsIndexList.beginEdit());
@@ -167,6 +169,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 
     //BUGFIX: clear pre-existing data before loading the file
     my_positions.clear();
+    material.activated = false;
     my_texCoords.clear();
     my_normals.clear();
     my_materials.clear();
@@ -548,20 +551,20 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     }
 
 
-    // create subset lists
-    std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
-    for (int ft = 0; ft < NBFACETYPE; ++ft)
-    {
-        for (size_t gi=0; gi<my_faceGroups[ft].size(); ++gi)
-        {
-            PrimitiveGroup g = my_faceGroups[ft][gi];
-            helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];
-            for (int f=g.p0; f<g.p0+g.nbp; ++f)
-                out.push_back(f);
-        }
-    }
     if (computeMaterialFaces.getValue())
     {
+        // create subset lists
+        std::map< std::string, helper::vector<unsigned int> > materialFaces[NBFACETYPE];
+        for (int ft = 0; ft < NBFACETYPE; ++ft)
+        {
+            for (size_t gi=0; gi<my_faceGroups[ft].size(); ++gi)
+            {
+                PrimitiveGroup g = my_faceGroups[ft][gi];
+                helper::vector<unsigned int>& out = materialFaces[ft][g.materialName];
+                for (int f=g.p0; f<g.p0+g.nbp; ++f)
+                    out.push_back(f);
+            }
+        }
         for (int ft = 0; ft < NBFACETYPE; ++ft)
         {
             std::string fname;
@@ -599,6 +602,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     d_quads.endEdit();
     normalsList.endEdit();
     normalsIndexList.endEdit();
+    d_material.endEdit();
     materials.endEdit();
     texIndexList.endEdit();
     texCoordsList.endEdit();
