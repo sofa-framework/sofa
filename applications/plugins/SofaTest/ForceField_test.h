@@ -147,7 +147,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
-    {
+    {        
+        if( !(flags & TEST_POTENTIAL_ENERGY) ) msg_warning("ForceFieldTest") << "Potential energy is not tested";
+
+
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
