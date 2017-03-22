@@ -1235,6 +1235,126 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale
     }
 }
 
+
+SReal DistanceGrid::quickeval(const Coord& x) const
+{
+    SReal d;
+    if (inGrid(x))
+    {
+        d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
+        d = helper::rsqrt((x-xclamp).norm2() + d*d);
+    }
+    return d;
+}
+
+SReal DistanceGrid::eval2(const Coord& x) const
+{
+    SReal d2;
+    if (inGrid(x))
+    {
+        SReal d = interp(x);
+        d2 = d*d;
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        SReal d = interp(xclamp);
+        d2 = ((x-xclamp).norm2() + d*d); // we underestimate the distance
+    }
+    return d2;
+}
+
+SReal DistanceGrid::quickeval2(const Coord& x) const
+{
+    SReal d2;
+    if (inGrid(x))
+    {
+        SReal d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
+        d2 = d*d;
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        SReal d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
+        d2 = ((x-xclamp).norm2() + d*d);
+    }
+    return d2;
+}
+
+SReal DistanceGrid::interp(int index, const Coord& coefs) const
+{
+    return interp(coefs[2],interp(coefs[1],interp(coefs[0],dists[index          ],dists[index+1        ]),
+            interp(coefs[0],dists[index  +nx     ],dists[index+1+nx     ])),
+            interp(coefs[1],interp(coefs[0],dists[index     +nxny],dists[index+1   +nxny]),
+                    interp(coefs[0],dists[index  +nx+nxny],dists[index+1+nx+nxny])));
+}
+
+
+SReal DistanceGrid::interp(const Coord& p) const
+{
+    Coord coefs;
+    int i = index(p, coefs);
+    return interp(i, coefs);
+}
+
+Coord DistanceGrid::grad(int index, const Coord& coefs) const
+{
+    // val = dist[0][0][0] * (1-x) * (1-y) * (1-z)
+    //     + dist[1][0][0] * (  x) * (1-y) * (1-z)
+    //     + dist[0][1][0] * (1-x) * (  y) * (1-z)
+    //     + dist[1][1][0] * (  x) * (  y) * (1-z)
+    //     + dist[0][0][1] * (1-x) * (1-y) * (  z)
+    //     + dist[1][0][1] * (  x) * (1-y) * (  z)
+    //     + dist[0][1][1] * (1-x) * (  y) * (  z)
+    //     + dist[1][1][1] * (  x) * (  y) * (  z)
+    // dval / dx = (dist[1][0][0]-dist[0][0][0]) * (1-y) * (1-z)
+    //           + (dist[1][1][0]-dist[0][1][0]) * (  y) * (1-z)
+    //           + (dist[1][0][1]-dist[0][0][1]) * (1-y) * (  z)
+    //           + (dist[1][1][1]-dist[0][1][1]) * (  y) * (  z)
+    const SReal dist000 = dists[index          ];
+    const SReal dist100 = dists[index+1        ];
+    const SReal dist010 = dists[index  +nx     ];
+    const SReal dist110 = dists[index+1+nx     ];
+    const SReal dist001 = dists[index     +nxny];
+    const SReal dist101 = dists[index+1   +nxny];
+    const SReal dist011 = dists[index  +nx+nxny];
+    const SReal dist111 = dists[index+1+nx+nxny];
+    return Coord(
+            interp(coefs[2],interp(coefs[1],dist100-dist000,dist110-dist010),interp(coefs[1],dist101-dist001,dist111-dist011)), //*invCellWidth[0],
+            interp(coefs[2],interp(coefs[0],dist010-dist000,dist110-dist100),interp(coefs[0],dist011-dist001,dist111-dist101)), //*invCellWidth[1],
+            interp(coefs[1],interp(coefs[0],dist001-dist000,dist101-dist100),interp(coefs[0],dist011-dist010,dist111-dist110))); //*invCellWidth[2]);
+}
+
+Coord DistanceGrid::grad(const Coord& p) const
+{
+    Coord coefs;
+    int i = index(p, coefs);
+    return grad(i, coefs);
+}
+
+SReal DistanceGrid::eval(const Coord& x) const
+{
+    SReal d;
+    if (inGrid(x))
+    {
+        d = interp(x);
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        d = interp(xclamp);
+        d = helper::rsqrt((x-xclamp).norm2() + d*d); // we underestimate the distance
+    }
+    return d;
+}
+
+
+
 std::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShared()
 {
     static std::map<DistanceGridParams, DistanceGrid*> instance;
