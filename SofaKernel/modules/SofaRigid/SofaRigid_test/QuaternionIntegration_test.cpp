@@ -83,7 +83,7 @@ TYPED_TEST_CASE(QuaternionIntegrationTest, DataTypes);
 
 // first test case
 TYPED_TEST( QuaternionIntegrationTest, quaternion_angle) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->test_quaternion_angle();
 }
 

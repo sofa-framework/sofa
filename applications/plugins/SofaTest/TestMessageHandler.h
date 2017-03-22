@@ -109,9 +109,9 @@ class SOFA_TestPlugin_API WarningAndErrorAsTestFailure
     MessageAsTestFailure m_error ;
     MessageAsTestFailure m_warning ;
 public:
-    WarningAndErrorAsTestFailure() :
-        m_error(Message::Error),
-        m_warning(Message::Warning) {
+    WarningAndErrorAsTestFailure(const char* filename="undefined", int lineno=0) :
+        m_error(Message::Error, filename, lineno),
+        m_warning(Message::Warning, filename, lineno) {
     }
 
     virtual ~WarningAndErrorAsTestFailure(){

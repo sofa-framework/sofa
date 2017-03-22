@@ -231,7 +231,7 @@ TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -239,7 +239,7 @@ TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

@@ -177,19 +177,19 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(ExtrudeEdgesAndGenerateQuads_test, DataTypes);
 
 TYPED_TEST(ExtrudeEdgesAndGenerateQuads_test, NormalBehavior) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
 
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(ExtrudeEdgesAndGenerateQuads_test, OutputsSizeTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
 
     ASSERT_NO_THROW(this->outputsSizeTest()) ;
 }
 
 TYPED_TEST(ExtrudeEdgesAndGenerateQuads_test, ExtrudeTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
 
     ASSERT_NO_THROW(this->extrudeTest()) ;
 }

@@ -115,12 +115,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(ComplementaryROI_test, DataTypes);
 
 TYPED_TEST(ComplementaryROI_test, NormalBehavior) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(ComplementaryROI_test, UpdateTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

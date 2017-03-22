@@ -147,7 +147,7 @@ TYPED_TEST_CASE(PointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PointConstraint_test , testValue )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     EXPECT_TRUE(  this->test(1e-8) );
 }
 

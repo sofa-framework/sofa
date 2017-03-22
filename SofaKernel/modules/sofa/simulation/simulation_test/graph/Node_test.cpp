@@ -61,7 +61,7 @@ struct Node_test : public Sofa_test<>
 
 TEST_F( Node_test, getPathName)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
     EXPECT_EQ("", root->getPathName());
     EXPECT_EQ("/A/B", B->getPathName());
 }

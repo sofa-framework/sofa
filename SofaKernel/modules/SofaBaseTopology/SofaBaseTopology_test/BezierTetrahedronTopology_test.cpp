@@ -308,7 +308,7 @@ TYPED_TEST_CASE(BezierTetrahedronTopology_test, DataTypes);
 // first test topology
 TYPED_TEST( BezierTetrahedronTopology_test , testTopology )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
 
     this->createScene();
     ASSERT_TRUE( this->testBezierTetrahedronTopology());

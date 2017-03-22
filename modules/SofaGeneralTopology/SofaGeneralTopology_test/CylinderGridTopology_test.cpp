@@ -89,17 +89,17 @@ bool CylinderGridTopology_test::cylinderGridPosition()
 }
 
 TEST_F(CylinderGridTopology_test, cylinderGridCreation ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( cylinderGridCreation());
 }
 
 TEST_F(CylinderGridTopology_test, cylinderGridSize ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( cylinderGridSize());
 }
 
 TEST_F(CylinderGridTopology_test, cylinderGridPosition ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( cylinderGridPosition());
 }
 

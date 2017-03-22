@@ -148,7 +148,7 @@ TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PartialFixedConstraint_test , testValue )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     EXPECT_TRUE(  this->test(1e-8) );
 }
 

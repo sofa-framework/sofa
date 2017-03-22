@@ -115,7 +115,7 @@ TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->errorMax *= 10;
     this->debug = false;
 
@@ -125,7 +125,7 @@ TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceFieldTest)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->errorMax *= 10;
     this->debug = false;
 

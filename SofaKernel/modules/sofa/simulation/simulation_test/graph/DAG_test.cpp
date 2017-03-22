@@ -370,7 +370,7 @@ Expected output: RABCDEEDCBAR
 
 TEST_F( DAG_test, traverse )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     traverse_simple_tree();
     traverse_simple_diamond();
     traverse_complex();
@@ -380,32 +380,32 @@ TEST_F( DAG_test, traverse )
 
 TEST(DAGNodeTest, objectDestruction_singleObject)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     Node_test_objectDestruction_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_multipleObjects)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     Node_test_objectDestruction_multipleObjects<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     Node_test_objectDestruction_childNode_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     Node_test_objectDestruction_childNode_complexChild<DAGNode>();
 }
 
 
 TEST_F(DAG_test, getObject)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     getObject();
 }
 

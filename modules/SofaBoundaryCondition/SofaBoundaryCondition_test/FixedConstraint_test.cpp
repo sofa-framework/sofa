@@ -134,20 +134,20 @@ TYPED_TEST_CASE(FixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithCG )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     EXPECT_TRUE(  this->test(1e-8,std::string("Implicit")) );
 }
 
 TYPED_TEST( FixedConstraint_test , testValueExplicit )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
 #ifdef SOFA_HAVE_METIS
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
 }
 #endif

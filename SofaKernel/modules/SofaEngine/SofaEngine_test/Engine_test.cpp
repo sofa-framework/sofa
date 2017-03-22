@@ -170,21 +170,21 @@ struct Engine_test : public Sofa_test<>
 /// first test case: Check update method of engine2
 TEST_F(Engine_test , check_engine2_update )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
     this->testUpdateEngine2();
 }
 
 /// second test case: Check update method of engine3
 TEST_F(Engine_test , check_engine3_update )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
     this->testUpdateEngine3();
 }
 
 /// third test case: check propagation direction
 TEST_F(Engine_test , check_propagation )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
     this->testPropagationDirection();
 }
 
@@ -316,7 +316,7 @@ TYPED_TEST_CASE(DataEngine_test, TestTypes);
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->run_basic_test();
 }
 

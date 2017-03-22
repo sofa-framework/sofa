@@ -208,7 +208,7 @@ TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     this->debug = false;
 
 

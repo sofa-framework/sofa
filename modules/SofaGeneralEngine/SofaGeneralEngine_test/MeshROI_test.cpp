@@ -209,37 +209,37 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(MeshROI_test, DataTypes);
 
 TYPED_TEST(MeshROI_test, attributesTests) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(MeshROI_test, initTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, computeBoundingBoxTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->computeBoundingBoxTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isPointInMeshTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->isPointInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isEdgeInMeshTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->isEdgeInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isTriangleInMeshTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->isTriangleInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isTetrahedraInMeshTest) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_NO_THROW(this->isTetrahedraInMeshTest()) ;
 }
 

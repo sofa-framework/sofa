@@ -74,17 +74,17 @@ bool SphereGridTopology_test::SphereGridPosition()
 }
 
 TEST_F(SphereGridTopology_test, SphereGridCreation ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridCreation());
 }
 
 TEST_F(SphereGridTopology_test, SphereGridSize ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridSize());
 }
 
 TEST_F(SphereGridTopology_test, SphereGridPosition ) {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridPosition());
 }
 

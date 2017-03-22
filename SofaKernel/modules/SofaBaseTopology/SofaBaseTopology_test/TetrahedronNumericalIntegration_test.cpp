@@ -156,7 +156,7 @@ TYPED_TEST_CASE(TetrahedronNumericalIntegration_test, DataTypes);
 // first test topology
 TYPED_TEST( TetrahedronNumericalIntegration_test , testNumericalIntegration )
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
     this->createScene();
     ASSERT_TRUE( this->testNumericalIntegration());
 

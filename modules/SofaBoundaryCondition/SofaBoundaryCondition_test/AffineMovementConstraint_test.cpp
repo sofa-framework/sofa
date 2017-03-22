@@ -195,7 +195,7 @@ TYPED_TEST_CASE(AffineMovementConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( AffineMovementConstraint_test , testValue )
 {
-   WarningAndErrorAsTestFailure raii;
+   WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
    ASSERT_TRUE( this->projectPosition(5e-6,5e-5));
 }
 

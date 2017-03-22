@@ -104,7 +104,7 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
 TEST_F( TopologicalChangeProcessor_test,Incise)
 {
-    WarningAndErrorAsTestFailure raii;
+    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE(this->TestInciseProcess());
 }
 
