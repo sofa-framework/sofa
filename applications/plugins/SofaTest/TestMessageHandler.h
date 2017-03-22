@@ -43,32 +43,18 @@ namespace helper
 namespace logging
 {
 
-const std::string& toString(const Message::Type type)
-{
-    switch (type) {
-    case Message::Advice:
-        return "Advice";
-    case Message::Deprecated:
-        return "Deprecated";
-    case Message::Info:
-        return "Info";
-    case Message::Warning:
-        return "Warning";
-    case Message::Error:
-        return "Error";
-    case Message::Fatal:
-        return "Fatal";
-    default:
-    }
-    return "Unknown type of message";
-}
+const std::string toString(const Message::Type type) ;
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
+    std::string m_filename;
+    uint64_t  m_lineno;
+
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
 
-    ExpectMessage(const Message::Type t) {
+    ExpectMessage(const Message::Type t, const std::string& filename, const uint64_t lineno) {
+
         m_type = t ;
         m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
@@ -83,12 +69,18 @@ struct SOFA_TestPlugin_API ExpectMessage
 
 struct SOFA_TestPlugin_API MessageAsTestFailure
 {
+    std::string m_filename;
+    uint64_t  m_lineno;
+
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
     LogMessage m_log;
 
-    MessageAsTestFailure(const Message::Type t)
+    MessageAsTestFailure(const Message::Type t,
+                         const std::string& filename="", const uint64_t lineno=0)
     {
+        m_filename = filename ;
+        m_lineno = lineno ;
         m_type = t ;
         m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
@@ -105,7 +97,7 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
             }
             backlog << "===============================================================" << std::endl ;
 
-            ADD_FAILURE() << "A message of type '" << toString(m_type) << "' was not expected but it was received. " << std::endl;
+            ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type) << "' was not expected but it was received. " << std::endl
                           << backlog.str() ;
         }
     }
