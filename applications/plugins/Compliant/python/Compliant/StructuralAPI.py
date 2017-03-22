@@ -210,13 +210,13 @@ class RigidBody(SingleMechanicalObject):
         self.framecom = Frame.Frame()
         self.fixedConstraint = None # to fix the RigidBody
 
-    def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+    def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = 0 ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
         self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
-    def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
+    def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = 0) :
         self.framecom = Frame.Frame()
         self.framecom.rotation = info.inertia_rotation
         self.framecom.translation = info.com
