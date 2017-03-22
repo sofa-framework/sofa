@@ -75,7 +75,7 @@ Message& Message::operator=( const Message& msg )
     return *this;
 }
 
-const std::string toString(const Message::Type type)
+const SOFA_HELPER_API std::string toString(const Message::Type type)
 {
     switch (type) {
     case Message::Advice:

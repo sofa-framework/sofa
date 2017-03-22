@@ -43,7 +43,7 @@ namespace helper
 namespace logging
 {
 
-const std::string toString(const Message::Type type) ;
+
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
