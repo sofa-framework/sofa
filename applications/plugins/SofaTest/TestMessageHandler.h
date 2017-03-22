@@ -43,6 +43,26 @@ namespace helper
 namespace logging
 {
 
+const std::string& toString(const Message::Type type)
+{
+    switch (type) {
+    case Message::Advice:
+        return "Advice";
+    case Message::Deprecated:
+        return "Deprecated";
+    case Message::Info:
+        return "Info";
+    case Message::Warning:
+        return "Warning";
+    case Message::Error:
+        return "Error";
+    case Message::Fatal:
+        return "Fatal";
+    default:
+    }
+    return "Unknown type of message";
+}
+
 struct SOFA_TestPlugin_API ExpectMessage
 {
     int m_lastCount      {0} ;
@@ -56,7 +76,7 @@ struct SOFA_TestPlugin_API ExpectMessage
     ~ExpectMessage() {
         if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
         {
-            ADD_FAILURE() << "A message of type '" << m_type << "' was expected. None was received." << std::endl ;
+            ADD_FAILURE() << "A message of type '" << toString(m_type) << "' was expected. None was received." << std::endl ;
         }
     }
 };
@@ -77,13 +97,16 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
     {
         if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
         {
-            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
-            std::cout << "====================== Messages Backlog =======================" << std::endl ;
+            std::stringstream backlog;
+            backlog << "====================== Messages Backlog =======================" << std::endl ;
             for(auto& message : m_log)
             {
-                std::cout << message << std::endl ;
+                backlog << message << std::endl ;
             }
-            std::cout << "===============================================================" << std::endl ;
+            backlog << "===============================================================" << std::endl ;
+
+            ADD_FAILURE() << "A message of type '" << toString(m_type) << "' was not expected but it was received. " << std::endl;
+                          << backlog.str() ;
         }
     }
 };
@@ -97,11 +120,9 @@ public:
     WarningAndErrorAsTestFailure() :
         m_error(Message::Error),
         m_warning(Message::Warning) {
-        std::cout << "ENTERING..." << std::endl;
     }
 
     virtual ~WarningAndErrorAsTestFailure(){
-        std::cout << "Leaving..." << std::endl;
     }
 };
 
