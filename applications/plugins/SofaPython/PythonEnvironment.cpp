@@ -100,7 +100,6 @@ try:\n\
 except:\n\
     pass");
 
-
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
     // or if the script is read from standard input), path[0] is the empty string,
     // which directs Python to search modules in the current directory first.
@@ -136,7 +135,14 @@ except:\n\
         }
     }
 
+    // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
+
+    // general sofa-python stuff
+    PyRun_SimpleString("import SofaPython");
+
+    // python modules are automatically reloaded at each scene loading
+    setAutomaticModuleReload( true );
 }
 
 void PythonEnvironment::Release()
@@ -299,8 +305,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     //  Py_BEGIN_ALLOW_THREADS
 
-    PyRun_SimpleString("import sys");
-
     // Load the scene script
     char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
@@ -377,6 +381,23 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
     }
 }
 */
+
+void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
+{
+    // unload python modules to force importing their eventual modifications
+    PyRun_SimpleString("SofaPython.unloadModules()");
+}
+
+
+void PythonEnvironment::setAutomaticModuleReload( bool b )
+{
+    if( b )
+        SceneLoader::addListener( SceneLoaderListerner::getInstance() );
+    else
+        SceneLoader::removeListener( SceneLoaderListerner::getInstance() );
+}
+
+
 
 } // namespace simulation
 
