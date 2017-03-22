@@ -99,7 +99,6 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
     return (PyObject*)pyObj;
 }
 
-
 // =============================================================================
 // Ptr objects passed to python
 // deletion can be made by Python IF the "deletable" flag is true,
