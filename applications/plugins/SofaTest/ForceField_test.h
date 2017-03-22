@@ -192,7 +192,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
 
         // Get potential Energy before applying a displacement to dofs
-        double potentialEnergyBeforeDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+        SReal potentialEnergyBeforeDisplacement = (flags & TEST_POTENTIAL_ENERGY) ? ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams) : 0;
 
         // change position
         VecDeriv dX(n);
@@ -214,20 +214,20 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         if( flags & TEST_POTENTIAL_ENERGY )
         {
             // Get potential energy after displacement of dofs
-            double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+            SReal potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
             // Check getPotentialEnergy() we should have dE = -dX.F
 
             // Compute dE = E(x+dx)-E(x)
-            double differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
+            SReal differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
 
             // Compute the expected difference of potential energy: -dX.F (dot product between applied displacement and Force)
-            double expectedDifferencePotentialEnergy = 0;
+            SReal expectedDifferencePotentialEnergy = 0;
             for( unsigned i=0; i<n; ++i){
                 expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
             }
 
-            double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+            SReal absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
             if( absoluteErrorPotentialEnergy> errorFactorPotentialEnergy*errorMax*this->epsilon() ){
                 ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorFactorPotentialEnergy*errorMax*this->epsilon() << ")" << std::endl
                             << "dPotentialEnergy is " << differencePotentialEnergy << std::endl
