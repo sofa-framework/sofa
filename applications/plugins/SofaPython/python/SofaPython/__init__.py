@@ -11,6 +11,10 @@ try:
 except:
     __SofaPythonEnvironment_importedModules__ = sys.modules.copy()
 
+    # some modules could be added here manually and can be modified procedurally
+    # e.g. plugin's modules defined from c++
+    __SofaPythonEnvironment_modulesExcludedFromReload = []
+
 
 
 def unloadModules():
@@ -19,7 +23,7 @@ def unloadModules():
         their last import).
     """
     global __SofaPythonEnvironment_importedModules__
-    toremove = [name for name in sys.modules if not name in __SofaPythonEnvironment_importedModules__ ]
+    toremove = [name for name in sys.modules if not name in __SofaPythonEnvironment_importedModules__ and not name in __SofaPythonEnvironment_modulesExcludedFromReload ]
     for name in toremove:
         del(sys.modules[name]) # unload it
 

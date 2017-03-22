@@ -398,6 +398,12 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 }
 
 
+void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
+{
+    PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+}
+
+
 
 } // namespace simulation
 

@@ -64,6 +64,9 @@ public:
     /// should the future scene loadings reload python modules?
     static void setAutomaticModuleReload( bool );
 
+    /// excluding a module from automatic reload
+    static void excludeModuleFromReload( const std::string& moduleName );
+
     /// to be able to react when a scene is loaded
     struct SceneLoaderListerner : public SceneLoader::Listener
     {
