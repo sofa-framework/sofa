@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <sofa/helper/BackTrace.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
@@ -111,10 +114,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(AverageCoord_test, DataTypes);
 
 TYPED_TEST(AverageCoord_test, NormalBehavior) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(AverageCoord_test, UpdateTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

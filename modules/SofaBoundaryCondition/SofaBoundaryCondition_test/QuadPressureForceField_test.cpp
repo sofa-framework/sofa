@@ -25,6 +25,9 @@
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 namespace sofa {
 
 /**  Test QuadPressureForceField.
@@ -75,7 +78,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         Inherited::force->dmax.setValue(0.01);
         Inherited::force->pressure=Coord(0,0,0.2);
     }
-    
+
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
     void test_valueForce()
     {
@@ -93,7 +96,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         {
             sofa::simulation::getSimulation()->animate(Inherited::node.get(),0.5);
         }
-        
+
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
@@ -103,7 +106,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 // Types to instantiate.
 typedef testing::Types<
     component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
-> TestTypes; 
+> TestTypes;
 
 
 
@@ -113,6 +116,7 @@ TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 {
+    WarningAndErrorAsTestFailure raii;
     this->errorMax *= 10;
     this->debug = false;
 
@@ -122,6 +126,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
+    WarningAndErrorAsTestFailure raii;
     this->errorMax *= 10;
     this->debug = false;
 

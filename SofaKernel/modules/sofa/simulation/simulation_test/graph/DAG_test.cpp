@@ -22,12 +22,16 @@
 
 #include "../Node_test.h"
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>
-#include <SofaSimulationGraph/DAGNode.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaSimulationGraph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
+
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 namespace sofa {
 
@@ -366,6 +370,7 @@ Expected output: RABCDEEDCBAR
 
 TEST_F( DAG_test, traverse )
 {
+    WarningAndErrorAsTestFailure raii;
     traverse_simple_tree();
     traverse_simple_diamond();
     traverse_complex();
@@ -375,27 +380,32 @@ TEST_F( DAG_test, traverse )
 
 TEST(DAGNodeTest, objectDestruction_singleObject)
 {
+    WarningAndErrorAsTestFailure raii;
     Node_test_objectDestruction_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_multipleObjects)
 {
+    WarningAndErrorAsTestFailure raii;
     Node_test_objectDestruction_multipleObjects<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
 {
+    WarningAndErrorAsTestFailure raii;
     Node_test_objectDestruction_childNode_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
 {
+    WarningAndErrorAsTestFailure raii;
     Node_test_objectDestruction_childNode_complexChild<DAGNode>();
 }
 
 
 TEST_F(DAG_test, getObject)
 {
+    WarningAndErrorAsTestFailure raii;
     getObject();
 }
 

@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -102,6 +104,7 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
 TEST_F( TopologicalChangeProcessor_test,Incise)
 {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_TRUE(this->TestInciseProcess());
 }
 

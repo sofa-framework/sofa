@@ -88,8 +88,31 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
     }
 };
 
+
+class SOFA_TestPlugin_API WarningAndErrorAsTestFailure
+{
+    MessageAsTestFailure m_error ;
+    MessageAsTestFailure m_warning ;
+public:
+    WarningAndErrorAsTestFailure() :
+        m_error(Message::Error),
+        m_warning(Message::Warning) {
+        std::cout << "ENTERING..." << std::endl;
+    }
+
+    virtual ~WarningAndErrorAsTestFailure(){
+        std::cout << "Leaving..." << std::endl;
+    }
+};
+
 } // logging
 } // helper
+
+namespace test
+{
+    using sofa::helper::logging::WarningAndErrorAsTestFailure ;
+}
+
 } // sofa
 
 #endif // TESTMESSAGEHANDLER_H

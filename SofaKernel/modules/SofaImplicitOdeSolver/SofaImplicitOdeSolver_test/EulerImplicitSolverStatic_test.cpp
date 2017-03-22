@@ -30,6 +30,9 @@
 
 #include <sofa/simulation/Simulation.h>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 namespace sofa {
 
 using namespace modeling;
@@ -52,6 +55,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
+        WarningAndErrorAsTestFailure raii;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******
@@ -134,6 +138,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
+        WarningAndErrorAsTestFailure raii;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

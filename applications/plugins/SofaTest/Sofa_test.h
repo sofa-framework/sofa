@@ -279,7 +279,6 @@ struct data_traits
                 vec[j+deriv_total_size*i] = vderiv[i][j];
         }
     }
-
 };
 
 // Do not use this class directly

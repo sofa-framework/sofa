@@ -28,6 +28,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 namespace sofa {
 using std::cout;
 using std::cerr;
@@ -67,7 +70,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     /// Create the context for the matrix tests.
     void SetUp()
-    {        
+    {
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -182,9 +185,9 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
        for(unsigned i=0; i<numNodes; i++ )
-	   {
-		   if ((it!=indices.end()) && ( i==*it ))  // constrained particle
-		   {
+       {
+           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
+           {
               Real scal = v[i]*normal; // null if v is in the plane
 //              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
@@ -230,6 +233,7 @@ TYPED_TEST_CASE(ProjectToPlaneConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
 {
+    WarningAndErrorAsTestFailure raii;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -237,6 +241,7 @@ TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
 {
+    WarningAndErrorAsTestFailure raii;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

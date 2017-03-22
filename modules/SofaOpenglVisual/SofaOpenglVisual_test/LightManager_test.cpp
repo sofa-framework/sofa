@@ -50,13 +50,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 
-int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
-
 namespace sofa {
 
 struct TestLightManager : public Sofa_test<double> {
