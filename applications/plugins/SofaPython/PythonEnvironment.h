@@ -27,7 +27,6 @@
 
 #include "Binding.h"
 #include <SofaPython/config.h>
-#include <sofa/simulation/SceneLoaderFactory.h>
 #include <vector>
 #include <string>
 
@@ -40,8 +39,8 @@ namespace simulation
 class SOFA_SOFAPYTHON_API PythonEnvironment
 {
 public:
-    static void Init();
-    static void Release();
+    static void     Init();
+    static void     Release();
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);
@@ -53,6 +52,9 @@ public:
     /// NB: can also be used for projects <projectDirectory>/*/python
     static void addPythonModulePathsForPlugins(const std::string& pluginsDirectory);
 
+    // helper functions
+    //static sofa::simulation::tree::GNode::SPtr  initGraphFromScript( const char *filename );        // returns root node
+
     /// add module to python context, Init() must have been called before
     static void addModule(const std::string& name, PyMethodDef* methodDef);
 
@@ -61,21 +63,12 @@ public:
     static bool         runString(const std::string& script);
     static bool         runFile( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
 
-    /// should the future scene loadings reload python modules?
-    static void setAutomaticModuleReload( bool );
+    //static bool         initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot);  // calls the method "initGraph(root)" of the script
 
-    /// to be able to react when a scene is loaded
-    struct SceneLoaderListerner : public SceneLoader::Listener
-    {
-        virtual void rightBeforeLoadingScene(); // possibly unload python modules to force importing their eventual modifications
-        static SceneLoaderListerner* getInstance() { static SceneLoaderListerner sceneLoaderListerner; return &sceneLoaderListerner; } // singleton
-    private:
-        SceneLoaderListerner(){}
-    };
 };
 
 
-} // namespace simulation
+} // namespace core
 
 } // namespace sofa
 

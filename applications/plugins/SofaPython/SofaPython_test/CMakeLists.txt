@@ -15,7 +15,6 @@ set(PYTHON_FILES
     python/automaticNodeInitialization.py
     python/sysPathDuplicate.py
     python/dataVecResize.py
-    python/moduleReload.py
     python/testController.py
     python/test_PySceneWithPyCtlr.py
     python/test_Quaternion.py
