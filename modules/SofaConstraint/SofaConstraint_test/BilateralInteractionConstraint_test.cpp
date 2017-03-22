@@ -251,7 +251,6 @@ TYPED_TEST_CASE(BilateralInteractionConstraint_test, DataTypes);
 //TODO(dmarchal): Needs a serious refactor !!!
 TYPED_TEST( BilateralInteractionConstraint_test , checkVec3dconstrainedPositions )
 {
-    WarningAndErrorAsTestFailure raii;
     this->init_Vec3dSetup();
     ASSERT_TRUE(  this->test_Vec3dconstrainedPositions() );
 }
@@ -259,19 +258,16 @@ TYPED_TEST( BilateralInteractionConstraint_test , checkVec3dconstrainedPositions
 
 TYPED_TEST( BilateralInteractionConstraint_test , attributesTests )
 {
-    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(  this->attributesTests() );
 }
 
 TYPED_TEST( BilateralInteractionConstraint_test , checkMstateRequiredAssumption )
 {
-    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(  this->checkMstateRequiredAssumption() );
 }
 
 TYPED_TEST( BilateralInteractionConstraint_test ,  checkRigid3fFixForBackwardCompatibility)
 {
-     WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(  this->checkRigid3fFixForBackwardCompatibility() );
 }
 

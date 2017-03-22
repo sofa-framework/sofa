@@ -47,14 +47,15 @@ const std::string toString(const Message::Type type) ;
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
-    std::string m_filename;
-    uint64_t  m_lineno;
+    const char* m_filename;
+    int  m_lineno;
 
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
 
-    ExpectMessage(const Message::Type t, const std::string& filename, const uint64_t lineno) {
-
+    ExpectMessage(const Message::Type t, const char* filename="unknown", const int lineno=0) {
+        m_filename=filename;
+        m_lineno = lineno;
         m_type = t ;
         m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
@@ -62,22 +63,22 @@ struct SOFA_TestPlugin_API ExpectMessage
     ~ExpectMessage() {
         if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
         {
-            ADD_FAILURE() << "A message of type '" << toString(m_type) << "' was expected. None was received." << std::endl ;
+            ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type) << "' was expected. None was received." << std::endl ;
         }
     }
 };
 
 struct SOFA_TestPlugin_API MessageAsTestFailure
 {
-    std::string m_filename;
-    uint64_t  m_lineno;
+    const  char* m_filename;
+    int  m_lineno;
 
     int m_lastCount      {0} ;
     Message::Type m_type {Message::TEmpty} ;
     LogMessage m_log;
 
     MessageAsTestFailure(const Message::Type t,
-                         const std::string& filename="", const uint64_t lineno=0)
+                         const char* filename="unknown", const int lineno=0)
     {
         m_filename = filename ;
         m_lineno = lineno ;
