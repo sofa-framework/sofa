@@ -114,6 +114,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     ForceField_test(std::string filename)
         : errorMax( 100 )
+        , errorFactorPotentialEnergy(1)
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
