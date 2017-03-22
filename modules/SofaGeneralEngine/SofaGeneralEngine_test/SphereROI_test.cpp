@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -165,26 +168,32 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(SphereROI_test, DataTypes);
 
 TYPED_TEST(SphereROI_test, attributesTests) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(SphereROI_test, initTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isPointInSphereTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->isPointInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isEdgeInSphereTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->isEdgeInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTriangleInSphereTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->isTriangleInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTetrahedraInSphereTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->isTetrahedraInSphereTest()) ;
 }
 

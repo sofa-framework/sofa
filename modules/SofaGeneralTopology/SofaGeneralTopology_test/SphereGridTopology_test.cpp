@@ -1,4 +1,7 @@
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <SofaGeneralTopology/SphereGridTopology.h>
 
 namespace sofa
@@ -70,7 +73,19 @@ bool SphereGridTopology_test::SphereGridPosition()
     return true;
 }
 
-TEST_F(SphereGridTopology_test, SphereGridCreation ) { ASSERT_TRUE( SphereGridCreation()); }
-TEST_F(SphereGridTopology_test, SphereGridSize ) { ASSERT_TRUE( SphereGridSize()); }
-TEST_F(SphereGridTopology_test, SphereGridPosition ) { ASSERT_TRUE( SphereGridPosition()); }
+TEST_F(SphereGridTopology_test, SphereGridCreation ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( SphereGridCreation());
+}
+
+TEST_F(SphereGridTopology_test, SphereGridSize ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( SphereGridSize());
+}
+
+TEST_F(SphereGridTopology_test, SphereGridPosition ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( SphereGridPosition());
+}
+
 }

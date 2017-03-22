@@ -6,6 +6,9 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SceneCreator/SceneCreator.h>
 
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 using namespace sofa::modeling;
 using namespace sofa::component;
 using namespace sofa::simulation;
@@ -425,11 +428,30 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){  testLinearOneFixedOneComplianceSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){  testLinearOneFixedOneStiffnessSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){  testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){  testLinearOneFixedOneComplianceSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){  testEmptyMState(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){
+    WarningAndErrorAsTestFailure raii;
+    testLinearOneFixedOneComplianceSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){
+    WarningAndErrorAsTestFailure raii;
+    testLinearOneFixedOneStiffnessSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){
+    WarningAndErrorAsTestFailure raii;
+    testLinearOneFixedOneStiffnessSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){
+    WarningAndErrorAsTestFailure raii;
+    testLinearOneFixedOneComplianceSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){
+    WarningAndErrorAsTestFailure raii;
+    testEmptyMState(false);
+}
 
 }// sofa
 

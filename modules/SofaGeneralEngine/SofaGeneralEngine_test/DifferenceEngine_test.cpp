@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -106,14 +109,17 @@ typedef Types<defaulttype::Vec3d> DataTypes;
 TYPED_TEST_CASE(DifferenceEngine_test, DataTypes);
 
 TYPED_TEST(DifferenceEngine_test, NormalBehavior) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, UpdateTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, DataTest) {
+    WarningAndErrorAsTestFailure raii;
     ASSERT_NO_THROW(this->dataTest()) ;
 }
 

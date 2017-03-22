@@ -20,13 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
-
 
 namespace sofa {
 using namespace modeling;
@@ -232,19 +234,53 @@ protected:
 };
 
 // run the tests
-TEST_F( Scene_test,computeBBox) { this->computeBBox(); }
+TEST_F( Scene_test,computeBBox) {
+    WarningAndErrorAsTestFailure raii;
+    this->computeBBox();
+}
 
 // component destruction
-TEST_F( Scene_test,objectDestruction_replace) { this->objectDestruction_replace(); }
-TEST_F( Scene_test,objectDestruction_delete) { this->objectDestruction_delete(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_setNull) { this->objectDestruction_setNull(); }
-TEST_F( Scene_test,objectDestruction_reset) { this->objectDestruction_reset(); }
-TEST_F( Scene_test,objectDestruction_subObject) { this->objectDestruction_subObject(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_subNodeAndStep) { this->objectDestruction_subNodeAndStep(); }
+TEST_F( Scene_test,objectDestruction_replace) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_replace();
+}
+
+TEST_F( Scene_test,objectDestruction_delete) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_delete(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_setNull) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_setNull();
+}
+
+TEST_F( Scene_test,objectDestruction_reset) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_reset();
+}
+
+TEST_F( Scene_test,objectDestruction_subObject) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_subObject(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
+    WarningAndErrorAsTestFailure raii;
+    this->objectDestruction_subNodeAndStep();
+}
 
 // graph destruction
-TEST_F( Scene_test,sceneDestruction_unload) { this->sceneDestruction_unload(); }
-TEST_F( Scene_test,sceneDestruction_createnewgraph) { this->sceneDestruction_createnewgraph(); }
+TEST_F( Scene_test,sceneDestruction_unload) {
+    WarningAndErrorAsTestFailure raii;
+    this->sceneDestruction_unload();
+}
+
+TEST_F( Scene_test,sceneDestruction_createnewgraph) {
+    WarningAndErrorAsTestFailure raii;
+    this->sceneDestruction_createnewgraph();
+}
+
 // Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
 //TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
 //TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }

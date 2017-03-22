@@ -66,13 +66,6 @@ using sofa::helper::logging::ClangMessageHandler ;
 using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 
-int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
-
 namespace sofa {
 
 using namespace PrimitiveCreationTest;
@@ -100,8 +93,6 @@ struct TestSphere : public Sofa_test<double>{
 
     template <class Intersector>
     bool softTriangle(Intersector & bi);
-//    sofa::component::collision::OBB movingOBB;
-//    sofa::component::collision::OBB staticOBB;
 };
 
 
@@ -135,9 +126,6 @@ bool TestSphere::rigidRigid1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -195,9 +183,6 @@ bool TestSphere::rigidRigid2(){
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -245,9 +230,6 @@ bool TestSphere::rigidSoft2(){
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -294,9 +276,6 @@ bool TestSphere::rigidSoft1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -346,9 +325,6 @@ bool TestSphere::rigidSoft3(){
     if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -395,9 +371,6 @@ bool TestSphere::rigidSoft4(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -446,9 +419,6 @@ bool TestSphere::rigidTriangle(Intersector &bi){
     if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
@@ -488,9 +458,6 @@ bool TestSphere::softTriangle(Intersector &bi){
     if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
@@ -526,9 +493,6 @@ bool TestSphere::softSoft1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,2.01)).norm() > 1e-6)

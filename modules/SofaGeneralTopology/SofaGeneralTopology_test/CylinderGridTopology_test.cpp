@@ -1,4 +1,7 @@
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+using sofa::test::WarningAndErrorAsTestFailure ;
+
 #include <SofaGeneralTopology/CylinderGridTopology.h>
 
 namespace sofa
@@ -85,7 +88,19 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     return true;
 }
 
-TEST_F(CylinderGridTopology_test, cylinderGridCreation ) { ASSERT_TRUE( cylinderGridCreation()); }
-TEST_F(CylinderGridTopology_test, cylinderGridSize ) { ASSERT_TRUE( cylinderGridSize()); }
-TEST_F(CylinderGridTopology_test, cylinderGridPosition ) { ASSERT_TRUE( cylinderGridPosition()); }
+TEST_F(CylinderGridTopology_test, cylinderGridCreation ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( cylinderGridCreation());
+}
+
+TEST_F(CylinderGridTopology_test, cylinderGridSize ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( cylinderGridSize());
+}
+
+TEST_F(CylinderGridTopology_test, cylinderGridPosition ) {
+    WarningAndErrorAsTestFailure raii;
+    ASSERT_TRUE( cylinderGridPosition());
+}
+
 }
