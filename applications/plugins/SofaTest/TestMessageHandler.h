@@ -111,7 +111,6 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
     }
 };
 
-
 class SOFA_TestPlugin_API WarningAndErrorAsTestFailure
 {
     MessageAsTestFailure m_error ;
