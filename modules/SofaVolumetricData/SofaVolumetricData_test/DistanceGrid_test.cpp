@@ -20,6 +20,20 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
 
+#include <SofaTest/TestMessageHandler.h>
 
+/// I don't use namespace in test because i see ne reason to do so and it
+/// make the code harder to read.
 
+struct DistanceGrid_test : public Sofa_test<SReal>
+{
+    void checkConstructors(){
+
+    }
+};
+
+TEST_F(DistanceGrid_test, checkConstructor) {
+    ASSERT_NO_THROW(this->checkConstructors()) ;
+}
