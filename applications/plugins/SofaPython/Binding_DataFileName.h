@@ -19,57 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef BINDING_DataFileName_H
+#define BINDING_DataFileName_H
 
-/// @author M Nesme @date 2016
-///
-///
-/// TODO: we could add a [] operator to get bound DataFileName
+#include "PythonMacros.h"
+#include <sofa/core/objectmodel/DataFileName.h>
 
-#include "Binding_DataFileNameVector.h"
-#include "Binding_Data.h"
+SP_DECLARE_CLASS_TYPE(DataFileName)
 
-using namespace sofa::helper;
-using namespace sofa::core::objectmodel;
-
-
-
-
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
-{
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
-
-    sofa::helper::vector<std::string>& val = *data->beginEdit();
-    val.clear();
-    data->endEdit();
-
-    Py_RETURN_NONE;
-}
-
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
-{
-    char *path;
-    if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
-
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
-
-    data->addPath(path);
-
-    Py_RETURN_NONE;
-}
-
-
-SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
-SP_CLASS_ATTRS_END
-
-
-
-SP_CLASS_METHODS_BEGIN(DataFileNameVector)
-SP_CLASS_METHOD(DataFileNameVector,addPath)
-SP_CLASS_METHOD(DataFileNameVector,clear)
-SP_CLASS_METHODS_END
-
-
-
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
-
+#endif
