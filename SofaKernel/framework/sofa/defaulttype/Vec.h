@@ -402,13 +402,13 @@ public:
     }
 
     /// Sets every element to 0.
-    void clear()
+    inline void clear()
     {
         this->assign(real());
     }
 
     /// Sets every element to r.
-    void fill(real r)
+    inline void fill(real r)
     {
         this->assign(r);
     }

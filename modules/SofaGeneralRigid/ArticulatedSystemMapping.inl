@@ -123,7 +123,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
         (*ac)->DisplacementArticulationCenter.clear();
         (*ac)->Disp_Rotation.clear();
 
-        // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
         // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
 }

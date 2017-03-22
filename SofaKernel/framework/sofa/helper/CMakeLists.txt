@@ -184,6 +184,7 @@ set(SOURCE_FILES
     system/thread/debug.cpp
     system/FileRepository.cpp
     vector.cpp
+    types/fixed_array.cpp
     types/RGBAColor.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
