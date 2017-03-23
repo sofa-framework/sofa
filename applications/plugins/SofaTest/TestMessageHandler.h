@@ -50,20 +50,34 @@ struct SOFA_TestPlugin_API ExpectMessage
     const char* m_filename;
     int  m_lineno;
 
-    int m_lastCount      {0} ;
-    Message::Type m_type {Message::TEmpty} ;
+    helper::vector<int>           m_lastCounts ;
+    helper::vector<Message::Type> m_types ;
 
-    ExpectMessage(const Message::Type t, const char* filename="unknown", const int lineno=0) {
+    ExpectMessage(const Message::Type t,
+                  const char* filename="unknown", const int lineno=0) {
         m_filename=filename;
         m_lineno = lineno;
-        m_type = t ;
-        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+        m_types.push_back(t) ;
+        m_lastCounts.push_back(MainCountingMessageHandler::getMessageCountFor(t)) ;
+    }
+
+    ExpectMessage(std::initializer_list<Message::Type> types,
+                  const char* filename="unknown", const int lineno=0) {
+        m_filename=filename;
+        m_lineno = lineno;
+
+        for(auto type : types){
+            m_types.push_back(type) ;
+            m_lastCounts.push_back( MainCountingMessageHandler::getMessageCountFor(type) ) ;
+        }
     }
 
     ~ExpectMessage() {
-        if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
-        {
-            ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type) << "' was expected. None was received." << std::endl ;
+        for(unsigned int i=0;i<m_types.size();++i){
+            if(m_lastCounts[i] == MainCountingMessageHandler::getMessageCountFor(m_types[i]) )
+            {
+                ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_types[i]) << "' was expected. None was received." << std::endl ;
+            }
         }
     }
 
@@ -75,33 +89,47 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
     const  char* m_filename;
     int  m_lineno;
 
-    int m_lastCount      {0} ;
-    Message::Type m_type {Message::TEmpty} ;
+    helper::vector<int>           m_lastCounts ;
+    helper::vector<Message::Type> m_types ;
     LogMessage m_log;
 
-    MessageAsTestFailure(const Message::Type t,
+    MessageAsTestFailure(std::initializer_list<Message::Type> types,
                          const char* filename="unknown", const int lineno=0)
     {
         m_filename = filename ;
         m_lineno = lineno ;
-        m_type = t ;
-        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
+
+        for(auto type : types){
+            m_types.push_back(type) ;
+            m_lastCounts.push_back( MainCountingMessageHandler::getMessageCountFor(type) ) ;
+        }
+    }
+
+    MessageAsTestFailure(const Message::Type type,
+                         const char* filename="unknown", const int lineno=0)
+    {
+        m_filename = filename ;
+        m_lineno = lineno ;
+        m_types.push_back(type) ;
+        m_lastCounts.push_back(MainCountingMessageHandler::getMessageCountFor(type)) ;
     }
 
     ~MessageAsTestFailure()
     {
-        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
-        {
-            std::stringstream backlog;
-            backlog << "====================== Messages Backlog =======================" << std::endl ;
-            for(auto& message : m_log)
+        for(unsigned int i=0;i<m_types.size();++i){
+            if(m_lastCounts[i] != MainCountingMessageHandler::getMessageCountFor(m_types[i]) )
             {
-                backlog << message << std::endl ;
-            }
-            backlog << "===============================================================" << std::endl ;
+                std::stringstream backlog;
+                backlog << "====================== Messages Backlog =======================" << std::endl ;
+                for(auto& message : m_log)
+                {
+                    backlog << message << std::endl ;
+                }
+                backlog << "===============================================================" << std::endl ;
 
-            ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type) << "' was not expected but it was received. " << std::endl
-                          << backlog.str() ;
+                ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_types[i]) << "' was not expected but it was received. " << std::endl
+                              << backlog.str() ;
+            }
         }
     }
 };
@@ -120,9 +148,24 @@ public:
     }
 };
 
+///TAKE FROM http://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros
+#define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
+#define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 
-#define EXPECT_MSG_EMIT( code ) sofa::helper::logging::ExpectMessage(sofa::helper::logging::Message::code, SOURCE_LOCATION)
-#define EXPECT_MSG_NOEMIT( code ) sofa::helper::logging::MessageAsTestFailure(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+#define EXPECT_MSG_EMIT2( code, code2 ) sofa::helper::logging::ExpectMessage({sofa::helper::logging::Message::code, sofa::helper::logging::Message::code2}, SOURCE_LOCATION)
+#define EXPECT_MSG_EMIT1( code ) sofa::helper::logging::ExpectMessage(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+#define EXPECT_MSG_EMIT0
+
+#define EXPECT_MSG_EMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_EMIT2, EXPECT_MSG_EMIT1, ))
+#define EXPECT_MSG_EMIT_NO_ARG_EXPANDER() ,,EXPECT_MSG_EMIT0
+#define EXPECT_MSG_EMIT_CHOOSER(...) EXPECT_MSG_EMIT_CHOOSE_FROM_ARG_COUNT(EXPECT_MSG_EMIT_NO_ARG_EXPANDER __VA_ARGS__ ())
+
+#define EXPECT_MSG_EMIT(...) EXPECT_MSG_EMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
+
+#define EXPECT_MSG_NOEMIT1( code ) sofa::helper::logging::MessageAsTestFailure(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+#define EXPECT_MSG_NOEMIT2( code, code2 ) sofa::helper::logging::MessageAsTestFailure({sofa::helper::logging::Message::code, sofa::helper::logging::Message::code2}, SOURCE_LOCATION)
+#define EXPECT_MSG_NOEMIT( code, ... )
 
 
 } // logging

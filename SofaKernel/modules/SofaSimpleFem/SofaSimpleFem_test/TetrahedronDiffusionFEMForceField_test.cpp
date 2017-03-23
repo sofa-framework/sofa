@@ -208,7 +208,7 @@ TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->debug = false;
 
 

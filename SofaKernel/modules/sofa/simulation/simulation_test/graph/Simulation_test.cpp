@@ -235,49 +235,49 @@ protected:
 
 // run the tests
 TEST_F( Scene_test,computeBBox) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->computeBBox();
 }
 
 // component destruction
 TEST_F( Scene_test,objectDestruction_replace) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_replace();
 }
 
 TEST_F( Scene_test,objectDestruction_delete) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_delete(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_setNull) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_setNull();
 }
 
 TEST_F( Scene_test,objectDestruction_reset) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_reset();
 }
 
 TEST_F( Scene_test,objectDestruction_subObject) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_subObject(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->objectDestruction_subNodeAndStep();
 }
 
 // graph destruction
 TEST_F( Scene_test,sceneDestruction_unload) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->sceneDestruction_unload();
 }
 
 TEST_F( Scene_test,sceneDestruction_createnewgraph) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->sceneDestruction_createnewgraph();
 }
 

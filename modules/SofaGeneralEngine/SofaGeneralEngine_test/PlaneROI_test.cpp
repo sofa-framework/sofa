@@ -172,32 +172,32 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(PlaneROI_test, DataTypes);
 
 TYPED_TEST(PlaneROI_test, attributesTests) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(PlaneROI_test, initTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isPointInPlaneTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->isPointInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isEdgeInPlaneTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->isEdgeInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTriangleInPlaneTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->isTriangleInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTetrahedraInPlaneTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->isTetrahedraInPlaneTest()) ;
 }
 

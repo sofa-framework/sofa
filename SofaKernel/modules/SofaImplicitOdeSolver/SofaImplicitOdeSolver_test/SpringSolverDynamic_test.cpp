@@ -132,7 +132,7 @@ TYPED_TEST_CASE(SpringSolverDynamic_test, DataTypes);
 // Test case EulerImplicit Solver
 TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
 {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
    this->loadScene("EulerImplicitSpringDynamicTest.xml");
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.01));
 }

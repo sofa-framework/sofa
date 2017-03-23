@@ -148,7 +148,7 @@ TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PartialFixedConstraint_test , testValue )
 {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     EXPECT_TRUE(  this->test(1e-8) );
 }
 

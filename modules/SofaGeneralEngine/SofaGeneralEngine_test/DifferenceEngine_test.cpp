@@ -109,17 +109,17 @@ typedef Types<defaulttype::Vec3d> DataTypes;
 TYPED_TEST_CASE(DifferenceEngine_test, DataTypes);
 
 TYPED_TEST(DifferenceEngine_test, NormalBehavior) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, UpdateTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, DataTest) {
-    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     ASSERT_NO_THROW(this->dataTest()) ;
 }
 
