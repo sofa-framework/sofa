@@ -235,49 +235,49 @@ protected:
 
 // run the tests
 TEST_F( Scene_test,computeBBox) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->computeBBox();
 }
 
 // component destruction
 TEST_F( Scene_test,objectDestruction_replace) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_replace();
 }
 
 TEST_F( Scene_test,objectDestruction_delete) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_delete(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_setNull) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_setNull();
 }
 
 TEST_F( Scene_test,objectDestruction_reset) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_reset();
 }
 
 TEST_F( Scene_test,objectDestruction_subObject) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_subObject(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->objectDestruction_subNodeAndStep();
 }
 
 // graph destruction
 TEST_F( Scene_test,sceneDestruction_unload) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->sceneDestruction_unload();
 }
 
 TEST_F( Scene_test,sceneDestruction_createnewgraph) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->sceneDestruction_createnewgraph();
 }
 

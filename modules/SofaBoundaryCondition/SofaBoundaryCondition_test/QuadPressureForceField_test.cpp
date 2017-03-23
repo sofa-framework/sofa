@@ -116,7 +116,7 @@ TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->errorMax *= 10;
     this->debug = false;
 
@@ -126,7 +126,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->errorMax *= 10;
     this->debug = false;
 

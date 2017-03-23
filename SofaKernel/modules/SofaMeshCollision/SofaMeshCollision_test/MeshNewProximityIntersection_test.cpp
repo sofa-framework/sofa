@@ -162,7 +162,7 @@ namespace sofa{
 
 
 TEST_F(MeshNewProximityIntersectionTest, pointTriangle ) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_TRUE( pointTriangle());
 }
 

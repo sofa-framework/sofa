@@ -168,32 +168,32 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(SphereROI_test, DataTypes);
 
 TYPED_TEST(SphereROI_test, attributesTests) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(SphereROI_test, initTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isPointInSphereTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->isPointInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isEdgeInSphereTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->isEdgeInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTriangleInSphereTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->isTriangleInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTetrahedraInSphereTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->isTetrahedraInSphereTest()) ;
 }
 

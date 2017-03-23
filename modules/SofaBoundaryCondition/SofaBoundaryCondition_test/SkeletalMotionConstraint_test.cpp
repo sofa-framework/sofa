@@ -191,7 +191,7 @@ TYPED_TEST_CASE(SkeletalMotionConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( SkeletalMotionConstraint_test , twoConstrainedBones )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     this->init_2bones();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

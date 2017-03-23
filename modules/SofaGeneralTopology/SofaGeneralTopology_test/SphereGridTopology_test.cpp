@@ -1,7 +1,5 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
-
 #include <SofaGeneralTopology/SphereGridTopology.h>
 
 namespace sofa
@@ -20,19 +18,31 @@ struct SphereGridTopology_test : public Sofa_test<>
 bool SphereGridTopology_test::SphereGridCreation()
 {
     // Creating a good Grid
-    SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(5, 5, 5);
-    EXPECT_NE(sphereGrid, nullptr);
-    EXPECT_EQ(sphereGrid->d_radius.getValue(), 1.0);
+    {
+        EXPECT_MSG_NOEMIT(Warning) ;
+        EXPECT_MSG_NOEMIT(Error) ;
+
+        SphereGridTopology::SPtr sphereGrid = sofa::core::objectmodel::New<SphereGridTopology>(5, 5, 5);
+        EXPECT_NE(sphereGrid, nullptr);
+        EXPECT_EQ(sphereGrid->d_radius.getValue(), 1.0);
+    }
 
     // Creating a bad Grid
-    SphereGridTopology::SPtr sphereGrid2 = sofa::core::objectmodel::New<SphereGridTopology>(-1, 0, 1);
-    // EXPECT_EQ(sphereGrid2, nullptr);
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_MSG_EMIT(Warning) ;
+
+        SphereGridTopology::SPtr sphereGrid2 = sofa::core::objectmodel::New<SphereGridTopology>(-1, 0, 1);
+    }
 
     return true;
 }
 
 bool SphereGridTopology_test::SphereGridSize()
 {
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
     // Creating a good Grid
     int nx = 5;
     int ny = 5;
@@ -50,6 +60,9 @@ bool SphereGridTopology_test::SphereGridSize()
 
 bool SphereGridTopology_test::SphereGridPosition()
 {
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
     int nx = 6;
     int ny = 6;
     int nz = 5;
@@ -74,17 +87,14 @@ bool SphereGridTopology_test::SphereGridPosition()
 }
 
 TEST_F(SphereGridTopology_test, SphereGridCreation ) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridCreation());
 }
 
 TEST_F(SphereGridTopology_test, SphereGridSize ) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridSize());
 }
 
 TEST_F(SphereGridTopology_test, SphereGridPosition ) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
     ASSERT_TRUE( SphereGridPosition());
 }
 

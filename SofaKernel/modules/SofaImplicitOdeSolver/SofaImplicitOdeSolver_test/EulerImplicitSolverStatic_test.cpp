@@ -55,7 +55,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
-        WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+        WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******
@@ -138,7 +138,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
-        WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+        WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

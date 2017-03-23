@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -104,7 +103,8 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
 TEST_F( TopologicalChangeProcessor_test,Incise)
 {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    EXPECT_MSG_NOEMIT(Error) ;
+
     ASSERT_TRUE(this->TestInciseProcess());
 }
 

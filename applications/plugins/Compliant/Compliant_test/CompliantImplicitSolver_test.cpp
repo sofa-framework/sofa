@@ -429,27 +429,27 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 //=================
 // simple linear cases
 TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     testLinearOneFixedOneComplianceSpringV100(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     testLinearOneFixedOneStiffnessSpringV100(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     testLinearOneFixedOneStiffnessSpringX200(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     testLinearOneFixedOneComplianceSpringX200(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     testEmptyMState(false);
 }
 

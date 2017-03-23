@@ -43,7 +43,7 @@ namespace helper
 namespace logging
 {
 
-
+#define SOURCE_LOCATION __FILE__, __LINE__
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
@@ -66,6 +66,8 @@ struct SOFA_TestPlugin_API ExpectMessage
             ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type) << "' was expected. None was received." << std::endl ;
         }
     }
+
+
 };
 
 struct SOFA_TestPlugin_API MessageAsTestFailure
@@ -117,6 +119,11 @@ public:
     virtual ~WarningAndErrorAsTestFailure(){
     }
 };
+
+
+#define EXPECT_MSG_EMIT( code ) sofa::helper::logging::ExpectMessage(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+#define EXPECT_MSG_NOEMIT( code ) sofa::helper::logging::MessageAsTestFailure(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+
 
 } // logging
 } // helper

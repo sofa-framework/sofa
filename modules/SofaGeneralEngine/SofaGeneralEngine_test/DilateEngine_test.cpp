@@ -109,12 +109,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(DilateEngine_test, DataTypes);
 
 TYPED_TEST(DilateEngine_test, NormalBehavior) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DilateEngine_test, UpdateTest) {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    WarningAndErrorAsTestFailure raii(SOURCE_LOCATION);
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

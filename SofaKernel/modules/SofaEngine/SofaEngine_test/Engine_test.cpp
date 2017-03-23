@@ -28,7 +28,7 @@
 
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+using sofa::helper::logging::WarningAndErrorAsTestFailure ;
 
 namespace sofa {
 
@@ -316,7 +316,7 @@ TYPED_TEST_CASE(DataEngine_test, TestTypes);
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__, __LINE__);
+    EXPECT_MSG_NOEMIT(Error) ;
     this->run_basic_test();
 }
 
