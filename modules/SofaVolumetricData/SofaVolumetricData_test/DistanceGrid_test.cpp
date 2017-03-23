@@ -24,8 +24,8 @@ using sofa::Sofa_test ;
 
 #include <SofaTest/TestMessageHandler.h>
 
-/// I don't use namespace in test because i see ne reason to do so and it
-/// make the code harder to read.
+/// I don't use namespace in tests because i see no reason to do so and it
+/// make the code uglier to read.
 
 struct DistanceGrid_test : public Sofa_test<SReal>
 {

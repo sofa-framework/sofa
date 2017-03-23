@@ -300,7 +300,7 @@ bool SceneCreator_test::createSphereSuccess()
     // check Grid
     std::vector<SphereGridTopology*> grids;
     node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     SphereGridTopology* grid = grids[0];
     EXPECT_NE(grid->getNbPoints(), 0);
