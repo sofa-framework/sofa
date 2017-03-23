@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -35,6 +32,7 @@
  * This software is provided "as is" without express or implied
  * warranty, and with no claim as to its suitability for any purpose.
  *
+ * 17 Jan 2017 - add std::enable_if to replace static_assert (Damien Marchal)
  * 29 Jun 2005 - remove boost includes and reverse iterators. (Jeremie Allard)
  * 23 Aug 2002 - fix for Non-MSVC compilers combined with MSVC libraries.
  * 05 Aug 2001 - minor update (Nico Josuttis)
@@ -55,7 +53,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
-#include <boost/static_assert.hpp>
 
 #include <cstddef>
 #include <stdexcept>
@@ -95,33 +92,37 @@ public:
 
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit fixed_array(value_type r1)
     {
-        BOOST_STATIC_ASSERT(N==1);
+        static_assert(N==1, "");
         this->elems[0]=r1;
     }
 
     /// Specific constructor for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     fixed_array(value_type r1, value_type r2)
     {
-        BOOST_STATIC_ASSERT(N == 2);
+        static_assert(N == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
 
     /// Specific constructor for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3)
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
     }
 
     /// Specific constructor for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
     {
-        BOOST_STATIC_ASSERT(N == 4);
+        static_assert(N == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -129,9 +130,10 @@ public:
     }
 
     /// Specific constructor for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
     {
-        BOOST_STATIC_ASSERT(N == 5);
+        static_assert(N == 5, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -140,9 +142,10 @@ public:
     }
 
     /// Specific constructor for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
     {
-        BOOST_STATIC_ASSERT(N == 6);
+        static_assert(N == 6, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -152,9 +155,10 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
     {
-        BOOST_STATIC_ASSERT(N == 7);
+        static_assert(N == 7, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -165,9 +169,10 @@ public:
     }
 
     /// Specific constructor for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
     {
-        BOOST_STATIC_ASSERT(N == 8);
+        static_assert(N == 8, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -179,9 +184,10 @@ public:
     }
 
     /// Specific constructor for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
     {
-        BOOST_STATIC_ASSERT(N == 9);
+        static_assert(N == 9, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -194,9 +200,10 @@ public:
     }
 
     /// Specific constructor for 10-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==10,int>::type = 0>
     fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
     {
-        BOOST_STATIC_ASSERT(N == 10);
+        static_assert(N == 10, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;

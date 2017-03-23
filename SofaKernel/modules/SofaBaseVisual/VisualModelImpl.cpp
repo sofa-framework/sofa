@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -49,7 +46,7 @@
 #include <sofa/helper/accessor.h>
 #include <sstream>
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace sofa
 {
@@ -72,10 +69,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
-        obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
+        obj->setUseNormals(arg->getAttributeAsInt("normals", 1)!=0);
 
     if (arg->getAttribute("castshadow")!=NULL)
-        obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
+        obj->setCastShadow(arg->getAttributeAsInt("castshadow", 1)!=0);
 
     if (arg->getAttribute("flip")!=NULL)
         obj->flipFaces();
@@ -84,24 +81,34 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
         obj->setColor(arg->getAttribute("color"));
 
     if (arg->getAttribute("su")!=NULL || arg->getAttribute("sv")!=NULL)
-        m_scaleTex = TexCoord((float)atof(arg->getAttribute("su","1.0")),(float)atof(arg->getAttribute("sv","1.0")));
+        m_scaleTex = TexCoord(arg->getAttributeAsFloat("su",1.0),
+                              arg->getAttributeAsFloat("sv",1.0));
 
     if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
-        m_translationTex = TexCoord((float)atof(arg->getAttribute("du","0.0")),(float)atof(arg->getAttribute("dv","0.0")));
+        m_translationTex = TexCoord(arg->getAttributeAsFloat("du",0.0),
+                                    arg->getAttributeAsFloat("dv",0.0));
 
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
-        m_rotation.setValue(Vec3Real((Real)(atof(arg->getAttribute("rx","0.0"))),(Real)(atof(arg->getAttribute("ry","0.0"))),(Real)(atof(arg->getAttribute("rz","0.0")))));
+        m_rotation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("rx",0.0),
+                                     (Real)arg->getAttributeAsFloat("ry",0.0),
+                                     (Real)arg->getAttributeAsFloat("rz",0.0)));
 
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        m_translation.setValue(Vec3Real((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        m_translation.setValue(Vec3Real((Real)arg->getAttributeAsFloat("dx",0.0),
+                                        (Real)arg->getAttributeAsFloat("dy",0.0),
+                                        (Real)arg->getAttributeAsFloat("dz",0.0)));
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0")), (Real)atof(arg->getAttribute("scale","1.0"))));
+        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
+                                  (Real)arg->getAttributeAsFloat("scale",1.0),
+                                  (Real)arg->getAttributeAsFloat("scale",1.0)));
     }
     else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)atof(arg->getAttribute("sx","1.0")), (Real)atof(arg->getAttribute("sy","1.0")), (Real)atof(arg->getAttribute("sz","1.0"))));
+        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("sx",1.0),
+                                  (Real)arg->getAttributeAsFloat("sy",1.0),
+                                  (Real)arg->getAttributeAsFloat("sz",1.0)));
     }
 }
 
@@ -465,7 +472,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             }
         }
     }
-    
+
     m_edges.endEdit();
     m_triangles.endEdit();
     m_quads.endEdit();
@@ -478,7 +485,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     using sofa::helper::io::Mesh;
-    
+
     //      bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty())
     {
@@ -491,7 +498,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         else
             serr << "Texture \"" << textureName << "\" not found" << sendl;
     }
-    
+
     // Make sure all Data are up-to-date
     m_vertices2.updateIfDirty();
     m_vnormals.updateIfDirty();
@@ -501,14 +508,14 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     m_edges.updateIfDirty();
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
-    
+
     if (!filename.empty() && (m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
     {
         std::string meshFilename(filename);
         if (sofa::helper::system::DataRepository.findFile(meshFilename))
         {
             //name = filename;
-            boost::scoped_ptr<Mesh> objLoader;
+            std::unique_ptr<Mesh> objLoader;
             if (loader.empty())
             {
                 objLoader.reset(Mesh::Create(filename));
@@ -517,7 +524,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             {
                 objLoader.reset(Mesh::Create(loader, filename));
             }
-            
+
             if (objLoader.get() == 0)
             {
                 return false;
@@ -536,7 +543,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                     setMesh(*objLoader, true);
                 }
             }
-            
+
             if(textureName.empty())
             {
                 //we check how many textures are linked with a material (only if a texture name is not defined in the scn file)
@@ -568,10 +575,10 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             sout << "VisualModel: will use Topology." << sendl;
             useTopology = true;
         }
-        
+
         modified = true;
     }
-    
+
     if (!xformsModified)
     {
         // add one identity matrix
@@ -1057,7 +1064,7 @@ void VisualModelImpl::flipFaces()
     ResizableExtVector<Edge>& edges = *(m_edges.beginEdit());
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
-    
+
     for (unsigned int i = 0; i < edges.size() ; i++)
     {
         int temp = edges[i][1];
@@ -1108,6 +1115,8 @@ static int hexval(char c)
     else return 0;
 }
 
+//TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
+// This code should be factored out.
 void VisualModelImpl::setColor(std::string color)
 {
     if (color.empty()) return;
@@ -1303,20 +1312,20 @@ void VisualModelImpl::computeMesh()
                 setMesh(m, !texturename.getValue().empty());
                 sout << m.getVertices().size() << " points, " << m.getFacets().size()  << " triangles." << sendl;
                 useTopology = false; //visual model needs to be created only once at initial time
-				return;
-			}
+                return;
+            }
 
-			if (this->f_printLog.getValue())
-				sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+            if (this->f_printLog.getValue())
+                sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
 
-			vertices.resize(m_topology->getNbPoints());
+            vertices.resize(m_topology->getNbPoints());
 
-			for (unsigned int i=0; i<vertices.size(); i++)
-			{
-				vertices[i][0] = (Real)m_topology->getPX(i);
-				vertices[i][1] = (Real)m_topology->getPY(i);
-				vertices[i][2] = (Real)m_topology->getPZ(i);
-			}
+            for (unsigned int i=0; i<vertices.size(); i++)
+            {
+                vertices[i][0] = (Real)m_topology->getPX(i);
+                vertices[i][1] = (Real)m_topology->getPY(i);
+                vertices[i][2] = (Real)m_topology->getPZ(i);
+            }
 
         }
         else
@@ -1324,20 +1333,20 @@ void VisualModelImpl::computeMesh()
             BaseMechanicalState* mstate = m_topology->getContext()->getMechanicalState();
 
             if (mstate)
-			{
-				if (this->f_printLog.getValue())
-					sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+            {
+                if (this->f_printLog.getValue())
+                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
 
-				vertices.resize(mstate->getSize());
+                vertices.resize(mstate->getSize());
 
-				for (unsigned int i=0; i<vertices.size(); i++)
-				{
-					vertices[i][0] = (Real)mstate->getPX(i);
-					vertices[i][1] = (Real)mstate->getPY(i);
-					vertices[i][2] = (Real)mstate->getPZ(i);
-				}
-				
-			}
+                for (unsigned int i=0; i<vertices.size(); i++)
+                {
+                    vertices[i][0] = (Real)mstate->getPX(i);
+                    vertices[i][1] = (Real)mstate->getPY(i);
+                    vertices[i][2] = (Real)mstate->getPZ(i);
+                }
+
+            }
         }
         m_positions.endEdit();
     }
@@ -1347,17 +1356,17 @@ void VisualModelImpl::computeMesh()
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
 
-	if (this->f_printLog.getValue())
-		sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
+    if (this->f_printLog.getValue())
+        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
 
-	ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
-	triangles.resize(inputTriangles.size());
+    ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
+    triangles.resize(inputTriangles.size());
 
-	for (unsigned int i=0; i<triangles.size(); ++i)
-	{
-		triangles[i] = inputTriangles[i];
-	}
-	m_triangles.endEdit();
+    for (unsigned int i=0; i<triangles.size(); ++i)
+    {
+        triangles[i] = inputTriangles[i];
+    }
+    m_triangles.endEdit();
 
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
@@ -1898,7 +1907,7 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
             *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
         }
     }
-    
+
     for (unsigned int i = 0; i < edges.size() ; i++)
     {
         *out << "f";

@@ -3,7 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <boost/math/tools/minima.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 #include "../utils/nr.h"
 #include "../utils/scoped.h"
@@ -254,9 +254,8 @@ void CompliantStaticSolver::ls_brent(helper& op,
         // TODO compute this from precision
         const int bits = 32;
         {
-            using namespace boost;
             boost::uintmax_t iter = info.iterations;
-            tie(res.x, res.f) = math::tools::brent_find_minima(f,
+            std::tie(res.x, res.f) = boost::math::tools::brent_find_minima(f,
                                                                a.x, c.x,
                                                                bits,
                                                                iter);
@@ -353,7 +352,7 @@ public:
 
 
 SOFA_DECL_CLASS(CompliantStaticSolver)
-const int CompliantStaticSolverClass = core::RegisterObject("Static solver")
+int CompliantStaticSolverClass = core::RegisterObject("Static solver")
     .add< CompliantStaticSolver >();
 
 

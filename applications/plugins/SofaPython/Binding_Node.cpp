@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,7 +26,6 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
-#include "ScriptEnvironment.h"
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
@@ -57,7 +53,7 @@ extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
-    // BaseNode is not binded in SofaPython, so getRoot is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
     return sofa::PythonFactory::toPython(node->getRoot());
 }
 
@@ -98,17 +94,38 @@ extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
+extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char *path;
+
     if (!PyArg_ParseTuple(args, "s",&path))
         Py_RETURN_NONE;
     if (!node || !path)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
+    }
+
+    bool warning = true;
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+            if( !strcmp(PyString_AsString(key),"warning") )
+            {
+                if PyBool_Check(value)
+                    warning = (value==Py_True);
+                break;
+            }
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
     }
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -123,7 +140,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
         }
     if (!childNode)
     {
-        SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
+        if( warning ) SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
     return sofa::PythonFactory::toPython(childNode);
@@ -131,7 +148,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args)
 
 extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
@@ -148,7 +165,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
+    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     const objectmodel::BaseNode::Children& parents = node->getParents();
@@ -165,7 +182,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getPathName is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getPathName().c_str());
@@ -173,7 +190,7 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getRootPath is binded in Node instead
+    // BaseNode is not bound in SofaPython, so getRootPath is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
     return PyString_FromString(node->getRootPath().c_str());
@@ -193,42 +210,58 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&nodeName))
         Py_RETURN_NONE;
     Node* child = obj->createChild(nodeName).get();
-    ScriptEnvironment::nodeCreatedByScript(child);
     return sofa::PythonFactory::toPython(child);
 }
 
-extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, bool printWarnings)
+extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O",&pyChild))
         Py_RETURN_NONE;
+
+    bool warning = printWarnings;
+    if (kw && PyDict_Size(kw)>0)
+    {
+        PyObject* keys = PyDict_Keys(kw);
+        PyObject* values = PyDict_Values(kw);
+        for (int i=0; i<PyDict_Size(kw); i++)
+        {
+            PyObject *key = PyList_GetItem(keys,i);
+            PyObject *value = PyList_GetItem(values,i);
+            if( !strcmp(PyString_AsString(key),"warning") )
+            {
+                if PyBool_Check(value)
+                    warning = (value==Py_True);
+                break;
+            }
+        }
+        Py_DecRef(keys);
+        Py_DecRef(values);
+    }
+
     BaseObject* object=((PySPtr<Base>*)pyChild)->object->toBaseObject();
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->addObject(object);
 
-    if (printWarnings && node->isInitialized())
+    if (warning && node->isInitialized())
         SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" )
-//    if (!ScriptEnvironment::isNodeCreatedByScript(node))
-//        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is not created by the script" )
-
-    //object->init();
-    // plus besoin !! node->init(sofa::core::ExecParams::defaultInstance());
 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args)
+extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw)
 {
-    return Node_addObject_Impl( self, args, true );
+    return Node_addObject_Impl( self, args, kw, true );
 }
 extern "C" PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args)
 {
-    return Node_addObject_Impl( self, args, false );
+    SP_MESSAGE_DEPRECATED("Node_addObject_noWarning is deprecated, use the keyword warning=False in Node_addObject instead.")
+    return Node_addObject_Impl( self, args, NULL, false );
 }
 
 extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
@@ -241,7 +274,7 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     if (!object)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     node->removeObject(object);
 
@@ -261,7 +294,7 @@ extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->addChild(child);
     Py_RETURN_NONE;
@@ -277,7 +310,7 @@ extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->removeChild(child);
     Py_RETURN_NONE;
@@ -293,7 +326,7 @@ extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
     if (!child)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->moveChild(child);
     Py_RETURN_NONE;
@@ -314,7 +347,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&eventName,&pyUserData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     PythonScriptEvent event(node,eventName,pyUserData);
     node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -328,7 +361,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -342,7 +375,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&eventName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
     down_cast<Node>(node->getRoot())->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
@@ -402,15 +435,15 @@ SP_CLASS_METHOD(Node,getRoot)
 SP_CLASS_METHOD(Node,simulationStep)
 SP_CLASS_METHOD(Node,reset)
 SP_CLASS_METHOD(Node,init)
-SP_CLASS_METHOD(Node,getChild)
+SP_CLASS_METHOD_KW(Node,getChild)
 SP_CLASS_METHOD(Node,getChildren)
 SP_CLASS_METHOD(Node,getParents)
 SP_CLASS_METHOD(Node,getPathName)
 SP_CLASS_METHOD(Node,getRootPath)
 SP_CLASS_METHOD(Node,getLinkPath)
 SP_CLASS_METHOD(Node,createChild)
-SP_CLASS_METHOD(Node,addObject)
-SP_CLASS_METHOD(Node,addObject_noWarning)
+SP_CLASS_METHOD_KW(Node,addObject)
+SP_CLASS_METHOD(Node,addObject_noWarning) // deprecated
 SP_CLASS_METHOD(Node,removeObject)
 SP_CLASS_METHOD(Node,addChild)
 SP_CLASS_METHOD(Node,removeChild)

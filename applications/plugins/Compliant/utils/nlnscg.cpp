@@ -2,7 +2,7 @@
 
 namespace utils {
 nlnscg::nlnscg(unsigned n, const vec& metric)
-    : n(n), metric(metric), k(0), p( vec::Zero(n) ), g2(0) {
+    : /*n(n),*/ metric(metric), k(0), p( vec::Zero(n) ), g2(0) {
 
     
 }

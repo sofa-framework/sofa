@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralTopology)
 
 
@@ -11,6 +11,7 @@ set(HEADER_FILES
     BezierTriangleSetTopologyContainer.h
     CubeTopology.h
     CylinderGridTopology.h
+    SphereGridTopology.h
     SphereQuadTopology.h
     config.h
     initGeneralTopology.h
@@ -23,6 +24,7 @@ set(SOURCE_FILES
     BezierTriangleSetTopologyContainer.cpp
     CubeTopology.cpp
     CylinderGridTopology.cpp
+    SphereGridTopology.cpp
     SphereQuadTopology.cpp
     initGeneralTopology.cpp
 )

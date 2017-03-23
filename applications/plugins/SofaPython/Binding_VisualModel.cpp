@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,6 +23,7 @@
 
 #include "Binding_VisualModel.h"
 #include "Binding_BaseState.h"
+#include <fstream>
 
 using namespace sofa::component::visualmodel;
 using namespace sofa::core::objectmodel;
@@ -41,7 +39,7 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
         if (!PyArg_ParseTuple(args, "iiii",&ir,&ig,&ib,&ia))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         r = (double)ir;
         g = (double)ig;
@@ -52,8 +50,33 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
+{
+    VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
+
+    char* filename;
+    if (!PyArg_ParseTuple(args, "s",&filename))
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    std::ofstream outfile(filename);
+
+    int vindex = 0;
+    int nindex = 0;
+    int tindex = 0;
+    int count = 0;
+
+    obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);
+
+    outfile.close();
+
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(VisualModel)
+SP_CLASS_METHOD(VisualModel,exportOBJ)
 SP_CLASS_METHODS_END
 
 SP_CLASS_METHODS_BEGIN(VisualModelImpl)

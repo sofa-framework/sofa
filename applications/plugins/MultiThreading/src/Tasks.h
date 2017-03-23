@@ -1,39 +1,24 @@
-/*                               nulstein @ Evoke 2009
-*
-*
-* ____________________________________
-* Copyright 2009 Intel Corporation
-* All Rights Reserved
-*
-* Permission is granted to use, copy, distribute and prepare derivative works of this
-* software for any purpose and without fee, provided, that the above copyright notice
-* and this statement appear in all copies.  Intel makes no representations about the
-* suitability of this software for any purpose.  THIS SOFTWARE IS PROVIDED "AS IS."
-* INTEL SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, AND ALL LIABILITY,
-* INCLUDING CONSEQUENTIAL AND OTHER INDIRECT DAMAGES, FOR THE USE OF THIS SOFTWARE,
-* INCLUDING LIABILITY FOR INFRINGEMENT OF ANY PROPRIETARY RIGHTS, AND INCLUDING THE
-* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  Intel does not
-* assume any responsibility for any errors which may appear in this software nor any
-* responsibility to update it.
-* ____________________________________
-*
-*
-* A multicore tasking engine in some 500 lines of C
-* This is the code corresponding to the seminar on writing a task-scheduler suitable 
-* for use in multicore optimisation of small prods by Jerome Muffat-Meridol.
-*
-* Credits :
-* -=-=-=-=-
-*  .music taken from M40-Southbound, by Ghaal (c)2009
-*  .liposuction advice from Matt Pietrek
-*     http://www.microsoft.com/msj/archive/S572.aspx
-*  .ordering display list ideas based on Christer Ericson's article 
-*     http://realtimecollisiondetection.net/blog/?p=86
-*  .Approximate Math Library by Alex Klimovitski, Intel GmbH
-*  .kkrunchy packed this exe, kudos to ryg/farbrausch
-*     http://www.farbrausch.de/~fg/kkrunchy/
-*/
-
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef MultiThreadingTasks_h__
 #define MultiThreadingTasks_h__
 

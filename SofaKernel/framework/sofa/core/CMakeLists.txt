@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaCore)
 
 set(HEADER_FILES
@@ -116,6 +116,7 @@ set(HEADER_FILES
     objectmodel/JoystickEvent.h
     objectmodel/KeypressedEvent.h
     objectmodel/KeyreleasedEvent.h
+    objectmodel/IdleEvent.h
     objectmodel/Link.h
     objectmodel/MouseEvent.h
     objectmodel/SPtr.h
@@ -214,6 +215,7 @@ set(SOURCE_FILES
     objectmodel/KeypressedEvent.cpp
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
+    objectmodel/IdleEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
     topology/BaseTopology.cpp

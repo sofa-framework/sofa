@@ -31,6 +31,10 @@ def im(q):
     """imaginary part"""
     return array(q[:3])
 
+def angle(q):
+    """get angle in rad"""
+    return 2.0* math.acos(re(q))
+
 # TODO optimize
 def prod(a, b):
     """product"""
@@ -192,14 +196,18 @@ def from_line(v, sign=1, xyz=1):
     @type xyz: int with the value 1/2/3
     """
     v1 = numpy.array(v) / numpy.linalg.norm(numpy.array(v), 2) * sign;
-    v2 = numpy.array([v1[1], -v1[0], 0]) / numpy.linalg.norm(numpy.array([v1[1], -v1[0], 0]), 2);
+    # v2 : orthogonal vector in z=0 plane
+    if v1[0]==0 and v1[1]==0:
+        v2 = [1,0,0]
+    else:
+        v2 = numpy.array([v1[1], -v1[0], 0]) / numpy.linalg.norm(numpy.array([v1[1], -v1[0], 0]), 2);
     v3 = numpy.cross(v1, v2)
     if(xyz==1) :
-        m = numpy.matrix([ [v1[0], v2[0], v3[0]], [v1[1], v2[1], v3[1]], [v1[2], v2[2], v3[2]] ]).getT() # The transpose is import because the given lines are normally the column
+        m = numpy.matrix([ [v1[0], v2[0], v3[0]], [v1[1], v2[1], v3[1]], [v1[2], v2[2], v3[2]] ])
     if(xyz==2) :
-        m = numpy.matrix([ [v2[0], v1[0], v3[0]], [v2[1], v1[1], v3[1]], [v2[2], v1[2], v3[2]] ]).getT() # The transpose is import because the given lines are normally the column
+        m = numpy.matrix([ [v2[0], v1[0], v3[0]], [v2[1], v1[1], v3[1]], [v2[2], v1[2], v3[2]] ])
     if(xyz>=3) :
-        m = numpy.matrix([ [v2[0], v3[0], v1[0]], [v2[1], v3[1], v1[1]], [v2[2], v3[2], v1[2]] ]).getT() # The transpose is import because the given lines are normally the column
+        m = numpy.matrix([ [v2[0], v3[0], v1[0]], [v2[1], v3[1], v1[1]], [v2[2], v3[2], v1[2]] ])
     q = from_matrix(m)
     return q
 
@@ -225,7 +233,7 @@ def quatToAxis(q):
         axis = [0.0,1.0,0.0]
     else :
         axis = numpy.asarray(q)[0:3]/sine
-    phi =  math.acos(q[3]) * 2.0
+    phi =  angle(q)
     return [axis, phi]
 
 def quatToRotVec(q):

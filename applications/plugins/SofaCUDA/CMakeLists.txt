@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaCUDA)
 
 set(SOFACUDA_MAJOR_VERSION 0)
@@ -10,17 +10,19 @@ if(NOT WIN32)
     set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 endif()
 
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the SofaCUDA plugin.")
+endif()
+
 set(HEADER_FILES
     sofa/gpu/cuda/CudaBarycentricMapping.h
     sofa/gpu/cuda/CudaBarycentricMapping.inl
     sofa/gpu/cuda/CudaBarycentricMappingRigid.h
     sofa/gpu/cuda/CudaBaseVector.h
-    sofa/gpu/cuda/CudaCollisionDetection.h
     sofa/gpu/cuda/CudaCommon.h
-    sofa/gpu/cuda/CudaContactMapper.h
     sofa/gpu/cuda/CudaDiagonalMass.h
     sofa/gpu/cuda/CudaDiagonalMass.inl
-    sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
     sofa/gpu/cuda/CudaEllipsoidForceField.h
     sofa/gpu/cuda/CudaEllipsoidForceField.inl
     sofa/gpu/cuda/CudaFixedConstraint.h
@@ -101,10 +103,7 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaBeamLinearMapping.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaCollision.cpp
-    sofa/gpu/cuda/CudaCollisionDetection.cpp
-    sofa/gpu/cuda/CudaCollisionDistanceGrid.cpp
     sofa/gpu/cuda/CudaDiagonalMass.cpp
-    sofa/gpu/cuda/CudaDistanceGridCollisionModel.cpp
     sofa/gpu/cuda/CudaEllipsoidForceField.cpp
     sofa/gpu/cuda/CudaExtraMonitor.cpp
     sofa/gpu/cuda/CudaFixedConstraint.cpp
@@ -148,8 +147,6 @@ set(SOURCE_FILES
 set(CUDA_SOURCES
     sofa/gpu/cuda/CudaBarycentricMapping.cu
     sofa/gpu/cuda/CudaBaseVector.cu
-    sofa/gpu/cuda/CudaCollisionDetection.cu
-    sofa/gpu/cuda/CudaContactMapper.cu
     sofa/gpu/cuda/CudaDiagonalMass.cu
     sofa/gpu/cuda/CudaEllipsoidForceField.cu
     sofa/gpu/cuda/CudaFixedConstraint.cu
@@ -180,12 +177,14 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/mycuda.cu
 )
 
+
 set(README_FILES SofaCUDA.txt)
 
 find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
+find_package(MiniFlowVR QUIET)
 
 if(VolumetricRendering_FOUND)   
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
@@ -194,6 +193,24 @@ if(VolumetricRendering_FOUND)
     add_definitions("-DSOFACUDA_ENABLE_VOLUMETRICRENDERING")
 else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
+endif()
+
+if(MiniFlowVR_FOUND)
+    list(APPEND HEADER_FILES
+        sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
+        sofa/gpu/cuda/CudaContactMapper.h
+        sofa/gpu/cuda/CudaCollisionDetection.h)
+
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaDistanceGridCollisionModel.cpp
+        sofa/gpu/cuda/CudaCollisionDistanceGrid.cpp
+        sofa/gpu/cuda/CudaCollisionDetection.cpp)
+
+    list(APPEND CUDA_SOURCES
+        sofa/gpu/cuda/CudaContactMapper.cu
+        sofa/gpu/cuda/CudaCollisionDetection.cu)
+else()
+    message(STATUS "SofaCUDA: MiniFlowVR was not enabled/found, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
@@ -295,3 +312,4 @@ sofa_create_package(SofaCUDA ${SOFACUDA_VERSION} SofaCUDA SofaCUDA)
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+

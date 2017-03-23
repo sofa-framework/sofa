@@ -1,33 +1,31 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_HELPER_GL_DRAWTOOLGL_CPP
 
 #include <sofa/core/visual/DrawToolGL.h>
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/helper/gl/BasicShapesGL.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/gl/template.h>
@@ -36,6 +34,19 @@
 
 namespace sofa
 {
+
+namespace helper
+{
+
+namespace gl
+{
+
+template class SOFA_CORE_API BasicShapesGL_Sphere< sofa::defaulttype::Vector3 >;
+template class SOFA_CORE_API BasicShapesGL_FakeSphere< sofa::defaulttype::Vector3 >;
+
+} // namespace gl
+
+} // namespace helper
 
 namespace core
 {
@@ -57,6 +68,10 @@ DrawToolGL::DrawToolGL()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 DrawToolGL::~DrawToolGL()
+{
+}
+
+void DrawToolGL::init()
 {
 
 }
@@ -323,8 +338,8 @@ void DrawToolGL::drawFrame(const Vector3& position, const Quaternion &orientatio
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    for (unsigned int i=0; i<points.size(); ++i)
-        drawSphere(points[i], radius);
+
+    m_sphereUtil.draw(points, radius);
 
     resetMaterial(colour);
 }
@@ -334,8 +349,29 @@ void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, float radius, c
 void DrawToolGL::drawSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4,float>& colour)
 {
     setMaterial(colour);
-    for (unsigned int i=0; i<points.size(); ++i)
-        drawSphere(points[i], radius[i]);
+
+    m_sphereUtil.draw(points, radius);
+
+    resetMaterial(colour);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
+    m_fakeSphereUtil.draw(points, radius);
+
+    resetMaterial(colour);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec<4, float>& colour)
+{
+    setMaterial(colour);
+
+    m_fakeSphereUtil.draw(points, radius);
 
     resetMaterial(colour);
 }
@@ -761,20 +797,20 @@ void DrawToolGL::drawScaledTetrahedra(const std::vector<Vector3> &points, const 
         Vector3 np1 = ((p1 - center)*scale) + center;
         Vector3 np2 = ((p2 - center)*scale) + center;
         Vector3 np3 = ((p3 - center)*scale) + center;
-        
+
         //this->drawTetrahedron(p0,p1,p2,p3,colour); // not recommanded as it will call glBegin/glEnd <number of tetra> times
         this->drawTriangle(np0, np1, np2, cross((p1 - p0), (p2 - p0)), colour);
         this->drawTriangle(np0, np1, np3, cross((p1 - p0), (p3 - p0)), colour);
         this->drawTriangle(np0, np2, np3, cross((p2 - p0), (p3 - p0)), colour);
         this->drawTriangle(np1, np2, np3, cross((p2 - p1), (p3 - p1)), colour);
-    } 
+    }
     glEnd();
     resetMaterial(colour);
 }
 
 
 void DrawToolGL::drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
-                                const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, 
+                                const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7,
                                 const Vec4f &colour)
 {
     //{{0,1,2,3}, {4,7,6,5}, {1,0,4,5},{1,5,6,2},  {2,6,7,3}, {0,3,7,4}}
@@ -794,7 +830,7 @@ void DrawToolGL::drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vect
 void DrawToolGL::drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour)
 {
     setMaterial(colour);
-    
+
     glBegin(GL_QUADS);
     for (std::vector<Vector3>::const_iterator it = points.begin(), end = points.end(); it != end;)
     {
@@ -1112,6 +1148,15 @@ void DrawToolGL::saveLastState()
 void DrawToolGL::restoreLastState()
 {
     glPopAttrib();
+}
+
+void DrawToolGL::readPixels(int x, int y, int w, int h, float* rgb, float* z)
+{
+    if(rgb != NULL && sizeof(*rgb) == 3 * sizeof(float) * w * h)
+        glReadPixels(x, y, w, h, GL_RGB, GL_FLOAT, rgb);
+
+    if(z != NULL && sizeof(*z) == sizeof(float) * w * h)
+        glReadPixels(x, y, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, z);
 }
 
 } // namespace visual

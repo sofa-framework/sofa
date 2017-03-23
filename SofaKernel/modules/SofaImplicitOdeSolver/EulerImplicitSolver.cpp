@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -100,9 +97,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
-	/// inform the constraint parameters about the position and velocity id
-	mop.cparams.setX(xResult);
-	mop.cparams.setV(vResult);
+    /// inform the constraint parameters about the position and velocity id
+    mop.cparams.setX(xResult);
+    mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, !d_threadsafevisitor.getValue(), true );
@@ -153,7 +150,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         std::cout<<"trapezoidal factor = "<< tr <<std::endl;
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-	mop->setImplicit(true); // this solver is implicit
+    mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
     mop.computeForce(f);
     if( verbose )
@@ -321,7 +318,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
 SOFA_DECL_CLASS(EulerImplicitSolver)
 
-int EulerImplicitSolverClass = core::RegisterObject("Implicit time integrator using backward Euler scheme")
+int EulerImplicitSolverClass = core::RegisterObject("Time integrator using implicit backward Euler scheme")
         .add< EulerImplicitSolver >()
         .addAlias("EulerImplicit")
         .addAlias("ImplicitEulerSolver")

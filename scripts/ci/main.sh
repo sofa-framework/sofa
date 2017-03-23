@@ -11,6 +11,10 @@ build_dir="$1"
 src_dir="$(cd "$2" && pwd)"
 sha=$(git --git-dir="$src_dir/.git" rev-parse HEAD)
 
+# Clean flag files
+rm -f "$build_dir/build-started"
+rm -f "$build_dir/build-finished"
+
 if [ -z "$CI_JOB" ]; then CI_JOB="$JOB_NAME"; fi
 
 send-message-to-dashboard() {
@@ -63,8 +67,7 @@ send-message-to-dashboard \
     "tests_failures=$("$src_dir/scripts/ci/tests.sh" count-failures $build_dir $src_dir)" \
     "tests_disabled=$("$src_dir/scripts/ci/tests.sh" count-disabled $build_dir $src_dir)" \
     "tests_errors=$("$src_dir/scripts/ci/tests.sh" count-errors $build_dir $src_dir)" \
-    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)" \
-    "tests_crash=$("$src_dir/scripts/ci/tests.sh" count-crashes $build_dir $src_dir)"
+    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)"
 
 touch "$build_dir/build-finished"
 

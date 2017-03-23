@@ -14,30 +14,27 @@ namespace
 {
 	const std::string authors(
 		"\
-		/******************************************************************************\n\
-		*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *\n\
-		*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *\n\
-		*                                                                             *\n\
-		* This library is free software; you can redistribute it and/or modify it     *\n\
-		* under the terms of the GNU Lesser General Public License as published by    *\n\
-		* the Free Software Foundation; either version 2.1 of the License, or (at     *\n\
-		* your option) any later version.                                             *\n\
-		*                                                                             *\n\
-		* This library is distributed in the hope that it will be useful, but WITHOUT *\n\
-		* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *\n\
-		* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *\n\
-		* for more details.                                                           *\n\
-		*                                                                             *\n\
-		* You should have received a copy of the GNU Lesser General Public License    *\n\
-		* along with this library; if not, write to the Free Software Foundation,     *\n\
-		* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *\n\
-		*******************************************************************************\n\
-		*                               SOFA :: Modules                               *\n\
-		*                                                                             *\n\
-		* Authors: The SOFA Team and external contributors (see Authors.txt)          *\n\
-		*                                                                             *\n\
-		* Contact information: contact@sofa-framework.org                             *\n\
-		******************************************************************************/\n\
+		/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU General Public License as published by the Free  *
+* Software Foundation; either version 2 of the License, or (at your option)   *
+* any later version.                                                          *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+* more details.                                                               *
+*                                                                             *
+* You should have received a copy of the GNU General Public License along     *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/\n\
 		"		);
 	const std::string defaultIncludes(
 		"\

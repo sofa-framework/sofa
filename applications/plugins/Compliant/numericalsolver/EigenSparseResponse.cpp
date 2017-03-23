@@ -7,10 +7,15 @@ namespace component {
 namespace linearsolver {
 
 
+
+
 template class SOFA_Compliant_API EigenSparseResponse< LDLTSparseLinearSolver, LDLTSparseLinearSolver::UpLo >;
 SOFA_DECL_CLASS(LDLTResponse)
-int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of the response matrix.").add< LDLTResponse >();
+int LDLTResponseClass = core::RegisterObject("A sparse LDLT Cholesky factorization of the response matrix.").add< LDLTResponse >();
 
+template class SOFA_Compliant_API EigenSparseResponse< LLTSparseLinearSolver, LLTSparseLinearSolver::UpLo >;
+SOFA_DECL_CLASS(LLTResponse)
+int LLTResponseClass = core::RegisterObject("A sparse LLT Cholesky factorization of the response matrix.").add< LLTResponse >();
 
 template class SOFA_Compliant_API EigenSparseResponse< LUSparseLinearSolver, 0 >;
 SOFA_DECL_CLASS(LUResponse)
