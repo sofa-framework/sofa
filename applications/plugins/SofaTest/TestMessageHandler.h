@@ -33,9 +33,6 @@
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
 #include <gtest/gtest.h>
-#include <queue>
-
-#define SOURCE_LOCATION __FILE__, __LINE__
 
 namespace sofa
 {

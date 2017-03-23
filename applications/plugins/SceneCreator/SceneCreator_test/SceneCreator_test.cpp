@@ -294,13 +294,13 @@ bool SceneCreator_test::createSphereSuccess()
     // Check MecaObj
     std::vector<MechanicalObject3*> mecaObjs;
     node->get<MechanicalObject3>(&mecaObjs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(mecaObjs.size(), 1);
+    EXPECT_EQ(mecaObjs.size(), (size_t)1);
 
 
     // check Grid
     std::vector<SphereGridTopology*> grids;
     node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     SphereGridTopology* grid = grids[0];
     EXPECT_NE(grid->getNbPoints(), 0);

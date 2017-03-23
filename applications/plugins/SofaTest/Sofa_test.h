@@ -35,8 +35,7 @@
 #include <time.h>
 #include <iostream>
 
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-#include <sofa/helper/logging/CountingMessageHandler.h>
+#include <SofaTest/TestMessageHandler.h>
 
 // Maybe not the right place to put this (private header?)
 #ifndef SOFA_FLOAT
@@ -79,6 +78,13 @@ struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
 template <typename _Real=SReal>
 struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 {
+    /// By default all test based on Sofa_test are failing if there is one of the following.
+    /// To prevent that you simply need to add the line
+    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
+    EXPECT_MSG_NOEMIT(Fatal) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Deprecated) ;
 
     /** @name Scalars
      *  Type and functions to manipulate real numbers.
