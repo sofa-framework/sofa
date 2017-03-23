@@ -23,8 +23,6 @@
 #include <SofaTest/ForceField_test.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::core::objectmodel::ComponentState ;
@@ -113,7 +111,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
         this->clearSceneGraph();
 
         // This is a RAII message.
-        ExpectMessage error(Message::Error) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"

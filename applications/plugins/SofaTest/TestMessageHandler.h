@@ -107,19 +107,26 @@ public:
 
 struct SOFA_TestPlugin_API MesssageAsTestFailure2
 {
-    GtestMessageFrameFailure frame ;
+    std::vector<GtestMessageFrameFailure*> m_frames ;
 
     MesssageAsTestFailure2(Message::Type t,
                            const char* filename="unknown", int lineno=0) ;
+
+    MesssageAsTestFailure2(std::initializer_list<Message::Type> t,
+                           const char* filename="unknown", int lineno=0) ;
+
     virtual ~MesssageAsTestFailure2() ;
 };
 
 struct SOFA_TestPlugin_API ExpectMessage2
 {
-    GtestMessageFrameFailureWhenMissing frame ;
+    std::vector<GtestMessageFrameFailureWhenMissing*> m_frames ;
 
     ExpectMessage2(Message::Type t,
                    const char* filename="unknown", int lineno=0) ;
+    ExpectMessage2(std::initializer_list<Message::Type> t,
+                   const char* filename="unknown", int lineno=0) ;
+
     virtual ~ExpectMessage2() ;
 };
 
@@ -127,103 +134,14 @@ struct SOFA_TestPlugin_API ExpectMessage2
 #define EXPECT_MSG_PASTER(x,y) x ## _ ## y
 #define EXPECT_MSG_EVALUATOR(x,y)  EXPECT_MSG_PASTER(x,y)
 
-#define EXPECT_MSG_EMIT_V2(t) sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::t, __FILE__, __LINE__ }
-#define EXPECT_MSG_NOEMIT_V2(t) sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__){ sofa::helper::logging::Message::t, __FILE__, __LINE__ }
 
-
-struct SOFA_TestPlugin_API ExpectMessage
-{
-    const char* m_filename;
-    int  m_lineno;
-
-    helper::vector<int>           m_lastCounts ;
-    helper::vector<Message::Type> m_types ;
-
-    ExpectMessage(const Message::Type t,
-                  const char* filename="unknown", const int lineno=0) {
-        m_filename=filename;
-        m_lineno = lineno;
-        m_types.push_back(t) ;
-        m_lastCounts.push_back(MainCountingMessageHandler::getMessageCountFor(t)) ;
-    }
-
-    ExpectMessage(std::initializer_list<Message::Type> types,
-                  const char* filename="unknown", const int lineno=0) {
-        m_filename=filename;
-        m_lineno = lineno;
-
-        for(auto type : types){
-            m_types.push_back(type) ;
-            m_lastCounts.push_back( MainCountingMessageHandler::getMessageCountFor(type) ) ;
-        }
-    }
-
-    ~ExpectMessage() {
-        for(unsigned int i=0;i<m_types.size();++i){
-            if(m_lastCounts[i] == MainCountingMessageHandler::getMessageCountFor(m_types[i]) )
-            {
-                ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_types[i]) << "' was expected. None was received." << std::endl ;
-            }
-        }
-    }
-};
-
-struct SOFA_TestPlugin_API MessageAsTestFailure
-{
-    const  char* m_filename;
-    int  m_lineno;
-
-    helper::vector<int>           m_lastCounts ;
-    helper::vector<Message::Type> m_types ;
-    LogMessage m_log;
-
-    MessageAsTestFailure(std::initializer_list<Message::Type> types,
-                         const char* filename="unknown", const int lineno=0)
-    {
-        m_filename = filename ;
-        m_lineno = lineno ;
-
-        for(auto type : types){
-            m_types.push_back(type) ;
-            m_lastCounts.push_back( MainCountingMessageHandler::getMessageCountFor(type) ) ;
-        }
-    }
-
-    MessageAsTestFailure(const Message::Type type,
-                         const char* filename="unknown", const int lineno=0)
-    {
-        m_filename = filename ;
-        m_lineno = lineno ;
-        m_types.push_back(type) ;
-        m_lastCounts.push_back(MainCountingMessageHandler::getMessageCountFor(type)) ;
-    }
-
-    ~MessageAsTestFailure()
-    {
-        for(unsigned int i=0;i<m_types.size();++i){
-            if(m_lastCounts[i] != MainCountingMessageHandler::getMessageCountFor(m_types[i]) )
-            {
-                std::stringstream backlog;
-                backlog << "====================== Messages Backlog =======================" << std::endl ;
-                for(auto& message : m_log)
-                {
-                    backlog << message << std::endl ;
-                }
-                backlog << "===============================================================" << std::endl ;
-
-                ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_types[i]) << "' was not expected but it was received. " << std::endl
-                              << backlog.str() ;
-            }
-        }
-    }
-};
 
 ///TAKE FROM http://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros
 #define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 
-#define EXPECT_MSG_EMIT2( code, code2 ) sofa::helper::logging::ExpectMessage({sofa::helper::logging::Message::code, sofa::helper::logging::Message::code2}, SOURCE_LOCATION)
-#define EXPECT_MSG_EMIT1( code ) sofa::helper::logging::ExpectMessage(sofa::helper::logging::Message::code, SOURCE_LOCATION)
+#define EXPECT_MSG_EMIT2(a,b) sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { {sofa::helper::logging::Message::a, sofa::helper::logging::Message::b} , __FILE__, __LINE__ }
+#define EXPECT_MSG_EMIT1(t)   sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::t, __FILE__, __LINE__ }
 #define EXPECT_MSG_EMIT0
 
 #define EXPECT_MSG_EMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_EMIT2, EXPECT_MSG_EMIT1, ))
@@ -233,10 +151,15 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
 #define EXPECT_MSG_EMIT(...) EXPECT_MSG_EMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 
-#define EXPECT_MSG_NOEMIT1( code ) sofa::helper::logging::MessageAsTestFailure(sofa::helper::logging::Message::code, SOURCE_LOCATION)
-#define EXPECT_MSG_NOEMIT2( code, code2 ) sofa::helper::logging::MessageAsTestFailure({sofa::helper::logging::Message::code, sofa::helper::logging::Message::code2}, SOURCE_LOCATION)
-#define EXPECT_MSG_NOEMIT( code, ... )
+#define EXPECT_MSG_NOEMIT2(a,b) sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { {sofa::helper::logging::Message::a, sofa::helper::logging::Message::b} , __FILE__, __LINE__ }
+#define EXPECT_MSG_NOEMIT1(t)   sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__){ sofa::helper::logging::Message::t, __FILE__, __LINE__ }
+#define EXPECT_MSG_NOEMIT0
 
+#define EXPECT_MSG_NOEMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_NOEMIT2, EXPECT_MSG_NOEMIT1, ))
+#define EXPECT_MSG_NOEMIT_NO_ARG_EXPANDER() ,,EXPECT_MSG_NOEMIT0
+#define EXPECT_MSG_NOEMIT_CHOOSER(...) EXPECT_MSG_NOEMIT_CHOOSE_FROM_ARG_COUNT(EXPECT_MSG_NOEMIT_NO_ARG_EXPANDER __VA_ARGS__ ())
+
+#define EXPECT_MSG_NOEMIT(...) EXPECT_MSG_NOEMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 } // logging
 } // helper

@@ -53,9 +53,6 @@ using sofa::simulation::SceneLoaderXML ;
 using namespace component;
 using namespace defaulttype;
 
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
 template <typename _DataTypes>
 struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataTypes::Real>
 {
@@ -131,7 +128,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
     /// This component requires to be used in conjonction with MechanicalObjects.
     void checkMstateRequiredAssumption(){
-        ExpectMessage e(Message::Error) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         /// I'm using '\n' so that the XML parser correctly report the line number
         /// in case of problems.
@@ -154,7 +151,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
 template<>
 void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwardCompatibility(){
-    ExpectMessage e(Message::Warning) ;
+    EXPECT_MSG_EMIT(Warning) ;
 
     /// I'm using '\n' so that the XML parser correctly report the line number
     /// in case of problems.

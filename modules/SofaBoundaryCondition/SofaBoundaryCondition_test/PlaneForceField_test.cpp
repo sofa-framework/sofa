@@ -22,8 +22,6 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
@@ -289,7 +287,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         EXPECT_NE(planeff, nullptr) ;
 
         {
-            ExpectMessage msg(Message::Warning) ;
+            EXPECT_MSG_EMIT(Warning) ;
             planeff->init() ;
         }
 
@@ -302,7 +300,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
     ///
     bool testBehaviorWhenMissingMechanicalObject()
     {
-        ExpectMessage msg(Message::Error) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"

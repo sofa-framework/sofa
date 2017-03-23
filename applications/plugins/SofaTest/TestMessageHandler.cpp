@@ -33,6 +33,7 @@ namespace logging
 namespace {
     static struct raii {
       raii() {
+            std::cout << "INSTALLING THE HANDLER " << std::endl ;
             helper::logging::MessageDispatcher::addHandler( &MainGtestMessageHandler::getInstance() ) ;
       }
     } sin ;
@@ -40,7 +41,6 @@ namespace {
 
 void GtestMessageFrame::process(Message& m) {
     SOFA_UNUSED(m);
-    std::cout << "PROCESSING THE MESSAGE BUT DOING NOTHING: " << m.type() << std::endl ;
 }
 
 void GtestMessageFrame::finalize() {
@@ -131,28 +131,63 @@ void MainGtestMessageHandler::popFrame(Message::Type type){
     getInstance().popFrame(type) ;
 }
 
-MesssageAsTestFailure2::MesssageAsTestFailure2(Message::Type t,
-                                               const char* filename, int lineno) : frame(t, filename, lineno)
+MesssageAsTestFailure2::MesssageAsTestFailure2(Message::Type type,
+                                               const char* filename, int lineno)
 {
-    MainGtestMessageHandler::pushFrame(t, &frame) ;
+    auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
+    m_frames.push_back(frame);
+    MainGtestMessageHandler::pushFrame(type, frame) ;
+}
+
+MesssageAsTestFailure2::MesssageAsTestFailure2(std::initializer_list<Message::Type> types,
+                                               const char* filename, int lineno)
+{
+    for(Message::Type type : types)
+    {
+        auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
+        m_frames.push_back(frame);
+        MainGtestMessageHandler::pushFrame(type, frame) ;
+    }
 }
 
 MesssageAsTestFailure2::~MesssageAsTestFailure2(){
-
-    MainGtestMessageHandler::popFrame(frame.m_type) ;
-    frame.finalize() ;
+    for(auto frame : m_frames)
+    {
+        MainGtestMessageHandler::popFrame(frame->m_type) ;
+        frame->finalize() ;
+        delete frame;
+    }
+    m_frames.clear();
 }
 
 
-ExpectMessage2::ExpectMessage2(Message::Type t,
-                               const char* filename, int lineno) : frame(t, filename, lineno)
+ExpectMessage2::ExpectMessage2(Message::Type type,
+                               const char* filename, int lineno)
 {
-    MainGtestMessageHandler::pushFrame(t, &frame) ;
+    auto frame = new GtestMessageFrameFailureWhenMissing(type, filename, lineno);
+    m_frames.push_back( frame ) ;
+    MainGtestMessageHandler::pushFrame(type, frame ) ;
+}
+
+ExpectMessage2::ExpectMessage2(std::initializer_list<Message::Type> types,
+                               const char* filename, int lineno)
+{
+    for(Message::Type type : types)
+    {
+        auto frame = new GtestMessageFrameFailureWhenMissing(type, filename, lineno);
+        m_frames.push_back(frame);
+        MainGtestMessageHandler::pushFrame(type, frame) ;
+    }
 }
 
 ExpectMessage2::~ExpectMessage2(){
-    MainGtestMessageHandler::popFrame(frame.m_type) ;
-    frame.finalize() ;
+    for(auto frame : m_frames)
+    {
+        MainGtestMessageHandler::popFrame(frame->m_type) ;
+        frame->finalize() ;
+        delete frame;
+    }
+    m_frames.clear();
 }
 
 } // logging

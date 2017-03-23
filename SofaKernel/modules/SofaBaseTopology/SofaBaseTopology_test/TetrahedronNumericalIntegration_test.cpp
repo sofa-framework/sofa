@@ -157,6 +157,7 @@ TYPED_TEST_CASE(TetrahedronNumericalIntegration_test, DataTypes);
 TYPED_TEST( TetrahedronNumericalIntegration_test , testNumericalIntegration )
 {
     EXPECT_MSG_NOEMIT(Error, Warning);
+
     this->createScene();
     ASSERT_TRUE( this->testNumericalIntegration());
 

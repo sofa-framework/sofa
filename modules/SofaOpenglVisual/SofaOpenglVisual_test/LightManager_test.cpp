@@ -47,7 +47,6 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 
 namespace sofa {

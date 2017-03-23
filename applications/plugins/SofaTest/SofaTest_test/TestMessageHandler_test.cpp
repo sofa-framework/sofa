@@ -8,9 +8,9 @@ using sofa::helper::logging::GtestMessageHandler ;
 /// expectation are given this generates test failures.
 class Sofa_test2 : public Sofa_test<float>
 {
-    EXPECT_MSG_NOEMIT_V2(Error) ;
-    EXPECT_MSG_NOEMIT_V2(Warning) ;
-    EXPECT_MSG_NOEMIT_V2(Deprecated) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Deprecated) ;
 };
 
 
@@ -26,8 +26,8 @@ public:
 
     void catchingTestBehavior()
     {
-        EXPECT_MSG_EMIT_V2(Warning) ;
-        EXPECT_MSG_EMIT_V2(Error) ;
+        EXPECT_MSG_EMIT(Warning) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         msg_warning("HERE") << "This should not generate a failure"  ;
         msg_error("HERE") << "This should not generate a test falure" ;
@@ -36,8 +36,8 @@ public:
     /// THIS TEST SHOULD FAIL.
     void expectAMessageissingBehavior()
     {
-        EXPECT_MSG_EMIT_V2(Warning) ;
-        EXPECT_MSG_EMIT_V2(Error) ;
+        EXPECT_MSG_EMIT(Warning) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         //msg_warning("HERE") << "This should not generate a failure"  ;
         //msg_error("HERE") << "This should not generate a test falure" ;
@@ -45,8 +45,8 @@ public:
 
     void noEmitTestBehavior()
     {
-        EXPECT_MSG_NOEMIT_V2(Warning) ;
-        EXPECT_MSG_NOEMIT_V2(Error) ;
+        EXPECT_MSG_NOEMIT(Warning) ;
+        EXPECT_MSG_NOEMIT(Error) ;
 
         msg_warning("HERE") << "This should generate a failure but with line number close to " << __LINE__  ;
         msg_error("HERE") << "This should generate a test falure with line number close to " << __LINE__ ;
@@ -55,20 +55,20 @@ public:
     void complexTestBehavior()
     {
         {
-            EXPECT_MSG_EMIT_V2(Warning) ;
-            EXPECT_MSG_EMIT_V2(Error) ;
+            EXPECT_MSG_EMIT(Warning) ;
+            EXPECT_MSG_EMIT(Error) ;
 
             //msg_warning("HERE") << "This should generate a failure"  ;
             //msg_error("HERE") << "This should generate a test failure" ;
             {
-                EXPECT_MSG_NOEMIT_V2(Error) ;
+                EXPECT_MSG_NOEMIT(Error) ;
                 msg_error("HERE") << "This should generate a test failure" ;
             }
         }
 
         {
-            EXPECT_MSG_NOEMIT_V2(Warning) ;
-            EXPECT_MSG_NOEMIT_V2(Error) ;
+            EXPECT_MSG_NOEMIT(Warning) ;
+            EXPECT_MSG_NOEMIT(Error) ;
 
             msg_warning("HERE") << "This should generate a failure"  ;
             msg_error("HERE") << "This should generate a test falure" ;

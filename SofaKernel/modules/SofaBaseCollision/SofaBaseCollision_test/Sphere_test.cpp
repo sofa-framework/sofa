@@ -63,8 +63,6 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
 
 namespace sofa {
 
@@ -584,7 +582,7 @@ void checkSceneWithRigid3dMechanicalModel()
 
 void checkGracefulHandlingWhenMechanicalModelIsMissing()
 {
-    ExpectMessage err(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"
