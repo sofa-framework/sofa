@@ -33,7 +33,7 @@
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa{
 namespace {

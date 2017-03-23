@@ -28,7 +28,7 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>

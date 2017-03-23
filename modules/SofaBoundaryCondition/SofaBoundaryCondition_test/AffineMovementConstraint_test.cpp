@@ -28,7 +28,7 @@
 #include <sofa/helper/RandomGenerator.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 using namespace sofa::defaulttype;
 

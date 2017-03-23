@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure;
+
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
@@ -61,7 +61,8 @@ struct Node_test : public Sofa_test<>
 
 TEST_F( Node_test, getPathName)
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
+
     EXPECT_EQ("", root->getPathName());
     EXPECT_EQ("/A/B", B->getPathName());
 }

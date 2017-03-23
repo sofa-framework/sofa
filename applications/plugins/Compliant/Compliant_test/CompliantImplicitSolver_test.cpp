@@ -7,7 +7,7 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 using namespace sofa::modeling;
 using namespace sofa::component;

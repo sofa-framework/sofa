@@ -23,7 +23,7 @@
 #include <gtest/gtest.h>
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 #include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 

@@ -28,7 +28,7 @@
 
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa {
 
@@ -170,21 +170,21 @@ struct Engine_test : public Sofa_test<>
 /// first test case: Check update method of engine2
 TEST_F(Engine_test , check_engine2_update )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testUpdateEngine2();
 }
 
 /// second test case: Check update method of engine3
 TEST_F(Engine_test , check_engine3_update )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testUpdateEngine3();
 }
 
 /// third test case: check propagation direction
 TEST_F(Engine_test , check_propagation )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testPropagationDirection();
 }
 
@@ -316,7 +316,7 @@ TYPED_TEST_CASE(DataEngine_test, TestTypes);
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )
 {
-    EXPECT_MSG_NOEMIT(Error) ;
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->run_basic_test();
 }
 

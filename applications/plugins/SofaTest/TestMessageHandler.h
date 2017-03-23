@@ -134,20 +134,6 @@ struct SOFA_TestPlugin_API MessageAsTestFailure
     }
 };
 
-class SOFA_TestPlugin_API WarningAndErrorAsTestFailure
-{
-    MessageAsTestFailure m_error ;
-    MessageAsTestFailure m_warning ;
-public:
-    WarningAndErrorAsTestFailure(const char* filename="undefined", int lineno=0) :
-        m_error(Message::Error, filename, lineno),
-        m_warning(Message::Warning, filename, lineno) {
-    }
-
-    virtual ~WarningAndErrorAsTestFailure(){
-    }
-};
-
 ///TAKE FROM http://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros
 #define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
@@ -170,11 +156,6 @@ public:
 
 } // logging
 } // helper
-
-namespace test
-{
-    using sofa::helper::logging::WarningAndErrorAsTestFailure ;
-}
 
 } // sofa
 

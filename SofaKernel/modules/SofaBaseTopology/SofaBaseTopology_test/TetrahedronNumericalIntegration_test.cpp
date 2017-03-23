@@ -34,7 +34,7 @@
 
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa {
 
@@ -156,7 +156,7 @@ TYPED_TEST_CASE(TetrahedronNumericalIntegration_test, DataTypes);
 // first test topology
 TYPED_TEST( TetrahedronNumericalIntegration_test , testNumericalIntegration )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->createScene();
     ASSERT_TRUE( this->testNumericalIntegration());
 

@@ -23,7 +23,7 @@
 #include "../Node_test.h"
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>

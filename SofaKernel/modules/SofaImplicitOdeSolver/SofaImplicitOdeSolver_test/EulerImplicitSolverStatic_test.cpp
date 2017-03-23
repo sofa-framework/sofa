@@ -31,7 +31,7 @@
 #include <sofa/simulation/Simulation.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa {
 

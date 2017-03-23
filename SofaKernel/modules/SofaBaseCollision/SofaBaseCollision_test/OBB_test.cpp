@@ -23,7 +23,7 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 using namespace sofa::PrimitiveCreationTest;
 using namespace sofa::defaulttype;
@@ -1238,137 +1238,137 @@ bool TestTriOBB::vertexVertex(){
 }
 
 TEST_F(TestOBB, face_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestOBB, vertex_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestOBB, face_face ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceFace());
 }
 
 TEST_F(TestOBB, face_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestOBB, edge_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestOBB, edge_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestCapOBB, face_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestCapOBB, face_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestCapOBB, edge_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestCapOBB, edge_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestCapOBB, vertex_edge) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexEdge());
 }
 
 TEST_F(TestCapOBB, vertex_vertex) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestSphereOBB, vertex_sphere ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertex());
 }
 
 TEST_F(TestSphereOBB, edge_sphere ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edge());
 }
 
 TEST_F(TestSphereOBB, face_sphere ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( face());
 }
 
 TEST_F(TestTriOBB, face_face ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceFace());
 }
 
 TEST_F(TestTriOBB, face_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestTriOBB, face_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestTriOBB, edge_face ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeFace());
 }
 
 TEST_F(TestTriOBB, edge_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestTriOBB, edge_edge_2 ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge2());
 }
 
 TEST_F(TestTriOBB, edge_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestTriOBB, vertex_face ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexFace());
 }
 
 TEST_F(TestTriOBB, vertex_edge ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexEdge());
 }
 
 TEST_F(TestTriOBB, vertex_vertex ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestTriOBB, face_vertex_out ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex_out());
 }
 
 TEST_F(TestTriOBB, face_vertex_out2 ) {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex_out2());
 }
 

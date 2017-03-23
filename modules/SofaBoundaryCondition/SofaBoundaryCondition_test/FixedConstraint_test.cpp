@@ -22,7 +22,7 @@
 
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>

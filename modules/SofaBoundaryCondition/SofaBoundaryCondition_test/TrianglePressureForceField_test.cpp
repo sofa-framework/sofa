@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa {
 

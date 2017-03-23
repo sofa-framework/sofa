@@ -41,7 +41,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::test::WarningAndErrorAsTestFailure ;
+
 
 namespace sofa {
 
@@ -308,7 +308,7 @@ TYPED_TEST_CASE(BezierTetrahedronTopology_test, DataTypes);
 // first test topology
 TYPED_TEST( BezierTetrahedronTopology_test , testTopology )
 {
-    WarningAndErrorAsTestFailure raii(__FILE__,__LINE__);
+    EXPECT_MSG_NOEMIT(Error, Warning);
 
     this->createScene();
     ASSERT_TRUE( this->testBezierTetrahedronTopology());
