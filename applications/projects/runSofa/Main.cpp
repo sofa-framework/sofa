@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -88,6 +85,12 @@ using sofa::gui::BatchGUI;
 using sofa::gui::BaseGUI;
 
 #include <sofa/helper/logging/Messaging.h>
+
+#include <sofa/helper/logging/ConsoleMessageHandler.h>
+using sofa::helper::logging::ConsoleMessageHandler ;
+
+#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #ifdef SOFA_HAVE_GLUT_GUI
 #include <sofa/helper/system/glut.h>
@@ -195,6 +198,8 @@ int main(int argc, char** argv)
     bool        affinity = false;
 #endif
     string colorsStatus = "auto";
+    string messageHandler = "auto";
+    bool enableInteraction = false ;
 
     string gui_help = "choose the UI (";
     gui_help += GUIManager::ListSupportedGUI('|');
@@ -214,15 +219,16 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto, clang, test)")
+    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
+    .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
+    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
+
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
     .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
 #endif
     (argc,argv);
-
-    // TODO: create additionnal message handlers depending on command-line parameters
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
@@ -275,23 +281,39 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new TreeSimulation());
 #endif
 
-
     if (colorsStatus == "auto")
         Console::setColorsStatus(Console::ColorsAuto);
     else if (colorsStatus == "yes")
         Console::setColorsStatus(Console::ColorsEnabled);
     else if (colorsStatus == "no")
         Console::setColorsStatus(Console::ColorsDisabled);
-    else if (colorsStatus == "clang"){
+
+    //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
+    if (messageHandler == "auto" )
+    {
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler() ) ;
+    }
+    else if (messageHandler == "clang")
+    {
         MessageDispatcher::clearHandlers() ;
         MessageDispatcher::addHandler( new ClangMessageHandler() ) ;
     }
-    else if (colorsStatus == "test"){
+    else if (messageHandler == "sofa")
+    {
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler() ) ;
+    }
+    else if (messageHandler == "rich")
+    {
+        MessageDispatcher::clearHandlers() ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+    }
+    else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
     }
     else{
-        Console::setColorsStatus(Console::ColorsAuto);
-        msg_warning("") << "Invalid argument ‘" << colorsStatus << "‘ for ‘--colors‘";
+        msg_warning("") << "Invalid argument ‘" << messageHandler << "‘ for ‘--formatting‘";
     }
 
     // Add the plugin directory to PluginRepository
@@ -328,6 +350,12 @@ int main(int argc, char** argv)
         GUIManager::AddGUIOption(oss.str().c_str());
     }
 
+    if(enableInteraction){
+        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
+                               "that may change or be removed in the future. " ;
+        GUIManager::AddGUIOption("enableInteraction");
+    }
+
     if(nbMSSASamples > 1)
     {
         ostringstream oss ;
@@ -361,12 +389,9 @@ int main(int argc, char** argv)
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(800,600);
 
-    Node::SPtr groot;
-    BaseNode* baseroot = sofa::simulation::getSimulation()->load(fileName.c_str()).get();
-    if( !baseroot )
+    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
+    if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
-    else
-        groot = down_cast<Node>( baseroot );
 
     if (!verif.empty())
     {

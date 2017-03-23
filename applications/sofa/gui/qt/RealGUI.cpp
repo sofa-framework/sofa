@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -93,6 +90,12 @@
 #include <sstream>
 #include <ctime>
 
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
+
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::helper::system::FileMonitor ;
+
 namespace sofa
 {
 
@@ -121,6 +124,16 @@ public:
     QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
     { }
+
+#if QT_VERSION < 0x050000
+    static inline QString translate(const char * context, const char * key, const char * disambiguation,
+                            QCoreApplication::Encoding encoding = QCoreApplication::UnicodeUTF8, int n = -1)
+        { return QApplication::translate(context, key, disambiguation, encoding, n); }
+#else
+    static inline QString translate(const char * context, const char * key,
+                            const char * disambiguation = Q_NULLPTR, int n = -1)
+        { return QApplication::translate(context, key, disambiguation, n); }
+#endif
 
 protected:
     bool event(QEvent *event)
@@ -264,7 +277,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     m_fullScreen(false),
     mViewer(NULL),
     m_clockBeforeLastStep(0),
-	propertyWidget(NULL),
+    propertyWidget(NULL),
     currentTab ( NULL ),
     statWidget(NULL),
     timerStep(NULL),
@@ -305,6 +318,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
     connect ( tabs, SIGNAL ( currentChanged ( int ) ), this, SLOT ( currentTabChanged ( int ) ) );
 
+    /// We activate this timer only if the interactive mode is enabled (ie livecoding+mouse mouve event).
+    if(m_enableInteraction){
+        timerIdle = new QTimer(this);
+        connect ( timerIdle, SIGNAL ( timeout() ), this, SLOT ( emitIdle() ) );
+        timerIdle->start(50) ;
+    }
+
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
     //dockWidget=new QDockWidget(tr(""), this);
     //dockWidget->setResizeEnabled(true);
@@ -316,9 +336,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
 
-	/*moveDockWindow(dockWidget, Qt::DockLeft);
-	dockWidget->setFixedExtentWidth(400);
-	dockWidget->setFixedExtentHeight(600);*/
+    /*moveDockWindow(dockWidget, Qt::DockLeft);
+    dockWidget->setFixedExtentWidth(400);
+    dockWidget->setFixedExtentHeight(600);*/
 
     // create a Dock Window to receive the Sofa Recorder
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -371,8 +391,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
-	/** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
-	/*
+    /** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
+    /*
     QSettings settings;
     settings.beginGroup("viewer");
     int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
@@ -388,11 +408,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
     this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
-	*/
+    */
 
-	//Center the application
-	const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-	this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+    //Center the application
+    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
 
@@ -413,10 +433,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     gridLayout->removeWidget(screenshotButton);
     gridLayout->addWidget(screenshotButton, 3, 1, 1,1);
 
-    interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
-    interactionButton->setShortcut(QApplication::translate("GUI", "Alt+i", 0, QApplication::UnicodeUTF8));
+    interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
+    interactionButton->setShortcut(QSOFAApplication::translate("GUI", "Alt+i", 0));
 #ifndef QT_NO_TOOLTIP
-    interactionButton->setProperty("toolTip", QVariant(QApplication::translate("GUI", "Start interaction mode", 0, QApplication::UnicodeUTF8)));
+    interactionButton->setProperty("toolTip", QVariant(QSOFAApplication::translate("GUI", "Start interaction mode", 0)));
 #endif
 
     connect ( interactionButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( interactionGUI ( bool ) ) );
@@ -625,13 +645,13 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         return;
     }
     this->unloadScene();
-    Node *simuNode = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
-    getSimulation()->init(simuNode);
-    if ( simuNode )
+    mSimulation = dynamic_cast< Node *> (simulation::getSimulation()->load ( scene.c_str() ));
+    getSimulation()->init(mSimulation);
+    if ( mSimulation )
     {
         if ( !pmlreader ) pmlreader = new PMLReader;
-        pmlreader->BuildStructure ( filename, simuNode );
-        setScene ( simuNode, filename );
+        pmlreader->BuildStructure ( filename, mSimulation );
+        setScene ( mSimulation, filename );
         this->setWindowFilePath(filename); //.c_str());
     }
 }
@@ -659,7 +679,6 @@ void RealGUI::lmlOpen ( const char* filename )
 
 
 //======================= OPTIONS DEFINITIONS ========================= }
-
 
 
 //======================= METHODS ========================= {
@@ -711,7 +730,7 @@ int RealGUI::closeGUI()
 
 sofa::simulation::Node* RealGUI::currentSimulation()
 {
-    return simulation::getSimulation()->GetRoot().get();
+    return mSimulation.get();
 }
 
 //------------------------------------
@@ -740,20 +759,39 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     sofa::simulation::xml::numDefault = 0;
 
     if( currentSimulation() ) this->unloadScene();
-    simulation::Node::SPtr root = simulation::getSimulation()->load ( filename.c_str() );
-    simulation::getSimulation()->init ( root.get() );
-    if ( root == NULL )
+    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    simulation::getSimulation()->init ( mSimulation.get() );
+    if ( mSimulation == NULL )
     {
         std::cerr<<"Failed to load "<<filename.c_str()<<std::endl;
         return;
     }
-    setScene ( root, filename.c_str(), temporaryFile );
-    configureGUI(root.get());
+    setScene ( mSimulation, filename.c_str(), temporaryFile );
+    configureGUI(mSimulation.get());
 
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     //  displayComputationTime(m_displayComputationTime);  // (FF) This can be set outside of the GUI and should not be changed implicitly by the GUI
     stopDumpVisitor();
+}
+
+
+//------------------------------------
+
+void RealGUI::emitIdle()
+{
+    // Update all the registered monitor.
+    FileMonitor::updates(0) ;
+
+    IdleEvent hb;
+    Node* groot = mViewer->getScene();
+    if (groot)
+    {
+        groot->propagateEvent(core::ExecParams::defaultInstance(), &hb);
+    }
+
+    if(isEmbeddedViewer())
+        getQtViewer()->getQWidget()->update();;
 }
 
 //------------------------------------
@@ -869,6 +907,8 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
     if (root)
     {
+        mSimulation = root;
+
         eventNewTime();
 
         //simulation::getSimulation()->updateVisualContext ( root );
@@ -933,7 +973,7 @@ void RealGUI::setTitle ( std::string windowTitle )
 
 void RealGUI::fileNew()
 {
-    std::string newScene("share/config/newScene.scn");
+    std::string newScene("config/newScene.scn");
     if (sofa::helper::system::DataRepository.findFile (newScene))
         fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
 }
@@ -1076,12 +1116,12 @@ void RealGUI::setViewerResolution ( int w, int h )
 
         const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->screenNumber(this));
 //      QSize newWinSize(dockWidget->width() + w, dockWidget->height() + h);
-        
+
         QSize newWinSize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
         if (newWinSize.width() > screen.width()) newWinSize.setWidth(screen.width()-20);
         if (newWinSize.height() > screen.height()) newWinSize.setHeight(screen.height()-20);
 
-		this->resize(newWinSize);
+        this->resize(newWinSize);
         //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
     }
     else
@@ -1647,6 +1687,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
     connect ( screenshotButton, SIGNAL ( clicked() ), this, SLOT ( screenshot() ) );
     connect ( sizeW, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeW ( int ) ) );
     connect ( sizeH, SIGNAL ( valueChanged ( int ) ), this, SLOT ( setSizeH ( int ) ) );
+
 }
 
 //------------------------------------
@@ -1655,6 +1696,8 @@ void RealGUI::parseOptions(const std::vector<std::string>& options)
 {
     for (unsigned int i=0; i<options.size(); ++i)
     {
+        if (options[i] == "enableInteraction")
+            m_enableInteraction = true;
         if (options[i] == "noViewers")
             mCreateViewersOpt = false;
         if (options[i].substr(0,4).compare("msaa") == 0)
@@ -1749,7 +1792,7 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
-	connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );
+    connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( dataModified( QString ) ), this, SLOT( appendToDataLogFile(QString ) ) );
@@ -1759,7 +1802,7 @@ void RealGUI::createSimulationGraph()
 
 void RealGUI::createPropertyWidget()
 {
-	ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
+    ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
     modifyObjectFlags.setFlagsForSofa();
 
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
@@ -1886,7 +1929,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
 void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
 {
-	node->setSleeping(sleeping);
+    node->setSleeping(sleeping);
 }
 
 //------------------------------------
@@ -1990,7 +2033,7 @@ void RealGUI::interactionGUI ( bool value )
 
     if(value)
     {
-        interactionButton->setText(QApplication::translate("GUI", "ESC to qu&it", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QSOFAApplication::translate("GUI", "ESC to qu&it", 0));
         this->grabMouse();
         this->grabKeyboard();
         this->setMouseTracking(true);
@@ -2001,7 +2044,7 @@ void RealGUI::interactionGUI ( bool value )
     }
     else
     {
-        interactionButton->setText(QApplication::translate("GUI", "&Interaction", 0, QApplication::UnicodeUTF8));
+        interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
         this->releaseKeyboard();
         this->releaseMouse();
         this->setMouseTracking(false);
@@ -2145,14 +2188,20 @@ void RealGUI::screenshot()
 
     if ( filename != "" )
     {
-        std::ostringstream ofilename;
-        const char* begin = filename.toStdString().c_str();
-        const char* end = strrchr ( begin,'_' );
-        if ( !end )
-            end = begin + filename.length();
-        ofilename << std::string ( begin, end );
-        ofilename << "_";
-        getViewer()->setPrefix ( ofilename.str() );
+        QString prefix;
+        int end = filename.lastIndexOf('_');
+        if (end > -1) {
+            prefix = filename.mid(
+                0,
+                end+1
+            );
+        } else {
+            prefix = QString::fromStdString(
+              sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.toStdString().c_str()) + "_");
+        }
+
+        if (!prefix.isEmpty())
+            getViewer()->setPrefix ( prefix.toStdString(), false );
 
         getViewer()->screenshot ( filename.toStdString() );
     }
@@ -2437,8 +2486,8 @@ void RealGUI::updateViewerList()
 void RealGUI::toolsDockMoved()
 {
     QDockWidget* dockWindow = qobject_cast<QDockWidget*>(sender());
-	if(!dockWindow)
-		return;
+    if(!dockWindow)
+        return;
 
     if(dockWindow->isFloating())
         dockWindow->resize(500, 700);
@@ -2447,8 +2496,8 @@ void RealGUI::toolsDockMoved()
 void RealGUI::propertyDockMoved(Qt::DockWidgetArea /*a*/)
 {
     QDockWidget* dockWindow = qobject_cast<QDockWidget*>(sender());
-	if(!dockWindow)
-		return;
+    if(!dockWindow)
+        return;
 
     if(dockWindow->isFloating())
         dockWindow->resize(500, 700);

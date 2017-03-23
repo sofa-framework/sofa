@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -54,13 +51,13 @@ void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescript
 {
     this->Inherit::parse(arg);
     if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
-        this->setGridMin(atof(arg->getAttribute("minx","-100.0")),
-                atof(arg->getAttribute("miny","-100.0")),
-                atof(arg->getAttribute("minz","-100.0")));
+        this->setGridMin(arg->getAttributeAsFloat("minx",-100.0),
+                         arg->getAttributeAsFloat("miny",-100.0),
+                         arg->getAttributeAsFloat("minz",-100.0));
     if (arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
-        this->setGridMax(atof(arg->getAttribute("maxx","100.0")),
-                atof(arg->getAttribute("maxy","100.0")),
-                atof(arg->getAttribute("maxz","100.0")));
+        this->setGridMax(arg->getAttributeAsFloat("maxx",100.0),
+                         arg->getAttributeAsFloat("maxy",100.0),
+                         arg->getAttributeAsFloat("maxz",100.0));
 }
 
 template<class Real>

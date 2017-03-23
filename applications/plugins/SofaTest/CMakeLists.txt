@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaTest)
 
 set(SOFATEST_VERSION 0.1)
@@ -16,6 +16,7 @@ set(HEADER_FILES
     PrimitiveCreation.h
     Sofa_test.h
     TestMessageHandler.h
+    #LogMessage.h
 )
 
 set(SOURCE_FILES

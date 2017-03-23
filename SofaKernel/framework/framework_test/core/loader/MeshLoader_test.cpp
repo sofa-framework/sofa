@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -62,16 +59,16 @@ protected:
 
     void populateMesh_1triangle_1tetra()
     {
-        MeshTestLoader::waPositions my_positions(meshLoader.positions);
+        MeshTestLoader::waPositions my_positions(meshLoader.d_positions);
         meshLoader.addPosition(&(my_positions.wref()), 0.,0.,0.);
         meshLoader.addPosition(&(my_positions.wref()), 1.,0.,0.);
         meshLoader.addPosition(&(my_positions.wref()), 0.,1.,0.);
         meshLoader.addPosition(&(my_positions.wref()), 0.,0.,1.);
 
-        MeshTestLoader::waTtriangles my_triangles(meshLoader.triangles);
+        MeshTestLoader::waTtriangles my_triangles(meshLoader.d_triangles);
         meshLoader.addTriangle(&(my_triangles.wref()), MeshLoader::Triangle(0,1,2));
 
-        MeshTestLoader::waTetrahedra my_tetrahedra(meshLoader.tetrahedra);
+        MeshTestLoader::waTetrahedra my_tetrahedra(meshLoader.d_tetrahedra);
         meshLoader.addTetrahedron(&(my_tetrahedra.wref()), MeshLoader::Tetrahedron(0,1,2,3) );
 
     }
@@ -83,21 +80,21 @@ protected:
 TEST_F(MeshLoader_test, createSubElements)
 {
     populateMesh_1triangle_1tetra();
-    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
-    EXPECT_EQ(1u, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.d_positions.getValue().size());
+    EXPECT_EQ(1u, meshLoader.d_triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.d_tetrahedra.getValue().size());
 
-    meshLoader.createSubelements.setValue(false);
+    meshLoader.d_createSubelements.setValue(false);
     updateMesh();
-    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
-    EXPECT_EQ(1u, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.d_positions.getValue().size());
+    EXPECT_EQ(1u, meshLoader.d_triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.d_tetrahedra.getValue().size());
 
-    meshLoader.createSubelements.setValue(true);
+    meshLoader.d_createSubelements.setValue(true);
     updateMesh();
-    EXPECT_EQ(4u, meshLoader.positions.getValue().size());
-    EXPECT_EQ(4u, meshLoader.triangles.getValue().size());
-    EXPECT_EQ(1u, meshLoader.tetrahedra.getValue().size());
+    EXPECT_EQ(4u, meshLoader.d_positions.getValue().size());
+    EXPECT_EQ(4u, meshLoader.d_triangles.getValue().size());
+    EXPECT_EQ(1u, meshLoader.d_tetrahedra.getValue().size());
 
 }
 

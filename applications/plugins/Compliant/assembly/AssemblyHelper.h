@@ -7,11 +7,13 @@
 #include <Compliant/config.h>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/OwnershipSPtr.h>
+
 
 namespace sofa {
 
 
-
+// TODO move this into SofaKernel as it can be useful to any plugin.
 
 // some helpers
 template<class Matrix>
@@ -188,111 +190,12 @@ static void convertDenseToSparse( mat& res, const densemat& m )
     res.finalize();
 }
 
-//// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-/// @warning this is performing a copy, even when the type is ok
-/// prefer to use convertSPtr
-//template<class mat>
-//mat convert( const defaulttype::BaseMatrix* m) {
-//    assert( m );
-
-//    {
-//    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-//    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-//    if ( smd ) return smd->compressedMatrix.cast<SReal>();
-//    }
-
-//    {
-//    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-//    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-//    if( smf ) return smf->compressedMatrix.cast<SReal>();
-//    }
-
-//    msg_warning("AssemblyHelper)"<<"very slow matrix conversion";
-
-//    mat res(m->rowSize(), m->colSize());
-
-//    res.reserve(res.rows() * res.cols());
-//    for(unsigned i = 0, n = res.rows(); i < n; ++i) {
-//        res.startVec( i );
-//        for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-//            SReal e = m->element(i, j);
-//            if( e ) res.insertBack(i, j) = e;
-//        }
-//    }
-
-//    return res;
-//}
 
 
 
-/// Smart pointer that can point to an existing data without taking ownership
-/// Or that can point to a new temporary Data that must be deleted when this
-/// smart pointer is deleted (taking ownership)
-// maybe an equivalent smart pointer exists in boost but I do not know
-template<class T>
-class MySPtr
-{
-    const T* t;
-    mutable bool ownership;
-public:
-    MySPtr() : t(NULL), ownership(false) {}
-    MySPtr( const T* t, bool ownership ) : t(t), ownership(ownership) {}
-    MySPtr( const MySPtr<T>& other ) : t(other.t), ownership(other.ownership) { other.ownership=false; }
-    ~MySPtr() { if( ownership ) delete t; }
-    void operator=(const MySPtr<T>& other) { t=other.t; ownership=other.ownership; other.ownership=false; }
-    const T& operator*() const { return *t; }
-    const T* operator->() const { return t; }
-};
-
-
-// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
-template<class mat>
-MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
-    assert( m );
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
-    const matrixr* smr = dynamic_cast<const matrixr*> (m);
-    if ( smr ) return MySPtr<mat>(&smr->compressedMatrix, false);
-    }
-
-    msg_warning("AssemblyHelper")<<"slow matrix conversion (scalar type conversion)";
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-    const matrixd* smd = dynamic_cast<const matrixd*> (m);
-    if ( smd ) return MySPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
-    }
-
-    {
-    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-    const matrixf* smf = dynamic_cast<const matrixf*>(m);
-    if( smf ) return MySPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
-    }
-
-    msg_warning("AssemblyHelper")<<"very slow matrix conversion (from BaseMatrix)";
-
-    mat* res = new mat(m->rowSize(), m->colSize());
-
-    res->reserve(res->rows() * res->cols());
-    for(unsigned i = 0, n = res->rows(); i < n; ++i) {
-        res->startVec( i );
-        for(unsigned j = 0, k = res->cols(); j < k; ++j) {
-            SReal e = m->element(i, j);
-            if( e ) res->insertBack(i, j) = e;
-        }
-    }
-
-    return MySPtr<mat>(res, true);
-}
-
-
-
-
-
+// TODO move this in is own file
 namespace simulation
 {
-
 
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
@@ -388,23 +291,30 @@ public:
 
 
 
-/// propagate constraint *forces* (lambdas/dt) toward independent dofs
+/// add/propagate constraint *forces* (lambdas/dt) toward independent dofs
 class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
 
     core::MultiVecDerivId force, lambda;
-    SReal invdt;
+    SReal factor;
+    bool clear, propagate;
 
 public:
 
     propagate_constraint_force_visitor(const sofa::core::MechanicalParams* mparams,
                       const core::MultiVecDerivId& out,
                       const core::MultiVecDerivId& in,
-                      SReal dt)
+                      SReal factor, /*depending on the system formulation, constraint forces are deduced from lagrange multipliers  f=lamba for acc/dv,  f=lambda/dt for vel */
+                      bool clear, /*clear existing forces*/
+                      bool propagate /*propagating toward independent dofs*/)
         : simulation::MechanicalVisitor(mparams)
         , force( out )
         , lambda( in )
-        , invdt( 1.0/dt )
-    {}
+        , factor( factor )
+        , clear(clear)
+        , propagate(propagate)
+    {
+        assert(!propagate || clear ); // existing forces must be cleared if propagating
+    }
 
 
     Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
@@ -413,8 +323,8 @@ public:
 
         if( !node->forceField.empty() && node->forceField[0]->isCompliance.getValue() ) // TODO handle interactionFF
             // compliance should be alone in the node
-            state->vOp( mparams, force.getId(state), core::ConstVecId::null(), lambda.getId(state), invdt ); // constraint force = lambda / dt
-        else
+            state->vOp( mparams, force.getId(state), clear?core::ConstVecId::null():force.getId(state), lambda.getId(state), factor ); // constraint force = lambda / dt
+        else if( propagate )
             state->resetForce(mparams, force.getId(state));
 
         return RESULT_CONTINUE;
@@ -423,24 +333,74 @@ public:
     Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
     {
         // compliance cannot be present at independent dof level
-        state->resetForce(mparams, force.getId(state));
+        if( propagate )
+            state->resetForce(mparams, force.getId(state));
         return RESULT_CONTINUE;
     }
 
     void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
     {
-        map->applyJT(mparams, force, force);
+        if( propagate )
+            map->applyJT(mparams, force, force);
     }
 
     void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
     {
-        c->projectResponse( mparams, force );
+        if( propagate )
+            c->projectResponse( mparams, force );
     }
 
 
 };
 
 
+/// TOOO move this somewhere else
+/// propagate lambdas in lambda vectors
+class SOFA_Compliant_API propagate_lambdas_visitor : public simulation::MechanicalVisitor {
+
+    core::MultiVecDerivId lambda;
+
+public:
+
+    propagate_lambdas_visitor(const core::MechanicalParams* mparams,
+                      const core::MultiVecDerivId& lambda)
+        : simulation::MechanicalVisitor(mparams)
+        , lambda( lambda )
+    {
+    }
+
+    Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* state)
+    {
+        if( node->forceField.empty() || !node->forceField[0]->isCompliance.getValue() )
+        {
+            const core::VecDerivId& id = lambda.getId(state);
+            if( !id.isNull() )
+                state->resetForce( mparams, id );
+        }
+
+        return RESULT_CONTINUE;
+    }
+
+    Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* state)
+    {
+        // compliance cannot be present at independent dof level
+        const core::VecDerivId& id = lambda.getId(state);
+        if( !id.isNull() )
+            state->resetForce( mparams, id );
+        return RESULT_CONTINUE;
+    }
+
+    void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    {
+        map->applyJT(mparams, lambda, lambda);
+    }
+
+    void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    {
+        c->projectResponse( mparams, lambda );
+    }
+
+};
 
 
 } // namespace simulation

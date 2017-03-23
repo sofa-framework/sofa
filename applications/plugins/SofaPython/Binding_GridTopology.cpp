@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -36,22 +33,9 @@ extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setSize(nx,ny,nz);
-    Py_RETURN_NONE;
-}
-
-extern "C" PyObject * GridTopology_setNumVertices(PyObject *self, PyObject * args)
-{
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
-    int nx,ny,nz;
-    if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
-    }
-    obj->setNumVertices(nx,ny,nz);
     Py_RETURN_NONE;
 }
 
@@ -68,7 +52,7 @@ extern "C" PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNx(nb);
     Py_RETURN_NONE;
@@ -87,7 +71,7 @@ extern "C" PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNy(nb);
     Py_RETURN_NONE;
@@ -106,7 +90,7 @@ extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     obj->setNz(nb);
     Py_RETURN_NONE;
@@ -117,7 +101,6 @@ extern "C" PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 
 SP_CLASS_METHODS_BEGIN(GridTopology)
 SP_CLASS_METHOD(GridTopology,setSize)
-SP_CLASS_METHOD(GridTopology,setNumVertices)
 SP_CLASS_METHOD(GridTopology,getNx)
 SP_CLASS_METHOD(GridTopology,getNy)
 SP_CLASS_METHOD(GridTopology,getNz)

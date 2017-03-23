@@ -15,7 +15,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(PreconditionedCgSolver)
-const int PreconditionedCgSolverClass = core::RegisterObject("Sparse PCG linear solver").add< PreconditionedCgSolver >();
+int PreconditionedCgSolverClass = core::RegisterObject("Sparse PCG linear solver").add< PreconditionedCgSolver >();
 
 
 void PreconditionedCgSolver::init()

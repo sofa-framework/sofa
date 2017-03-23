@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -61,6 +58,8 @@ public:
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
 
+    virtual void init() = 0;
+
     /// @name Primitive rendering methods
     /// @{
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour) = 0 ;
@@ -97,6 +96,8 @@ public:
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0 ;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0;
 
     virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16) = 0 ;
 
@@ -197,6 +198,8 @@ public:
     /// draw 2D text at position (x,y) from top-left corner
     virtual void writeOverlayText( int x, int y, unsigned fontSize, const Vec4f &color, const char* text ) = 0;
 
+    // @name Color Buffer method
+    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL) = 0;
     /// @}
 
     virtual void clear() {}

@@ -9,7 +9,8 @@ namespace component {
 namespace linearsolver {
 
 
-/// this has to be added in the Constraint class definition (as public)
+/// This has to be added in the Constraint class definition (as public).
+/// It is a way to check constraint type for cheap.
 #define SOFA_COMPLIANT_CONSTRAINT_H(T) \
     protected:\
     static const size_t s_constraintTypeIndex; \
@@ -18,7 +19,8 @@ namespace linearsolver {
     static bool checkConstraintType( const Constraint* constraint ) { return constraint->getConstraintTypeIndex() == T::s_constraintTypeIndex; }
 
 
-/// this has to be added in the Constraint implementation file
+/// This has to be added in the Constraint implementation file.
+/// It is a way to check constraint type for cheap.
 #define SOFA_COMPLIANT_CONSTRAINT_CPP(T) \
     const size_t T::s_constraintTypeIndex = ++sofa::component::linearsolver::Constraint::s_lastConstraintTypeIndex;
 
@@ -30,14 +32,11 @@ struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
 
     Constraint();
 
-
-    // TODO @index is not used at all in
-    // CoulombConstraint/UnilateralConstraint, which I assume is
-    // normal behavior. n is assumed to be the total size of the
-    // buffer.
-    
     /// project the response on the valid sub-space
-    /// @correctionPass informs if the correction pass is performing (in which case only a friction projection should only treat the unilateral projection for example)
+    /// @param out: the buffer to project
+    /// @param n: the total size of the buffer
+    /// @param index: unused in the general case (introduced for the 6d contact work)
+    /// @param correctionPass informs if the correction pass is performing (in which case only a friction projection should only treat the unilateral projection for example)
     virtual void project(SReal* out, unsigned n, unsigned index, bool correctionPass=false) const = 0;
 
     /// Flagging which constraints must be activated (true == active)

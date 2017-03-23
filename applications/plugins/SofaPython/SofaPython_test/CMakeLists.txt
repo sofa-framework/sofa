@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaPython_test)
 
@@ -8,9 +8,12 @@ set(SOURCE_FILES
     python_test_list.cpp
     memory.cpp
     PythonFactory_test.cpp
+    PythonScriptControllerHelper_test.cpp
 )
 
 set(PYTHON_FILES
+    python/automaticNodeInitialization.py
+    python/sysPathDuplicate.py
     python/dataVecResize.py
     python/testController.py
     python/test_PySceneWithPyCtlr.py
@@ -20,12 +23,9 @@ set(PYTHON_FILES
     python/test_units.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
+    python/test_PythonScriptControllerHelper.py
 )
 
-if(SOFA_USE_C++11)
-    list(APPEND SOURCE_FILES PythonScriptControllerHelper_test.cpp)
-    list(APPEND PYTHON_FILES python/test_PythonScriptControllerHelper.py)
-endif()
 
 find_package(SofaTest)
 find_package(SofaPython)

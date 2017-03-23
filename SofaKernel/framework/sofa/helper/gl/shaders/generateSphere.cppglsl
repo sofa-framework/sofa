@@ -1,0 +1,99 @@
+namespace sofa
+{
+
+namespace helper
+{
+
+namespace gl
+{
+
+const std::string generateSphereVS = R"SHADER_DELIM(
+#version 120
+
+attribute float a_radius;
+
+// uniform float u_radius;
+
+varying vec2 v_mapping;
+varying vec4 v_cameraSpherePos;
+varying vec3 v_lightDir;
+varying float v_radius;
+varying vec4 v_ambientGlobal;
+
+void main(void)
+{
+	vec2 offset;
+
+    	v_cameraSpherePos = (gl_ModelViewMatrix * gl_Vertex);
+
+    	gl_TexCoord[0] = gl_MultiTexCoord0;
+
+    	v_mapping = vec2(gl_TexCoord[0].x , gl_TexCoord[0].y);
+	offset = v_mapping * a_radius;
+    
+    vec4 cameraCornerPos = v_cameraSpherePos;
+    cameraCornerPos.xy += offset;
+
+        vec3 vertexToLightSource = gl_LightSource[0].position.xyz - cameraCornerPos.xyz;
+    v_lightDir = normalize(vertexToLightSource);  
+    v_radius = a_radius;
+
+    v_ambientGlobal = gl_LightSource[0].ambient * gl_FrontMaterial.ambient; 	
+    
+    gl_Position = gl_ProjectionMatrix * cameraCornerPos;
+    // gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+
+    }
+
+)SHADER_DELIM";
+
+const std::string generateSphereFS = R"SHADER_DELIM(
+#version 120
+
+// uniform float u_radius;
+
+varying vec2 v_mapping;
+varying vec4 v_cameraSpherePos;
+varying vec3 v_lightDir;
+varying float v_radius;
+varying vec4 v_ambientGlobal;
+
+void main()
+{
+    //const vec3 lightDir = vec3(0,0,1);
+    vec3 lightDir = v_lightDir;
+    vec4 ambientColor = v_ambientGlobal;
+    vec4 diffuseColor = gl_FrontMaterial.diffuse;
+    vec4 specularColor = gl_FrontMaterial.specular;
+    float shininess = gl_FrontMaterial.shininess;
+
+        vec3 cameraPos;
+    vec3 cameraNormal;
+    
+    float lensqr = dot(v_mapping, v_mapping);
+    if(lensqr > 1.0)
+        discard;
+        
+    cameraNormal = vec3(v_mapping, sqrt(1.0 - lensqr));
+    cameraPos = (cameraNormal * v_radius) + v_cameraSpherePos.xyz;
+
+        //Diffuse
+    float diff = max(dot(lightDir, cameraNormal), 0.0);
+    vec4 diffuse = diff * diffuseColor;
+    //Specular
+    vec3 viewDir = normalize(-cameraPos);
+    vec3 reflectDir = normalize(reflect(-lightDir, cameraNormal));
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+
+        vec4 specular = vec4(specularColor.xyz * spec, 1.0) * gl_LightSource[0].specular ;
+
+        gl_FragColor = ambientColor + diffuse + specular;
+    //gl_FragColor = vec4(v_mapping,0,1);  
+}
+)SHADER_DELIM";
+
+} //gl
+
+} //helper
+
+} //sofa

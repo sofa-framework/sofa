@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -71,73 +68,62 @@ public:
 
     virtual void reinit();
 
-    /// Apply translation vector to the position.
-    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
-
-    /// Apply rotation using Euler Angles in degree.
-    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
-
-    /// Apply rotation using quaternion.
-    virtual void applyRotation (const defaulttype::Quat q);
-
-    /// Apply Scale to the positions
-    virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
 
     /// Apply Homogeneous transformation to the positions
     virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);
 
     /// @name Initial transformations accessors.
     /// @{
-    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTranslation(SReal dx, SReal dy, SReal dz) {d_translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(SReal rx, SReal ry, SReal rz) {d_rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(SReal sx, SReal sy, SReal sz) {d_scale.setValue(Vector3(sx,sy,sz));}
     void setTransformation(const sofa::defaulttype::Matrix4& t) {d_transformation.setValue(t);}
 
-    virtual Vector3 getTranslation() const {return translation.getValue();}
-    virtual Vector3 getRotation() const {return rotation.getValue();}
-    virtual Vector3 getScale() const {return scale.getValue();}
+    virtual Vector3 getTranslation() const {return d_translation.getValue();}
+    virtual Vector3 getRotation() const {return d_rotation.getValue();}
+    virtual Vector3 getScale() const {return d_scale.getValue();}
     virtual sofa::defaulttype::Matrix4 getTransformation() const {return d_transformation.getValue();}
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions;
 
     // Tab of 2D elements composition
-    Data< helper::vector< Edge > > edges;
-    Data< helper::vector< Triangle > > triangles;
-    Data< helper::vector< Quad > > quads;
-    Data< helper::vector< helper::vector <unsigned int> > > polygons;
+    Data< helper::vector< Edge > > d_edges;
+    Data< helper::vector< Triangle > > d_triangles;
+    Data< helper::vector< Quad > > d_quads;
+    Data< helper::vector< helper::vector <unsigned int> > > d_polygons;
 
     // Tab of 3D elements composition
-    Data< helper::vector< Tetrahedron > > tetrahedra;
-    Data< helper::vector< Hexahedron > > hexahedra;
-    Data< helper::vector< Pentahedron > > pentahedra;
-    Data< helper::vector< Pyramid > > pyramids;
+    Data< helper::vector< Tetrahedron > > d_tetrahedra;
+    Data< helper::vector< Hexahedron > > d_hexahedra;
+    Data< helper::vector< Pentahedron > > d_pentahedra;
+    Data< helper::vector< Pyramid > > d_pyramids;
 
     // polygons in 3D ?
 
     //Misc
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > normals; /// Normals per vertex
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; /// Normals per vertex
 
     // Groups
-    Data< helper::vector< PrimitiveGroup > > edgesGroups;
-    Data< helper::vector< PrimitiveGroup > > trianglesGroups;
-    Data< helper::vector< PrimitiveGroup > > quadsGroups;
-    Data< helper::vector< PrimitiveGroup > > polygonsGroups;
-    Data< helper::vector< PrimitiveGroup > > tetrahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > hexahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > pentahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > pyramidsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_edgesGroups;
+    Data< helper::vector< PrimitiveGroup > > d_trianglesGroups;
+    Data< helper::vector< PrimitiveGroup > > d_quadsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_polygonsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_tetrahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_hexahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_pentahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > d_pyramidsGroups;
 
-    Data< bool > flipNormals;
-    Data< bool > triangulate;
-    Data< bool > createSubelements;
-    Data< bool > onlyAttachedPoints;
+    Data< bool > d_flipNormals;
+    Data< bool > d_triangulate;
+    Data< bool > d_createSubelements;
+    Data< bool > d_onlyAttachedPoints;
 
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
-    Data< Vector3 > scale;
-    Data< sofa::defaulttype::Matrix4 > d_transformation;
+    Data< Vector3 > d_translation;
+    Data< Vector3 > d_rotation;
+    Data< Vector3 > d_scale;
+    Data< defaulttype::Matrix4 > d_transformation;
 
 
    virtual void updateMesh();
@@ -147,6 +133,8 @@ public:
 
 protected:
 
+    /// to be able to call reinit w/o applying several time the same transform
+    defaulttype::Matrix4 d_previousTransformation;
 
 
     void addPosition(helper::vector< sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);

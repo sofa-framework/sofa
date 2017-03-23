@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,13 +24,15 @@
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-//#include <sofa/core/topology/BaseMeshTopology.h>
-//#ifdef SOFA_HAVE_FLOWVR
+
+#ifdef SOFA_HAVE_MINIFLOWVR
 #include <flowvr/render/mesh.h>
-//#endif
+#endif
 
 #include <fstream>
 #include <sstream>
+
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -148,20 +147,20 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
     {
         return loadVTKFile(filename, scale, sampling);
     }
-//#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
     {
+#ifdef SOFA_HAVE_MINIFLOWVR
         flowvr::render::Mesh mesh;
         if (!mesh.load(filename.c_str()))
         {
-            std::cerr << "ERROR loading FlowVR mesh file "<<filename<<std::endl;
+            msg_error("DistanceGrid")<<"loading FlowVR mesh file "<<filename;
             return NULL;
         }
         //base->sout << "bbox = "<<mesh.bb<<base->sendl;
 
         if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
         {
-            std::cerr << "ERROR: FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap."<<std::endl;
+            msg_error("DistanceGrid")<<"FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap.";
             return NULL;
         }
         nx = mesh.distmap->nx;
@@ -212,8 +211,11 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             grid->computeBBox();
         //std::cout<< "Distance grid creation DONE."<<std::endl;
         return grid;
+#else
+        msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library (activatable with the CMake option 'SOFA_BUILD_MINIFLOWVR')";
+        return NULL;
+#endif
     }
-//#endif
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
@@ -273,7 +275,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
     }
     else
     {
-        std::cerr << "Unknown extension: "<<filename<<std::endl;
+         msg_error("DistanceGrid")<< "Unknown extension: "<<filename;
         return NULL;
     }
 }
@@ -288,7 +290,7 @@ bool DistanceGrid::save(const std::string& filename)
     }
     else
     {
-        std::cerr << " DistanceGrid::save(): Unsupported extension: "<<filename<<std::endl;
+        msg_error("DistanceGrid")<<"save(): Unsupported extension: "<<filename;
         return false;
     }
     return true;
@@ -369,7 +371,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
         return NULL;
     }
 
-    std::cout << (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header << std::endl;
+    msg_info("DistanceGrid")<< (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header;
     //enum { Header, CellData, PointData } section = Header;
     int dataSize = 0;
     int nx = 0, ny = 0, nz = 0;
@@ -408,9 +410,9 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
         {
             std::string name, typestr;
             ln >> name >> typestr;
-            std::cout << "Found " << typestr << " data: " << name << std::endl;
+            msg_info("DistanceGrid")<< "Found " << typestr << " data: " << name;
             std::getline(inVTKFile, line); // lookup_table, ignore
-            std::cout << "Loading " << nx<<"x"<<ny<<"x"<<nz << " volume..." << std::endl;
+            msg_info("DistanceGrid")<< "Loading " << nx<<"x"<<ny<<"x"<<nz << " volume...";
             DistanceGrid* grid = new DistanceGrid(nx, ny, nz, origin, origin + Coord(spacing[0] * nx, spacing[1] * ny, spacing[2]*nz));
             bool ok = true;
             if (typestr == "char") ok = readData<char>(inVTKFile, dataSize, binary, grid->dists, scale);
@@ -425,7 +427,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
             else if (typestr == "double") ok = readData<double>(inVTKFile, dataSize, binary, grid->dists, scale);
             else
             {
-                std::cerr << "Invalid type " << typestr << std::endl;
+                msg_error("DistanceGrid")<< "Invalid type " << typestr;
                 ok = false;
             }
             if (!ok)
@@ -433,7 +435,7 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
                 delete grid;
                 return NULL;
             }
-            std::cout << "Volume data loading OK." << std::endl;
+            msg_info("DistanceGrid")<< "Volume data loading OK.";
             grid->computeBBox();
             if (sampling)
                 grid->sampleSurface(sampling);
@@ -576,7 +578,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     fmm_status.resize(nxnynz);
     fmm_heap.resize(nxnynz);
     fmm_heap_size = 0;
-    std::cout << "FMM: Init."<<std::endl;
+    msg_info("DistanceGrid")<< "FMM: Init.";
 
     std::fill(fmm_status.begin(), fmm_status.end(), FMM_FAR);
     std::fill(dists.begin(), dists.end(), maxDist());
@@ -585,7 +587,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     const sofa::helper::vector<sofa::helper::vector<sofa::helper::vector<int> > > & facets = mesh->getFacets();
 
     // Initialize distance of edges crossing triangles
-    std::cout << "FMM: Initialize distance of edges crossing triangles."<<std::endl;
+    msg_info("DistanceGrid")<< "FMM: Initialize distance of edges crossing triangles.";
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
@@ -953,7 +955,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
         }
         if (nbin && nbout)
         {
-            std::cerr << "FMM WARNING: in/out conflict at cell "<<x<<" "<<y<<" "<<z<<" ( "<<nbin<<" in, "<<nbout<<" out), dist = "<<dists[ind]<<std::endl;
+            msg_warning("DistanceGrid")<< "FMM WARNING: in/out conflict at cell "<<x<<" "<<y<<" "<<z<<" ( "<<nbin<<" in, "<<nbout<<" out), dist = "<<dists[ind];
         }
         if (nbin > nbout)
             fmm_status[ind] = FMM_KNOWN_IN;
@@ -978,7 +980,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                     //std::cerr << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind]<<std::endl;
                 }
             }
-    std::cout << "FMM: DONE. "<< nbin << " points inside ( " << (nbin*100)/size() <<" % )" << std::endl;
+    msg_info("DistanceGrid")<< "FMM: DONE. "<< nbin << " points inside ( " << (nbin*100)/size() <<" % )";
 }
 
 inline void DistanceGrid::fmm_swap(int entry1, int entry2)
@@ -995,7 +997,7 @@ int DistanceGrid::fmm_pop()
 {
     int res = fmm_heap[0];
 #ifdef FMM_VERBOSE
-    std::cout << "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<dists[res]<<std::endl;
+    msg_info("DistanceGrid")<< "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<dists[res];
 #endif
     --fmm_heap_size;
     if (fmm_heap_size>0)
@@ -1119,17 +1121,16 @@ void DistanceGrid::fmm_push(int index)
 #endif
 }
 
-
 /// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
 void DistanceGrid::sampleSurface(double sampling)
 {
-    std::cout << "DistanceGrid: sample surface with sampling distance " << sampling << std::endl;
+    msg_info("DistanceGrid")<< "sample surface with sampling distance " << sampling;
     std::vector<Coord> pts;
     if (sampling <= -1.0 && sampling == floor(sampling))
     {
         int stepX, stepY, stepZ;
         stepX = stepY = stepZ = (int)(-sampling);
-        std::cout << "DistanceGrid: sampling steps: " << stepX << " " << stepY << " " << stepZ << std::endl;
+        msg_info("DistanceGrid")<< "sampling steps: " << stepX << " " << stepY << " " << stepZ;
 
         SReal maxD = (SReal)sqrt((cellWidth[0]*stepX)*(cellWidth[0]*stepX) + (cellWidth[1]*stepY)*(cellWidth[1]*stepY) + (cellWidth[2]*stepZ)*(cellWidth[2]*stepZ));
         for (int z=1; z<nz-1; z+=stepZ)
@@ -1155,9 +1156,9 @@ void DistanceGrid::sampleSurface(double sampling)
                     }
                     if (it == 10 && rabs(d) > 0.1f*maxD)
                     {
-                        std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                        msg_warning("DistanceGrid")<< "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
                                 << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
-                                << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                                << " pos = " << pos << " d = " << d << " grad = " << n;
                         continue;
                     }
                     Coord p = pos;
@@ -1172,7 +1173,7 @@ void DistanceGrid::sampleSurface(double sampling)
         int nstepY = (int)ceil((pmax[1] - pmin[1])/sampling);
         int nstepZ = (int)ceil((pmax[2] - pmin[2])/sampling);
         Coord p0 = pmin + ((pmax-pmin) - Coord((nstepX)*sampling, (nstepY)*sampling, (nstepZ)*sampling))*0.5f;
-        std::cout << "DistanceGrid: sampling bbox " << pmin << " - " << pmax << " starting at " << p0 << " with number of steps: " << nstepX << " " << nstepY << " " << nstepZ << std::endl;
+        msg_info("DistanceGrid")<< "sampling bbox " << pmin << " - " << pmax << " starting at " << p0 << " with number of steps: " << nstepX << " " << nstepY << " " << nstepZ;
 
         for (int z=0; z<=nstepZ; z++)
             for (int y=0; y<=nstepY; y++)
@@ -1197,16 +1198,16 @@ void DistanceGrid::sampleSurface(double sampling)
                     }
                     if (it == 10 && rabs(d) > 0.1f*maxD)
                     {
-                        std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                        msg_warning("DistanceGrid")<< "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
                                 << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
-                                << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                                << " pos = " << pos << " d = " << d << " grad = " << n;
                         continue;
                     }
                     Coord p = pos;
                     pts.push_back(p);
                 }
     }
-    std::cout << "DistanceGrid: " << pts.size() << " sampling points created." << std::endl;
+    msg_info("DistanceGrid")<< pts.size() << " sampling points created.";
     meshPts.resize(pts.size());
     for (unsigned int p=0; p<pts.size(); ++p)
         meshPts[p] = pts[p];

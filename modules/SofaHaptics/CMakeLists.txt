@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaHaptics)
 
 set(HEADER_FILES
@@ -21,10 +21,8 @@ set(SOURCE_FILES
     initHaptics.cpp
 )
 
-find_package(Boost QUIET REQUIRED COMPONENTS thread)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES} SofaConstraint)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_HAPTICS")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

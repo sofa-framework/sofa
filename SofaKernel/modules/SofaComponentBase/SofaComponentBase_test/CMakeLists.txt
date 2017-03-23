@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaComponentBase_test)
 
 set(SOURCE_FILES
-        MessageHandlerComponent_test.cpp       
+        MessageHandlerComponent_test.cpp
+        MakeAliasComponent_test.cpp
+        MakeDataAliasComponent_test.cpp
 )
 
 find_package(SofaTest REQUIRED)

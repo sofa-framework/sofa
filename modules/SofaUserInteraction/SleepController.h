@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
 #include "config.h"
@@ -89,7 +110,7 @@ protected:
 	std::vector<double> m_timeSinceWakeUp; // For each monitored node, the duration since it has awaken
 	std::vector<bool> m_initialState; // The initial state of each node we are monitoring (for reset)
 
-	typedef boost::shared_ptr<BaseStateTester> StateTesterPtr;
+	typedef std::shared_ptr<BaseStateTester> StateTesterPtr;
 	typedef std::vector<StateTesterPtr> StateTesters;
 	StateTesters m_stateTesters; // All supported templates
 	StateTesters m_correspondingTesters; // The correct template for each state of the list m_statesThanCanSleep
