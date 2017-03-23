@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -27,7 +24,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
-#include <boost/static_assert.hpp>
 
 #include <sstream>
 #include <iostream>
@@ -263,7 +259,7 @@ public:
     template<VecAccess vaccess2>
     TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     TVecId(const TVecId<vtype, V_WRITE>& v) : BaseVecId(vtype, v.getIndex()) { }
@@ -271,7 +267,7 @@ public:
 	template<VecAccess vaccess2>
     explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
-		BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
 #ifndef NDEBUG
         assert(v.getType() == vtype);
 #endif
@@ -316,7 +312,7 @@ public:
     template<VecType vtype2, VecAccess vaccess2>
     TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     template<VecType vtype2, VecAccess vaccess2>
@@ -361,7 +357,7 @@ typedef TVecId<V_DERIV, V_WRITE>     VecDerivId;
 typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
 
-BOOST_STATIC_ASSERT(sizeof(VecId) == sizeof(VecCoordId));
+static_assert(sizeof(VecId) == sizeof(VecCoordId), "");
 
 } // namespace core
 

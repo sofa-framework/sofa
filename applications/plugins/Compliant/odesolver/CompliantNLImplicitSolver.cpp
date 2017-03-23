@@ -541,7 +541,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
         vec x(sys.size()); // unknown
         vec residual(sys.size()); // residual
-        boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
+        std::unique_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
         handleUnilateralConstraints();
 
@@ -706,9 +706,10 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
 
     // propagate lambdas if asked to
-    if( propagate_lambdas.getValue() ) {
-        scoped::timer step("lambda propagation");
-        simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+    unsigned constraint_f = this->constraint_forces.getValue().getSelectedId();
+    if( constraint_f && sys.n ) {
+        scoped::timer step("constraint_forces");
+        simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), formulation.getValue().getSelectedId()==FORMULATION_VEL ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
         send( prop );
     }
 
@@ -741,7 +742,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 
     const unsigned n = sys.size();
 
-    boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
+    std::unique_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
     vec x(n), xold(n);
     sys.copyFromMultiVec( xold, newV );

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(Compliant_test)
 
@@ -16,6 +16,8 @@ set(SOURCE_FILES
     DotProductMapping_test.cpp
     NormalizationMapping_test.cpp
     SafeDistanceMapping_test.cpp
+    UniformStiffness_test.cpp
+    DiagonalStiffness_test.cpp
 )
 
 set(PYTHON_FILES

@@ -109,7 +109,7 @@ protected:
     typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> matrix_type;
     matrix_type matC; ///< compliance matrix
 
-    real m_lastDt; /// if the dt changed, the compliance matrix must be updated
+    SReal m_lastDt; /// if the dt changed, the compliance matrix must be updated
 
 };
 

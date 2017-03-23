@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -44,7 +41,7 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     float scale=1.0f;
     if (arg->getAttribute("scale")!=NULL)
     {
-        scale = (float)atof(arg->getAttribute("scale"));
+        scale = arg->getAttributeAsFloat("scale", 1.0);
     }
 
     this->GridTopology::parse(arg);
@@ -55,16 +52,16 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         arg->getAttribute("ymax") != NULL &&
         arg->getAttribute("zmax") != NULL )
     {
-        const char* xmin = arg->getAttribute("xmin");
-        const char* ymin = arg->getAttribute("ymin");
-        const char* zmin = arg->getAttribute("zmin");
-        const char* xmax = arg->getAttribute("xmax");
-        const char* ymax = arg->getAttribute("ymax");
-        const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vector3((SReal)atof(xmin)*scale, (SReal)atof(ymin)*scale, (SReal)atof(zmin)*scale));
-        max.setValue(Vector3((SReal)atof(xmax)*scale, (SReal)atof(ymax)*scale, (SReal)atof(zmax)*scale));
+        float xmin = arg->getAttributeAsFloat("xmin",0);
+        float ymin = arg->getAttributeAsFloat("ymin",0);
+        float zmin = arg->getAttributeAsFloat("zmin",0);
+        float xmax = arg->getAttributeAsFloat("xmax",1);
+        float ymax = arg->getAttributeAsFloat("ymax",1);
+        float zmax = arg->getAttributeAsFloat("zmax",1);
+        d_min.setValue(Vector3((SReal)xmin*scale, (SReal)ymin*scale, (SReal)zmin*scale));
+        d_max.setValue(Vector3((SReal)xmax*scale, (SReal)ymax*scale, (SReal)zmax*scale));
     }
-    this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
+    this->setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 
 }
 
@@ -76,105 +73,58 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         ;
 
 RegularGridTopology::RegularGridTopology()
-    :
-    computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
-    computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
-    computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
-    computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
-    min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal")),
-    max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal")),
-    p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points")),
-    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+    : GridTopology()
+    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
+    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
+    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
+    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 
 RegularGridTopology::RegularGridTopology(Vec3i n, BoundingBox b)
-    : GridTopology(n),
-      computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
-      //  computeTetraList(initData(&computeTetraList, false, "computeTetraList", "put true if the list of Tetrahedra is needed during init")),
-      computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
-      //   computeTriList(initData(&computeTriList, false, "computeTriList", "put true if the list of Triangle is needed during init")),
-      computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
-      computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
-      min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
-      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
-      _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+    : GridTopology(n)
+    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
+    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
+    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 
 {
     setPos(b);
 }
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
-    : GridTopology(nx, ny, nz),
-      computeHexaList(initData(&computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init")),
-      //  computeTetraList(initData(&computeTetraList, false, "computeTetraList", "put true if the list of Tetrahedra is needed during init")),
-      computeQuadList(initData(&computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init")),
-      //   computeTriList(initData(&computeTriList, false, "computeTriList", "put true if the list of Triangle is needed during init")),
-      computeEdgeList(initData(&computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init")),
-      computePointList(initData(&computePointList, true, "computePointList", "put true if the list of Points is needed during init")),
-      min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
-      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
-      _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+    : GridTopology(nx, ny, nz)
+    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
+    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
+    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
+    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 
 {
 }
 
 void RegularGridTopology::init()
 {
-    if (_cellWidth.getValue())
+    if (d_cellWidth.getValue())
     {
-        SReal w = _cellWidth.getValue();
+        SReal w = d_cellWidth.getValue();
 
         Vec3i grid;
-        grid[0]= (int)ceil((max.getValue()[0]-min.getValue()[0]) / w)+1;
-        grid[1]= (int)ceil((max.getValue()[1]-min.getValue()[1]) / w)+1;
-        grid[2]= (int)ceil((max.getValue()[2]-min.getValue()[2]) / w)+1;
-        n.setValue(grid);
-        setSize();
-        sout << "Grid size: " << n.getValue() << sendl;
+        grid[0]= (int)ceil((d_max.getValue()[0]-d_min.getValue()[0]) / w)+1;
+        grid[1]= (int)ceil((d_max.getValue()[1]-d_min.getValue()[1]) / w)+1;
+        grid[2]= (int)ceil((d_max.getValue()[2]-d_min.getValue()[2]) / w)+1;
+        d_n.setValue(grid);
+        setNbGridPoints();
+        sout << "Grid size: " << d_n.getValue() << sendl;
     }
-
-    if (computeHexaList.getValue())
-    {
-        updateHexahedra();
-        const SeqHexahedra seq_hexa= this->getHexahedra();
-        sout<<"Init: Number of Hexadredra ="<<seq_hexa.size()<<sendl;
-    }
-
-    if (computeQuadList.getValue())
-    {
-        //updateQuads();
-        const SeqQuads seq_quads= this->getQuads();
-        sout<<"Init: Number of Quads ="<<seq_quads.size()<<sendl;
-    }
-
-    if (computeEdgeList.getValue())
-    {
-        //updateEdges();
-        const SeqLines seq_l=this->getLines();
-        sout<<"Init: Number of Lines ="<<seq_l.size()<<sendl;
-    }
-
-    if (computePointList.getValue())
-    {
-        int nbPoints= this->getNbPoints();
-        // put the result in seqPoints
-        SeqPoints& seq_P= *(seqPoints.beginEdit());
-        seq_P.resize(nbPoints);
-
-        for (int i=0; i<nbPoints; i++)
-        {
-            seq_P[i] = this->getPoint(i);
-        }
-
-        seqPoints.endEdit();
-    }
-
-    //    MeshTopology::init();
 
     Inherit1::init();
+}
+
+void RegularGridTopology::reinit()
+{
+    setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
+
+    Inherit1::reinit();
 }
 
 void RegularGridTopology::setPos(BoundingBox b)
@@ -187,24 +137,24 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
 {
     SReal p0x=xmin, p0y=ymin, p0z=zmin;
 
-    if (n.getValue()[0]>1)
-        setDx(Vector3((xmax-xmin)/(n.getValue()[0]-1),0,0));
+    if (d_n.getValue()[0]>1)
+        setDx(Vector3((xmax-xmin)/(d_n.getValue()[0]-1),0,0));
     else
     {
         setDx(Vector3(xmax-xmin,0,0));
         p0x = (xmax+xmin)/2;
     }
 
-    if (n.getValue()[1]>1)
-        setDy(Vector3(0,(ymax-ymin)/(n.getValue()[1]-1),0));
+    if (d_n.getValue()[1]>1)
+        setDy(Vector3(0,(ymax-ymin)/(d_n.getValue()[1]-1),0));
     else
     {
         setDy(Vector3(0,ymax-ymin,0));
         p0y = (ymax+ymin)/2;
     }
 
-    if (n.getValue()[2]>1)
-        setDz(Vector3(0,0,(zmax-zmin)/(n.getValue()[2]-1)));
+    if (d_n.getValue()[2]>1)
+        setDz(Vector3(0,0,(zmax-zmin)/(d_n.getValue()[2]-1)));
     else
     {
         setDz(Vector3(0,0,zmax-zmin));
@@ -212,50 +162,35 @@ void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax,
         p0z = zmin;
     }
 
-    min.setValue(Vector3(xmin,ymin,zmin));
-    max.setValue(Vector3(xmax,ymax,zmax));
-    if (!p0.isSet())
+    d_min.setValue(Vector3(xmin,ymin,zmin));
+    d_max.setValue(Vector3(xmax,ymax,zmax));
+    if (!d_p0.isSet())
     {
         setP0(Vector3(p0x,p0y,p0z));
     }
 }
 
-unsigned RegularGridTopology::getIndex( int i, int j, int k ) const
+Vector3 RegularGridTopology::getPointInGrid(int i, int j, int k) const
 {
-    return n.getValue()[0]* ( n.getValue()[1]*k + j ) + i;
+    return d_p0.getValue()+dx*i+dy*j+dz*k;
 }
 
-
-Vector3 RegularGridTopology::getPoint(int i) const
-{
-
-    int x = i%n.getValue()[0]; i/=n.getValue()[0];
-    int y = i%n.getValue()[1]; i/=n.getValue()[1];
-    int z = i;
-
-    return getPoint(x,y,z);
-}
-
-Vector3 RegularGridTopology::getPoint(int x, int y, int z) const
-{
-    return p0.getValue()+dx*x+dy*y+dz*z;
-}
 
 /// return the cube containing the given point (or -1 if not found).
 int RegularGridTopology::findCube(const Vector3& pos)
 {
-    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2)
+    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2)
         return -1;
-    Vector3 p = pos-p0.getValue();
+    Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (   (unsigned)ix <= (unsigned)n.getValue()[0]-2
-            && (unsigned)iy <= (unsigned)n.getValue()[1]-2
-            && (unsigned)iz <= (unsigned)n.getValue()[2]-2 )
+    if (   (unsigned)ix <= (unsigned)d_n.getValue()[0]-2
+            && (unsigned)iy <= (unsigned)d_n.getValue()[1]-2
+            && (unsigned)iz <= (unsigned)d_n.getValue()[2]-2 )
     {
         return cube(ix,iy,iz);
     }
@@ -268,17 +203,17 @@ int RegularGridTopology::findCube(const Vector3& pos)
 /// return the nearest cube (or -1 if not found).
 int RegularGridTopology::findNearestCube(const Vector3& pos)
 {
-    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0.getValue();
+    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return -1;
+    Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>n.getValue()[0]-2) ix=n.getValue()[0]-2;
-    if (iy<0) iy=0; else if (iy>n.getValue()[1]-2) iy=n.getValue()[1]-2;
-    if (iz<0) iz=0; else if (iz>n.getValue()[2]-2) iz=n.getValue()[2]-2;
+    if (ix<0) ix=0; else if (ix>d_n.getValue()[0]-2) ix=d_n.getValue()[0]-2;
+    if (iy<0) iy=0; else if (iy>d_n.getValue()[1]-2) iy=d_n.getValue()[1]-2;
+    if (iz<0) iz=0; else if (iz>d_n.getValue()[2]-2) iz=d_n.getValue()[2]-2;
     return cube(ix,iy,iz);
 }
 
@@ -286,8 +221,8 @@ int RegularGridTopology::findNearestCube(const Vector3& pos)
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0.getValue();
+    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return -1;
+    Vector3 p = pos-d_p0.getValue();
 
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
@@ -296,7 +231,7 @@ int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SRea
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if ((unsigned)ix<=(unsigned)n.getValue()[0]-2 && (unsigned)iy<=(unsigned)n.getValue()[1]-2 && (unsigned)iz<=(unsigned)n.getValue()[2]-2)
+    if ((unsigned)ix<=(unsigned)d_n.getValue()[0]-2 && (unsigned)iy<=(unsigned)d_n.getValue()[1]-2 && (unsigned)iz<=(unsigned)d_n.getValue()[2]-2)
     {
         fx = x-ix;
         fy = y-iy;
@@ -313,17 +248,17 @@ int RegularGridTopology::findCube(const Vector3& pos, SReal& fx, SReal &fy, SRea
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
 {
-    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
-    Vector3 p = pos-p0.getValue();
+    if (d_n.getValue()[0]<2 || d_n.getValue()[1]<2 || d_n.getValue()[2]<2) return -1;
+    Vector3 p = pos-d_p0.getValue();
     SReal x = p*dx*inv_dx2;
     SReal y = p*dy*inv_dy2;
     SReal z = p*dz*inv_dz2;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>n.getValue()[0]-2) ix=n.getValue()[0]-2;
-    if (iy<0) iy=0; else if (iy>n.getValue()[1]-2) iy=n.getValue()[1]-2;
-    if (iz<0) iz=0; else if (iz>n.getValue()[2]-2) iz=n.getValue()[2]-2;
+    if (ix<0) ix=0; else if (ix>d_n.getValue()[0]-2) ix=d_n.getValue()[0]-2;
+    if (iy<0) iy=0; else if (iy>d_n.getValue()[1]-2) iy=d_n.getValue()[1]-2;
+    if (iz<0) iz=0; else if (iz>d_n.getValue()[2]-2) iz=d_n.getValue()[2]-2;
     fx = x-ix;
     fy = y-iy;
     fz = z-iz;
@@ -333,14 +268,14 @@ int RegularGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &f
 
 unsigned RegularGridTopology::getCubeIndex( int i, int j, int k ) const
 {
-    return (n.getValue()[0]-1)* ( (n.getValue()[1]-1)*k + j ) + i;
+    return (d_n.getValue()[0]-1)* ( (d_n.getValue()[1]-1)*k + j ) + i;
 }
 
 Vector3 RegularGridTopology::getCubeCoordinate(int i) const
 {
     Vector3 result;
-    result[0] = (SReal)(i%(n.getValue()[0]-1)); i/=(n.getValue()[0]-1);
-    result[1] = (SReal)(i%(n.getValue()[1]-1)); i/=(n.getValue()[1]-1);
+    result[0] = (SReal)(i%(d_n.getValue()[0]-1)); i/=(d_n.getValue()[0]-1);
+    result[1] = (SReal)(i%(d_n.getValue()[1]-1)); i/=(d_n.getValue()[1]-1);
     result[2] = (SReal)i;
     return result;
 }
@@ -351,7 +286,7 @@ void RegularGridTopology::createTexCoords()
     std::cout << "createTexCoords" << std::endl;
 #endif
     unsigned int nPts = this->getNbPoints();
-    const Vec3i& _n = n.getValue();
+    const Vec3i& _n = d_n.getValue();
 
     if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
     {

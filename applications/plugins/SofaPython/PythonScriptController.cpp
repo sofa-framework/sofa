@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -33,16 +30,19 @@ using sofa::core::objectmodel::Base;
 using sofa::simulation::Node;
 
 #include "Binding_PythonScriptController.h"
-#include "ScriptEnvironment.h"
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
 using sofa::core::objectmodel::PythonScriptEvent;
 
+#include <sofa/helper/system/FileMonitor.h>
+using sofa::helper::system::FileMonitor ;
+using sofa::helper::system::FileEventListener ;
+
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
 
 #include "PythonFactory.h"
-
-
 
 //TODO(dmarchal): This have to be merged with the ScopedAdvancedTimer
 struct ActivableScopedAdvancedTimer {
@@ -73,6 +73,34 @@ namespace controller
 {
 
 
+class MyFileEventListener : public FileEventListener
+{
+    PythonScriptController* m_controller ;
+public:
+   MyFileEventListener(PythonScriptController* psc){
+        m_controller = psc ;
+    }
+
+    virtual ~MyFileEventListener(){}
+
+    virtual void fileHasChanged(const std::string& filepath){
+        /// This function is called when the file has changed. Two cases have
+        /// to be considered if the script was already loaded once or not.
+        if(!m_controller->scriptControllerInstance()){
+           m_controller->doLoadScript();
+        }else{
+            std::string file=filepath;
+            SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
+                             const_cast<char*>("s"),
+                             const_cast<char*>(file.data()));
+
+            m_controller->refreshBinding();
+        }
+    }
+};
+
+
+
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         ;
@@ -91,9 +119,45 @@ PythonScriptController::PythonScriptController()
                                "Set this attribute to true or false to activate/deactivate the gathering"
                                " of timing statistics on the python execution time. Default value is set"
                                "to true." ))
+    , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
+                                "Automatically reload the file when the source code is changed. "
+                                "Default value is set to false" ) )
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
+    m_filelistener = new MyFileEventListener(this) ;
+}
+
+PythonScriptController::~PythonScriptController()
+{
+    if(m_filelistener)
+    {
+        FileMonitor::removeListener(m_filelistener) ;
+        delete m_filelistener ;
+    }
+}
+
+void PythonScriptController::refreshBinding()
+{
+    BIND_OBJECT_METHOD(onLoaded)
+    BIND_OBJECT_METHOD(createGraph)
+    BIND_OBJECT_METHOD(initGraph)
+    BIND_OBJECT_METHOD(bwdInitGraph)
+    BIND_OBJECT_METHOD(onKeyPressed)
+    BIND_OBJECT_METHOD(onKeyReleased)
+    BIND_OBJECT_METHOD(onMouseButtonLeft)
+    BIND_OBJECT_METHOD(onMouseButtonRight)
+    BIND_OBJECT_METHOD(onMouseButtonMiddle)
+    BIND_OBJECT_METHOD(onMouseWheel)
+    BIND_OBJECT_METHOD(onBeginAnimationStep)
+    BIND_OBJECT_METHOD(onEndAnimationStep)
+    BIND_OBJECT_METHOD(storeResetState)
+    BIND_OBJECT_METHOD(reset)
+    BIND_OBJECT_METHOD(cleanup)
+    BIND_OBJECT_METHOD(onGUIEvent)
+    BIND_OBJECT_METHOD(onScriptEvent)
+    BIND_OBJECT_METHOD(draw)
+    BIND_OBJECT_METHOD(onIdle)
 }
 
 bool PythonScriptController::isDerivedFrom(const std::string& name, const std::string& module)
@@ -106,6 +170,11 @@ bool PythonScriptController::isDerivedFrom(const std::string& name, const std::s
 
 void PythonScriptController::loadScript()
 {
+    if(m_doAutoReload.getValue())
+    {
+        FileMonitor::addFile(m_filename.getFullPath(), m_filelistener) ;
+    }
+
     // if the filename is empty, the controller is supposed to be in an already loaded file
     // otherwise load the controller's file
     if( m_filename.isSet() && !m_filename.getRelativePath().empty() && !PythonEnvironment::runFile(m_filename.getFullPath().c_str()) )
@@ -158,8 +227,24 @@ void PythonScriptController::loadScript()
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
     BIND_OBJECT_METHOD(draw)
+    BIND_OBJECT_METHOD(onIdle)
 }
 
+void PythonScriptController::doLoadScript()
+{
+    loadScript() ;
+}
+
+void PythonScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
+{
+    FileMonitor::updates(0);
+
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle) ;
+
+    // Flush the console to avoid the sys.stdout.flush() in each script function.
+    std::cout.flush() ;
+    std::cerr.flush() ;
+}
 
 void PythonScriptController::script_onLoaded(Node *node)
 {
@@ -278,7 +363,6 @@ void PythonScriptController::handleEvent(core::objectmodel::Event *event)
     if (PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
-        simulation::ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }

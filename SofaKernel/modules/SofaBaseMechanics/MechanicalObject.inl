@@ -1,27 +1,24 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
- *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
@@ -91,17 +88,17 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
-    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
     , d_useTopology(initData(&d_useTopology, true, "useTopology", "Shall this object rely on any active topology to initialize its size and positions"))
-    , showObject(initData(&showObject, (bool) false, "showObject", "Show objects"))
-    , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display"))
-    , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices"))
-    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display"))
-    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
-    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
+    , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
+    , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display. (default=0.1)"))
+    , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
+    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
+    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
+    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function. (default=false)"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -109,7 +106,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
     , l_topology(initLink("topology","Link to the topology relevant for this object"))
-    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors"))
+    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
 {
@@ -285,43 +282,64 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     Inherited::parse(arg);
-    
+
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        int newsize = arg->getAttributeAsInt("size", 1) ;
+        if(newsize>=0)
+        {
+            resize(newsize) ;
+        }
+        else
+        {
+            msg_warning(this) << "The attribute 'size' cannot have a negative value.  "
+                                 "The value "<<newsize<<" is ignored. Current value is " <<getSize()<< ".  "
+                                 "To remove this warning you need to fix your scene.";
+        }
     }
 
-    // DEPRECATED: Warning, you should not use these parameters, but a TransformEngine instead
     if (arg->getAttribute("scale") != NULL)
     {
-        SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
+        SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
     if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
     {
-        scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
+        scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
+                               (SReal)arg->getAttributeAsFloat("sy",1.0),
+                               (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
     if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
     {
-        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
+        rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
+                                  (SReal)arg->getAttributeAsFloat("ry",0.0),
+                                  (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
     if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
     {
-        translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
+                                     (Real)arg->getAttributeAsFloat("dy",0.0),
+                                     (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
     {
-        rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
+        rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("ry2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
     if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
     {
-        translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
+        translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dy2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
+
+
 }
 
 
@@ -410,8 +428,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 unsigned int p2 = pointsAdded.pointIndexArray[i];
                 if (p1 != p2)
                 {
-                    serr << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
-                         << p1 << " != " << p2 << sendl;
+                    dmsg_error(this) << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
+                                     << p1 << " != " << p2 << ".\n";
                 }
             }
 
@@ -478,7 +496,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                 geoAlgo->initPointsAdded(pointsAdded.pointIndexArray, pointsAdded.ancestorElems, coordVecs, derivVecs);
             }
-            
+
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -1229,9 +1247,8 @@ void MechanicalObject<DataTypes>::reinit()
 
         if (grid)
         {
-            this->serr << "Warning ! MechanicalObject initial rotation is not applied to its grid topology"<<this->sendl;
-            this->serr << "Regular grid topologies rotations are unsupported."<<this->sendl;
-            //  p0 = q.rotate(p0);
+            msg_warning(this) << "MechanicalObject initial rotation is not applied to its grid topology. \n"
+                                 "Regular grid topologies rotations are unsupported.\n" ;
         }
     }
 

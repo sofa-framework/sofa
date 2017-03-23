@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -68,7 +65,7 @@ protected:
 
     void runRegressionScene( std::string& reference, const std::string& scene, unsigned int steps, double epsilon )
     {
-        std::cout << "[ INFO     ] " << "  Testing " << scene << std::endl;
+        msg_info("Regression_test") << "  Testing " << scene;
 
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
@@ -101,7 +98,7 @@ protected:
         }
         else // create reference
         {
-            std::cerr << "[ WARNING  ] Non existing reference created: " << reference << std::endl;
+            msg_warning("Regression_test") << "Non existing reference created: " << reference;
 
             // just to create an empty file to know it is already init
             std::ofstream filestream(reference.c_str());
@@ -154,7 +151,7 @@ protected:
 
         if (helper::system::FileSystem::exists(regression_scene_list) && !helper::system::FileSystem::isDirectory(regression_scene_list))
         {
-            std::cout << "[ INFO     ] " << "Parsing " << regression_scene_list << std::endl;
+            msg_info("Regression_test") << "Parsing " << regression_scene_list;
 
             // parser le fichier -> (file,nb time steps,epsilon)
             std::ifstream iniFileStream(regression_scene_list.c_str());
@@ -213,16 +210,12 @@ protected:
         std::vector<std::string> dir;
         helper::system::FileSystem::listDirectory(pluginsDirectory, dir);
 
-//        std::cerr << "Regression_test : plugins directory: " << pluginsDirectory << std::endl;
-
         for (std::vector<std::string>::iterator i = dir.begin(); i != dir.end(); ++i)
         {
             const std::string pluginPath = pluginsDirectory + "/" + *i;
 
             if (helper::system::FileSystem::isDirectory(pluginPath))
             {
-//                std::cerr << "Regression_test : testing plugin/project " << pluginPath << std::endl;
-
                 const std::string testDir = pluginPath + "/" + *i + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
                 {

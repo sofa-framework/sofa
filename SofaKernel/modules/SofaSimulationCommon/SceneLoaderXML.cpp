@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -76,13 +73,11 @@ sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
     if (!canLoadFileName(filename))
         return 0;
 
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::loadFromFile ( filename );
+    notifyLoadingScene();
 
+    xml::BaseElement* xml = xml::loadFromFile ( filename );
     root = processXML(xml, filename);
 
-    // 				std::cout << "load done."<<std::endl;
     delete xml;
 
     return root;
@@ -115,20 +110,20 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     sofa::simulation::xml::NodeElement* nodeElt = dynamic_cast<sofa::simulation::xml::NodeElement *>(xml);
     if( nodeElt==NULL )
     {
-        std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
+        msg_fatal_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "XML Root Node is not an Element. \n" ;
         loadSucceed = false;
         std::exit(EXIT_FAILURE);
     }
     else if( !(nodeElt->init()) )
     {
-        std::cerr << "LOAD ERROR: Node initialization failed."<<std::endl;
+        msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Node initialization failed. \n" ;
         loadSucceed = false;
     }
 
     core::objectmodel::BaseNode* baseroot = xml->getObject()->toBaseNode();
     if ( baseroot == NULL )
     {
-        std::cerr << "LOAD ERROR: Objects initialization failed."<<std::endl;
+        msg_error_withfile("SceneLoaderXML", xml->getSrcFile(), xml->getSrcLine()) << "Objects initialization failed." ;
         loadSucceed = false;
         return NULL;
     }
@@ -147,15 +142,13 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 /// Load from a string in memory
 Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
-    //::sofa::simulation::init();
-    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    notifyLoadingScene();
+
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
     Node::SPtr root = processXML(xml, filename);
 
-    // 				std::cout << "load done."<<std::endl;
     delete xml;
-
     return root;
 }
 

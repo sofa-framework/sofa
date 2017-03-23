@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -568,7 +565,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
-        sofa::helper::set<Vec3i>& generatedCubes,
+        std::set<Vec3i>& generatedCubes,
         std::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid,
         bool propagate
@@ -633,7 +630,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         bool propagate ) const
 {
 //    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
-    sofa::helper::set<Vec3i> generatedCubes;
+    std::set<Vec3i> generatedCubes;
 
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
@@ -767,7 +764,7 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
 {
     std::cout << "MarchingCubeUtility::findSeeds(). Begining." << std::endl;
     //vector< unsigned char > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
-    sofa::helper::set<unsigned int> parsedVoxels;
+    std::set<unsigned int> parsedVoxels;
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
         return;
@@ -868,7 +865,7 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
 
 
 
-void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data )
+void MarchingCubeUtility::findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data )
 {
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );

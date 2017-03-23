@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -62,6 +59,8 @@ namespace visualmodel
 class SOFA_OPENGL_VISUAL_API Light : public sofa::core::visual::VisualModel
 {
 public:
+    enum LightType { DIRECTIONAL = 0, POSITIONAL = 1, SPOTLIGHT = 2 };
+
     SOFA_CLASS(Light, core::visual::VisualModel);
 protected:
     GLint m_lightID;
@@ -86,16 +85,22 @@ protected:
 public:
     Data<sofa::defaulttype::Vector3> d_color;
     Data<GLuint> d_shadowTextureSize;
-    Data<bool> d_drawSource;
+    Data<bool> d_drawSource; 
     Data<double> d_zNear, d_zFar;
     Data<bool> d_shadowsEnabled;
     Data<bool> d_softShadows;
+    Data<float> d_shadowFactor;
+    Data<float> d_VSMLightBleeding;
+    Data<float> d_VSMMinVariance;
     Data<unsigned short> d_textureUnit;
 
 protected:
     Light();
     virtual ~Light();
 public:
+    Data<helper::vector<float> > d_modelViewMatrix;
+    Data<helper::vector<float> > d_projectionMatrix;
+
     void setID(const GLint& id);
 
     //VisualModel
@@ -105,17 +110,25 @@ public:
     virtual void reinit();
     virtual void updateVisual();
 
+    GLfloat getZNear();
+    GLfloat getZFar();
+
     //CastShadowModel
     virtual void preDrawShadow(core::visual::VisualParams* vp);
     virtual void postDrawShadow();
     virtual GLuint getShadowMapSize();
+    const GLfloat* getOpenGLProjectionMatrix();
+    const GLfloat* getOpenGLModelViewMatrix();
     virtual GLuint getDepthTexture() { return 0 ;}
     virtual GLuint getColorTexture() { return 0 ;}
-    virtual const GLfloat* getOpenGLProjectionMatrix() { return NULL ;}
-    virtual const GLfloat* getOpenGLModelViewMatrix() { return NULL ;}
     virtual const sofa::defaulttype::Vector3 getPosition() { return sofa::defaulttype::Vector3(0.0,0.0,0.0); }
     virtual unsigned short getShadowTextureUnit() { return d_textureUnit.getValue(); }
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
+    virtual defaulttype::Vector3 getDirection() { return defaulttype::Vector3(); }
+    virtual float getShadowFactor() { return d_shadowFactor.getValue(); }
+    virtual float getVSMLightBleeding() { return d_VSMLightBleeding.getValue(); }    
+    virtual float getVSMMinVariance() { return d_VSMMinVariance.getValue(); }
+    virtual LightType getLightType() = 0;
 
 protected:
     bool b_needUpdate;
@@ -131,9 +144,17 @@ public:
 
     DirectionalLight();
     virtual ~DirectionalLight();
+    virtual void preDrawShadow(core::visual::VisualParams* vp);
     virtual void drawLight();
     virtual void draw(const core::visual::VisualParams* vparams);
-
+    virtual GLuint getDepthTexture();
+    virtual GLuint getColorTexture();   
+    virtual defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
+    LightType getLightType() { return LightType::DIRECTIONAL; }
+private:
+    void computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
+    void computeOpenGLProjectionMatrix(GLfloat mat[16], float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
+    void computeOpenGLModelViewMatrix(GLfloat lightMatModelview[16], const sofa::defaulttype::Vector3 &direction);
 
 };
 
@@ -151,7 +172,7 @@ public:
     virtual void drawLight();
     virtual void draw(const core::visual::VisualParams* vparams);
     virtual const sofa::defaulttype::Vector3 getPosition() { return d_position.getValue(); }
-
+    LightType getLightType() { return LightType::POSITIONAL; }
 };
 
 class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
@@ -163,8 +184,6 @@ public:
     Data<float> d_cutoff;
     Data<float> d_exponent;
     Data<bool> d_lookat;
-    Data<helper::vector<float> > d_modelViewMatrix;
-    Data<helper::vector<float> > d_projectionMatrix;
 
     SpotLight();
     virtual ~SpotLight();
@@ -174,8 +193,9 @@ public:
     void preDrawShadow(core::visual::VisualParams*  vp);
     GLuint getDepthTexture();
     GLuint getColorTexture();
-    const GLfloat* getOpenGLProjectionMatrix();
-    const GLfloat* getOpenGLModelViewMatrix();
+    defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
+    LightType getLightType() { return LightType::SPOTLIGHT; }
+        
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar);

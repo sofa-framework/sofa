@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaMiscMapping)
 
 set(HEADER_FILES
@@ -34,6 +34,8 @@ set(HEADER_FILES
     ProjectionToPlaneMapping.inl
     SquareDistanceMapping.h
     SquareDistanceMapping.inl
+    SquareMapping.h
+    SquareMapping.inl
     SubsetMultiMapping.h
     SubsetMultiMapping.inl
     TubularMapping.h
@@ -60,6 +62,7 @@ set(SOURCE_FILES
     ProjectionToLineMapping.cpp
     ProjectionToPlaneMapping.cpp
     SquareDistanceMapping.cpp
+    SquareMapping.cpp
     SubsetMultiMapping.cpp
     TubularMapping.cpp
     VoidMapping.cpp

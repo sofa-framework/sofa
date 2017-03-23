@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -43,8 +40,9 @@
 #include <SofaPython/Binding_BaseTopologyObject.h>
 #include <SofaPython/Binding_PointSetTopologyModifier.h>
 #include <SofaPython/Binding_TriangleSetTopologyModifier.h>
+#include <SofaPython/Binding_Data.h>
 
-#include <boost/type_traits/is_base_of.hpp>
+#include <type_traits>
 
 
 namespace sofa
@@ -62,7 +60,9 @@ namespace sofa
     }
 
 
-/// @internal To convert a sofa::core::objectmodel::Base in its corresponding pyObject
+/// @internal To convert a sofa::core::objectmodel::Base
+/// or a sofa::core::objectmodel::BaseData
+/// in its corresponding pyObject
 // retourne automatiquement le type Python de plus haut niveau possible,
 // en fonction du type de l'objet Cpp (spécifiquement bindé)
 // afin de permettre l'utilisation de fonctions des sous-classes de Base
@@ -80,6 +80,7 @@ protected:
     {
         BasePythonBoundType(PyTypeObject*pyTypeObject):pyTypeObject(pyTypeObject){}
         virtual bool canCast(sofa::core::objectmodel::Base*) const { return false; }
+        virtual bool canCast(sofa::core::objectmodel::BaseData*) const { return false; }
         PyTypeObject* pyTypeObject;
     };
 
@@ -90,6 +91,7 @@ protected:
     {
         PythonBoundType(PyTypeObject*pyTypeObject):BasePythonBoundType(pyTypeObject){}
         virtual bool canCast(sofa::core::objectmodel::Base* obj) const { return dynamic_cast<T*>(obj); }
+        virtual bool canCast(sofa::core::objectmodel::BaseData* data) const { return dynamic_cast<T*>(data); }
     };
 
     /// a list of Abstract classes that can be cheaply deduced from Base* (by static_cast)
@@ -98,7 +100,9 @@ protected:
     enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,BaseTopologyObject,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,NB_LISTS};
     typedef std::list< BasePythonBoundType* > PythonBoundTypes;
     /// a list of types for each sub-classes (prefiltering types not to have to check casting with any of them)
-    static PythonBoundTypes s_boundTypes[NB_LISTS];
+    static PythonBoundTypes s_boundComponents[NB_LISTS];
+    /// a list of Data types
+    static PythonBoundTypes s_boundData;
 
 
     /// check for the corresponding type in the given list
@@ -115,52 +119,56 @@ protected:
 
 public:
 
-    /// add a new sofa::core::objectmodel::Base-inherited type with it corresponding pyTypeObject to the Factory
+    /// add a new sofa::core::objectmodel::Base-inherited type
+    /// or a sofa::core::objectmodel::BaseData-inherited type
+    /// with it corresponding pyTypeObject to the Factory
     template<class T>
     static void add( PyTypeObject* pyTypeObject )
     {
-//        std::cerr<<"ADD "<<T::template className<T>()<<std::endl;
+//        std::cerr<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
 
         PythonBoundType<T>* t = new PythonBoundType<T>(pyTypeObject);
 
-        if( boost::is_base_of<sofa::core::objectmodel::BaseObject,T>::value )
+        if( std::is_base_of<sofa::core::objectmodel::BaseObject,T>::value )
         {
-            if( boost::is_base_of<sofa::core::loader::BaseLoader, T>::value )
-                return s_boundTypes[BaseLoader].push_back( t );
+            if( std::is_base_of<sofa::core::loader::BaseLoader, T>::value )
+                return s_boundComponents[BaseLoader].push_back( t );
 
-            if( boost::is_base_of<sofa::core::topology::Topology, T>::value )
+            if( std::is_base_of<sofa::core::topology::Topology, T>::value )
             {
-                if( boost::is_base_of<sofa::core::topology::BaseMeshTopology, T>::value )
-                    return s_boundTypes[BaseMeshTopology].push_back( t );
-                return s_boundTypes[Topology].push_back( t );
+                if( std::is_base_of<sofa::core::topology::BaseMeshTopology, T>::value )
+                    return s_boundComponents[BaseMeshTopology].push_back( t );
+                return s_boundComponents[Topology].push_back( t );
             }
 
-            if( boost::is_base_of<sofa::core::topology::BaseTopologyObject, T>::value )
-                return s_boundTypes[BaseTopologyObject].push_back( t );
+            if( std::is_base_of<sofa::core::topology::BaseTopologyObject, T>::value )
+                return s_boundComponents[BaseTopologyObject].push_back( t );
 
-            if( boost::is_base_of<sofa::core::visual::VisualModel, T>::value )
-                return s_boundTypes[VisualModel].push_back( t );
+            if( std::is_base_of<sofa::core::visual::VisualModel, T>::value )
+                return s_boundComponents[VisualModel].push_back( t );
 
-            if( boost::is_base_of<sofa::core::BaseState, T>::value )
+            if( std::is_base_of<sofa::core::BaseState, T>::value )
             {
-                if( boost::is_base_of<sofa::core::behavior::BaseMechanicalState, T>::value )
-                    return s_boundTypes[BaseMechanicalState].push_back( t );
+                if( std::is_base_of<sofa::core::behavior::BaseMechanicalState, T>::value )
+                    return s_boundComponents[BaseMechanicalState].push_back( t );
 
-                return s_boundTypes[BaseState].push_back( t );
+                return s_boundComponents[BaseState].push_back( t );
             }
 
-            if( boost::is_base_of<sofa::core::BaseMapping, T>::value )
-                return s_boundTypes[BaseMapping].push_back( t );
+            if( std::is_base_of<sofa::core::BaseMapping, T>::value )
+                return s_boundComponents[BaseMapping].push_back( t );
 
-            if( boost::is_base_of<sofa::core::DataEngine, T>::value )
-                return s_boundTypes[DataEngine].push_back( t );
+            if( std::is_base_of<sofa::core::DataEngine, T>::value )
+                return s_boundComponents[DataEngine].push_back( t );
 
-            return s_boundTypes[BaseObject].push_back( t );
+            return s_boundComponents[BaseObject].push_back( t );
         }
-        else if( boost::is_base_of<sofa::core::objectmodel::BaseContext, T>::value )
-            return s_boundTypes[BaseContext].push_back( t );
+        else if( std::is_base_of<sofa::core::objectmodel::BaseContext, T>::value )
+            return s_boundComponents[BaseContext].push_back( t );
+        else if( std::is_base_of<sofa::core::objectmodel::Base, T>::value )
+            return s_boundComponents[Base].push_back( t );
 
-        return s_boundTypes[Base].push_back( t );
+        return s_boundData.push_back( t );
     }
 
 
@@ -200,74 +208,74 @@ public:
         }
         else if( obj->toBaseContext() ) return toPython( obj->toBaseContext() );
 
-        return toPython( s_boundTypes[Base], obj, &SP_SOFAPYTYPEOBJECT(Base) );
+        return toPython( s_boundComponents[Base], obj, &SP_SOFAPYTYPEOBJECT(Base) );
     }
 
 
     /// to convert a BaseObject-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::objectmodel::BaseObject* obj)
     {
-            if( obj->toBaseLoader() ) return toPython( obj->toBaseLoader() );
+        if( obj->toBaseLoader() ) return toPython( obj->toBaseLoader() );
 
-            if( obj->toTopology() )
-            {
-                if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
-                return toPython( obj->toTopology() );
-            }
+        if( obj->toTopology() )
+        {
+            if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
+            return toPython( obj->toTopology() );
+        }
 
-            if( obj->toBaseTopologyObject() ) return toPython( obj->toBaseTopologyObject() );
+        if( obj->toBaseTopologyObject() ) return toPython( obj->toBaseTopologyObject() );
 
-            if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
+        if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
 
-            if( obj->toBaseState() )
-            {
-                if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
+        if( obj->toBaseState() )
+        {
+            if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
 
-                return toPython( obj->toBaseState() );
-            }
+            return toPython( obj->toBaseState() );
+        }
 
-            if (obj->toBaseMapping()) return toPython( obj->toBaseMapping() );
+        if (obj->toBaseMapping()) return toPython( obj->toBaseMapping() );
 
-            if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
+        if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
 
-            return toPython( s_boundTypes[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
+        return toPython( s_boundComponents[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
     }
 
     /// to convert a BaseContext-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::objectmodel::BaseContext* obj)
     {
-        return toPython( s_boundTypes[BaseContext], obj, &SP_SOFAPYTYPEOBJECT(BaseContext) );
+        return toPython( s_boundComponents[BaseContext], obj, &SP_SOFAPYTYPEOBJECT(BaseContext) );
     }
 
     /// to convert a BaseLoader-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::loader::BaseLoader* obj)
     {
-        return toPython( s_boundTypes[BaseLoader], obj, &SP_SOFAPYTYPEOBJECT(BaseLoader) );
+        return toPython( s_boundComponents[BaseLoader], obj, &SP_SOFAPYTYPEOBJECT(BaseLoader) );
     }
 
     /// to convert a Topology-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::topology::Topology* obj)
     {
         if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
-        return toPython( s_boundTypes[Topology], obj, &SP_SOFAPYTYPEOBJECT(Topology) );
+        return toPython( s_boundComponents[Topology], obj, &SP_SOFAPYTYPEOBJECT(Topology) );
     }
 
     /// to convert a BaseMeshTopology-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::topology::BaseMeshTopology* obj)
     {
-        return toPython( s_boundTypes[BaseMeshTopology], obj, &SP_SOFAPYTYPEOBJECT(BaseMeshTopology) );
+        return toPython( s_boundComponents[BaseMeshTopology], obj, &SP_SOFAPYTYPEOBJECT(BaseMeshTopology) );
     }
 
     /// to convert a BaseTopologyObject-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::topology::BaseTopologyObject* obj)
     {
-        return toPython( s_boundTypes[BaseTopologyObject], obj, &SP_SOFAPYTYPEOBJECT(BaseTopologyObject) );
+        return toPython( s_boundComponents[BaseTopologyObject], obj, &SP_SOFAPYTYPEOBJECT(BaseTopologyObject) );
     }
 
     /// to convert a VisualModel-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::visual::VisualModel* obj)
     {
-        return toPython( s_boundTypes[VisualModel], obj, &SP_SOFAPYTYPEOBJECT(VisualModel) );
+        return toPython( s_boundComponents[VisualModel], obj, &SP_SOFAPYTYPEOBJECT(VisualModel) );
     }
 
     /// to convert a BaseState-inherited object to its corresponding pyObject
@@ -275,25 +283,40 @@ public:
     {
         if (obj->toBaseMechanicalState()) return toPython( obj->toBaseMechanicalState() );
 
-        return toPython( s_boundTypes[BaseState], obj, &SP_SOFAPYTYPEOBJECT(BaseState) );
+        return toPython( s_boundComponents[BaseState], obj, &SP_SOFAPYTYPEOBJECT(BaseState) );
     }
 
     /// to convert a BaseMechanicalState-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::behavior::BaseMechanicalState* obj)
     {
-        return toPython( s_boundTypes[BaseMechanicalState], obj, &SP_SOFAPYTYPEOBJECT(BaseMechanicalState) );
+        return toPython( s_boundComponents[BaseMechanicalState], obj, &SP_SOFAPYTYPEOBJECT(BaseMechanicalState) );
     }
 
     /// to convert a BaseMapping-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::BaseMapping* obj)
     {
-        return toPython( s_boundTypes[BaseMapping], obj, &SP_SOFAPYTYPEOBJECT(BaseMapping) );
+        return toPython( s_boundComponents[BaseMapping], obj, &SP_SOFAPYTYPEOBJECT(BaseMapping) );
     }
 
     /// to convert a DataEngine-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::DataEngine* obj)
     {
-        return toPython( s_boundTypes[DataEngine], obj, &SP_SOFAPYTYPEOBJECT(DataEngine) );
+        return toPython( s_boundComponents[DataEngine], obj, &SP_SOFAPYTYPEOBJECT(DataEngine) );
+    }
+
+
+    /// to convert a sofa::core::objectmodel::BaseData to its corresponding pyObject
+    /// returns NULL if the data does not correpond to any special type
+    static PyObject* toPython(sofa::core::objectmodel::BaseData* data)
+    {
+        for(PythonBoundTypes::const_reverse_iterator it=s_boundData.rbegin(),itend=s_boundData.rend();it!=itend;++it)
+        {
+            if( (*it)->canCast( data ) )
+                return BuildPyPtr<sofa::core::objectmodel::BaseData>(data,(*it)->pyTypeObject,false);
+        }
+
+//        return BuildPyPtr<sofa::core::objectmodel::BaseData>(data,&SP_SOFAPYTYPEOBJECT(Data),false);
+        return NULL;
     }
 
 

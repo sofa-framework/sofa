@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -69,6 +66,7 @@ public:
     virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
+    /// @warning do not forgot to call notifyLoadingScene()
     virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
 
     /// write scene graph in the file
@@ -80,6 +78,26 @@ public:
     /// get the list of file extensions
     virtual void getExtensionList(ExtensionList* list) = 0;
 
+
+
+    /// to be able to inform when a scene is loaded
+    struct Listener
+    {
+        virtual void rightBeforeLoadingScene() {} ///< callback called just before loading the scene file
+    };
+
+    /// adding a listener
+    static void addListener( Listener* l ) { s_listerners.insert(l); }
+
+    /// removing a listener
+    static void removeListener( Listener* l ) { s_listerners.erase(l); }
+
+protected:
+
+    /// the list of listerners
+    typedef std::set<Listener*> Listeners;
+    static Listeners s_listerners;
+    static void notifyLoadingScene() { for( auto* l : s_listerners ) l->rightBeforeLoadingScene(); }
 
 };
 

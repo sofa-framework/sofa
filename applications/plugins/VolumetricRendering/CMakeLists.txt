@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(VolumetricRendering)
 
 set(VOLUMETRICRENDERING_MAJOR_VERSION 0)
@@ -8,6 +8,11 @@ set(VOLUMETRICRENDERING_VERSION ${VOLUMETRICRENDERING_MAJOR_VERSION}.${VOLUMETRI
 find_package(SofaFramework REQUIRED)
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
+
+if(${SOFA_NO_OPENGL})
+    message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
+    message("Flag SOFA_NO_OPENGL incompatible with the VolumetricRendering plugin.")
+endif()
 
 set(HEADER_FILES
     initVolumetricRendering.h

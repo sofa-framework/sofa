@@ -1,26 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Matthieu Nesme                                                     *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -31,6 +26,9 @@
 #ifndef TESTMESSAGEHANDLER_H
 #define TESTMESSAGEHANDLER_H
 
+#include <sofa/helper/vector.h>
+#include <sofa/helper/logging/CountingMessageHandler.h>
+#include <sofa/helper/logging/LoggingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
@@ -45,51 +43,50 @@ namespace helper
 namespace logging
 {
 
-
-/// each ERROR and FATAL message raises a gtest error
-class SOFA_TestPlugin_API TestMessageHandler : public MessageHandler
+struct SOFA_TestPlugin_API ExpectMessage
 {
-public:
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
 
-    /// raises a gtest error as soon as message is an error
-    /// iff the handler is active (see setActive)
-    virtual void process(Message &m)
-    {
-        if( active && m.type()>=Message::Error )
-            ADD_FAILURE() << std::endl;
+    ExpectMessage(const Message::Type t) {
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
 
-    // singleton
-    static TestMessageHandler& getInstance()
+    ~ExpectMessage() {
+        if(m_lastCount == MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was expected. None was received." << std::endl ;
+        }
+    }
+};
+
+struct SOFA_TestPlugin_API MessageAsTestFailure
+{
+    int m_lastCount      {0} ;
+    Message::Type m_type {Message::TEmpty} ;
+    LogMessage m_log;
+
+    MessageAsTestFailure(const Message::Type t)
     {
-        static TestMessageHandler s_instance;
-        return s_instance;
+        m_type = t ;
+        m_lastCount = MainCountingMessageHandler::getMessageCountFor(m_type) ;
     }
 
-    /// raising a gtest error can be temporarily deactivated
-    /// indeed, sometimes, testing that a error message is raised is mandatory
-    /// and should not raise a gtest error
-    static void setActive( bool a ) { getInstance().active = a; }
-
-private:
-
-    /// true by default
-    bool active;
-
-    // private default constructor for singleton
-    TestMessageHandler() : active(true) {}
+    ~MessageAsTestFailure()
+    {
+        if(m_lastCount != MainCountingMessageHandler::getMessageCountFor(m_type) )
+        {
+            ADD_FAILURE() << "A message of type '" << m_type << "' was not expected but it was received. " << std::endl ;
+            std::cout << "====================== Messages Backlog =======================" << std::endl ;
+            for(auto& message : m_log)
+            {
+                std::cout << message << std::endl ;
+            }
+            std::cout << "===============================================================" << std::endl ;
+        }
+    }
 };
-
-
-/// the TestMessageHandler is deactivated in the scope of a ScopedDeactivatedTestMessageHandler variable
-struct SOFA_TestPlugin_API ScopedDeactivatedTestMessageHandler
-{
-    ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(false); }
-    ~ScopedDeactivatedTestMessageHandler() { TestMessageHandler::setActive(true); }
-};
-
-
-
 
 } // logging
 } // helper

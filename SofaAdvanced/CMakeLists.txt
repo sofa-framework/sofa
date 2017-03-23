@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaAdvanced)
 
 ## Dependencies
 find_package(SofaGeneral REQUIRED)
-find_package(MiniFlowVR)
+find_package(MiniFlowVR QUIET)
 set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND})
 set(SOFA_HAVE_FLOWVR ${MiniFlowVR_FOUND}) # cmakedefine
 
