@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -510,19 +507,17 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 /// Parse the given description to assign values to this object's fields and potentially other parameters
 void  Base::parse ( BaseObjectDescription* arg )
 {
-    std::vector< std::string > attributeList;
-    arg->getAttributeList(attributeList);
-    for (unsigned int i=0; i<attributeList.size(); ++i)
+    for( auto& it : arg->getAttributeMap() )
     {
-        std::string attrName = attributeList[i];
+        const std::string& attrName = it.first;
+
         // FIX: "type" is already used to define the type of object to instanciate, any Data with
         // the same name cannot be extracted from BaseObjectDescription
         if (attrName == std::string("type")) continue;
+
         if (!hasField(attrName)) continue;
-        const char* val = arg->getAttribute(attrName);
-        if (!val) continue;
-        std::string valueString(val);
-        parseField(attrName, valueString);
+
+        parseField(attrName, it.second);
     }
     updateLinks(false);
 }

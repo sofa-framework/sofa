@@ -2,10 +2,7 @@ import sys
 import numpy
 
 import Sofa
-Sofa.loadPlugin("Compliant")
-
-import SofaCompliant
-
+import Compliant
 
 
 def createSceneAndController(node):
@@ -30,7 +27,7 @@ def createSceneAndController(node):
 def bwdInitGraph(node):
 
     # here M is constant
-    M = SofaCompliant.getAssembledImplicitMatrix(simuNode,1,0,0)
+    M = Compliant.getAssembledImplicitMatrix(simuNode,1,0,0)
     print "M: ", numpy.asarray(M)
 
     sys.stdout.flush()
@@ -41,7 +38,7 @@ def onEndAnimationStep(dt):
     global simuNode
 
     # K changes at each step
-    K = SofaCompliant.getAssembledImplicitMatrix(simuNode,0,0,1)
+    K = Compliant.getAssembledImplicitMatrix(simuNode,0,0,1)
     print "K: ", numpy.asarray(K)
 
     sys.stdout.flush()

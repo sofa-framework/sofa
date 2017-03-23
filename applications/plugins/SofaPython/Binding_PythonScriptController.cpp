@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -41,6 +38,17 @@ using namespace sofa::core::objectmodel;
 
 //#define LOG_UNIMPLEMENTED_METHODS   // prints a message each time a non-implemented (in the script) method is called
 
+extern "C" PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args)
+{
+    SOFA_UNUSED(args) ;
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+     msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onIdle not implemented in " << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
 
 extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObject * args)
 {
@@ -48,7 +56,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -66,7 +74,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -84,7 +92,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -102,7 +110,7 @@ extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "O",&pyNode))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -120,7 +128,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     else
     {
@@ -141,7 +149,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "d",&dt))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -193,7 +201,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
     if (!PyArg_ParseTuple(args, "sss",&controlID,&valueName,&value))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -210,7 +218,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -227,7 +235,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "c",&k))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -245,7 +253,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -263,7 +271,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -281,7 +289,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
     if (!PyArg_ParseTuple(args, "iib",&x,&y,&pressed))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -298,7 +306,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
     if (!PyArg_ParseTuple(args, "iii",&x,&y,&delta))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -317,13 +325,13 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     if (!PyArg_ParseTuple(args, "OsO",&pySenderNode,&eventName,&pyData))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     BaseNode* senderBaseNode = ((PySPtr<Base>*)pySenderNode)->object->toBaseNode();
     if (!senderBaseNode)
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     // TODO check pyData
@@ -370,6 +378,7 @@ SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
+SP_CLASS_METHOD(PythonScriptController,onIdle)
 SP_CLASS_METHODS_END
 
 

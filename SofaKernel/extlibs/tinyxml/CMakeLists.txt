@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(tinyxml)
 
 
@@ -24,4 +24,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${TINYXML_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(../../SofaFramework/SofaMacros.cmake)
-sofa_create_package(TinyXML 2.6.2 tinyxml "")
+sofa_create_package(TinyXML ${TINYXML_VERSION} ${PROJECT_NAME} "")

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -40,7 +37,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 //#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include "ScriptEnvironment.h"
 #include <sofa/helper/logging/Messaging.h>
 
 #include "SceneLoaderPY.h"
@@ -68,7 +64,7 @@ extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&name))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     sofa::simulation::Node::SPtr node = sofa::simulation::Node::create( name );
@@ -84,7 +80,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     if (!PyArg_ParseTuple(args, "s",&type))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     SP_MESSAGE_DEPRECATED( "Sofa.createObject is deprecated; use Sofa.Node.createObject instead." )
@@ -110,7 +106,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
     {
         SP_MESSAGE_ERROR( "createObject "<<desc.getName().c_str()<<" of type "<<desc.getAttribute("type","") )
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     // by default, it will always be at least a BaseObject...
@@ -123,7 +119,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
     PyErr_BadArgument();
-    Py_RETURN_NONE;
+    return NULL;
 
 }
 
@@ -132,7 +128,7 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
     PyErr_BadArgument();
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 using namespace sofa::gui;
@@ -163,7 +159,7 @@ extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -185,7 +181,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
     if (!PyArg_ParseTuple(args, "ii",&width,&height))
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
@@ -208,13 +204,13 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
 	color[0] = r; color[1] = g; color[2] = b;
 	for (int i = 0; i < 3; ++i){
 		if (color[i] < 00.f || color[i] > 1.0) {
 			PyErr_BadArgument();
-			return 0;
+			return NULL;
 		}
 	}
 
@@ -239,7 +235,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw))
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
 
 
@@ -297,7 +293,7 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "sddddddd",&meshFilename,&density,&sx,&sy,&sz,&rx,&ry,&rz))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     sofa::helper::GenerateRigidInfo rigid;
@@ -316,39 +312,53 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 {
     char* filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
-    getSimulation()->exportGraph( Simulation::GetRoot().get(), filename );
+    BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!node)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+
+    getSimulation()->exportGraph( down_cast<Node>(node), filename );
 
     return Py_BuildValue("i",0);
 }
 
 
 
-extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * /*args*/)
+extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 {
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "O", &pyNode))
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    BaseNode* basenode=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    if (!basenode)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    Node* node = down_cast<Node>(basenode);
     Simulation* simulation = getSimulation();
-    Node*root=simulation->GetRoot().get();
 
     //    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-//    root->execute<UpdateBoundingBoxVisitor>(params);
-//    simulation->updateVisualContext(root);
-    simulation->updateVisual(root);
+//    node->execute<UpdateBoundingBoxVisitor>(params);
+//    simulation->updateVisualContext(node);
+    simulation->updateVisual(node);
 
 
-    Py_RETURN_NONE;
-}
-
-// sometimes nodes created in Python are not initialized ASAP
-// e.g. when created in callbacks initGraph or bwdInitGraph
-// this function forces the initialization of every nodes created in python that are not yet initialized
-extern "C" PyObject * Sofa_forceInitNodeCreatedInPython(PyObject * /*self*/, PyObject * /*args*/)
-{
-    sofa::simulation::ScriptEnvironment::initScriptNodes();
     Py_RETURN_NONE;
 }
 
@@ -367,7 +377,7 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_info( emitter ) << message;
@@ -377,7 +387,7 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_info( s_emitter ) << message;
@@ -398,7 +408,7 @@ extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_deprecated( emitter ) << message;
@@ -408,7 +418,7 @@ extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_deprecated( s_emitter ) << message;
@@ -429,7 +439,7 @@ extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_warning( emitter ) << message;
@@ -439,7 +449,7 @@ extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_warning( s_emitter ) << message;
@@ -460,7 +470,7 @@ extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_error( emitter ) << message;
@@ -470,7 +480,7 @@ extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_error( s_emitter ) << message;
@@ -491,7 +501,7 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_fatal( emitter ) << message;
@@ -501,7 +511,7 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
         if( !PyArg_ParseTuple(args, "s", &message) )
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
 
         msg_fatal( s_emitter ) << message;
@@ -517,7 +527,7 @@ extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
@@ -573,7 +583,7 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "s",&pluginName))
     {
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     using sofa::helper::system::PluginManager;
@@ -599,6 +609,7 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
     {
         SP_MESSAGE_WARNING( "Sofa_loadPlugin: cannot find plugin: " << pluginName );
         PyErr_BadArgument();
+        return NULL;
     }
 
     Py_RETURN_NONE;
@@ -623,7 +634,6 @@ SP_MODULE_METHOD(Sofa,getViewerCamera)
 SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHOD(Sofa,exportGraph)
 SP_MODULE_METHOD(Sofa,updateVisual)
-SP_MODULE_METHOD(Sofa,forceInitNodeCreatedInPython)
 SP_MODULE_METHOD(Sofa,msg_info)
 SP_MODULE_METHOD(Sofa,msg_deprecated)
 SP_MODULE_METHOD(Sofa,msg_warning)

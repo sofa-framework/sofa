@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(SofaMiscMapping_test)
 
@@ -8,6 +8,7 @@ set(SOURCE_FILES
     ProjectionToTargetPlaneMapping_test.cpp
     SubsetMultiMapping_test.cpp
     SquareDistanceMapping_test.cpp
+    SquareMapping_test.cpp
    )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaDefaultType)
 
 set(HEADER_FILES
@@ -29,6 +29,7 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
+    Color.h
 )
 
 set(SOURCE_FILES
@@ -38,6 +39,7 @@ set(SOURCE_FILES
     # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
+    Color.cpp
     init.cpp
 )
 

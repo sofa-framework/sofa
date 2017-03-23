@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -57,15 +54,15 @@ public:
     {
     protected:
         std::string value;
-        bool accessed;
+        mutable bool accessed;
     public:
         Attribute() : accessed(false) {}
         Attribute(const std::string& v) : value(v), accessed(false) {}
         void operator=(const std::string& v) { value = v; }
         void operator=(const char* v) { value = v; }
-        operator std::string() { accessed = true; return value; }
-        const char* c_str() { accessed = true; return value.c_str(); }
-        bool isAccessed() { return accessed; }
+        operator std::string() const { accessed = true; return value; }
+        const char* c_str() const { accessed = true; return value.c_str(); }
+        bool isAccessed() const { return accessed; }
         void setAccessed(bool v) { accessed = v; }
     };
 
@@ -91,12 +88,12 @@ public:
     virtual std::string getBaseFile();
 
     ///// Get all attribute data, read-only
-    //virtual const AttributeMap& getAttributeMap() const;
+    virtual const AttributeMap& getAttributeMap() const;
 
     ///// Get list of all attributes
-    template<class T> void getAttributeList(T& container)
+    template<class T> void getAttributeList(T& container) const
     {
-        for (AttributeMap::iterator it = attributes.begin();
+        for (AttributeMap::const_iterator it = attributes.begin();
                 it != attributes.end(); ++it)
             container.push_back(it->first);
     }
@@ -110,6 +107,16 @@ public:
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
+    /// Get an attribute converted to a float given its name.
+    /// returns defaultVal if not present or in case the attribute cannot be parsed totally
+    /// adds a message in the logError if the attribute cannot be totally parsed.
+    virtual float getAttributeAsFloat(const std::string& attr, const float defaultVal=0.0);
+
+    /// Get an attribute converted to a int given its name.
+    /// returns defaultVal if not present or in case the attribute cannot be parsed totally
+    /// adds a message in the logError if the attribute cannot be totally parsed.
+    virtual int getAttributeAsInt(const std::string& attr, const int defaultVal=0.0) ;
+
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);
 
@@ -120,6 +127,8 @@ public:
     virtual std::string getFullName();
 
     virtual void logError(std::string s) {errors.push_back(s);}
+
+    std::vector< std::string > const& getErrors() const {return errors;}
 
 protected:
     AttributeMap attributes;

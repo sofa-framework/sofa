@@ -40,3 +40,13 @@ def as_numpy( data ):
 def numpy_data(obj, name):
     data = obj.findData(name)
     return as_numpy(data)
+
+
+def vec_as_numpy( (ptr, size, typename) ):
+    '''maps vec as a numpy array'''
+
+    type = ctypeFromName.get(typename,None)
+    if not type: raise Exception("can't map data of type " + typename)
+
+    array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
+    return numpy.ctypeslib.as_array(array, (size,) )

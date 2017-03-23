@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,7 +26,8 @@
 
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
-
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/gl/BasicShapesGL.h>
 
 namespace sofa
 {
@@ -53,6 +51,8 @@ public:
 
     DrawToolGL();
     ~DrawToolGL();
+
+    virtual void init();
 
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour);
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour);
@@ -86,6 +86,8 @@ public:
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour);
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour);
 
     virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16);
 
@@ -169,11 +171,19 @@ public:
     virtual void saveLastState();
     virtual void restoreLastState();
 
+    virtual void readPixels(int x, int y, int w, int h, float* rgb, float* z = NULL);
+
+    void internalDrawSpheres(const helper::vector<Vector3>& centers, const float& radius, const unsigned int rings, const unsigned int sectors);
+    void internalDrawSphere(const Vector3& center, const float& radius, const unsigned int rings, const unsigned int sectors);
+
 protected:
 
     bool mLightEnabled;
     int  mPolygonMode;      //0: no cull, 1 front (CULL_CLOCKWISE), 2 back (CULL_ANTICLOCKWISE)
     bool mWireFrameEnabled;
+
+    helper::gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
+    helper::gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
 
 public:
     // getter & setter
@@ -185,8 +195,11 @@ public:
 
     int getPolygonMode() {return mPolygonMode;}
     bool getWireFrameEnabled() {return mWireFrameEnabled;}
-
 };
+
+//#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_GL_DRAWTOOLGL_CPP)
+//extern template class SOFA_CORE_API BasicShapesGL_Sphere < sofa::defaulttype::Vector3 >;
+//#endif // defined(SOFA_EXTERN_TEMPLATE)
 
 }//namespace visual
 

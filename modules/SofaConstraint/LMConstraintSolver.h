@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -58,9 +55,9 @@ protected:
     typedef linearsolver::SparseMatrixEigen    SparseMatrixEigen;
     typedef linearsolver::SparseVectorEigen    SparseVectorEigen;
 
-    typedef helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
+    typedef std::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, helper::set<unsigned int> > DofToMask;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, std::set<unsigned int> > DofToMask;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
 
 public:
@@ -139,14 +136,14 @@ protected:
             bool isPositionChangesUpdateVelocity,
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
-            const sofa::helper::set< unsigned int > &dofUsed,
+            const std::set< unsigned int > &dofUsed,
             sofa::core::behavior::BaseMechanicalState* dof) const;
 
 
     ///
     virtual void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
             const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
-            SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
+            SparseMatrixEigen& L, std::set< unsigned int > &dofUsed ) const;
     virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseConstraintCorrection* constraintCorrection,
             SparseMatrixEigen& matrix) const;

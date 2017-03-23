@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGui)
 
 
@@ -122,8 +122,8 @@ if(NOT SOFA_NO_OPENGL)
             endif()
 
            ## QWT
-           option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")
-           if(SOFA_ENABLE_QWT)
+           option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
+           if(SOFAGUI_ENABLE_QWT)
                 set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
 

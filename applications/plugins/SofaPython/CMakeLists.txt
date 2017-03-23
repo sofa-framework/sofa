@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaPython)
 
 set(SOFAPYTHON_MAJOR_VERSION 0)
@@ -25,6 +25,8 @@ set(HEADER_FILES
     Binding_Context.h
     Binding_Data.h
     Binding_DataEngine.h
+    Binding_DataFileName.h
+    Binding_DataFileNameVector.h
     Binding_DisplayFlagsData.h
     Binding_OptionsGroupData.h
     Binding_GridTopology.h
@@ -47,6 +49,7 @@ set(HEADER_FILES
 #    Binding_SubsetMultiMapping.h
     Binding_Topology.h
     Binding_Vector.h
+    Binding_VectorLinearSpringData.h
     Binding_VisualModel.h
     PythonCommon.h
     PythonEnvironment.h
@@ -60,7 +63,6 @@ set(HEADER_FILES
     PythonVisitor.h
     SceneLoaderPY.h
     ScriptController.h
-    ScriptEnvironment.h
     ScriptEvent.h
     ScriptFunction.h
 )
@@ -79,6 +81,8 @@ set(SOURCE_FILES
     Binding_Context.cpp
     Binding_Data.cpp
     Binding_DataEngine.cpp
+    Binding_DataFileName.cpp
+    Binding_DataFileNameVector.cpp
     Binding_DisplayFlagsData.cpp
     Binding_OptionsGroupData.cpp
     Binding_GridTopology.cpp
@@ -101,6 +105,7 @@ set(SOURCE_FILES
 #    Binding_SubsetMultiMapping.cpp
     Binding_Topology.cpp
     Binding_Vector.cpp
+    Binding_VectorLinearSpringData.cpp
     Binding_VisualModel.cpp
     PythonEnvironment.cpp
     PythonFactory.cpp
@@ -113,7 +118,6 @@ set(SOURCE_FILES
     PythonVisitor.cpp
     SceneLoaderPY.cpp
     ScriptController.cpp
-    ScriptEnvironment.cpp
     ScriptEvent.cpp
     ScriptFunction.cpp
     initSofaPython.cpp
@@ -130,6 +134,7 @@ set(PYTHON_FILES
     python/SofaPython/sml.py
     python/SofaPython/units.py
     python/SofaPython/noPicking.py
+    python/SofaPython/livecoding.py
 )
 
 

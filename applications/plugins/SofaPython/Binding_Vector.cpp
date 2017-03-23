@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -36,7 +33,7 @@ SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->x());
 }
@@ -46,7 +43,7 @@ SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
     obj->x()=PyFloat_AsDouble(args);
     return 0;
@@ -58,7 +55,7 @@ SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->y());
 }
@@ -68,7 +65,7 @@ SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
     obj->y()=PyFloat_AsDouble(args);
     return 0;
@@ -80,7 +77,7 @@ SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return NULL;
     }
     return PyFloat_FromDouble(obj->z());
 }
@@ -90,7 +87,7 @@ SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
     if (!obj)
     {
         PyErr_BadArgument();
-        return 0;
+        return -1;
     }
     obj->z()=PyFloat_AsDouble(args);
     return 0;

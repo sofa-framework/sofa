@@ -11,7 +11,7 @@ namespace component {
 namespace odesolver {
 
 SOFA_DECL_CLASS(CompliantImplicitSolver)
-int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
+int CompliantImplicitSolverClass = core::RegisterObject("Newmark-beta implicit solver for constrained dynamics using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
 
@@ -31,14 +31,13 @@ using namespace core::behavior;
                               true,
                               "warm_start",
                               "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)")),
-          propagate_lambdas(initData(&propagate_lambdas,
-                                     false,
-                                     "propagate_lambdas",
-                                     "propagate Lagrange multipliers in force vector at the end of time step")),
           debug(initData(&debug,
                          false,
                          "debug",
                          "print debug stuff")),
+          constraint_forces(initData(&constraint_forces,
+                                     "constraint_forces",
+                                     "add constraint forces to mstate's 'force' vector at compliance levels at the end of the time step. (0->do nothing, 1->add to existing forces, 2->clear existing forces, 3-> clear existing forces and propagate constraint forces toward independent dofs) ")),
           alpha( initData(&alpha,
                           SReal(1),
                           "implicitVelocity",
@@ -48,7 +47,7 @@ using namespace core::behavior;
                          "implicitPosition",
                          "Weight of the next velocities in the average velocities used to update the positions. 1 is implicit, 0 is explicit.")),
 
-		stabilization_damping(initData(&stabilization_damping,
+          stabilization_damping(initData(&stabilization_damping,
 									   SReal(1e-7),
 									   "stabilization_damping",
 									   "stabilization damping hint to relax infeasible problems"))
@@ -78,9 +77,18 @@ using namespace core::behavior;
         formulationOptions.setNbItems( NB_FORMULATION );
         formulationOptions.setItemName( FORMULATION_VEL, "vel" );
         formulationOptions.setItemName( FORMULATION_DV,  "dv"  );
-        formulationOptions.setItemName( FORMULATION_ACC, "acc" );;
+        formulationOptions.setItemName( FORMULATION_ACC, "acc" );
         formulationOptions.setSelectedItem( FORMULATION_VEL );
         formulation.setValue( formulationOptions );
+
+        helper::OptionsGroup constraint_forcesOptions;
+        constraint_forcesOptions.setNbItems( 4 );
+        constraint_forcesOptions.setItemName( 0, "no" );
+        constraint_forcesOptions.setItemName( 1, "add"  );
+        constraint_forcesOptions.setItemName( 2, "clear" );
+        constraint_forcesOptions.setItemName( 3, "propagate" );
+        constraint_forcesOptions.setSelectedItem( 0 );
+        constraint_forces.setValue( constraint_forcesOptions );
     }
 
 
@@ -637,9 +645,10 @@ using namespace core::behavior;
 
 
             // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
-            if( propagate_lambdas.getValue() && sys.n ) {
-                scoped::timer step("lambda propagation");
-                simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? sys.dt : 1.0 );
+            unsigned constraint_f = constraint_forces.getValue().getSelectedId();
+            if( constraint_f && sys.n ) {
+                scoped::timer step("constraint_forces");
+                simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
                 send( prop );
             }
 
@@ -744,6 +753,21 @@ using namespace core::behavior;
     }
 
 
+    void CompliantImplicitSolver::parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        Inherit1::parse(arg);
+
+        // to be backward compatible with previous data structure
+        const char* propagate_lambdasChar = arg->getAttribute("propagate_lambdas");
+        if( propagate_lambdasChar )
+        {
+            serr<<helper::logging::Message::Deprecated<<"parse: You are using a deprecated Data 'propagate_lambdas', please have a look to 'constraint_forces'"<<sendl;
+            Data<bool> data;
+            data.read( propagate_lambdasChar );
+            if( data.getValue() )
+                constraint_forces.beginWriteOnly()->setSelectedItem(3); constraint_forces.endEdit();
+        }
+    }
 
 }
 }

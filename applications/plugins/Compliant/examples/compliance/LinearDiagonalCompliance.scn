@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 0 0" dt="0.001">
+    <RequiredPlugin name="Compliant"/>
+    <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
+    <CompliantImplicitSolver/>
+    <CgSolver precision="1e-6" iterations="100" />
+    
+    <Node name="uniformCompliance">
+        <MechanicalObject name="dof" template="Vec3" position="0 0 0 10 0 0" showObject="true" drawMode="1"/>
+        <UniformMass name="mass" mass="1" />
+        <FixedConstraint indices="0" />
+        <Node name="compliance">
+            <EdgeSetTopologyContainer edges="0 1" />
+            <MechanicalObject name="dist" template="Vec1" />
+            <DistanceMapping restLengths="0.5" />
+            <UniformCompliance compliance="1e-5" />
+        </Node>
+    </Node>
+    
+    <Node name="linearCompliance">
+        <MechanicalObject name="dof" template="Vec3" position="0 1 0 10 1 0" showObject="true" drawMode="1" showColor="1 0 0 1"/>
+        <UniformMass name="mass" mass="1" />
+        <FixedConstraint indices="0" />
+        <Node name="compliance">
+            <EdgeSetTopologyContainer edges="0 1" />
+            <MechanicalObject name="dist" template="Vec1" />
+            <DistanceMapping restLengths="0.5" />
+            <LinearDiagonalCompliance complianceMin="1e-5" errorMin="0.1" />
+        </Node>
+    </Node>
+    
+</Node>

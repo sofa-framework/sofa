@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -31,7 +28,7 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 
 namespace sofa
 {
@@ -128,10 +125,10 @@ private:
 
 
 
-class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::vector<std::string> >
+class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::SVector<std::string> >
 {
 public:
-    typedef sofa::core::objectmodel::Data<sofa::helper::vector<std::string> > Inherit;
+    typedef sofa::core::objectmodel::Data<sofa::helper::SVector<std::string> > Inherit;
 
     DataFileNameVector( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
         : Inherit(helpMsg, isDisplayed, isReadOnly)
@@ -178,11 +175,19 @@ public:
     }
     virtual void virtualEndEdit() { endEdit(); }
 
-    void setValueAsString(const std::string& v)
+    void addPath(const std::string& v, bool clear = false)
     {
         sofa::helper::vector<std::string>& val = *beginEdit();
-        val.clear();
+        if(clear) val.clear();
         val.push_back(v);
+        endEdit();
+    }
+    void setValueAsString(const std::string& v)
+    {
+        sofa::helper::SVector<std::string>& val = *beginEdit();
+        val.clear();
+        std::istringstream ss( v );
+        ss >> val;
         endEdit();
     }
     virtual void virtualSetValueAsString(const std::string& v) { setValueAsString(v); }

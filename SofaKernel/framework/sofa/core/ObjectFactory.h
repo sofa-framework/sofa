@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -34,8 +31,6 @@
 #include <memory>
 #include <iostream>
 #include <typeinfo>
-
-#include <boost/shared_ptr.hpp>
 
 namespace sofa
 {
@@ -63,7 +58,7 @@ public:
     class Creator
     {
     public:
-        typedef boost::shared_ptr<Creator> SPtr;
+        typedef std::shared_ptr<Creator> SPtr;
 
         virtual ~Creator() { }
         /// Pre-construction check.
@@ -95,7 +90,7 @@ public:
     class ClassEntry
     {
     public:
-        typedef boost::shared_ptr<ClassEntry> SPtr;
+        typedef std::shared_ptr<ClassEntry> SPtr;
 
         std::string className;
         std::set<std::string> aliases;
@@ -104,6 +99,7 @@ public:
         std::string license;
         std::string defaultTemplate;
         CreatorMap creatorMap;
+        std::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
     typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
@@ -137,11 +133,11 @@ public:
     /// Add an alias name for an already registered class
     ///
     /// \param name     name of the new alias
-    /// \param result   class pointed to by the new alias
+    /// \param target   class pointed to by the new alias
     /// \param force    set to true if this method should override any entry already registered for this name
     /// \param previous (output) previous ClassEntry registered for this name
-    bool addAlias(std::string name, std::string result, bool force=false,
-		  ClassEntry::SPtr* previous = NULL);
+    bool addAlias(std::string name, std::string target, bool force=false,
+          ClassEntry::SPtr* previous = NULL);
 
     /// Reset an alias to a previous state
     ///

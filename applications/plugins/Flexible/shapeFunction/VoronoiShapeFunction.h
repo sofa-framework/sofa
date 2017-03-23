@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -59,7 +56,7 @@ there are computed from an image (typically a rasterized object)
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct VoronoiShapeFunctionSpecialization
 {
 };
@@ -76,8 +73,8 @@ struct NaturalNeighborData
 
 
 /// Specialization for regular Image
-template <>
-struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct VoronoiShapeFunctionSpecialization<defaulttype::Image<T>>
 {
     template<class VoronoiShapeFunction>
     static void init(VoronoiShapeFunction* This)
@@ -120,7 +117,6 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     static void computeVoronoi(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
         typedef typename VoronoiShapeFunction::raTransform raTransform;
@@ -160,7 +156,6 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     static void ComputeWeigths_DistanceRatio(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
         typedef typename VoronoiShapeFunction::raTransform raTransform;
@@ -273,12 +268,10 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     *   - the updated voronoi including the point (@param voronoiPt and @param distancesPt)
     * returns volume, area and distance associated to each natural neighbor (indexed in @param ref)
     */
-
     template<class VoronoiShapeFunction>
     static void ComputeWeigths_NaturalNeighbors(VoronoiShapeFunction* This)
     {
         typedef typename VoronoiShapeFunction::ImageTypes ImageTypes;
-        typedef typename VoronoiShapeFunction::T T;
         typedef typename VoronoiShapeFunction::Real Real;
         typedef typename VoronoiShapeFunction::Coord Coord;
         typedef typename VoronoiShapeFunction::raImage raImage;
@@ -386,8 +379,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class VoronoiShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
-    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct VoronoiShapeFunctionSpecialization<ImageTypes_>;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(VoronoiShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
@@ -440,14 +432,14 @@ public:
         Inherit::init();
 
         // init voronoi, distance, weight and indice image
-        VoronoiShapeFunctionSpecialization<ImageTypes::label>::init( this );
+        VoronoiShapeFunctionSpecialization<ImageTypes>::init( this );
 
         // compute voronoi based on node positions
-        VoronoiShapeFunctionSpecialization<ImageTypes::label>::computeVoronoi( this );
+        VoronoiShapeFunctionSpecialization<ImageTypes>::computeVoronoi( this );
 
         // compute weights from voronoi
-        if(this->method.getValue().getSelectedId() == DISTANCE)  VoronoiShapeFunctionSpecialization<ImageTypes::label>::ComputeWeigths_DistanceRatio(this);
-        else VoronoiShapeFunctionSpecialization<ImageTypes::label>::ComputeWeigths_NaturalNeighbors(this);
+        if(this->method.getValue().getSelectedId() == DISTANCE)  VoronoiShapeFunctionSpecialization<ImageTypes>::ComputeWeigths_DistanceRatio(this);
+        else VoronoiShapeFunctionSpecialization<ImageTypes>::ComputeWeigths_NaturalNeighbors(this);
 
         // clear voronoi and distance image ?
         if(this->f_clearData.getValue())

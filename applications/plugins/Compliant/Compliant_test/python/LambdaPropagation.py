@@ -42,7 +42,7 @@ def createScene(node):
 
     ode.stabilization = "pre-stabilization"
     ode.warm_start = False
-    ode.propagate_lambdas = True
+    ode.constraint_forces = "propagate"
     
     # ode.debug = True
 

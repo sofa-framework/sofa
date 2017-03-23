@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(Registration)
 
 set(REGISTRATION_MAJOR_VERSION 0)
@@ -57,10 +57,15 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "i
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
+
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()
+if(NOT ${SOFA_NO_OPENGL})
+    target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION})
