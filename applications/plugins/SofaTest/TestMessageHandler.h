@@ -33,6 +33,9 @@
 #include <sofa/helper/logging/Message.h>
 #include "InitPlugin_test.h"
 #include <gtest/gtest.h>
+#include <queue>
+
+#define SOURCE_LOCATION __FILE__, __LINE__
 
 namespace sofa
 {
@@ -43,7 +46,90 @@ namespace helper
 namespace logging
 {
 
-#define SOURCE_LOCATION __FILE__, __LINE__
+class GtestMessageFrame
+{
+public:
+    virtual ~GtestMessageFrame() {}
+
+    const char* m_filename;
+    int   m_lineno ;
+
+    virtual void process(Message& m) ;
+    virtual void finalize() ;
+};
+
+class GtestMessageFrameFailure : public GtestMessageFrame
+{
+public:
+    Message::Type m_type;
+
+    GtestMessageFrameFailure(Message::Type type,
+                             const char* filename, int lineno) ;
+    virtual void process(Message& message) ;
+};
+
+class GtestMessageFrameFailureWhenMissing  : public GtestMessageFrame
+{
+public:
+    Message::Type m_type;
+    bool  m_gotMessage {false} ;
+
+    GtestMessageFrameFailureWhenMissing(Message::Type type,
+                                        const char* filename,  int lineno) ;
+
+    virtual void process(Message& message) ;
+    void finalize() ;
+};
+
+
+class SOFA_TestPlugin_API GtestMessageHandler : public MessageHandler
+{
+    Message::Class m_class ;
+    std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
+
+public:
+    GtestMessageHandler(Message::Class mclass) ;
+    virtual ~ GtestMessageHandler();
+
+    /// Inherited from MessageHandler
+    virtual void process(Message& m) ;
+    void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
+    void popFrame(Message::Type type) ;
+};
+
+class SOFA_TestPlugin_API MainGtestMessageHandler
+{
+public:
+    static GtestMessageHandler& getInstance() ;
+    static void pushFrame(Message::Type type, GtestMessageFrame* frame) ;
+    static void popFrame(Message::Type type) ;
+};
+
+struct SOFA_TestPlugin_API MesssageAsTestFailure2
+{
+    GtestMessageFrameFailure frame ;
+
+    MesssageAsTestFailure2(Message::Type t,
+                           const char* filename="unknown", int lineno=0) ;
+    virtual ~MesssageAsTestFailure2() ;
+};
+
+struct SOFA_TestPlugin_API ExpectMessage2
+{
+    GtestMessageFrameFailureWhenMissing frame ;
+
+    ExpectMessage2(Message::Type t,
+                   const char* filename="unknown", int lineno=0) ;
+    virtual ~ExpectMessage2() ;
+};
+
+//From http://en.cppreference.com/w/cpp/preprocessor/replace
+#define EXPECT_MSG_PASTER(x,y) x ## _ ## y
+#define EXPECT_MSG_EVALUATOR(x,y)  EXPECT_MSG_PASTER(x,y)
+
+#define EXPECT_MSG_EMIT_V2(t) sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::t, __FILE__, __LINE__ }
+#define EXPECT_MSG_NOEMIT_V2(t) sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__){ sofa::helper::logging::Message::t, __FILE__, __LINE__ }
+
 
 struct SOFA_TestPlugin_API ExpectMessage
 {
@@ -80,8 +166,6 @@ struct SOFA_TestPlugin_API ExpectMessage
             }
         }
     }
-
-
 };
 
 struct SOFA_TestPlugin_API MessageAsTestFailure
