@@ -33,7 +33,7 @@ namespace logging
 namespace {
     static struct raii {
       raii() {
-            std::cout << "INSTALLING THE HANDLER " << std::endl ;
+            //std::cout << "INSTALLING THE HANDLER " << std::endl ;
             helper::logging::MessageDispatcher::addHandler( &MainGtestMessageHandler::getInstance() ) ;
       }
     } sin ;
@@ -96,9 +96,10 @@ GtestMessageHandler::GtestMessageHandler(Message::Class mclass) : m_class(mclass
 /// Inherited from MessageHandler
 void GtestMessageHandler::process(Message& m)
 {
-    if(m.context()==m_class){
-        m_gtestframes[m.type()].back()->process(m) ;
-    }
+    //if(m.context()==m_class){
+    //std::cout << "PROCESSING MESSAGE" << toString(m.type()) << ": " << m_gtestframes[m.type()].size() << std::endl;
+    m_gtestframes[m.type()].back()->process(m) ;
+    //}
 }
 
 GtestMessageHandler::~GtestMessageHandler()
@@ -134,6 +135,7 @@ void MainGtestMessageHandler::popFrame(Message::Type type){
 MesssageAsTestFailure2::MesssageAsTestFailure2(Message::Type type,
                                                const char* filename, int lineno)
 {
+    //std::cout << "INSTALL HANDLER FOR" << toString(type) << std::endl;
     auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
     m_frames.push_back(frame);
     MainGtestMessageHandler::pushFrame(type, frame) ;
@@ -144,6 +146,7 @@ MesssageAsTestFailure2::MesssageAsTestFailure2(std::initializer_list<Message::Ty
 {
     for(Message::Type type : types)
     {
+        //std::cout << "INSTALL HANDLER FOR" << toString(type) << std::endl;
         auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
         m_frames.push_back(frame);
         MainGtestMessageHandler::pushFrame(type, frame) ;
@@ -153,6 +156,7 @@ MesssageAsTestFailure2::MesssageAsTestFailure2(std::initializer_list<Message::Ty
 MesssageAsTestFailure2::~MesssageAsTestFailure2(){
     for(auto frame : m_frames)
     {
+        //std::cout << "REMOVE HANDLER FOR" << toString(frame->m_type) << std::endl;
         MainGtestMessageHandler::popFrame(frame->m_type) ;
         frame->finalize() ;
         delete frame;

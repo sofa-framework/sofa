@@ -103,8 +103,6 @@ struct TopologicalChangeProcessor_test: public Sofa_test<double>
 
 TEST_F( TopologicalChangeProcessor_test,Incise)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     ASSERT_TRUE(this->TestInciseProcess());
 }
 

@@ -38,10 +38,12 @@ using sofa::helper::Utils;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;
 
+#include <sofa/helper/system/console.h>
+using sofa::helper::Console ;
+
 #include <SofaTest/TestMessageHandler.h>
 
 namespace sofa {
-
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
 
@@ -64,6 +66,10 @@ BaseSofa_test::BaseSofa_test(){
     //use the same seed (the seed value is indicated at the 2nd line of test results)
     //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
     helper::srand(seed);
+
+    // gtest already use color so we remove the color from the sofa message to make the distinction
+    // clean and avoid ambiguity.
+    Console::setColorsStatus(Console::ColorsDisabled) ;
 
     // Repeating this for each class is harmless because addHandler test if the handler is already installed and
     // if so it don't install it again.
