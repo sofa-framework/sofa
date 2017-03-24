@@ -470,8 +470,8 @@ public:
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
     Data<helper::OptionsGroup> method;
-    Data< bool > computeRecursive;
     Data< ParamTypes > param;
+    Data< bool > computeRecursive;
     /**@}*/
 
     //@name sample data (points+connectivity)
@@ -526,8 +526,8 @@ public:
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
         , method ( initData ( &method,"method","method (param)" ) )
-        , computeRecursive(initData(&computeRecursive,false,"computeRecursive","if true: insert nodes recursively and build the graph"))
         , param ( initData ( &param,"param","Parameters" ) )
+        , computeRecursive(initData(&computeRecursive,false,"computeRecursive","if true: insert nodes recursively and build the graph"))
         , position(initData(&position,SeqPositions(),"position","output positions"))
         , fixedPosition(initData(&fixedPosition,SeqPositions(),"fixedPosition","user defined sample positions"))
         , edges(initData(&edges,SeqEdges(),"edges","edges connecting neighboring nodes"))
