@@ -2,6 +2,7 @@
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 
 #include "../assembly/AssemblyVisitor.h"
 #include "../utils/scoped.h"
@@ -61,6 +62,8 @@ using namespace core::behavior;
             true,
             "neglecting_compliance_forces_in_geometric_stiffness",
             "isn't the name clear enough?"))
+        , extra_solves(initData(&extra_solves, unsigned(0), "extra_solves",
+                                "extra dynamics solves. a SolveEndEvent is sent after each solve if nonzero"))
     {
         storeDSol = false;
         assemblyVisitor = NULL;
@@ -515,12 +518,21 @@ using namespace core::behavior;
         assemblyVisitor->assemble(sys);
     }
 
+
+simulation::Node* CompliantImplicitSolver::node() {
+    assert( dynamic_cast<simulation::Node*>(getContext()) );
+    return static_cast<simulation::Node*>(getContext());
+}
+
+SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
+
+
     void CompliantImplicitSolver::solve(const core::ExecParams* params,
                                 SReal dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 
-        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params );
+        node()->precomputeTraversalOrder( params );
 
         assert(kkt);
 
@@ -622,6 +634,24 @@ using namespace core::behavior;
                 }
 
 
+                for(unsigned k = 0, kmax = extra_solves.getValue(); k < kmax; ++k) {
+                    std::clog << "extra solves" << std::endl;
+                    set_state_lambda( sys, rhs.tail(sys.n) );
+
+                    // TODO send event
+                    {
+                        SolveEndEvent ev; ev.index = k;
+                        simulation::PropagateEventVisitor act ( params, &ev );
+                        node()->execute ( act );
+                    }
+
+                    compute_forces( sop, f, &_ck );
+                    rhs_dynamics( sop, rhs, sys, _ck, posId, velId );
+                    
+                    kkt->solve(x, sys, rhs);
+                }
+
+
                 switch( formulation.getValue().getSelectedId() )
                 {
                 case FORMULATION_VEL: // p+ = p- + h.v
@@ -689,9 +719,8 @@ using namespace core::behavior;
     {
         if( !sys.n ) return;
 
-        if( realloc )
-        {
-            static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
+        if( realloc ) {
+            node()->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
             _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
         }
 
