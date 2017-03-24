@@ -98,9 +98,7 @@ protected:
         }
         else // create reference
         {
-
-            msg_warning("Regression_test")<<"a reference is not existing and is created now, \""<<testScene
-                      <<".reference*\" files should be added to the repository ";
+            msg_warning("Regression_test") << "Non existing reference created: " << reference;
 
             // just to create an empty file to know it is already init
             std::ofstream filestream(reference.c_str());
