@@ -81,10 +81,11 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
     /// By default all test based on Sofa_test are failing if there is one of the following.
     /// To prevent that you simply need to add the line
     /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    EXPECT_MSG_NOEMIT(Fatal) ;
-    EXPECT_MSG_NOEMIT(Error) ;
-    EXPECT_MSG_NOEMIT(Warning) ;
-    EXPECT_MSG_NOEMIT(Deprecated) ;
+    sofa::helper::logging::MesssageAsTestFailure2 m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ );
+    sofa::helper::logging::MesssageAsTestFailure2 m_error(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
+    sofa::helper::logging::MesssageAsTestFailure2 m_warning(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
+    sofa::helper::logging::MesssageAsTestFailure2 m_deprecated(sofa::helper::logging::Message::Deprectated, __FILE__, __LINE__ );
+
 
     /** @name Scalars
      *  Type and functions to manipulate real numbers.
