@@ -320,7 +320,7 @@ bool ImagePNG::save(std::string filename, int compression_level)
         return false;
     }
 #ifndef NDEBUG
-    msg_info() << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
+    msg_info("ImagePNG") << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
 #endif
     png_set_IHDR(PNG_writer, PNG_info, width, height,
             bit_depth, color_type, PNG_INTERLACE_NONE,

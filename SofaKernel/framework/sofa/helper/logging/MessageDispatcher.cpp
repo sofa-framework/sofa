@@ -107,11 +107,14 @@ public:
 };
 
 
-mutex s_dispatchermutex ;
 MessageDispatcherImpl s_messagedispatcher ;
 
-/*
-static std::vector<MessageHandler*> setDefaultMessageHandler()
+mutex& getMutex(){
+    static mutex s_dispatchermutex ;
+    return s_dispatchermutex ;
+}
+
+/*static std::vector<MessageHandler*> setDefaultMessageHandler()
 {
     /// This static function of the dispatcher has to be protected against concurent access
     /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
@@ -124,31 +127,31 @@ static std::vector<MessageHandler*> setDefaultMessageHandler()
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    lock_guard<mutex> guard(s_dispatchermutex) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.process(m);
 }
