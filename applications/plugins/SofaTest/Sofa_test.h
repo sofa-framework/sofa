@@ -84,7 +84,7 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
     sofa::helper::logging::MesssageAsTestFailure2 m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ );
     sofa::helper::logging::MesssageAsTestFailure2 m_error(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
     sofa::helper::logging::MesssageAsTestFailure2 m_warning(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
-    sofa::helper::logging::MesssageAsTestFailure2 m_deprecated(sofa::helper::logging::Message::Deprectated, __FILE__, __LINE__ );
+    sofa::helper::logging::MesssageAsTestFailure2 m_deprecated(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
 
 
     /** @name Scalars
