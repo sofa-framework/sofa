@@ -114,6 +114,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
 	templatename = sofa::defaulttype::TemplateAliases::resolveAlias(templatename); // Resolve template aliases
+    ClassEntry::SPtr entry ;
 
     ClassEntryMap::iterator it = registry.find(classname);
     if (it == registry.end())
