@@ -44,3 +44,13 @@ custom.cmake
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
 # can be placed in sub-directories to avoid polluting the root one.
+/applications/plugins/SofaPython/doc/SofaPython_CreateObjects.aux
+/applications/plugins/SofaPython/doc/SofaPython_Scenes.aux
+/applications/plugins/SofaPython/doc/SofaPython_Components.aux
+/applications/plugins/SofaPython/doc/SofaPython.log
+/applications/plugins/SofaPython/doc/SofaPython.aux
+/applications/plugins/SofaPython/doc/SofaPython_PythonScriptController.aux
+/applications/plugins/SofaPython/doc/SofaPython_Visitors.aux
+/applications/plugins/SofaPython/doc/SofaPython_API.aux
+/applications/plugins/SofaPython/doc/SofaPython.tcp
+/applications/plugins/SofaPython/doc/SofaPython.tps
