@@ -77,11 +77,11 @@ BoxROI<DataTypes>::BoxROI()
     , d_tetrahedra(initData (&d_tetrahedra, "tetrahedra", "Tetrahedron Topology") )
     , d_hexahedra(initData (&d_hexahedra, "hexahedra", "Hexahedron Topology") )
     , d_quad(initData (&d_quad, "quad", "Quad Topology") )
-    , d_computeEdges( initData(&d_computeEdges, true,"computeEdges","If true, will compute edge list and index list inside the ROI. (default = true)") )
-    , d_computeTriangles( initData(&d_computeTriangles, true,"computeTriangles","If true, will compute triangle list and index list inside the ROI. (default = true)") )
-    , d_computeTetrahedra( initData(&d_computeTetrahedra, true,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
-    , d_computeHexahedra( initData(&d_computeHexahedra, true,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
-    , d_computeQuad( initData(&d_computeQuad, true,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
+    , d_computeEdges( initData(&d_computeEdges, false,"computeEdges","If true, will compute edge list and index list inside the ROI. (default = true)") )
+    , d_computeTriangles( initData(&d_computeTriangles, false,"computeTriangles","If true, will compute triangle list and index list inside the ROI. (default = true)") )
+    , d_computeTetrahedra( initData(&d_computeTetrahedra, false,"computeTetrahedra","If true, will compute tetrahedra list and index list inside the ROI. (default = true)") )
+    , d_computeHexahedra( initData(&d_computeHexahedra, false,"computeHexahedra","If true, will compute hexahedra list and index list inside the ROI. (default = true)") )
+    , d_computeQuad( initData(&d_computeQuad, false,"computeQuad","If true, will compute quad list and index list inside the ROI. (default = true)") )
     , d_indices( initData(&d_indices,"indices","Indices of the points contained in the ROI") )
     , d_edgeIndices( initData(&d_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , d_triangleIndices( initData(&d_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
@@ -221,7 +221,11 @@ void BoxROI<DataTypes>::init()
     }
 
 
-    if (!d_edges.isSet() || !d_triangles.isSet() || !d_tetrahedra.isSet() || !d_hexahedra.isSet() || !d_quad.isSet() )
+    if ( ( !d_edges.isSet() && d_computeEdges.getValue() ) ||
+            ( !d_triangles.isSet() && d_computeTriangles.getValue() ) ||
+            ( !d_tetrahedra.isSet() && d_computeTetrahedra.getValue() ) ||
+            ( !d_hexahedra.isSet() && d_computeHexahedra.getValue() ) ||
+            ( !d_quad.isSet() && d_computeQuad.getValue() ) )
     {
         msg_info(this) << "No topology given. Searching for a TopologyContainer and a BaseMeshTopology in the current context.\n";
 
