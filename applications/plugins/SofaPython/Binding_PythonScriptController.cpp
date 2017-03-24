@@ -356,6 +356,12 @@ extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject 
 }
 
 
+extern "C" PyObject * PythonScriptController_onEvent(PyObject * /*self*/, PyObject * /*args*/) {
+    Py_RETURN_NONE;
+}
+
+
+
 extern "C" PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
 {
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
@@ -386,6 +392,7 @@ SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
+SP_CLASS_METHOD(PythonScriptController, onEvent)
 SP_CLASS_METHOD(PythonScriptController,onIdle)
 SP_CLASS_METHOD(PythonScriptController,instance)
 SP_CLASS_METHODS_END

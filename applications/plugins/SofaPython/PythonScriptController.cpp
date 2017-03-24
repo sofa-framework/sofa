@@ -122,6 +122,7 @@ PythonScriptController::PythonScriptController()
     , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
+    , m_doOnEvent( initData(&m_doOnEvent, false, "receive_all_events", "listens to all events through onEvent"))
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
@@ -156,6 +157,7 @@ void PythonScriptController::refreshBinding()
     BIND_OBJECT_METHOD(cleanup)
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
+    BIND_OBJECT_METHOD(onEvent)        
     BIND_OBJECT_METHOD(draw)
     BIND_OBJECT_METHOD(onIdle)
 }
@@ -226,6 +228,7 @@ void PythonScriptController::loadScript()
     BIND_OBJECT_METHOD(cleanup)
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
+    BIND_OBJECT_METHOD(onEvent)        
     BIND_OBJECT_METHOD(draw)
     BIND_OBJECT_METHOD(onIdle)
 }
@@ -351,6 +354,14 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
 }
 
+
+void PythonScriptController::script_onEvent(core::objectmodel::Event* event) {
+    SP_CALL_MODULEFUNC(m_Func_onEvent, "(sl)",
+                       event->getClassName(),
+                       (std::size_t)event);
+}
+
+
 void PythonScriptController::script_draw(const core::visual::VisualParams*)
 {
     ActivableScopedAdvancedTimer advancedTimer(m_timingEnabled.getValue(), "PythonScriptController_draw", this);
@@ -360,11 +371,14 @@ void PythonScriptController::script_draw(const core::visual::VisualParams*)
 
 void PythonScriptController::handleEvent(core::objectmodel::Event *event)
 {
-    if (PythonScriptEvent::checkEventType(event))
-    {
+    if (PythonScriptEvent::checkEventType(event)) {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
+    } else {
+        if(m_doOnEvent.getValue() ) {
+            script_onEvent(event);
+        }
+        ScriptController::handleEvent(event);
     }
-    else ScriptController::handleEvent(event);
 }
 
 
