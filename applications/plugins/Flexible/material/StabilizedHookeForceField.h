@@ -23,8 +23,8 @@
 #define SOFA_StabilizedHookeFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/StabilizedHookeMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "StabilizedHookeMaterialBlock.h"
 
 
 namespace sofa

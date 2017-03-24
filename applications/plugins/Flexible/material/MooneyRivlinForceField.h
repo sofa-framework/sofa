@@ -23,8 +23,8 @@
 #define SOFA_MooneyRivlinFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/MooneyRivlinMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "MooneyRivlinMaterialBlock.h"
 
 namespace sofa
 {

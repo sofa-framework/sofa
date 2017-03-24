@@ -22,7 +22,7 @@
 #define SOFA_GaussPointSmoother_CPP
 
 #include <Flexible/config.h>
-#include "../quadrature/GaussPointSmoother.h"
+#include "GaussPointSmoother.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

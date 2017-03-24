@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../BaseJacobian.h"
 #include <sofa/helper/decompose.h>
 

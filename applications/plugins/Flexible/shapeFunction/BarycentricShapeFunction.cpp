@@ -22,7 +22,7 @@
 #define FLEXIBLE_BarycentricShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BarycentricShapeFunction.h"
+#include "BarycentricShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

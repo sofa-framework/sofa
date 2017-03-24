@@ -22,7 +22,7 @@
 #define SOFA_OgdenFORCEFIELD_CPP
 
 #include <Flexible/config.h>
-#include "../material/OgdenForceField.h"
+#include "OgdenForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

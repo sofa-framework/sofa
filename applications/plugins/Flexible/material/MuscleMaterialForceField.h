@@ -23,8 +23,8 @@
 #define SOFA_MuscleMaterialFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/MuscleMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "MuscleMaterialBlock.h"
 
 
 namespace sofa

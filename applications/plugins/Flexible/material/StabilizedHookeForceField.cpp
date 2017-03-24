@@ -22,7 +22,7 @@
 #define SOFA_StabilizedHookeFORCEFIELD_CPP
 
 #include <Flexible/config.h>
-#include "../material/StabilizedHookeForceField.h"
+#include "StabilizedHookeForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -23,7 +23,7 @@
 #define SOFA_GaussPointSmoother_H
 
 #include <Flexible/config.h>
-#include "../quadrature/BaseGaussPointSampler.h"
+#include "BaseGaussPointSampler.h"
 #include "../shapeFunction/BaseShapeFunction.h"
 #include <sofa/helper/SVector.h>
 

@@ -22,7 +22,7 @@
 #ifndef FLEXIBLE_VolumePreservationMaterialBlock_INL
 #define FLEXIBLE_VolumePreservationMaterialBlock_INL
 
-#include "../material/VolumePreservationMaterialBlock.h"
+#include "VolumePreservationMaterialBlock.h"
 #include "../BaseJacobian.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

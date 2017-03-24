@@ -22,7 +22,7 @@
 #define SOFA_TendonMaterialFORCEFIELD_CPP
 
 #include <Flexible/config.h>
-#include "../material/TendonMaterialForceField.h"
+#include "TendonMaterialForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

@@ -27,7 +27,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include "../types/DeformationGradientTypes.h"
 #include "../types/StrainTypes.h"
-#include "../types/PolynomialBasis.h"
 
 namespace sofa
 {

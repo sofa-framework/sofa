@@ -22,11 +22,10 @@
 #ifndef FLEXIBLE_HookeMaterialBlock_INL
 #define FLEXIBLE_HookeMaterialBlock_INL
 
-#include "../material/HookeMaterialBlock.h"
+#include "HookeMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include "../types/StrainTypes.h"
-#include "../types/PolynomialBasis.h"
 
 namespace sofa
 {

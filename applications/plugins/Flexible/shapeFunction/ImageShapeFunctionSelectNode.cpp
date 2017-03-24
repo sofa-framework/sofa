@@ -23,7 +23,7 @@
 #define FLEXIBLE_ImageShapeFunctionSelectNode_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/ImageShapeFunctionSelectNode.h"
+#include "ImageShapeFunctionSelectNode.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

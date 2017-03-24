@@ -23,8 +23,8 @@
 #define SOFA_ProjectiveFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/ProjectiveMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "ProjectiveMaterialBlock.h"
 
 
 namespace sofa

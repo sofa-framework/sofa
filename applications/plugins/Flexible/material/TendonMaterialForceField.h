@@ -23,8 +23,8 @@
 #define SOFA_TendonMaterialFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/TendonMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "TendonMaterialBlock.h"
 
 namespace sofa
 {

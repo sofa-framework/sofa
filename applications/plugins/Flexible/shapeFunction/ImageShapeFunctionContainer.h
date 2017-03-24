@@ -23,8 +23,8 @@
 #define FLEXIBLE_ImageShapeFunctionContainer_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BaseShapeFunction.h"
-#include "../shapeFunction/BaseImageShapeFunction.h"
+#include "BaseShapeFunction.h"
+#include "BaseImageShapeFunction.h"
 
 #include <image/ImageTypes.h>
 

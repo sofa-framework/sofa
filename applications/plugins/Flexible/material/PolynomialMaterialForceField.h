@@ -23,8 +23,8 @@
 #define SOFA_PolynomialMaterialFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/PolynomialMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "PolynomialMaterialBlock.h"
 
 
 namespace sofa

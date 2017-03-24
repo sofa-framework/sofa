@@ -22,7 +22,7 @@
 #define SOFA_ImageGaussPointSAMPLER_CPP
 
 #include <Flexible/config.h>
-#include "../quadrature/ImageGaussPointSampler.h"
+#include "ImageGaussPointSampler.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

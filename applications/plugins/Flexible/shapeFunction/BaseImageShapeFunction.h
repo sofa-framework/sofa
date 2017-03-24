@@ -23,7 +23,7 @@
 #define FLEXIBLE_BaseImageShapeFunction_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BaseShapeFunction.h"
+#include "BaseShapeFunction.h"
 #include "../types/PolynomialBasis.h"
 
 #include <image/ImageTypes.h>

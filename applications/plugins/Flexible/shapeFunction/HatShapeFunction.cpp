@@ -22,7 +22,7 @@
 #define FLEXIBLE_HatShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/HatShapeFunction.h"
+#include "HatShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

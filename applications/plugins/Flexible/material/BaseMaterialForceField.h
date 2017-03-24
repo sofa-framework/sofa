@@ -27,7 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>

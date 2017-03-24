@@ -22,7 +22,7 @@
 #define FLEXIBLE_ShepardShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/ShepardShapeFunction.h"
+#include "ShepardShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -22,7 +22,7 @@
 #define SOFA_BaseGaussPointSAMPLER_CPP
 
 #include <Flexible/config.h>
-#include "../quadrature/BaseGaussPointSampler.h"
+#include "BaseGaussPointSampler.h"
 
 namespace sofa
 {

@@ -23,7 +23,7 @@
 #define FLEXIBLE_ShapeFunctionDiscretizer_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BaseShapeFunction.h"
+#include "BaseShapeFunction.h"
 #include <image/ImageTypes.h>
 
 #include <sofa/core/DataEngine.h>

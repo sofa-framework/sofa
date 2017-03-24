@@ -22,7 +22,7 @@
 #define FLEXIBLE_ShapeFunctionDiscretizer_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/ShapeFunctionDiscretizer.h"
+#include "ShapeFunctionDiscretizer.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

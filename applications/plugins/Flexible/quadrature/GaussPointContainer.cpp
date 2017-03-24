@@ -22,7 +22,7 @@
 #define SOFA_GaussPointContainer_CPP
 
 #include <Flexible/config.h>
-#include "../quadrature/GaussPointContainer.h"
+#include "GaussPointContainer.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

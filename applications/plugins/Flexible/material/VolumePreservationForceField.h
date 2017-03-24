@@ -23,8 +23,8 @@
 #define SOFA_VolumePreservationFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/VolumePreservationMaterialBlock.inl"
+#include "BaseMaterialForceField.h"
+#include "VolumePreservationMaterialBlock.inl"
 
 #include <sofa/helper/OptionsGroup.h>
 

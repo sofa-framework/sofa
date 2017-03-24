@@ -22,7 +22,7 @@
 #define FLEXIBLE_BezierShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BezierShapeFunction.h"
+#include "BezierShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

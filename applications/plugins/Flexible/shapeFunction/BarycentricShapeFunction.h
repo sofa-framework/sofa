@@ -23,7 +23,7 @@
 #define FLEXIBLE_BarycentricShapeFunction_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BaseShapeFunction.h"
+#include "BaseShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <algorithm>

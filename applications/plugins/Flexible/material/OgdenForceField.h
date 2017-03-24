@@ -23,8 +23,8 @@
 #define SOFA_OgdenFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/OgdenMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "OgdenMaterialBlock.h"
 
 
 namespace sofa
