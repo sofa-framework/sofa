@@ -635,7 +635,6 @@ SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
 
 
                 for(unsigned k = 0, kmax = extra_solves.getValue(); k < kmax; ++k) {
-                    std::clog << "extra solves" << std::endl;
                     set_state_lambda( sys, rhs.tail(sys.n) );
 
                     // TODO send event
