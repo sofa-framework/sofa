@@ -41,11 +41,24 @@ using sofa::component::logging::MessageHandlerComponent ;
 
 #include <SofaComponentBase/initComponentBase.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+bool perTestInit()
+{
+    /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
+    /// DO NO REMOVE
+    sofa::helper::logging::MessageDispatcher::addHandler( &sofa::helper::logging::MainGtestMessageHandler::getInstance() );
+    return true;
+}
+bool inited = perTestInit() ;
+
+
+
 TEST(MessageHandlerComponent, simpleInit)
 {
     sofa::component::initComponentBase();
 
-	string scene =
+    string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "   <Node>  "
@@ -71,7 +84,7 @@ TEST(MessageHandlerComponent, missingHandler)
 {
     sofa::component::initComponentBase();
 
-	string scene =
+    string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent/>                   "
@@ -91,7 +104,7 @@ TEST(MessageHandlerComponent, invalidHandler)
 {
     sofa::component::initComponentBase();
 
-	string scene =
+    string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='thisisinvalid'/>           "
@@ -111,7 +124,7 @@ TEST(MessageHandlerComponent, clangHandler)
 {
     sofa::component::initComponentBase();
 
-	string scene =
+    string scene =
         "<?xml version='1.0'?>                                               "
         "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         "
         "       <MessageHandlerComponent handler='clang'/>                   "

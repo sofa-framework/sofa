@@ -17,14 +17,14 @@ class Sofa_test2 : public Sofa_test<float>
 class TestMessageHandler_test : public Sofa_test2
 {
 public:
-    void defaultTestBehavior()
+    void defaultTestBehaviorSHOULDFAIL()
     {
         msg_deprecated("HERE") << "This should generate a failure" ;
         msg_warning("HERE") << "This should generate a failure"  ;
         msg_error("HERE") << "This should generate a failure" ;
     }
 
-    void catchingTestBehavior()
+    void catchingTestBehaviorSHOULDNOTFAIL()
     {
         EXPECT_MSG_EMIT(Warning) ;
         EXPECT_MSG_EMIT(Error) ;
@@ -34,7 +34,7 @@ public:
     }
 
     /// THIS TEST SHOULD FAIL.
-    void expectAMessageissingBehavior()
+    void expectAMessageissingBehaviorSHOULDFAIL()
     {
         EXPECT_MSG_EMIT(Warning) ;
         EXPECT_MSG_EMIT(Error) ;
@@ -43,7 +43,7 @@ public:
         //msg_error("HERE") << "This should not generate a test falure" ;
     }
 
-    void noEmitTestBehavior()
+    void noEmitTestBehaviorSHOULDFAIL()
     {
         EXPECT_MSG_NOEMIT(Warning) ;
         EXPECT_MSG_NOEMIT(Error) ;
@@ -52,7 +52,7 @@ public:
         msg_error("HERE") << "This should generate a test falure with line number close to " << __LINE__ ;
     }
 
-    void complexTestBehavior()
+    void complexTestBehaviorSHOULDFAIL()
     {
         {
             EXPECT_MSG_EMIT(Warning) ;
@@ -78,26 +78,26 @@ public:
 };
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, defaultTestBehavior)
+TEST_F(TestMessageHandler_test, defaultTestBehaviorSHOULDFAIL)
 {
-    this->defaultTestBehavior();
+    this->defaultTestBehaviorSHOULDFAIL();
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, catchingTestBehavior)
+TEST_F(TestMessageHandler_test, catchingTestBehaviorSHOULDNOTFAIL)
 {
-    this->catchingTestBehavior();
+    this->catchingTestBehaviorSHOULDNOTFAIL();
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, noEmitTestBehavior)
+TEST_F(TestMessageHandler_test, noEmitTestBehaviorSHOULDFAIL)
 {
-    this->noEmitTestBehavior();
+    this->noEmitTestBehaviorSHOULDFAIL();
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, complexTestBehavior)
+TEST_F(TestMessageHandler_test, complexTestBehaviorSHOULDFAIL)
 {
-    this->complexTestBehavior();
+    this->complexTestBehaviorSHOULDFAIL();
 }
 

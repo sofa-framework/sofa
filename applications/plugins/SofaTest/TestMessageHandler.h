@@ -138,8 +138,8 @@ struct SOFA_TestPlugin_API ExpectMessage2
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 
 #define EXPECT_MSG_EMIT2(a,b) \
-    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::a, __FILE__, __LINE__ } \
-    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::b, __FILE__, __LINE__ }
+    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
 #define EXPECT_MSG_EMIT1(t)   sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__) { sofa::helper::logging::Message::t, __FILE__, __LINE__ }
 #define EXPECT_MSG_EMIT0
@@ -151,8 +151,8 @@ struct SOFA_TestPlugin_API ExpectMessage2
 #define EXPECT_MSG_EMIT(...) EXPECT_MSG_EMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 #define EXPECT_MSG_NOEMIT2(a,b) \
-       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) { sofa::helper::logging::Message::a, __FILE__, __LINE__ } \
-       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) { sofa::helper::logging::Message::b, __FILE__, __LINE__ }
+       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
 #define EXPECT_MSG_NOEMIT1(t)   sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevar_, __LINE__){ sofa::helper::logging::Message::t, __FILE__, __LINE__ }
 #define EXPECT_MSG_NOEMIT0
