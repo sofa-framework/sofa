@@ -633,11 +633,52 @@ SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
                     dynamics_solution = x;
                 }
 
+                core::MultiVecDerivId state_id;
+                SReal acc_factor = 0;
 
+                switch( formulation.getValue().getSelectedId() ) {
+                case FORMULATION_VEL: // p+ = p- + h.v
+                    state_id = velId;
+                    acc_factor = 0;
+                    break;
+                case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
+                    state_id = _acc.id();
+                    acc_factor = 1.0;
+                    break;
+                case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
+                    state_id = _acc.id();
+                    acc_factor = dt;
+                    break;
+                }                
+
+                auto set_state = [&] {
+                    this->set_state( sys, x, state_id );
+                };
+
+                auto integrate = [&] {
+                    if( acc_factor ) this->integrate( sop, posId, velId, _acc.id(), acc_factor );
+                    else this->integrate( sop, posId, velId );
+                };
+
+                auto propagate_lambdas = [&] {
+                    
+                    const unsigned constraint_f = constraint_forces.getValue().getSelectedId();
+                    if( constraint_f && sys.n ) {
+                        scoped::timer step("constraint_forces");
+                        simulation::propagate_constraint_force_visitor
+                            vis( &sop.mparams(),
+                                  core::VecId::force(), lagrange.id(),
+                                  useVelocity ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
+                        send( vis );
+                    }
+                };
+
+                // extra solves
                 for(unsigned k = 0, kmax = extra_solves.getValue(); k < kmax; ++k) {
-                    set_state_lambda( sys, rhs.tail(sys.n) );
 
-                    // TODO send event
+                    set_state();
+                    propagate_lambdas();
+                    
                     {
                         SolveEndEvent ev; ev.index = k;
                         simulation::PropagateEventVisitor act ( params, &ev );
@@ -650,40 +691,15 @@ SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
                     kkt->solve(x, sys, rhs);
                 }
 
-
-                switch( formulation.getValue().getSelectedId() )
-                {
-                case FORMULATION_VEL: // p+ = p- + h.v
-                    set_state( sys, x, velId ); // set v and lambda
-                    integrate( sop, posId, velId );
-                    break;
-                case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), 1.0  );
-                    break;
-                case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), dt  );
-                    break;
-                }
-
-                // TODO is this even needed at this point ? NO it is done by the animation loop
-//                propagate( &sop.mparams() );
+                set_state();
+                integrate();
+                propagate_lambdas();
             }
 
-
-            // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
-            unsigned constraint_f = constraint_forces.getValue().getSelectedId();
-            if( constraint_f && sys.n ) {
-                scoped::timer step("constraint_forces");
-                simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
-                send( prop );
-            }
-
+            
             // constraint post-stabilization
-            if( stabilizationType>=POST_STABILIZATION_RHS )
-            {
-                post_stabilization( sop, posId, velId, stabilizationType==POST_STABILIZATION_ASSEMBLY);
+            if( stabilizationType >= POST_STABILIZATION_RHS ) {
+                post_stabilization( sop, posId, velId, stabilizationType == POST_STABILIZATION_ASSEMBLY);
             }
         }
 
