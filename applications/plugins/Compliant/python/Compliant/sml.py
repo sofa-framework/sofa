@@ -50,10 +50,10 @@ def insertRigid(parentNode, rigidModel, density, scale=1, param=None):
             massinfo.setFromInertia(rigidModel.inertia[0], rigidModel.inertia[1], rigidModel.inertia[2], # Ixx, Ixy, Ixz
                                     rigidModel.inertia[3], rigidModel.inertia[4], # Iyy, Iyz
                                     rigidModel.inertia[5] ) # Izz
-        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position, inertia_forces = False )    # TODO: handle inertia_forces ?
+        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position, inertia_forces = 0 )    # TODO: handle inertia_forces ?
     elif len(rigidModel.mesh)!=0 :
         # get inertia from meshes and density
-        rigid.setFromRigidInfo(rigidModel.getRigidMassInfo(density, scale), offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = False )    # TODO: handle inertia_forces ?
+        rigid.setFromRigidInfo(rigidModel.getRigidMassInfo(density, scale), offset=StructuralAPI.scaleOffset(scale, rigidModel.position), inertia_forces = 0 )    # TODO: handle inertia_forces ?
 
         #if not rigidModel.mass is None :
             ## no density but a mesh let's normalise computed mass with specified mass

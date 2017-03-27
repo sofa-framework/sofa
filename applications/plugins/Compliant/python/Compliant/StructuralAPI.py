@@ -230,7 +230,7 @@ class RigidBody(SingleMechanicalObject):
                                 inertia = concat(info.diagonal_inertia),
                                 inertia_forces = inertia_forces )
 
-    def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
+    def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = 0 ):
         ## create the rigid body by manually giving its inertia
         self.frame = Frame.Frame( offset )
         self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
