@@ -412,7 +412,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         for(Index i=0; i<Np.size(); i++)
         {
             EXPECT_EQ( inDofs[i]->forceMask.size(), inDofs[i]->getSize() );
-            inDofs[i]->forceMask.clear();
+            inDofs[i]->forceMask.assign(inDofs[i]->getSize(),false);
         }
         EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
         outDofs->forceMask.assign(outDofs->getSize(),true);
