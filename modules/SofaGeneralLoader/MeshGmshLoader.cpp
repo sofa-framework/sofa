@@ -193,7 +193,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
     helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
 
-    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(highOrderEdgePositions.beginEdit());
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
 
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
@@ -381,7 +381,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
-	highOrderEdgePositions.endEdit();
+	d_highOrderEdgePositions.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")

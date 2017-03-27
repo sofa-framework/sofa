@@ -36,30 +36,30 @@ namespace engine
 
 template <class DataTypes>
 GenerateGrid<DataTypes>::GenerateGrid()
-    : f_outputX ( initData (&f_outputX, "output_position", "output array of 3d points") )
-    , f_tetrahedron( initData (&f_tetrahedron, "tetrahedra", "output mesh tetrahedra") )
-    , f_quad( initData (&f_quad, "quads", "output mesh quads") )
-    , f_triangle( initData (&f_triangle, "triangles", "output mesh triangles") )
-    , f_hexahedron( initData (&f_hexahedron, "hexahedra", "output mesh hexahedra") )
-    , f_minCorner( initData (&f_minCorner,Vec3(), "min", "the 3 coordinates of the minimum corner") )
-    , f_maxCorner( initData (&f_maxCorner,Vec3(), "max", "the 3 coordinates of the maximum corner") )
-    , f_resolution( initData (&f_resolution,Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
+    : d_outputX ( initData (&d_outputX, "output_position", "output array of 3d points") )
+    , d_tetrahedron( initData (&d_tetrahedron, "tetrahedra", "output mesh tetrahedra") )
+    , d_quad( initData (&d_quad, "quads", "output mesh quads") )
+    , d_triangle( initData (&d_triangle, "triangles", "output mesh triangles") )
+    , d_hexahedron( initData (&d_hexahedron, "hexahedra", "output mesh hexahedra") )
+    , d_minCorner( initData (&d_minCorner,Vec3(), "min", "the 3 coordinates of the minimum corner") )
+    , d_maxCorner( initData (&d_maxCorner,Vec3(), "max", "the 3 coordinates of the maximum corner") )
+    , d_resolution( initData (&d_resolution,Vec3Int(3,3,3), "resolution", "the number of cubes in the x,y,z directions. If resolution in the z direction is  0 then a 2D grid is generated") )
 {
-    addAlias(&f_outputX,"position");
+    addAlias(&d_outputX,"position");
 }
 
 
 template <class DataTypes>
 void GenerateGrid<DataTypes>::init()
 {
-    addInput(&f_minCorner);
-    addInput(&f_maxCorner);
-    addInput(&f_resolution);
-    addOutput(&f_outputX);
-    addOutput(&f_tetrahedron);
-    addOutput(&f_hexahedron);
-    addOutput(&f_quad);
-    addOutput(&f_triangle);
+    addInput(&d_minCorner);
+    addInput(&d_maxCorner);
+    addInput(&d_resolution);
+    addOutput(&d_outputX);
+    addOutput(&d_tetrahedron);
+    addOutput(&d_hexahedron);
+    addOutput(&d_quad);
+    addOutput(&d_triangle);
     setDirtyValue();
 }
 
@@ -74,13 +74,13 @@ void GenerateGrid<DataTypes>::update()
 {
     cleanDirty();
 
-	helper::WriteAccessor<Data<VecCoord> > out = f_outputX;
+	helper::WriteAccessor<Data<VecCoord> > out = d_outputX;
 
-	Vec3 size=f_maxCorner.getValue()-f_minCorner.getValue();
+	Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();
 
-	size_t freqL=f_resolution.getValue()[0];
-	size_t freqH=f_resolution.getValue()[2];
-	size_t freqW=f_resolution.getValue()[1];
+	size_t freqL=d_resolution.getValue()[0];
+	size_t freqH=d_resolution.getValue()[2];
+	size_t freqW=d_resolution.getValue()[1];
 
 	if (freqL==0) {
 		serr<<" Number of cubes in the x direction cannot be 0; Changed to 1"<<sendl;
@@ -98,7 +98,7 @@ void GenerateGrid<DataTypes>::update()
 	else
 		height = size[2]/freqH;
 	Coord origin;
-	helper::eq(origin,Vec3(f_minCorner.getValue()));
+	helper::eq(origin,Vec3(d_minCorner.getValue()));
 
 
 
@@ -123,8 +123,8 @@ void GenerateGrid<DataTypes>::update()
 	if (freqH==0) {
 		// only output quads & triangles
 		size_t nbQuads=(freqL)*(freqW);
-		SeqTriangles  &triangles = *(f_triangle.beginEdit());
-		SeqQuads  &quads = *(f_quad.beginEdit());
+		SeqTriangles  &triangles = *(d_triangle.beginEdit());
+		SeqQuads  &quads = *(d_quad.beginEdit());
 		quads.resize(nbQuads);
 		triangles.resize(nbQuads*2);
 
@@ -148,8 +148,8 @@ void GenerateGrid<DataTypes>::update()
 
 	} else {
 		// outputs hexahedra & tetrahedra
-		SeqTetrahedra  &tetras = *(f_tetrahedron.beginEdit());
-		SeqHexahedra  &hexas = *(f_hexahedron.beginEdit());
+		SeqTetrahedra  &tetras = *(d_tetrahedron.beginEdit());
+		SeqHexahedra  &hexas = *(d_hexahedron.beginEdit());
 		size_t nbHexahedra=(freqL)*(freqH)*(freqW);
 		hexas.resize(nbHexahedra);
 		tetras.resize(nbHexahedra*6);
@@ -185,8 +185,8 @@ void GenerateGrid<DataTypes>::update()
 
 
 
-	f_tetrahedron.endEdit();
-	f_hexahedron.endEdit();
+	d_tetrahedron.endEdit();
+	d_hexahedron.endEdit();
 }
 
 

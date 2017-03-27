@@ -88,14 +88,14 @@ public:
     }
 
 public:
-    Data<VecCoord> f_outputX; ///< ouput position
-    Data<SeqTetrahedra> f_tetrahedron; ///< output tetrahedra
-    Data<SeqQuads> f_quad; ///< output quads
-    Data<SeqTriangles> f_triangle; ///< output triangles
-    Data<SeqHexahedra> f_hexahedron; ///< output hexahedra
-	Data<Vec3Int> f_resolution; /// the resolution in the 3 directions
-	Data<Vec3> f_minCorner; /// the position of the minimum corner 
-	Data<Vec3> f_maxCorner; ///the position of the maximum corner 
+    Data<VecCoord> d_outputX; ///< ouput position
+    Data<SeqTetrahedra> d_tetrahedron; ///< output tetrahedra
+    Data<SeqQuads> d_quad; ///< output quads
+    Data<SeqTriangles> d_triangle; ///< output triangles
+    Data<SeqHexahedra> d_hexahedron; ///< output hexahedra
+	Data<Vec3Int> d_resolution; /// the resolution in the 3 directions
+	Data<Vec3> d_minCorner; /// the position of the minimum corner 
+	Data<Vec3> d_maxCorner; ///the position of the maximum corner 
 };
 
 

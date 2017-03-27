@@ -42,16 +42,16 @@ namespace topology
 
 template <class DataTypes>
  PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
-        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
-        ,showPointIndices (core::objectmodel::Base::initData(&showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
-		, m_tagMechanics( initData(&m_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+        ,d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+        ,d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
+		,d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
     {
     }
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-	if ( this->m_tagMechanics.getValue().size()>0) {
-		sofa::core::objectmodel::Tag mechanicalTag(this->m_tagMechanics.getValue());
+	if ( this->d_tagMechanics.getValue().size()>0) {
+		sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
 		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
 	} else {
 		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
@@ -69,7 +69,7 @@ template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
     const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * showIndicesScale.getValue());
+    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * d_showIndicesScale.getValue());
 }
 
 
@@ -245,7 +245,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, c
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (showPointIndices.getValue())
+    if (d_showPointIndices.getValue())
     {
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());

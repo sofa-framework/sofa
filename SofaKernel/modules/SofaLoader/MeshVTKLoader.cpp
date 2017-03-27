@@ -198,7 +198,7 @@ bool MeshVTKLoader::setInputsMesh()
     helper::vector<Tetrahedron >& my_tetrahedra = *(d_tetrahedra.beginEdit());
     helper::vector<Hexahedron >& my_hexahedra = *(d_hexahedra.beginEdit());
 
-    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(highOrderEdgePositions.beginEdit());
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
 
     int errorcount = 0;    
     if (reader->inputPolygons)
@@ -427,7 +427,7 @@ bool MeshVTKLoader::setInputsMesh()
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
-	highOrderEdgePositions.endEdit();
+	d_highOrderEdgePositions.endEdit();
 
     return true;
 }

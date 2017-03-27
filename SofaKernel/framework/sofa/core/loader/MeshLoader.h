@@ -111,17 +111,17 @@ public:
     Data< helper::vector< Triangle > > d_triangles;
     Data< helper::vector< Quad > > d_quads;
     Data< helper::vector< helper::vector <unsigned int> > > d_polygons;
-    Data< helper::vector< HighOrderEdgePosition > > highOrderEdgePositions;
-    Data< helper::vector< HighOrderTrianglePosition > > highOrderTrianglePositions;
-    Data< helper::vector< HighOrderQuadPosition > > highOrderQuadPositions;
+    Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions;
+    Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions;
+    Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions;
 
     // Tab of 3D elements composition
     Data< helper::vector< Tetrahedron > > d_tetrahedra;
     Data< helper::vector< Hexahedron > > d_hexahedra;
     Data< helper::vector< Pentahedron > > d_pentahedra;
     Data< helper::vector< Pyramid > > d_pyramids;
-    Data< helper::vector< HighOrderTetrahedronPosition > > highOrderTetrahedronPositions;
-    Data< helper::vector< HighOrderHexahedronPosition > > highOrderHexahedronPositions;
+    Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions;
+    Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions;
 
     // polygons in 3D ?
 

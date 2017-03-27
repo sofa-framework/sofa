@@ -126,10 +126,10 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    Data<float> showIndicesScale;
-    Data<bool> showPointIndices;
+    Data<float> d_showIndicesScale;
+    Data<bool> d_showPointIndices;
     /// Tage of the Mechanical State associated with the vertex position
-    Data<std::string> m_tagMechanics;
+    Data<std::string> d_tagMechanics;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
