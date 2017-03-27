@@ -141,7 +141,7 @@ if(PNG_FOUND)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
 
 
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
+    sofa_install_get_libraries("${PNG_LIBRARY}")
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
