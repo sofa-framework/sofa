@@ -6,7 +6,7 @@ from Compliant import easy, tool
 import math
 import numpy as np
 
-from Compliant import mapping, easy
+from Compliant import mapping, easy, StructuralAPI as api
 from SofaTest import gtest
 
 
@@ -33,12 +33,17 @@ class Solver(easy.Solver):
         gtest.assert_true( (rhs == np.array([0, 0, 0,
                                              0, 1, 0,
                                              0])).all(), "dynamics rhs error" )
-        gtest.finish()
         
     def correct(self, res, sys, rhs, damping):
         gtest.assert_true( (rhs == np.zeros(7)).all(), "correction rhs error")
-
         
+
+
+class Script(api.Script):
+
+    def onEndAnimationStep(self, dt):
+        gtest.finish()
+
         
 def createScene(node):
     node.createObject('CompliantImplicitSolver')
@@ -66,3 +71,5 @@ def createScene(node):
     
     node.dt = 1
     node.gravity = '0 1 0'
+
+    script = Script(node)
