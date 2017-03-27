@@ -59,7 +59,7 @@ struct DiagonalStiffness_test : public ForceField_test<_DiagonalStiffness>
     */
     DiagonalStiffness_test():Inherited::ForceField_test()
     {
-        this->errorFactorPotentialEnergy = 2; // increading tolerance for potential energy test due to non-linearities
+        this->errorFactorPotentialEnergy = 3; // increading tolerance for potential energy test due to non-linearities
 
         //Position
         x.resize(3);
