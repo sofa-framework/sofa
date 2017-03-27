@@ -73,11 +73,11 @@ run-single-test-subtests() {
     # List all the subtests in this test
     bash -c "$build_dir/bin/$test --gtest_list_tests > $output_dir/$test/subtests.tmp.txt"
     IFS=''; while read line; do
-        if echo "$line" | grep -q "^.*\." ; then
-            local current_test="$(echo "$line" | grep -o "^.*\.")"
-        elif echo "$line" | grep -q "^  [^ ]*" ; then
-            local current_subtest="$(echo "$line" | grep -o "[^ ]*" | head -1)"
-            echo "$current_test$current_subtest" >> "$output_dir/$test/subtests.txt"
+        if echo "$line" | grep -q "^  [^ ][^ ]*" ; then
+            local current_subtest="$(echo "$line" | sed 's/^  \([^ ][^ ]*\).*/\1/g')"
+            echo "$current_test.$current_subtest" >> "$output_dir/$test/subtests.txt"
+        else
+            local current_test="$(echo "$line" | sed 's/\..*//g')"
         fi
     done < "$output_dir/$test/subtests.tmp.txt"
     rm -f "$output_dir/$test/subtests.tmp.txt"
@@ -88,13 +88,27 @@ run-single-test-subtests() {
     while read subtest; do
         local output_file="$output_dir/$test/$subtest/report.xml"
         local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file --gtest_filter=$subtest 2>&1"
-
         mkdir -p "$output_dir/$test/$subtest"
         echo "$test_cmd" >> "$output_dir/$test/$subtest/command.txt"
-        bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt"
-        pipestatus="${PIPESTATUS[0]}"
-        echo "$pipestatus" > "$output_dir/$test/$subtest/status.txt"
 
+        if [[ $(uname) = Darwin ]]; then
+            if [ -e "/usr/local/bin/gdate" ]; then
+                date_nanosec_cmd="/usr/local/bin/gdate +%s%N"
+            else
+                date_nanosec_cmd="date +%s000000000" # fallback: seconds * 1000000000
+            fi
+        else
+            date_nanosec_cmd="date +%s%N"
+        fi
+
+        begin_millisec="$(($(bash -c $date_nanosec_cmd)/1000000))"
+        bash -c "$test_cmd" | tee "$output_dir/$test/$subtest/output.txt" ; pipestatus="${PIPESTATUS[0]}"
+        end_millisec="$(($(bash -c $date_nanosec_cmd)/1000000))"
+
+        elapsed_millisec="$(($end_millisec - $begin_millisec))"
+        elapsed_sec="$(($elapsed_millisec/1000)).$(printf "%03d" $elapsed_millisec)"
+
+        echo "$pipestatus" > "$output_dir/$test/$subtest/status.txt"
         if [ $pipestatus -gt 1 ]; then # this subtest crashed (0:OK 1:failure >1:crash)
             IFS='.' read -r -a array <<< "$subtest"
             test_name="${array[0]}"
@@ -102,9 +116,9 @@ run-single-test-subtests() {
             echo "$0: error: $subtest ended with code $pipestatus" >&2
             # Write the XML output by hand
             echo '<?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="1" failures="0" disabled="0" errors="1" time="1" name="AllTests">
-    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="1">
-        <testcase name="'"$subtest_name"'" type_param="" status="run" time="1" classname="'"$test_name"'">
+<testsuites tests="1" failures="0" disabled="0" errors="1" time="-'"$elapsed_sec"'" name="AllTests">
+    <testsuite name="'"$test_name"'" tests="1" failures="0" disabled="0" errors="1" time="-'"$elapsed_sec"'">
+        <testcase name="'"$subtest_name"'" type_param="" status="run" time="-'"$elapsed_sec"'" classname="'"$test_name"'">
             <error message="[CRASH] '"$subtest"' ended with code '"$pipestatus"'">
 <![CDATA['"$(cat $output_dir/$test/$subtest/output.txt)"']]>
             </error>
@@ -115,7 +129,7 @@ run-single-test-subtests() {
 
         if [ -f "$output_file" ]; then
             fix-test-report "$output_file"
-            cp "$output_file" "$output_dir/reports/"$test"_subtest"$i".xml"
+            cp "$output_file" "$output_dir/reports/"$test"_subtest"$(printf "%03d" $i)".xml"
         else
             echo "$0: error: $test subtest $subtest ended with code $(cat $output_dir/$test/$subtest/status.txt)" >&2
         fi
@@ -204,8 +218,8 @@ print-summary() {
     echo "- $(tests-get disabled) disabled test(s)"
     echo "- $(tests-get failures) failure(s)"
 
-    local errors='$(tests-get errors)'
-    echo "- $(tests-get errors) error(s)"
+    local errors="$(tests-get errors)"
+    echo "- $errors error(s)"
     if [[ "$errors" != 0 ]]; then
         while read test; do
             if [[ ! -e "$output_dir/$test/report.xml" ]]; then # this test crashed
@@ -225,12 +239,6 @@ print-summary() {
                         echo "Error: unexpected value in $output_dir/$test/status.txt: $status"
                         ;;
                 esac
-                last_run_line_number="$(grep -n "\[ RUN      \]" "$output_dir/$test/output.txt" | tail -1 | tr ":" "\n" | head -1)"
-                tail --lines=+"$last_run_line_number" "$output_dir/$test/output.txt" > "$output_dir/$test/last_run_output.tmp"
-                while read log_line; do
-                    echo "      $log_line"
-                done < "$output_dir/$test/last_run_output.tmp"
-                rm -f "$output_dir/$test/last_run_output.tmp"
             fi
         done < "$output_dir/tests.txt"
     fi

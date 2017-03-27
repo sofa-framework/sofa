@@ -20,56 +20,42 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-/// @author M Nesme @date 2016
-///
-///
-/// TODO: we could add a [] operator to get bound DataFileName
 
-#include "Binding_DataFileNameVector.h"
+#include "Binding_DataFileName.h"
 #include "Binding_Data.h"
 
-using namespace sofa::helper;
+
 using namespace sofa::core::objectmodel;
 
 
 
-
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+SP_CLASS_ATTR_GET(DataFileName, fullPath)(PyObject *self, void*)
 {
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
-
-    sofa::helper::vector<std::string>& val = *data->beginEdit();
-    val.clear();
-    data->endEdit();
-
-    Py_RETURN_NONE;
-}
-
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
-{
-    char *path;
-    if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
-
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
-
-    data->addPath(path);
-
-    Py_RETURN_NONE;
+    DataFileName* dataFilename = down_cast<DataFileName>( ((PyPtr<BaseData>*)self)->object );
+    return PyString_FromString(dataFilename->getFullPath().c_str());
 }
 
 
-SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
+SP_CLASS_ATTR_SET(DataFileName, fullPath)(PyObject */*self*/, PyObject * /*args*/, void*)
+{
+    SP_MESSAGE_ERROR("fullPath attribute is read only")
+        PyErr_BadArgument();
+    return -1;
+}
+
+
+
+
+SP_CLASS_ATTRS_BEGIN(DataFileName)
+SP_CLASS_ATTR(DataFileName,fullPath)
 SP_CLASS_ATTRS_END
 
 
 
-SP_CLASS_METHODS_BEGIN(DataFileNameVector)
-SP_CLASS_METHOD(DataFileNameVector,addPath)
-SP_CLASS_METHOD(DataFileNameVector,clear)
+SP_CLASS_METHODS_BEGIN(DataFileName)
 SP_CLASS_METHODS_END
 
 
 
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
+SP_CLASS_TYPE_PTR_ATTR(DataFileName,DataFileName,Data)
 
