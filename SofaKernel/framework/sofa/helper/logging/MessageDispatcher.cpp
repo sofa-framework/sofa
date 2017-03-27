@@ -71,6 +71,8 @@ std::vector<MessageHandler*> getDefaultMessageHandlers(){
 class MessageDispatcherImpl
 {
 public:
+    mutex dispatchermutex ;
+
     std::vector<MessageHandler*> m_messageHandlers = getDefaultMessageHandlers();
 
     std::vector<MessageHandler*>& getHandlers()
@@ -110,8 +112,7 @@ public:
 MessageDispatcherImpl s_messagedispatcher ;
 
 mutex& getMutex(){
-    static mutex s_dispatchermutex ;
-    return s_dispatchermutex ;
+    return s_messagedispatcher.dispatchermutex ;
 }
 
 /*static std::vector<MessageHandler*> setDefaultMessageHandler()
