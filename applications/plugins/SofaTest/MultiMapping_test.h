@@ -409,7 +409,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         // =================== test updateForceMask
         // propagate forces coming from all child, each parent receiving a force should be in the mask
-        for(Index i=0; i<Np.size(); i++) inDofs[i]->forceMask.clear();
+        for(Index i=0; i<Np.size(); i++)
+        {
+            EXPECT_EQ( inDofs[i]->forceMask.size(), inDofs[i]->getSize() );
+            inDofs[i]->forceMask.clear();
+        }
+        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
         for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul

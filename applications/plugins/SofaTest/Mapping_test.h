@@ -476,6 +476,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // =================== test updateForceMask
         // propagate forces coming from all child, each parent receiving a force should be in the mask
+        EXPECT_EQ( inDofs->forceMask.size(), inDofs->getSize() );
+        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
         inDofs->forceMask.clear();
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
