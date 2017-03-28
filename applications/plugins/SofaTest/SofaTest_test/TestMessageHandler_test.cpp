@@ -4,17 +4,7 @@ using sofa::Sofa_test;
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::GtestMessageHandler ;
 
-/// We can define a default policy for a complete class this way so that if not more
-/// expectation are given this generates test failures.
-class Sofa_test2 : public Sofa_test<float>
-{
-    EXPECT_MSG_NOEMIT(Error) ;
-    EXPECT_MSG_NOEMIT(Warning) ;
-    EXPECT_MSG_NOEMIT(Deprecated) ;
-};
-
-
-class TestMessageHandler_test : public Sofa_test2
+class TestMessageHandler_test : public Sofa_test<>
 {
 public:
     void defaultTestBehaviorSHOULDFAIL()
