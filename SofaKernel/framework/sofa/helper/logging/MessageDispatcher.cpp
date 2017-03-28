@@ -71,8 +71,6 @@ std::vector<MessageHandler*> getDefaultMessageHandlers(){
 class MessageDispatcherImpl
 {
 public:
-    mutex dispatchermutex ;
-
     std::vector<MessageHandler*> m_messageHandlers = getDefaultMessageHandlers();
 
     std::vector<MessageHandler*>& getHandlers()
@@ -82,7 +80,6 @@ public:
 
     int addHandler(MessageHandler* o)
     {
-        lock_guard<mutex> guard(dispatchermutex) ;
         if( std::find(m_messageHandlers.begin(), m_messageHandlers.end(), o) == m_messageHandlers.end())
         {
             m_messageHandlers.push_back(o) ;
@@ -93,20 +90,17 @@ public:
 
     int rmHandler(MessageHandler* o)
     {
-        lock_guard<mutex> guard(dispatchermutex) ;
         m_messageHandlers.erase(remove(m_messageHandlers.begin(), m_messageHandlers.end(), o), m_messageHandlers.end());
         return (int)(m_messageHandlers.size()-1);
     }
 
     void clearHandlers()
     {
-        lock_guard<mutex> guard(dispatchermutex) ;
         m_messageHandlers.clear() ;
     }
 
     void process(sofa::helper::logging::Message& m)
     {
-        lock_guard<mutex> guard(dispatchermutex) ;
         for( size_t i=0 ; i<m_messageHandlers.size() ; i++ )
             m_messageHandlers[i]->process(m) ;
     }
