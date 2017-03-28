@@ -92,12 +92,12 @@
 //todo(bruno&damien): the first quick&dirty version should be improved to preserve the semantic between
 // the version compiled with WITH_SOFA_DEVTOOLS enabled and the other.
 #ifdef SOFA_WITH_DEVTOOLS
-#define olddmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define olddmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define olddmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define olddmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define olddmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
-#define olddmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Dev, emitter, SOFA_FILE_INFO)
+#define olddmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define olddmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define olddmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define olddmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define olddmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define olddmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Dev, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
 #else
 #define olddmsg_info(emitter)       nmsg_info(emitter)
 #define olddmsg_deprecated(emitter) nmsg_deprecated(emitter)
@@ -107,12 +107,12 @@
 #define olddmsg_advice(emitter)     nmsg_advice(emitter)
 #endif // NDEBUG
 
-#define oldmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define oldmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define oldmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define oldmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define oldmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
-#define oldmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO)
+#define oldmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define oldmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define oldmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define oldmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define oldmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define oldmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
 
 ///#define msg_info_when(cond)          if(cond) sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
 ///#define msg_deprecated_when(cond)    if(cond) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
@@ -121,19 +121,19 @@
 ///#define msg_fatal_when(cond)         if(cond) sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
 ///#define msg_advice_when(cond)        if(cond) sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, this, SOFA_FILE_INFO)
 
-#define logmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
-#define logmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
-#define logmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
-#define logmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
-#define logmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
-#define logmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Log, emitter, SOFA_FILE_INFO)
+#define logmsg_info(emitter)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define logmsg_deprecated(emitter) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define logmsg_warning(emitter)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define logmsg_error(emitter)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define logmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
+#define logmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
 
-#define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-#define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-#define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-#define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-#define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
-#define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, emitter, SOFA_FILE_INFO2(file,line))
+#define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
 
 /// THESE MACRO BEASTS ARE FOR AUTOMATIC DETECTION OF MACRO NO or ONE ARGUMENTS
 #define TWO_FUNC_CHOOSER(_f1, _f2 ,...) _f2

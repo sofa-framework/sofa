@@ -533,7 +533,7 @@ public:
 
 } // namespace sofa
 
-/// This allow an object to be muted.
+/// This allow Base object to interact with the messaging system.
 namespace sofa
 {
 namespace helper
@@ -542,7 +542,35 @@ namespace logging
 {
     inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
     inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
-}
-}
-}
+
+    class SofaComponentInfo : public ComponentInfo
+    {
+    public:
+        const sofa::core::objectmodel::Base* m_component ;
+        std::string                          m_name;
+
+        SofaComponentInfo(const sofa::core::objectmodel::Base* c)
+        {
+            assert(c!=nullptr) ;
+            m_component = c ;
+            m_sender = c->getClassName() ;
+            m_name = c->getName() ;
+        }
+
+        const std::string& name() const { return m_name; }
+        std::ostream& toStream(std::ostream &out) const
+        {
+            out << m_sender << "(" << m_name << ")" ;
+            return out ;
+        }
+    };
+
+    /// This construct a new ComponentInfo object from a Base object.
+    inline ComponentInfo::SPtr getComponentInfo(const sofa::core::objectmodel::Base* t)
+    {
+        return ComponentInfo::SPtr( new SofaComponentInfo(t) ) ;
+    }
+} // logging
+} // helper
+} // sofa
 #endif

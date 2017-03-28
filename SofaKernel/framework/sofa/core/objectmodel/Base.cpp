@@ -247,7 +247,7 @@ void Base::processStream(std::ostream& out)
     if (serr==out)
     {
         addMessage( (MessageDispatcher::log(serr.messageClass(),
-                                            serr.messageType(), this,
+                                            serr.messageType(), sofa::helper::logging::getComponentInfo(this),
                                             serr.fileInfo()) << serr.str()).getMessage() );
         serr.clear();
     }
@@ -256,7 +256,7 @@ void Base::processStream(std::ostream& out)
         if (f_printLog.getValue())
         {
             addMessage( (MessageDispatcher::log(sout.messageClass(),
-                                                  sout.messageType(), this,
+                                                  sout.messageType(), sofa::helper::logging::getComponentInfo(this),
                                                   sout.fileInfo()) << sout.str()).getMessage() );
         }
 

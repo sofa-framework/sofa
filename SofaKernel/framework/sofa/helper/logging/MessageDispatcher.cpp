@@ -61,6 +61,19 @@ namespace helper
 namespace logging
 {
 
+const ComponentInfo::SPtr getComponentInfo(const std::string& s)
+{
+    return ComponentInfo::SPtr( new ComponentInfo(s) );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Threading issues...
+///     a mutex is serializing the access to the message API.
+/// Memory management:
+///     object are passed to the message info.
+///     some of them are duplicated
+///     other get a weak reference
+
 std::vector<MessageHandler*> getDefaultMessageHandlers(){
     std::vector<MessageHandler*> messageHandlers;
     static ConsoleMessageHandler s_consoleMessageHandler(&DefaultStyleMessageFormatter::getInstance());
@@ -140,76 +153,43 @@ void MessageDispatcher::process(sofa::helper::logging::Message& m){
     s_messagedispatcher.process(m);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return MessageDispatcher::LoggerStream( mclass, type, sender, fileInfo);
+
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type,
+                                                       const ComponentInfo::SPtr& cinfo, const  FileInfo::SPtr& fileInfo) {
+    return MessageDispatcher::LoggerStream(mclass, type, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, const  FileInfo::SPtr& fileInfo) {
-    return MessageDispatcher::LoggerStream(mclass, type, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass,
+                                                        const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Info, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Info, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Deprecated, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Info, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Warning, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Deprecated, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Error, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Deprecated, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Fatal, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Warning, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Advice, cinfo, fileInfo);
 }
-
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Warning, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Error, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Error, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Fatal, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Fatal, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Advice, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Advice, sender, fileInfo);
-}
-
 
 MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Type type,
-             const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo)
+             const ComponentInfo::SPtr& cInfo, const FileInfo::SPtr& fileInfo)
     : m_message( mclass
                  , type
-                 , sender->getClassName()
-                 // temporary, until Base object reference kept in the message itself ->
-                 // (mattn) not sure it is a good idea, the Message could be kept after the Base is deleted
-                 // TODO(dmarchal): by converting this to a string we are not able anymore to
-                 // display rich information like the component name or location in the scene tree while these
-                 // information are really usefull. I have to make small experiment to see what could be a nice
-                 // approach without too much overhead.
-                 , fileInfo
-                 , ComponentInfo::SPtr( new ComponentInfo(sender)) )
+                 , cInfo
+                 , fileInfo )
 {
 }
 

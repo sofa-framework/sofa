@@ -53,6 +53,7 @@ namespace logging
 // forward declaration
 class MessageHandler;
 
+const ComponentInfo::SPtr getComponentInfo(const std::string& s) ;
 
 /// static interface to manage the list of MessageHandlers
 /// that process the Messages
@@ -74,13 +75,7 @@ public:
             {}
 
             LoggerStream(Message::Class mclass, Message::Type type,
-                         const std::string& sender, const FileInfo::SPtr& fileInfo)
-                : m_message( mclass, type, sender, fileInfo )
-            {
-            }
-
-            LoggerStream(Message::Class mclass, Message::Type type,
-                         const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo);
+                         const ComponentInfo::SPtr& sender, const FileInfo::SPtr& fileInfo) ;
 
             ~LoggerStream() ;
 
@@ -121,22 +116,15 @@ public:
         static void clearHandlers() ; ///< to remove every MessageHandlers
         static std::vector<MessageHandler*>& getHandlers(); ///< the list of MessageHandlers
 
-        static LoggerStream info(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream deprecated(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream warning(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream error(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream fatal(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream advice(Message::Class mclass, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream info(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream deprecated(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream warning(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream error(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+        static LoggerStream advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
 
         static const NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
-        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const std::string& sender = "", const FileInfo::SPtr& fileInfo = EmptyFileInfo);
-        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
+        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
 
         /// Process the Message by all the Message handlers.
         /// Called in the destructor of LoggerStream

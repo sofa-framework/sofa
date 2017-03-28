@@ -104,16 +104,25 @@ struct FileInfoOwningFilename : public FileInfo
 struct ComponentInfo
 {
 public:
-    typedef boost::shared_ptr<ComponentInfo> SPtr;
+    ComponentInfo(){}
+    ComponentInfo(const std::string& name) { m_sender = name ; }
+    virtual ~ComponentInfo() {}
 
-    const core::objectmodel::Base* m_component ;
-
-    ComponentInfo(const core::objectmodel::Base* component)
-    {
-        m_component = component;
+    virtual std::ostream& toStream(std::ostream& out) const {
+        out << m_sender ;
+        return out ;
     }
 
+    const std::string& sender(){ return m_sender; }
+
+    friend std::ostream& operator<<(std::ostream& out, const ComponentInfo& nfo) ;
+    friend std::ostream& operator<<(std::ostream& out, const ComponentInfo* nfo) ;
+
+    typedef boost::shared_ptr<ComponentInfo> SPtr;
+protected:
+    std::string m_sender ;
 };
+
 
 static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
 
@@ -135,9 +144,8 @@ public:
     Message() {}
     Message( const Message& msg );
     Message(Class mclass, Type type,
-            const std::string& sender = "",
-            const FileInfo::SPtr& fileInfo = EmptyFileInfo,
-            const ComponentInfo::SPtr& = ComponentInfo::SPtr());
+            const ComponentInfo::SPtr& = ComponentInfo::SPtr(),
+            const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
 
     Message& operator=( const Message& msg );
 
@@ -146,7 +154,7 @@ public:
     const std::stringstream& message() const  { return m_stream; }
     Class                    context() const  { return m_class; }
     Type                     type() const     { return m_type; }
-    const std::string&       sender() const   { return m_sender; }
+    const std::string&       sender() const   { return m_componentinfo->sender(); }
 
     const std::string messageAsString() const  { return m_stream.str(); }
 
@@ -163,9 +171,8 @@ public:
     static Message emptyMsg ;
 
 protected:
-    std::string         m_sender; ///< who send the message (component or module)
-    FileInfo::SPtr      m_fileInfo; ///< a trace (file,line) from where the message have been created
     ComponentInfo::SPtr m_componentinfo; /// a trace (name, path) from whom has emitted this message.
+    FileInfo::SPtr      m_fileInfo; ///< a trace (file,line) from where the message have been created
     std::stringstream   m_stream; ///< the actual message
     Class               m_class; ///< who is the attender of the message (developers or users)?
     Type                m_type; ///< the message level
