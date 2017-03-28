@@ -17,3 +17,13 @@ _dll.finish.argtypes = []
 assert_true = _dll.assert_true
 expect_true = _dll.expect_true
 finish = _dll.finish
+
+
+import sys
+_old_handler = sys.excepthook
+
+def handler(type, value, tb):
+    _old_handler(type, value, tb)
+    assert_true(False, "aborting test due to python error: {0}".format(value))
+
+sys.excepthook = handler
