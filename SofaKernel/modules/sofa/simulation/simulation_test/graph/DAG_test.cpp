@@ -309,14 +309,15 @@ Expected output: RABCDEEDCBAR
         C->addChild(D);
         Node::SPtr E = D->createChild("E");
 
-//        A
-//       / \
-//       B C
-//       \ /
-//        D
-//        |
-//        E
-
+/**
+        A
+       / \
+       B C
+       \ /
+        D
+        |
+        E
+*/
 
         Dummy::SPtr dummyA = sofa::core::objectmodel::New<Dummy>("obj");
         A->addObject(dummyA);
