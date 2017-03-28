@@ -123,6 +123,10 @@ protected:
     std::string m_sender ;
 };
 
+inline const ComponentInfo::SPtr getComponentInfo(const std::string& s)
+{
+    return ComponentInfo::SPtr( new ComponentInfo(s) );
+}
 
 static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
 

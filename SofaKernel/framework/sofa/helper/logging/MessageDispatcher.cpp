@@ -61,10 +61,7 @@ namespace helper
 namespace logging
 {
 
-const ComponentInfo::SPtr getComponentInfo(const std::string& s)
-{
-    return ComponentInfo::SPtr( new ComponentInfo(s) );
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Threading issues...

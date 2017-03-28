@@ -53,8 +53,6 @@ namespace logging
 // forward declaration
 class MessageHandler;
 
-const ComponentInfo::SPtr getComponentInfo(const std::string& s) ;
-
 /// static interface to manage the list of MessageHandlers
 /// that process the Messages
 class SOFA_HELPER_API MessageDispatcher
