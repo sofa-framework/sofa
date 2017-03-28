@@ -89,16 +89,6 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
     return s;
 }
 
-std::ostream& operator<<(std::ostream& out, const ComponentInfo& nfo)
-{
-    return nfo.toStream(out) ;
-}
-
-std::ostream& operator<<(std::ostream& out, const ComponentInfo* nfo)
-{
-    return nfo->toStream(out) ;
-}
-
 bool Message::empty() const
 {
     // getting the size without creating a copy like m_stream.str().size()

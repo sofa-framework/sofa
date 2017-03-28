@@ -107,6 +107,8 @@ set(HEADER_FILES
     vector_device.h
     logging/Messaging.h
     logging/Message.h
+    logging/ComponentInfo.h
+    logging/FileInfo.h
     logging/MessageDispatcher.h
     logging/MessageHandler.h
     logging/ConsoleMessageHandler.h
@@ -184,6 +186,7 @@ set(SOURCE_FILES
     vector.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
     logging/DefaultStyleMessageFormatter.cpp

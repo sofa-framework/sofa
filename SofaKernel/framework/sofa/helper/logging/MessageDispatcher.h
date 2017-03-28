@@ -33,22 +33,10 @@
 
 namespace sofa
 {
-
-namespace core
-{
-namespace objectmodel
-{
-class Base; // forward declaration
-} // namespace objectmodel
-} // namespace core
-
-
 namespace helper
 {
-
 namespace logging
 {
-
 
 // forward declaration
 class MessageHandler;
