@@ -239,7 +239,7 @@ def quatToAxis(q):
     if half_angle > sys.float_info.epsilon:
         return [ im(q2) / math.sin(half_angle), 2 * half_angle ]
 
-    norm = im(q2).norm()
+    norm = numpy.linalg.norm( im(q2) )
     if norm > sys.float_info.epsilon:
         sign = 1.0 if half_angle > 0 else -1.0
         return [ im(q2) * (sign / norm), 2 * half_angle ]
