@@ -74,119 +74,119 @@ void GenerateGrid<DataTypes>::update()
 {
     cleanDirty();
 
-	helper::WriteAccessor<Data<VecCoord> > out = d_outputX;
+    helper::WriteAccessor<Data<VecCoord> > out = d_outputX;
 
-	Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();
+    Vec3 size=d_maxCorner.getValue()-d_minCorner.getValue();
 
-	size_t freqL=d_resolution.getValue()[0];
-	size_t freqH=d_resolution.getValue()[2];
-	size_t freqW=d_resolution.getValue()[1];
+    size_t freqL=d_resolution.getValue()[0];
+    size_t freqH=d_resolution.getValue()[2];
+    size_t freqW=d_resolution.getValue()[1];
 
-	if (freqL==0) {
-		serr<<" Number of cubes in the x direction cannot be 0; Changed to 1"<<sendl;
-		freqL=1;
-	}
-	if (freqW==0) {
-		serr<<" Number of cubes in the y direction cannot be 0; Changed to 1"<<sendl;
-		freqW=1;
-	}
-	const Real length = size[0]/freqL;
-	const Real width = size[1]/freqW;
-	Real height;
-	if (freqH==0)
-		height=0;
-	else
-		height = size[2]/freqH;
-	Coord origin;
-	helper::eq(origin,Vec3(d_minCorner.getValue()));
-
-
-
-
-	size_t  nbVertices= (freqL+1)*(freqH+1)*(freqW+1);
-	out.resize(nbVertices);
-
-	size_t i,j,k,index;
-	Coord pos;
-
-	for(index=0,k=0;k<=freqH;++k) {
-		for(j=0;j<=freqW;++j) {
-			for(i=0;i<=freqL;i++) {
-				// handle Vec2D case
-				helper::eq(pos,Vec3(i*length,j*width,k*height));
-				pos+=origin;
-				out[index++]=pos;
-			}
-		}
-	}
-
-	if (freqH==0) {
-		// only output quads & triangles
-		size_t nbQuads=(freqL)*(freqW);
-		SeqTriangles  &triangles = *(d_triangle.beginEdit());
-		SeqQuads  &quads = *(d_quad.beginEdit());
-		quads.resize(nbQuads);
-		triangles.resize(nbQuads*2);
-
-
-		Quad quad;
-		for(index=0,i=0;i<freqL;i++) {
-			for(j=0;j<freqW;++j) {
-				quad[0]=(PointID)(i+j*(freqL+1));
-				quad[1]=(PointID)(i+1+j*(freqL+1));
-				quad[2]=(PointID)(i+1+(j+1)*(freqL+1));
-				quad[3]=(PointID)(i+(j+1)*(freqL+1));
-				quads[index]=quad;
-				/// decompose quad into 2 triangles tetra
-				triangles[2*index]=Triangle(quad[0],quad[1],quad[3]);
-				triangles[2*index+1]=Triangle(quad[3],quad[1],quad[2]);
-
-				index++;
-
-			}
-		}
-
-	} else {
-		// outputs hexahedra & tetrahedra
-		SeqTetrahedra  &tetras = *(d_tetrahedron.beginEdit());
-		SeqHexahedra  &hexas = *(d_hexahedron.beginEdit());
-		size_t nbHexahedra=(freqL)*(freqH)*(freqW);
-		hexas.resize(nbHexahedra);
-		tetras.resize(nbHexahedra*6);
-
-		typedef sofa::core::topology::Topology::PointID PointID;
-		Hexahedron hexahedron;
-		for(index=0,i=0;i<freqL;i++) {
-			for(j=0;j<freqW;++j) {
-				for(k=0;k<freqH;++k) {
-					hexahedron[0]=(PointID)(i+j*(freqL+1)+k*(freqL+1)*(freqW+1));
-					hexahedron[1]=(PointID)(i+1+j*(freqL+1)+k*(freqL+1)*(freqW+1));
-					hexahedron[2]=(PointID)(i+1+(j+1)*(freqL+1)+k*(freqL+1)*(freqW+1));
-					hexahedron[3]=(PointID)(i+(j+1)*(freqL+1)+k*(freqL+1)*(freqW+1));
-					hexahedron[4]=(PointID)(i+j*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
-					hexahedron[5]=(PointID)(i+1+j*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
-					hexahedron[6]=(PointID)(i+1+(j+1)*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
-					hexahedron[7]=(PointID)(i+(j+1)*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
-					hexas[index]=hexahedron;
-					/// decompose hexahedron into 6 tetra
-					tetras[6*index]=Tetrahedron(hexahedron[0],hexahedron[5],hexahedron[1],hexahedron[6]);
-					tetras[6*index+1]=Tetrahedron(hexahedron[0],hexahedron[1],hexahedron[3],hexahedron[6]);
-					tetras[6*index+2]=Tetrahedron(hexahedron[1],hexahedron[3],hexahedron[6],hexahedron[2]);
-					tetras[6*index+3]=Tetrahedron(hexahedron[6],hexahedron[3],hexahedron[0],hexahedron[7]);
-					tetras[6*index+4]=Tetrahedron(hexahedron[6],hexahedron[7],hexahedron[0],hexahedron[5]);
-					tetras[6*index+5]=Tetrahedron(hexahedron[7],hexahedron[5],hexahedron[4],hexahedron[0]);
-					index++;
-				}
-			}
-		}
-	}
+    if (freqL==0) {
+        serr<<" Number of cubes in the x direction cannot be 0; Changed to 1"<<sendl;
+        freqL=1;
+    }
+    if (freqW==0) {
+        serr<<" Number of cubes in the y direction cannot be 0; Changed to 1"<<sendl;
+        freqW=1;
+    }
+    const Real length = size[0]/freqL;
+    const Real width = size[1]/freqW;
+    Real height;
+    if (freqH==0)
+        height=0;
+    else
+        height = size[2]/freqH;
+    Coord origin;
+    helper::eq(origin,Vec3(d_minCorner.getValue()));
 
 
 
 
+    size_t  nbVertices= (freqL+1)*(freqH+1)*(freqW+1);
+    out.resize(nbVertices);
 
-	d_tetrahedron.endEdit();
-	d_hexahedron.endEdit();
+    size_t i,j,k,index;
+    Coord pos;
+
+    for(index=0,k=0;k<=freqH;++k) {
+        for(j=0;j<=freqW;++j) {
+            for(i=0;i<=freqL;i++) {
+                // handle Vec2D case
+                helper::eq(pos,Vec3(i*length,j*width,k*height));
+                pos+=origin;
+                out[index++]=pos;
+            }
+        }
+    }
+
+    if (freqH==0) {
+        // only output quads & triangles
+        size_t nbQuads=(freqL)*(freqW);
+        SeqTriangles  &triangles = *(d_triangle.beginEdit());
+        SeqQuads  &quads = *(d_quad.beginEdit());
+        quads.resize(nbQuads);
+        triangles.resize(nbQuads*2);
+
+
+        Quad quad;
+        for(index=0,i=0;i<freqL;i++) {
+            for(j=0;j<freqW;++j) {
+                quad[0]=(PointID)(i+j*(freqL+1));
+                quad[1]=(PointID)(i+1+j*(freqL+1));
+                quad[2]=(PointID)(i+1+(j+1)*(freqL+1));
+                quad[3]=(PointID)(i+(j+1)*(freqL+1));
+                quads[index]=quad;
+                /// decompose quad into 2 triangles tetra
+                triangles[2*index]=Triangle(quad[0],quad[1],quad[3]);
+                triangles[2*index+1]=Triangle(quad[3],quad[1],quad[2]);
+
+                index++;
+
+            }
+        }
+
+    } else {
+        // outputs hexahedra & tetrahedra
+        SeqTetrahedra  &tetras = *(d_tetrahedron.beginEdit());
+        SeqHexahedra  &hexas = *(d_hexahedron.beginEdit());
+        size_t nbHexahedra=(freqL)*(freqH)*(freqW);
+        hexas.resize(nbHexahedra);
+        tetras.resize(nbHexahedra*6);
+
+        typedef sofa::core::topology::Topology::PointID PointID;
+        Hexahedron hexahedron;
+        for(index=0,i=0;i<freqL;i++) {
+            for(j=0;j<freqW;++j) {
+                for(k=0;k<freqH;++k) {
+                    hexahedron[0]=(PointID)(i+j*(freqL+1)+k*(freqL+1)*(freqW+1));
+                    hexahedron[1]=(PointID)(i+1+j*(freqL+1)+k*(freqL+1)*(freqW+1));
+                    hexahedron[2]=(PointID)(i+1+(j+1)*(freqL+1)+k*(freqL+1)*(freqW+1));
+                    hexahedron[3]=(PointID)(i+(j+1)*(freqL+1)+k*(freqL+1)*(freqW+1));
+                    hexahedron[4]=(PointID)(i+j*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
+                    hexahedron[5]=(PointID)(i+1+j*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
+                    hexahedron[6]=(PointID)(i+1+(j+1)*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
+                    hexahedron[7]=(PointID)(i+(j+1)*(freqL+1)+(k+1)*(freqL+1)*(freqW+1));
+                    hexas[index]=hexahedron;
+                    /// decompose hexahedron into 6 tetra
+                    tetras[6*index]=Tetrahedron(hexahedron[0],hexahedron[5],hexahedron[1],hexahedron[6]);
+                    tetras[6*index+1]=Tetrahedron(hexahedron[0],hexahedron[1],hexahedron[3],hexahedron[6]);
+                    tetras[6*index+2]=Tetrahedron(hexahedron[1],hexahedron[3],hexahedron[6],hexahedron[2]);
+                    tetras[6*index+3]=Tetrahedron(hexahedron[6],hexahedron[3],hexahedron[0],hexahedron[7]);
+                    tetras[6*index+4]=Tetrahedron(hexahedron[6],hexahedron[7],hexahedron[0],hexahedron[5]);
+                    tetras[6*index+5]=Tetrahedron(hexahedron[7],hexahedron[5],hexahedron[4],hexahedron[0]);
+                    index++;
+                }
+            }
+        }
+    }
+
+
+
+
+
+    d_tetrahedron.endEdit();
+    d_hexahedron.endEdit();
 }
 
 

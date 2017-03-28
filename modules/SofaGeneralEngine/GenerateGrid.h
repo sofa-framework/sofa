@@ -55,15 +55,15 @@ public:
     typedef typename DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<3,Real> Vec3;
     typedef sofa::defaulttype::Vec<3,size_t> Vec3Int;
-	typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
-	typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
-	typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-	typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
+    typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef sofa::core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef typename SeqTetrahedra::value_type Tetrahedron;
     typedef typename SeqHexahedra::value_type Hexahedron;
     typedef typename SeqTriangles::value_type Triangle;
     typedef typename SeqQuads::value_type Quad;
-	typedef sofa::core::topology::Topology::PointID PointID;
+    typedef sofa::core::topology::Topology::PointID PointID;
 
 public:
 
@@ -93,9 +93,9 @@ public:
     Data<SeqQuads> d_quad; ///< output quads
     Data<SeqTriangles> d_triangle; ///< output triangles
     Data<SeqHexahedra> d_hexahedron; ///< output hexahedra
-	Data<Vec3Int> d_resolution; /// the resolution in the 3 directions
-	Data<Vec3> d_minCorner; /// the position of the minimum corner 
-	Data<Vec3> d_maxCorner; ///the position of the maximum corner 
+    Data<Vec3Int> d_resolution; /// the resolution in the 3 directions
+    Data<Vec3> d_minCorner; /// the position of the minimum corner 
+    Data<Vec3> d_maxCorner; ///the position of the maximum corner 
 };
 
 

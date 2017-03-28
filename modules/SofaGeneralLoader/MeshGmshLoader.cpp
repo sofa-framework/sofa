@@ -260,12 +260,12 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
         helper::vector <unsigned int> nodes;
         nodes.resize (nnodes);
-		const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
-		const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3}};
-		std::set<Edge> edgeSet;
-		size_t j;
-		for (int n=0; n<nnodes; ++n)
-		{
+        const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
+        const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3}};
+        std::set<Edge> edgeSet;
+        size_t j;
+        for (int n=0; n<nnodes; ++n)
+        {
             int t = 0;
             file >> t;
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
@@ -298,65 +298,65 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             addHexahedron(&my_hexahedra,Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;
-		case 8: // quadratic edge
-			addInGroup(my_edgesGroups,tag,my_edges.size());
-			addEdge(&my_edges, Edge(nodes[0], nodes[1]));
-			{
-				HighOrderEdgePosition hoep;
-				hoep[0]= nodes[2];
-				hoep[1]=my_edges.size()-1;
-				hoep[2]=1;
-				hoep[3]=1;
-				my_highOrderEdgePositions.push_back(hoep);
-			}
-			++nlines;
-			break;
+        case 8: // quadratic edge
+            addInGroup(my_edgesGroups,tag,my_edges.size());
+            addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+            {
+                HighOrderEdgePosition hoep;
+                hoep[0]= nodes[2];
+                hoep[1]=my_edges.size()-1;
+                hoep[2]=1;
+                hoep[3]=1;
+                my_highOrderEdgePositions.push_back(hoep);
+            }
+            ++nlines;
+            break;
         case 9: // quadratic triangle
             addInGroup(my_trianglesGroups,tag,my_triangles.size());
-			addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
-			{
-				HighOrderEdgePosition hoep;
-				for(j=0;j<3;++j) {
-					size_t v0=std::min( nodes[edgesInQuadraticTriangle[j][0]],
-						nodes[edgesInQuadraticTriangle[j][1]]);
-					size_t v1=std::max( nodes[edgesInQuadraticTriangle[j][0]],
-						nodes[edgesInQuadraticTriangle[j][1]]);
-					Edge e(v0,v1);
-					if (edgeSet.find(e)==edgeSet.end()) {
-						edgeSet.insert(e);
-						addEdge(&my_edges, v0, v1);
-						hoep[0]= nodes[j+3];
-						hoep[1]=my_edges.size()-1;
-						hoep[2]=1;
-						hoep[3]=1;
-						my_highOrderEdgePositions.push_back(hoep);
-					}
-				}
-			}
+            addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<3;++j) {
+                    size_t v0=std::min( nodes[edgesInQuadraticTriangle[j][0]],
+                        nodes[edgesInQuadraticTriangle[j][1]]);
+                    size_t v1=std::max( nodes[edgesInQuadraticTriangle[j][0]],
+                        nodes[edgesInQuadraticTriangle[j][1]]);
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= nodes[j+3];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
+                    }
+                }
+            }
             ++ntris;
             break;
         case 11: // quadratic tetrahedron
-             addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
-			 addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
-			 {
-				 HighOrderEdgePosition hoep;
-				 for(j=0;j<6;++j) {
-					 size_t v0=std::min( nodes[edgesInQuadraticTetrahedron[j][0]],
-						 nodes[edgesInQuadraticTetrahedron[j][1]]);
-					 size_t v1=std::max( nodes[edgesInQuadraticTetrahedron[j][0]],
-						 nodes[edgesInQuadraticTetrahedron[j][1]]);
-					 Edge e(v0,v1);
-					 if (edgeSet.find(e)==edgeSet.end()) {
-						 edgeSet.insert(e);
-						 addEdge(&my_edges, v0, v1);
-						 hoep[0]= nodes[j+4];
-						 hoep[1]=my_edges.size()-1;
-						 hoep[2]=1;
-						 hoep[3]=1;
-						 my_highOrderEdgePositions.push_back(hoep);
-					 }
-				 }
-			 }
+            addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
+            addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<6;++j) {
+                    size_t v0=std::min( nodes[edgesInQuadraticTetrahedron[j][0]],
+                        nodes[edgesInQuadraticTetrahedron[j][1]]);
+                    size_t v1=std::max( nodes[edgesInQuadraticTetrahedron[j][0]],
+                        nodes[edgesInQuadraticTetrahedron[j][1]]);
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= nodes[j+4];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
+                    }
+                }
+            }
             ++ntetrahedra;
             break;
         default:
@@ -381,7 +381,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
-	d_highOrderEdgePositions.endEdit();
+    d_highOrderEdgePositions.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
@@ -391,14 +391,14 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         return false;
     }
 
-    // 	sout << "Loading topology complete:";
-    // 	if (npoints>0) sout << ' ' << npoints << " points";
-    // 	if (nlines>0)  sout << ' ' << nlines  << " lines";
-    // 	if (ntris>0)   sout << ' ' << ntris   << " triangles";
-    // 	if (nquads>0)  sout << ' ' << nquads  << " quads";
-    // 	if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
-    // 	if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
-    // 	sout << sendl;
+    // sout << "Loading topology complete:";
+    // if (npoints>0) sout << ' ' << npoints << " points";
+    // if (nlines>0)  sout << ' ' << nlines  << " lines";
+    // if (ntris>0)   sout << ' ' << ntris   << " triangles";
+    // if (nquads>0)  sout << ' ' << nquads  << " quads";
+    // if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
+    // if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
+    // sout << sendl;
 
     file.close();
     return true;

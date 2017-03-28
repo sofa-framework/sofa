@@ -44,18 +44,18 @@ template <class DataTypes>
  PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
         ,d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
         ,d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
-		,d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+        ,d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
     {
     }
 template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-	if ( this->d_tagMechanics.getValue().size()>0) {
-		sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
-		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
-	} else {
-		object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
-	}
+    if ( this->d_tagMechanics.getValue().size()>0) {
+        sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
+    } else {
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+    }
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
 }

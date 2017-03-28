@@ -265,10 +265,10 @@ bool MeshVTKLoader::setInputsMesh()
 
         helper::vector<int> numSubPolyLines;
 
-		const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
-		const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{1,3},{2,3}};
-		std::set<Edge> edgeSet;
-		size_t j;
+        const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
+        const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{1,3},{2,3}};
+        std::set<Edge> edgeSet;
+        size_t j;
         int nbf = reader->numberOfCells;
         int i = 0;
         for (int c = 0; c < nbf; ++c)
@@ -335,60 +335,60 @@ bool MeshVTKLoader::setInputsMesh()
                         inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]);
                 break;
             case 21: // QUADRATIC Edge
-				 addEdge(&my_edges, inFP[i+0], inFP[i+1]);
-				 {
-					 HighOrderEdgePosition hoep;
-					 hoep[0]= inFP[i+2];
-					 hoep[1]=my_edges.size()-1;
-					 hoep[2]=1;
-					 hoep[3]=1;
-					 my_highOrderEdgePositions.push_back(hoep);
-				 }
+                addEdge(&my_edges, inFP[i+0], inFP[i+1]);
+                {
+                    HighOrderEdgePosition hoep;
+                    hoep[0]= inFP[i+2];
+                    hoep[1]=my_edges.size()-1;
+                    hoep[2]=1;
+                    hoep[3]=1;
+                    my_highOrderEdgePositions.push_back(hoep);
+                }
                 break;
             case 22: // QUADRATIC Triangle
                 addTriangle(&my_triangles,inFP[i+0], inFP[i+1], inFP[i+2]);
-				 {
-					 HighOrderEdgePosition hoep;
-					 for(j=0;j<3;++j) {
-						 size_t v0=std::min( inFP[i+edgesInQuadraticTriangle[j][0]],
-							 inFP[i+edgesInQuadraticTriangle[j][1]]);
- 						 size_t v1=std::max( inFP[i+edgesInQuadraticTriangle[j][0]],
-							 inFP[i+edgesInQuadraticTriangle[j][1]]);
-						 Edge e(v0,v1);
-						 if (edgeSet.find(e)==edgeSet.end()) {
-							 edgeSet.insert(e);
-							 addEdge(&my_edges, v0, v1);
-							 hoep[0]= inFP[i+j+3];
-							 hoep[1]=my_edges.size()-1;
-							 hoep[2]=1;
-							 hoep[3]=1;
-							 my_highOrderEdgePositions.push_back(hoep);
-						 }
-					 }
-				 }
+                {
+                    HighOrderEdgePosition hoep;
+                    for(j=0;j<3;++j) {
+                        size_t v0=std::min( inFP[i+edgesInQuadraticTriangle[j][0]],
+                            inFP[i+edgesInQuadraticTriangle[j][1]]);
+                        size_t v1=std::max( inFP[i+edgesInQuadraticTriangle[j][0]],
+                            inFP[i+edgesInQuadraticTriangle[j][1]]);
+                        Edge e(v0,v1);
+                        if (edgeSet.find(e)==edgeSet.end()) {
+                            edgeSet.insert(e);
+                            addEdge(&my_edges, v0, v1);
+                            hoep[0]= inFP[i+j+3];
+                            hoep[1]=my_edges.size()-1;
+                            hoep[2]=1;
+                            hoep[3]=1;
+                            my_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
 
                 break;
             case 24: // QUADRATIC Tetrahedron
-               addTetrahedron(&my_tetrahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
-				 {
-					  HighOrderEdgePosition hoep;
-					 for(j=0;j<6;++j) {
-						 size_t v0=std::min( inFP[i+edgesInQuadraticTetrahedron[j][0]],
-							 inFP[i+edgesInQuadraticTetrahedron[j][1]]);
- 						 size_t v1=std::max( inFP[i+edgesInQuadraticTetrahedron[j][0]],
-							 inFP[i+edgesInQuadraticTetrahedron[j][1]]);
-						 Edge e(v0,v1);
-						 if (edgeSet.find(e)==edgeSet.end()) {
-							 edgeSet.insert(e);
-							 addEdge(&my_edges, v0, v1);
-							 hoep[0]= inFP[i+j+4];
-							 hoep[1]=my_edges.size()-1;
-							 hoep[2]=1;
-							 hoep[3]=1;
-							 my_highOrderEdgePositions.push_back(hoep);
-						 }
-					 }
-				 }
+                addTetrahedron(&my_tetrahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
+                {
+                     HighOrderEdgePosition hoep;
+                    for(j=0;j<6;++j) {
+                        size_t v0=std::min( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+                            inFP[i+edgesInQuadraticTetrahedron[j][1]]);
+                        size_t v1=std::max( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+                            inFP[i+edgesInQuadraticTetrahedron[j][1]]);
+                        Edge e(v0,v1);
+                        if (edgeSet.find(e)==edgeSet.end()) {
+                            edgeSet.insert(e);
+                            addEdge(&my_edges, v0, v1);
+                            hoep[0]= inFP[i+j+4];
+                            hoep[1]=my_edges.size()-1;
+                            hoep[2]=1;
+                            hoep[3]=1;
+                            my_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
                 break;
             // more types are defined in vtkCellType.h in libvtk
             default:
@@ -427,7 +427,7 @@ bool MeshVTKLoader::setInputsMesh()
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
-	d_highOrderEdgePositions.endEdit();
+    d_highOrderEdgePositions.endEdit();
 
     return true;
 }
