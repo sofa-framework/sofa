@@ -82,6 +82,7 @@ public:
 
     int addHandler(MessageHandler* o)
     {
+        lock_guard<mutex> guard(dispatchermutex) ;
         if( std::find(m_messageHandlers.begin(), m_messageHandlers.end(), o) == m_messageHandlers.end())
         {
             m_messageHandlers.push_back(o) ;
@@ -92,17 +93,20 @@ public:
 
     int rmHandler(MessageHandler* o)
     {
+        lock_guard<mutex> guard(dispatchermutex) ;
         m_messageHandlers.erase(remove(m_messageHandlers.begin(), m_messageHandlers.end(), o), m_messageHandlers.end());
         return (int)(m_messageHandlers.size()-1);
     }
 
     void clearHandlers()
     {
+        lock_guard<mutex> guard(dispatchermutex) ;
         m_messageHandlers.clear() ;
     }
 
     void process(sofa::helper::logging::Message& m)
     {
+        lock_guard<mutex> guard(dispatchermutex) ;
         for( size_t i=0 ; i<m_messageHandlers.size() ; i++ )
             m_messageHandlers[i]->process(m) ;
     }
@@ -111,48 +115,33 @@ public:
 
 MessageDispatcherImpl s_messagedispatcher ;
 
-mutex& getMutex(){
-    return s_messagedispatcher.dispatchermutex ;
-}
-
-/*static std::vector<MessageHandler*> setDefaultMessageHandler()
-{
-    /// This static function of the dispatcher has to be protected against concurent access
-    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
-
-    std::vector<MessageHandler*> messageHandlers;
-    messageHandlers.push_back(&s_consoleMessageHandler);
-    return messageHandlers;
-}*/
-
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    lock_guard<mutex> guard(getMutex()) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    lock_guard<mutex> guard(getMutex()) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    lock_guard<mutex> guard(getMutex()) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    lock_guard<mutex> guard(getMutex()) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    lock_guard<mutex> guard(getMutex()) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.process(m);
 }
