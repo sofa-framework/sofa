@@ -543,7 +543,7 @@ namespace logging
     inline bool notMuted(const sofa::core::objectmodel::Base* t){ return t->notMuted(); }
     inline bool notMuted(sofa::core::objectmodel::Base* t){ return t->notMuted(); }
 
-    class SofaComponentInfo : public ComponentInfo
+    class SOFA_CORE_API SofaComponentInfo : public ComponentInfo
     {
     public:
         const sofa::core::objectmodel::Base* m_component ;

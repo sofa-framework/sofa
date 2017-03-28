@@ -101,7 +101,7 @@ struct FileInfoOwningFilename : public FileInfo
 
 
 /// To keep track component informations associated with a message.
-struct ComponentInfo
+struct SOFA_HELPER_API ComponentInfo
 {
 public:
     ComponentInfo(){}
