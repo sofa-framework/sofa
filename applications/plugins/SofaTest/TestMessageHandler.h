@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*****************************************************************************
-* User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
 #ifndef TESTMESSAGEHANDLER_H
 #define TESTMESSAGEHANDLER_H
 
@@ -34,6 +30,38 @@
 #include "InitPlugin_test.h"
 #include <gtest/gtest.h>
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// This file is providing an API to combine gtest and msg_* API.
+/// The underlying idea is to be able to test sofa's message.
+///
+/// The API is composed of two macro:
+///    - EXPECT_MSG_EMIT(...);
+///    - EXPECT_MSG_NOEMIT(...);
+///
+/// The first one generates a gtest failure when a message of a given type is not emitted. So
+/// You need to use it express that the good behavior from the object is to rise a message.
+///
+/// The second one generates a gtest failure when a message of a given type is emitted.
+///
+/// Examples of use:
+///     for(BaseLoader* b : objectlist)
+///     {
+///         EXPECT_MESSAGE_NOEMIT(Warning);
+///         EXPECT_MESSAGE_EMIT(Error);
+///         b->load("Invalid file");
+///     }
+///
+/// To work the API need to a specific handler to be install in the messaging system.
+/// This means that we need to install the message handler using. This is not done automatically
+/// To not add something with a linear time complexity in the process.
+///
+/// Example of installation:
+///     MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
+///
+/// NB: This is done automatically if you are inhering from Sofa_test.
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace sofa
 {
 
@@ -43,7 +71,6 @@ namespace helper
 namespace logging
 {
 /// Forward declaration of private classes.
-
 class GtestMessageFrame;
 
 /// Rise a gtest failure when a message of type Message:type is emitted.

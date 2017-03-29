@@ -158,7 +158,6 @@ GtestMessageHandler::GtestMessageHandler(Message::Class mclass) : m_class(mclass
     }
 }
 
-/// Inherited from MessageHandler
 void GtestMessageHandler::process(Message& m)
 {
     m_gtestframes[m.type()].back()->process(m) ;
