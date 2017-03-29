@@ -2,8 +2,6 @@
 using sofa::Sofa_test;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::GtestMessageHandler ;
-
 class TestMessageHandler_test : public Sofa_test<>
 {
 public:

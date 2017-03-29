@@ -21,6 +21,13 @@
 ******************************************************************************/
 #include <SofaTest/TestMessageHandler.h>
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// This file organization:
+///     - PRIVATE DECLARATION  (the class that are only used internally)
+///     - PRIVATE DEFINITION   (the implementation of the private classes)
+///     - PUBLIC  DEFINITION   (the implementation of the public classes)
+////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace sofa
 {
 
@@ -30,23 +37,81 @@ namespace helper
 namespace logging
 {
 
-namespace {
-    static struct raii {
-      raii() {
-            //std::cout << "INSTALLING THE HANDLER " << std::endl ;
-            helper::logging::MessageDispatcher::addHandler( &MainGtestMessageHandler::getInstance() ) ;
-      }
-    } sin ;
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// PRIVATE DECLARATION /////////////////////////////////////////////////
+/// Here are declared the classes that are only used for internal use.
+/// In case someone want to use them it is easy to move that in .h file.
+/// Until that happens, keeps these here to hide the implementation details from the users of the .h
+/// And accelerate compilation of Sofa :)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class GtestMessageFrame
+{
+public:
+    virtual ~GtestMessageFrame() {}
 
-void GtestMessageFrame::process(Message& m) {
-    SOFA_UNUSED(m);
-}
+    virtual void process(Message& /*m*/) {}
+    virtual void finalize() {}
 
-void GtestMessageFrame::finalize() {
-}
+public:
+    Message::Type m_type;
+    const char* m_filename;
+    int   m_lineno ;
+};
 
-GtestMessageFrameFailure::GtestMessageFrameFailure(Message::Type type, const char* filename, int lineno)
+class GtestMessageFrameFailure : public GtestMessageFrame
+{
+public:
+
+    GtestMessageFrameFailure(Message::Type type,
+                             const char* filename, int lineno) ;
+    virtual void process(Message& message) ;
+};
+
+class GtestMessageFrameFailureWhenMissing  : public GtestMessageFrame
+{
+public:
+    bool  m_gotMessage {false} ;
+
+    GtestMessageFrameFailureWhenMissing(Message::Type type,
+                                        const char* filename,  int lineno) ;
+
+    virtual void process(Message& message) ;
+    virtual void finalize() ;
+};
+
+class SOFA_TestPlugin_API GtestMessageHandler : public MessageHandler
+{
+    Message::Class m_class ;
+    std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
+
+public:
+    GtestMessageHandler(Message::Class mclass) ;
+    virtual ~ GtestMessageHandler();
+
+    /// Inherited from MessageHandler
+    virtual void process(Message& m) ;
+    void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
+    void popFrame(Message::Type type) ;
+};
+
+class SOFA_TestPlugin_API MainGtestMessageHandlerPrivate
+{
+public:
+    static GtestMessageHandler& getInstance() ;
+    static void pushFrame(Message::Type type, GtestMessageFrame* frame) ;
+    static void popFrame(Message::Type type) ;
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// DEFINITION OF PRIVATE CLASSES //////////////////////////////////
+///
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+GtestMessageFrameFailure::GtestMessageFrameFailure(Message::Type type,
+                                                   const char* filename,
+                                                   int lineno)
 {
     m_type = type;
     m_filename = filename;
@@ -65,8 +130,9 @@ void GtestMessageFrameFailure::process(Message& message) {
                                          << backlog.str() ;
 }
 
-
-GtestMessageFrameFailureWhenMissing::GtestMessageFrameFailureWhenMissing( Message::Type type,  const char* filename,  int lineno)
+GtestMessageFrameFailureWhenMissing::GtestMessageFrameFailureWhenMissing(Message::Type type,
+                                                                         const char* filename,
+                                                                         int lineno)
 {
     m_type = type;
     m_filename = filename;
@@ -84,7 +150,6 @@ void GtestMessageFrameFailureWhenMissing::finalize(){
                                              << "' was expected but none was received. " << std::endl ;
 }
 
-
 GtestMessageHandler::GtestMessageHandler(Message::Class mclass) : m_class(mclass)
 {
     for(unsigned int i=0; i < Message::TypeCount ; ++i)
@@ -96,10 +161,7 @@ GtestMessageHandler::GtestMessageHandler(Message::Class mclass) : m_class(mclass
 /// Inherited from MessageHandler
 void GtestMessageHandler::process(Message& m)
 {
-    //if(m.context()==m_class){
-    //std::cout << "PROCESSING MESSAGE" << toString(m.type()) << ": " << m_gtestframes[m.type()].size() << std::endl;
     m_gtestframes[m.type()].back()->process(m) ;
-    //}
 }
 
 GtestMessageHandler::~GtestMessageHandler()
@@ -111,7 +173,8 @@ GtestMessageHandler::~GtestMessageHandler()
     }
 }
 
-void GtestMessageHandler::pushFrame(Message::Type type, GtestMessageFrame* frame){
+void GtestMessageHandler::pushFrame(Message::Type type,
+                                    GtestMessageFrame* frame){
     m_gtestframes[type].push_back(frame) ;
 }
 
@@ -119,79 +182,53 @@ void GtestMessageHandler::popFrame(Message::Type type){
     m_gtestframes[type].pop_back() ;
 }
 
-GtestMessageHandler& MainGtestMessageHandler::getInstance(){
+MessageHandler* MainGtestMessageHandler::getInstance(){
+    return &MainGtestMessageHandlerPrivate::getInstance() ;
+}
+
+GtestMessageHandler& MainGtestMessageHandlerPrivate::getInstance(){
     static GtestMessageHandler instance(Message::Runtime) ;
     return instance ;
 }
 
-void MainGtestMessageHandler::pushFrame(Message::Type type, GtestMessageFrame *frame){
+void MainGtestMessageHandlerPrivate::pushFrame(Message::Type type, GtestMessageFrame *frame){
     getInstance().pushFrame(type, frame) ;
 }
 
-void MainGtestMessageHandler::popFrame(Message::Type type){
+void MainGtestMessageHandlerPrivate::popFrame(Message::Type type){
     getInstance().popFrame(type) ;
 }
 
-MesssageAsTestFailure2::MesssageAsTestFailure2(Message::Type type,
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// DEFINITION OF PUBLIC CLASSES ///////////////////////////////////
+///
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+MesssageAsTestFailure::MesssageAsTestFailure(Message::Type type,
                                                const char* filename, int lineno)
 {
-    //std::cout << "INSTALL HANDLER FOR" << toString(type) << std::endl;
-    auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
-    m_frames.push_back(frame);
-    MainGtestMessageHandler::pushFrame(type, frame) ;
+    m_frame = new GtestMessageFrameFailure(type, filename, lineno) ;
+    MainGtestMessageHandlerPrivate::pushFrame(type, m_frame) ;
 }
 
-MesssageAsTestFailure2::MesssageAsTestFailure2(std::initializer_list<Message::Type> types,
-                                               const char* filename, int lineno)
-{
-    for(Message::Type type : types)
-    {
-        //std::cout << "INSTALL HANDLER FOR" << toString(type) << std::endl;
-        auto frame = new GtestMessageFrameFailure(type, filename, lineno) ;
-        m_frames.push_back(frame);
-        MainGtestMessageHandler::pushFrame(type, frame) ;
-    }
+MesssageAsTestFailure::~MesssageAsTestFailure(){
+    MainGtestMessageHandlerPrivate::popFrame( m_frame->m_type ) ;
+    m_frame->finalize() ;
+    delete m_frame ;
 }
 
-MesssageAsTestFailure2::~MesssageAsTestFailure2(){
-    for(auto frame : m_frames)
-    {
-        //std::cout << "REMOVE HANDLER FOR" << toString(frame->m_type) << std::endl;
-        MainGtestMessageHandler::popFrame(frame->m_type) ;
-        frame->finalize() ;
-        delete frame;
-    }
-    m_frames.clear();
-}
-
-
-ExpectMessage2::ExpectMessage2(Message::Type type,
+ExpectMessage::ExpectMessage(Message::Type type,
                                const char* filename, int lineno)
 {
-    auto frame = new GtestMessageFrameFailureWhenMissing(type, filename, lineno);
-    m_frames.push_back( frame ) ;
-    MainGtestMessageHandler::pushFrame(type, frame ) ;
+    m_frame = new GtestMessageFrameFailureWhenMissing(type, filename, lineno);
+    MainGtestMessageHandlerPrivate::pushFrame(type, m_frame ) ;
 }
 
-ExpectMessage2::ExpectMessage2(std::initializer_list<Message::Type> types,
-                               const char* filename, int lineno)
-{
-    for(Message::Type type : types)
-    {
-        auto frame = new GtestMessageFrameFailureWhenMissing(type, filename, lineno);
-        m_frames.push_back(frame);
-        MainGtestMessageHandler::pushFrame(type, frame) ;
-    }
-}
-
-ExpectMessage2::~ExpectMessage2(){
-    for(auto frame : m_frames)
-    {
-        MainGtestMessageHandler::popFrame(frame->m_type) ;
-        frame->finalize() ;
-        delete frame;
-    }
-    m_frames.clear();
+ExpectMessage::~ExpectMessage(){
+    MainGtestMessageHandlerPrivate::popFrame(m_frame->m_type) ;
+    m_frame->finalize() ;
+    delete m_frame ;
 }
 
 } // logging

@@ -42,106 +42,81 @@ namespace helper
 
 namespace logging
 {
+/// Forward declaration of private classes.
 
-class GtestMessageFrame
+class GtestMessageFrame;
+
+/// Rise a gtest failure when a message of type Message:type is emitted.
+/// Better use the macro:
+///    EXPECT_MSG_NOEMIT(Error) as a more 'good looking' version of
+///
+/// sofa::helper::logging::MessageAsTestFailure failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
+class SOFA_TestPlugin_API MesssageAsTestFailure
 {
 public:
-    virtual ~GtestMessageFrame() {}
+    MesssageAsTestFailure(Message::Type t,
+                           const char* filename="unknown", int lineno=0) ;
 
-    const char* m_filename;
-    int   m_lineno ;
+    virtual ~MesssageAsTestFailure() ;
 
-    virtual void process(Message& m) ;
-    virtual void finalize() ;
+private:
+    GtestMessageFrame* m_frame ;
 };
 
-class GtestMessageFrameFailure : public GtestMessageFrame
+/// Rise a gtest failure during the object destruction when the expected message have not
+/// been received.
+/// Better use the macro:
+///    EXPECT_MSG_EMIT(Error) as a more 'good looking' version of
+///
+/// sofa::helper::logging::ExpectMessage failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
+class SOFA_TestPlugin_API ExpectMessage
 {
 public:
-    Message::Type m_type;
+    ExpectMessage(Message::Type t,
+                   const char* filename="unknown", int lineno=0) ;
 
-    GtestMessageFrameFailure(Message::Type type,
-                             const char* filename, int lineno) ;
-    virtual void process(Message& message) ;
+    virtual ~ExpectMessage() ;
+
+private:
+    GtestMessageFrame* m_frame ;
 };
 
-class GtestMessageFrameFailureWhenMissing  : public GtestMessageFrame
-{
-public:
-    Message::Type m_type;
-    bool  m_gotMessage {false} ;
-
-    GtestMessageFrameFailureWhenMissing(Message::Type type,
-                                        const char* filename,  int lineno) ;
-
-    virtual void process(Message& message) ;
-    void finalize() ;
-};
-
-
-class SOFA_TestPlugin_API GtestMessageHandler : public MessageHandler
-{
-    Message::Class m_class ;
-    std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
-
-public:
-    GtestMessageHandler(Message::Class mclass) ;
-    virtual ~ GtestMessageHandler();
-
-    /// Inherited from MessageHandler
-    virtual void process(Message& m) ;
-    void pushFrame(Message::Type type, GtestMessageFrame* frame)  ;
-    void popFrame(Message::Type type) ;
-};
-
+/// Inherited from MessageHandler, this handler must be installed to have the testing subsystem
+/// working. By default it is added in Sofa_test but if you are not inheriting from Sofa_test
+/// you have to install it manually.
 class SOFA_TestPlugin_API MainGtestMessageHandler
 {
 public:
-    static GtestMessageHandler& getInstance() ;
-    static void pushFrame(Message::Type type, GtestMessageFrame* frame) ;
-    static void popFrame(Message::Type type) ;
+    static MessageHandler* getInstance() ;
 };
 
-struct SOFA_TestPlugin_API MesssageAsTestFailure2
-{
-    std::vector<GtestMessageFrameFailure*> m_frames ;
-
-    MesssageAsTestFailure2(Message::Type t,
-                           const char* filename="unknown", int lineno=0) ;
-
-    MesssageAsTestFailure2(std::initializer_list<Message::Type> t,
-                           const char* filename="unknown", int lineno=0) ;
-
-    virtual ~MesssageAsTestFailure2() ;
-};
-
-struct SOFA_TestPlugin_API ExpectMessage2
-{
-    std::vector<GtestMessageFrameFailureWhenMissing*> m_frames ;
-
-    ExpectMessage2(Message::Type t,
-                   const char* filename="unknown", int lineno=0) ;
-    ExpectMessage2(std::initializer_list<Message::Type> t,
-                   const char* filename="unknown", int lineno=0) ;
-
-    virtual ~ExpectMessage2() ;
-};
-
-//From http://en.cppreference.com/w/cpp/preprocessor/replace
+////////////////////////////// MACROS TO EASE THE USERS ////////////////////////////////////////////
+/// Using the raw objects is very verbose as it lead to code like this:
+///    ExpectMessage error(Message::Error, __FILE__, __LINE__) ;
+///
+/// which obfuscate the readability of the source code and force developper to import
+/// ExpectMessage and Message into the current namespace.
+///
+/// For that reason we are provide a set of macro that can be used in the following way:
+///    EXPECT_MSG_EMIT(Error) or EXPECT_MSG_NOEMIT instead of calling the ExpectMessage
+///    and MessageAsTestFailure objcet.
+///
+/// The macros are mimicking the way gtest macros are working... and thus as any macro are really
+/// hard to understand and error prone.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///From http://en.cppreference.com/w/cpp/preprocessor/replace
 #define EXPECT_MSG_PASTER(x,y) x ## _ ## y
 #define EXPECT_MSG_EVALUATOR(x,y)  EXPECT_MSG_PASTER(x,y)
-
-
 
 ///TAKE FROM http://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros
 #define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 
 #define EXPECT_MSG_EMIT2(a,b) \
-    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
-    sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
+    sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+    sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
-#define EXPECT_MSG_EMIT1(t)   sofa::helper::logging::ExpectMessage2 EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__) ( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
+#define EXPECT_MSG_EMIT1(t)   sofa::helper::logging::ExpectMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__) ( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
 #define EXPECT_MSG_EMIT0
 
 #define EXPECT_MSG_EMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_EMIT2, EXPECT_MSG_EMIT1, ))
@@ -151,10 +126,10 @@ struct SOFA_TestPlugin_API ExpectMessage2
 #define EXPECT_MSG_EMIT(...) EXPECT_MSG_EMIT_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 #define EXPECT_MSG_NOEMIT2(a,b) \
-       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
-       sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
+       sofa::helper::logging::MesssageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarA_, __LINE__) ( sofa::helper::logging::Message::a, __FILE__, __LINE__ ); \
+       sofa::helper::logging::MesssageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarB_, __LINE__) ( sofa::helper::logging::Message::b, __FILE__, __LINE__ )
 
-#define EXPECT_MSG_NOEMIT1(t)   sofa::helper::logging::MesssageAsTestFailure2 EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__)( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
+#define EXPECT_MSG_NOEMIT1(t)   sofa::helper::logging::MesssageAsTestFailure EXPECT_MSG_EVALUATOR(__hiddenscopevarT_, __LINE__)( sofa::helper::logging::Message::t, __FILE__, __LINE__ )
 #define EXPECT_MSG_NOEMIT0
 
 #define EXPECT_MSG_NOEMIT_CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, EXPECT_MSG_NOEMIT2, EXPECT_MSG_NOEMIT1, ))

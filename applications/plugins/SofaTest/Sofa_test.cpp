@@ -42,6 +42,8 @@ using sofa::helper::BackTrace;
 using sofa::helper::Console ;
 
 #include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::MainGtestMessageHandler ;
 
 namespace sofa {
 
@@ -50,7 +52,8 @@ namespace sofa {
 namespace {
     static struct raii {
       raii() {
-           BackTrace::autodump() ;
+          MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
+          BackTrace::autodump() ;
       }
     } singleton;
 }
@@ -73,7 +76,7 @@ BaseSofa_test::BaseSofa_test(){
 
     // Repeating this for each class is harmless because addHandler test if the handler is already installed and
     // if so it don't install it again.
-    helper::logging::MessageDispatcher::addHandler( &helper::logging::MainGtestMessageHandler::getInstance() ) ;
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
 }
 
 BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }

@@ -49,6 +49,7 @@ using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
 
 #include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::MainGtestMessageHandler ;
 
 #include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
@@ -82,7 +83,7 @@ void perTestInit()
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
-    MessageDispatcher::addHandler( &sofa::helper::logging::MainGtestMessageHandler::getInstance() );
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
 }
 
 

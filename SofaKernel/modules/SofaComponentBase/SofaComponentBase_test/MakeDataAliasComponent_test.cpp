@@ -45,6 +45,7 @@ using sofa::component::MakeDataAliasComponent ;
 #include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher;
+using sofa::helper::logging::MainGtestMessageHandler;
 using sofa::helper::logging::MessageHandler;
 using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
@@ -82,7 +83,7 @@ void perTestInit()
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
-    MessageDispatcher::addHandler( &sofa::helper::logging::MainGtestMessageHandler::getInstance() );
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
 }
 
 TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)

@@ -42,12 +42,14 @@ using sofa::component::logging::MessageHandlerComponent ;
 #include <SofaComponentBase/initComponentBase.h>
 
 #include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::MainGtestMessageHandler ;
+using sofa::helper::logging::MessageDispatcher ;
 
 bool perTestInit()
 {
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE
-    sofa::helper::logging::MessageDispatcher::addHandler( &sofa::helper::logging::MainGtestMessageHandler::getInstance() );
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
     return true;
 }
 bool inited = perTestInit() ;
