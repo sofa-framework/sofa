@@ -32,9 +32,15 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     if (first)
     {
         sofa::simulation::PythonEnvironment::Init();
-        first = false;        
+        first = false;
     }
 }
+
+SOFA_SOFAPYTHON_API void reinitExternalModule()
+{
+    sofa::simulation::PythonEnvironment::ReInit();
+}
+
 
 SOFA_SOFAPYTHON_API const char* getModuleName()
 {
@@ -53,7 +59,7 @@ SOFA_SOFAPYTHON_API const char* getModuleLicense()
 
 SOFA_SOFAPYTHON_API const char* getModuleDescription()
 {
-    return "Imbeds Python scripts in Sofa";
+    return "Embeds Python scripts in Sofa";
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleComponentList()
@@ -67,6 +73,8 @@ SOFA_SOFAPYTHON_API const char* getModuleComponentList()
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 SOFA_LINK_CLASS(PythonScriptController)
+SOFA_LINK_CLASS(PythonEnvironment)
+
 
 
 // register the loader in the factory
