@@ -15,7 +15,7 @@ using sofa::defaulttype::Vec4d ;
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;
 
-#include <sofa/defaulttype/Color.h>
+#include <sofa/defaulttype/RGBAColor.h>
 using sofa::defaulttype::RGBAColor ;
 
 class Color_Test : public Sofa_test<>

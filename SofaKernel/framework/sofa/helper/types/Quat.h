@@ -19,63 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_OGLGRID_H
-#define SOFA_OGLGRID_H
-#include "config.h"
+#ifndef SOFA_DEFAULTTYPE_QUAT_H
+#define SOFA_DEFAULTTYPE_QUAT_H
 
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
 
-namespace component
+namespace defaulttype
 {
+typedef helper::Quater<double> Quatd; ///< alias
+typedef helper::Quater<float>  Quatf; ///< alias
+#ifdef SOFA_FLOAT
+typedef Quatf Quat; ///< alias
+#else
+typedef Quatd Quat; ///< alias
+#endif
+typedef Quat Quaternion; ///< alias
 
-namespace visualmodel
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+template<class T>
+struct DataTypeInfo< sofa::helper::Quater<T> > : public FixedArrayTypeInfo< sofa::helper::Quater<T> >
 {
-
-class OglGrid : public core::visual::VisualModel
-{
-public:
-    SOFA_CLASS(OglGrid, VisualModel);
-
-    typedef sofa::defaulttype::Vector3 Vector3;
-
-    enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
-
-    Data<std::string> plane;
-    PLANE internalPlane;
-
-    Data<float> size;
-    Data<int> nbSubdiv;
-
-    Data<defaulttype::RGBAColor> color;
-    Data<float> thickness;
-    Data<bool> draw;
-
-    OglGrid():
-        plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid")),
-        size(initData(&size, 10.0f,  "size", "Size of the squared grid")),
-        nbSubdiv(initData(&nbSubdiv, 16,  "nbSubdiv", "Number of subdivisions")),
-        color(initData(&color, defaulttype::RGBAColor(0.34117647058f,0.34117647058f,0.34117647058f,1.0f),  "color", "Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)")),
-        thickness(initData(&thickness, 1.0f,  "thickness", "Thickness of the lines in the grid")),
-        draw(initData(&draw, true,  "draw", "Display the grid or not"))
-    {}
-
-    virtual void init();
-    virtual void reinit();
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void updateVisual();
-
-protected:
-
+    static std::string name() { std::ostringstream o; o << "Quater<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
-} // namespace visualmodel
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
-} // namespace component
+template<> struct DataTypeName<defaulttype::Quatf> { static const char* name() { return "Quatf"; } };
+template<> struct DataTypeName<defaulttype::Quatd> { static const char* name() { return "Quatd"; } };
+
+/// \endcond
+
+} // namespace defaulttype
 
 } // namespace sofa
 
-#endif //SOFA_OGLGRID_H
+#endif
+

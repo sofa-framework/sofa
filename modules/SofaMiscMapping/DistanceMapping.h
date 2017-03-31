@@ -29,6 +29,7 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 
 namespace sofa
@@ -91,7 +92,7 @@ public:
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::Vec4f > d_color;         ///< drawing color
+    Data< defaulttype::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     virtual void init();
@@ -182,12 +183,12 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
 
-    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::Vec4f > d_color;         ///< drawing color
+    Data< bool >		                       f_computeDistance;	///< computeDistance = true ---> restDistance = 0
+    Data< helper::vector< Real > >             f_restLengths;		///< rest length of each link
+    Data< Real >                               d_showObjectScale;   ///< drawing size
+    Data< defaulttype::RGBAColor >             d_color;         ///< drawing color
     Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);

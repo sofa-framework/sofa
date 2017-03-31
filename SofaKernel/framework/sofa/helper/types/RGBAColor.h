@@ -23,29 +23,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_COLOR_H
-#define SOFA_DEFAULTTYPE_COLOR_H
+#ifndef SOFA_HELPER_TYPES_COLOR_H
+#define SOFA_HELPER_TYPES_COLOR_H
 #include <string>
 
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/helper/helper.h>
 #include <sofa/defaulttype/Vec.h>
-
 namespace sofa
 {
 
 namespace defaulttype
 {
 
+using sofa::defaulttype::Vec;
+using sofa::defaulttype::Vec4d;
+using sofa::defaulttype::Vec4f;
+
 /**
  *  \brief encode a 4 RGBA component color as a specialized Vec<4, float> vector.
  */
-class SOFA_DEFAULTTYPE_API RGBAColor : public Vec<4, float>
+class SOFA_HELPER_API RGBAColor : public Vec<4, float>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
     static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
     static RGBAColor fromVec4(const Vec4d& color) ;
     static RGBAColor fromVec4(const Vec4f& color) ;
+
+    static RGBAColor fromHSVA(float h, float s, float v, float a) ;
+
     static bool read(const std::string& str, RGBAColor& color) ;
 
     static RGBAColor white()  { return RGBAColor(1.0,1.0,1.0,1.0); }
@@ -86,7 +92,7 @@ public:
 
 };
 
-} // namespace defaulttype
+}
 
 } // namespace sofa
 

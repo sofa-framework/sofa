@@ -29,20 +29,17 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
-    Color.h
+    RGBAColor.h
+
 )
 
 set(SOURCE_FILES
-    BaseMatrix.cpp
     BoundingBox.cpp
     Frame.cpp
-    # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
-    Color.cpp
     init.cpp
 )
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)

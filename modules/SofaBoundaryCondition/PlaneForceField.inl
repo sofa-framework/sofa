@@ -63,9 +63,7 @@ PlaneForceField<DataTypes>::PlaneForceField() :
     // TODO(dmarchal): draw is a bad name. doDraw, doDebugDraw or drawEnabled to be consistent with the drawSize ?
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "draw", "enable/disable drawing of plane. (default=false)"))
     // TODO(dmarchal): color is a bad name.
-    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-    //This field should support the color="red" api.
-    , d_drawColor(initData(&d_drawColor, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color. (default=[0.0,0.5,0.2])"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0.0f,.5f,.2f,1.0f), "color", "plane color. (default=[0.0,0.5,0.2,1.0])"))
     , d_drawSize(initData(&d_drawSize, (Real)10.0f, "drawSize", "plane display size if draw is enabled. (default=10)"))
 {
     Deriv n;

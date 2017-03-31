@@ -122,7 +122,15 @@ set(HEADER_FILES
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
     logging/RichConsoleStyleMessageFormatter.h
-
+    types/Vec.h
+    types/BaseMatrix.h
+    types/RGBAColor.h
+    types/Quat.h
+    types/Quat.inl
+    types/Mat.h
+    types/Vec3Types.h
+    types/VecTypes.h
+    types/RigidTypes.h
 )
 
 set(SOURCE_FILES
@@ -197,6 +205,9 @@ set(SOURCE_FILES
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
     logging/RichConsoleStyleMessageFormatter.cpp
+    types/BaseMatrix.cpp
+    types/Vec.cpp
+    types/RGBAColor.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
