@@ -450,7 +450,6 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 }
 
 
-
 SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast

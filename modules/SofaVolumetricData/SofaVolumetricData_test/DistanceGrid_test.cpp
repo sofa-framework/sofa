@@ -19,57 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
 
-/// @author M Nesme @date 2016
-///
-///
-/// TODO: we could add a [] operator to get bound DataFileName
+#include <SofaTest/TestMessageHandler.h>
 
-#include "Binding_DataFileNameVector.h"
-#include "Binding_Data.h"
+/// I don't use namespace in tests because i see no reason to do so and it
+/// make the code uglier to read.
 
-using namespace sofa::helper;
-using namespace sofa::core::objectmodel;
-
-
-
-
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+struct DistanceGrid_test : public Sofa_test<SReal>
 {
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    void checkConstructors(){
 
-    sofa::helper::vector<std::string>& val = *data->beginEdit();
-    val.clear();
-    data->endEdit();
+    }
+};
 
-    Py_RETURN_NONE;
+TEST_F(DistanceGrid_test, checkConstructor) {
+    ASSERT_NO_THROW(this->checkConstructors()) ;
 }
-
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
-{
-    char *path;
-    if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
-
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
-
-    data->addPath(path);
-
-    Py_RETURN_NONE;
-}
-
-
-SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
-SP_CLASS_ATTRS_END
-
-
-
-SP_CLASS_METHODS_BEGIN(DataFileNameVector)
-SP_CLASS_METHOD(DataFileNameVector,addPath)
-SP_CLASS_METHOD(DataFileNameVector,clear)
-SP_CLASS_METHODS_END
-
-
-
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
-
