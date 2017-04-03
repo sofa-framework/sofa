@@ -63,6 +63,7 @@ const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";
 const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
 const char* Plugin::GetModuleVersion::symbol          = "getModuleVersion";
+const char* Plugin::IsAutoloadablePlugin::symbol     = "isAutoloadablePlugin";
 
 std::string PluginManager::s_gui_postfix = "gui";
 
@@ -290,6 +291,48 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
 bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
 {
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+}
+
+
+bool PluginManager::browsePluginPath()
+{
+    for (auto&& currentDir : m_searchPaths)
+    {
+        //list all files in the dir
+        std::vector<std::string> files;
+        sofa::helper::system::FileSystem::listDirectory(currentDir, files);
+
+        for(auto&& currentFile : files)
+        {
+            const std::string path = currentDir + "/" + currentFile;
+            if(checkIfPlugin(path) && !sofa::helper::system::FileSystem::isSymbolicLink(path))
+            {
+                DynamicLibrary::Handle d  = DynamicLibrary::load(path);
+                Plugin p;
+
+                //store informations
+                if(d.isValid() && getPluginEntry(p.isAutoloadablePlugin,d))
+                {
+                    if(p.isAutoloadablePlugin())
+                        loadPluginByPath(path);
+                    //do stuff with autoload
+                }
+            }
+        }
+    }
+}
+
+bool PluginManager::checkIfPlugin(const std::string& filePath)
+{
+    bool res = false;
+    DynamicLibrary::Handle d  = DynamicLibrary::load(filePath);
+    Plugin p;
+    if( d.isValid() )
+    {
+        res = getPluginEntry(p.initExternalModule,d);
+    }
+
+    return res;
 }
 
 }

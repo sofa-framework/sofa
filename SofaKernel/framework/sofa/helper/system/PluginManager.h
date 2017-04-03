@@ -118,12 +118,26 @@ public:
         GetModuleVersion():func(0) {}
     } GetModuleVersion;
 
+    typedef struct IsAutoloadablePlugin
+    {
+        static const char* symbol;
+        typedef bool (*FuncPtr) ();
+        FuncPtr func;
+        bool operator() () const
+        {
+            if (func) return func();
+            else return false;
+        }
+        IsAutoloadablePlugin():func(0) {}
+    } IsAutoloadablePlugin;
+
     InitExternalModule     initExternalModule;
     GetModuleName          getModuleName;
     GetModuleDescription   getModuleDescription;
     GetModuleLicense       getModuleLicense;
     GetModuleComponentList getModuleComponentList;
     GetModuleVersion       getModuleVersion;
+    IsAutoloadablePlugin   isAutoloadablePlugin;
 private:
     DynamicLibrary::Handle dynamicLibrary;
 
@@ -146,6 +160,10 @@ public:
 
     std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);
+
+    //search all possible plugins into a given path
+    bool browsePluginPath();
+    bool checkIfPlugin(const std::string& filePath);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
