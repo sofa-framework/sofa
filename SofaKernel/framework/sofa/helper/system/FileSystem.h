@@ -107,6 +107,9 @@ static std::string getParentDirectory(const std::string& path);
 /// E.g. /a/b/c --> c
 static std::string stripDirectory(const std::string& path);
 
+/// @brief (UNIX) check if path is a symbolic link (on Windows, will always return false)
+static bool isSymbolicLink(const std::string& path);
+
 };
 
 
