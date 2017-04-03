@@ -341,8 +341,9 @@ int main(int argc, char** argv)
 
     // to force loading plugin SofaPython if existing
     {
-        std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+        //std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
+        //sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+        sofa::helper::system::PluginManager::getInstance().browsePluginPath();
     }
 
     PluginManager::getInstance().init();

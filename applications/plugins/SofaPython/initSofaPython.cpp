@@ -62,6 +62,12 @@ SOFA_SOFAPYTHON_API const char* getModuleComponentList()
     return "PythonScriptController";
 }
 
+SOFA_SOFAPYTHON_API bool isAutoloadablePlugin()
+{
+    return true;
+}
+
+
 }
 
 
