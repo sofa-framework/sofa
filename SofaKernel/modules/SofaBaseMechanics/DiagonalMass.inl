@@ -50,15 +50,13 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , m_pointHandler(NULL)
     , d_massDensity( initData(&d_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
-    , d_totalMass(initData(&d_totalMass, (Real)-1.0, "totalMass", "Total mass of the object (read only)"))
+    , d_totalMass(initData(&d_totalMass, (Real)-1.0, "totalMass", "Total mass of the object, if set, the massDensity is overwritten"))
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , d_fileMass( initData(&d_fileMass,  "fileMass", "an Xsp3.0 file to specify the mass parameters" ) )
     , m_topologyType(TOPOLOGY_UNKNOWN)
 {
     this->addAlias(&d_fileMass,"filename");
-
-    d_totalMass.setReadOnly(true);
 }
 
 template <class DataTypes, class MassType>
@@ -781,6 +779,18 @@ void DiagonalMass<DataTypes, MassType>::init()
         while (masses.size() < n)
             masses.push_back(masses[i]);
         d_mass.endEdit();
+    }
+
+    if (d_totalMass.isSet())
+    {
+        if(d_massDensity.isSet())
+        {
+            msg_warning("DiagonalMass") << "both massDensity and totalMass are set, totalMass will be applied (recomputes the density)";
+        }
+        Real totalMassTemp = d_totalMass.getValue();
+        reinit();
+        d_massDensity.setValue(totalMassTemp/d_totalMass.getValue());
+        reinit();
     }
 
     if ((d_mass.getValue().size()==0) && (_topology!=0))
