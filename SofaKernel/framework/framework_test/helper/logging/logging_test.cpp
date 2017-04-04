@@ -1,5 +1,5 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+*       SOFA, Simulation-Framework Architecture, development version     *
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -162,7 +162,7 @@ void f3()
 }
 
 
-TEST(LoggingTest, threadingTests)
+TEST(LoggingTest, threadingTests_OpenIssue)
 {
     MessageDispatcher::clearHandlers() ;
 
