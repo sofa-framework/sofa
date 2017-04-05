@@ -107,13 +107,13 @@ public:
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = t[targetIndex] - in[j];
+                    out[j] = TIn::getCPos( t[targetIndex] ) - TIn::getCPos( in[j] );
                 }
             else
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = in[j] - t[targetIndex];
+                    out[j] = TIn::getCPos( in[j] ) - TIn::getCPos( t[targetIndex] );
                 }
         }
         else
@@ -124,14 +124,14 @@ public:
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = t[targetIndex] - in[k];
+                    out[j] = TIn::getCPos( t[targetIndex] ) - TIn::getCPos( in[k] );
                 }
             else
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = in[k] - t[targetIndex];
+                    out[j] = TIn::getCPos( in[k] ) - TIn::getCPos( t[targetIndex] );
                 }
         }
     }
@@ -147,8 +147,27 @@ public:
         if( ind.empty() )
         {
             J.resize( Nout * in.size(), Nin * in.size());
-            J.setIdentity();
-            if( inverted ) J *= -1;
+
+            if( Nout==Nin )
+            {
+                J.setIdentity();
+                if( inverted ) J *= -1;
+            }
+            else
+            {
+                const int value = inverted ? -1 : 1;
+
+                for( size_t j = 0 ; j < in.size() ; ++j )
+                {
+                    for( size_t w=0 ; w<Nout ; ++w )
+                    {
+                        const size_t line = j*Nout+w;
+                        const size_t col = j*Nin+w;
+                        J.startVec( line );
+                        J.insertBack( line, col ) = value;
+                    }
+                }
+            }
         }
         else
         {
@@ -163,7 +182,7 @@ public:
                 for( size_t w=0 ; w<Nout ; ++w )
                 {
                     const size_t line = j*Nout+w;
-                    const size_t col = k*Nout+w;
+                    const size_t col = k*Nin+w;
                     J.startVec( line );
                     J.insertBack( line, col ) = value;
                 }
@@ -188,8 +207,8 @@ public:
             for( size_t j = 0 ; j < pos.size() ; ++j )
             {
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                points[2*j] = t[targetIndex];
-                points[2*j+1] = pos[j];
+                points[2*j] = TIn::getCPos( t[targetIndex] );
+                points[2*j+1] = TIn::getCPos( pos[j] );
             }
         }
         else
@@ -199,8 +218,8 @@ public:
             {
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
                 const unsigned k = ind[j];
-                points[2*j] = t[targetIndex];
-                points[2*j+1] = pos[k];
+                points[2*j] = TIn::getCPos( t[targetIndex] );
+                points[2*j+1] = TIn::getCPos( pos[k] );
             }
         }
 
