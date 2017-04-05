@@ -161,10 +161,9 @@ public:
     std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);
 
-    //search all possible plugins into a given path
-    bool browsePluginPath();
-    bool checkIfPlugin(const std::string& filePath);
-
+    //@brief browse all plugins and load ones marked "autoload"
+    bool autoloadPlugins();
+    
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
         return pluginManager.writeToStream( os );

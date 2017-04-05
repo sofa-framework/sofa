@@ -339,12 +339,9 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    // to force loading plugin SofaPython if existing
-    {
-        //std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
-        //sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
-        sofa::helper::system::PluginManager::getInstance().browsePluginPath();
-    }
+    // autoloading plugins (if compiled as such, e.g SofaPython)
+    sofa::helper::system::PluginManager::getInstance().autoloadPlugins();
+    
 
     PluginManager::getInstance().init();
 

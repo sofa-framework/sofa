@@ -294,7 +294,7 @@ bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
 }
 
 
-bool PluginManager::browsePluginPath()
+bool PluginManager::autoloadPlugins()
 {
     for (auto&& currentDir : m_searchPaths)
     {
@@ -305,34 +305,26 @@ bool PluginManager::browsePluginPath()
         for(auto&& currentFile : files)
         {
             const std::string path = currentDir + "/" + currentFile;
-            if(checkIfPlugin(path) && !sofa::helper::system::FileSystem::isSymbolicLink(path))
+
+            // check if not already loaded (by a symlink or manually before executing this function)
+            if (!pluginIsLoaded(path))
             {
-                DynamicLibrary::Handle d  = DynamicLibrary::load(path);
+                DynamicLibrary::Handle d = DynamicLibrary::load(path);
                 Plugin p;
 
-                //store informations
-                if(d.isValid() && getPluginEntry(p.isAutoloadablePlugin,d))
+                //if it is a plugin
+                if (d.isValid() && getPluginEntry(p.initExternalModule, d))
                 {
-                    if(p.isAutoloadablePlugin())
+                    getPluginEntry(p.isAutoloadablePlugin, d);
+                    //if the plugin has implemented the function for autoloading & if it returns true
+                    if (p.isAutoloadablePlugin())
+                    {
                         loadPluginByPath(path);
-                    //do stuff with autoload
+                    }
                 }
             }
         }
     }
-}
-
-bool PluginManager::checkIfPlugin(const std::string& filePath)
-{
-    bool res = false;
-    DynamicLibrary::Handle d  = DynamicLibrary::load(filePath);
-    Plugin p;
-    if( d.isValid() )
-    {
-        res = getPluginEntry(p.initExternalModule,d);
-    }
-
-    return res;
 }
 
 }
