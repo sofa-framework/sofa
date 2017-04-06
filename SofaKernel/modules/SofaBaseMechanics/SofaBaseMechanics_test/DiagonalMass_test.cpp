@@ -114,16 +114,16 @@ public:
     void check(MassType expectedTotalMass, const VecMass& expectedMass)
     {
         // Check that the mass vector has the right size.
-        ASSERT_EQ(mstate->x.getValue().size(), mass->f_mass.getValue().size());
+        ASSERT_EQ(mstate->x.getValue().size(), mass->d_mass.getValue().size());
         // Safety check...
         ASSERT_EQ(mstate->x.getValue().size(), expectedMass.size());
 
         // Check the total mass.
-        EXPECT_FLOAT_EQ(expectedTotalMass, mass->m_totalMass.getValue());
+        EXPECT_FLOAT_EQ(expectedTotalMass, mass->d_totalMass.getValue());
 
         // Check the mass at each index.
         for (size_t i = 0 ; i < mstate->x.getValue().size() ; i++)
-            EXPECT_FLOAT_EQ(expectedMass[i], mass->f_mass.getValue()[i]);
+            EXPECT_FLOAT_EQ(expectedMass[i], mass->d_mass.getValue()[i]);
     }
 
     void runTest(VecCoord positions, BaseObject::SPtr topologyContainer, BaseObject::SPtr geometryAlgorithms,
