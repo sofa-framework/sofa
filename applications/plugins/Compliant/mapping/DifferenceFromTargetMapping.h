@@ -34,10 +34,11 @@ public:
     typedef DifferenceFromTargetMapping Self;
 
     typedef typename TIn::VecCoord InVecCoord;
+    typedef typename TOut::VecCoord OutVecCoord;
 
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    Data< InVecCoord > targets;
+    Data< OutVecCoord > targets;
     Data< helper::vector<unsigned> > d_targetIndices;
 
     Data< bool > d_inverted;
@@ -67,7 +68,7 @@ public:
         else this->toModel->resize( ind.size() );
 
         // if targets is empty, set it with actual positions
-        InVecCoord& t = *targets.beginEdit();
+        OutVecCoord& t = *targets.beginEdit();
         if( t.empty() )
         {
             helper::ReadAccessor<Data<InVecCoord> > x = this->fromModel->read(core::ConstVecCoordId::position());
@@ -75,7 +76,7 @@ public:
             {
                 t.resize( this->fromModel->getSize() );
                 for( size_t j = 0 ; j < t.size() ; ++j )
-                    t[j] = x[j];
+                    t[j] = TIn::getCPos( x[j] );
             }
             else
             {
@@ -83,7 +84,7 @@ public:
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
-                    t[j] = x[k];
+                    t[j] = TIn::getCPos( x[k] );
                 }
             }
         }
@@ -95,7 +96,7 @@ public:
     virtual void apply(typename Self::out_pos_type& out,
                        const typename Self::in_pos_type& in )
     {
-        const InVecCoord& t = targets.getValue();
+        const OutVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
         bool inverted = d_inverted.getValue();
         const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
@@ -107,13 +108,13 @@ public:
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = TIn::getCPos( t[targetIndex] ) - TIn::getCPos( in[j] );
+                    out[j] = t[targetIndex] - TIn::getCPos( in[j] );
                 }
             else
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = TIn::getCPos( in[j] ) - TIn::getCPos( t[targetIndex] );
+                    out[j] = TIn::getCPos( in[j] ) - t[targetIndex];
                 }
         }
         else
@@ -124,14 +125,14 @@ public:
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = TIn::getCPos( t[targetIndex] ) - TIn::getCPos( in[k] );
+                    out[j] = t[targetIndex] - TIn::getCPos( in[k] );
                 }
             else
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = TIn::getCPos( in[k] ) - TIn::getCPos( t[targetIndex] );
+                    out[j] = TIn::getCPos( in[k] ) - t[targetIndex];
                 }
         }
     }
@@ -196,7 +197,7 @@ public:
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        const InVecCoord& t = targets.getValue();
+        const OutVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
         const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
@@ -207,7 +208,7 @@ public:
             for( size_t j = 0 ; j < pos.size() ; ++j )
             {
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                points[2*j] = TIn::getCPos( t[targetIndex] );
+                points[2*j] = t[targetIndex];
                 points[2*j+1] = TIn::getCPos( pos[j] );
             }
         }
@@ -218,7 +219,7 @@ public:
             {
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
                 const unsigned k = ind[j];
-                points[2*j] = TIn::getCPos( t[targetIndex] );
+                points[2*j] = t[targetIndex];
                 points[2*j+1] = TIn::getCPos( pos[k] );
             }
         }

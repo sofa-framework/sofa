@@ -18,6 +18,7 @@ set(SOURCE_FILES
     SafeDistanceMapping_test.cpp
     UniformStiffness_test.cpp
     DiagonalStiffness_test.cpp
+    DifferenceFromTargetMapping_test.cpp
     )
 
 file(GLOB PYTHON_FILES

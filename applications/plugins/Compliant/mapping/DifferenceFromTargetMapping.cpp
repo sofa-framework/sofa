@@ -21,12 +21,12 @@ int DifferenceFromTargetMappingClass = core::RegisterObject("Compute position di
 #ifndef SOFA_FLOAT
 .add< DifferenceFromTargetMapping< Vec3dTypes, Vec3dTypes > >()
 .add< DifferenceFromTargetMapping< Vec1dTypes, Vec1dTypes > >()
-.add< DifferenceFromTargetMapping< Rigid3dTypes, Vec1dTypes > >()
+.add< DifferenceFromTargetMapping< Rigid3dTypes, Vec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
 .add< DifferenceFromTargetMapping< Vec3fTypes, Vec3fTypes > >()
 .add< DifferenceFromTargetMapping< Vec1fTypes, Vec1fTypes > >()
-.add< DifferenceFromTargetMapping< Rigid3fTypes, Vec1fTypes > >()
+.add< DifferenceFromTargetMapping< Rigid3fTypes, Vec3fTypes > >()
 #endif
 ;
 
@@ -34,13 +34,13 @@ int DifferenceFromTargetMappingClass = core::RegisterObject("Compute position di
 #ifndef SOFA_FLOAT
 template class SOFA_Compliant_API DifferenceFromTargetMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_Compliant_API DifferenceFromTargetMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_Compliant_API DifferenceFromTargetMapping< Rigid3dTypes, Vec1dTypes >;
+template class SOFA_Compliant_API DifferenceFromTargetMapping< Rigid3dTypes, Vec3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
 template class SOFA_Compliant_API DifferenceFromTargetMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_Compliant_API DifferenceFromTargetMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_Compliant_API DifferenceFromTargetMapping< Rigid3fTypes, Vec1fTypes >;
+template class SOFA_Compliant_API DifferenceFromTargetMapping< Rigid3fTypes, Vec3fTypes >;
 #endif
 
 
