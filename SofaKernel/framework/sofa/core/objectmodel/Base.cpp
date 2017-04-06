@@ -22,11 +22,14 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::Message ;
+
 #include <map>
 #include <typeinfo>
 #include <string.h>
 #include <sstream>
 
+#define ERROR_LOG_SIZE 100
 
 namespace sofa
 {
@@ -62,6 +65,8 @@ Base::Base()
     f_bbox.setDisplayed(false);
     f_bbox.setAutoLink(false);
     sendl.setParent(this);
+
+
 }
 
 Base::~Base()
@@ -302,6 +307,18 @@ void Base::clearOutputs()
     outputs.clear();
 }
 
+void Base::addMessage(const Message &m) const
+{
+    if(m_messageslog.size() >= ERROR_LOG_SIZE ){
+        m_messageslog.pop_front();
+    }
+    m_messageslog.push_back(m) ;
+}
+
+const std::deque<sofa::helper::logging::Message>& Base::getLoggedMessages() const
+{
+    return m_messageslog ;
+}
 
 bool Base::hasTag(Tag t) const
 {

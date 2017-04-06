@@ -53,7 +53,11 @@ using sofa::helper::logging::MainRoutingMessageHandler ;
 #include <sofa/helper/logging/ConsoleMessageHandler.h>
 using sofa::helper::logging::ConsoleMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
+using sofa::helper::logging::PerComponentLoggingMessageHandler ;
+using sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
+
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -66,9 +70,6 @@ class MyMessageHandler : public MessageHandler
 public:
     virtual void process(Message& m){
         m_messages.push_back(m);
-
-        //        if( !m.sender().empty() )
-        //            std::cerr<<m<<std::endl;
     }
 
     size_t numMessages(){
@@ -82,8 +83,6 @@ public:
         return m_messages.back();
     }
 } ;
-
-
 
 TEST(LoggingTest, noHandler)
 {
@@ -193,17 +192,33 @@ TEST(LoggingTest, emptyMessage)
 class MyComponent : public sofa::core::objectmodel::BaseObject
 {
 public:
-    MyComponent()
-    {
+    MyComponent() {}
+
+    void emitSerrSoutMessages(){
         f_printLog.setValue(true); // to print sout
         serr<<"regular serr"<<sendl;
         sout<<"regular sout"<<sendl;
         serr<<SOFA_FILE_INFO<<"serr with fileinfo"<<sendl;
         sout<<SOFA_FILE_INFO<<"sout with fileinfo"<<sendl;
     }
+
+    void emitMessages(){
+        msg_info(this) << "an info message" ;
+        msg_warning(this) << "a warning message" ;
+        msg_error(this) << "an error message" ;
+    }
+
+    /*void emitMessagesAboveLevel(Message::Type m_messageLevel){
+        msg_info(this) << "an info message" ;
+        msg_warning(this) << "a warning message" ;
+        msg_error(this) < "an error message" ;
+    }*/
+
+
+
 };
 
-TEST(LoggingTest, BaseObject)
+TEST(LoggingTest, checkBaseObjectSerr)
 {
     MessageDispatcher::clearHandlers() ;
     MyMessageHandler h;
@@ -212,6 +227,7 @@ TEST(LoggingTest, BaseObject)
 
     MyComponent c;
 
+    c.emitSerrSoutMessages();
     /// the constructor of MyComponent is sending 4 messages
     EXPECT_EQ( h.numMessages(), 4u ) ;
 
@@ -284,6 +300,56 @@ TEST(LoggingTest, BaseObject)
 
 }
 
+
+TEST(LoggingTest, checkBaseObjectMsgAPI)
+{
+    MessageDispatcher::clearHandlers() ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
+
+
+    MyComponent c;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 3u);
+    EXPECT_EQ(c.getLoggedMessages().size(), 0u) ;
+
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    c.emitMessages() ;
+    EXPECT_EQ(h.numMessages(), 6u);
+
+    std::stringstream s;
+    s << "============= Back log ==============" << std::endl ;
+    for(auto& message : c.getLoggedMessages()){
+        s << message << std::endl ;
+    }
+    s << "=====================================" << std::endl ; ;
+    EXPECT_EQ(c.getLoggedMessages().size(), 3u) << s.str();
+
+    msg_info(&c) << "A fourth message ";
+
+    EXPECT_EQ(c.getLoggedMessages().size(), 4u) << s.str();
+}
+
+
+TEST(LoggingTest, checkBaseObjectQueueSize)
+{
+    /// We install the handler that copy the message into the component.
+    MessageDispatcher::clearHandlers() ;
+    MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
+
+    MyComponent c;
+
+    /// Filling the internal message queue.
+    for(unsigned int i=0;i<100;i++){
+        c.emitMessages();
+    }
+    EXPECT_EQ(c.getLoggedMessages().size(), 100u);
+}
+
+
 #undef MESSAGING_H
 #define WITH_SOFA_DEVTOOLS
 #undef dmsg_info
@@ -316,8 +382,6 @@ TEST(LoggingTest, withDevMode)
     EXPECT_TRUE( h.numMessages() == 6u ) ;
 }
 
-
-
 TEST(LoggingTest, checkLoggingMessageHandler)
 {
     CountingMessageHandler& m = MainCountingMessageHandler::getInstance() ;
@@ -343,8 +407,8 @@ TEST(LoggingTest, checkLoggingMessageHandler)
             std::cout << message << std::endl ;
         }
     }
-
 }
+
 
 TEST(LoggingTest, checkCountingMessageHandler)
 {

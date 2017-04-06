@@ -27,8 +27,8 @@
 #define RICHCONSOLESTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
+#include <sofa/helper/logging/Message.h>
+#include <sofa/helper/logging/MessageFormatter.h>
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -53,7 +53,7 @@ namespace richconsolestylemessageformater
 ///     - automatic reading of the console number of column for prettier display.
 ///
 ///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+class SOFA_CORE_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
 public:
     virtual void formatMessage(const Message& m,std::ostream& out);
@@ -64,7 +64,7 @@ private:
 };
 
 /// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
+class SOFA_CORE_API MainRichConsoleStyleMessageFormatter
 {
 public:
     static void formatMessage(const Message& m,std::ostream& out)

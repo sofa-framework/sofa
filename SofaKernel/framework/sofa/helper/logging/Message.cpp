@@ -29,6 +29,7 @@
 using std::endl ;
 using std::string ;
 
+
 namespace sofa
 {
 
@@ -37,6 +38,8 @@ namespace helper
 
 namespace logging
 {
+
+
 
 Message Message::emptyMsg(CEmpty, TEmpty, "", EmptyFileInfo) ;
 
@@ -83,8 +86,8 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
 
     if(m.fileInfo())
         s << "    source code loc: " << m.fileInfo()->filename << ":" << m.fileInfo()->line << endl ;
-    if(m.componentInfo())
-        s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
+    //if(m.componentInfo())
+    //    s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
 
     return s;
 }

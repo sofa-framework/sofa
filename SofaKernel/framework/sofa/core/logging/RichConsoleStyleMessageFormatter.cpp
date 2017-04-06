@@ -26,7 +26,10 @@
 
 
 #include "RichConsoleStyleMessageFormatter.h"
-#include "Message.h"
+
+#include <sofa/helper/logging/Message.h>
+
+#include <sofa/core/objectmodel/Base.h>
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/fixed_array.h>
@@ -244,8 +247,9 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
     {
         if( m.componentInfo() )
         {
-            psize +=m.sender().size()+m.componentInfo()->m_name.size()+5 ;
-            out << Console::BLUE << "[" << m.sender()<< "(" << m.componentInfo()->m_name << ")] ";
+            std::string cname = m.componentInfo()->m_component->getName();
+            psize +=m.sender().size()+cname.size()+5 ;
+            out << Console::BLUE << "[" << m.sender()<< "(" << cname << ")] ";
         }
         else
         {

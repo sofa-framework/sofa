@@ -37,6 +37,19 @@
 namespace sofa
 {
 
+namespace core
+{
+    namespace objectmodel
+{
+class Base; // forward declaration
+} // namespace objectmodel
+} // namespace core
+}
+
+
+namespace sofa
+{
+
 namespace helper
 {
 
@@ -91,13 +104,11 @@ struct ComponentInfo
 public:
     typedef boost::shared_ptr<ComponentInfo> SPtr;
 
-    std::string m_name ;
-    std::string m_path ;
+    const core::objectmodel::Base* m_component ;
 
-    ComponentInfo(const std::string& name, const std::string& path)
+    ComponentInfo(const core::objectmodel::Base* component)
     {
-        m_name = name ;
-        m_path = path ;
+        m_component = component;
     }
 
 };

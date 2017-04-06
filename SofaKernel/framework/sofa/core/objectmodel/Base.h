@@ -37,6 +37,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <deque>
 #include <string>
 #include <map>
 
@@ -337,12 +338,11 @@ public:
     /// @{
 
 private:
-
     /// effective ostringstream for logging
     mutable std::ostringstream _serr, _sout;
+    mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
-
     /// write into component buffer + Message processedby message handlers
     /// default message type = Warning
     mutable helper::system::SofaOStream<helper::logging::Message::Warning> serr;
@@ -362,6 +362,8 @@ public:
 
     void processStream(std::ostream& out);
 
+    void addMessage(const sofa::helper::logging::Message& m) const ;
+    const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
     /// @}
 
 protected:
@@ -463,7 +465,6 @@ public:
     Data< sofa::core::objectmodel::TagSet > f_tags;
 
     Data< sofa::defaulttype::BoundingBox > f_bbox;
-
 
     /// @name casting
     ///   trivial cast to a few base components
