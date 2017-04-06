@@ -236,6 +236,23 @@ public:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(DIFFERENCEFROMTARGETMAPPING_CPP)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+#endif
+
+
+#endif
+
 
 
 

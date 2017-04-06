@@ -2,6 +2,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#define DIFFERENCEFROMTARGETMAPPING_CPP
+
 namespace sofa
 {
 

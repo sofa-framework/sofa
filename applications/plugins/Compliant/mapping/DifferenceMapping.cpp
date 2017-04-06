@@ -2,6 +2,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#define DIFFERENCEMAPPING_CPP
+
 namespace sofa
 {
 

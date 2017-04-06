@@ -333,9 +333,34 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
     };
 
 
-}
-}
-}
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(DIFFERENCEMAPPING_CPP)
+
+#ifndef SOFA_FLOAT
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
+
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
+    extern template class SOFA_Compliant_API DifferenceMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
+
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
+    extern template class SOFA_Compliant_API DifferenceMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
+#endif
+
+
+#endif
+
+}
+}
+}
 
 #endif
