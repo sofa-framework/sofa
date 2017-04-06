@@ -64,6 +64,11 @@ public:
             creators.push_back(new sofa::helper::Creator<sofa::helper::io::Image::FactoryImage, ImageQt>(format));
         }
     }
+
+    ~ImageQtCreators()
+    {
+        for(auto&it:creators) delete it;
+    }
 };
 
 

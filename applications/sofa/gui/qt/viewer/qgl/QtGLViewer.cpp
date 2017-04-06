@@ -143,6 +143,11 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
     vparams->zFar()  = camera()->zFar();
 
     connect( &captureTimer, SIGNAL(timeout()), this, SLOT(captureEvent()) );
+
+    _arrow = nullptr;
+    _tube = nullptr;
+    _sphere = nullptr;
+    _disk = nullptr;
 }
 
 
@@ -151,6 +156,10 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbM
 // ---------------------------------------------------------
 QtGLViewer::~QtGLViewer()
 {
+    if( _arrow ) gluDeleteQuadric( _arrow );
+    if( _tube ) gluDeleteQuadric( _tube );
+    if( _sphere ) gluDeleteQuadric( _sphere );
+    if( _disk ) gluDeleteQuadric( _disk );
 }
 
 // -----------------------------------------------------------------
