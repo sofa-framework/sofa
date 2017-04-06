@@ -11,6 +11,7 @@ This PR:
 - [ ] does not break existing scenes.
 - [ ] does not break API compatibility.
 - [ ] has been reviewed and agreed to be transitional.
-- [ ] is more than 1 week old.
+- [ ] is more than 1 week old (or has fast-merge label).
+- [ ] reports important changes in Changelog.
 
 **Reviewers will merge only if all these checks are true.**
