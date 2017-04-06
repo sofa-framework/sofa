@@ -180,6 +180,7 @@ int main(int argc, char** argv)
     bool        loadRecent = false;
     bool        temporaryFile = false;
     bool        testMode = false;
+    bool        noAutoloadPlugins = false;
     int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
@@ -214,6 +215,7 @@ int main(int argc, char** argv)
     .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
+    .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
     .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&printFactory,'p',"factory","print factory logs")
@@ -340,7 +342,8 @@ int main(int argc, char** argv)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
     // autoloading plugins (if compiled as such, e.g SofaPython)
-    sofa::helper::system::PluginManager::getInstance().autoloadPlugins();
+    if(!noAutoloadPlugins)
+        sofa::helper::system::PluginManager::getInstance().autoloadPlugins();
     
 
     PluginManager::getInstance().init();
