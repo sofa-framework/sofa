@@ -7,6 +7,7 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     Regression_test.cpp
+    AllComponents_test.cpp
 )
 
 find_package(SofaPython QUIET)
