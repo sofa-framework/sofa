@@ -156,7 +156,7 @@ public:
             K.resizeBlocks(x.size(),x.size());
         }
 
-        for (size_t m = 0; m < f_nbMeshes.getValue(); ++m)
+        for (size_t m = 0, nbMeshes = f_nbMeshes.getValue() ; m < nbMeshes ; ++m)
         {
             raTriangles triangles(*this->vf_triangles[m]);
             raQuads quads(*this->vf_quads[m]);
