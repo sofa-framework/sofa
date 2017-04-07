@@ -34,19 +34,23 @@ static std::string nonpluginName = "RandomNameForAPluginButHopeItDoesNotExist";
 const std::string dotExt = "." + sofa::helper::system::DynamicLibrary::extension;
 #ifdef WIN32
 const std::string separator = "\\";
+const std::string prefix = "";
 #else
 const std::string separator = "/";
+const std::string prefix = "lib";
 #endif // WIN32
 
 struct PluginManager_test: public ::testing::Test
 {
+    std::string pluginDir;
+
     void SetUp()
     {
         // Add the plugin directory to PluginRepository
 #ifdef WIN32
-        const std::string pluginDir = sofa::helper::Utils::getExecutableDirectory();
+        pluginDir = sofa::helper::Utils::getExecutableDirectory();
 #else
-        const std::string pluginDir = sofa::helper::Utils::getSofaPathPrefix() + "/lib";
+        pluginDir = sofa::helper::Utils::getSofaPathPrefix() + "/lib";
 #endif
         sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
     }
@@ -57,8 +61,10 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
 {
     sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
 
-    std::string pluginPath = sofa::helper::Utils::getExecutableDirectory() + separator + pluginName + dotExt;
-    std::string nonpluginPath = sofa::helper::Utils::getExecutableDirectory() + separator + nonpluginName + dotExt;
+    std::string pluginPath = pluginDir + separator + prefix + pluginName + dotExt;
+    std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
+
+    std::cout << pluginPath << std::endl;
 
     ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
     ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
