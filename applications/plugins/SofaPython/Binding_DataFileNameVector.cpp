@@ -21,6 +21,9 @@
 ******************************************************************************/
 
 /// @author M Nesme @date 2016
+///
+///
+/// TODO: we could add a [] operator to get bound DataFileName
 
 #include "Binding_DataFileNameVector.h"
 #include "Binding_Data.h"
