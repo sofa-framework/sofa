@@ -429,27 +429,27 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 //=================
 // simple linear cases
 TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     testLinearOneFixedOneComplianceSpringV100(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     testLinearOneFixedOneStiffnessSpringV100(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     testLinearOneFixedOneStiffnessSpringX200(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     testLinearOneFixedOneComplianceSpringX200(false);
 }
 
 TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     testEmptyMState(false);
 }
 

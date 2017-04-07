@@ -195,7 +195,7 @@ TYPED_TEST_CASE(AffineMovementConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( AffineMovementConstraint_test , testValue )
 {
-   EXPECT_MSG_NOEMIT(Error, Warning) ;
+   EXPECT_MSG_NOEMIT(Error) ;
    ASSERT_TRUE( this->projectPosition(5e-6,5e-5));
 }
 

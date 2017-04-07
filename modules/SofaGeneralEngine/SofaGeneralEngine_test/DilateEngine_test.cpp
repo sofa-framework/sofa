@@ -109,12 +109,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(DilateEngine_test, DataTypes);
 
 TYPED_TEST(DilateEngine_test, NormalBehavior) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DilateEngine_test, UpdateTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

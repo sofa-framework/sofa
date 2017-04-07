@@ -147,7 +147,7 @@ TYPED_TEST_CASE(PointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PointConstraint_test , testValue )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8) );
 }
 

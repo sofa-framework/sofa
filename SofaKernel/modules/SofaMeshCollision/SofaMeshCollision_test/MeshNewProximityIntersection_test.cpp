@@ -162,7 +162,7 @@ namespace sofa{
 
 
 TEST_F(MeshNewProximityIntersectionTest, pointTriangle ) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_TRUE( pointTriangle());
 }
 

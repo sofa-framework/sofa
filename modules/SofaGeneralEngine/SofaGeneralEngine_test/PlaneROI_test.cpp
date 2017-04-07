@@ -172,32 +172,32 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(PlaneROI_test, DataTypes);
 
 TYPED_TEST(PlaneROI_test, attributesTests) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(PlaneROI_test, initTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isPointInPlaneTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isPointInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isEdgeInPlaneTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isEdgeInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTriangleInPlaneTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTriangleInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTetrahedraInPlaneTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTetrahedraInPlaneTest()) ;
 }
 

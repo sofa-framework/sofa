@@ -208,7 +208,7 @@ TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->debug = false;
 
 

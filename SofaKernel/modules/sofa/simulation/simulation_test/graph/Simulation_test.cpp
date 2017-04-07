@@ -235,49 +235,49 @@ protected:
 
 // run the tests
 TEST_F( Scene_test,computeBBox) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->computeBBox();
 }
 
 // component destruction
 TEST_F( Scene_test,objectDestruction_replace) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_replace();
 }
 
 TEST_F( Scene_test,objectDestruction_delete) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_delete(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_setNull) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_setNull();
 }
 
 TEST_F( Scene_test,objectDestruction_reset) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_reset();
 }
 
 TEST_F( Scene_test,objectDestruction_subObject) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_subObject(); checkDeletions();
 }
 
 TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectDestruction_subNodeAndStep();
 }
 
 // graph destruction
 TEST_F( Scene_test,sceneDestruction_unload) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->sceneDestruction_unload();
 }
 
 TEST_F( Scene_test,sceneDestruction_createnewgraph) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->sceneDestruction_createnewgraph();
 }
 

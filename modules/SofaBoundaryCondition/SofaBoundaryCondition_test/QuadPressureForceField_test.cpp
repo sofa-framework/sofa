@@ -116,7 +116,7 @@ TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->errorMax *= 10;
     this->debug = false;
 
@@ -126,7 +126,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->errorMax *= 10;
     this->debug = false;
 

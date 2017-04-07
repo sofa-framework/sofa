@@ -55,7 +55,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
-        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        EXPECT_MSG_NOEMIT(Error) ;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

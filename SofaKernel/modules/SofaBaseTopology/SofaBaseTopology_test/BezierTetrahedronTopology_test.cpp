@@ -308,8 +308,6 @@ TYPED_TEST_CASE(BezierTetrahedronTopology_test, DataTypes);
 // first test topology
 TYPED_TEST( BezierTetrahedronTopology_test , testTopology )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning);
-
     this->createScene();
     ASSERT_TRUE( this->testBezierTetrahedronTopology());
     ASSERT_TRUE( this->testBezierTetrahedronGeometry());

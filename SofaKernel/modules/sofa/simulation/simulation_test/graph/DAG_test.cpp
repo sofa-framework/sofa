@@ -370,7 +370,7 @@ Expected output: RABCDEEDCBAR
 
 TEST_F( DAG_test, traverse )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     traverse_simple_tree();
     traverse_simple_diamond();
     traverse_complex();
@@ -380,33 +380,33 @@ TEST_F( DAG_test, traverse )
 
 TEST(DAGNodeTest, objectDestruction_singleObject)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     Node_test_objectDestruction_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_multipleObjects)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_multipleObjects<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_childNode_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_childNode_complexChild<DAGNode>();
 }
 
 
 TEST_F(DAG_test, getObject)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     getObject();
 }
 

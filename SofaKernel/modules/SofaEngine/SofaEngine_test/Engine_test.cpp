@@ -316,7 +316,7 @@ TYPED_TEST_CASE(DataEngine_test, TestTypes);
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->run_basic_test();
 }
 

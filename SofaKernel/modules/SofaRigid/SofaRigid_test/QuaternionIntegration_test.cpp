@@ -83,7 +83,7 @@ TYPED_TEST_CASE(QuaternionIntegrationTest, DataTypes);
 
 // first test case
 TYPED_TEST( QuaternionIntegrationTest, quaternion_angle) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->test_quaternion_angle();
 }
 

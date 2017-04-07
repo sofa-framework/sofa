@@ -1238,137 +1238,110 @@ bool TestTriOBB::vertexVertex(){
 }
 
 TEST_F(TestOBB, face_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestOBB, vertex_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestOBB, face_face ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceFace());
 }
 
 TEST_F(TestOBB, face_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestOBB, edge_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestOBB, edge_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestCapOBB, face_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestCapOBB, face_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestCapOBB, edge_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestCapOBB, edge_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestCapOBB, vertex_edge) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexEdge());
 }
 
 TEST_F(TestCapOBB, vertex_vertex) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestSphereOBB, vertex_sphere ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertex());
 }
 
 TEST_F(TestSphereOBB, edge_sphere ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edge());
 }
 
 TEST_F(TestSphereOBB, face_sphere ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( face());
 }
 
 TEST_F(TestTriOBB, face_face ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceFace());
 }
 
 TEST_F(TestTriOBB, face_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceEdge());
 }
 
 TEST_F(TestTriOBB, face_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex());
 }
 
 TEST_F(TestTriOBB, edge_face ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeFace());
 }
 
 TEST_F(TestTriOBB, edge_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge());
 }
 
 TEST_F(TestTriOBB, edge_edge_2 ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeEdge2());
 }
 
 TEST_F(TestTriOBB, edge_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( edgeVertex());
 }
 
 TEST_F(TestTriOBB, vertex_face ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexFace());
 }
 
 TEST_F(TestTriOBB, vertex_edge ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexEdge());
 }
 
 TEST_F(TestTriOBB, vertex_vertex ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( vertexVertex());
 }
 
 TEST_F(TestTriOBB, face_vertex_out ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex_out());
 }
 
 TEST_F(TestTriOBB, face_vertex_out2 ) {
-    EXPECT_MSG_NOEMIT(Error, Warning);
     ASSERT_TRUE( faceVertex_out2());
 }
 

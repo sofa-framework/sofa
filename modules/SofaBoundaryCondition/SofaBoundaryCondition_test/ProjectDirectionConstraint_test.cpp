@@ -242,7 +242,7 @@ TYPED_TEST_CASE(ProjectDirectionConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -250,7 +250,7 @@ TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 // second test case
 TYPED_TEST( ProjectDirectionConstraint_test , allParticlesConstrained )
 {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

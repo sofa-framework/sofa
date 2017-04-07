@@ -115,12 +115,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(ComplementaryROI_test, DataTypes);
 
 TYPED_TEST(ComplementaryROI_test, NormalBehavior) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(ComplementaryROI_test, UpdateTest) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

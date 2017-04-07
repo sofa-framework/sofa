@@ -84,7 +84,7 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
 
 // run the tests
 TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep) {
-    EXPECT_MSG_NOEMIT(Error, Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
     this->objectRemovalThenStep();
 }
 
