@@ -76,7 +76,7 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::load()
 {
-    sout << "Loading OBJ file: " << m_filename << sendl;
+    sout << "Loading " << m_filename << sendl;
 
     bool fileRead = false;
 
@@ -100,9 +100,6 @@ bool MeshObjLoader::load()
 bool MeshObjLoader::readOBJ (istream &stream, const char* filename)
 {
     SOFA_UNUSED(filename);
-
-    if( this->f_printLog.getValue() )
-        sout << "MeshObjLoader::readOBJ" << sendl;
 
     vector<Vector3>& my_positions = *(d_positions.beginWriteOnly());
     vector<int> nodes, nIndices;
