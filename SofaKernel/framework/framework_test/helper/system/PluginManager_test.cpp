@@ -169,3 +169,22 @@ TEST_F(PluginManager_test, testIniFile)
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
     ASSERT_EQ(pm.getPluginMap().size(), 0);
 }
+
+TEST_F(PluginManager_test, autoloadTestPlugin)
+{
+    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    ASSERT_TRUE(pm.autoloadPlugins());
+    
+    ASSERT_GT(pm.getPluginMap().size(), 0);
+
+    const std::string pluginPath = pm.findPlugin(pluginName);
+    ASSERT_GT(pluginPath.size(), 0);
+    sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+    ASSERT_EQ(0, std::string(p.getModuleName()).compare(pluginName));
+    
+    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
+    //autoload might have loaded other plugins (e.g SofaPython) so lets unload all of them
+    for (sofa::helper::system::PluginManager::PluginMap::iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
+        pm.unloadPlugin((*it).first);
+    ASSERT_EQ(pm.getPluginMap().size(), 0);
+}
