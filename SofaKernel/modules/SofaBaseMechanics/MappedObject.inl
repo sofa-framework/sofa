@@ -52,8 +52,8 @@ void MappedObject<DataTypes>::init()
 {
     if (getSize() == 0)
     {
-        sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
-        if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+        sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getActiveMeshTopology();
+        if (topo!=NULL && topo->hasPos())
         {
             VecCoord& x = *getX();
             int nbp = topo->getNbPoints();

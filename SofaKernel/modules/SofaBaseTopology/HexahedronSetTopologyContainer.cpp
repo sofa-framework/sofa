@@ -58,14 +58,14 @@ void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e,
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
-    if (a >= getNbPoints()) nbPoints.setValue(a+1);
-    if (b >= getNbPoints()) nbPoints.setValue(b+1);
-    if (c >= getNbPoints()) nbPoints.setValue(c+1);
-    if (d >= getNbPoints()) nbPoints.setValue(d+1);
-    if (e >= getNbPoints()) nbPoints.setValue(e+1);
-    if (f >= getNbPoints()) nbPoints.setValue(f+1);
-    if (g >= getNbPoints()) nbPoints.setValue(g+1);
-    if (h >= getNbPoints()) nbPoints.setValue(h+1);
+    if (a >= getNbPoints()) setNbPoints(a+1);
+    if (b >= getNbPoints()) setNbPoints(b+1);
+    if (c >= getNbPoints()) setNbPoints(c+1);
+    if (d >= getNbPoints()) setNbPoints(d+1);
+    if (e >= getNbPoints()) setNbPoints(e+1);
+    if (f >= getNbPoints()) setNbPoints(f+1);
+    if (g >= getNbPoints()) setNbPoints(g+1);
+    if (h >= getNbPoints()) setNbPoints(h+1);
 }
 
 void HexahedronSetTopologyContainer::init()
