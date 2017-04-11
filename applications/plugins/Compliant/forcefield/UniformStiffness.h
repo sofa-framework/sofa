@@ -54,9 +54,6 @@ public:
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const;
 
-    /// Return a pointer to the Stiffness matrix
-    virtual const sofa::defaulttype::BaseMatrix* getStiffnessMatrix(const core::MechanicalParams*);
-
     using Inherit1::addKToMatrix;
 
     virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );

@@ -111,14 +111,6 @@ SReal UniformStiffness<DataTypes>::getPotentialEnergy( const core::MechanicalPar
 }
 
 
-template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* UniformStiffness<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
-{
-    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->mstate->getSize() != matC.rows() ) reinit();
-
-    return &matC;
-}
-
 
 template<class DataTypes>
 void UniformStiffness<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )

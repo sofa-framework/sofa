@@ -121,12 +121,6 @@ SReal DiagonalStiffness<DataTypes>::getPotentialEnergy( const core::MechanicalPa
 }
 
 template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* DiagonalStiffness<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
-{
-    return &matC;
-}
-
-template<class DataTypes>
 void DiagonalStiffness<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
 //    cerr<<SOFA_CLASS_METHOD<<std::endl;
