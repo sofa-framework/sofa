@@ -26,6 +26,8 @@
 
 using namespace sofa;
 
+#define SQR(X)   ((X)*(X))
+
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
 using namespace CGAL::parameters;
 #endif
@@ -38,11 +40,13 @@ MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
 	: m_filename(initData(&m_filename,"filename","Image file"))
     , image(initData(&image,ImageTypes(),"image","image input"))
     , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
+    , d_features( initData (&d_features, "d_features", "features (1D) that will be preserved in the mesh"))
     , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
     , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
     , f_tetraDomain(initData(&f_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
     , output_cellData(initData(&output_cellData, "outputCellData", "Output cell data"))
     , frozen(initData(&frozen, false, "frozen", "true to prohibit recomputations of the mesh"))
+    , edgeSize(initData(&edgeSize, 2.0, "edgeSize", "Edge size criterium (needed for polyline features"))
     , facetAngle(initData(&facetAngle, 25.0, "facetAngle", "Lower bound for the angle in degrees of the surface mesh facets"))
     , facetSize(initData(&facetSize, 0.15, "facetSize", "Uniform upper bound for the radius of the surface Delaunay balls"))
     , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "Upper bound for the center-center distances of the surface mesh facets"))
@@ -137,6 +141,8 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
     helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
     helper::WriteAccessor<Data< vector<int> > > tetraDomain(this->f_tetraDomain);
 
+    helper::ReadAccessor< Data<VecCoord> > fts = d_features;
+
 
     if (frozen.getValue()) return;
     newPoints.clear();
@@ -216,12 +222,37 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
             << cellSize.getValue() << " will be apply for all layers" << sendl;
 	}
 
+
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
     sout << "Create Mesh" << sendl;
-    Mesh_criteria criteria(
+    Mesh_criteria criteria(edge_size=edgeSize.getValue(),
         facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
         cell_radius_edge=cellRatio.getValue(), cell_size=size);
+
+    size_t nfts = fts.size();
+    Polylines polylines (nfts);
+
+    if (nfts > 0)
+        sout << "Explicitly defined 0D features: #" << nfts << std::endl;
+
+    size_t fi = 0;
+
+    Vector3 translation = Vector3(image3.image()->tx, image3.image()->ty, image3.image()->tz);
+    for (Polylines::iterator l = polylines.begin(); l != polylines.end(); l++, fi++) {
+        Coord ft = fts[fi];
+        //std::cout << "ft = " << ft << std::endl;
+        ft = ft - translation;
+        //std::cout << " ftt = " << ft << std::endl;
+        Point3 p=Point3(ft[0],ft[1], ft[2]);
+        l->push_back(p);
+        Point3 p1=Point3(ft[0], ft[1], ft[2]);
+        l->push_back(p1);
+    }
+    domain.add_features(polylines.begin(), polylines.end());
+
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
+
+
 #else
     // Set mesh criteria
     Facet_criteria facet_criteria(facetAngle.getValue(), facetSize.getValue(), facetApproximation.getValue()); // angle, size, approximation
@@ -269,8 +300,13 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 #endif
 #endif
 
-    const Tr& tr = c3t3.triangulation();
+//    CGAL::Weighted_point<Point3, double> wp(p);
+//    Vertex_handle vh = c3t3.triangulation().insert(wp);
+//    c3t3.add_to_complex(vh,1);
+//    CGAL::refine_mesh_3(c3t3, domain, criteria);
 
+
+    const Tr& tr = c3t3.triangulation();
     std::map<Vertex_handle, int> Vnbe;
 
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
@@ -293,6 +329,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
         p[2] = CGAL::to_double(pointCgal.z());
         if (Vnbe.find(vit) == Vnbe.end() || Vnbe[vit] <= 0)
         {
+            std::cout << "Un-connected point: " << p << std::endl;
             ++notconnected;
         }
         else
@@ -407,6 +444,31 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
     }
 
     sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
+
+    //std::cout << "New points size: " << newPoints.size() << std::endl;
+
+    /// test if explicitly defined features are included in the mesh (desactivated by default)
+    /*for (size_t fi = 0; fi < nfts; fi++) {
+        double bd = 1e5;
+        size_t indBD = 0;
+        Coord coorBD;
+        const Coord& ft = fts[fi];
+        for (size_t i = 0; i < newPoints.size(); i++) {
+            Coord& np = newPoints[i];
+
+            double dist = 0.0;
+
+            for (size_t d = 0; d < 3; d++)
+                dist += SQR(np[d] - ft[d]);
+            dist = sqrt(dist);
+            if (dist < bd) {
+                bd = dist;
+                indBD = i;
+                coorBD = np;
+            }
+        }
+        std::cout << "Best node for " << ft << ": " << indBD << " dist: " << bd << " coor: " << coorBD << std::endl;
+    }*/
 
     frozen.setValue(true);
 
