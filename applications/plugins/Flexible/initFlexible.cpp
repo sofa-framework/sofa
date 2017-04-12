@@ -90,9 +90,12 @@ SOFA_LINK_CLASS(ShapeFunctionDiscretizer)
 SOFA_LINK_CLASS(DiffusionShapeFunction)
 #endif
 
+#ifdef SOFA_HAVE_SofaHighOrderTopology
+SOFA_LINK_CLASS(BezierShapeFunction)
+#endif
+
 SOFA_LINK_CLASS(ShepardShapeFunction)
 SOFA_LINK_CLASS(BarycentricShapeFunction)
-SOFA_LINK_CLASS(BezierShapeFunction)
 SOFA_LINK_CLASS(DefGradientMechanicalObject)
 SOFA_LINK_CLASS(LinearMapping_point)
 SOFA_LINK_CLASS(LinearMapping_affine)
