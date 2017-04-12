@@ -101,11 +101,10 @@ public:
         this->Inherit::reinit();
     }
 
-    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord A, const InCoord B, const InCoord C)
+    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord& A, const InCoord& B, const InCoord& C)
     {
         InDeriv ab = B - A;
         InDeriv ac = C - A;
-        InDeriv bc = C - B;
         InDeriv sn = (ab.cross(ac))/6.;
 
         for(unsigned k=0; k<Nin; k++ )
@@ -116,6 +115,7 @@ public:
         }
         if( f_geometricStiffness.getValue() )
         {
+            InDeriv bc = C - B;
             defaulttype::Mat<3,3,Real> DsnDA= defaulttype::crossProductMatrix<Real>(bc)*(+1./6.);
             defaulttype::Mat<3,3,Real> DsnDB= defaulttype::crossProductMatrix<Real>(ac)*(-1./6.);
             defaulttype::Mat<3,3,Real> DsnDC= defaulttype::crossProductMatrix<Real>(ab)*(+1./6.);
