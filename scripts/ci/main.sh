@@ -30,7 +30,7 @@ send-message-to-dashboard() {
         message="$message&sha=$sha&config=$CI_JOB"
         local url="$CI_DASHBOARD_URL"
         echo "Message (sent): " sha="$sha" "config=$CI_JOB" $*
-        wget --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
+        wget --no-check-certificate --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
     fi
 }
 
