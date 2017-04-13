@@ -136,6 +136,8 @@ PythonScriptController::~PythonScriptController()
         FileMonitor::removeListener(m_filelistener) ;
         delete m_filelistener ;
     }
+    if( m_ScriptControllerInstance )
+        Py_DECREF( m_ScriptControllerInstance );
 }
 
 void PythonScriptController::refreshBinding()
@@ -203,7 +205,10 @@ void PythonScriptController::loadScript()
     }
 
     // créer l'instance de la classe
+    if( m_ScriptControllerInstance )
+        Py_DECREF( m_ScriptControllerInstance );
     m_ScriptControllerInstance = BuildPySPtr<Base>(this,(PyTypeObject*)m_ScriptControllerClass);
+    Py_INCREF( m_ScriptControllerInstance );
 
     if (!m_ScriptControllerInstance)
     {
