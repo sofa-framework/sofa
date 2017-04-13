@@ -434,7 +434,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         {
             if (!dataVec[d]->setParent(value))
             {
-                serr<<"Could not setup Data link between "<< value << " and " << attribute << "." << sendl;
+                serr<<"Could not setup Data link between "<< value << " and " << attribute << " ("<< this->getPathName() <<")"<< sendl;
                 ok = false;
                 continue;
             }
