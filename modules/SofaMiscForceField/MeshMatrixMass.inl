@@ -99,7 +99,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(u
     EdgeMass = 0;
 }
 template< class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFunction(unsigned int tetra, MassVector & TetrahedronMass,
+void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFunction(unsigned int /*tetra*/, MassVector & /*TetrahedronMass*/,
         const core::topology::BaseMeshTopology::Tetrahedron&,
         const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
