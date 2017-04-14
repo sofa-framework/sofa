@@ -138,7 +138,6 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
-        EXPECT_MSG_NOEMIT(Error, Warning) ;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

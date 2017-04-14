@@ -115,8 +115,6 @@ TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 {
-    EXPECT_MSG_NOEMIT(Error);
-
     this->errorMax *= 10;
     this->debug = false;
 
@@ -126,8 +124,6 @@ TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceFieldTest)
 {
-    EXPECT_MSG_NOEMIT(Error);
-
     this->errorMax *= 10;
     this->debug = false;
 
