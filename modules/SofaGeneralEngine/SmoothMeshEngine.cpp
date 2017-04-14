@@ -37,7 +37,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(SmoothMeshEngine)
 
-int SmoothMeshEngineClass = core::RegisterObject("Compute the laplacian smoothing of a mesh")
+int SmoothMeshEngineClass = core::RegisterObject("Compute the Laplacian smoothing of a mesh subset")
 #ifndef SOFA_FLOAT
         .add< SmoothMeshEngine<Vec3dTypes> >()
 #endif //SOFA_FLOAT

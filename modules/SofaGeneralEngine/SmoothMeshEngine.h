@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa
@@ -75,6 +76,9 @@ public:
     Data<unsigned int> nb_iterations;
 
 
+    Data< helper::OptionsGroup > d_method; ///< Laplacian formulation
+
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
@@ -86,6 +90,9 @@ public:
     }
 
 protected:
+
+    /// performing the Laplacian interpolation
+    void laplacian( unsigned method, VecCoord& out, size_t index, const VecCoord& in );
 
 };
 

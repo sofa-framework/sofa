@@ -46,11 +46,16 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , input_position( initData (&input_position, "input_position", "Input position") )
     , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed, leave empty for all positions") )
     , output_position( initData (&output_position, "output_position", "Output position") )
-    , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
+    , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing"))
+    , d_method(initData(&d_method,"method","Laplacian formulation (simple, central, cotangent)"))
 {
     this->addAlias(&input_position,"inputPosition");
     this->addAlias(&output_position,"outputPosition");
     this->addAlias(&nb_iterations,"iterations");
+
+    helper::OptionsGroup methodOptions(3, "simple", "central", "cotangent");
+    methodOptions.setSelectedItem(0); // simple
+    d_method.setValue(methodOptions);
 }
 
 template <class DataTypes>
@@ -65,6 +70,8 @@ void SmoothMeshEngine<DataTypes>::init()
 
     addInput(&input_position);
     addInput(&input_indices);
+    addInput(&d_method);
+    addInput(&nb_iterations);
     addOutput(&output_position);
 
     setDirtyValue();
@@ -76,51 +83,89 @@ void SmoothMeshEngine<DataTypes>::reinit()
     update();
 }
 
+
+template <class DataTypes>
+inline void SmoothMeshEngine<DataTypes>::laplacian( unsigned method, VecCoord& out, size_t index, const VecCoord& in )
+{
+    // note that out[i] == in[i] when entering
+
+    using sofa::core::topology::BaseMeshTopology;
+
+    switch( method )
+    {
+
+        case 2: // cotangent
+        {
+            serr<<"cotangent Laplacian not yet implemented"<<sendl;
+            break;
+        }
+
+        case 1: // central - using current pos + neighbours pos w/o weights
+        {
+            BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(index);
+            if( !v.empty() )
+            {
+                for( unsigned int j = 0 ; j < v.size() ; j++ )
+                    out[index] += in[v[j]];
+                out[index] /= (v.size()+1);
+            }
+            break;
+        }
+
+        case 0: // simple - simply using neighbours pos w/o weights
+        default:
+        {
+            BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(index);
+            if( !v.empty() )
+            {
+                out[index] = in[v[0]];
+                for( unsigned int j = 1 ; j < v.size() ; j++ )
+                    out[index] += in[v[j]];
+                out[index] /= v.size();
+            }
+            break;
+        }
+
+    }
+
+}
+
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::update()
 {
-    using sofa::core::topology::BaseMeshTopology;
-
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
     helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
+
+    unsigned method = d_method.getValue().getSelectedId();
+    unsigned iterations = nb_iterations.getValue();
 
     cleanDirty();
 
     if (!l_topology) return;
 
-    helper::WriteOnlyAccessor< Data<VecCoord> > out(output_position);
+    VecCoord& out = *output_position.beginWriteOnly();
 
     out.resize(in.size());
     VecCoord t( out.size() ); // temp
 
-    for (unsigned int i =0; i<in.size();i++) t[i] = out[i] = in[i];
+    for (size_t i =0; i<in.size();i++) t[i] = out[i] = in[i];
 
     
-    for (unsigned int n=0; n < nb_iterations.getValue(); n++)
+    for (size_t n=0; n < iterations ; n++)
     {
         if( indices.empty() )
         {
-            for (unsigned int i = 0; i < out.size(); i++)
-            {
-                BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(i);
-                for (unsigned int j = 0; j < v.size(); j++)
-                    t[i] += out[v[j]];
-                t[i] /= (v.size()+1);
-            }
-            for (unsigned int i=0 ; i<in.size() ; i++ ) out[i] = t[i];
+            for (size_t i = 0; i < out.size(); i++) laplacian( method, t, i, out );
+            for (size_t i=0 ; i<in.size() ; i++ ) out[i] = t[i];
         }
         else
         {
-            for(unsigned int i = 0; i < indices.size(); i++)
-            {
-                BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(indices[i]);
-                for (unsigned int j = 0; j < v.size(); j++)
-                    t[indices[i]] += out[v[j]];
-                t[indices[i]] /= (v.size()+1);
-            }
-            for(unsigned int i = 0; i < indices.size(); i++) out[indices[i]] = t[indices[i]];
+            for(size_t i = 0; i < indices.size(); i++) laplacian( method, t, indices[i], out );
+            for(size_t i = 0; i < indices.size(); i++) out[indices[i]] = t[indices[i]];
         }
     }
+
+    output_position.endEdit();
 
 }
 

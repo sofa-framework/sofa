@@ -10,7 +10,6 @@
         
         <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@initLoader.position" nb_iterations="10"  input_indices="@boxroi.indices"/>
         
-        <MeshTopology name="outPutTopology" src="@initLoader" position="@smoother.output_position" />
-        <VisualModel src="@outPutTopology"/>
+        <MeshTopology name="outPutTopology" src="@initLoader" position="@smoother.output_position"  drawTriangles="true"/>
 
 </Node>
