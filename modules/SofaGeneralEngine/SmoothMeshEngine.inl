@@ -42,12 +42,11 @@ namespace engine
 
 template <class DataTypes>
 SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
-    : input_position( initData (&input_position, "input_position", "Input position") )
+    : l_topology( initLink( "topology", "Link to a BaseTopology component"))
+    , input_position( initData (&input_position, "input_position", "Input position") )
     , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed, leave empty for all positions") )
     , output_position( initData (&output_position, "output_position", "Output position") )
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
-    , showInput( initData (&showInput, false, "showInput", "showInput") )
-    , showOutput( initData (&showOutput, false, "showOutput", "showOutput") )
 {
 
 }
@@ -55,11 +54,15 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
 template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::init()
 {
-    m_topo = this->getContext()->getMeshTopology();
-    if (!m_topo)
-        serr << "SmoothMeshEngine requires a mesh topology" << sendl;
+    if( !l_topology )
+    {
+        l_topology = this->getContext()->getMeshTopology();
+        if (!l_topology)
+            serr << "requires a mesh topology" << sendl;
+    }
 
     addInput(&input_position);
+    addInput(&input_indices);
     addOutput(&output_position);
 
     setDirtyValue();
@@ -76,136 +79,47 @@ void SmoothMeshEngine<DataTypes>::update()
 {
     using sofa::core::topology::BaseMeshTopology;
 
-    cleanDirty();
-
-    if (!m_topo) return;
-
     helper::ReadAccessor< Data<VecCoord> > in(input_position);
     helper::ReadAccessor< Data<helper::vector <unsigned int > > > indices(input_indices);
-    helper::WriteAccessor< Data<VecCoord> > out(output_position);
+
+    cleanDirty();
+
+    if (!l_topology) return;
+
+    helper::WriteOnlyAccessor< Data<VecCoord> > out(output_position);
 
     out.resize(in.size());
-    for (unsigned int i =0; i<in.size();i++) out[i] = in[i];
+    VecCoord t( out.size() ); // temp
+
+    for (unsigned int i =0; i<in.size();i++) t[i] = out[i] = in[i];
+
     
     for (unsigned int n=0; n < nb_iterations.getValue(); n++)
     {
-        VecCoord t;
-        t.resize(out.size());
-
-        if(!indices.size())
+        if( indices.empty() )
         {
             for (unsigned int i = 0; i < out.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(i);
-                if (v.size()>0) {
-                    Coord p = Coord();
-                    for (unsigned int j = 0; j < v.size(); j++)
-                        p += out[v[j]];
-                    t[i] = p / v.size();
-                }
-                else
-                    t[i] = out[i];
+                BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(i);
+                for (unsigned int j = 0; j < v.size(); j++)
+                    t[i] += out[v[j]];
+                t[i] /= (v.size()+1);
             }
+            for (unsigned int i=0 ; i<in.size() ; i++ ) out[i] = t[i];
         }
         else
         {
-            // init
-            for (unsigned int i = 0; i < out.size(); i++)
-            {
-                
-                t[i] = out[i];
-            }            
             for(unsigned int i = 0; i < indices.size(); i++)
             {
-                BaseMeshTopology::VerticesAroundVertex v = m_topo->getVerticesAroundVertex(indices[i]);
-                if (v.size()>0) {
-                    Coord p = Coord();
-                    for (unsigned int j = 0; j < v.size(); j++)
-                        p += out[v[j]];
-                    t[indices[i]] = p / v.size();
-                }
+                BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(indices[i]);
+                for (unsigned int j = 0; j < v.size(); j++)
+                    t[indices[i]] += out[v[j]];
+                t[indices[i]] /= (v.size()+1);
             }
+            for(unsigned int i = 0; i < indices.size(); i++) out[indices[i]] = t[indices[i]];
         }
-        for (unsigned int i = 0; i < out.size(); i++) out[i] = t[i];
     }
 
-}
-
-template <class DataTypes>
-void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    using sofa::defaulttype::Vec;
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowVisualModels()) return;
-
-    bool wireframe=vparams->displayFlags().getShowWireFrame();
-
-    sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
-
-    glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
-    glEnable( GL_LIGHTING);
-
-    if (this->showInput.getValue())
-    {
-        helper::ReadAccessor< Data<VecCoord> > in(input_position);
-
-        const float color[] = {1.0f, 0.76078431372f, 0.0f, 0.0f};
-        const float specular[] = {0.0f, 0.0f ,0.0f ,0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
-        {
-            if(wireframe) glBegin(GL_LINE_LOOP);
-            const Vec<3,Real>& a = in[ tri[i][0] ];
-            const Vec<3,Real>& b = in[ tri[i][1] ];
-            const Vec<3,Real>& c = in[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
-        }
-        if(!wireframe) glEnd();
-    }
-
-    if (this->showOutput.getValue())
-    {
-        helper::ReadAccessor< Data<VecCoord> > out(output_position);
-
-        const float color[] = {0.0f, 0.6f, 0.8f, 0.0f};
-        const float specular[] = {0.0f, 0.0f, 0.0f, 0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
-        for (unsigned int i=0; i<tri.size(); ++i)
-        {
-            if(wireframe) glBegin(GL_LINE_LOOP);
-            const Vec<3,Real>& a = out[ tri[i][0] ];
-            const Vec<3,Real>& b = out[ tri[i][1] ];
-            const Vec<3,Real>& c = out[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
-        }
-        if(!wireframe) glEnd();
-    }
-
-    glPopAttrib();
-
-#endif
 }
 
 } // namespace engine
