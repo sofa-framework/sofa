@@ -48,7 +48,9 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     , output_position( initData (&output_position, "output_position", "Output position") )
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
 {
-
+    this->addAlias(&input_position,"inputPosition");
+    this->addAlias(&output_position,"outputPosition");
+    this->addAlias(&nb_iterations,"iterations");
 }
 
 template <class DataTypes>
