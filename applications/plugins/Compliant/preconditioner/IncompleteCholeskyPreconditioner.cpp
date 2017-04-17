@@ -20,12 +20,31 @@ IncompleteCholeskyPreconditioner::IncompleteCholeskyPreconditioner()
 {}
 
 
+  template<class T, T, class R = void> struct sfinae {
+    using type = R;
+  };
+  
+  // sfinae for picking the right shift method
+  template<class Preconditioner>
+  static void set_shift(Preconditioner& preconditioner, SReal value,
+                        decltype( &Preconditioner::setInitialShift )) {
+    preconditioner.setInitialShift( value );
+  }
+
+
+  template<class Preconditioner>
+  static void set_shift(Preconditioner& preconditioner, SReal value,
+                        decltype( &Preconditioner::setShift)) {
+    preconditioner.setShift( value );
+  }
+  
 
 void IncompleteCholeskyPreconditioner::reinit()
 {
     BasePreconditioner::reinit();
     m_factorized = false;
-    preconditioner.setInitialShift( d_shift.getValue() );
+
+    set_shift(preconditioner, d_shift.getValue(), nullptr);
 }
 
 void IncompleteCholeskyPreconditioner::compute( const rmat& H )

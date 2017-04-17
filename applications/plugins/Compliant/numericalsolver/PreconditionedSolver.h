@@ -41,7 +41,9 @@ class SOFA_Compliant_API PreconditionedSolver {
             {
                 AssembledSystem::rmat identity(sys.H.rows(),sys.H.cols());
                 identity.setIdentity();
-                p->compute( sys.P.transpose()*sys.H*sys.P + identity * std::numeric_limits<SReal>::epsilon() );
+                
+                p->compute( AssembledSystem::rmat(sys.P.transpose()*sys.H*sys.P) +
+                            identity * std::numeric_limits<SReal>::epsilon() );
             }
         }
 
