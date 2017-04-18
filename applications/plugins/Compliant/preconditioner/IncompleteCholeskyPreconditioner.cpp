@@ -27,15 +27,17 @@ IncompleteCholeskyPreconditioner::IncompleteCholeskyPreconditioner()
   // sfinae for picking the right shift method
   template<class Preconditioner>
   static void set_shift(Preconditioner& preconditioner, SReal value,
-                        decltype( &Preconditioner::setInitialShift )) {
-    preconditioner.setInitialShift( value );
+                        typename sfinae<void (Preconditioner::*)(SReal) ,
+                        &Preconditioner::setInitialShift>::type*) {
+      preconditioner.setInitialShift( value );
   }
 
 
   template<class Preconditioner>
   static void set_shift(Preconditioner& preconditioner, SReal value,
-                        decltype( &Preconditioner::setShift)) {
-    preconditioner.setShift( value );
+                        typename sfinae<void (Preconditioner::*)(SReal) ,
+                        &Preconditioner::setShift>::type*) {
+      preconditioner.setShift( value );
   }
   
 
