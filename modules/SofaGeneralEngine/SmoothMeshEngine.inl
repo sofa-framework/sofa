@@ -53,8 +53,8 @@ SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     this->addAlias(&output_position,"outputPosition");
     this->addAlias(&nb_iterations,"iterations");
 
-    helper::OptionsGroup methodOptions(3, "simple", "central", "cotangent");
-    methodOptions.setSelectedItem(0); // simple
+    helper::OptionsGroup methodOptions(2, "umbrealla", "cotangent");
+    methodOptions.setSelectedItem(0); // umbrealla
     d_method.setValue(methodOptions);
 }
 
@@ -94,26 +94,64 @@ inline void SmoothMeshEngine<DataTypes>::laplacian( unsigned method, VecCoord& o
     switch( method )
     {
 
-        case 2: // cotangent
+        case 1: // cotangent
         {
-            serr<<"cotangent Laplacian not yet implemented"<<sendl;
-            break;
-        }
-
-        case 1: // central - using current pos + neighbours pos w/o weights
-        {
-            BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(index);
-            if( !v.empty() )
+            // iterating over triangles surrounding the current vertex
+            const BaseMeshTopology::TrianglesAroundVertex& vt = l_topology->getTrianglesAroundVertex(index);
+            if( !vt.empty() )
             {
-                for( unsigned int j = 0 ; j < v.size() ; j++ )
-                    out[index] += in[v[j]];
-                out[index] /= (v.size()+1);
+                const Coord& curPt = in[index];
+                out[index].clear();
+                Real cumWeight = 0; // weight sum
+
+                for( unsigned int j = 0 ; j < vt.size() ; j++ )
+                {
+                    const BaseMeshTopology::Triangle& t = l_topology->getTriangle( vt[j] );
+                    for( int i=0 ; i<3 ; ++i ) // finding the current vertex in neighbour triangle
+                    {
+                        if( t[i] != index ) continue;
+
+                        const Coord& curNeib = in[t[(i+1)%3]];
+                        const Coord& nextNeib = in[t[(i+2)%3]];
+
+
+                        // TODO some edge length computations are redundant in-between triangles
+
+                        Coord curEdge = curPt-curNeib;
+                        if(!curEdge.normalize()) break; // degenerated triangle, go to the next triangle
+
+                        Coord nextEdge = curPt-nextNeib;
+                        if(!nextEdge.normalize()) break; // degenerated triangle, go to the next triangle
+
+                        Coord facingEdge = curNeib-nextNeib;
+                        if(!facingEdge.normalize()) break; // degenerated triangle, go to the next triangle
+
+                        const Real curAngle = acos(-curEdge*facingEdge);
+                        const Real nextAngle = acos(nextEdge*facingEdge);
+
+                        const Real curW  = 1./tan(curAngle);
+                        const Real nextW = 1./tan(nextAngle);
+
+                        out[index] += nextW * curNeib;
+                        out[index] += curW * nextNeib;
+                        cumWeight += curW + nextW;
+                        break;
+                    }
+                }
+
+                if( cumWeight )
+                    out[index] /= cumWeight;
+                else
+                    out[index] = curPt;
+
             }
+
             break;
         }
 
-        case 0: // simple - simply using neighbours pos w/o weights
         default:
+            serr<<"unknown method"<<sendl;
+        case 0: // umbrealla scheme - simply using neighbours pos w/o weights
         {
             BaseMeshTopology::VerticesAroundVertex v = l_topology->getVerticesAroundVertex(index);
             if( !v.empty() )
