@@ -12,7 +12,7 @@ public:
 
     void windowsProblem2()
     {
-        ADD_FAILURE() << "POURQUOI ?";
+        ADD_FAILURE_AT("fichierbidon.cpp",3) << "POURQUOI ?";
     }
 
     void defaultTestBehaviorSHOULDFAIL()
