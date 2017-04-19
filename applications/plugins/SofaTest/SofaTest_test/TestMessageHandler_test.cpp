@@ -5,6 +5,16 @@ using sofa::Sofa_test;
 class TestMessageHandler_test : public Sofa_test<>
 {
 public:
+    void windowsProblem1()
+    {
+        EXPECT_FALSE(true) << "OUI POURUOI ?";
+    }
+
+    void windowsProblem2()
+    {
+        ADD_FAILURE() << "POURQUOI ?";
+    }
+
     void defaultTestBehaviorSHOULDFAIL()
     {
         msg_deprecated("HERE") << "This should generate a failure" ;
@@ -64,6 +74,21 @@ public:
 
     }
 };
+
+
+/// performing the regression test on every plugins/projects
+TEST_F(TestMessageHandler_test, windowsProblem1)
+{
+    this->windowsProblem1();
+}
+
+
+/// performing the regression test on every plugins/projects
+TEST_F(TestMessageHandler_test, windowsProblem2)
+{
+    this->windowsProblem2();
+}
+
 
 /// performing the regression test on every plugins/projects
 TEST_F(TestMessageHandler_test, defaultTestBehaviorSHOULDFAIL)
