@@ -64,9 +64,6 @@ void PreassembledMass< DataTypes >::bwdInit()
         mparams.setMFactor(1);
         mparams.setDt( this->getContext()->getDt() ); // should not be used but to be sure
 
-        std::clog << "sending visitor" << std::endl;
-
-
         {
             // trigger masks computation as it is required by assembly
             simulation::MechanicalComputeForceVisitor visitor(&mparams, core::VecDerivId::force());
@@ -101,8 +98,6 @@ void PreassembledMass< DataTypes >::bwdInit()
                if( massNodes[i]->isActive() ) massNodes[i]->setActive( false );
             }
         }
-
-        std::clog << "mass: " << sys.H << std::endl;
     }
 
 
