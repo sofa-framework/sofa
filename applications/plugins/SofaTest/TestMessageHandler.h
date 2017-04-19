@@ -108,6 +108,22 @@ private:
     GtestMessageFrame* m_frame ;
 };
 
+
+/// Locally hide the fact that a message is expected.
+/// Better use the macro:
+///    IGNORE_MSG(Error) as a more 'good looking' version of
+///
+/// sofa::helper::logging::IgnoreMessage ignore(sofa::helper::logging::Message::Error);
+class SOFA_TestPlugin_API IgnoreMessage
+{
+public:
+    IgnoreMessage(Message::Type t) ;
+    virtual ~IgnoreMessage() ;
+
+private:
+    GtestMessageFrame* m_frame ;
+};
+
 /// Inherited from MessageHandler, this handler must be installed to have the testing subsystem
 /// working. By default it is added in Sofa_test but if you are not inheriting from Sofa_test
 /// you have to install it manually.
@@ -131,6 +147,8 @@ public:
 /// The macros are mimicking the way gtest macros are working... and thus as any macro are really
 /// hard to understand and error prone.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#define IGNORE_MSG(t) sofa::helper::logging::IgnoreMessage EXPECT_MSG_EVALUATOR(__hiddenscopevarI_, __LINE__) ( sofa::helper::logging::Message::t)
+
 ///From http://en.cppreference.com/w/cpp/preprocessor/replace
 #define EXPECT_MSG_PASTER(x,y) x ## _ ## y
 #define EXPECT_MSG_EVALUATOR(x,y)  EXPECT_MSG_PASTER(x,y)

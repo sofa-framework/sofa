@@ -144,6 +144,20 @@ public:
         msg_error("HERE") << "This should generate a test falure with line number close to " << __LINE__ ;
     }
 
+    void noEmitIgnoredTestBehaviorSHOULDNTFAIL()
+    {
+        EXPECT_MSG_EMIT(Error) ;
+        EXPECT_MSG_EMIT(Warning) ;
+        IGNORE_MSG(Warning) ;
+
+        msg_warning("HERE") << "This shouldn't generate a failure " ;
+
+        {
+            IGNORE_MSG(Error) ;
+            msg_error("HERE") << "This shouldn't generate a failure " ;
+        }
+    }
+
     void complexTestBehaviorSHOULDFAIL()
     {
         {

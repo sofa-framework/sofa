@@ -79,6 +79,14 @@ public:
     virtual void finalize() ;
 };
 
+class GtestMessageFrameIgnore  : public GtestMessageFrame
+{
+public:
+    GtestMessageFrameIgnore(Message::Type type) ;
+};
+
+
+
 class SOFA_TestPlugin_API GtestMessageHandler : public MessageHandler
 {
     Message::Class m_class ;
@@ -149,6 +157,16 @@ void GtestMessageFrameFailureWhenMissing::finalize(){
         ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(m_type)
                                              << "' was expected but none was received. " << std::endl ;
 }
+
+
+GtestMessageFrameIgnore::GtestMessageFrameIgnore(Message::Type type)
+{
+    m_type = type;
+    m_filename = "";
+    m_lineno = -1;
+}
+
+
 
 GtestMessageHandler::GtestMessageHandler(Message::Class mclass) : m_class(mclass)
 {
@@ -229,6 +247,20 @@ ExpectMessage::~ExpectMessage(){
     m_frame->finalize() ;
     delete m_frame ;
 }
+
+
+IgnoreMessage::IgnoreMessage(Message::Type type)
+{
+    m_frame = new GtestMessageFrameIgnore(type);
+    MainGtestMessageHandlerPrivate::pushFrame(type, m_frame ) ;
+}
+
+IgnoreMessage::~IgnoreMessage(){
+    MainGtestMessageHandlerPrivate::popFrame(m_frame->m_type) ;
+    m_frame->finalize() ;
+    delete m_frame ;
+}
+
 
 } // logging
 } // helper
