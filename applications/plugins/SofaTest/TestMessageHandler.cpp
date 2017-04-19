@@ -130,6 +130,8 @@ void GtestMessageFrameFailure::process(Message& message) {
                                          << backlog.str() ;
 
     ADD_FAILURE_AT("fichierbidon.cpp",10) << "POURQUOI ?";
+    ADD_FAILURE() ;
+
 }
 
 GtestMessageFrameFailureWhenMissing::GtestMessageFrameFailureWhenMissing(Message::Type type,
