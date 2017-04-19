@@ -793,7 +793,7 @@ SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
         set_state_v( sys, x, _vstab.id() ); // set v (no need to set lambda)
         integrate( sop, posId, _vstab.id() );
 
-        propagate( &sop.mparams() );
+        // propagate( &sop.mparams() );
     }
 
 
