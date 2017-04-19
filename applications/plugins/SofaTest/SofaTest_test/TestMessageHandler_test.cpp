@@ -20,7 +20,9 @@ public:
         msg_deprecated("HERE") << "This should generate a failure" ;
         msg_warning("HERE") << "This should generate a failure"  ;
         msg_error("HERE") << "This should generate a failure" ;
+        ADD_FAILURE_AT("fichierbidon.cpp",5) << "POURQUOI ?";
     }
+
 
     void catchingTestBehaviorSHOULDNOTFAIL()
     {
