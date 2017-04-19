@@ -59,8 +59,12 @@ public:
 	void bottom_up(simulation::Visitor* vis) const;
 
 public:
-	simulation::Node* start_node;
+    // used during traversal
+	mutable simulation::Node* start_node;
 
+    // last traversal root 
+    simulation::Node* root;
+    
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 	virtual void processNodeBottomUp(simulation::Node* node);

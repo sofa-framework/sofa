@@ -50,8 +50,17 @@ AssemblyVisitor::chunk::chunk()
 
 }
 
-bool AssemblyVisitor::is_master(const chunk& c) const { return c.mechanical && c.map.empty(); }
-bool AssemblyVisitor::is_compliant(const chunk& c) const { return c.mechanical && notempty(c.C); }
+bool AssemblyVisitor::is_master(const chunk& c) const {
+    const bool is_independent = c.mechanical && c.map.empty();
+    const bool is_toplevel = c.mechanical && (c.dofs->getContext() == root);
+
+    return is_independent || is_toplevel;
+}
+    
+
+bool AssemblyVisitor::is_compliant(const chunk& c) const { 
+    return c.mechanical && notempty(c.C);
+}
 
 
 
@@ -315,21 +324,27 @@ void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
     helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_prefix" );
-
+    
 	assert( node->mechanicalState );
     assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
 
     // should this mstate be ignored?
     {
         // is it empty?
-        if( node->mechanicalState->getSize() == 0 ) return;
+        if( node->mechanicalState->getSize() == 0 ) {
+            return;
+        }
 
         // does the mask filter every dofs?
         const sofa::core::behavior::BaseMechanicalState::ForceMask::InternalStorage& mask = node->mechanicalState->forceMask.getEntries();
-        if( std::find(mask.begin(), mask.end(), true) == mask.end() ) return;
+        if( std::find(mask.begin(), mask.end(), true) == mask.end() ) {
+            return;
+        }
     }
 
 
+
+        
 	// fill chunk for current dof
 	chunk& c = chunks[ node->mechanicalState ];
 
@@ -833,6 +848,7 @@ Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
     {
         start_node = node;
         isPIdentity = true;
+        root = start_node;
     }
 
 	if( node->mechanicalState ) fill_prefix( node );
