@@ -128,10 +128,6 @@ void GtestMessageFrameFailure::process(Message& message) {
     ADD_FAILURE_AT(m_filename, m_lineno) << "A message of type '" << toString(message.type())
                                          << "' was not expected but it was received. " << std::endl
                                          << backlog.str() ;
-
-    ADD_FAILURE_AT("fichierbidon.cpp",10) << "POURQUOI ?";
-    FAIL() ;
-    ASSERT_FALSE(true);
 }
 
 GtestMessageFrameFailureWhenMissing::GtestMessageFrameFailureWhenMissing(Message::Type type,

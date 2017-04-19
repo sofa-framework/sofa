@@ -62,7 +62,7 @@ namespace {
 int BaseSofa_test::seed = (unsigned int)time(NULL);
 
 BaseSofa_test::BaseSofa_test(){
-    seed = testing::seedValue;
+    //seed = //testing::seedValue;
     modeling::initSofa();
 
     //if you want to generate the same sequence of pseudo-random numbers than a specific test suites
