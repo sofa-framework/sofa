@@ -76,7 +76,7 @@ template <class DataTypes>
 void ExtrudeEdgesAndGenerateQuads<DataTypes>::reinit()
 {
     checkInput();
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

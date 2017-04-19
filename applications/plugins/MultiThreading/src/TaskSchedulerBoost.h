@@ -26,259 +26,224 @@
 
 #include "Tasks.h"
 
-#include <boost/smart_ptr.hpp>
-#include <boost/thread.hpp>
+#include <boost/pool/pool.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/tss.hpp>
+#include <boost/thread/condition_variable.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
-//#include <boost/detail/atomic_count.hpp>
-
-//#include <boost/pool/singleton_pool.hpp>
-
-
 
 namespace sofa
 {
 
-	namespace simulation
-	{
+namespace simulation
+{
 
 
-		class TaskScheduler;
-		class WorkerThread;
+class TaskScheduler;
+class WorkerThread;
 
+class SpinMutexLock
+{
+public:
 
+    SpinMutexLock() : mMutex(0)
+    {
+    }
 
-		class SpinMutexLock
-		{
-		public:
+    SpinMutexLock(boost::detail::spinlock* pMutex, bool bLock = true)
+        : mMutex(pMutex)
+    {
 
-			SpinMutexLock() : mMutex(0)
-			{
-			}
+        if (bLock) 
+        {
+            mMutex->lock();
+        }
+    }
 
-			SpinMutexLock(boost::detail::spinlock* pMutex, bool bLock = true)
-				: mMutex(pMutex)
-			{
+    bool try_lock(boost::detail::spinlock* pMutex)
+    {
+        if (!pMutex->try_lock()) 
+        {
+            return false;
+        }
 
-				if (bLock) 
-				{
-					mMutex->lock();
-				}
-			}
+        mMutex = pMutex;
+        return true;
+    }
 
-			bool try_lock(boost::detail::spinlock* pMutex)
-			{
-				if (!pMutex->try_lock()) 
-				{
-					return false;
-				}
+    ~SpinMutexLock()
+    {
+        if (mMutex) 
+            mMutex->unlock();
+    }
 
-				mMutex = pMutex;
-				return true;
-			}
+private:
+    boost::detail::spinlock* mMutex;
+};
 
-			~SpinMutexLock()
-			{
-				if (mMutex) 
-					mMutex->unlock();
-			}
+class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
+{
+public:
 
-		private:
-			boost::detail::spinlock* mMutex;
-		};
+    WorkerThread(TaskScheduler* const& taskScheduler, int index);
 
+    ~WorkerThread();
 
+    static WorkerThread* getCurrent();
 
+    /// queue task if there is space, and run it otherwise
+    bool addStealableTask(Task* pTask);
 
+    /// queue a task to the specific task list. It cannot be stealed, and therefore be executed only by this thread. 
+    bool addSpecificTask(Task* pTask);
+    
+    /// run the given task directly
+    void runTask(Task* pTask);
 
-		class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
-		{
-		public:
+    void workUntilDone(Task::Status* status);
 
-			WorkerThread(TaskScheduler* const& taskScheduler);
+    Task::Status* getCurrentStatus() const {return mCurrentStatus;}
 
-			~WorkerThread();
+    boost::detail::spinlock* getTaskMutex() {return &mTaskMutex;}
+    
+    int getThreadIndex();
+    
+    void enableTaskLog(bool val);
+    void clearTaskLog();
+    const std::vector<Task*>& getTaskLog();
 
-			static WorkerThread* getCurrent();
+private:
 
-			// queue task if there is space, and run it otherwise
-			bool addTask(Task* pTask);	
+    bool start();
 
-			void workUntilDone(Task::Status* status);
 
-			Task::Status* getCurrentStatus() const {return mCurrentStatus;}
+    boost::shared_ptr<boost::thread> create_and_attach();
 
-			boost::detail::spinlock* getTaskMutex() const {return &mTaskMutex;}
+    bool release();
 
+    boost::thread::id getId();
 
-		private:
+    // queue task if there is space (or do nothing)
+    bool pushTask(Task* pTask, Task* taskArray[], unsigned* taskCount );
 
-			bool start(TaskScheduler* const& taskScheduler);
+    // pop task from queue
+    bool popTask(Task** ppTask);
 
+    // steal and queue some task from another thread 
+    bool stealTasks();
 
-			boost::shared_ptr<boost::thread> create_and_attach( TaskScheduler* const& taskScheduler);
-			
-            bool release();
+    // give an idle thread some work
+    bool giveUpSomeWork(WorkerThread* pIdleThread);	 
 
-			
+    void doWork(Task::Status* status);		
 
+    // boost thread main loop
+    void run(void);
 
+    //void	ThreadProc(void);
+    void	Idle(void);
 
-		
-			boost::thread::id getId();
+    bool attachToThisThread(TaskScheduler* pScheduler);
 
-			// queue task if there is space (or do nothing)
-			bool pushTask(Task* pTask);
+private:
 
-			// pop task from queue
-			bool popTask(Task** ppTask);
-			
-			// steal and queue some task from another thread 
-			bool stealTasks();
+    enum 
+    {
+        Max_TasksPerThread = 256
+    };
 
-			// give an idle thread some work
-			bool giveUpSomeWork(WorkerThread* pIdleThread);	 
+    mutable boost::detail::spinlock	  mTaskMutex;
+    TaskScheduler*                    mTaskScheduler; 
+    Task*		                      mStealableTask[Max_TasksPerThread];///< shared task list, stealable by other threads
+    Task*                             mSpecificTask[Max_TasksPerThread];///< thread specific task list, not stealable. They have a higher priority compared to the shared task list
+    unsigned			              mStealableTaskCount;///< current size of the shared task list
+    unsigned                          mSpecificTaskCount;///< current size of the specific task list								
+    Task::Status*	                  mCurrentStatus;	
+   
+    boost::shared_ptr<boost::thread>  mThread;
+    int                               mThreadIndex;
+    bool                              mTaskLogEnabled;
+    std::vector<Task*>                mTaskLog;
 
-			
-			void doWork(Task::Status* status);		
+    // The following members may be accessed by _multiple_ threads at the same time:
+    volatile bool	                  mFinished;
 
-			// boost thread main loop
-			void run(void);
+    friend class TaskScheduler;
 
+};
 
-			//void	ThreadProc(void);
-			void	Idle(void);
+class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
+{
+    enum
+    {
+        MAX_THREADS = 16,
+        STACKSIZE = 64*1024 /* 64K */ 
+    };
 
-			bool attachToThisThread(TaskScheduler* pScheduler);
+public:
 
+    static TaskScheduler& getInstance();
 
-		
-			
 
-		private:
+    bool start(const unsigned int NbThread = 0);
 
-			enum 
-			{
-				Max_TasksPerThread = 256
-			};
+    bool stop(void);
 
+    bool isClosing(void) const { return mIsClosing; }
 
-		
+    unsigned int getThreadCount(void) const { return mThreadCount; }
 
-			mutable boost::detail::spinlock		mTaskMutex;
-			Task*		mTask[Max_TasksPerThread];
-			unsigned			mTaskCount;								
-			Task::Status*	mCurrentStatus;	
+    void	WaitForWorkersToBeReady();
 
-		
-			TaskScheduler*     mTaskScheduler;    
-			boost::shared_ptr<boost::thread>  mThread;  
+    void	wakeUpWorkers();
 
-			// The following members may be accessed by _multiple_ threads at the same time:
-			volatile bool	mFinished;
+    static unsigned GetHardwareThreadsCount();
 
+    unsigned size()	const volatile;
 
-			friend class TaskScheduler;
+    WorkerThread* getWorkerThread(const unsigned int index);
 
-		};
+private:
 
+    static boost::thread_specific_ptr<WorkerThread>	mWorkerThreadIndex;
 
+    //boost::thread_group mThreads;
+    WorkerThread* 	mThread[MAX_THREADS];
 
+    // The following members may be accessed by _multiple_ threads at the same time:
+    volatile Task::Status*	mainTaskStatus;
 
-		class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
+    volatile bool readyForWork;
 
-		{
-			enum
-			{
-				MAX_THREADS = 16,
-				STACKSIZE = 64*1024 /* 64K */ 
-			};
+    boost::mutex  wakeUpMutex;
 
-		public:
-			
-			static TaskScheduler& getInstance();
-			
+    boost::condition_variable wakeUpEvent;
+    //boost::condition_variable sleepEvent;
 
-			bool start(const unsigned int NbThread = 0);
-			
-			bool stop(void);
+private:
 
-			bool isClosing(void) const { return mIsClosing; }
+    TaskScheduler();
 
-			unsigned int getThreadCount(void) const { return mThreadCount; }
+    TaskScheduler(const TaskScheduler& ) {} 
 
+    ~TaskScheduler();
 
-			void	WaitForWorkersToBeReady();
+    bool mIsInitialized;
+    // The following members may be accessed by _multiple_ threads at the same time:
+    volatile unsigned mWorkerCount;	
+    volatile unsigned mTargetWorkerCount;	
+    volatile unsigned mActiveWorkerCount;
+    
+    bool              mWorkersIdle;
+    bool              mIsClosing;
+    unsigned          mThreadCount;
 
-			void	wakeUpWorkers();
 
-			static unsigned GetHardwareThreadsCount();
 
-			unsigned size()	const volatile;
+    friend class WorkerThread;
+};		
 
-			const WorkerThread* getWorkerThread(const unsigned int index);
-		
-
-		private:
-			
-			static boost::thread_specific_ptr<WorkerThread>	mWorkerThreadIndex;
-
-			//boost::thread_group mThreads;
-			WorkerThread* 	mThread[MAX_THREADS];
-
-			
-			// The following members may be accessed by _multiple_ threads at the same time:
-			volatile Task::Status*	mainTaskStatus;
-
-			volatile bool readyForWork;
-
-			boost::mutex  wakeUpMutex;
-
-			boost::condition_variable wakeUpEvent;
-			//boost::condition_variable sleepEvent;
-
-
-
-		private:
-
-			TaskScheduler();
-			
-			TaskScheduler(const TaskScheduler& ) {} 
-
-			~TaskScheduler();
-
-			bool mIsInitialized;
-			// The following members may be accessed by _multiple_ threads at the same time:
-			volatile unsigned mWorkerCount;	
-//			volatile unsigned mTargetWorkerCount;
-//			volatile unsigned mActiveWorkerCount;
-
-
-			bool						mWorkersIdle;
-
-
-			bool mIsClosing;
-
-			unsigned					mThreadCount;
-
-		
-
-			friend class WorkerThread;
-		};		
-
-
-
-		
-
-		SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(WorkerThread* pThread, const Task *pTask );
-
-		SOFA_MULTITHREADING_PLUGIN_API bool runThreadSpecificTask(const Task *pTask );
-
-
-
-
-
-	} // namespace simulation
+} // namespace simulation
 
 } // namespace sofa
 

@@ -64,7 +64,7 @@ void AverageCoord<DataTypes>::init()
 template <class DataTypes>
 void AverageCoord<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>
@@ -104,7 +104,7 @@ template <class DataTypes>
 void AverageCoord<DataTypes>::onBeginAnimationStep(const double dt)
 {
     SOFA_UNUSED(dt);
-    update();
+    this->requestUpdate();
 }
 
 } // namespace engine

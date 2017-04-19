@@ -419,6 +419,21 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
                                            std::string templatename,
                                            ObjectFactory::Creator::SPtr creator)
 {
+    // Make sure TClass is instantiated (as static variable init is not thread safe with visual c++)
+    // and also validate that the class info matches (i.e. SOFA_CLASS macro is used correctly)
+    const objectmodel::BaseClass* myclass = creator->getClass();
+    if (myclass == NULL)
+    {
+        std::cerr << "ERROR: ObjectFactory: getClass() for class "<<classname<<"<"<<templatename<<"> is NULL\n";
+    }
+    else if (myclass->className != classname || myclass->templateName != templatename)
+    {
+        std::cerr << "ERROR: ObjectFactory: getClass() for class "<<classname<<"<"<<templatename<<"> returns class "<<myclass->className<<"<"<<myclass->templateName<<">, SOFA_CLASS macro is probably missing or incorrect\n";
+    }
+    else
+    {
+        //std::cout << "ObjectFactory: getClass() for class "<<classname<<"<"<<templatename<<"> OK" << std::endl;
+    }
 
     if (!entry.className.empty() && entry.className != classname)
     {

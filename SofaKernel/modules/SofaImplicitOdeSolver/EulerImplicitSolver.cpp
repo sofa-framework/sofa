@@ -59,6 +59,7 @@ EulerImplicitSolver::EulerImplicitSolver()
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
+    , d_threadsafevisitor( initData( &d_threadsafevisitor, false, "threadsafevisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField.") )
 {
 }
 
@@ -79,7 +80,7 @@ void EulerImplicitSolver::cleanup()
 {
     // free the locally created vector x (including eventual external mechanical states linked by an InteractionForceField)
     sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
-    vop.v_free( x.id(), true, true );
+    vop.v_free( x.id(), !d_threadsafevisitor.getValue(), true );
 }
 
 void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
@@ -101,9 +102,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, !d_threadsafevisitor.getValue(), true );
 
-    x.realloc( &vop, true, true );
+    x.realloc( &vop, !d_threadsafevisitor.getValue(), true );
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO

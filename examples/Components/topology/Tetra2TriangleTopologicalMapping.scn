@@ -17,7 +17,7 @@
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
-            <include href="Objects/TriangleSetTopology.xml" src="@" tags=" " />
+            <include href="Objects/TriangleSetTopology.xml" src="" tags=" " />
             <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

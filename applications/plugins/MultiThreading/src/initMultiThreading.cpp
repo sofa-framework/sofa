@@ -67,4 +67,3 @@ const char* getModuleComponentList()
 //SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
 //#endif
 //SOFA_LINK_CLASS(DataExchange)
-

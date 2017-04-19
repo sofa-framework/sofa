@@ -400,7 +400,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 
     // security to avoid loops
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
-        (*it)->cleanDirty();
+        (*it)->forceCleanDirty();
 
 #ifndef NDEBUG
     sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
@@ -452,7 +452,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
 #ifndef NDEBUG
             std::cout << "PointSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
 #endif
-            topoEngine->update();
+            topoEngine->requestUpdate();
         }
     }
 

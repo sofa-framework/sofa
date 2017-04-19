@@ -973,14 +973,13 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
-        // no need to dynamic cast this time? TO BE CHECKED!
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
 #ifndef NDEBUG
             std::cout << "EdgeSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
 #endif
-            topoEngine->update();
+            topoEngine->requestUpdate();
         }
     }
 

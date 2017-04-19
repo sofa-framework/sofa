@@ -107,13 +107,13 @@ public:
         return fullpath;
     }
 
+protected:
     virtual void update()
     {
         this->Inherit::update();
         this->updatePath();
     }
 
-protected:
     void updatePath();
 
     std::string fullpath;

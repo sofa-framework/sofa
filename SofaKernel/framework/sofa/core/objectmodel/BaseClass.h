@@ -55,6 +55,8 @@ protected:
     BaseClass();
     virtual ~BaseClass();
 
+    void logNewClass();
+
 public:
 
 
@@ -386,6 +388,8 @@ protected:
         parents.resize(TClassParents<Parents>::nb());
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
+
+        logNewClass();
     }
     virtual ~TClass() {}
 
@@ -416,7 +420,4 @@ public:
 
 } // namespace sofa
 
-
-
 #endif
-

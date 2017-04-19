@@ -24,30 +24,30 @@ using core::collision::Contact;
 SOFA_DECL_CLASS(PenaltyCompliantContact)
 
 
-Creator<Contact::Factory, PenaltyCompliantContact<PointModel, PointModel> > PointPointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<LineModel, SphereModel> > LineSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<LineModel, PointModel> > LinePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<LineModel, LineModel> > LineLinePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, SphereModel> > TriangleSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, PointModel> > TrianglePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, LineModel> > TriangleLinePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, TriangleModel> > TriangleTrianglePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<SphereModel, SphereModel> > SphereSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<SphereModel, PointModel> > SpherePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<CapsuleModel, CapsuleModel> > CapsuleCapsulePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<CapsuleModel, TriangleModel> > CapsuleTrianglePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<CapsuleModel, SphereModel> > CapsuleSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<OBBModel, OBBModel> > OBBOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<SphereModel, OBBModel> > SphereOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<CapsuleModel, OBBModel> > CapsuleOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, OBBModel> > TriangleOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<RigidSphereModel, RigidSphereModel> > RigidSphereRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<SphereModel, RigidSphereModel> > SphereRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<LineModel, RigidSphereModel> > LineRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<TriangleModel, RigidSphereModel> > TriangleRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<RigidSphereModel, PointModel> > RigidSpherePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
-Creator<Contact::Factory, PenaltyCompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<PointModel, PointModel> > PointPointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<LineModel, SphereModel> > LineSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<LineModel, PointModel> > LinePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<LineModel, LineModel> > LineLinePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, SphereModel> > TriangleSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, PointModel> > TrianglePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, LineModel> > TriangleLinePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, TriangleModel> > TriangleTrianglePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<SphereModel, SphereModel> > SphereSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<SphereModel, PointModel> > SpherePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<CapsuleModel, CapsuleModel> > CapsuleCapsulePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<CapsuleModel, TriangleModel> > CapsuleTrianglePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<CapsuleModel, SphereModel> > CapsuleSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<OBBModel, OBBModel> > OBBOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<SphereModel, OBBModel> > SphereOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<CapsuleModel, OBBModel> > CapsuleOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, OBBModel> > TriangleOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<RigidSphereModel, RigidSphereModel> > RigidSphereRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<SphereModel, RigidSphereModel> > SphereRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<LineModel, RigidSphereModel> > LineRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<TriangleModel, RigidSphereModel> > TriangleRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<RigidSphereModel, PointModel> > RigidSpherePointPenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSpherePenaltyCompliantContactClass("PenaltyCompliantContact",true);
+sofa::core::collision::ContactCreator< PenaltyCompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBPenaltyCompliantContactClass("PenaltyCompliantContact",true);
 
 
 } // namespace collision

@@ -69,11 +69,19 @@ public:
     /// Get the pair of collision models which are in contact
     virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
 
-    /// Set the generic description of a contact point
+    /// Receive the description of contact points for this time step
     virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
 
+    /// Prepare the response (multi-threaded API, first step, before parallel tasks, graph changes allowed)
     virtual void createResponse(objectmodel::BaseContext* group) = 0;
 
+    /// Compute the response (multi-threaded API, second step, in parallel tasks, graph changes forbidden)
+    virtual void computeResponse() {}
+
+    /// Finalize the response (multi-threaded API, third step, after parallel tasks, graph changes allowed)
+    virtual void finalizeResponse(objectmodel::BaseContext* group) {}
+
+    /// Remove the response from the graph
     virtual void removeResponse() = 0;
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
@@ -123,6 +131,19 @@ public:
         return sofa::core::objectmodel::New<RealContact>(model1, model2, inter);
     }
 
+};
+
+template < class RealContact >
+class ContactCreator : public helper::Creator < Contact::Factory, RealContact >
+{
+public:
+    typedef helper::Creator < Contact::Factory, RealContact > Inherit;
+    ContactCreator(std::string name, bool multi = true)
+    : Inherit(name, multi)
+    {
+        // make sure metaclass info is initialized (fixing issues with multiple threads)
+        RealContact::GetClass();
+    }
 };
 
 } // namespace collision

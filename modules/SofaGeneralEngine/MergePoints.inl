@@ -66,7 +66,7 @@ void MergePoints<DataTypes>::init()
 template <class DataTypes>
 void MergePoints<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

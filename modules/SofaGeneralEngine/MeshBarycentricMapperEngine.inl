@@ -59,7 +59,7 @@ template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::init()
 {
 
-    this->update();
+    this->requestUpdate();
 
     if (TopoInput==NULL)
     {
@@ -81,7 +81,7 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

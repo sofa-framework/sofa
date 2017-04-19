@@ -80,6 +80,7 @@ public:
     Data<SReal> dampingCoef;
     Data<SReal> stiffnessCoef;
     Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
+    Data<bool> d_threadsafevisitor;
 };
 
 } // namespace odesolver

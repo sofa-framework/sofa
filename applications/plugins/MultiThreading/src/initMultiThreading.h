@@ -19,22 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/ClassInfo.h>
+#ifndef PLUGIN_MULTITHREADING_INIT_H
+#define PLUGIN_MULTITHREADING_INIT_H
+
+#include <sofa/SofaGeneral.h>
+
+#ifndef WIN32
+    #define SOFA_EXPORT_DYNAMIC_LIBRARY 
+    #define SOFA_IMPORT_DYNAMIC_LIBRARY
+    #define SOFA_MULTITHREADING_PLUGIN_API
+#else
+    #ifdef SOFA_MULTITHREADING_PLUGIN
+		#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+		#define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+    #else
+		#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+		#define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+    #endif
+#endif
+
 
 namespace sofa
 {
-
-namespace core
+namespace component
 {
+	extern "C" {
+                SOFA_MULTITHREADING_PLUGIN_API void initExternalModule();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();		
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
+                SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
+	}
 
-namespace objectmodel
-{
+} //component
+} //sofa 
 
-std::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
 
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+#endif /* PLUGIN_XICATH_INIT_H */

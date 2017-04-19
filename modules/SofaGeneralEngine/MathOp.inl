@@ -462,7 +462,7 @@ void MathOp<VecT>::reinit()
 {
     createInputs();
 
-    update();
+    this->requestUpdate();
 }
 
 template <class VecT>

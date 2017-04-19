@@ -302,7 +302,7 @@ void MeshROI<DataTypes>::computeBoundingBox()
 template <class DataTypes>
 void MeshROI<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

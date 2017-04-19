@@ -117,7 +117,7 @@ void PairBoxROI<DataTypes>::init()
 template <class DataTypes>
 void PairBoxROI<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

@@ -63,7 +63,7 @@ void IndicesFromValues<T>::init()
 template <class T>
 void IndicesFromValues<T>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class T>

@@ -35,6 +35,7 @@
 #endif
 #include <string.h>
 #include <iostream>
+#include <stack>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -48,26 +49,22 @@ namespace system
 {
 
 #if defined(WIN32)
-	#define chdir _chdir
 	#define getcwd _getcwd
 #elif defined(_XBOX)
-	int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
 	char* getcwd(char *buffer, int maxlen) { return ""; } // NOT IMPLEMENTED
 #elif defined(PS3)
 	std::string g_currentWorkingDir = std::string("/app_home/");
 	char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
-	int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
 #endif
+
+std::stack<std::string> sofaCurrentDirectory;
 
 SetDirectory::SetDirectory(const char* filename)
 {
     directory = GetParentDir(filename);
     if (!directory.empty())
     {
-//         std::cout << ">chdir("<<directory<<")"<<std::endl;
-        previousDir = GetCurrentDir();
-        if (chdir(directory.c_str()) != 0)
-            msg_error("SetDirectory") << "can't change directory.";
+        sofaCurrentDirectory.push(directory);
     }
 }
 
@@ -78,11 +75,9 @@ SetDirectory::SetDirectory(const std::string& filename)
 
 SetDirectory::~SetDirectory()
 {
-    if (!directory.empty() && !previousDir.empty())
+    if (!directory.empty())
     {
-//         std::cout << "<chdir("<<directory<<")"<<std::endl;
-        if (chdir(previousDir.c_str()) != 0)
-            msg_error("SetDirectory") << "can't change directory.";
+        sofaCurrentDirectory.pop();
     }
 }
 
@@ -100,11 +95,18 @@ bool SetDirectory::IsAbsolute(const std::string& filename)
 /// Get the current directory
 std::string SetDirectory::GetCurrentDir()
 {
-    char dir[1024];
-    memset(dir,0,sizeof(dir));
-    if (getcwd(dir, sizeof(dir)) == NULL)
+    if (!sofaCurrentDirectory.empty())
+    {
+        return sofaCurrentDirectory.top();
+    }
+    else
+    {
+        char dir[1024];
+        memset(dir,0,sizeof(dir));
+        if (getcwd(dir, sizeof(dir)) == NULL)
         msg_error("SetDirectory") << "can't get current directory.";
-    return dir;
+        return dir;
+    }
 }
 
 std::string SetDirectory::GetParentDir(const char* filename)

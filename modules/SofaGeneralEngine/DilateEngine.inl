@@ -86,7 +86,7 @@ void DilateEngine<DataTypes>::bwdInit()
 template <class DataTypes>
 void DilateEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

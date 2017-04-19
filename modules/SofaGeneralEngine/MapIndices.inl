@@ -64,7 +64,7 @@ void MapIndices<T>::init()
 template <class T>
 void MapIndices<T>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class T>

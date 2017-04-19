@@ -25,136 +25,86 @@
 #include <MultiThreading/config.h>
 
 #include <boost/detail/atomic_count.hpp>
-#include <boost/pool/singleton_pool.hpp>
-
 #include <sofa/helper/system/atomic.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/defaulttype/Vec.h>
 #include <boost/thread/mutex.hpp>
 
 namespace sofa
 {
 
-	namespace simulation
-	{
+namespace simulation
+{
 
-		class WorkerThread;
-		class TaskScheduler;
+class WorkerThread;
+class TaskScheduler;
 
+class SOFA_MULTITHREADING_PLUGIN_API Task
+{
+public:
+    // Task Status class definition
+    class Status
+    {
+    public:
+        Status();
 
-		class SOFA_MULTITHREADING_PLUGIN_API Task
-		{
-		public:
+        bool IsBusy() const;
 
+    private:
 
-			// Task Status class definition
-			class Status
-			{
-			public:
-				Status();
+        void MarkBusy(bool bBusy);
 
-				bool IsBusy() const;
+        /*volatile*/ boost::detail::atomic_count mBusy;
 
-				
+        friend class WorkerThread;
+    };
 
-			private:
+    typedef sofa::helper::system::thread::ctime_t ctime_t;
+    typedef std::pair<ctime_t,ctime_t> TimeInterval;
+    typedef sofa::defaulttype::Vec4f Color;
 
-				void MarkBusy(bool bBusy);
+    virtual const char* getName() const;
+    virtual Color getColor() const;
+    
+    virtual bool runTask(WorkerThread* thread);
 
-				/*volatile*/ boost::detail::atomic_count mBusy;
+    const TimeInterval& getExecTime() const { return execTime; }
+    int getExecThreadIndex() const { return execThreadIndex; }
+    ctime_t getExecDuration() const { return execTime.second - execTime.first; }
 
-				friend class WorkerThread;
-			};
+    static bool compareExecDuration(Task* a, Task* b)
+    {
+        return a->getExecDuration() < b->getExecDuration();
+    }
+    
+    static bool compareExecDurationReverse(Task* a, Task* b)
+    {
+        return a->getExecDuration() > b->getExecDuration();
+    }
+protected:
+    
+    virtual bool run(WorkerThread* thread) = 0;
 
+    Task(const Task::Status* status);
 
+    virtual ~Task();
 
-		protected:
+    inline Task::Status* getStatus(void) const;
 
-			Task(const Task::Status* status);
+    const Task::Status*	m_Status;
 
-		
-		public:
-			
-			virtual ~Task();
+    friend class WorkerThread;
 
-			//struct TaskTag{};
-			//typedef boost::singleton_pool<TaskTag, sizeof(*this)> memory_pool;
+    TimeInterval execTime;
+    int execThreadIndex;
 
+private:
 
-			virtual bool run(WorkerThread* thread) = 0;
+    //Task(const Task& /*task*/) {}
+    //Task& operator= (const Task& /*task*/) {return *this;}
+};
 
-
-		private:
-
-            Task(const Task& /*task*/) {}
-            Task& operator= (const Task& /*task*/) {return *this;}
-
-
-		protected:
-
-			inline Task::Status* getStatus(void) const;
-
-
-
-			const Task::Status*	m_Status;
-
-			friend class WorkerThread;
-
-		};
-
-
-
-		// This task is called once by each thread used by the TasScheduler
-		// this is useful to initialize the thread specific variables
-		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
-		{
-
-		public:
-
-			//InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-            ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
-
-			virtual ~ThreadSpecificTask();
-
-			virtual bool runThreadSpecific()  {return true;}
-
-			virtual bool runCriticalThreadSpecific() {return true;}
-
-		private:
-
-			virtual bool run(WorkerThread* );
-
-			//volatile long* mAtomicCounter;
-			helper::system::atomic<int>* mAtomicCounter;
-
-			boost::mutex*	 mThreadSpecificMutex;
-
-		};
-
-
-
-
-		// not used yet
-		template<class T>
-		class TaskAllocator
-		{
-			struct TaskBaseTag{};
-			typedef boost::singleton_pool<TaskBaseTag, sizeof(T)> memory_pool; 
-
-		public:
-            static inline void* operator new (std::size_t /*size*/)
-			{
-				return memory_pool::malloc();
-			}
-
-			static inline void operator delete (void* ptr) 
-			{
-				memory_pool::free(ptr);
-
-			}
-
-		};
-
-
-	} // namespace simulation
+} // namespace simulation
 
 } // namespace sofa
 

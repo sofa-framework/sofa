@@ -57,7 +57,7 @@ void GroupFilterYoungModulus<DataTypes>::init()
 template <class DataTypes>
 void GroupFilterYoungModulus<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

@@ -70,7 +70,7 @@ void GenerateGrid<DataTypes>::init()
 template <class DataTypes>
 void GenerateGrid<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

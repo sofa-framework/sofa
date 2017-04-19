@@ -51,7 +51,7 @@ using sofa::helper::WriteOnlyAccessor;
 
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
-    : d_useTopo(initData(&d_useTopo, true, "useTopo", "Use avalaible topology to compute neighborhood."))
+    : d_useTopo(initData(&d_useTopo, true, "useTopo", "Use available topology to compute neighborhood."))
     , d_radius(initData(&d_radius, (Real)1.0, "radius", "Neighborhood range."))
     , d_fixedRadius(initData(&d_fixedRadius, (Real)1.0, "fixedRadius", "Neighborhood range (for non mechanical particles)."))
     , d_nbClusters(initData(&d_nbClusters, (int)-1, "number", "Number of clusters (-1 means that all input points are selected)."))
@@ -297,8 +297,8 @@ bool ClusteringEngine<DataTypes>::load()
 {
     if (!this->input_filename.isSet()) return false;
 
-    input_filename.update();
-    string fname(this->input_filename.getFullPath());
+    input_filename.requestUpdate();
+    std::string fname(this->input_filename.getFullPath());
     if(!fname.compare(loadedFilename)) return true;
 
     if (!fname.size()) return false;

@@ -67,6 +67,8 @@ public:
 
     Data<bool> m_solveVelocityConstraintFirst;
 
+    Data<bool> d_threadsafevisitor;
+
 protected :
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;

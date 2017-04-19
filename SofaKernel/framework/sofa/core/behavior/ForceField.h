@@ -194,7 +194,7 @@ public:
                     for (unsigned j=0; j<S; j++)
                     {
                         unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
-                        unsigned column = 3*n2+j;                      // j-th column associated with node n2 in the element matrix
+                        unsigned column = S*n2+j;                      // j-th column associated with node n2 in the element matrix
                         bm->add( ROW,COLUMN, em[row][column]* scale );
                     }
                 }

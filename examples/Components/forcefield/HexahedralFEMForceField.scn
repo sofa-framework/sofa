@@ -16,14 +16,14 @@
         <DiagonalMass massDensity="0.2" />
         <FixedConstraint indices="12 15 28 31" />
         <Node name="Q">
-            <include href="Objects/QuadSetTopology.xml" src="@" />
+            <include href="Objects/QuadSetTopology.xml" src="" />
             <Hexa2QuadTopologicalMapping input="@../Container" output="@Container" />
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
                 <IdentityMapping input="@../../Hexa" output="@Visual" />
             </Node>
             <Node name="T">
-                <include href="Objects/TriangleSetTopology.xml" src="@" />
+                <include href="Objects/TriangleSetTopology.xml" src="" />
                 <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
                 <TriangleSet />
             </Node>

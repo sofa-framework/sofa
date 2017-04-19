@@ -121,7 +121,7 @@ void GNode::detachFromGraph()
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
+void* GNode::getObject(const sofa::core::objectmodel::BaseClass* class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if (dir == SearchRoot)
     {
@@ -130,11 +130,8 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
     }
     void *result = NULL;
 #ifdef DEBUG_GETOBJECT
-    std::string cname = class_info.name();
-    if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "GNODE: search for object of type " << class_info.name() << std::endl;
-    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
-    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
+    if (class_info->className != std::string("Shader"))
+        std::cout << "GNODE: search for object of type " << class_info->className << std::endl;
 #endif
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
@@ -143,10 +140,9 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
 #ifdef DEBUG_GETOBJECT
-                if (isg)
-                    std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+                std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
 #endif
-                result = class_info.dynamicCast(obj);
+                result = class_info->dynamicCast(obj);
                 if (result != NULL)
                 {
 #ifdef DEBUG_GETOBJECT
@@ -186,7 +182,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 /// Generic object access, given a path from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
+void* GNode::getObject(const sofa::core::objectmodel::BaseClass* class_info, const std::string& path) const
 {
     if (path.empty())
     {
@@ -239,10 +235,10 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             }
             else
             {
-                void* result = class_info.dynamicCast(obj);
+                void* result = class_info->dynamicCast(obj);
                 if (result == NULL)
                 {
-                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info->className<<std::endl;
                     return NULL;
                 }
                 else
@@ -258,7 +254,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 /// Generic list of objects access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
+void GNode::getObjects(const sofa::core::objectmodel::BaseClass* class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if (dir == SearchRoot)
     {
@@ -277,7 +273,7 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
-            void* result = class_info.dynamicCast(obj);
+            void* result = class_info->dynamicCast(obj);
             if (result != NULL && (tags.empty() || (obj)->getTags().includes(tags)))
                 container(result);
         }

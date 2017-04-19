@@ -159,7 +159,7 @@ void DAGNode::notifyMoveChild(Node::SPtr node, Node* prev)
 /// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
+void* DAGNode::getObject(const sofa::core::objectmodel::BaseClass* class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if (dir == SearchRoot)
     {
@@ -168,11 +168,8 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     void *result = NULL;
 #ifdef DEBUG_GETOBJECT
-    std::string cname = class_info.name();
-    if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "DAGNode: search for object of type " << class_info.name() << std::endl;
-    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
-    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
+    if (class_info->className != std::string("Shader"))
+        std::cout << "DAGNode: search for object of type " << class_info->className << std::endl;
 #endif
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
@@ -181,10 +178,9 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
 #ifdef DEBUG_GETOBJECT
-                if (isg)
-                    std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
+                std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
 #endif
-                result = class_info.dynamicCast(obj);
+                result = class_info->dynamicCast(obj);
                 if (result != NULL)
                 {
 #ifdef DEBUG_GETOBJECT
@@ -228,7 +224,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Generic object access, given a path from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
+void* DAGNode::getObject(const sofa::core::objectmodel::BaseClass* class_info, const std::string& path) const
 {
     if (path.empty())
     {
@@ -294,10 +290,10 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             }
             else
             {
-                void* result = class_info.dynamicCast(obj);
+                void* result = class_info->dynamicCast(obj);
                 if (result == NULL)
                 {
-                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info->className<<std::endl;
                     return NULL;
                 }
                 else
@@ -313,7 +309,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Generic list of objects access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
-void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
+void DAGNode::getObjects(const sofa::core::objectmodel::BaseClass* class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
     if( dir == SearchRoot )
     {

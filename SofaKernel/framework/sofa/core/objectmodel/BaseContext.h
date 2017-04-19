@@ -25,7 +25,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/Tag.h>
-#include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/core/ExecParams.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -211,17 +210,17 @@ public:
     /// Generic object access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const ClassInfo& class_info, SearchDirection dir = SearchUp) const;
+    virtual void* getObject(const BaseClass* class_info, SearchDirection dir = SearchUp) const;
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const ClassInfo& class_info, const TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void* getObject(const BaseClass* class_info, const TagSet& tags, SearchDirection dir = SearchUp) const;
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const ClassInfo& class_info, const std::string& path) const;
+    virtual void* getObject(const BaseClass* class_info, const std::string& path) const;
 
     class GetObjectsCallBack
     {
@@ -233,19 +232,19 @@ public:
     /// Generic list of objects access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
+    virtual void getObjects(const BaseClass* class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void getObjects(const BaseClass* class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
 
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
     T* get(SearchDirection dir = SearchUp) const
     {
-        return reinterpret_cast<T*>(this->getObject(classid(T), dir));
+        return reinterpret_cast<T*>(this->getObject(T::GetClass(), dir));
     }
 
 
@@ -267,7 +266,7 @@ public:
     template<class T>
     T* get(const Tag& tag, SearchDirection dir = SearchUp) const
     {
-        return reinterpret_cast<T*>(this->getObject(classid(T), TagSet(tag), dir));
+        return reinterpret_cast<T*>(this->getObject(T::GetClass(), TagSet(tag), dir));
     }
 
     /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
@@ -288,7 +287,7 @@ public:
     template<class T>
     T* get(const TagSet& tags, SearchDirection dir = SearchUp) const
     {
-        return reinterpret_cast<T*>(this->getObject(classid(T), tags, dir));
+        return reinterpret_cast<T*>(this->getObject(T::GetClass(), tags, dir));
     }
 
     /// Generic object access template wrapper, given a set of required tags, possibly searching up or down from the current context
@@ -309,7 +308,7 @@ public:
     template<class T>
     T* get(const std::string& path) const
     {
-        return reinterpret_cast<T*>(this->getObject(classid(T), path));
+        return reinterpret_cast<T*>(this->getObject(T::GetClass(), path));
     }
 
     /// Generic object access template wrapper, given a path from the current context
@@ -343,7 +342,7 @@ public:
     void get(Container* list, SearchDirection dir = SearchUp) const
     {
         GetObjectsCallBackT<T,Container> cb(list);
-        this->getObjects(classid(T), cb, dir);
+        this->getObjects(T::GetClass(), cb, dir);
     }
 
     /// Generic list of objects access template wrapper, given a required tag, possibly searching up or down from the current context
@@ -351,7 +350,7 @@ public:
     void get(Container* list, const Tag& tag, SearchDirection dir = SearchUp) const
     {
         GetObjectsCallBackT<T,Container> cb(list);
-        this->getObjects(classid(T), cb, TagSet(tag), dir);
+        this->getObjects(T::GetClass(), cb, TagSet(tag), dir);
     }
 
     /// Generic list of objects access template wrapper, given a set of required tags, possibly searching up or down from the current context
@@ -359,7 +358,7 @@ public:
     void get(Container* list, const TagSet& tags, SearchDirection dir = SearchUp) const
     {
         GetObjectsCallBackT<T,Container> cb(list);
-        this->getObjects(classid(T), cb, tags, dir);
+        this->getObjects(T::GetClass(), cb, tags, dir);
     }
 
     /// @}

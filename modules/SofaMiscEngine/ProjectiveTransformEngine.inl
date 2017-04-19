@@ -57,7 +57,7 @@ void ProjectiveTransformEngine<DataTypes>::init()
 template <class DataTypes>
 void ProjectiveTransformEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

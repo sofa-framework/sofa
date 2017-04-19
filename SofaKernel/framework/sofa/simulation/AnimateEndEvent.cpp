@@ -43,6 +43,7 @@ SOFA_EVENT_CPP( AnimateEndEvent )
 AnimateEndEvent::AnimateEndEvent(SReal dt)
     : sofa::core::objectmodel::Event()
     , dt(dt)
+    , taskStatus(0)
 {
 }
 

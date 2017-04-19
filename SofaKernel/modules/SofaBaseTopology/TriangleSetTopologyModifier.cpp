@@ -729,7 +729,7 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
 #ifndef NDEBUG
             std::cout << "TriangleSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
 #endif
-            topoEngine->update();
+            topoEngine->requestUpdate();
         }
     }
 

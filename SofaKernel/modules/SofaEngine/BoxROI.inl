@@ -336,7 +336,7 @@ void BoxROI<DataTypes>::reinit()
 
     computeOrientedBoxes();
 
-    update();
+    this->requestUpdate();
 }
 
 

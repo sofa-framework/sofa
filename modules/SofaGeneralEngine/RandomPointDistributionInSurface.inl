@@ -94,7 +94,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

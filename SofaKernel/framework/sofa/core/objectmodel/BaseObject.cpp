@@ -63,12 +63,20 @@ BaseObject::~BaseObject()
     }
 }
 
+
+SOFA_CORE_API int logGraphUpdates = 0;
+
+
 // This method insures that context is never NULL (using BaseContext::getDefault() instead)
 // and that all slaves of an object share its context
 void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
+    if (logGraphUpdates && before != NULL)
+    {
+        std::cout << "changeContextLink " << getTypeName() << " " << getName() << "    " << before->getName() << " -> " << after->getName() << std::endl;
+    }
     for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
     if (after != BaseContext::getDefault())
     {
@@ -81,6 +89,10 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
 {
     if (!ptr) return;
+    if (logGraphUpdates)
+    {
+        std::cout << "changeSlaveLink " << getTypeName() << " " << getName() << "    " << (add ? "ADD" : "DEL") << " " << ptr->getTypeName() << " " << ptr->getName() << std::endl;
+    }
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
     else     { ptr->l_master.reset(); ptr->l_context.reset(); }
 }
@@ -93,7 +105,10 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
         if (valueString[0] != '@')
         {
-            serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            if(!valueString.empty())
+            {
+                serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            }
         }
         else
         {

@@ -59,7 +59,7 @@ void JoinPoints<DataTypes>::init()
 template <class DataTypes>
 void JoinPoints<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

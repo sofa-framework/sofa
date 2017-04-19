@@ -117,7 +117,7 @@ void ProximityROI<DataTypes>::init()
 template <class DataTypes>
 void ProximityROI<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 class SortingPair

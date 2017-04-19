@@ -57,9 +57,13 @@ public:
     ~AnimateBeginEvent();
 
     SReal getDt() const { return dt; }
+	void setTaskStatus(void* status) { taskStatus = status; }
+	void* getTaskStatus() const { return taskStatus; }
+
     virtual const char* getClassName() const { return "AnimateBeginEvent"; }
 protected:
     SReal dt;
+	void* taskStatus;
 };
 
 

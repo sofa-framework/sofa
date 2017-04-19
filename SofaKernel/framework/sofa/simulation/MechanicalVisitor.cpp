@@ -642,6 +642,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdMappedMechanicalState(simulati
 template< VecType vtype>
 Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulation::Node* /*node*/, core::behavior::BaseInteractionForceField* ff)
 {
+
     if( interactionForceField )
     {
         core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
@@ -649,6 +650,7 @@ Visitor::Result MechanicalVFreeVisitor<vtype>::fwdInteractionForceField(simulati
         mm = ff->getMechModel2();
         mm->vFree( this->params, v.getId(mm) );
     }
+
     return RESULT_CONTINUE;
 }
 

@@ -21,7 +21,7 @@
         		<FixedConstraint indices="12 15 28 31" />    
 <!--         <BoxConstraint box="0 3 0 0 3 1 3 3 0 3 3 1" /> -->
         <Node name="Q">
-            <QuadSetTopologyContainer name="Quad_topo" src="@" tags=" " />
+            <QuadSetTopologyContainer name="Quad_topo" src="" tags=" " />
             <QuadSetTopologyModifier name="Modifier" />
             <QuadSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
             <QuadSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawQuads="1" />

@@ -30,6 +30,15 @@
 
 #include <sstream>
 
+#ifdef WIN32
+#include <windows.h>
+#include <direct.h>
+#elif defined(_XBOX)
+#include <xtl.h>
+#else
+#include <unistd.h>
+#endif
+
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
 #include "PythonFactory.h"
@@ -41,6 +50,14 @@ namespace sofa
 
 namespace simulation
 {
+
+#if defined(WIN32)
+    #define chdir _chdir
+#elif defined(_XBOX)
+    int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
+#elif defined(PS3)
+    int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
+#endif
 
 std::string SceneLoaderPY::OurHeader;
 
@@ -94,7 +111,8 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
+    std::string directory = helper::system::SetDirectory::GetParentDir(filename);
+    if (chdir(directory.c_str()) != 0) msg_error("SetDirectory") << "can't get current directory.";
 
     notifyLoadingScene();
     if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))

@@ -65,7 +65,7 @@ void RigidToQuatEngine<DataTypes>::init()
 template <class DataTypes>
 void RigidToQuatEngine<DataTypes>::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template <class DataTypes>

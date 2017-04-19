@@ -133,7 +133,7 @@ void Distances< DataTypes >::init()
 template<class DataTypes>
 void Distances< DataTypes >::reinit()
 {
-    update();
+    this->requestUpdate();
 }
 
 template<class DataTypes>

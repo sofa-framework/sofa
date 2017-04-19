@@ -77,7 +77,7 @@ void TopologyEngineImpl< VecT>::init()
 template <typename VecT>
 void TopologyEngineImpl< VecT>::reinit()
 {
-    this->update();
+    this->requestUpdate();
 }
 
 
