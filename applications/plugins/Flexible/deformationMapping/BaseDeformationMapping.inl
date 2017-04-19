@@ -604,13 +604,16 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
     {
         if( !eigenJacobian.rows() ) updateJ();
 
-        //        if( this->maskTo->isActivated() )
-        //        {
-        //            updateMaskedJ();
-        //            maskedEigenJacobian.addMultTranspose(dIn,dOut);
-        //        }
-        //        else
-        eigenJacobian.addMultTranspose(dIn,dOut);
+        if( this->maskTo->isActivated() ) {
+            helper::WriteAccessor< Data<InVecDeriv> > dst (dIn);
+            helper::ReadAccessor<Data<OutVecDeriv> > src (dOut);
+            
+            eigenJacobian.addMultTransposeMask(dst, src, *this->maskTo);
+
+        } else {
+            eigenJacobian.addMultTranspose(dIn,dOut);
+        }
+
     }
     else
     {
