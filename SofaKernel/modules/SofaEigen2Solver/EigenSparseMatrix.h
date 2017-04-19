@@ -403,6 +403,46 @@ protected:
 		}
 	}
 
+public:
+    template<class InType, class OutType, class Mask>
+    void addMultTransposeMask(InType& result, const OutType& data, const Mask& mask, Real fact = 1.0) const {
+        if( data.empty() ) return;
+
+        if(!canCast(result)) {
+            static std::ostream& once =
+                std::cerr << "warning: addMultTransposeMask fallback to addMultTranspose" << std::endl;
+            (void) once;
+            
+            addMultTranspose_impl(result, data, fact);
+            return;
+        }
+
+        VectorEigenIn tmp;
+        
+        for(std::size_t i = 0, n = mask.size(); i < n; ++i) {
+
+            if(!mask.getEntry(i) ) continue;
+
+            const std::size_t off = i * Nout;
+            
+            if( alias(result, data) ) {
+                tmp = (this->compressedMatrix.middleRows(off, Nout).transpose()
+                       * (map(data).template segment<Nout>(off).template cast<Real>()
+                          * fact)).template cast<InReal>();
+                
+                map(result) += tmp;
+            } else {
+                map(result).noalias() += (this->compressedMatrix.middleRows(off, Nout).transpose()
+                                          * (map(data).template segment<Nout>(off).template cast<Real>()
+                                             * fact)).template cast<InReal>();
+            }
+            
+        }
+        
+    }
+    
+protected:
+    
 	template<class InType, class OutType>
     void addMultTranspose_impl( InType& result, const OutType& data, Real fact) const {
 
@@ -422,6 +462,7 @@ protected:
 			return;
 		}
 
+        
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
 
