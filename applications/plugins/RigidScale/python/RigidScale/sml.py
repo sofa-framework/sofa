@@ -53,6 +53,22 @@ def insertRigidScale(parentNode, rigidModel, param):
 
     return body
 
+def getSolidSkinningIndicesAndWeights(solidModel, meshId, skinningArmatureBoneIndexById) :
+    """ Construct the indices and weights vectors for the skinning of solidModel
+    """
+    indices = dict()
+    weights = dict()
+    for skinning in solidModel.skinnings:
+        if skinning.mesh.id == meshId:
+            currentBoneIndex = skinningArmatureBoneIndexById[skinning.solid.id]
+            for index,weight in zip(skinning.index, skinning.weight):
+                if not index in indices:
+                    indices[index]=list()
+                    weights[index]=list()
+                indices[index].append(currentBoneIndex)
+                weights[index].append(weight)
+    #TODO fill potential holes in indices/weights ?
+    return (indices, weights)
 
 class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
@@ -172,6 +188,8 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         self.deformables = dict()
         self.skins = dict()
 
+        self.param.attachedSolids = dict() # for visual mapping
+
         # visual
         self.param.showRigid = True
         self.param.showRigidScale = 0.05  # SI unit (m)
@@ -215,14 +233,25 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
                 for mesh in solidModel.mesh:
                     # take care only of visual meshes with skinning
                     if solidModel.meshAttributes[mesh.id].visual:
+                        (indices, weights) = getSolidSkinningIndicesAndWeights(solidModel, mesh.id, self.skinningArmatureBoneIndexById)
                         deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
-                        deformable.loadMesh(mesh.source)
-                        deformable.addMechanicalObject()
-                        (indices, weights) = Flexible.sml.getSolidSkinningIndicesAndWeights(solidModel, self.skinningArmatureBoneIndexById)
-                        deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
-                        self.skins[mesh.id] = (deformable.addVisual()).visual
-                        deformable.addMass(self.param.mass)
+                        if solidModel.meshAttributes[mesh.id].simulation:
+                            deformable.loadMesh(mesh.source)
+                            deformable.addMechanicalObject()
+                            deformable.addMass(self.param.mass)
+                            deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
+                            self.skins[mesh.id] = (deformable.addVisual()).visual
+                        else:
+                            deformable.loadVisual(mesh.source, initRestPositions = True)
+                            deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values(), isMechanical = False)
                         self.deformables[mesh.id] = deformable
+            else:
+                if solidModel.id in self.param.attachedSolids:
+                    for mesh in solidModel.mesh:
+                        deformable = Flexible.API.Deformable(self.rigidScales[self.param.attachedSolids[solidModel.id]].rigidNode, solidModel.name+"_"+mesh.name)
+                        deformable.loadVisual(mesh.source, initRestPositions = True)
+                        deformable.node.createObject("RigidMapping", mapForces=False, mapConstraints=False, mapMasses=False, globalToLocalCoords=True)
+
 
 
 
