@@ -97,9 +97,10 @@ public:
         /// Note it includes having a mechanical child
         /// or a child mapped with a mapping generating geometric stiffness
         bool mechanical;
-		
-		bool master() const { return mechanical && map.empty(); }
-        bool compliant() const { return mechanical && notempty(C); }
+
+        // these are in AssemblyVisitor now
+		// bool master() const { return mechanical && map.empty(); }
+        // bool compliant() const { return mechanical && notempty(C); }
 		
 		unsigned vertex;
 		
@@ -111,11 +112,16 @@ public:
 		map_type map;
 		
 		// check consistency
-		bool check() const;
+		// bool check() const;
 
 		void debug() const;
 	};
 
+
+    bool is_master(const chunk& c) const;
+    bool is_compliant(const chunk& c) const;
+    
+    
     // a special structure to handle InteractionForceFields
     struct InteractionForceField
     {
@@ -252,12 +258,17 @@ private:
 // -> or at least its implementation could be written in the .cpp
 struct AssemblyVisitor::process_helper {
 
+    const AssemblyVisitor* owner;
     process_type& res;
     const graph_type& g;
 
-    process_helper(process_type& res, const graph_type& g)
-        : res(res), g(g)  {
-
+    process_helper(const AssemblyVisitor* owner,
+                   process_type& res,
+                   const graph_type& g)
+        : owner(owner),
+          res(res),
+          g(g)  {
+        
     }
 
     void operator()(unsigned v) const {
@@ -269,7 +280,7 @@ struct AssemblyVisitor::process_helper {
         fullmapping_type& full = res.fullmapping;
         offset_type& offsets = res.offset.master;
 
-        if( c->master() || !c->mechanical ) return;
+        if( owner->is_master(*c) || !c->mechanical ) return;
 
         rmat& Jc = full[ curr ]; // (output) full mapping from independent dofs to mapped dofs c
         assert( empty(Jc) );
@@ -311,7 +322,7 @@ struct AssemblyVisitor::process_helper {
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
-                if( p->master() && empty(Jp) ) {
+                if( owner->is_master(*p) && empty(Jp) ) {
                     shift_right<rmat>( Jp, find(offsets, pdofs), p->size, size_m);
                 }
 
