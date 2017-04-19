@@ -108,7 +108,7 @@ AnyFailureChecker::~AnyFailureChecker() {
 class TestMessageHandler_test : public Sofa_test<>
 {
 public:
-    void defaultTestBehaviorSHOULDFAIL()
+    void defaultTestBehavior()
     {
         msg_deprecated("HERE") << "This should generate a failure"  ;
         msg_warning("HERE") << "This should generate a failure" ;
@@ -116,7 +116,7 @@ public:
     }
 
 
-    void catchingTestBehaviorSHOULDNOTFAIL()
+    void catchingTestBehavior()
     {
         EXPECT_MSG_EMIT(Warning) ;
         EXPECT_MSG_EMIT(Error) ;
@@ -126,7 +126,7 @@ public:
     }
 
     /// THIS TEST SHOULD FAIL.
-    void expectAMessageissingBehaviorSHOULDFAIL()
+    void expectAMessageissingBehavior()
     {
         EXPECT_MSG_EMIT(Warning) ;
         EXPECT_MSG_EMIT(Error) ;
@@ -135,7 +135,7 @@ public:
         //msg_error("HERE") << "This should not generate a test falure" ;
     }
 
-    void noEmitTestBehaviorSHOULDFAIL()
+    void noEmitTestBehavior()
     {
         EXPECT_MSG_NOEMIT(Warning) ;
         EXPECT_MSG_NOEMIT(Error) ;
@@ -144,12 +144,12 @@ public:
         msg_error("HERE") << "This should generate a test falure with line number close to " << __LINE__ ;
     }
 
-    void noEmitIgnoredTestBehaviorSHOULDNTFAIL()
+    void noEmitIgnoredTestBehavior()
     {
-        EXPECT_MSG_EMIT(Error) ;
-        EXPECT_MSG_EMIT(Warning) ;
-        IGNORE_MSG(Warning) ;
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_MSG_NOEMIT(Warning) ;
 
+        IGNORE_MSG(Warning) ;
         msg_warning("HERE") << "This shouldn't generate a failure " ;
 
         {
@@ -158,7 +158,7 @@ public:
         }
     }
 
-    void complexTestBehaviorSHOULDFAIL()
+    void complexTestBehavior()
     {
         {
             EXPECT_MSG_EMIT(Warning) ;
@@ -185,26 +185,32 @@ public:
 
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, defaultTestBehaviorSHOULDFAIL)
+TEST_F(TestMessageHandler_test, defaultTestBehavior)
 {
-   EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->defaultTestBehaviorSHOULDFAIL(), "Message") ;
+   EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->defaultTestBehavior(), "Message") ;
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, catchingTestBehaviorSHOULDNOTFAIL)
+TEST_F(TestMessageHandler_test, catchingTestBehavior)
 {
-    this->catchingTestBehaviorSHOULDNOTFAIL();
+    this->catchingTestBehavior();
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, noEmitTestBehaviorSHOULDFAIL)
+TEST_F(TestMessageHandler_test, noEmitTestBehavior)
 {
-    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->noEmitTestBehaviorSHOULDFAIL(), "Message") ;
+    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->noEmitTestBehavior(), "Message") ;
 }
 
 /// performing the regression test on every plugins/projects
-TEST_F(TestMessageHandler_test, complexTestBehaviorSHOULDFAIL)
+TEST_F(TestMessageHandler_test, noEmitIgnoredTestBehavior)
 {
-    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->complexTestBehaviorSHOULDFAIL(), "Message") ;
+    this->noEmitIgnoredTestBehavior();
+}
+
+/// performing the regression test on every plugins/projects
+TEST_F(TestMessageHandler_test, complexTestBehavior)
+{
+    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->complexTestBehavior(), "Message") ;
 }
 
