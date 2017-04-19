@@ -196,10 +196,11 @@ public:
         @sa endBlockRow()
         @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
         */
-    void beginBlockRow(unsigned row)
-    {
-        bRow = row;
-        bColumns.clear();
+
+
+    
+    void beginBlockRow(unsigned row) {
+        block_row = row;
         blocks.clear();
     }
 
@@ -215,12 +216,10 @@ public:
 
         @warning the block must NOT already exist
         */
-    void createBlock( unsigned column,  const Block& b )
-    {
-        blocks.push_back(b);
-        bColumns.push_back(column);
+    void createBlock( unsigned column, const Block& b ) {
+        blocks.push_back( blocks_type(column, b) );
     }
-
+    
     /** Finalize the creation of the current block row.
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b )
@@ -228,22 +227,16 @@ public:
       If the block have been given in column order,
       endSortedBlockRow() is more efficient.
       */
-    void endBlockRow()
-    {
-        vector<unsigned> p = helper::sortedPermutation(bColumns); // indices in ascending column order
-
-        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
-        {
-            this->beginRow(r+ bRow*Nout);
-            for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
-            {
-                const Block& b = blocks[p[i]];
-                for( unsigned c=0; c<Nin; c++ )
-                {
-                    this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
-                }
-            }
-        }
+    void endBlockRow() {
+        
+        // sort blocks by columns
+        std::sort(blocks.begin(), blocks.end(), 
+                  [](const blocks_type& lhs, const blocks_type& rhs) {
+                      return lhs.first < rhs.first;
+                  });
+        
+        endSortedBlockRow();
+        
     }
 
 
@@ -252,17 +245,18 @@ public:
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b ) in column order
       */
-    void endSortedBlockRow()
-    {
-        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
-        {
-            this->beginRow(r+ bRow*Nout);
-            for(unsigned i=0; i<bColumns.size(); i++ )  // process the blocks in ascending order
-            {
-                const Block& b = blocks[i];
-                for( unsigned c=0; c<Nin; c++ )
-                {
-                    this->insertBack( r + bRow*Nout, c + bColumns[i] * Nin, b[r][c]);
+    void endSortedBlockRow() {
+        for(unsigned r = 0; r < Nout; ++r) { 
+            // process one scalar row after another
+            
+            const std::size_t row = block_row * Nout + r;
+            this->beginRow( row );
+            for(const blocks_type& b : blocks) { 
+                // process the blocks in ascending order
+                
+                for(unsigned c = 0; c < Nin; ++c ) {
+                    const std::size_t col = Nin * b.first + c;
+                    this->insertBack( row, col, b.second[r][c]);
                 }
             }
         }
@@ -563,9 +557,10 @@ private:
      * createBlock( unsigned column, const Block& b ) and
      * endBlockRow() */
 
-    unsigned bRow;
-    vector<unsigned> bColumns;
-    vector<Block> blocks;
+    std::size_t block_row;
+    using blocks_type = std::pair<std::size_t, Block>;
+    std::vector< blocks_type > blocks;
+    
     //@}
 
 	
