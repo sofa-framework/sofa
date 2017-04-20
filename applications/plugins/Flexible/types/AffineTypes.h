@@ -86,19 +86,6 @@ public:
         const Frame& getAffine() const { return *reinterpret_cast<const Frame*>(&this->elems[_spatial_dimensions]); }
 
 
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
-        {
-            out<<c.getCenter()<<" "<<c.getAffine();
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Coord& c )
-        {
-            in>>c.getCenter()>>c.getAffine();
-            return in;
-        }
-
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {
