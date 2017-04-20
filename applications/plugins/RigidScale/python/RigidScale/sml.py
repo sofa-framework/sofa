@@ -170,6 +170,8 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
 
         self.rigidScales = dict()
         self.joints = dict()
+        self.collisions = dict()
+        self.visuals = dict()
 
         ## params
         # the set of tags simulated as rigids
@@ -228,10 +230,16 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
         # insert node containing all bones of the armature
         self.nodes["armature"] = self.insertMergeAffine(mergeNodeName="armature", tags={"armature"}, affineIndexById=self.skinningArmatureBoneIndexById)
         for solidModel in self.model.solids.values():
+
+            self.visuals[solidModel.id] = {}
+            self.collisions[solidModel.id] = {}
+
             if len(solidModel.skinnings) > 0:  # ignore solid if it has no skinning
                 # for each mesh create a Flexible.API.Deformable
                 for mesh in solidModel.mesh:
                     # take care only of visual meshes with skinning
+
+                    #TODO better handle visual / simulated / collision
                     if solidModel.meshAttributes[mesh.id].visual:
                         (indices, weights) = getSolidSkinningIndicesAndWeights(solidModel, mesh.id, self.skinningArmatureBoneIndexById)
                         deformable = Flexible.API.Deformable(self.nodes["armature"], solidModel.name+"_"+mesh.name)
@@ -240,17 +248,23 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
                             deformable.addMechanicalObject()
                             deformable.addMass(self.param.mass)
                             deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values())
-                            self.skins[mesh.id] = (deformable.addVisual()).visual
+                            visualDeformable = deformable.addVisual()
+                            self.visuals[solidModel.id][mesh.id] = visualDeformable
+                            self.skins[mesh.id] = visualDeformable.visual
+                            self.collisions[solidModel.id][mesh.id] = deformable
                         else:
                             deformable.loadVisual(mesh.source, initRestPositions = True)
                             deformable.addSkinning(self.nodes["armature"], indices.values(), weights.values(), isMechanical = False)
+                            self.visuals[solidModel.id][mesh.id] = deformable
                         self.deformables[mesh.id] = deformable
             else:
                 if solidModel.id in self.param.attachedSolids:
                     for mesh in solidModel.mesh:
+                        # TODO handle collision vs visual meshes
                         deformable = Flexible.API.Deformable(self.rigidScales[self.param.attachedSolids[solidModel.id]].rigidNode, solidModel.name+"_"+mesh.name)
                         deformable.loadVisual(mesh.source, initRestPositions = True)
                         deformable.node.createObject("RigidMapping", mapForces=False, mapConstraints=False, mapMasses=False, globalToLocalCoords=True)
+                        self.visuals[solidModel.id][mesh.id] = deformable
 
 
 
