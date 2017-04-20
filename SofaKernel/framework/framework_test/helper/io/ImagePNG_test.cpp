@@ -27,14 +27,7 @@
 
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
-
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-using sofa::helper::logging::MainLoggingMessageHandler ;
-
-#include <sofa/helper/logging/CountingMessageHandler.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
 
 
 namespace sofa {
@@ -43,11 +36,6 @@ namespace sofa {
 class ImagePNG_test : public ::testing::Test
 {
 protected:
-    ImagePNG_test() {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-        MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
-    }
 
     void SetUp()
     {
@@ -94,7 +82,7 @@ protected:
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
 {
     /// This generate a test failure if no error message is generated.
-    ExpectMessage raii(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     sofa::helper::io::ImagePNG imgNoFile;
     EXPECT_FALSE(imgNoFile.load("image/randomnamewhichdoesnotexist.png"));

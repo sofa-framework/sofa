@@ -28,6 +28,8 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
@@ -69,7 +71,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -234,6 +236,7 @@ TYPED_TEST_CASE(ProjectToLineConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -241,6 +244,7 @@ TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

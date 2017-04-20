@@ -25,6 +25,9 @@
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa {
 
 /**  Test TrianglePressureForceField.
@@ -77,7 +80,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
         Inherited::force->dmax.setValue(0.01);
         Inherited::force->pressure=Coord(0,0,0.6);
     }
-    
+
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
     void test_valueForce()
     {
@@ -95,7 +98,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
         {
             sofa::simulation::getSimulation()->animate(Inherited::node.get(),0.5);
         }
-        
+
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
@@ -105,7 +108,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
 // Types to instantiate.
 typedef testing::Types<
     component::forcefield::TrianglePressureForceField<defaulttype::Vec3Types>
-> TestTypes; 
+> TestTypes;
 
 
 
@@ -115,6 +118,8 @@ TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 {
+    EXPECT_MSG_NOEMIT(Error);
+
     this->errorMax *= 10;
     this->debug = false;
 
@@ -124,6 +129,8 @@ TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceFieldTest)
 {
+    EXPECT_MSG_NOEMIT(Error);
+
     this->errorMax *= 10;
     this->debug = false;
 

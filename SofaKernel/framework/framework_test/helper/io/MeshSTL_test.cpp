@@ -24,7 +24,6 @@
 #include <gtest/gtest.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage;
 using sofa::helper::logging::Message;
 
 namespace sofa {
@@ -108,7 +107,7 @@ protected:
 TEST_F(MeshSTL_test, MeshSTL_NoFile)
 {
     /// This generate a test failure if no message is generated.
-    ExpectMessage raii(Message::Error);
+    EXPECT_MSG_EMIT(Error) ;
 
     MeshSTLTestData meshNoFile("mesh/randomnamewhichdoesnotexist.obj", 0, 0, 0, 0, 0, 0);
     meshNoFile.testBench();

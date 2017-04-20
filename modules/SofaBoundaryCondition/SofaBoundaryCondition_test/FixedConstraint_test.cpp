@@ -21,6 +21,9 @@
 ******************************************************************************/
 
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaBoundaryCondition/FixedConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/Simulation.h>
@@ -30,6 +33,7 @@
 #include <SofaBaseMechanics/UniformMass.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
+
 
 namespace sofa{
 namespace {
@@ -61,34 +65,31 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef component::projectiveconstraintset::FixedConstraint<DataTypes> FixedConstraint;
     typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
     typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
-    
-    
+
+
     typedef typename MechanicalObject::VecCoord  VecCoord;
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
     typedef typename MechanicalObject::Deriv  Deriv;
     typedef typename DataTypes::Real  Real;
 
-   
-
-
     bool test(double epsilon, const std::string &integrationScheme )
-	{
-		//Init
+    {
+        //Init
 
-        simulation::Simulation* simulation;  
+        simulation::Simulation* simulation;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         Coord initCoord;
         Deriv force;
         for(unsigned i=0; i<force.size(); i++)
             force[i]=10;
 
-        /// Scene creation 
+        /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test", integrationScheme);
-        
+
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
         dofs->resize(1);
 
@@ -114,7 +115,7 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         }
         return true;
 
-	}
+    }
 };
 
 // Define the list of DataTypes to instanciate
@@ -133,17 +134,20 @@ TYPED_TEST_CASE(FixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithCG )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     EXPECT_TRUE(  this->test(1e-8,std::string("Implicit")) );
 }
 
 TYPED_TEST( FixedConstraint_test , testValueExplicit )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
 #ifdef SOFA_HAVE_METIS
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     EXPECT_TRUE(  this->test(1e-8, std::string("Implicit_SparseLDL")) );
 }
 #endif

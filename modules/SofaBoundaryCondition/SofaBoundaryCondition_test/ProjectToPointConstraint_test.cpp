@@ -30,6 +30,8 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 namespace {
@@ -71,7 +73,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
         // Init
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -123,7 +125,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
          projection->f_indices.setValue(indices);
-       
+
          /// Init
          sofa::simulation::getSimulation()->init(root.get());
     }
@@ -186,7 +188,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (v[i]-Deriv()); 
+              CPos diffPoints = (v[i]-Deriv());
               Real scal = diffPoints.norm(); // should be null
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
@@ -229,6 +231,7 @@ TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -236,6 +239,7 @@ TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

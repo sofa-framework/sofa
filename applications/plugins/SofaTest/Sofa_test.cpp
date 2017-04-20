@@ -25,7 +25,6 @@
 
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
-#include "TestMessageHandler.h"
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -39,18 +38,22 @@ using sofa::helper::Utils;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;
 
+#include <sofa/helper/system/console.h>
+using sofa::helper::Console ;
+
+#include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::MessageDispatcher ;
+using sofa::helper::logging::MainGtestMessageHandler ;
 
 namespace sofa {
-
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
 
 namespace {
     static struct raii {
       raii() {
-            helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
-            helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
-            BackTrace::autodump() ;
+          MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
+          BackTrace::autodump() ;
       }
     } singleton;
 }
@@ -67,16 +70,19 @@ BaseSofa_test::BaseSofa_test(){
     //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
     helper::srand(seed);
 
+    // gtest already use color so we remove the color from the sofa message to make the distinction
+    // clean and avoid ambiguity.
+    Console::setColorsStatus(Console::ColorsDisabled) ;
 
     // Repeating this for each class is harmless because addHandler test if the handler is already installed and
     // if so it don't install it again.
-    helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
-    helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
 }
 
 BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
 
 void BaseSofa_test::clearSceneGraph(){ modeling::clearScene(); }
+
 
 #ifndef SOFA_FLOAT
 template struct SOFA_TestPlugin_API Sofa_test<double>;
