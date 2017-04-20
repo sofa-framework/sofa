@@ -49,7 +49,7 @@ bool empty(const Matrix& m) {
 template<class LValue, class LHS, class RHS>
 static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
 
-    helper::ScopedAdvancedTimer advancedTimer("add_prod");
+    // helper::ScopedAdvancedTimer advancedTimer("add_prod");
 
     if( empty(lval) ) {
         sparse::fast_prod(lval, lhs, rhs);
@@ -67,7 +67,7 @@ template<class LValue, class LHS, class RHS>
 static void add_prod_mask(LValue& lval,
                           const LHS& lhs, const RHS& rhs,
                           const std::vector<bool>& res_mask, unsigned res_block_size) {
-    helper::ScopedAdvancedTimer advancedTimer("add_prod_mask");
+    // helper::ScopedAdvancedTimer advancedTimer("add_prod_mask");
     
     if( empty(lval) ) {
         sparse::fast_prod_mask(lval, lhs, rhs, res_mask, res_block_size);

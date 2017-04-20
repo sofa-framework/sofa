@@ -323,7 +323,7 @@ void AssemblyVisitor::bottom_up(simulation::Visitor* vis) const {
 // simply fetch infos for each dof.
 void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
-    helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_prefix" );
+    // helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_prefix" );
     
 	assert( node->mechanicalState );
     assert( chunks.find( node->mechanicalState ) == chunks.end() && "Did you run the simulation with a DAG traversal?" );
@@ -391,7 +391,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 // bottom-up: build dependency graph
 void AssemblyVisitor::fill_postfix(simulation::Node* node) {
 
-    helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
+    // helper::ScopedAdvancedTimer advancedTimer( "assembly: fill_postfix" );
 
     chunks_type::const_iterator cit = chunks.find( node->mechanicalState );
     // this mstate was ignored in fill_prefix (e.g. it is empty or completely masked out)
