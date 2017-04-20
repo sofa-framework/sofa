@@ -44,8 +44,6 @@
 #include <assert.h>
 #include <iostream>
 
-#include <SofaBaseTopology/TopologyData.inl>
-
 namespace
 {
 
