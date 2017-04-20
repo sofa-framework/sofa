@@ -386,5 +386,9 @@ class Quaternion(np.ndarray):
 
         return res
 
+    @staticmethod
+    def slerp(q1,q2,t):
+        """ Returns spherical linear interpolation between q1 and q2 """
+        return q1 * Quaternion.exp( t*Quaternion.log( Quaternion.conj(q1) * q2) )
 
     
