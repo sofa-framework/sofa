@@ -576,7 +576,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             useTopology = true;
         }
 
-        modified = true;
+        d_isModified.setValue( true );
     }
 
     if (!xformsModified)
@@ -1196,14 +1196,14 @@ void VisualModelImpl::updateVisual()
         }
     */
 #ifdef SOFA_SMP
-    modified = true;
+    d_isModified.setValue( true );
 #endif
     //sout << "VMI::updateVisual()" << sendl;
     //if ((m_positions.getValue()).size()>10)
     //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
     //if ((m_vertices.getValue()).size()>10)
     //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
-    if (modified && (!getVertices().empty() || useTopology))
+    if ( d_isModified.getValue() && (!getVertices().empty() || useTopology))
     {
         if (useTopology)
         {
@@ -1229,7 +1229,7 @@ void VisualModelImpl::updateVisual()
         computeNormals();
         if (m_updateTangents.getValue())
             computeTangents();
-        modified = false;
+        d_isModified.setValue( false );
     }
 
     m_positions.updateIfDirty();
