@@ -28,6 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObjectTasks.inl>
 #endif
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 
@@ -43,6 +44,10 @@
 
 #include <assert.h>
 #include <iostream>
+
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
+#include <SofaBaseTopology/TopologyData.inl>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace
 {

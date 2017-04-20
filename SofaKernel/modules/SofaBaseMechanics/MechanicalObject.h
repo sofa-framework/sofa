@@ -37,7 +37,9 @@
 #include <vector>
 #include <fstream>
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 #include <SofaBaseTopology/TopologyData.h>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace sofa
 {
