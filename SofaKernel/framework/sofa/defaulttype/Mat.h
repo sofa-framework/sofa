@@ -348,11 +348,7 @@ public:
         static_assert(L == C, "");
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
-            {
-                real t = this->elems[i][j];
-                this->elems[i][j] = this->elems[j][i];
-                this->elems[j][i] = t;
-            }
+                std::swap( this->elems[i][j], this->elems[j][i] );
     }
 
     /// @name Tests operators
