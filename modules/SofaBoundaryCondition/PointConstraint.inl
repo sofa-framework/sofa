@@ -91,10 +91,9 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
     }
     for(unsigned i=0; i<f_indices.getValue().size(); i++ )
     {
-//                cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
         for(unsigned j=0; j<blockSize; j++)
             jacobian.set( f_indices.getValue()[i]*blockSize+j, f_indices.getValue()[i]*blockSize+j, 0);
-        std::cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << std::endl;
+        msg_info("PointConstraint<DataTypes>")<<"getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian ;
     }
 
     return &jacobian;
@@ -104,11 +103,8 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    //    cerr<<"PointConstraint<DataTypes>::projectResponse is called "<<endl;
-    //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-    //serr<<"PointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -136,7 +132,6 @@ void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
         }
         ++rowIt;
     }
-    //cerr<<"PointConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // constant velocity: do not change the velocity
@@ -155,8 +150,6 @@ void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<"PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -174,8 +167,6 @@ void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //cerr<<"PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue();
@@ -196,10 +187,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"PointConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
-
-
 
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -207,7 +194,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"PointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)

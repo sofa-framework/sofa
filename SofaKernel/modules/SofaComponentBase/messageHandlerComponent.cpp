@@ -44,7 +44,7 @@ using sofa::helper::logging::DefaultStyleMessageFormatter;
 #include <sofa/helper/logging/ClangMessageHandler.h>
 using sofa::helper::logging::ClangMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 #include <sofa/helper/logging/Messaging.h>

@@ -1306,17 +1306,18 @@ void VisualModelImpl::computeMesh()
         {
             if (SparseGridTopology *spTopo = dynamic_cast< SparseGridTopology *>(m_topology))
             {
-                sout << "VisualModel: getting marching cube mesh from topology : ";
                 sofa::helper::io::Mesh m;
                 spTopo->getMesh(m);
                 setMesh(m, !texturename.getValue().empty());
-                sout << m.getVertices().size() << " points, " << m.getFacets().size()  << " triangles." << sendl;
+                dmsg_info() << " getting marching cube mesh from topology, "
+                            << m.getVertices().size() << " points, "
+                            << m.getFacets().size()  << " triangles." ;
+
                 useTopology = false; //visual model needs to be created only once at initial time
                 return;
             }
 
-            if (this->f_printLog.getValue())
-                sout << "VisualModel: copying " << m_topology->getNbPoints() << " points from topology." << sendl;
+            dmsg_info() << " copying " << m_topology->getNbPoints() << " points from topology." ;
 
             vertices.resize(m_topology->getNbPoints());
 
@@ -1334,8 +1335,7 @@ void VisualModelImpl::computeMesh()
 
             if (mstate)
             {
-                if (this->f_printLog.getValue())
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
+                dmsg_info() << " copying " << mstate->getSize() << " points from mechanical state" ;
 
                 vertices.resize(mstate->getSize());
 
@@ -1356,8 +1356,7 @@ void VisualModelImpl::computeMesh()
     const vector< Triangle >& inputTriangles = m_topology->getTriangles();
 
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputTriangles.size() << " triangles from topology." << sendl;
+    dmsg_info() << " copying " << inputTriangles.size() << " triangles from topology" ;
 
     ResizableExtVector< Triangle >& triangles = *(m_triangles.beginEdit());
     triangles.resize(inputTriangles.size());
@@ -1371,8 +1370,7 @@ void VisualModelImpl::computeMesh()
 
     const vector< BaseMeshTopology::Quad >& inputQuads = m_topology->getQuads();
 
-    if (this->f_printLog.getValue())
-        sout << "VisualModel: copying " << inputQuads.size()<< " quads from topology." << sendl;
+    dmsg_info() << " copying " << inputQuads.size()<< " quads from topology." ;
 
     ResizableExtVector< Quad >& quads = *(m_quads.beginEdit());
     quads.resize(inputQuads.size());
@@ -1779,11 +1777,10 @@ void VisualModelImpl::handleTopologyChange()
 
             if (mstate)
             {
-                if (this->f_printLog.getValue())
-                {
-                    sout << "VisualModel: oldsize    " << this->getSize()  << sendl;
-                    sout << "VisualModel: copying " << mstate->getSize() << " points from mechanical state." << sendl;
-                }
+
+                dmsg_info() << " changing size.  " << msgendl
+                            << " oldsize    " << this->getSize() << msgendl
+                            << " copying " << mstate->getSize() << " points from mechanical state.";
 
                 vertices.resize(mstate->getSize());
 

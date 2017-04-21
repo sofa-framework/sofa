@@ -55,7 +55,7 @@ void FixParticlePerformer<DataTypes>::start()
 
     if (!mstateCollision || points.empty())
     {
-        std::cerr << "Model not supported!" << std::endl;
+        msg_error("FixParticlePerformer") << "Model not supported!" ;
         return;
     }
 

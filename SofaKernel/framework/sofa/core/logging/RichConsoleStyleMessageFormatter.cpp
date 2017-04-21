@@ -26,7 +26,11 @@
 
 
 #include "RichConsoleStyleMessageFormatter.h"
-#include "Message.h"
+
+#include <sofa/helper/logging/Message.h>
+
+#include <sofa/core/objectmodel/Base.h>
+using sofa::helper::logging::SofaComponentInfo ;
 
 #include <sofa/helper/system/console.h>
 #include <sofa/helper/fixed_array.h>
@@ -240,19 +244,20 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 
     out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
 
-    if (!m.sender().empty())
+    SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
+    if( nfo != nullptr )
     {
-        if( m.componentInfo() )
-        {
-            psize +=m.sender().size()+m.componentInfo()->m_name.size()+5 ;
-            out << Console::BLUE << "[" << m.sender()<< "(" << m.componentInfo()->m_name << ")] ";
-        }
-        else
-        {
-            psize +=m.sender().size()+3 ;
-            out << Console::BLUE << "[" << m.sender()<< "] ";
-        }
+        const std::string& classname= nfo->sender();
+        const std::string& name = nfo->name();
+        psize +=classname.size()+name.size()+5 ;
+        out << Console::BLUE << "[" << classname << "(" << name << ")] ";
     }
+    else
+    {
+        psize +=m.sender().size()+3 ;
+        out << Console::BLUE << "[" << m.sender()<< "] ";
+    }
+
     out << Console::DEFAULT_COLOR;
 
     /// Format & align the text and write the result into 'out'.

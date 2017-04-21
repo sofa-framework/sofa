@@ -68,18 +68,18 @@ const std::string &GUIManager::GetCurrentGUIName()
 
 int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
 {
-	if(guiCreators.size())
-	{
-		std::list<GUICreator>::iterator it = guiCreators.begin();
-		std::list<GUICreator>::iterator itend = guiCreators.end();
-		while (it != itend && strcmp(name, it->name))
-			++it;
-		if (it != itend)
-		{
+    if(guiCreators.size())
+    {
+        std::list<GUICreator>::iterator it = guiCreators.begin();
+        std::list<GUICreator>::iterator itend = guiCreators.end();
+        while (it != itend && strcmp(name, it->name))
+            ++it;
+        if (it != itend)
+        {
             msg_error("GUIManager") << "ERROR(GUIManager): GUI "<<name<<" duplicate registration.";
-			return 1;
-		}
-	}
+            return 1;
+        }
+    }
 
     GUICreator entry;
     entry.name = name;
@@ -176,8 +176,8 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         ++it;
     if (it == itend)
     {
-        std::cerr << "ERROR(GUIManager): GUI "<<name<<" creation failed."<<std::endl;
-        std::cerr << "Available GUIs:" << ListSupportedGUI(' ') << std::endl;
+        msg_error("GUIManager") << "GUI '"<<name<<"' creation failed."<< msgendl
+                                << "Available GUIs: {" << ListSupportedGUI(' ') <<  "}";
         return NULL;
     }
     else
@@ -227,7 +227,7 @@ int GUIManager::Init(const char* argv0, const char* name)
 
     if (guiCreators.empty())
     {
-        std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
+        msg_error("GUIManager") << "No GUI registered.";
         return 1;
     }
 
@@ -261,7 +261,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
         currentGUI = (*creator->creator)(valid_guiname, guiOptions, groot, filename);
         if (!currentGUI)
         {
-            std::cerr << "ERROR(GUIManager): GUI "<<valid_guiname<<" creation failed."<<std::endl;
+            msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;
             return 1;
         }
         //Save this GUI type as the last used GUI
@@ -311,7 +311,7 @@ int GUIManager::MainLoop(sofa::simulation::Node::SPtr groot, const char* filenam
     ret = currentGUI->mainLoop();
     if (ret)
     {
-        std::cerr << "ERROR(SofaGUI): GUI "<<currentGUI->GetGUIName()<<" main loop failed (code "<<ret<<")."<<std::endl;
+        dmsg_error("GUIManager") << " GUI '"<<currentGUI->GetGUIName()<<"' main loop failed (code "<<ret<<").";
         return ret;
     }
     return ret;
@@ -351,9 +351,9 @@ void GUIManager::SetFullScreen()
 void GUIManager::SaveScreenshot(const char* filename)
 {
     if (currentGUI) {
-		std::string output = (filename?std::string(filename):"output.png");
-		currentGUI->saveScreenshot(output);
-	}
+        std::string output = (filename?std::string(filename):"output.png");
+        currentGUI->saveScreenshot(output);
+    }
 }
 
 

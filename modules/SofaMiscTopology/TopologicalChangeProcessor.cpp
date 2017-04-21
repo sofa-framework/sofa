@@ -617,8 +617,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
         }
         else if ( buff == "INCISE=" )
         {
-            if (this->f_printLog.getValue())
-                std::cout << "(TopologicalChangeProcessor::processTopologicalChanges()) about to make a incision with time = " << time << std::endl;
+            msg_info() << "processTopologicalChanges: about to make a incision with time = " << time ;
 
             if (m_saveIndicesAtInit.getValue())
             {
@@ -645,7 +644,6 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
             //get the number of element
             str >> nbElements;
-//                        std::cout << "(TopologicalChangeProcessor::processTopologicalChanges())nbElements = " << nbElements<< std::endl;
 
             ++it;//go to the next line
 
@@ -1371,8 +1369,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
         //Duplicates the given edges
         triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
 
-        if (reachBorder)
-            std::cout <<"INCISION HAS REACHED A BORDER" << std::endl;
+        msg_info_when(reachBorder) <<"INCISION HAS REACHED A BORDER";
 
         if (!end_points.empty())
         {
@@ -1414,7 +1411,7 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             if ( j >= triangleIncisionInformation[i].coordinates.size() || triangleIncisionInformation[i].coordinates.empty())
             {
-                std::cout << "WARNING(TopologicalChangeProcessor::updateTriangleIncisionInformation): error accessing coordinates" << std::endl;
+                msg_warning() << "(updateTriangleIncisionInformation): error accessing coordinates" ;
                 break;
             }
 
@@ -1422,12 +1419,13 @@ void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 
             if ( newTriangleIndexb == -1)
             {
-                std::cout << "WARNING(TopologicalChangeProcessor::updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex << std::endl;
+                msg_warning() << "(updateTriangleIncisionInformation): error while finding the point " << triangleIncisionInformation[i].coordinates[j] << " in a new triangle. Current triangle index = " << currentTriangleIndex ;
                 break;
             }
 
-            if ( (int)currentTriangleIndex != newTriangleIndexb && this->f_printLog.getValue())
-                std::cout << "(TopologicalChangeProcessor::updateTriangleIncisionInformation): incision point which was in triangle " << currentTriangleIndex << " has been updated to " << newTriangleIndexb  << std::endl;
+            msg_info_when((int)currentTriangleIndex != newTriangleIndexb)
+                          << "(updateTriangleIncisionInformation): incision point which was in triangle " << currentTriangleIndex
+                          << " has been updated to " << newTriangleIndexb  ;
 
             triangleIncisionInformation[i].triangleIndices[j] = newTriangleIndexb;
 

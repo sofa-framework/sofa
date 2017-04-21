@@ -163,7 +163,7 @@ public:
             {
                 if ((nbCol/BSIZE)*(nbRow/BSIZE) > -allocsize)
                 {
-                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")." ;
                     return;
                 }
             }
@@ -543,7 +543,7 @@ public:
             {
                 if ((nbRow/BSIZE)*3 > -allocsize)
                 {
-                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")" ;
                     return;
                 }
             }

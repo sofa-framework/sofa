@@ -137,7 +137,7 @@ void OglTexture::init()
 
                     if (tmp->getTextureType() != helper::io::Image::TEXTURE_2D)
                     {
-                        std::cerr << "OglTexture: invalid texture type in " << filename[i] << std::endl;
+                        msg_error() << "Invalid texture type in '" << filename[i] <<"'";
                         continue;
                     }
 
@@ -152,19 +152,19 @@ void OglTexture::init()
                         if (img->getWidth() != tmp->getWidth() ||
                             img->getHeight() != tmp->getHeight())
                         {
-                            std::cerr << "OglTexture: inconsistent cubemap dimensions in " << filename[i] << std::endl;
+                            msg_error() << "Inconsistent cubemap dimensions in '" << filename[i] << "'";
                             continue;
                         }
 
                         if (img->getDataType() != tmp->getDataType())
                         {
-                            std::cerr << "OglTexture: inconsistent cubemap datatype in " << filename[i] << std::endl;
+                            msg_error() << "Inconsistent cubemap datatype in '" << filename[i] << "'";
                             continue;
                         }
 
                         if (img->getChannelFormat() != tmp->getChannelFormat())
                         {
-                            std::cerr << "OglTexture: inconsistent cubemap channel format in " << filename[i] << std::endl;
+                            msg_error() << "Inconsistent cubemap channel format in '" << filename[i] << "'";
                             continue;
                         }
                     }

@@ -73,13 +73,13 @@ bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defa
 
     if (a*b>0)
     {
-        std::cerr<<"WARNING : les deux points sont du même côté de la surface \n"<<std::endl;
+        msg_warning()<<"les deux points sont du même côté de la surface \n";
         return false;
     }
 
     if(b<0)
     {
-        std::cerr<<"WARNING : posOutside is inside"<<std::endl;
+        msg_warning()<<"posOutside is inside";
         return false;
     }
 
@@ -116,15 +116,12 @@ bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defa
 
         val = getValue(intersecPos, i);
         if (val < 0)
-            std::cerr<<"WARNING : val is negative\n"<<std::endl;
-
+            msg_warning()<<": val is negative\n" ;
     }
 
     if (count>998)
     {
-        std::cerr<<"ERROR in computeSegIntersection: Seg : "<<Seg<<std::endl;
-
-
+        msg_error()<<"in computeSegIntersection: Seg : "<<Seg;
     }
 
 
@@ -236,7 +233,6 @@ bool ImplicitSurface::projectPointOutOfSurface(defaulttype::Vec3d& point, int i,
 
   double SphereSurface::getValue(defaulttype::Vec3d& Pos, int& domain)
 {
-    //std::cout<<"getValue is called for pos"<<Pos<<"radius="<<_radius <<std::endl;
   (void)domain;
   double result = (Pos[0] - _Center[0])*(Pos[0] - _Center[0]) +
     (Pos[1] - _Center[1])*(Pos[1] - _Center[1]) +
@@ -244,7 +240,7 @@ bool ImplicitSurface::projectPointOutOfSurface(defaulttype::Vec3d& point, int i,
     _radius * _radius ;
   if(_inside)
     result = -result;
-  
+
   return result;
 }
 
@@ -264,7 +260,7 @@ defaulttype::Vec3d SphereSurface::getGradient(defaulttype::Vec3d &Pos, int &doma
       g[1] = 2* (Pos[1] - _Center[1]);
       g[2] = 2* (Pos[2] - _Center[2]);
     }
-  
+
   return g;
 }
 
@@ -285,15 +281,15 @@ void SphereSurface::getValueAndGradient(defaulttype::Vec3d& Pos, double &value, 
       value = g.norm2() - _radius*_radius;
       g = g * 2;
     }
-  
+
   return;
 }
 
 double SphereSurface::getDistance(defaulttype::Vec3d& Pos, int& /*domain*/)
 {
   double result = _radius - sqrt((Pos[0] - _Center[0])*(Pos[0] - _Center[0]) +
-				 (Pos[1] - _Center[1])*(Pos[1] - _Center[1]) +
-				 (Pos[2] - _Center[2])*(Pos[2] - _Center[2]));
+                 (Pos[1] - _Center[1])*(Pos[1] - _Center[1]) +
+                 (Pos[2] - _Center[2])*(Pos[2] - _Center[2]));
   return _inside ? result : -result;
 }
 

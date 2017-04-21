@@ -184,7 +184,6 @@ void AspectBuffer::clear()
 AspectRef AspectBuffer::allocate()
 {
     int id = availableID.exchange(-1);
-    //std::cerr << "availableID: " << id << " -> " << -1 << std::endl;
     if (id == -1)
         return pool.allocate();
     else
@@ -205,12 +204,10 @@ void AspectBuffer::push(AspectRef id)
         id->add_ref(); // add a ref token that will be implicitly held by latestID
     }
     int prevID = latestID.exchange(newID);
-    //std::cerr << "latestID: " << prevID << " -> " << newID << std::endl;
     if (prevID != -1)
     {
         // store prevID as the next available ID
         int freeID = availableID.exchange(prevID);
-        //std::cerr << "availableID: " << freeID << " -> " << prevID << std::endl;
         if (freeID != -1)
             pool.getAspect(freeID)->release(); // remove the ref token that was implicitly held by availableID
     }
@@ -220,7 +217,6 @@ void AspectBuffer::push(AspectRef id)
 bool AspectBuffer::pop(AspectRef& id)
 {
     int newID = latestID.exchange(-1);
-    //std::cerr << "latestID: " << newID << " -> " << -1 << std::endl;
     if (newID == -1) return false;
     if (id)
     {
@@ -228,7 +224,6 @@ bool AspectBuffer::pop(AspectRef& id)
         // store prevID as the next available ID
         id->add_ref(); // add a ref token that will be implicitly held by availableID
         int freeID = availableID.exchange(prevID);
-        //std::cerr << "availableID: " << freeID << " -> " << prevID << std::endl;
         if (freeID != -1)
             pool.getAspect(freeID)->release(); // remove the ref token that was implicitly held by availableID
     }
