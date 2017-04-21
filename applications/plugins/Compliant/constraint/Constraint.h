@@ -54,6 +54,14 @@ struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
     virtual size_t getConstraintTypeIndex() const = 0;
 
 protected:
+
+    template<class Derived>
+    static std::size_t constraint_index(Derived* self) {
+        const Constraint* check = self; (void) check;
+        static std::size_t result = ++sofa::component::linearsolver::Constraint::s_lastConstraintTypeIndex;
+        return result;
+    }
+    
     static size_t s_lastConstraintTypeIndex; ///< storing the last given id
 };
 
