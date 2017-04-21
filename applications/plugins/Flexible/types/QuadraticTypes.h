@@ -123,6 +123,20 @@ public:
             return  m;
         }
 
+
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Coord& c )
+        {
+            out<<c.getCenter()<<" "<<c.getQuadratic();
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Coord& c )
+        {
+            in>>c.getCenter()>>c.getQuadratic();
+            return in;
+        }
+
         /// Write the OpenGL transformation matrix
         void writeOpenGlMatrix ( float m[16] ) const
         {

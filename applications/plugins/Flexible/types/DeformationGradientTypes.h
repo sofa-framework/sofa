@@ -129,7 +129,7 @@ struct DefGradientTypes
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Deriv& c )
         {
-            out<<c.getVec();
+            out<<" "<<c.getVec();
             return out;
         }
         /// read from an input stream
