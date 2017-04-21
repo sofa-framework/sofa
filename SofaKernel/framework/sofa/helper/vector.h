@@ -87,9 +87,10 @@ public:
     explicit vector(size_type n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
+    /// Constructor
+    vector(const std::initializer_list<T>& t) : std::vector<T>(t) {}
     /// Move constructor
     vector(std::vector<T,Alloc>&& v): std::vector<T,Alloc>(std::move(v)) {}
-
     /// Copy operator
     vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {
