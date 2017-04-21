@@ -50,8 +50,6 @@ void RigidScaleToAffineMultiMapping<I1,I2,O>::init()
 template <class I1, class I2, class O>
 void RigidScaleToAffineMultiMapping<I1, I2, O>::reset()
 {
-	// Automatic init if required
-	if (this->automaticInit.getValue()) this->autoInit();
 	// Reset of the different parameter
 	this->setup();
 	// Call of the parent method
