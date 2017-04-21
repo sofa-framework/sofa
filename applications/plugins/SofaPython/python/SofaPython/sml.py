@@ -132,6 +132,7 @@ class Model:
             self.name = None
             self.tags = set()
             self.position = None
+            self.keyPositions = {} # optional animated keyframed positions {name(string):position(6 floats)}, note 'name' can represent a time (that would need to be casted as a float in your sml moulinette)
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
             self.image = list() # list of images
@@ -183,6 +184,9 @@ class Model:
                 self.inertia_rotation = Tools.strToListFloat(objXml.find("inertia_rotation").text)
             for o in objXml.findall("offset"):
                 self.offsets.append( Model.Offset(o) )
+            for o in objXml.findall("keyPosition"):
+                assert( o.attrib["name"] )
+                self.keyPositions[o.attrib["name"]] = Tools.strToListFloat(o.text)
 
     class Offset:
         def __init__(self, offsetXml=None):
