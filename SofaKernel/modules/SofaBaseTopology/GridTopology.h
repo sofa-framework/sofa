@@ -168,12 +168,10 @@ public:
     /// Overload Method from @sa MeshTopology::getNbHexahedra
     virtual int getNbHexahedra() { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
 
-    using MeshTopology::getQuad;
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
 
-    using MeshTopology::getHexahedron;
     Hexa getHexahedron(int x, int y, int z);
     Hexa getHexaCopy(int i);
     Quad getQuadCopy(int i);
