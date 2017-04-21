@@ -34,12 +34,18 @@ namespace component
 namespace topology
 {
 
+ 
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
 class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
+
 public:
+
+using MeshTopology::getQuad;
+using MeshTopology::getHexahedron;
+
     SOFA_CLASS(GridTopology,MeshTopology);
     typedef sofa::defaulttype::Vec3i Vec3i;
     typedef sofa::defaulttype::Vector2 Vector2;
