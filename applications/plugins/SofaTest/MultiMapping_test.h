@@ -44,7 +44,6 @@ typedef std::size_t Index;
 
 /** @brief Base class for the MultiMapping tests, directly adapted from Mapping_test.
  * @sa Mapping_test
-
   @author François Faure @date 2014
   */
 
@@ -367,9 +366,6 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
 
-        // =================== test updateForceMask
-        // propagate forces coming from all child, each parent receiving a force should be in the mask
-        for(Index i=0; i<Np.size(); i++) inDofs[i]->forceMask.clear();
         // ================ test getK()
         InVecDeriv totalvp;
         for( Index p=0; p<Np.size(); p++ ) {
