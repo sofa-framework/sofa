@@ -23,9 +23,6 @@
 #include "Sofa_test.h"
 #include <SceneCreator/SceneCreator.h>
 
-#include <sofa/helper/logging/MessageDispatcher.h>
-#include <sofa/helper/logging/CountingMessageHandler.h>
-
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
@@ -48,7 +45,6 @@ using sofa::helper::logging::MainGtestMessageHandler ;
 namespace sofa {
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
-
 namespace {
     static struct raii {
       raii() {

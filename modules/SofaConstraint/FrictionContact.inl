@@ -124,11 +124,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
             contacts.push_back(o);
     }
 
-    if (contacts.size()<outputs.size() && this->f_printLog.getValue())
-    {
-        // DUPLICATED CONTACTS FOUND
-        sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;
-    }
+    // DUPLICATED CONTACTS FOUND
+    msg_info_when(contacts.size()<outputs.size()) << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << msgendl;
 }
 
 
@@ -213,7 +210,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     if (!selfCollision) mapper2.updateXfree();
 
 
-    //std::cerr<<" end activateMappers call"<<std::endl;
+    //msg_info()<<" end activateMappers call"<<std::endl;
 
 }
 

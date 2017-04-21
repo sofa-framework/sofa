@@ -51,7 +51,7 @@ using sofa::helper::logging::Message ;
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::MainGtestMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;

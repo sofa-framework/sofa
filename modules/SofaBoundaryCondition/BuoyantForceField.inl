@@ -81,10 +81,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
             fluidModel = AABOX;
             change = true;
 
-            if (this->f_printLog.getValue())
-            {
-                std::cout << "BuoyantForceField:: " << this->getName() << " fluid is modeled now with a box" << std::endl;
-            }
+            msg_info() << " fluid is modeled now with a box" ;
         }
     }
     else
@@ -93,10 +90,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         {
             fluidModel = PLANE;
             change = true;
-            if (this->f_printLog.getValue())
-            {
-                std::cout << "BuoyantForceField:: " << this->getName() << " fluid is modeled now with a plane" << std::endl;
-            }
+            msg_info() <<  " fluid is modeled now with a plane" ;
         }
     }
 
@@ -120,10 +114,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         recomputeFluidSurface = true;
         change = true;
 
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "BuoyantForceField:: " << this->getName() << " change bounding box: <" <<  m_minBox.getValue() << "> - <" << m_maxBox.getValue() << ">"<< std::endl;
-        }
+        msg_info() << " change bounding box: <" <<  m_minBox.getValue() << "> - <" << m_maxBox.getValue() << ">" ;
     }
 
 
@@ -134,10 +125,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         recomputeFluidSurface = true;
         change = true;
 
-        if (this->f_printLog.getValue())
-        {
-            std::cout << "BuoyantForceField:: " << this->getName() << " new gravity : " << m_gravity << std::endl;
-        }
+        msg_info() << " new gravity : " << m_gravity ;
     }
 
     if (recomputeFluidSurface)
@@ -147,7 +135,8 @@ bool BuoyantForceField<DataTypes>::checkParameters()
 
         if (!m_gravityNorm)
         {
-            std::cout << "ERROR(BuoyantForceField::init()) : unable to determine fluid surface because there is no gravity" << std::endl;
+            //TODO(dmarchal) can someone explaine what is the consequence and how to get rid of this message.
+            msg_warning() << " unable to determine fluid surface because there is no gravity" ;
         }
         else
         {
@@ -179,15 +168,17 @@ void BuoyantForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
     this->getContext()->get(m_topology);
 
-    if (!m_topology)	{        std::cout << "WARNING: BuoyantForceField requires mesh topology" <<std::endl;		return;    }
-
-    if (this->f_printLog.getValue())
+    if (!m_topology)
     {
-        std::cout << "BuoyantForceField " << this->getName() << " coupled with " << m_topology->getName() << std::endl;
-        if (m_flipNormals.getValue())     std::cout << "BuoyantForceField::" << this->getName() << " Normals are flipped to inverse the forces" << std::endl;
+        msg_warning() << " missing mesh topology" ;
+        return;
     }
 
-    if (m_fluidDensity.getValue() <= 0.f)        serr << "Warning(BuoyantForceField):The density of the fluid is negative!" << sendl;
+    msg_info() << " coupling with " << m_topology->getName();
+    msg_info_when(m_flipNormals.getValue())<< " normals are flipped to inverse the forces" ;
+
+    //TODO(dmarchal): can someone explaine what is the consequence and they way to fix the problem.
+    msg_warning_when(m_fluidDensity.getValue() <= 0.f) << " the density of the fluid is negative." ;
 
     //get all the surfacic triangles from the topology
     m_triangles.clear();
@@ -196,8 +187,10 @@ void BuoyantForceField<DataTypes>::init()
         if (m_topology->getTetrahedraAroundTriangle(i).size()<=1)
             m_triangles.push_back(i);
 
-    if (this->f_printLog.getValue())        std::cout << "BuoyantForceField::" << this->getName() << " There are " << triangleArray.size()<< " triangles in the topology" << std::endl
-                << "BuoyantForceField::" << this->getName() << " There are " << m_triangles.size() << " triangles on the surface of the topology" << std::endl;
+    std::stringstream buffer;
+    buffer << " there are " << triangleArray.size()<< " triangles in the topology.  " << std::endl ;
+    buffer << " there are " << m_triangles.size() << " triangles on the surface of the topology." << std::endl;
+    msg_info() << buffer.str() ;
 }
 
 

@@ -227,7 +227,7 @@ void svddcmp(Mat<m,n,Real> &a, Vec<n,Real> &w, Mat<n,m,Real> &v)
             }
             if (its == 29)
             {
-// 				std::cerr<<"Warning: Mat.h :: svddcmp: no convergence in 30 svdcmp iterations"<<std::endl;
+// 				msg_info()<<"Warning: Mat.h :: svddcmp: no convergence in 30 svdcmp iterations"<<std::endl;
                 return;
             }
             x=w[l];

@@ -257,7 +257,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -270,7 +270,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -283,7 +283,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
     }
 
 
@@ -291,7 +291,7 @@ struct BoxROITest :  public ::testing::Test
     void isPointInOrientedBoxTest()
     {
         m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
-        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2  2");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2 2");
         m_boxroi->findData("position")->read("1. 0. 0.   1. 0. 1.   0. 0. 1.");
         m_boxroi->init();
 
@@ -309,7 +309,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->init();
 
         EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -323,7 +323,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->init();
 
         EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -331,13 +331,13 @@ struct BoxROITest :  public ::testing::Test
     void isTetrahedraInOrientedBoxTest()
     {
         m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
-        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2  2");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2 2");
         m_boxroi->findData("position")->read("0. 0. 0.   1. 0. 0.    1. 1. 0.   1. 0. 1.   0. 0. -2.");
         m_boxroi->findData("tetrahedra")->read("0 1 2 3 0 1 2 4");
         m_boxroi->init();
 
         EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
     }
 
 
@@ -356,14 +356,14 @@ struct BoxROITest :  public ::testing::Test
     /// Test computeBBox computation with a simple example
     void computeBBoxTest()
     {
-        m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.  ");
+        m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.");
         m_boxroi->computeBBox(NULL, false);
 
         EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
         EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,2));
 
         m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.");
-        m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0  2");
+        m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0 2");
         m_boxroi->computeBBox(NULL, false);
 
         EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));

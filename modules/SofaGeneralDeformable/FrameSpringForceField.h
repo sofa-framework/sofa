@@ -125,7 +125,7 @@ public:
                         in>>s.vec2;
                     else
                     {
-                        std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
+                        msg_error("FrameSpringForceField")<<" Error parsing Spring : Unknown Attribute '"<<str << "'";
                         return in;
                     }
 

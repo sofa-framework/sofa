@@ -138,7 +138,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -150,7 +150,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -162,7 +162,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
     }
 };
 

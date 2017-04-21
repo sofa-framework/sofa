@@ -170,8 +170,8 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"0");
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"1");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 1 ");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"1 2 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 1");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"1 2");
     }
 
 
@@ -184,8 +184,8 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("triangleIndices")->getValueString(),"0");
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("triangleOutIndices")->getValueString(),"1");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesInROI")->getValueString(),"0 1 2 ");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesOutROI")->getValueString(),"1 3 2 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesInROI")->getValueString(),"0 1 2");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("trianglesOutROI")->getValueString(),"1 3 2");
     }
 
 
@@ -198,8 +198,8 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedronIndices")->getValueString(),"0");
         EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedronOutIndices")->getValueString(),"1");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
-        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraOutROI")->getValueString(),"1 2 4 3 ");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+        EXPECT_EQ(m_node3->getChild("node")->getObject("MeshROI")->findData("tetrahedraOutROI")->getValueString(),"1 2 4 3");
     }
 };
 

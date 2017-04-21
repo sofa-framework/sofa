@@ -74,7 +74,7 @@ void OglLabel::init()
         }
         else
         {
-            if (f_printLog.getValue()) sout << "Background color is " << backgroundSetting->color.getValue() << sendl;
+            msg_info() << " background color is " << backgroundSetting->color.getValue() ;
         }
     }
 
@@ -157,7 +157,7 @@ void OglLabel::setColor(float r, float g, float b, float a)
     this->b = b;
     this->a = a;
 
-    if (f_printLog.getValue()) sout << "Set color to: " << r << ", " << g << ", " << b << ", " << a << sendl;
+    msg_info() << " set color to: " << r << ", " << g << ", " << b << ", " << a ;
 }
 
 static int hexval(char c)
@@ -170,6 +170,7 @@ static int hexval(char c)
 
 void OglLabel::setColor(std::string color)
 {
+    //TODO(dmarchal): color FIX
     if (color.empty()) return;
     float r = 1.0f;
     float g = 1.0f;
@@ -215,24 +216,24 @@ void OglLabel::setColor(std::string color)
             yiq /= 1000;
             if (yiq >= 128)
             {
-                if (f_printLog.getValue()) sout << "Black is selected to display text on this background" << sendl;
+                msg_info() << "Black is selected to display text on this background" ;
                 r = 0.0f; g = 0.0f; b = 0.0f;
             }
             else
             {
-                if (f_printLog.getValue()) sout << "White is selected to display text on this background" << sendl;
+                msg_info() << "White is selected to display text on this background" ;
                 r = 1.0f; g = 1.0f; b = 1.0f;
             }
         }
         else
         {
-            serr << "Background setting not found, cannot use contrast on color data (set white instead)" << sendl;
+            msg_info() << "Background setting not found, cannot use contrast on color data (set white instead)" ;
             r = 1.0f; g = 1.0f; b = 1.0f;
         }
     }
     else
     {
-        serr << "Unknown color "<<color<<sendl;
+        msg_warning() <<"Unknown color "<<color ;
         return;
     }
     setColor(r,g,b,a);

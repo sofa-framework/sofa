@@ -200,7 +200,7 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
     {
-        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        msg_error("GenerateRigid") << "unable to loading mesh from file '"<<meshFilename<<"'" ;
         return false;
     }
 
@@ -220,7 +220,7 @@ bool generateRigid(GenerateRigidInfo& res
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
     {
-        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        msg_info("GenerateRigid") << "unable to loade mesh from file '"<<meshFilename<<"'" ;
         return false;
     }
     generateRigid(res, mesh, meshFilename, density, scale, rotation);
@@ -241,7 +241,7 @@ void generateRigid( GenerateRigidInfo& res
 
     if( rigidMass.mass < 0 )
     {
-        std::cerr<<"WARNING: generateRigid: are normals inverted? "<<meshName<<std::endl;
+        msg_warning("generatedRigid")<<"are normals inverted? "<<meshName;
         rigidMass.mass = -rigidMass.mass;
         rigidMass.inertiaMatrix = -rigidMass.inertiaMatrix;
     }

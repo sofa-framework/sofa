@@ -65,7 +65,7 @@ struct Scene_test: public Sofa_test<SReal>
 
     Scene_test()
     {
-        //std::cerr << "Simulation_test::Simulation_test" << std::endl;
+        //msg_info("SimulationTest") << "Simulation_test::Simulation_test" ;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         //sofa::simulation::setSimulation(simulation = new sofa::simulation::tree::TreeSimulation());
     }

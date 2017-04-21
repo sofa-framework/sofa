@@ -238,7 +238,7 @@ void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item)
         }
     }
 
-	addInPropertyWidget(item, true);
+    addInPropertyWidget(item, true);
 }
 void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
 {
@@ -249,12 +249,12 @@ void QSofaListView::addInPropertyWidget(QTreeWidgetItem *item, bool clear)
     if(object == NULL)
         return;
 
-	if(propertyWidget)
-	{
-		propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
-		
-		propertyWidget->show();
-	}
+    if(propertyWidget)
+    {
+        propertyWidget->addComponent(object->getName().c_str(), object, item, clear);
+
+        propertyWidget->show();
+    }
 }
 
 void QSofaListView::Freeze()
@@ -271,7 +271,7 @@ void QSofaListView::Unfreeze()
 
 void QSofaListView::contextMenuEvent(QContextMenuEvent *event)
 {
-	event->accept();
+    event->accept();
 }
 
 void QSofaListView::focusObject()
@@ -345,7 +345,7 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
 //            contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
             act = contextMenu->addAction("Activate", this,SLOT(ActivateNode()));
         }
-		if (object_.ptr.Node->isSleeping())
+        if (object_.ptr.Node->isSleeping())
         {
 //            contextMenu->insertItem ( "Wake up", this, SLOT ( WakeUpNode() ) );
             act = contextMenu->addAction("Wake up", this,SLOT(WakeUpNode()));
@@ -681,12 +681,13 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     // helper::system::SetDirectory chdir ( path.c_str() );
 
     //std::cout << "Initializing objects"<<std::endl;
-    if ( !xml->init() )  std::cerr << "Objects initialization failed."<<std::endl;
+    if ( !xml->init() )
+        dmsg_error("QSofaListView") << "Objects initialization failed." ;
 
     BaseNode* new_basenode = xml->getObject()->toBaseNode();
     if ( new_basenode == NULL )
     {
-        std::cerr << "Objects initialization failed."<<std::endl;
+        dmsg_error("QSofaListView") << "Objects initialization failed.";
         delete xml;
         return ;
     }

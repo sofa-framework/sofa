@@ -21,67 +21,65 @@
 ******************************************************************************/
 /*****************************************************************************
 * User of this library should read the documentation
-* in the messaging.h file.
-******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sstream>
+* in the TextMessaging.h file.
+*****************************************************************************/
+#ifndef COMPONENTINFO_H
+#define COMPONENTINFO_H
+
+#include <iostream>
 #include <string>
-#include "Message.h"
-#include "MessageFormatter.h"
+#include <cstring>
 #include <sofa/helper/helper.h>
+#include <sstream>
+#include <set>
+
+#include <boost/shared_ptr.hpp>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace logging
 {
 
-namespace richconsolestylemessageformater
-{
-
+/// The base class to keep track of informations associated with a message.
+/// A component info object have a sender method to return the name string identifying the
+/// sender of a message.
 ///
-/// \brief The RichConsoleStyleMessageFormatter class
-///
-///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature formatting using a markdown like syntax:
-///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
-///     - automatic reading of the console number of column for prettier display.
-///
-///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+struct SOFA_HELPER_API ComponentInfo
 {
 public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
+    ComponentInfo() ;
+    ComponentInfo(const std::string& name) ;
+    virtual ~ComponentInfo() ;
 
-    RichConsoleStyleMessageFormatter();
-private:
-    bool m_showFileInfo ;
+    /// Returns a string identifying the sender of a message.
+    const std::string& sender() const ;
+
+    /// Write a textual version of the content of the ComponentInfo. You should
+    /// override this function when inheriting from the ComponentInfo base class.
+    virtual std::ostream& toStream(std::ostream& out) const ;
+
+    friend std::ostream& operator<<(std::ostream& out, const ComponentInfo& nfo) ;
+    friend std::ostream& operator<<(std::ostream& out, const ComponentInfo* nfo) ;
+
+    typedef boost::shared_ptr<ComponentInfo> SPtr;
+protected:
+    std::string m_sender ;
 };
 
-/// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_HELPER_API MainRichConsoleStyleMessageFormatter
+/// This function is used in the msg_* macro to handle emitting case based on string.
+inline const ComponentInfo::SPtr getComponentInfo(const std::string& s)
 {
-public:
-    static void formatMessage(const Message& m,std::ostream& out)
-    {
-        static RichConsoleStyleMessageFormatter formatter ;
-        formatter.formatMessage(m, out) ;
-    }
-};
+    return ComponentInfo::SPtr( new ComponentInfo(s) );
+}
 
-
-} // richconsolestylemessageformater
-
-using richconsolestylemessageformater::MainRichConsoleStyleMessageFormatter ;
-using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
+/// This function is used in the msg_* macro to handle string based on string.
+inline bool notMuted(const std::string&){ return true; }
 
 } // logging
 } // helper
 } // sofa
 
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
+
+#endif // COMPONENTINFO_H

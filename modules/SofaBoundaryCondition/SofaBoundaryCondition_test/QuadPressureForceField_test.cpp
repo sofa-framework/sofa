@@ -51,6 +51,9 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
     QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
     {
+        // potential energy is not implemented and won't be tested
+        this->flags &= ~Inherited::TEST_POTENTIAL_ENERGY;
+
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position
         x.resize(4);
