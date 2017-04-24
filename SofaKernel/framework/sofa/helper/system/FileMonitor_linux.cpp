@@ -128,10 +128,10 @@ void FileMonitor::removeListener(FileEventListener *listener){
 int FileMonitor::addFile(const std::string& filepath, FileEventListener* listener)
 {
     if(listener == NULL)
-        return -1 ;
+        return -3;
 
     if(!FileSystem::exists(filepath))
-        return -1 ;
+        return -2;
 
     if(filemonitor_inotifyfd<0)
         if( FileMonitor_init() < 0)
@@ -146,10 +146,10 @@ int FileMonitor::addFile(const std::string& parentname,
                          FileEventListener* listener)
 {
     if(listener == NULL)
-        return -1 ;
+        return -3;
 
     if(!FileSystem::exists(parentname))
-        return -1;
+        return -2;
 
     if(!FileSystem::exists(parentname+"/"+filename))
         return -1;
