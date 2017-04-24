@@ -447,24 +447,26 @@ class GenericRigidJoint:
             ## limits is a list of limits in each unconstrained directions
             ## always lower and upper bounds per direction, so its size is two times the number of unconstrained directions
             ## (following the order txmin,txmax,tymin,tymax,tzmin,tzmax,rxmin,rxmax,rymin,rymax,rzmin,rzmax)
+            ## limits can be set to None to represent unlimited directions
+
+            usefulLimits = []
+
             l = 0
             limitMasks=[]
-            hasLimits = False
             for m in xrange(6):
-                if self.mask[m] == 0 and limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
-                    hasLimits = True
-                    limits[l+1] *= -1.0 # inverted upper bound
+                if self.mask[m] == 0: # limits can only set in unconstrained directions
+                    if limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
+                        limitMaskL = [0]*6
+                        limitMaskU = [0]*6
+                        limitMaskL[m] = 1 # lower bound
+                        limitMaskU[m] = -1  # inverted upper bound
+                        limitMasks.append( limitMaskL )
+                        limitMasks.append( limitMaskU )
+                        usefulLimits.append( limits[l] )
+                        usefulLimits.append( -limits[l+1] ) # inverted upper bound
                     l += 2
-                    limitMaskL = [0]*6
-                    limitMaskU = [0]*6
-                    # lower bound
-                    limitMaskL[m] = 1
-                    limitMasks.append( limitMaskL )
-                    # upper bound
-                    limitMaskU[m] = -1  # inverted upper bound
-                    limitMasks.append( limitMaskU )
-            if hasLimits:
-                return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+            if usefulLimits:
+                return GenericRigidJoint.Limits( self.node, limitMasks, usefulLimits, compliance )
             else:
                 return None
 
