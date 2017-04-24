@@ -222,7 +222,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     vecBox[0]=box;
     typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
     boxRoi2->d_alignedBoxes.setValue(vecBox);
-    boxRoi2->d_computeTriangles=true;
+    boxRoi2->d_computeTriangles.setValue(true);
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
         modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);

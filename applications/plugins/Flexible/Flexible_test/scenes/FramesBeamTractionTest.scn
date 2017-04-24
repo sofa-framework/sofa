@@ -37,10 +37,10 @@
       <MechanicalObject  template="Vec3d" name="pts"    />
       <UniformMass totalMass="10" />
 
-      <BoxROI name="boxPressureBottom" template="Vec3d" box="-1 -1 -1.1 1 1 -0.99"   position="@pts.position" drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles" />
+      <BoxROI name="boxPressureBottom" template="Vec3d" box="-1 -1 -1.1 1 1 -0.99"   position="@pts.position" drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles" computeTriangles="true" />
       <SurfacePressureForceField name="bottomFF" min="0 0 -1.1" max="0 0 -0.99" triangleIndices="@boxPressureBottom.triangleIndices" mainDirection="0 0 1"/>
 
-      <BoxROI name="boxPressureUp" template="Vec3d" box="-1 -1 0.99 1 1 1.1 "   position="@pts.position" drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles" />
+      <BoxROI name="boxPressureUp" template="Vec3d" box="-1 -1 0.99 1 1 1.1 "   position="@pts.position" drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles" computeTriangles="true" />
       <SurfacePressureForceField name="upFF" min="0 0 0.99" max="0 0 1.1" triangleIndices="@boxPressureUp.triangleIndices" mainDirection="0 0 1"/>
 
       <LinearMapping template="Affine,Vec3d"/>
