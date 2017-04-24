@@ -4,6 +4,7 @@ import SofaPython.sml
 import Compliant.StructuralAPI
 import Compliant.sml
 import Flexible
+import os
 
 from Compliant.Tools import cat as concat
 
@@ -222,3 +223,13 @@ class SceneSkinningRigidScale(SofaPython.sml.BaseScene):
 
 
 
+    def addMeshExporters(self, dir, ExportAtEnd=False):
+        """ add obj Exporters for each visual model of the scene
+        """
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        for k,visuals in self.visuals.iteritems():
+            for mid,visual in visuals.iteritems():
+                filename = os.path.join(dir, os.path.basename(self.model.meshes[mid].source))
+                e = visual.node.createObject('ObjExporter', name='objExporter', filename=filename, printLog=True, exportAtEnd=ExportAtEnd)
+                self.meshExporters.append(e)
