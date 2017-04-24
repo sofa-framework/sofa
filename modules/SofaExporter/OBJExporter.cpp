@@ -88,6 +88,10 @@ void OBJExporter::writeOBJ()
     }
     if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
         filename += ".obj";
+
+    if( f_printLog.getValue() )
+        sout << "Exporting OBJ as: " << filename.c_str() << " (with MTL file)" << sendl;
+
     std::ofstream outfile(filename.c_str());
 
     std::string mtlfilename = objFilename.getFullPath();
@@ -100,9 +104,6 @@ void OBJExporter::writeOBJ()
     context->executeVisitor(&exportOBJ);
     outfile.close();
     mtlfile.close();
-
-    if( f_printLog.getValue() )
-        sout << "Exporting OBJ as: " << filename.c_str() << " (with MTL file)" << sendl;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
