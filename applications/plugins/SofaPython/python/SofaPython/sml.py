@@ -488,6 +488,7 @@ class BaseScene:
         self.material = Tools.Material() # a default material set
         self.solidMaterial = dict() # assign a material to a solid
         self.nodes = dict() # to store special nodes
+        self.meshExporters = list() # optional components to exports meshes
         n=name
         if n is None:
             n=self.model.name
@@ -557,6 +558,11 @@ class BaseScene:
                 if meshId in self.visuals[solidId]:
                     mesh = self.visuals[solidId][meshId]
         return mesh
+
+
+    def exportMeshes(self):
+        for e in self.meshExporters:
+            e.writeOBJ()
 
     def dagValidation(self):
         err = DAGValidation.test( self.root, True )
