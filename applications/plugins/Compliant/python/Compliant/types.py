@@ -16,6 +16,16 @@ ex = vec(1, 0, 0)
 ey = vec(0, 1, 0)
 ez = vec(0, 0, 1)
 
+# slices for quaternion/rigid/deriv
+imag_slice = slice(None, 3)
+real_index = -1
+
+angular_slice = slice(3, None)
+linear_slice = slice(None, 3)
+
+orient_slice = slice(3, None)
+center_slice = slice(None, 3)
+
 
 class Rigid3(np.ndarray):
 
@@ -27,24 +37,26 @@ class Rigid3(np.ndarray):
         '''lie algebra element as (translation, rotation)'''
         __slots__ = ()
 
+
         def __new__(cls, *args, **kwargs):
             return np.ndarray.__new__(cls, 6)
-
+        
         @property
         def linear(self):
-            return self[:3].view( np.ndarray )
+            return self[linear_slice].view( np.ndarray )
 
         @linear.setter
         def linear(self, value):
-            self[:3] = value
+            self[linear_slice] = value
 
         @property
         def angular(self):
-            return self[3:].view( np.ndarray )
+            return self[angular_slice].view( np.ndarray )
 
         @angular.setter
         def angular(self, value):
-            self[3:] = value
+            self[angular_slice] = value
+
 
         def exp(self):
             '''SE(3) exponential'''
@@ -58,19 +70,19 @@ class Rigid3(np.ndarray):
             
     @property
     def center(self):
-        return self[:3].view( np.ndarray )
+        return self[center_slice].view( np.ndarray )
 
     @center.setter
     def center(self, value):
-        self[:3] = value
+        self[center_slice] = value
 
     @property
     def orient(self):
-        return self[3:].view(Quaternion)
+        return self[orient_slice].view(Quaternion)
 
     @orient.setter
     def orient(self, value):
-        self[3:] = value
+        self[orient_slice] = value
 
     def __new__(cls, *args):
         return np.ndarray.__new__(cls, 7)
@@ -86,12 +98,15 @@ class Rigid3(np.ndarray):
         for k, v in kwargs.iteritems(): setattr(self, k, v)
 
     def inv(self):
+        '''SE(3) inverse'''
         res = Rigid3()
         res.orient = self.orient.inv()
         res.center = -res.orient(self.center)
         return res
 
     def __mul__(self, other):
+        '''SE(3) product'''
+        
         res = Rigid3()
 
         res.orient = self.orient * other.orient
@@ -111,10 +126,10 @@ class Rigid3(np.ndarray):
         R = self.orient.matrix()
         t = Quaternion.hat(self.center)
 
-        res[:3, :3] = R
-        res[3:, 3:] = R
+        res[angular_slice, angular_slice] = R
+        res[linear_slice, linear_slice] = R
 
-        res[3:, :3] = t.dot(R)
+        res[linear_slice, angular_slice] = t.dot(R)
 
         return res
 
@@ -132,7 +147,7 @@ class Rigid3(np.ndarray):
 
     
     def log(self):
-
+        '''SE(3) logarithm'''
         res = Rigid3.Deriv()
 
         res.angular = self.orient.log()
@@ -143,6 +158,8 @@ class Rigid3(np.ndarray):
 
     @contextmanager
     def gl_frame(self):
+        '''draw in the current rigid frame'''
+
         global GL
         if GL is None: from OpenGL import GL
         
@@ -177,11 +194,11 @@ class Quaternion(np.ndarray):
             self[:] = value
             
     def inv(self):
-        '''inverse'''
+        '''quaternion inverse. use conj for unit quaternions instead'''
         return self.conj() / self.dot(self)
     
     def conj(self):
-        '''conjugate'''
+        '''quaternion conjugate'''
         res = Quaternion()
         res.real = self.real
         res.imag = -self.imag
@@ -189,17 +206,21 @@ class Quaternion(np.ndarray):
         return res
 
     @property
-    def real(self): return self[-1]
+    def real(self):
+        '''quaternion real part'''
+        return self[real_index]
 
     @real.setter
-    def real(self, value): self[-1] = value
+    def real(self, value): self[real_index] = value
 
     @property
-    def imag(self): return self[:3].view( np.ndarray )
+    def imag(self):
+        '''quaternion imaginary part'''
+        return self[imag_slice].view( np.ndarray )
 
     @imag.setter
-    def imag(self, value): self[:3] = value
-
+    def imag(self, value): self[imag_slice] = value
+    
     def normalize(self):
         '''normalize quaternion'''
         self /= norm(self)
@@ -231,7 +252,7 @@ class Quaternion(np.ndarray):
 
 
     def matrix(self):
-        '''rotation matrix'''
+        '''rotation matrix conversion'''
 
         R = np.identity(3)
         
@@ -382,13 +403,15 @@ class Quaternion(np.ndarray):
         res[0, 2] = v[1]
         res[1, 2] = -v[0]
 
-        res -= res.T
-
+        res[1, 0] = v[2]
+        res[2, 0] = -v[1]
+        res[2, 1] = v[0]
+        
         return res
 
-    @staticmethod
-    def slerp(q1,q2,t):
-        """ Returns spherical linear interpolation between q1 and q2 """
-        return q1 * Quaternion.exp( t*Quaternion.log( Quaternion.conj(q1) * q2) )
+    def slerp(self, q2, t):
+        '''spherical linear interpolation between q1 and q2'''
+        # TODO optimize
+        return self * Quaternion.exp( t * (self.conj() * q2).log() )
 
     
