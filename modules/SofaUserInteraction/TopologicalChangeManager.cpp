@@ -457,7 +457,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
     if (firstCollisionModel != secondCollisionModel)
     {
-        std::cerr << "Incision involving different models is not supported yet!" << std::endl;
+        msg_warning("TopologicalChangeManager") << "Incision involving different models is not supported yet!" ;
         return false;
     }
 

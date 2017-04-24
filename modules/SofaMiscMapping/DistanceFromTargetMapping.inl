@@ -317,7 +317,7 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
 
-    //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
+    //        msg_info()<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
             K.addBlock(idx,idx,b);
         }

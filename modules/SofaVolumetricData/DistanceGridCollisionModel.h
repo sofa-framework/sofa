@@ -179,7 +179,7 @@ public:
         defaulttype::Matrix3 X(defaulttype::Vector3(1,0,0), defaulttype::Vector3(0, cos(x), -sin(x)), defaulttype::Vector3(0, sin(x), cos(x)));
         defaulttype::Matrix3 Y(defaulttype::Vector3(cos(y), 0, sin(y)), defaulttype::Vector3(0, 1, 0), defaulttype::Vector3(-sin(y), 0, cos(y)));
         defaulttype::Matrix3 Z(defaulttype::Vector3(cos(z), -sin(z), 0), defaulttype::Vector3(sin(z), cos(z), 0), defaulttype::Vector3(0, 0, 1));
-        
+
         return X * Y * Z;
     }
 
@@ -519,7 +519,7 @@ public:
         bary = this->model->getDeformCube(index).baryCoords(P);
         //if (elem == -1)
         //{
-        //    std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
+        //    msg_info()<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
         //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
         //}
         return this->mapper->addPointInCube(elem,bary.ptr());
@@ -550,13 +550,13 @@ public:
         {
             // add velocity visualization
             /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
-            		this->child->addObject(visu);
-            		visu->useAlpha.setValue(true);
-            		visu->vscale.setValue(this->model->getContext()->getDt());
-            		IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
-            		this->child->addObject(map);
-            		visu->init();
-            		map->init(); */
+                    this->child->addObject(visu);
+                    visu->useAlpha.setValue(true);
+                    visu->vscale.setValue(this->model->getContext()->getDt());
+                    IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > * map = new IdentityMapping< DataTypes, ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >( outmodel, visu );
+                    this->child->addObject(map);
+                    visu->init();
+                    map->init(); */
         }
         return outmodel;
     }

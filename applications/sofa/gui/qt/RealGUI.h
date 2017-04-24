@@ -451,7 +451,7 @@ struct ActivationFunctor
             desact_text.remove(QString("Deactivated "), Qt::CaseInsensitive);
             item->setText(0,desact_text);
             //Remove the icon
-            QPixmap *p = getPixmap(n);
+            QPixmap *p = getPixmap(n, false,false, false);
             item->setIcon(0, QIcon(*p));
 //            item->setOpen(true);
             item->setExpanded(true);

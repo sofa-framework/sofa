@@ -118,7 +118,7 @@ const std::string BaseViewer::screenshotName()
 #ifndef SOFA_NO_OPENGL
     return capture.findFilename().c_str();
 #else
-	return "";
+    return "";
 #endif
 }
 
@@ -227,8 +227,8 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         {
             helper::vector<std::string> validExtensions;
             helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
-            std::cerr << "Could not create: " << imageFileName << std::endl;
-            std::cerr << "Valid extensions: " << validExtensions << std::endl;
+            msg_error("BaseViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
+                                    << "Valid extensions: " << validExtensions ;
         }
         else
         {

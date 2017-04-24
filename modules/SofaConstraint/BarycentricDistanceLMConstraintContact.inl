@@ -71,7 +71,6 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
 
@@ -125,7 +124,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
             if (!index)
             {
                 ++nbnew;
-                if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: New contact "<<o->id<<std::endl;
+                msg_info() << " new contact "<<o->id ;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -150,7 +149,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: Removed contact "<<it->first<<std::endl;
+            msg_info() << " removed contact "<<it->first;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -161,7 +160,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
             ++it;
         }
     }
-    if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<std::endl;
+    msg_info() << " "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)." ;
 
     ff->clear();
     mapper1.resize(size);
@@ -213,7 +212,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         parent = group;
         if (parent!=NULL)
         {
-            //std::cerr << "Attaching contact response to "<<parent->getName()<<std::endl;
+            //msg_error() << "Attaching contact response to "<<parent->getName() ;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -227,7 +226,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         if (parent!=NULL)
         {
-            //std::cerr << "Removing contact response from "<<parent->getName()<<std::endl;
+            //msg_error()<< "Removing contact response from "<<parent->getName();
             parent->removeObject(this);
             parent->removeObject(ff);
         }
