@@ -89,7 +89,7 @@ public:
             const sofa::helper::vector< unsigned int > &,
             const sofa::helper::vector< double > &) {t = m_defaultValue;}
 
-    /// WARNING NEEED TO UNIFY THIS
+    /// WARNING NEED TO UNIFY THIS
     /// Apply adding current elementType elements
     virtual void applyCreateFunction(unsigned int i, value_type&t , const TopologyElementType& ,
             const sofa::helper::vector< unsigned int > &ancestors,

@@ -52,10 +52,10 @@ void QuadSetTopologyContainer::addQuad( int a, int b, int c, int d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     m_quad.push_back(Quad(a,b,c,d));
-    if (a >= getNbPoints()) nbPoints.setValue(a+1);
-    if (b >= getNbPoints()) nbPoints.setValue(b+1);
-    if (c >= getNbPoints()) nbPoints.setValue(c+1);
-    if (d >= getNbPoints()) nbPoints.setValue(d+1);
+    if (a >= getNbPoints()) setNbPoints( a+1 );
+    if (b >= getNbPoints()) setNbPoints( b+1 );
+    if (c >= getNbPoints()) setNbPoints( c+1 );
+    if (d >= getNbPoints()) setNbPoints( d+1 );
 }
 
 void QuadSetTopologyContainer::init()
