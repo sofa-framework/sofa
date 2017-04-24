@@ -23,17 +23,11 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
 
-#include <gtest/gtest.h>
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::Message ;
-
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
 
-
-class ImagePNG_test : public ::testing::Test
+class ImagePNG_test : public Sofa_test<>
 {
 protected:
 
@@ -76,7 +70,6 @@ protected:
             EXPECT_TRUE(0 == std::memcmp(data, testdata, width*height*bpp));
         }
     };
-
 };
 
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
@@ -90,6 +83,9 @@ TEST_F(ImagePNG_test, ImagePNG_NoFile)
 
 TEST_F(ImagePNG_test, ImagePNG_NoImg)
 {
+    /// This generate a test failure if no error message is generated.
+    EXPECT_MSG_EMIT(Error) ;
+
     sofa::helper::io::ImagePNG imgNoImage;
     EXPECT_FALSE(imgNoImage.load("image/imagetest_noimage.png"));
 }
