@@ -29,6 +29,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <time.h>
+#include <errno.h>
 
 //////////////////// C++ Header ///////////////////////////////////////////////
 #include <algorithm>
@@ -41,6 +42,8 @@
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
+
+#include <sofa/helper/logging/Messaging.h>
 
 using namespace std ;
 
@@ -81,11 +84,23 @@ void addAFileListenerInDict(string pathfilename, FileEventListener* listener)
 int FileMonitor_init()
 {
     if(filemonitor_inotifyfd>=0)
-        return filemonitor_inotifyfd ;
+        return filemonitor_inotifyfd;
 
     // Here we should add a file to monitor for change.
-    filemonitor_inotifyfd = inotify_init() ;
+    filemonitor_inotifyfd = inotify_init();
+
     if ( filemonitor_inotifyfd < 0 ) {
+        int errsv = errno;
+        std::stringstream errmsg;
+        switch( errsv )
+        {
+        case EMFILE: errmsg<<"EMFILE Too many open files"; break;
+        case ENFILE: errmsg<<"ENFILE Too many open files in system"; break;
+        case ENOMEM: errmsg<<"ENOMEM Insufficient kernel memory"; break;
+        default: errmsg<<"unknown error "<<errsv; break;
+        }
+        msg_error("FileMonitor")<<"FileMonitor_init inotify_init failed: "<<errmsg.str();
+
         return -1 ;
     }
     return 0 ;
