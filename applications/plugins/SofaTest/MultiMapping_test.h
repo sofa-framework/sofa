@@ -256,6 +256,21 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( fin, dfp[p] );
         }
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
+
+        // getting a copy ok K as soon it is computed
+        typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+        EigenSparseKMatrix K;
+        if( const defaulttype::BaseMatrix* bk = mapping->getK() )
+        {
+            if( const EigenSparseKMatrix* ek = dynamic_cast<const EigenSparseKMatrix*>(bk) )
+                K = *ek;
+            else
+            {
+                succeed = false;
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+            }
+        }
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness
@@ -374,22 +389,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             }
         }
         InVecDeriv Kv(totalvp.size());
-
-        const defaulttype::BaseMatrix* bk = mapping->getK();
         // K can be null or empty for linear mappings
         // still performing the test with a null Kv vector to check if the mapping is really linear
-        if( bk != NULL ){
-
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-            if( K == NULL ){
-                succeed = false;
-                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
-                // TODO perform a slow conversion with a big warning rather than a failure?
-            }
-
-            if( K->compressedMatrix.nonZeros() ) K->mult(Kv,totalvp);
-        }
+        if( K.compressedMatrix.nonZeros() ) K.mult(Kv,totalvp);
 
         // check that K.vp = dfp
         for( Index p=0, offset=0; p<Np.size(); p++ ) {
