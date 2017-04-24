@@ -139,7 +139,7 @@ public:
 
     virtual void assemble( const typename Self::in_pos_type& in )
     {
-        assert( Nout==Nin ); // supposing TIn==TOut
+        // assert( Nout==Nin ); // supposing TIn==TOut // no longer true :-/
 
         const helper::vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
