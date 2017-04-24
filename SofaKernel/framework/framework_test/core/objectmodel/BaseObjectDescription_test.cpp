@@ -19,15 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/init.h>
-using sofa::simulation::common::init ;
-
-#include <SofaSimulationGraph/init.h>
-using sofa::simulation::graph::init ;
-
-#include <SofaComponentBase/initComponentBase.h>
-using sofa::component::initComponentBase ;
-
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
@@ -42,14 +33,6 @@ using sofa::helper::logging::ExpectMessage ;
 
 struct BaseObjectDescription_test: public Sofa_test<>
 {
-    void SetUp()
-    {
-    }
-
-    void TearDown()
-    {
-    }
-
     void checkConstructorBehavior()
     {
         BaseObjectDescription objectDescription("theName", "theType");

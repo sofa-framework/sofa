@@ -21,8 +21,6 @@ using sofa::defaulttype::RGBAColor ;
 class Color_Test : public Sofa_test<>
 {
 public:
-    void SetUp() ;
-    void TearDown() ;;
     void checkCreateFromString() ;
     void checkCreateFromDouble() ;
     void checkEquality() ;
@@ -30,17 +28,6 @@ public:
     void checkColorDataField() ;
 };
 
-void Color_Test::SetUp()
-{
-    sofa::simulation::common::init();
-    sofa::simulation::graph::init();
-}
-
-void Color_Test::TearDown()
-{
-    sofa::simulation::common::cleanup();
-    sofa::simulation::graph::cleanup();
-}
 
 void Color_Test::checkCreateFromString()
 {
