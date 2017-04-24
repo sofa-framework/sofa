@@ -4198,6 +4198,7 @@ namespace cimg_library_suffixed {
     **/
     inline int system(const char *const command, const char *const module_name=0) {
       cimg::unused(module_name);
+      cimg::unused(command);
 #ifdef cimg_no_system_calls
       return -1;
 #else
