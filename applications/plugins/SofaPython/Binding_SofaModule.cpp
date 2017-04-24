@@ -37,7 +37,9 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 //#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
 
 #include "SceneLoaderPY.h"
 
@@ -620,6 +622,11 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 }
 
 
+static PyObject * Sofa_path(PyObject * /*self*/, PyObject * args) {
+    return PyString_FromString(sofa::helper::Utils::getSofaPathPrefix().c_str());
+}
+
+
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -644,6 +651,7 @@ SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
+SP_MODULE_METHOD(Sofa, path)
 SP_MODULE_METHODS_END
 
 
