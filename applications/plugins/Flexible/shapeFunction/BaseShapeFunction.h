@@ -42,6 +42,47 @@ namespace behavior
 {
 
 
+/// weights normalization : make partition of unity $sum_i w_i(x)=1$ and adjust derivatives accordingly
+/// to be reimplemented for multidimensional weights
+template< class TShapeFunctionTypes>
+class ShapeFunctionNormalizer
+{
+public:
+
+    static void normalize (typename TShapeFunctionTypes::VWeight& w, typename TShapeFunctionTypes::VGradient* dw, typename TShapeFunctionTypes::VHessian* ddw)
+    {
+        unsigned int nbRef=w.size();
+        typedef typename TShapeFunctionTypes::WeightType WeightType;
+        typedef typename TShapeFunctionTypes::Gradient Gradient;
+        typedef typename TShapeFunctionTypes::Hessian Hessian;
+        WeightType sum_w=0;
+        Gradient sum_dw;
+        Hessian sum_ddw;
+
+        // Compute norm
+        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
+        if(dw)
+        {
+            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
+            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
+        }
+
+        // Normalize
+        if(sum_w)
+            for (unsigned int j = 0; j < nbRef; j++)
+            {
+                WeightType wn=w[j]/sum_w;
+                if(dw)
+                {
+                    Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
+                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
+                    (*dw)[j]=dwn;
+                }
+                w[j]=wn;
+            }
+    }
+};
+
 template<typename TShapeFunctionTypes>
 struct ShapeFunctionInternalData
 {
@@ -147,38 +188,11 @@ public:
         for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
     }
 
-    /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
-    /// warning: this is a default implementation for scalar weights, must be reimplemented for multi-dimensional weights
-    virtual void normalize(VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL)
+    /// used to make a partition of unity
+    void normalize(VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL)
     {
-        unsigned int nbRef=w.size();
-        WeightType sum_w=0;
-        Gradient sum_dw;
-        Hessian sum_ddw;
-
-        // Compute norm
-        for (unsigned int j = 0; j < nbRef; j++) sum_w += w[j];
-        if(dw)
-        {
-            for (unsigned int j = 0; j < nbRef; j++) sum_dw += (*dw)[j];
-            if(ddw) for (unsigned int j = 0; j < nbRef; j++) sum_ddw += (*ddw)[j];
-        }
-
-        // Normalize
-        if(sum_w)
-            for (unsigned int j = 0; j < nbRef; j++)
-            {
-                Real wn=w[j]/sum_w;
-                if(dw)
-                {
-                    Gradient dwn=((*dw)[j] - sum_dw*wn)/sum_w;
-                    if(ddw) for(int o=0; o<Hessian::nbLines; o++) for(int p=0; p<Hessian::nbCols; p++) (*ddw)[j](o,p)=((*ddw)[j](o,p) - wn*sum_ddw(o,p) - sum_dw[o]*dwn[p] - sum_dw[p]*dwn[o])/sum_w;
-                    (*dw)[j]=dwn;
-                }
-                w[j]=wn;
-            }
+        ShapeFunctionNormalizer<ShapeFunctionTypes>::normalize(w,dw,ddw);
     }
-
 
 protected:
     BaseShapeFunction()
