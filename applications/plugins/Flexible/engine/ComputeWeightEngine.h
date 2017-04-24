@@ -35,7 +35,7 @@ public:
 
 
     // Shape function
-    typedef core::behavior::ShapeFunctionTypes< 3, SReal > ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes< 3, SReal, SReal > ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction< ShapeFunctionType > BaseShapeFunction;
     typedef SingleLink< ComputeWeightEngine, BaseShapeFunction, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkShapeFunction;
     LinkShapeFunction l_shapeFunction;

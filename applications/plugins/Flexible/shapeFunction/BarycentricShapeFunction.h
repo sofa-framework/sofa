@@ -50,7 +50,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
@@ -68,7 +68,7 @@ public:
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
         InternalShapeFunction<spatial_dimensions>::computeShapeFunction( this, childPosition, this->cellIndex, ref, w, dw, ddw, cell );
     }
@@ -219,7 +219,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();
@@ -521,7 +521,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();

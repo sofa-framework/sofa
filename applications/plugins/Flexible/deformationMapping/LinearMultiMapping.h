@@ -63,7 +63,7 @@ public:
 
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::Hessian Hessian;
@@ -87,7 +87,7 @@ protected:
     virtual ~LinearMultiMapping()     { }
 
 
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VWeight& w)
     {
         helper::ReadAccessor<Data<InVecCoord1> > in10 (*this->fromModel1->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));
@@ -121,7 +121,7 @@ protected:
         }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VWeight& w, const VGradient& dw)
     {
         helper::ReadAccessor<Data<InVecCoord1> > in10 (*this->fromModel1->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));

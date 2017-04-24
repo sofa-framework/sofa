@@ -38,12 +38,12 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block for PlasticStrainMapping */
 template<class TStrain>
-class PlasticStrainJacobianBlock : public BaseJacobianBlock<TStrain,TStrain>
+class PlasticStrainJacobianBlock : public BaseJacobianBlock<TStrain,TStrain,SReal>
 {
 
 public:
 
-    typedef BaseJacobianBlock<TStrain,TStrain> Inherit;
+    typedef BaseJacobianBlock<TStrain,TStrain,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -51,6 +51,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     typedef typename TStrain::StrainMat StrainMat;  ///< Matrix representing a strain
     typedef typename TStrain::StrainVec StrainVec;  ///< Vec representing a strain (Voigt notation)
@@ -167,13 +168,13 @@ public:
 ///// @warning @todo only implemented for principal stretches see as strain
 ///// @TODO it not working because the principal stretches are not ordered
 //template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
-//class PlasticStrainJacobianBlock_U : public BaseJacobianBlock< PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real>,PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real> >
+//class PlasticStrainJacobianBlock_U : public BaseJacobianBlock< PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real>,PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real>,SReal >
 //{
 
 //public:
 
 //    typedef PrincipalStretchesStrainTypes<_spatial_dimensions,_material_dimensions,_order,_Real> TStrain;
-//    typedef BaseJacobianBlock<TStrain,TStrain> Inherit;
+//    typedef BaseJacobianBlock<TStrain,TStrain,SReal> Inherit;
 //    typedef typename Inherit::InCoord InCoord;
 //    typedef typename Inherit::InDeriv InDeriv;
 //    typedef typename Inherit::OutCoord OutCoord;
@@ -181,6 +182,7 @@ public:
 //    typedef typename Inherit::MatBlock MatBlock;
 //    typedef typename Inherit::KBlock KBlock;
 //    typedef typename Inherit::Real Real;
+//    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
 //    enum { strain_size = TStrain::strain_size };
 //    enum { order = TStrain::order };

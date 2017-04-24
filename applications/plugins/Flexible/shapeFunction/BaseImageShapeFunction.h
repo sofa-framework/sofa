@@ -71,7 +71,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
 
     /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
+    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VWeight& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
     {
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
@@ -178,7 +178,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
@@ -221,7 +221,7 @@ public:
 
 
     /// interpolate weights and their derivatives at a spatial position
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
     {
         // resize input
         unsigned int nbRef=this->f_nbRef.getValue();

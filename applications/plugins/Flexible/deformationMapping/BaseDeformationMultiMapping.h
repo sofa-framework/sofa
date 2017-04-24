@@ -119,10 +119,11 @@ public:
 
     /** @name  Shape Function types    */
     //@{
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
+    typedef typename JacobianBlockType1::WeightType WeightType;  // here we assume that the two jacobian blocks have similar weigth types -> todo: separate weights from first and second parents?
+    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,WeightType,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
-    typedef typename BaseShapeFunction::VReal VReal;
-    typedef typename BaseShapeFunction::VecVReal VecVReal;
+    typedef typename BaseShapeFunction::VWeight VWeight;
+    typedef typename BaseShapeFunction::VecVWeight VecVWeight;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VecVGradient VecVGradient;
@@ -226,8 +227,8 @@ public:
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10);
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false);
 
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)=0;
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VWeight& w)=0;
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VWeight& w, const VGradient& dw)=0;
     //@}
 
 //    SparseMatrix& getJacobianBlocks()
@@ -243,7 +244,7 @@ public:
     Data<VecVRef > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
 //    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
 //    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
-    Data<VecVReal >       f_w;
+    Data<VecVWeight >       f_w;
     Data<VecVGradient >   f_dw;
     Data<VecVHessian >    f_ddw;
     Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients

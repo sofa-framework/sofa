@@ -109,7 +109,7 @@ public:
 
     typedef SE3< Real > se3;
 
-    typedef core::behavior::ShapeFunctionTypes<3,Real> ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes<3,Real,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
 
 	/****************** CONSTRUCTOR / DESTRUCTOR ***********************/

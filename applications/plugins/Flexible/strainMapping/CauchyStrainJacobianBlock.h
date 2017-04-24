@@ -38,13 +38,13 @@ namespace defaulttype
 /** Template class used to implement one jacobian block for CauchyStrainMapping */
 template<class TIn,class TOut>
 class CauchyStrainJacobianBlock :
-    public  BaseJacobianBlock< TIn , TOut >
+    public  BaseJacobianBlock< TIn , TOut, SReal >
 {
 public:
     typedef TIn In;
     typedef TOut Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -52,6 +52,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
     typedef typename Out::StrainMat StrainMat;  ///< Matrix representing a strain

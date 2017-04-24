@@ -257,7 +257,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
 
                 typename BaseShapeFunction::Coord out_pos;
                 typename BaseShapeFunction::VRef ref;
-                typename BaseShapeFunction::VReal w;
+                typename BaseShapeFunction::VWeight w;
                 helper::WriteOnlyAccessor<Data< helper::vector<unsigned> > > ra_index(this->index);
                 for (std::size_t ind0 = 0; ind0 < outSize; ++ind0) {
                     defaulttype::StdVectorTypes<typename BaseShapeFunction::Coord,typename BaseShapeFunction::Coord>::set( out_pos, xout_const[ind0][0] , xout_const[ind0][1] , xout_const[ind0][2]);
@@ -270,7 +270,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                         ra_index.push_back(ind0);ra_index.push_back(ref[0]);ra_index.push_back(ref[0]);
                     }
                     else {
-                        typename BaseShapeFunction::VReal::iterator itMax = std::max_element(w.begin(),w.end());
+                        typename BaseShapeFunction::VWeight::iterator itMax = std::max_element(w.begin(),w.end());
                         std::size_t indexMax = std::distance(w.begin(), itMax);
                         ra_index.push_back(ind0);ra_index.push_back(indexMax);ra_index.push_back(indexMax);
                         serr << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax << sendl;

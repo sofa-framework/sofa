@@ -165,7 +165,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
 */
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0)
+void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVWeight& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0)
 {
     size_t cSize = c0.size();
     if(cSize != x0.size() || cSize != index.size() || cSize != w.size() || cSize != dw.size() || cSize != ddw.size())
@@ -183,7 +183,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0,
     for(size_t i=0; i<cSize; ++i)
         wa_index[i].assign(index[i].begin(), index[i].end());
 
-    helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);
+    helper::WriteOnlyAccessor<Data<VecVWeight > > wa_w (this->f_w);
     wa_w.resize(cSize);
     for(size_t i=0; i<cSize; ++i)
         wa_w[i].assign(w[i].begin(), w[i].end());
@@ -344,7 +344,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const helper::vector<
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
     helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteOnlyAccessor<Data<VecVWeight > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
     helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
     helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
@@ -749,7 +749,7 @@ void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const C
 
     // interpolate weights at sample positions
     mCoord mp0;        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-    VRef ref; VReal w;
+    VRef ref; VWeight w;
     _shapeFunction->computeShapeFunction(mp0,ref,w);
 
     // map using specific instanciation
@@ -765,7 +765,7 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
     // iterate: p0(n+1) = F0.F^-1 (p-p(n)) + p0(n)
     size_t count=0;
     mCoord mp0;
-    MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
+    MaterialToSpatial F0;  VRef ref; VWeight w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
     defaulttype::Mat<material_dimensions,spatial_dimensions,Real> Finv;
@@ -837,7 +837,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<VecVRef > > ref (this->f_index);
-    helper::ReadAccessor<Data<VecVReal > > w (this->f_w);
+    helper::ReadAccessor<Data<VecVWeight > > w (this->f_w);
 
     if(this->missingInformationDirty)
     {

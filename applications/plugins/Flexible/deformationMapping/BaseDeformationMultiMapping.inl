@@ -234,7 +234,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
     helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteOnlyAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteOnlyAccessor<Data<VecVWeight > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
     helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
     helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
@@ -740,7 +740,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Forwar
 
     // interpolate weights at sample positions
     mCoord mp0;        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-    VRef ref; VReal w;
+    VRef ref; VWeight w;
     _shapeFunction->computeShapeFunction(mp0,ref,w);
 
     // map using specific instanciation
@@ -756,7 +756,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
     // iterate: p0(n+1) = F0.F^-1 (p-p(n)) + p0(n)
     size_t count=0;
     mCoord mp0;
-    MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
+    MaterialToSpatial F0;  VRef ref; VWeight w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
     defaulttype::Mat<material_dimensions,spatial_dimensions,Real> Finv;
@@ -859,7 +859,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
     helper::ReadAccessor<Data<InVecCoord2> > in2 (*this->fromModel2->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<VecVRef > > ref (this->f_index);
-    helper::ReadAccessor<Data<VecVReal > > w (this->f_w);
+    helper::ReadAccessor<Data<VecVWeight > > w (this->f_w);
     size_t size1=this->getFromSize1();
 
     if(this->missingInformationDirty)

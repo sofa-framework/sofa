@@ -60,7 +60,7 @@ public:
 
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::Hessian Hessian;
@@ -89,7 +89,7 @@ protected:
 
     ///< Compute the moment matrix \f$ M = sum w_i.xi*.xi*^T \f$ and its spatial derivatives (xi is the initial spatial position of node i)
     void computeMLSMatrices(moment& M, defaulttype::Vec<spatial_dimensions, moment>& dM, defaulttype::Mat<spatial_dimensions,spatial_dimensions, moment>& ddM,
-                                const VRef& index, const InVecCoord& in, const VReal& w, const VGradient& dw, const VHessian& ddw)
+                                const VRef& index, const InVecCoord& in, const VWeight& w, const VGradient& dw, const VHessian& ddw)
     {
         M=moment();
         for(unsigned int k=0; k<spatial_dimensions; k++ ) dM(k)=moment();
@@ -189,7 +189,7 @@ protected:
 
 
 
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VWeight& w)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -223,7 +223,7 @@ protected:
         }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& MtoS, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& MtoS, const VRef& ref, const VWeight& w, const VGradient& dw)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));

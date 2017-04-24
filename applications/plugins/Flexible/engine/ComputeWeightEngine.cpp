@@ -90,7 +90,7 @@ void ComputeWeightEngine::update()
     for(unsigned i = 0; i < nb_vertices; ++i )
     {
         BaseShapeFunction::VRef ref;
-        BaseShapeFunction::VReal w;
+        BaseShapeFunction::VWeight w;
 
         // Compute weights and indices for the given element
         sf->computeShapeFunction( vertices[i], ref, w );

@@ -32,7 +32,7 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block for InvariantMapping */
 template<class TIn, class TOut>
-class InvariantJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+class InvariantJacobianBlock : public BaseJacobianBlock<TIn,TOut,SReal> {};
 
 } // namespace defaulttype
 } // namespace sofa

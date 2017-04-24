@@ -81,9 +81,9 @@ public:
     /** @name  Shape Function types    */
     //@{
     enum { spatial_dimensions = 3 };
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
-    typedef typename BaseShapeFunction::VReal VReal;
+    typedef typename BaseShapeFunction::VWeight VWeight;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::Coord Coord;
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
@@ -155,7 +155,7 @@ protected:
                     if(inimg(x,y,z))
                     {
                         Coord p=inT->fromImage(Coord(x,y,z));
-                        VReal w; VRef ref;
+                        VWeight w; VRef ref;
                         _shapeFunction->computeShapeFunction(p,ref,w);
                         for(unsigned int i=0;i<ref.size();i++)
                         {

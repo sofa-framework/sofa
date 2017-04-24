@@ -116,13 +116,13 @@ static Mat<9,9,real> getI2Hessian(const Mat<3,3,real>& from)
 
 template<class InReal,class OutReal>
 class InvariantJacobianBlock< F331(InReal) , I331(OutReal) > :
-    public  BaseJacobianBlock< F331(InReal) , I331(OutReal) >
+    public  BaseJacobianBlock< F331(InReal) , I331(OutReal) , SReal >
 {
 public:
     typedef F331(InReal) In;
     typedef I331(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -130,6 +130,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
 
@@ -246,13 +247,13 @@ public:
 
 //template<class InReal,class OutReal>
 //class InvariantJacobianBlock< U331(InReal) , I331(OutReal) > :
-//    public  BaseJacobianBlock< U331(InReal) , I331(OutReal) >
+//    public  BaseJacobianBlock< U331(InReal) , I331(OutReal) , SReal >
 //{
 //public:
 //    typedef U331(InReal) In;
 //    typedef I331(OutReal) Out;
 
-//    typedef BaseJacobianBlock<In,Out> Inherit;
+//    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
 //    typedef typename Inherit::InCoord InCoord;
 //    typedef typename Inherit::InDeriv InDeriv;
 //    typedef typename Inherit::OutCoord OutCoord;
@@ -260,6 +261,7 @@ public:
 //    typedef typename Inherit::MatBlock MatBlock;
 //    typedef typename Inherit::KBlock KBlock;
 //    typedef typename Inherit::Real Real;
+//    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
 //    /**
 //    Mapping:

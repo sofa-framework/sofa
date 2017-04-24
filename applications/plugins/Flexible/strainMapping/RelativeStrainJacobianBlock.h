@@ -38,12 +38,12 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block for RelativeStrainMapping */
 template<class TStrain>
-class RelativeStrainJacobianBlock : public BaseJacobianBlock<TStrain,TStrain>
+class RelativeStrainJacobianBlock : public BaseJacobianBlock<TStrain,TStrain,SReal>
 {
 
 public:
 
-    typedef BaseJacobianBlock<TStrain,TStrain> Inherit;
+    typedef BaseJacobianBlock<TStrain,TStrain,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -51,6 +51,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     typedef typename TStrain::StrainMat StrainMat;  ///< Matrix representing a strain
     typedef typename TStrain::StrainVec StrainVec;  ///< Vec representing a strain (Voigt notation)
