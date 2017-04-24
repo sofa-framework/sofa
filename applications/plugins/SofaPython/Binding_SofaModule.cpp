@@ -622,7 +622,7 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 }
 
 
-static PyObject * Sofa_path(PyObject * /*self*/, PyObject * args) {
+static PyObject * Sofa_path(PyObject * /*self*/, PyObject * /*args*/) {
     return PyString_FromString(sofa::helper::Utils::getSofaPathPrefix().c_str());
 }
 
