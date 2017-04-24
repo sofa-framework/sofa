@@ -46,7 +46,7 @@ void IncompleteCholeskyPreconditioner::reinit()
     BasePreconditioner::reinit();
     m_factorized = false;
 
-    set_shift(preconditioner, d_shift.getValue(), nullptr);
+    set_shift(preconditioner, d_shift.getValue(), 0);
 }
 
 void IncompleteCholeskyPreconditioner::compute( const rmat& H )
