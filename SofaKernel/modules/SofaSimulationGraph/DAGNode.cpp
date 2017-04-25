@@ -163,63 +163,45 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 {
     if (dir == SearchRoot)
     {
-        if (getNbParents()) return getRootContext()->getObject(class_info, tags, dir);
+        if (getNbParents()) return getRootContext()->getObject(class_info, tags, SearchDown);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
-#ifdef DEBUG_GETOBJECT
-    std::string cname = class_info.name();
-    if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "DAGNode: search for object of type " << class_info.name() << std::endl;
-    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
-    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
-#endif
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
-#ifdef DEBUG_GETOBJECT
-                if (isg)
-                    std::cout << "DAGNode: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
-#endif
                 result = class_info.dynamicCast(obj);
-                if (result != NULL)
-                {
-#ifdef DEBUG_GETOBJECT
-                    std::cout << "DAGNode: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
-#endif
-                    break;
-                }
+                if (result) return result;
             }
         }
 
-    if (result == NULL)
+    assert( result == NULL );
+
+    switch(dir)
     {
-        switch(dir)
+    case Local:
+        break;
+    case SearchParents:
+    case SearchUp:
+    {
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( unsigned int i = 0; i < parents.size() ; ++i)
+            result = parents[i]->getObject(class_info, tags, SearchUp);
+    }
+    break;
+    case SearchDown:
+        for(ChildIterator it = child.begin(); it != child.end(); ++it)
         {
-        case Local:
-            break;
-        case SearchParents:
-        case SearchUp:
-        {
-            const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i)
-                result = parents[i]->getObject(class_info, tags, SearchUp);
+            result = (*it)->getObject(class_info, tags, dir);
+            if (result != NULL) break;
         }
         break;
-        case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
-            {
-                result = (*it)->getObject(class_info, tags, dir);
-                if (result != NULL) break;
-            }
-            break;
-        case SearchRoot:
-            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
-            break;
-        }
+    case SearchRoot:
+        std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
+        break;
     }
 
     return result;
@@ -761,7 +743,6 @@ DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
 
 SOFA_DECL_CLASS(DAGNode)
 
-//helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeDefaultClass("default");
 helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
 
 } // namespace graph
