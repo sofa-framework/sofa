@@ -19,57 +19,49 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <SofaMiscForceField/MeshMatrixMass.inl>
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
+#define TESTPLUGIN_COMPONENT_B_CPP
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include "ComponentB.h"
 
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include "CudaTypes.h"
+
 
 namespace sofa
 {
 
-namespace component
+namespace test
 {
 
-namespace mass
+template<class T>
+ComponentB<T>::ComponentB()
 {
+}
 
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace mass
-
-} // namespace component
-
-namespace gpu
+template<class T>
+ComponentB<T>::~ComponentB()
 {
+}
 
-namespace cuda
-{
+SOFA_DECL_CLASS(ComponentB)
 
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
+int ComponentBClass = sofa::core::RegisterObject("Component B")
+.add< ComponentB<float> >()
+.add< ComponentB<double> >()
+.add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
+.add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
+.add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
+.add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
+;
+template class SOFA_TESTPLUGIN_API ComponentB<float>;
+template class SOFA_TESTPLUGIN_API ComponentB<double>; 
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
 
-int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
 
-} // namespace cuda
 
-} // namespace gpu
+} // namespace test
 
 } // namespace sofa
-

@@ -19,54 +19,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
+#ifndef PLUGINEXAMPLE_MYBEHAVIORMODEL_H
+#define PLUGINEXAMPLE_MYBEHAVIORMODEL_H
+
+#include <PluginExample/config.h>
+#include <sofa/core/BehaviorModel.h>
+
+
 namespace sofa
 {
 
 namespace component
 {
 
-namespace topology
+namespace behaviormodel
 {
-using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(BezierTetrahedronSetGeometryAlgorithms)
-int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Bezier Tetrahedron set geometry algorithms")
-#ifdef SOFA_FLOAT
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
-#else
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< BezierTetrahedronSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
-        ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1dTypes>;
-#endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_GENERAL_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1fTypes>;
-#endif
+/**
+ * This BehaviorModel does nothing but contain a custom data widget.
+ */
+class MyBehaviorModel : public sofa::core::BehaviorModel
+{
 
-} // namespace topology
+public:
+    SOFA_CLASS(MyBehaviorModel, sofa::core::BehaviorModel);
+
+protected:
+    MyBehaviorModel();
+    ~MyBehaviorModel();
+
+public:
+    virtual void init();
+    virtual void reinit();
+    virtual void updatePosition(double dt);
+
+protected:
+    Data<unsigned> customUnsignedData;
+    Data<unsigned> regularUnsignedData;
+};
+
+
+} // namespace behaviormodel
 
 } // namespace component
 
 } // namespace sofa
 
+
+#endif // PLUGINEXAMPLE_MYBEHAVIORMODEL_H
