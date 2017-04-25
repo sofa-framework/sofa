@@ -22,6 +22,7 @@
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -108,9 +109,9 @@ void DAGNode::moveChild(BaseNode::SPtr node)
     else
     {
         const LinkParents::Container& parents = dagnode->l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
+        for ( const auto& parent : parents )
         {
-            DAGNode *prev = parents[i];
+            DAGNode *prev = parent;
             notifyMoveChild(dagnode,prev);
             prev->doRemoveChild(dagnode);
         }
@@ -167,7 +168,10 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
+
     if (dir != SearchParents)
+    {
+        // begins with a local search
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
@@ -177,6 +181,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
                 if (result) return result;
             }
         }
+    }
 
     assert( result == NULL );
 
@@ -184,19 +189,22 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
     case Local:
         break;
-    case SearchParents:
+    case SearchParents: // note at that point SearchUp==SearchParents because we already searched locally
     case SearchUp:
     {
         const LinkParents::Container& parents = l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; ++i)
-            result = parents[i]->getObject(class_info, tags, SearchUp);
+        for ( const auto& parent : parents )
+        {
+            result = parent->getObject(class_info, tags, SearchUp);
+            if (result) return result;
+        }
     }
     break;
     case SearchDown:
         for(ChildIterator it = child.begin(); it != child.end(); ++it)
         {
             result = (*it)->getObject(class_info, tags, dir);
-            if (result != NULL) break;
+            if (result) return result;
         }
         break;
     case SearchRoot:
@@ -240,9 +248,9 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         if (getNbParents())
         {
             const LinkParents::Container& parents = l_parents.getValue();
-            for ( unsigned int i = 0; i < parents.size() ; ++i)
+            for ( const auto& parent : parents )
             {
-                void* obj = parents[i]->getObject(class_info,newpath);
+                void* obj = parent->getObject(class_info,newpath);
                 if (obj) return obj;
             }
             return 0;   // not found in any parent node at all
@@ -299,14 +307,9 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 {
     if( dir == SearchRoot )
     {
-        if( getNbParents() )
-        {
-            getRootContext()->getObjects( class_info, container, tags, dir );
-            return;
-        }
+        if( getNbParents() ) return getRootContext()->getObjects( class_info, container, tags, SearchDown );
         else dir = SearchDown; // we are the root, search down from here.
     }
-
 
     switch( dir )
     {
@@ -345,8 +348,8 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
     Parents p;
 
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        p.push_back(parents[i]);
+    for ( const auto& parent : parents )
+        p.push_back(parent);
 
     return p;
 }
@@ -371,9 +374,9 @@ core::objectmodel::BaseNode* DAGNode::getFirstParent() const
 bool DAGNode::hasParent(const BaseNode* node) const
 {
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
+    for ( const auto& parent : parents )
     {
-        if (parents[i]==node) return true;
+        if (parent==node) return true;
     }
     return false;
 }
@@ -384,8 +387,8 @@ bool DAGNode::hasParent(const BaseContext* context) const
     if (context == NULL) return !getNbParents();
 
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        if (context == parents[i]->getContext()) return true;
+    for ( const auto& parent : parents )
+        if (context == parent->getContext()) return true;
     return false;
 
 }
@@ -397,9 +400,9 @@ bool DAGNode::hasParent(const BaseContext* context) const
 bool DAGNode::hasAncestor(const BaseContext* context) const
 {
     const LinkParents::Container& parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; ++i)
-        if (context == parents[i]->getContext()
-            || parents[i]->hasAncestor(context))
+    for ( const auto& parent : parents )
+        if (context == parent->getContext()
+            || parent->hasAncestor(context))
             return true;
     return false;
 }
@@ -542,16 +545,16 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         visitorRoot->updateDescendancy();
 
         const LinkParents::Container &parents = l_parents.getValue();
-        for ( unsigned int i = 0; i < parents.size() ; i++ )
+        for ( const auto& parent : parents )
         {
             // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
-            if ( visitorRoot->_descendancy.find(parents[i])!=visitorRoot->_descendancy.end() || parents[i]==visitorRoot )
+            if ( visitorRoot->_descendancy.find(parent)!=visitorRoot->_descendancy.end() || parent==visitorRoot )
             {
                 // all parents must have been visited before
-                if ( statusMap[parents[i]] == NOT_VISITED )
+                if ( statusMap[parent] == NOT_VISITED )
                     return; // skipped for now... the other parent should come later
 
-                allParentsPruned = allParentsPruned && ( statusMap[parents[i]] == PRUNED );
+                allParentsPruned = allParentsPruned && ( statusMap[parent] == PRUNED );
                 hasParent = true;
             }
         }
@@ -611,9 +614,9 @@ void DAGNode::setDirtyDescendancy()
 {
     _descendancy.clear();
     const LinkParents::Container &parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    for ( const auto& parent : parents )
     {
-        parents[i]->setDirtyDescendancy();
+        parent->setDirtyDescendancy();
     }
 }
 
@@ -738,6 +741,192 @@ DAGNode* DAGNode::findCommonParent( DAGNode* node1, DAGNode* node2 )
 
     return NULL;
 }
+
+
+
+
+/// Topology
+core::topology::Topology* DAGNode::getTopology() const
+{
+    if (this->topology)
+        return this->topology;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::topology::Topology* topology = parent->getTopology();
+            if( topology ) return topology;
+        }
+    }
+    return nullptr;
+}
+
+/// Mesh Topology (unified interface for both static and dynamic topologies)
+core::topology::BaseMeshTopology* DAGNode::getMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::topology::BaseMeshTopology* topology = parent->getMeshTopology();
+            if( topology ) return topology;
+        }
+    }
+    return nullptr;
+}
+
+/// Degrees-of-Freedom
+core::BaseState* DAGNode::getState() const
+{
+    // return this->state;
+    if (this->state)
+        return this->state;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::BaseState* o = parent->getState();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+/// Mechanical Degrees-of-Freedom
+core::behavior::BaseMechanicalState* DAGNode::getMechanicalState() const
+{
+    // return this->mechanicalModel;
+    if (this->mechanicalState)
+        return this->mechanicalState;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::behavior::BaseMechanicalState* o = parent->getMechanicalState();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+/// Shader
+core::visual::Shader* DAGNode::getShader() const
+{
+    if (!shaders.empty())
+        return *shaders.begin();
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::visual::Shader* o = parent->getShader();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+core::visual::Shader* DAGNode::getShader(const sofa::core::objectmodel::TagSet& t) const
+{
+    if(t.empty())
+        return getShader();
+    else // if getShader is Tag filtered
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        for(Sequence<core::visual::Shader>::iterator it = shaders.begin(), iend=shaders.end(); it!=iend; ++it)
+        {
+            if ( (*it)->getTags().includes(t) )
+                return (*it);
+        }
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::visual::Shader* o = parent->getShader( t );
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+core::behavior::BaseAnimationLoop* DAGNode::getAnimationLoop() const
+{
+    if (animationManager)
+        return animationManager;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::behavior::BaseAnimationLoop* o = parent->getAnimationLoop();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+core::behavior::OdeSolver* DAGNode::getOdeSolver() const
+{
+    if (!solver.empty())
+        return solver[0];
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::behavior::OdeSolver* o = parent->getOdeSolver();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+core::collision::Pipeline* DAGNode::getCollisionPipeline() const
+{
+    if (collisionPipeline)
+        return collisionPipeline;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::collision::Pipeline* o = parent->getCollisionPipeline();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
+core::visual::VisualLoop* DAGNode::getVisualLoop() const
+{
+    if (visualLoop)
+        return visualLoop;
+    else
+    {
+        // serr<<__FUNCTION__<<" performance issue - quadratic search"<<sendl;
+        const LinkParents::Container& parents = l_parents.getValue();
+        for ( const auto& parent : parents )
+        {
+            core::visual::VisualLoop* o = parent->getVisualLoop();
+            if( o ) return o;
+        }
+    }
+    return nullptr;
+}
+
 
 
 
