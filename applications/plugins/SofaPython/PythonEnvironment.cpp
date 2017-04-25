@@ -137,7 +137,14 @@ except:\n\
         }
     }
 
+    // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
+
+    // general sofa-python stuff
+    PyRun_SimpleString("import SofaPython");
+
+    // python modules are automatically reloaded at each scene loading
+    setAutomaticModuleReload( true );
 }
 
 void PythonEnvironment::Release()
@@ -300,8 +307,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     //  Py_BEGIN_ALLOW_THREADS
 
-    PyRun_SimpleString("import sys");
-
     // Load the scene script
     char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
@@ -378,6 +383,29 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
     }
 }
 */
+
+void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
+{
+    // unload python modules to force importing their eventual modifications
+    PyRun_SimpleString("SofaPython.unloadModules()");
+}
+
+
+void PythonEnvironment::setAutomaticModuleReload( bool b )
+{
+    if( b )
+        SceneLoader::addListener( SceneLoaderListerner::getInstance() );
+    else
+        SceneLoader::removeListener( SceneLoaderListerner::getInstance() );
+}
+
+
+void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
+{
+    PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+}
+
+
 
 } // namespace simulation
 

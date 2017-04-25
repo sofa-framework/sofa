@@ -93,7 +93,7 @@ bool SphereLoader::load()
         {
             int total;
             if (fscanf(file, "%d", &total) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.reserve(total);
         }
         else if (!strcmp(cmd,"sphe"))
@@ -102,7 +102,7 @@ bool SphereLoader::load()
             double cx=0,cy=0,cz=0,r=1;
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.push_back(Vector3((SReal)cx,(SReal)cy,(SReal)cz));
             my_radius.push_back((SReal)r);
             ++totalNumSpheres;
@@ -113,7 +113,7 @@ bool SphereLoader::load()
         }
         else			// it's an unknown keyword
         {
-            printf("%s: Unknown Sphere keyword: %s\n", filename, cmd);
+            msg_warning("SphereLoader") << "Unknown Sphere keyword: "<< cmd << " in file '"<<filename<< "'" ;
             skipToEOL(file);
         }
     }

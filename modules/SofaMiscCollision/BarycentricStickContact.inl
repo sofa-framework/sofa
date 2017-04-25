@@ -71,10 +71,10 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 {
     if (o==NULL) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    const bool printLog = this->f_printLog.getValue();
+
     if (ff==NULL)
     {
-        sout << "Creating BarycentricStickContact springs"<<sendl;
+        msg_info() << "Creating BarycentricStickContact springs" ;
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
         MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
@@ -120,7 +120,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
             if (!index)
             {
                 ++nbnew;
-                if (printLog) sout << "BarycentricStickContact: New contact "<<o->id<<sendl;
+                msg_info() << "BarycentricStickContact: New contact "<<o->id ;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -145,7 +145,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) sout << "BarycentricStickContact: Removed contact "<<it->first<<sendl;
+            msg_info() << "BarycentricStickContact: Removed contact "<<it->first;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -156,7 +156,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
             ++it;
         }
     }
-    if (printLog) sout << "BarycentricStickContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<sendl;
+    msg_info() << "BarycentricStickContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)." ;
 
     //int size = contacts.size();
     ff->clear(size);
@@ -204,7 +204,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     mapper2.update();
     mapper1.updateXfree();
     mapper2.updateXfree();
-    sout << size << "BarycentricStickContact springs created"<<sendl;
+    msg_info() << size << "BarycentricStickContact springs created";
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -220,7 +220,6 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }

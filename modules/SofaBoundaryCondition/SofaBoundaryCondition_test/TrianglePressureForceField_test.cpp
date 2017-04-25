@@ -48,6 +48,9 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
 
     TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
     {
+        // potential energy is not implemented and won't be tested
+        this->flags &= ~Inherited::TEST_POTENTIAL_ENERGY;
+
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position
         x.resize(3);

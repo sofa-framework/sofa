@@ -54,16 +54,12 @@ void PointInfo::buildFilter(unsigned int p_index)
     bool debug=false;
     if((int)p_index==-1)
         debug=true;
-    //std::cout<<"buildFilter for point"<<p_index;
+
     m_noLineModel = false;
-
-
 
     // get the positions:
     const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
     const sofa::defaulttype::Vector3 &pt = x[p_index];
-
-    //std::cout<<"  pt"<<pt<<std::endl;
 
     // get the topology
     BaseMeshTopology* bmt = this->base_mesh_topology;
@@ -72,8 +68,9 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     if(edgesAroundVertex.size() ==0)
     {
-        std::cerr<<"WARNING no topology defined: no filtering"<<std::endl;
-        std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
+        msg_warning("PointInfo")<<"no topology defined: no filtering"<<msgendl
+                                <<"Mesh Topology found :"<<bmt->getName() ;
+
         m_noLineModel = true;
         setValid();
         return;
@@ -97,8 +94,7 @@ void PointInfo::buildFilter(unsigned int p_index)
     // 2. if no triangle around the point: compute an other normal using edges
     if (trianglesAroundVertex.empty())
     {
-        if(debug)
-            std::cout<<" trianglesAroundVertex.empty !"<<std::endl;
+        msg_info_when(debug, "PointInfo") <<" trianglesAroundVertex.empty !";
         vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
         vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
 
@@ -118,11 +114,10 @@ void PointInfo::buildFilter(unsigned int p_index)
         nMean.normalize();
     else
     {
-        std::cerr << "WARNING PointInfo m_nMean is null" << std::endl;
+        msg_warning("PointInfo") << "PointInfo m_nMean is null";
     }
 
-    if (debug)
-        std::cout<<"  nMean ="<<nMean<<std::endl;
+    msg_info_when(debug,"PointInfo")<<"  nMean ="<<nMean ;
 
 
     // Build the set of unit vector that are normal to the planes that defines the cone
@@ -146,12 +141,11 @@ void PointInfo::buildFilter(unsigned int p_index)
             computedAngleCone = 0.0;
 
         computedAngleCone += m_lmdFilters->getConeMinAngle();
-        //std::cout<<"  add filtration with l="<<l<<"    and angle="<<computedAngleCone<<std::endl;
         m_computedData.push_back(std::make_pair(l, computedAngleCone));
         ++edgeIt;
 
-        if (debug)
-            std::cout<<"  l ="<<l<<"computedAngleCone ="<< computedAngleCone<<"  for edge ["<<edge[0]<<"-"<<edge[1]<<"]"<<std::endl;
+        msg_info_when(debug, "PointInfo") << "  l ="<<l<<"computedAngleCone ="
+                                          << computedAngleCone<<"  for edge ["<<edge[0]<<"-"<<edge[1]<<"]" ;
 
     }
 
@@ -170,12 +164,11 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 
     if (isValid())
     {
-        if(debug)
-            std::cout<<"Point "<<p<<" is valid"<<std::endl;
+        msg_info_when(debug, "PointInfo") << "Point "<<p<<" is valid";
 
         if (m_noLineModel)
         {
-            std::cout<<"Warning : No Line Model"<<std::endl;
+            msg_warning("PointInfo") << "No Line Model";
             return true;
         }
 
@@ -184,8 +177,8 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 
         while (it != itEnd)
         {
-            if(debug)
-                std::cout<<" test avec direction : "<<it->first <<"   dot(it->first , PQ)="<<dot(it->first , PQ)<<"    (-it->second * PQ.norm()) ="<<(-it->second * PQ.norm())<<std::endl;
+            msg_warning_when(debug, "PointInfo") <<" test avec direction : "<<it->first <<"   dot(it->first , PQ)="
+                                                 <<dot(it->first , PQ)<<"    (-it->second * PQ.norm()) ="<<(-it->second * PQ.norm()) ;
             if (dot(it->first , PQ) <= (-it->second * PQ.norm()))
                 return false;
 
@@ -196,8 +189,7 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
     }
     else
     {
-        if(debug)
-            std::cout<<"Point "<<p<<" is not valid ------------ build"<<std::endl;
+        msg_info_when(debug, "PointInfo") <<"Point "<<p<<" is not valid ------------ build" ;
         buildFilter(p);
         return validate(p, PQ);
     }

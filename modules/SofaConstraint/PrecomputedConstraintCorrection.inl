@@ -148,7 +148,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         std::string dir = fileDir.getValue();
         if (!dir.empty())
         {
-			std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
+            std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
             if (compFileIn.is_open())
             {
                 invM->data = new Real[nbRows * nbCols];
@@ -419,7 +419,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
     //  Print 400 first row and column of the matrix
-    if (this->f_printLog.getValue())
+    if (this->notMuted())
     {
         serr << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
@@ -536,8 +536,8 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     int nActiveDof = 0;
     for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
     {
-    	if (_indexNodeSparseCompliance[i] == 0)
-    		++nActiveDof;
+        if (_indexNodeSparseCompliance[i] == 0)
+            ++nActiveDof;
     }
     */
 
@@ -562,7 +562,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
             Vbuf.clear();
 
             MatrixDerivColConstIterator colItEnd = rowIt.end();
-            
+
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
                 const Deriv n2 = colIt.val();
@@ -618,8 +618,8 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-        	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
 
@@ -1161,11 +1161,11 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
             for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
             {
-            	unsigned int dof = itConstraint->first;
-            	Deriv n = itConstraint->second;
-            	constraint_F[dof] +=n * fC;
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                constraint_F[dof] +=n * fC;
 
-            	// TODO : remplacer pour faire + rapide !!
+                // TODO : remplacer pour faire + rapide !!
             //	setConstraintDForce(&fC, (int)c, (int)c, true);
 
             }
@@ -1249,8 +1249,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        	int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-        	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
+            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
 

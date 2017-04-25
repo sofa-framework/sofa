@@ -626,10 +626,11 @@ bool LegacyVTKReader::readFile(const char* filename)
                         {
                             inputDataVector.push_back(data);
                             data->name = dataName;
-                            if (kw == "CELL_DATA")
+                            if (kw == "CELL_DATA"){
                                 msg_info(this) << "Read cell data: " << data->name;
-                            else
+                            }else{
                                 msg_info(this) << "Read point data: " << data->name;
+                            }
                         } else
                             delete data;
                     }

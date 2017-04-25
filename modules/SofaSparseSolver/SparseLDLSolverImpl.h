@@ -128,7 +128,7 @@ inline void CSPARSE_numeric(int n,int * M_colptr,int * M_rowind,Real * M_values,
         }
         if (D[k] == 0.0)
         {
-            std::cerr << "SparseLDLSolver failure to factorize, D(k,k) is zero" << std::endl;
+            msg_error("SparseLDLSolver") << "Failed to factorize, D(k,k) is zero" ;
             return;
         }
     }

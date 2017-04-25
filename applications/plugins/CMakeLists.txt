@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 
+# Common extlibs dependency(ies)
+add_subdirectory(../../extlibs/CImg extlibs/CImg)
+
 find_package(SofaFramework)
 
 sofa_add_plugin(image image)
@@ -34,6 +37,7 @@ sofa_add_plugin(SofaCarving SofaCarving)
 sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
+sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc

@@ -53,10 +53,10 @@ protected:
     }
 
     virtual ~BaseConstraintSet() { }
-	
+
 private:
-	BaseConstraintSet(const BaseConstraintSet& n) ;
-	BaseConstraintSet& operator=(const BaseConstraintSet& n) ;	
+    BaseConstraintSet(const BaseConstraintSet& n) ;
+    BaseConstraintSet& operator=(const BaseConstraintSet& n) ;
 
 public:
     virtual void resetConstraint() {}
@@ -94,7 +94,7 @@ public:
     /// \param cIndex is the index of the next constraint equation
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     virtual void getConstraintViolation(const ConstraintParams* /*cParams*/, defaulttype::BaseVector * /*v*/, unsigned int /*cIndex*/) {
-        std::cerr << "ERROR getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) must be defined. " << std::endl;
+        dmsg_error() << "getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const unsigned int cIndex) is not implemented while it should";
     }
 
     /// Useful when the Constraint is applied only on a subset of dofs.
