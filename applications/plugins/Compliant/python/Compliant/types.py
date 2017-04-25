@@ -243,24 +243,16 @@ class Quaternion(np.ndarray):
     def __call__(self, x):
         '''rotate a vector. self should be normalized'''
         
-        tmp = Quaternion()
-        tmp.real = 0
-        tmp.imag = x
-
-        # TODO there might be a more efficient way        
-        return (self * tmp * self.conj()).imag
+        # euler-rodrigues formula
+        cross = np.cross(self.imag, 2 * x)
+        return x + self.real * cross + np.cross(self.imag, cross)
 
 
     def matrix(self):
         '''rotation matrix conversion'''
 
-        R = np.identity(3)
-        
-        # TODO there *is certainly* a more efficient way
-        for i in range(3):
-            R[:, i] = self( np.eye(1, 3, i) )
-
-        return R
+        K = Quaternion.hat(self.imag)
+        return np.identity(3) + (2*self.real) * K + 2 * K.dot(K)
         
 
     @staticmethod
@@ -399,13 +391,9 @@ class Quaternion(np.ndarray):
         
         res = np.zeros( (3, 3) )
 
-        res[0, 1] = -v[2]
-        res[0, 2] = v[1]
-        res[1, 2] = -v[0]
-
-        res[1, 0] = v[2]
-        res[2, 0] = -v[1]
-        res[2, 1] = v[0]
+        res[:] = [[    0, -v[2],  v[1]],
+                  [ v[2],     0, -v[0]],
+                  [-v[1],  v[0],     0]]
         
         return res
 
