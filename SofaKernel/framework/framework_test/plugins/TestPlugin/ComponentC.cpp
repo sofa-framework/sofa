@@ -19,20 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <SofaMiscForceField/MeshMatrixMass.inl>
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
+#include "MyBehaviorModel.h"
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
-
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
-#include "CudaTypes.h"
+
 
 namespace sofa
 {
@@ -40,36 +30,41 @@ namespace sofa
 namespace component
 {
 
-namespace mass
+namespace behaviormodel
 {
 
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
 
-} // namespace mass
+MyBehaviorModel::MyBehaviorModel():
+    customUnsignedData(initData(&customUnsignedData, (unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget")),
+    regularUnsignedData(initData(&regularUnsignedData, (unsigned)1,"Unsigned Data","Example of unsigned data with standard widget"))
+{
+    customUnsignedData.setWidget("widget_myData");
+}
+
+
+MyBehaviorModel::~MyBehaviorModel()
+{
+}
+
+void MyBehaviorModel::init()
+{
+}
+
+void MyBehaviorModel::reinit()
+{
+}
+
+void MyBehaviorModel::updatePosition(double /*dt*/)
+{
+}
+
+SOFA_DECL_CLASS(MyBehaviorModel)
+
+int MyBehaviorModelClass = core::RegisterObject("Dummy component with a custom widget.").add< MyBehaviorModel >();
+
+
+} // namespace behaviormodel
 
 } // namespace component
 
-namespace gpu
-{
-
-namespace cuda
-{
-
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
-
-int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-} // namespace cuda
-
-} // namespace gpu
-
 } // namespace sofa
-

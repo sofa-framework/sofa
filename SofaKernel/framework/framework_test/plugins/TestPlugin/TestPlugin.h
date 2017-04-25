@@ -19,57 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <SofaMiscForceField/MeshMatrixMass.inl>
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
+#ifndef TESTPLUGIN_CONFIG_H
+#define TESTPLUGIN_CONFIG_H
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/helper/system/config.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include "CudaTypes.h"
+#ifdef SOFA_BUILD_TESTPLUGIN
+#  define SOFA_TESTPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_TESTPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace mass
-{
-
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace mass
-
-} // namespace component
-
-namespace gpu
-{
-
-namespace cuda
-{
-
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
-
-int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
-
-} // namespace cuda
-
-} // namespace gpu
-
-} // namespace sofa
-
+#endif // TESTPLUGIN_CONFIG_H

@@ -19,57 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
-#include <SofaMiscForceField/MeshMatrixMass.inl>
-#include <sofa/core/behavior/Mass.inl>
-#include <sofa/core/behavior/ForceField.inl>
+#include <TestPlugin/TestPlugin.h>
 
-#include <SofaBaseTopology/PointSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/QuadSetGeometryAlgorithms.inl>
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
+extern "C" {
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/ObjectFactory.h>
-#include "CudaTypes.h"
+static int counter = 0;
 
-namespace sofa
+SOFA_TESTPLUGIN_API void initExternalModule()
 {
+    static bool first = true;
 
-namespace component
+    if (first)
+    {
+        first = false;
+    }
+    counter++;
+}
+
+SOFA_TESTPLUGIN_API const char* getModuleName()
 {
+    return "TestPlugin";
+}
 
-namespace mass
+SOFA_TESTPLUGIN_API const char* getModuleVersion()
 {
+    return "0.7";
+}
 
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2fTypes, float>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class MeshMatrixMass<sofa::gpu::cuda::CudaVec2dTypes, double>;
-#endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace mass
-
-} // namespace component
-
-namespace gpu
+SOFA_TESTPLUGIN_API const char* getModuleLicense()
 {
+    return "LicenceTest";
+}
 
-namespace cuda
+SOFA_TESTPLUGIN_API const char* getModuleDescription()
 {
+    return "Description of the Test Plugin";
+}
 
-SOFA_DECL_CLASS(CudaMeshMatrixMassClass)
+SOFA_TESTPLUGIN_API const char* getModuleComponentList()
+{
+    return "ComponentA, ComponentB";
+}
 
-int MeshMatrixMassClassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::mass::MeshMatrixMass<CudaVec2fTypes, float > >(true)
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::mass::MeshMatrixMass<CudaVec2dTypes, double > >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+} // extern "C"
 
-} // namespace cuda
 
-} // namespace gpu
-
-} // namespace sofa
-
+SOFA_LINK_CLASS(ComponentA)
+SOFA_LINK_CLASS(ComponentB)
