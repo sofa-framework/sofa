@@ -55,12 +55,12 @@ using namespace sofa::simulation;
 
 
 // set the viewer resolution
-extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
+static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
     return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
 }
 
-extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 {
     char *name;
     if (!PyArg_ParseTuple(args, "s",&name))
@@ -76,7 +76,7 @@ extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 
 
 // object factory
-extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw)
+static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw)
 {
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
@@ -116,7 +116,7 @@ extern "C" PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, Py
 }
 
 
-extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
@@ -125,7 +125,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 
 }
 
-extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
@@ -136,7 +136,7 @@ extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/
 using namespace sofa::gui;
 
 // send a text message to the GUI
-extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 {
     char *msgType;
     char *msgValue;
@@ -155,7 +155,7 @@ extern "C" PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 }
 
 // ask the GUI to save a screenshot
-extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
 {
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
@@ -177,7 +177,7 @@ extern "C" PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
 
 
 // set the viewer resolution
-extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
 {
 	int width, height;
     if (!PyArg_ParseTuple(args, "ii",&width,&height))
@@ -199,7 +199,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
 
 
 // set the viewer resolution
-extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
 	float r = 0.0f, g = 0.0f, b = 0.0f;
 	sofa::defaulttype::Vector3 color;
@@ -229,7 +229,7 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
 }
 
 // set the viewer camera
-extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 {
     float px = 0.0f, py = 0.0f, pz = 0.0f;
     float qx = 0.0f, qy = 0.0f, qz = 0.0f, qw = 1.0f;
@@ -259,7 +259,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 }
 
 
-extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
+static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 {
     sofa::defaulttype::Vector3 pos;
     sofa::defaulttype::Quat orient;
@@ -286,7 +286,7 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 // from a mesh, a density and a 3d scale
 // computes a mass, a center of mass, a diagonal inertia matrix and an inertia rotation
-extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 {
     char* meshFilename;
     double density;
@@ -313,7 +313,7 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 
 
 /// save a sofa scene from python
-extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 {
     char* filename;
     PyObject* pyNode;
@@ -338,7 +338,7 @@ extern "C" PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 
 
 
-extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode))
@@ -369,7 +369,7 @@ extern "C" PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 
 static const std::string s_emitter = "PythonScript";
 
-extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -400,7 +400,7 @@ extern "C" PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -431,7 +431,7 @@ extern "C" PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -462,7 +462,7 @@ extern "C" PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -493,7 +493,7 @@ extern "C" PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -525,7 +525,7 @@ extern "C" PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
 }
 
 
-extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 {
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
@@ -554,7 +554,7 @@ extern "C" PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
 
 
-extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -582,7 +582,7 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
 
 
 
-extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 {
     char *pluginName;
     if (!PyArg_ParseTuple(args, "s",&pluginName))
