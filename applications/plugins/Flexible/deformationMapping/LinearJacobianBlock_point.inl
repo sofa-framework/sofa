@@ -582,8 +582,7 @@ public:
 
     static const bool constant=true;
 
-    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I,  (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]   =  constant term
-    Real Pt;           ///< =   w     =  dp/dt
+    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M,  ( (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w] ).M  =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
     mHessian dFt;  ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
 

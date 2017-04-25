@@ -46,6 +46,7 @@ namespace component
 namespace mapping
 {
 
+
 template <class JacobianBlockType1,class JacobianBlockType2>
 BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::BaseDeformationMultiMappingT ()
     : Inherit ()
@@ -234,9 +235,28 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
     helper::WriteOnlyAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteOnlyAccessor<Data<VecVWeight > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
-    helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
-    helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
+    helper::WriteOnlyAccessor<Data<VecVWeight > > wa_w (this->f_w);          wa_w.resize(size);
+    for(size_t i=0; i<size; i++ )
+    {
+        //    wa_w[i].assign(w[i].begin(), w[i].end());
+        wa_w[i].resize(w[i].size());
+        for(size_t j=0; j<w[i].size(); j++ )    core::behavior::WeightTraits<WeightType>::set(wa_w[i][j],w[i][j]);
+    }
+
+    helper::WriteOnlyAccessor<Data<VecVGradient > > wa_dw (this->f_dw);    wa_dw.resize(size);
+    for(size_t i=0; i<size; i++ )
+    {
+        //    wa_dw[i].assign(dw[i].begin(), dw[i].end());
+        wa_dw[i].resize(dw[i].size());
+        for(size_t j=0; j<dw[i].size(); j++ )  for(size_t k=0; k<spatial_dimensions; k++ )   core::behavior::WeightTraits<WeightType>::set(wa_dw[i][j][k],dw[i][j][k]);
+    }
+    helper::WriteOnlyAccessor<Data<VecVHessian > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);
+    for(size_t i=0; i<size; i++ )
+    {
+        //    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
+        wa_ddw[i].resize(ddw[i].size());
+        for(size_t j=0; j<ddw[i].size(); j++ )  for(size_t k=0; k<spatial_dimensions; k++ ) for(size_t l=0; l<spatial_dimensions; l++ )   core::behavior::WeightTraits<WeightType>::set(wa_ddw[i][j](k,l),ddw[i][j](k,l));
+    }
     helper::WriteOnlyAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
     sout<<size <<" custom gauss points imported"<<sendl;
@@ -332,7 +352,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     eigenJacobian1.finalize();
 
-//    maskedEigenJacobian1.resize(0,0);
+    //    maskedEigenJacobian1.resize(0,0);
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
@@ -352,7 +372,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     eigenJacobian2.finalize();
 
-//    maskedEigenJacobian2.resize(0,0);
+    //    maskedEigenJacobian2.resize(0,0);
 }
 
 //template <class JacobianBlockType1,class JacobianBlockType2>
@@ -383,42 +403,42 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
     serr<<"The generic implementation of updateK has not be updated to the new BaseMapping::getK API\n";
 
-//    size_t size1 = this->getFromSize1();
-//    K1.resizeBlocks(size1,size1);
-//    vector<KBlock1> diagonalBlocks1; diagonalBlocks1.resize(size1);
+    //    size_t size1 = this->getFromSize1();
+    //    K1.resizeBlocks(size1,size1);
+    //    vector<KBlock1> diagonalBlocks1; diagonalBlocks1.resize(size1);
 
-//    if( !this->maskTo || !this->maskTo->isInUse() )
-//    {
-//        for(size_t i=0; i<jacobian1.size(); i++)
-//        {
-//            for(size_t j=0; j<jacobian1[i].size(); j++)
-//            {
-//                unsigned int index = this->f_index1.getValue()[i][j];
-//                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
-//            }
-//        }
-//    }
-//    else
-//    {
-//        const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-//        for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//        {
-//            size_t i= ( size_t ) ( *it );
-//            for(size_t j=0; j<jacobian1[i].size(); j++)
-//            {
-//                unsigned int index = this->f_index1.getValue()[i][j];
-//                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
-//            }
-//        }
-//    }
+    //    if( !this->maskTo || !this->maskTo->isInUse() )
+    //    {
+    //        for(size_t i=0; i<jacobian1.size(); i++)
+    //        {
+    //            for(size_t j=0; j<jacobian1[i].size(); j++)
+    //            {
+    //                unsigned int index = this->f_index1.getValue()[i][j];
+    //                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+    //        for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+    //        {
+    //            size_t i= ( size_t ) ( *it );
+    //            for(size_t j=0; j<jacobian1[i].size(); j++)
+    //            {
+    //                unsigned int index = this->f_index1.getValue()[i][j];
+    //                diagonalBlocks1[index] += jacobian1[i][j].getK(childForce[i]);
+    //            }
+    //        }
+    //    }
 
-//    for(size_t i=0; i<size1; i++)
-//    {
-//        K1.beginBlockRow(i);
-//        K1.createBlock(i,diagonalBlocks1[i]);
-//        K1.endBlockRow();
-//    }
-//    K1.compress();
+    //    for(size_t i=0; i<size1; i++)
+    //    {
+    //        K1.beginBlockRow(i);
+    //        K1.createBlock(i,diagonalBlocks1[i]);
+    //        K1.endBlockRow();
+    //    }
+    //    K1.compress();
 }
 
 
@@ -439,7 +459,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
-	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
+    for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -475,13 +495,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-//        if( this->maskTo[0]->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian1.mult(dOut,dIn1);
-//            maskedEigenJacobian2.mult(dOut,dIn2);
-//        }
-//        else
+        //        if( this->maskTo[0]->isActivated() )
+        //        {
+        //            updateMaskedJ();
+        //            maskedEigenJacobian1.mult(dOut,dIn1);
+        //            maskedEigenJacobian2.mult(dOut,dIn2);
+        //        }
+        //        else
         {
             eigenJacobian1.mult(dOut,dIn1);
             eigenJacobian2.addMult(dOut,dIn2);
@@ -526,13 +546,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
         if( !eigenJacobian1.rows() ) updateJ1();
         if( !eigenJacobian2.rows() ) updateJ2();
 
-//        if( this->maskTo[0]->isActivated() )
-//        {
-//            updateMaskedJ();
-//            maskedEigenJacobian1.addMultTranspose(dIn1,dOut);
-//            maskedEigenJacobian2.addMultTranspose(dIn2,dOut);
-//        }
-//        else
+        //        if( this->maskTo[0]->isActivated() )
+        //        {
+        //            updateMaskedJ();
+        //            maskedEigenJacobian1.addMultTranspose(dIn1,dOut);
+        //            maskedEigenJacobian2.addMultTranspose(dIn2,dOut);
+        //        }
+        //        else
         {
             eigenJacobian1.addMultTranspose(dIn1,dOut);
             eigenJacobian2.addMultTranspose(dIn2,dOut);
@@ -577,91 +597,91 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
     serr<<"applyDJT is not implemented\n";
     return;
 
-//    if(!this->isMechanical()) return;
-//    if(BlockType1::constant && BlockType2::constant) return;
+    //    if(!this->isMechanical()) return;
+    //    if(BlockType1::constant && BlockType2::constant) return;
 
-//    if(this->f_printLog.getValue()) sout<<":applyDJT"<<sendl;
+    //    if(this->f_printLog.getValue()) sout<<":applyDJT"<<sendl;
 
-//    const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
+    //    const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
+    //    helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
-//    // this does not compile for some reasons..
-////    Data<InVecDeriv1>& parentForceData1 = *parentDfId[this->fromModel1.get(mparams)].write();
-////    Data<InVecDeriv2>& parentForceData2 = *parentDfId[this->fromModel2.get(mparams)].write();
-//    // work around..
-//    helper::WriteAccessor<Data<InVecDeriv1> > parentForce1 (this->fromModel1->write(core::VecDerivId::force()));
-//    helper::WriteAccessor<Data<InVecDeriv2> > parentForce2 (this->fromModel2->write(core::VecDerivId::force()));
+    //    // this does not compile for some reasons..
+    ////    Data<InVecDeriv1>& parentForceData1 = *parentDfId[this->fromModel1.get(mparams)].write();
+    ////    Data<InVecDeriv2>& parentForceData2 = *parentDfId[this->fromModel2.get(mparams)].write();
+    //    // work around..
+    //    helper::WriteAccessor<Data<InVecDeriv1> > parentForce1 (this->fromModel1->write(core::VecDerivId::force()));
+    //    helper::WriteAccessor<Data<InVecDeriv2> > parentForce2 (this->fromModel2->write(core::VecDerivId::force()));
 
-//    const Data<InVecDeriv1>& parentDisplacementData1 = *mparams->readDx(this->fromModel1) ;
-//    helper::ReadAccessor<Data<InVecDeriv1> > parentDisplacement1 (parentDisplacementData1);
-//    const Data<InVecDeriv2>& parentDisplacementData2 = *mparams->readDx(this->fromModel2) ;
-//    helper::ReadAccessor<Data<InVecDeriv2> > parentDisplacement2 (parentDisplacementData2);
+    //    const Data<InVecDeriv1>& parentDisplacementData1 = *mparams->readDx(this->fromModel1) ;
+    //    helper::ReadAccessor<Data<InVecDeriv1> > parentDisplacement1 (parentDisplacementData1);
+    //    const Data<InVecDeriv2>& parentDisplacementData2 = *mparams->readDx(this->fromModel2) ;
+    //    helper::ReadAccessor<Data<InVecDeriv2> > parentDisplacement2 (parentDisplacementData2);
 
-//    if(this->assemble.getValue())
-//    {
-//        if(!BlockType1::constant)
-//        {
-//            K.addMult(parentForce1.wref(),parentDisplacementData1.getValue(),mparams->kFactor());
-//        }
-//    }
-//    else
-//    {
-//        if( !this->maskTo || !this->maskTo->isInUse() )
-//        {
-//            if(!BlockType1::constant)
-//            {
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-//                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
-//                {
-//                    for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
-//                    {
-//                        size_t indexc=this->f_index_parentToChild1[i][j];
-//                        jacobian1[indexc][this->f_index_parentToChild1[i][j+1]].addDForce(parentForce1[i],parentDisplacement1[i],childForce[indexc], mparams->kFactor());
-//                    }
-//                }
-//            }
-//            if(!BlockType2::constant)
-//            {
-//#ifdef _OPENMP
-//#pragma omp parallel for if (this->d_parallel.getValue())
-//#endif
-//                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
-//                {
-//                    for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
-//                    {
-//                        size_t indexc=this->f_index_parentToChild2[i][j];
-//                        jacobian2[indexc][this->f_index_parentToChild2[i][j+1]].addDForce(parentForce2[i],parentDisplacement2[i],childForce[indexc], mparams->kFactor());
-//                    }
-//                }
-//            }
-//        }
-//        else
-//        {
-//            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
-//            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//            {
-//                const int i= ( int ) ( *it );
-//                if(!BlockType1::constant)
-//                {
-//                    for(size_t j=0; j<jacobian1[i].size(); j++)
-//                    {
-//                        size_t index=this->f_index1.getValue()[i][j];
-//                        jacobian1[i][j].addDForce( parentForce1[index], parentDisplacement1[index], childForce[i], mparams->kFactor() );
-//                    }
-//                }
-//                if(!BlockType2::constant)
-//                {
-//                    for(size_t j=0; j<jacobian2[i].size(); j++)
-//                    {
-//                        size_t index=this->f_index2.getValue()[i][j];
-//                        jacobian2[i][j].addDForce( parentForce2[index], parentDisplacement2[index], childForce[i], mparams->kFactor() );
-//                    }
-//                }
-//            }
-//        }
-//    }
+    //    if(this->assemble.getValue())
+    //    {
+    //        if(!BlockType1::constant)
+    //        {
+    //            K.addMult(parentForce1.wref(),parentDisplacementData1.getValue(),mparams->kFactor());
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if( !this->maskTo || !this->maskTo->isInUse() )
+    //        {
+    //            if(!BlockType1::constant)
+    //            {
+    //#ifdef _OPENMP
+    //#pragma omp parallel for if (this->d_parallel.getValue())
+    //#endif
+    //                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
+    //                {
+    //                    for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
+    //                    {
+    //                        size_t indexc=this->f_index_parentToChild1[i][j];
+    //                        jacobian1[indexc][this->f_index_parentToChild1[i][j+1]].addDForce(parentForce1[i],parentDisplacement1[i],childForce[indexc], mparams->kFactor());
+    //                    }
+    //                }
+    //            }
+    //            if(!BlockType2::constant)
+    //            {
+    //#ifdef _OPENMP
+    //#pragma omp parallel for if (this->d_parallel.getValue())
+    //#endif
+    //                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
+    //                {
+    //                    for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
+    //                    {
+    //                        size_t indexc=this->f_index_parentToChild2[i][j];
+    //                        jacobian2[indexc][this->f_index_parentToChild2[i][j+1]].addDForce(parentForce2[i],parentDisplacement2[i],childForce[indexc], mparams->kFactor());
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            const helper::StateMask::InternalStorage &indices=this->maskTo->getEntries();
+    //            for (helper::StateMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+    //            {
+    //                const int i= ( int ) ( *it );
+    //                if(!BlockType1::constant)
+    //                {
+    //                    for(size_t j=0; j<jacobian1[i].size(); j++)
+    //                    {
+    //                        size_t index=this->f_index1.getValue()[i][j];
+    //                        jacobian1[i][j].addDForce( parentForce1[index], parentDisplacement1[index], childForce[i], mparams->kFactor() );
+    //                    }
+    //                }
+    //                if(!BlockType2::constant)
+    //                {
+    //                    for(size_t j=0; j<jacobian2[i].size(); j++)
+    //                    {
+    //                        size_t index=this->f_index2.getValue()[i][j];
+    //                        jacobian2[i][j].addDForce( parentForce2[index], parentDisplacement2[index], childForce[i], mparams->kFactor() );
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
 }
 
 
@@ -766,7 +786,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
     {
         defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
         _shapeFunction->computeShapeFunction(mp0,ref,w,&dw);
-        if(!w[0]) { p0=Coord(); return; } // outside object
+        if(!core::behavior::WeightTraits<WeightType>::get(w[0])) { p0=Coord(); return; } // outside object
 
         this->mapPosition(pnew,p0,ref,w);
         if((p-pnew).norm2()<Thresh) return; // has converged
@@ -828,17 +848,17 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMultiMappin
     if( !eigenJacobian1.rows() ) updateJ1();
     if( !eigenJacobian2.rows() ) updateJ2();
 
-//    if( this->maskTo[0]->isActivated() )
-//    {
-//        updateMaskedJ();
-//        baseMatrices[0] = &maskedEigenJacobian1;
-//        baseMatrices[1] = &maskedEigenJacobian2;
-//    }
-//    else
-//    {
-//        baseMatrices[0] = &eigenJacobian1;
-//        baseMatrices[1] = &eigenJacobian2;
-//    }
+    //    if( this->maskTo[0]->isActivated() )
+    //    {
+    //        updateMaskedJ();
+    //        baseMatrices[0] = &maskedEigenJacobian1;
+    //        baseMatrices[1] = &maskedEigenJacobian2;
+    //    }
+    //    else
+    //    {
+    //        baseMatrices[0] = &eigenJacobian1;
+    //        baseMatrices[1] = &eigenJacobian2;
+    //    }
 
     return &baseMatrices;
 }
@@ -879,11 +899,11 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(edge[1][0],edge[1][1],edge[1][2],out[i]);
             else edge[1]=f_pos[i];
             for(size_t j=0; j<ref[i].size(); j++ )
-                if(w[i][j])
+                if(core::behavior::WeightTraits<WeightType>::get(w[i][j]))
                 {
                     if(j<size1) In1::get(edge[0][0],edge[0][1],edge[0][2],in1[ref[i][j]]);
                     else In2::get(edge[0][0],edge[0][1],edge[0][2],in2[ref[i][j]-size1]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.*w[i][j],1.,.8,1.);
+                    sofa::helper::gl::Color::getHSVA(&col[0],240.*core::behavior::WeightTraits<WeightType>::get(w[i][j]),1.,.8,1.);
                     vparams->drawTool()->drawLines ( edge, 1, col );
                 }
         }

@@ -83,6 +83,17 @@ public:
     }
 };
 
+
+/// interface between weight and scalar values
+template< typename WeightType>
+class WeightTraits
+{
+public:
+    template<typename real> static void set(WeightType& w, const real& v) {w=v;}
+    static SReal get(const WeightType& w) {return (SReal)w;}
+};
+
+
 template<typename TShapeFunctionTypes>
 struct ShapeFunctionInternalData
 {
