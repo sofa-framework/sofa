@@ -312,15 +312,16 @@ class Quaternion(np.ndarray):
         
         if n is None: return np.identity(3)
 
-        theta /= 2
+        half_theta = theta / 2
+        
         res = np.zeros( (3, 3) )
 
         P = np.outer(n, n)
 
         log = n * theta
         
-        return (P + (theta / math.tan(theta)) * ( np.identity(3) - P ) + Quaternion.hat(log) )
-
+        return (P + (half_theta / math.tan(half_theta)) * ( np.identity(3) - P ) + Quaternion.hat(log / 2) )
+    
     
 
     def log(self):
