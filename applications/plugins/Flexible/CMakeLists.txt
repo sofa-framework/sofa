@@ -253,6 +253,8 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
         ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
 endif()
 
+set(NINJA_BUILD_POOL_FLEXIBLE "1" CACHE STRING "Cores used to build Flexible with ninja")
+set_property(GLOBAL APPEND PROPERTY JOB_POOLS flexible_pool=${NINJA_BUILD_POOL_FLEXIBLE})
 
 #if(UNIX)
 #    target_link_libraries(${PROJECT_NAME} pthread)
@@ -262,6 +264,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY JOB_POOL_COMPILE flexible_pool)
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
