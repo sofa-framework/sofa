@@ -8,24 +8,31 @@
 
 ### New features for users
 * [SceneCreator]
-    * New methods to add basic 3D object: Cube, Cylinder, Plane. In rigid or deformable.
+    * New methods to add basic 3D object: Cube, Cylinder, Sphere and Plane. In rigid or deformable.
 
+* [GeneralTopology]
+    * SphereGridTopology component to create sphere grids, similar to CylinderGridTopology.
 
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
-
+- Minor improvement on the way warning/error message are presented to the users in runSofa. 
+  A single panel is now used instead of of two, it is always displayed, the Panel name also contains the 
+  number of message eg: "Messages(5)" 
+- The Graph view is now displaying the type of message they contains. 
 
 ### New features for developpers
-
-
+- Add a Logger component that stores the history of messages into each sofa component. 
+- Implements new methods to write on-liner's conditional message:
+     msg_info_when(level<3) << "This is a conditional info message"
+- Implement an implicit version of each of the msg_* API allowing to write  
+     msg_info() << "Hello"  in place for msg_info(this) << Hello" 
 
 ### Improvements
-
 - XXX new tests
 - XXX/YYY components have an associated example
 
 ### Bug Fixes
 
-
+- [SofaPhysicsAPI] Fix compilation of the project
 
 ### Cleaning
 

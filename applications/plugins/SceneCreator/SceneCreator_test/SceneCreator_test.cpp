@@ -8,18 +8,23 @@ using sofa::component::container::MechanicalObject ;
 using sofa::component::forcefield::TetrahedronFEMForceField;
 using sofa::component::forcefield::TriangularFEMForceField;
 
-#include <SofaGeneralTopology/CylinderGridTopology.h>
-using sofa::component::topology::CylinderGridTopology;
-
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaGeneralTopology/CylinderGridTopology.h>
+#include <SofaGeneralTopology/SphereGridTopology.h>
+
 using sofa::component::topology::RegularGridTopology;
+using sofa::component::topology::CylinderGridTopology;
+using sofa::component::topology::SphereGridTopology;
 
 using sofa::core::objectmodel::BaseContext;
 using sofa::defaulttype::Vec3Types;
 
+typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
+typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
+typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
+
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
-
 
 typedef MechanicalObject<sofa::defaulttype::Vec3Types>      MechanicalObject3;
 typedef TetrahedronFEMForceField<Vec3Types>                 TetrahedronFEMForceField3;
@@ -35,6 +40,10 @@ struct SceneCreator_test : public sofa::Sofa_test<>
     bool createCylinderFailed();
     bool createCylinderSuccess();
     bool createRigidCylinderSuccess();
+
+    bool createSphereFailed();
+    bool createSphereSuccess();
+    bool createRigidSphereSuccess();
 
     bool createPlaneFailed();
     bool createPlaneSuccess();
@@ -237,6 +246,102 @@ bool SceneCreator_test::createRigidCylinderSuccess()
     return true;
 }
 
+
+///////////////////////////////////////////////////////////////////
+//////////////////////// Sphere Methods /////////////////////////
+///////////////////////////////////////////////////////////////////
+
+bool SceneCreator_test::createSphereFailed()
+{
+    // Null parent for Sphere case
+    sofa::simulation::Node::SPtr cyl = sofa::modeling::addSphere(nullptr, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                                                   sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
+                                                                   10, 1000, 0.45,
+                                                                   sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+    EXPECT_EQ(cyl, nullptr);
+
+    // Null parent for rigid Sphere case
+    cyl = sofa::modeling::addRigidSphere(nullptr, "SphereFIX_2", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                           sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
+                                           sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+
+    EXPECT_EQ(cyl, nullptr);
+
+    // Sphere with bad grid size
+    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    cyl = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(0, 5, 5),
+                                            sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
+                                            sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+    sofa::simulation::getSimulation()->init(root.get());
+
+    EXPECT_EQ(cyl, nullptr);
+
+    return true;
+}
+
+bool SceneCreator_test::createSphereSuccess()
+{
+    // Create Sphere
+    SReal poissonRatio = 0.45;
+    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    sofa::simulation::Node::SPtr node = sofa::modeling::addSphere(root, "SphereFEM_1", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 1, 0), 1.0,
+                                                                    10, 1000, 0.45,
+                                                                    sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+
+    EXPECT_NE(node, nullptr);
+
+    // Check MecaObj
+    std::vector<MechanicalObject3*> mecaObjs;
+    node->get<MechanicalObject3>(&mecaObjs, sofa::core::objectmodel::BaseContext::SearchDown);
+    EXPECT_EQ(mecaObjs.size(), (size_t)1);
+
+
+    // check Grid
+    std::vector<SphereGridTopology*> grids;
+    node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
+    EXPECT_EQ(grids.size(), (size_t)1);
+
+    SphereGridTopology* grid = grids[0];
+    EXPECT_NE(grid->getNbPoints(), 0);
+    EXPECT_NE(grid->getNbEdges(), 0);
+
+
+    // check FEM
+    std::vector<TetrahedronFEMForceField3*> FEMs;
+    node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
+    EXPECT_EQ(grids.size(), 1);
+
+    TetrahedronFEMForceField3* fem = FEMs[0];
+    EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
+
+    return true;
+}
+
+bool SceneCreator_test::createRigidSphereSuccess()
+{
+    sofa::simulation::Node::SPtr root = sofa::modeling::createRootWithCollisionPipeline();
+    sofa::simulation::Node::SPtr node = sofa::modeling::addRigidSphere(root, "SphereFIX_3", sofa::defaulttype::Vec3Types::Deriv(5, 5, 5),
+                                                                         sofa::defaulttype::Vec3Types::Deriv(1, 0, 0), 0.5,
+                                                                         sofa::defaulttype::Vec3Types::Deriv(0, 5, 0));
+
+    EXPECT_NE(node, nullptr);
+
+    // complementary with test createSphereSuccess
+
+    // check Grid
+    std::vector<SphereGridTopology*> grids;
+    node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
+    EXPECT_EQ(grids.size(), 1);
+
+    // check No FEM
+    std::vector<TetrahedronFEMForceField3*> FEMs;
+    node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
+    EXPECT_EQ(FEMs.size(), 0);
+
+    return true;
+}
+
 ///////////////////////////////////////////////////////////////////
 ////////////////////////// Plane Methods //////////////////////////
 ///////////////////////////////////////////////////////////////////
@@ -292,7 +397,7 @@ bool SceneCreator_test::createRigidPlaneSuccess()
 
     EXPECT_NE(node, nullptr);
 
-    // complementary with test createCylinderSuccess
+    // complementary with test createPlaneSuccess
 
     // check Grid
     std::vector<RegularGridTopology*> grids;
@@ -315,6 +420,10 @@ TEST_F(SceneCreator_test, createRigidCubeSuccess ) { ASSERT_TRUE( createRigidCub
 TEST_F(SceneCreator_test, createCylinderFailed ) { ASSERT_TRUE( createCylinderFailed()); }
 TEST_F(SceneCreator_test, createCylinderSuccess ) { ASSERT_TRUE( createCylinderSuccess()); }
 TEST_F(SceneCreator_test, createRigidCylinderSuccess ) { ASSERT_TRUE( createRigidCylinderSuccess()); }
+
+TEST_F(SceneCreator_test, createSphereFailed ) { ASSERT_TRUE( createSphereFailed()); }
+TEST_F(SceneCreator_test, createSphereSuccess ) { ASSERT_TRUE( createSphereSuccess()); }
+TEST_F(SceneCreator_test, createRigidSphereSuccess ) { ASSERT_TRUE( createRigidSphereSuccess()); }
 
 TEST_F(SceneCreator_test, createPlaneFailed ) { ASSERT_TRUE( createPlaneFailed()); }
 TEST_F(SceneCreator_test, createPlaneSuccess ) { ASSERT_TRUE( createPlaneSuccess()); }

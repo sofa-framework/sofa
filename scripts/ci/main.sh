@@ -30,7 +30,7 @@ send-message-to-dashboard() {
         message="$message&sha=$sha&config=$CI_JOB"
         local url="$CI_DASHBOARD_URL"
         echo "Message (sent): " sha="$sha" "config=$CI_JOB" $*
-        wget --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
+        wget --no-check-certificate --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
     fi
 }
 
@@ -67,8 +67,7 @@ send-message-to-dashboard \
     "tests_failures=$("$src_dir/scripts/ci/tests.sh" count-failures $build_dir $src_dir)" \
     "tests_disabled=$("$src_dir/scripts/ci/tests.sh" count-disabled $build_dir $src_dir)" \
     "tests_errors=$("$src_dir/scripts/ci/tests.sh" count-errors $build_dir $src_dir)" \
-    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)" \
-    "tests_crash=$("$src_dir/scripts/ci/tests.sh" count-crashes $build_dir $src_dir)"
+    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)"
 
 touch "$build_dir/build-finished"
 

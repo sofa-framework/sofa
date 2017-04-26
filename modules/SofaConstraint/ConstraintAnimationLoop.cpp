@@ -139,8 +139,8 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     /* // no init: the constraint problem has already been solved in the simulation...
     for(i=0; i<dim; )
     {
-    	res[i]->init(i, w, force);
-    	i += res[i]->nbLines;
+        res[i]->init(i, w, force);
+        i += res[i]->nbLines;
     }
      */
 
@@ -153,7 +153,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
             //1. nbLines provide the dimension of the constraint  (max=6)
             //debug
             // int a=_constraintsResolutions.size();
-            //std::cerr<<"&&"<<a<<"&&"<<std::endl;
+            //msg_info()<<"&&"<<a<<"&&"<<std::endl;
             //end debug
             nb = _constraintsResolutions[j]->nbLines;
 
@@ -222,11 +222,9 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
         }
     }
 
-    if (m_printLog)
-    {
-        std::cout << "------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = "
-                << error << " ------" << std::endl;
-    }
+    msg_info("ConstraintAnimationLoop") << "------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = "
+               << error << " ------" << msgendl;
+
 }
 
 
@@ -265,7 +263,7 @@ ConstraintAnimationLoop::ConstraintAnimationLoop(simulation::Node* gnode)
 
     timer = 0;
 
-    std::cerr << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." << std::endl;
+    msg_deprecated("ConstraintAnimationLoop") << "WARNING : ConstraintAnimationLoop is deprecated. Please use the combination of FreeMotionAnimationLoop and GenericConstraintSolver." ;
 }
 
 ConstraintAnimationLoop::~ConstraintAnimationLoop()
@@ -571,7 +569,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         // SWAP BUFFER:
         bufCP1 = !bufCP1;
     }
-    
+
     ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
 #if !defined(WIN32) && !defined(_XBOX)
@@ -600,11 +598,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     }
 #endif
 
-    debug = this->f_printLog.getValue();
-
-    if (debug)
-        sout << "ConstraintAnimationLoop::step is called" << sendl;
-
+    dmsg_info() << " step is called" ;
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
@@ -792,11 +786,11 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     graphs->clear();
     /*	for(j=0; j<dim; j++)
     {
-    	std::ostringstream oss;
-    	oss << "f" << j;
+        std::ostringstream oss;
+        oss << "f" << j;
 
-    	sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
-    	graph_force.clear();
+        sofa::helper::vector<double>& graph_force = (*graphs)[oss.str()];
+        graph_force.clear();
     }	*/
     _graphForces.endEdit();
 
@@ -863,8 +857,8 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                 ///////////// debug //////////
                 /*		if (i<3 && j<3)
                 {
-                std::cerr<<".............. iteration "<<i<< std::endl;
-                std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
+                msg_info()<<".............. iteration "<<i<< std::endl;
+                msg_info()<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
                 }*/
                 //////////////////////////////
 

@@ -81,7 +81,7 @@ void Operation::start()
         performer = createPerformer();
         if (!performer)
         {
-            std::cerr << defaultPerformerType() << " performer cannot be created with the picked model" << std::endl;
+            msg_error("MouseOperation") << defaultPerformerType() << " performer cannot be created with the picked model.";
             return;
         }
         else

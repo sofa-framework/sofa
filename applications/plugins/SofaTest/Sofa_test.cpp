@@ -23,28 +23,37 @@
 #include "Sofa_test.h"
 #include <SceneCreator/SceneCreator.h>
 
+
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::PluginRepository;
+using sofa::helper::system::DataRepository;
+using sofa::helper::system::FileSystem;
+
 #include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace ;
+
 #include <sofa/helper/logging/MessageDispatcher.h>
 #include <sofa/helper/logging/CountingMessageHandler.h>
 #include "TestMessageHandler.h"
 
-using sofa::helper::system::PluginRepository;
-using sofa::helper::system::DataRepository;
-using sofa::helper::system::FileSystem;
-using sofa::helper::Utils;
+#include <sofa/helper/BackTrace.h>
+using sofa::helper::BackTrace;
+
 
 namespace sofa {
 
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
-
 namespace {
     static struct raii {
       raii() {
             helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
             helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
+            BackTrace::autodump() ;
       }
     } singleton;
 }
@@ -60,7 +69,6 @@ BaseSofa_test::BaseSofa_test(){
     //use the same seed (the seed value is indicated at the 2nd line of test results)
     //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
     helper::srand(seed);
-
 
     // Repeating this for each class is harmless because addHandler test if the handler is already installed and
     // if so it don't install it again.

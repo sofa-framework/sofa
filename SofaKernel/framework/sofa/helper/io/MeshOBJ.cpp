@@ -47,7 +47,7 @@ void MeshOBJ::init (std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error("MeshOBJ") << "File " << filename << " not found.";
         return;
     }
     loaderType = "obj";
@@ -191,10 +191,6 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
             facets.push_back(vertNormTexIndices);
             ++nbf;
         }
-        else
-        {
-            // std::cerr << "readObj : Unknown token for line " << line << std::endl;
-        }
     }
 
     // end of current group
@@ -248,8 +244,7 @@ void MeshOBJ::readMTL(const char* filename)
 
     file = fopen(filename, "r");
     Material *mat = NULL;
-    if (!file);//std::cerr << "readMTL() failed: can't open material file " << filename << std::endl;
-    else
+    if (file)
     {
         /* now, read in the data */
         while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
@@ -263,9 +258,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
+                        msg_error("MeshOBJ") << " fgets function has encountered end of file." ;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
+                        msg_error("MeshOBJ") << " fgets function has encountered an error." ;
                 }
                 break;
             case 'n':
@@ -280,9 +275,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
+                        msg_error("MeshOBJ") << "fgets function has encountered end of file." ;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
+                        msg_error("MeshOBJ") << "fgets function has encountered an error." ;
                 }
                 sscanf(buf, "%s %s", buf, buf);
                 mat->name = buf;
@@ -294,7 +289,7 @@ void MeshOBJ::readMTL(const char* filename)
                 {
                     float optical_density;
                     if (fscanf(file, "%f", &optical_density) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
+                        msg_error("MeshOBJ") << "fscanf has encountered an error." ;
 
                     break;
                 }
@@ -305,10 +300,7 @@ void MeshOBJ::readMTL(const char* filename)
                        break;
                     }
                     if( fscanf(file, "%f", &mat->shininess) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
-                    // wavefront shininess is from [0, 1000], so scale for OpenGL
-                    //mat->shininess /= 1000.0;
-                    //mat->shininess *= 128.0;
+                        msg_error("MeshOBJ") << "fscanf has encountered an error" ;
                     mat->useShininess = true;
                     break;
                 default:
@@ -316,9 +308,9 @@ void MeshOBJ::readMTL(const char* filename)
                     if ( fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
-                            std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
+                            msg_error("MeshOBJ") << "Error: MeshOBJ: fgets function has encountered end of file.";
                         else
-                            std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
+                            msg_error("MeshOBJ") << "Error: MeshOBJ: fgets function has encountered an error.";
                     }
                     break;
                 }
@@ -333,9 +325,8 @@ void MeshOBJ::readMTL(const char* filename)
                        break;
                     }
                     if( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
+                        msg_error("MeshOBJ") << "fscanf has encountered an error" ;
                     mat->useDiffuse = true;
-                    /*std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<'*/ /*'<<mat->diffuse[2]<<std::endl;*/
                     break;
                 case 's':
                     if( !mat )
@@ -344,9 +335,8 @@ void MeshOBJ::readMTL(const char* filename)
                        break;
                     }
                     if( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
+                        msg_error("MeshOBJ") << "fscanf has encountered an error" ;
                     mat->useSpecular = true;
-                    /*std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<'*/ /*'<<mat->specular[2]<<std::endl;*/
                     break;
                 case 'a':
                     if( !mat )
@@ -355,18 +345,17 @@ void MeshOBJ::readMTL(const char* filename)
                        break;
                     }
                     if( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
+                        msg_error("MeshOBJ") << "fscanf has encountered an error";
                     mat->useAmbient = true;
-                    /*std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<'*/ /*'<<mat->ambient[2]<<std::endl;*/
                     break;
                 default:
                     /* eat up rest of line */
                     if (fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
-                            std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
+                            msg_error("MeshOBJ") << "fgets function has encountered end of file." ;
                         else
-                            std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
+                            msg_error("MeshOBJ") <<"fgets function has encountered an error." ;
                     }
 
                     break;
@@ -381,7 +370,7 @@ void MeshOBJ::readMTL(const char* filename)
                 }
                 // transparency value
                 if( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
-                    std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
+                    msg_error("MeshOBJ") << "fscanf has encountered an error" ;
                 break;
 
             case 'm':
@@ -395,15 +384,15 @@ void MeshOBJ::readMTL(const char* filename)
                 char charFilename[128] = {0};
                 if (fgets(charFilename, sizeof(charFilename), file)==NULL)
                 {
-                    std::cerr << "Error: MeshOBJ: fgets has encountered an error" << std::endl;
+                    msg_error("MeshOBJ") << "fgets has encountered an error" ;
                 }
                 else
                 {
                     mat->useTexture = true;
 
                     //store the filename of the texture map in the material
-
                     std::string stringFilename(charFilename);
+
                     //delete carriage return from the string assuming the next property of the .mtl file is at the next line
                     stringFilename.erase(stringFilename.end()-1, stringFilename.end());
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
@@ -422,15 +411,15 @@ void MeshOBJ::readMTL(const char* filename)
                 char charFilename[128] = {0};
                 if (fgets(charFilename, sizeof(charFilename), file)==NULL)
                 {
-                    std::cerr << "Error: MeshOBJ: fgets has encountered an error" << std::endl;
+                    msg_error("MeshOBJ") << "fgets has encountered an error" ;
                 }
                 else
                 {
                     mat->useBumpMapping = true;
 
                     //store the filename of the texture map in the material
-
                     std::string stringFilename(charFilename);
+
                     //delete carriage return from the string assuming the next property of the .mtl file is at the next line
                     stringFilename.erase(stringFilename.end()-1, stringFilename.end());
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
@@ -443,9 +432,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
+                        msg_error("MeshOBJ") << "fgets function has encountered end of file.";
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
+                        msg_error("MeshOBJ") << "fgets function has encountered an error.";
                 }
                 break;
             }

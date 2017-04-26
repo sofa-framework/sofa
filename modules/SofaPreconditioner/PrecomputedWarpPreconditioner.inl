@@ -408,7 +408,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             {
                 EulerSolver->f_verbose.setValue(true);
                 EulerSolver->f_printLog.setValue(true);
-                serr<<"getF : "<<force<<sendl;
+                msg_info() <<"getF : "<<force;
             }
 
             if (linearSolver)
@@ -424,7 +424,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithSolver()
             {
                 EulerSolver->f_verbose.setValue(false);
                 EulerSolver->f_printLog.setValue(false);
-                serr<<"getV : "<<velocity<<sendl;
+                msg_info()<<"getV : "<<velocity;
             }
 
             Real * minvVal = (*internalData.MinvPtr)[j*dof_on_node+d];

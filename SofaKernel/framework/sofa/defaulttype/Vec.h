@@ -962,7 +962,7 @@ struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defau
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
-        //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
+        //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for( unsigned i=0; i<N; ++i )
         {
             if( x[i]<y[i] )

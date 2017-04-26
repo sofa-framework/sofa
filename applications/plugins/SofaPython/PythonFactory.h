@@ -37,6 +37,9 @@
 #include <SofaPython/Binding_BaseMapping.h>
 #include <SofaPython/Binding_DataEngine.h>
 #include <SofaPython/Binding_BaseContext.h>
+#include <SofaPython/Binding_BaseTopologyObject.h>
+#include <SofaPython/Binding_PointSetTopologyModifier.h>
+#include <SofaPython/Binding_TriangleSetTopologyModifier.h>
 #include <SofaPython/Binding_Data.h>
 
 #include <type_traits>
@@ -94,7 +97,7 @@ protected:
     /// a list of Abstract classes that can be cheaply deduced from Base* (by static_cast)
     /// this limits checking the right cast on a limited number of types
     /// Note this list is built from actual needs, but can be easily extended to any types that Base* can be statically casted from.
-    enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,NB_LISTS};
+    enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,BaseTopologyObject,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,NB_LISTS};
     typedef std::list< BasePythonBoundType* > PythonBoundTypes;
     /// a list of types for each sub-classes (prefiltering types not to have to check casting with any of them)
     static PythonBoundTypes s_boundComponents[NB_LISTS];
@@ -105,7 +108,7 @@ protected:
     /// check for the corresponding type in the given list
     static PyObject* toPython( const PythonBoundTypes& list, sofa::core::objectmodel::Base* obj, PyTypeObject* pyTypeObject  )
     {
-//        std::cerr<<"toPython "<<obj->getClassName()<<std::endl;
+//        msg_info()<<"toPython "<<obj->getClassName()<<std::endl;
 
         for(PythonBoundTypes::const_reverse_iterator it=list.rbegin(),itend=list.rend();it!=itend;++it)
             if( (*it)->canCast( obj ) ) return BuildPySPtr<sofa::core::objectmodel::Base>(obj,(*it)->pyTypeObject);
@@ -122,7 +125,7 @@ public:
     template<class T>
     static void add( PyTypeObject* pyTypeObject )
     {
-//        std::cerr<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
+//        msg_info()<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
 
         PythonBoundType<T>* t = new PythonBoundType<T>(pyTypeObject);
 
@@ -137,6 +140,9 @@ public:
                     return s_boundComponents[BaseMeshTopology].push_back( t );
                 return s_boundComponents[Topology].push_back( t );
             }
+
+            if( std::is_base_of<sofa::core::topology::BaseTopologyObject, T>::value )
+                return s_boundComponents[BaseTopologyObject].push_back( t );
 
             if( std::is_base_of<sofa::core::visual::VisualModel, T>::value )
                 return s_boundComponents[VisualModel].push_back( t );
@@ -171,7 +177,7 @@ public:
     /// could be improve for known types, but since it is only setup...
     static PyObject* toPython(sofa::core::objectmodel::Base* obj)
     {
-//        std::cerr<<"toPython0 "<<obj->getClassName()<<std::endl;
+//        msg_info()<<"toPython0 "<<obj->getClassName()<<std::endl;
 
         if( obj->toBaseObject() )
         {
@@ -182,6 +188,8 @@ public:
                 if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
                 return toPython( obj->toTopology() );
             }
+
+            if( obj->toBaseTopologyObject() ) return toPython( obj->toBaseTopologyObject() );
 
             if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
 
@@ -214,6 +222,8 @@ public:
             if( obj->toBaseMeshTopology() ) return toPython( obj->toBaseMeshTopology() );
             return toPython( obj->toTopology() );
         }
+
+        if( obj->toBaseTopologyObject() ) return toPython( obj->toBaseTopologyObject() );
 
         if( obj->toVisualModel()) return toPython( obj->toVisualModel() );
 
@@ -254,6 +264,12 @@ public:
     static PyObject* toPython(sofa::core::topology::BaseMeshTopology* obj)
     {
         return toPython( s_boundComponents[BaseMeshTopology], obj, &SP_SOFAPYTYPEOBJECT(BaseMeshTopology) );
+    }
+
+    /// to convert a BaseTopologyObject-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::core::topology::BaseTopologyObject* obj)
+    {
+        return toPython( s_boundComponents[BaseTopologyObject], obj, &SP_SOFAPYTYPEOBJECT(BaseTopologyObject) );
     }
 
     /// to convert a VisualModel-inherited object to its corresponding pyObject

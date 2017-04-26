@@ -43,8 +43,6 @@ using std::remove ;
 #include "MessageHandler.h"
 #include "ConsoleMessageHandler.h"
 
-#include <sofa/core/objectmodel/Base.h>
-
 #include <sofa/helper/logging/DefaultStyleMessageFormatter.h>
 using sofa::helper::logging::DefaultStyleMessageFormatter;
 
@@ -60,6 +58,16 @@ namespace helper
 
 namespace logging
 {
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Threading issues...
+///     a mutex is serializing the access to the message API.
+/// Memory management:
+///     object are passed to the message info.
+///     some of them are duplicated
+///     other get a weak reference
 
 std::vector<MessageHandler*> getDefaultMessageHandlers(){
     std::vector<MessageHandler*> messageHandlers;
@@ -107,130 +115,76 @@ public:
 };
 
 
-mutex s_dispatchermutex ;
 MessageDispatcherImpl s_messagedispatcher ;
-
-/*
-static std::vector<MessageHandler*> setDefaultMessageHandler()
-{
-    /// This static function of the dispatcher has to be protected against concurent access
-    /// This is done by a mutex and a scoped_guard as in Use the http://en.cppreference.com/w/cpp/thread/lock_guard
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
-
-    std::vector<MessageHandler*> messageHandlers;
-    messageHandlers.push_back(&s_consoleMessageHandler);
-    return messageHandlers;
-}*/
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    //lock_guard<mutex> guard(s_dispatchermutex) ;
+    //lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.process(m);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return MessageDispatcher::LoggerStream( mclass, type, sender, fileInfo);
+
+MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type,
+                                                       const ComponentInfo::SPtr& cinfo, const  FileInfo::SPtr& fileInfo) {
+    return MessageDispatcher::LoggerStream(mclass, type, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::log(Message::Class mclass, Message::Type type, const sofa::core::objectmodel::Base* sender, const  FileInfo::SPtr& fileInfo) {
-    return MessageDispatcher::LoggerStream(mclass, type, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass,
+                                                        const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Info, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Info, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Deprecated, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::info(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Info, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Warning, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Deprecated, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Error, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::deprecated(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Deprecated, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Fatal, cinfo, fileInfo);
 }
 
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Warning, sender, fileInfo);
+MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo) {
+    return log(mclass, Message::Advice, cinfo, fileInfo);
 }
-
-MessageDispatcher::LoggerStream MessageDispatcher::warning(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Warning, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Error, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::error(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Error, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Fatal, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::fatal(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Fatal, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const std::string& sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Advice, sender, fileInfo);
-}
-
-MessageDispatcher::LoggerStream MessageDispatcher::advice(Message::Class mclass, const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo) {
-    return log(mclass, Message::Advice, sender, fileInfo);
-}
-
 
 MessageDispatcher::LoggerStream::LoggerStream(Message::Class mclass, Message::Type type,
-             const sofa::core::objectmodel::Base* sender, const FileInfo::SPtr& fileInfo)
+             const ComponentInfo::SPtr& cInfo, const FileInfo::SPtr& fileInfo)
     : m_message( mclass
                  , type
-                 , sender->getClassName()
-                 // temporary, until Base object reference kept in the message itself ->
-                 // (mattn) not sure it is a good idea, the Message could be kept after the Base is deleted
-                 // TODO(dmarchal): by converting this to a string we are not able anymore to
-                 // display rich information like the component name or location in the scene tree while these
-                 // information are really usefull. I have to make small experiment to see what could be a nice
-                 // approach without too much overhead.
-                 , fileInfo
-
-//TODO(dmarchal): this is a dirty fix to make the source code compile on windows which fail at link
-//time. More fundamentally this function should'nt be in the message dispatcher class that is supposed
-//to have no link to sofa::core::objectmodel::Base
-#ifdef WIN32
-                 , ComponentInfo::SPtr( new ComponentInfo("", "")) )
-#else
-                 , ComponentInfo::SPtr( new ComponentInfo("" /*sender->getName()*/, "")) )
-#endif //WIN32
+                 , cInfo
+                 , fileInfo )
 {
 }
 

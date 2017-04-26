@@ -25,6 +25,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 
+#include <sofa/helper/io/Mesh.h>
+
 #ifdef SOFA_HAVE_MINIFLOWVR
 #include <flowvr/render/mesh.h>
 #endif
@@ -46,26 +48,50 @@ namespace component
 namespace container
 {
 
+namespace _distancegrid_
+{
+
 using namespace defaulttype;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+const Coord calcCellWidth(const int nx, const int ny,const int nz,
+                          const Coord& pmin, const Coord& pmax)
+{
+   return Coord((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1)) ;
+}
+
+const Coord calcInvCellWidth(const int nx, const int ny,const int nz,
+                             const Coord& pmin, const Coord& pmax)
+{
+    return Coord((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2])) ;
+}
+
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<SReal>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new DefaultAllocator<Coord>)
+    , nbRef(1)
+    , dists(nx*ny*nz, new DefaultAllocator<SReal>)
+    , nx(nx), ny(ny), nz(nz)
+    , nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
-    , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
-    , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
+    , cellWidth   (calcCellWidth(nx,ny,nz,pmin,pmax))
+    , invCellWidth(calcInvCellWidth(nx,ny,nz,pmin,pmax))
     , cubeDim(0)
 {
 }
 
-DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<SReal>* alloc)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+DistanceGrid::DistanceGrid(int nx, int ny, int nz,
+                           Coord pmin, Coord pmax, ExtVectorAllocator<SReal>* alloc)
+    : meshPts(new DefaultAllocator<Coord>)
+    , nbRef(1)
+    , dists(nx*ny*nz, alloc)
+    , nx(nx), ny(ny), nz(nz)
+    , nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
-    , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
-    , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
+    , cellWidth   (calcCellWidth(nx,ny,nz,pmin,pmax))
+    , invCellWidth(calcInvCellWidth(nx,ny,nz,pmin,pmax))
     , cubeDim(0)
 {
 }
@@ -95,7 +121,10 @@ bool DistanceGrid::release()
     return true;
 }
 
-DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
+//todo(dmarchal) we should make a loader for that...
+DistanceGrid* DistanceGrid::load(const std::string& filename,
+                                 double scale, double sampling,
+                                 int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     double absscale=fabs(scale);
     if (filename == "#cube")
@@ -103,7 +132,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         float dim = (float)scale;
         int np = 5;
         Coord bbmin(-dim, -dim, -dim), bbmax(dim,dim,dim);
-        //std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
         if (pmin[0]<=pmax[0])
         {
             pmin = bbmin;
@@ -120,12 +148,10 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        //std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
         if (sampling)
             grid->sampleSurface(sampling);
-        //std::cout << "Distance grid creation DONE."<< std::endl;
         return grid;
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
@@ -218,10 +244,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
-        sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
-        const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
-
-        //std::cout <<"Computing bbox."<< std::endl;
+        Mesh* mesh = Mesh::Create(filename);
+        const helper::vector<Vector3> & vertices = mesh->getVertices();
 
         Coord bbmin, bbmax;
         if (!vertices.empty())
@@ -237,7 +261,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             bbmin *= absscale;
             bbmax *= absscale;
         }
-        //std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
 
         if (pmin[0]<=pmax[0])
         {
@@ -255,21 +278,17 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        //std::cout << "Creating distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        //std::cout << "Computing distance field."<<std::endl;
         grid->calcDistance(mesh, scale);
         if (sampling)
             grid->sampleSurface(sampling);
         else
         {
-            //std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(vertices.size());
             for(unsigned int i=0; i<vertices.size(); i++)
                 grid->meshPts[i] = vertices[i]*absscale;
         }
         grid->computeBBox();
-        //std::cout << "Distance grid creation DONE."<<std::endl;
         delete mesh;
         return grid;
     }
@@ -372,7 +391,6 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
     }
 
     msg_info("DistanceGrid")<< (binary ? "Binary" : "Text") << " VTK File " << filename << " (version " << version << "): " << header;
-    //enum { Header, CellData, PointData } section = Header;
     int dataSize = 0;
     int nx = 0, ny = 0, nz = 0;
     Coord origin, spacing(1.0f,1.0f,1.0f);
@@ -480,13 +498,12 @@ void * readData(std::istream& in, int dataSize, bool binary)
 
 
 template<int U, int V>
-bool pointInTriangle(const DistanceGrid::Coord& p, const DistanceGrid::Coord& p0, const DistanceGrid::Coord& p1, const DistanceGrid::Coord& p2)
+bool pointInTriangle(const Coord& p, const Coord& p0, const Coord& p1, const Coord& p2)
 {
     SReal u0 = p [U] - p0[U], v0 = p [V] - p0[V];
     SReal u1 = p1[U] - p0[U], v1 = p1[V] - p0[V];
     SReal u2 = p2[U] - p0[U], v2 = p2[V] - p0[V];
     SReal alpha, beta;
-    //return true;
     if (u1 == 0)
     {
         beta = u0/u2;
@@ -553,7 +570,6 @@ void DistanceGrid::calcCubeDistance(SReal dim, int np)
     if (np > 1)
     {
         int nbp = np*np*np - (np-2)*(np-2)*(np-2);
-        //std::cout << "Copying "<<nbp<<" cube vertices."<<std::endl;
         meshPts.resize(nbp);
 
         for (int i=0,z=0; z<np; z++)
@@ -562,8 +578,6 @@ void DistanceGrid::calcCubeDistance(SReal dim, int np)
                     if (z==0 || z==np-1 || y==0 || y==np-1 || x==0 || x==np-1)
                         meshPts[i++] = Coord(x*dim*2/(np-1) - dim, y*dim*2/(np-1) - dim, z*dim*2/(np-1) - dim);
     }
-
-    //std::cout << "Computing distance field."<<std::endl;
 
     SReal dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
 
@@ -586,7 +600,6 @@ void DistanceGrid::calcCubeDistance(SReal dim, int np)
                     d = rmax(rmax(rabs(s[0]),rabs(s[1])),rabs(s[2])) - dim2;
                 dists[i] = d - (dim-dim2);
             }
-    //computeBBox();
     bbmin = Coord(-dim,-dim,-dim);
     bbmax = Coord( dim, dim, dim);
 }
@@ -602,15 +615,15 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     std::fill(fmm_status.begin(), fmm_status.end(), FMM_FAR);
     std::fill(dists.begin(), dists.end(), maxDist());
 
-    const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
-    const sofa::helper::vector<sofa::helper::vector<sofa::helper::vector<int> > > & facets = mesh->getFacets();
+    const helper::vector<Vector3> & vertices = mesh->getVertices();
+    const helper::vector<helper::vector<helper::vector<int> > > & facets = mesh->getFacets();
 
     // Initialize distance of edges crossing triangles
     msg_info("DistanceGrid")<< "FMM: Initialize distance of edges crossing triangles.";
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        const sofa::helper::vector<int>& pts = facets[i][0];
+        const helper::vector<int>& pts = facets[i][0];
         const int pt0 = 0;
         const Coord p0 = vertices[pts[pt0]]*scale;
         for (unsigned int pt2=2; pt2<pts.size(); pt2++)
@@ -792,13 +805,10 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                             }
                         }
                     }
-            //std::cout << "Triangle "<<pts[pt0]<<"-"<<pts[pt1]<<"-"<<pts[pt2]<<" crossed "<<nedges<<" edges within <"<<ix0<<" "<<iy0<<" "<<iz0<<">-<"<<ix1-1<<" "<<iy1-1<<" "<<iz1-1<<" "<<">."<<std::endl;
-        }
+         }
     }
 
     // Update known points neighbors
-    //std::cout << "FMM: Update known points neighbors."<<std::endl;
-
     for (int z=0, ind=0; z<nz; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++, ind++)
@@ -874,7 +884,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
             }
 
     // March through the heap
-    //std::cout << "FMM: March through the heap." << std::endl;
     while (fmm_heap_size > 0)
     {
         int ind = fmm_pop();
@@ -983,7 +992,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     }
 
     // Finalize distances
-    //std::cout << "FMM: Finalize distances."<<std::endl;
     int nbin = 0;
     for (int z=0, ind=0; z<nz; z++)
         for (int y=0; y<ny; y++)
@@ -996,6 +1004,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 }
                 else if (fmm_status[ind] != FMM_KNOWN_OUT)
                 {
+                    //todo(dmarchal) shouldn't this be handle like a real error ?
                     //std::cerr << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind]<<std::endl;
                 }
             }
@@ -1233,7 +1242,8 @@ void DistanceGrid::sampleSurface(double sampling)
 }
 
 
-DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
+DistanceGrid* DistanceGrid::loadShared(const std::string& filename,
+                                       double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     DistanceGridParams params;
     params.filename = filename;
@@ -1254,12 +1264,223 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale
     }
 }
 
+
+SReal DistanceGrid::quickeval(const Coord& x) const
+{
+    SReal d;
+    if (inGrid(x))
+    {
+        d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
+        d = helper::rsqrt((x-xclamp).norm2() + d*d);
+    }
+    return d;
+}
+
+SReal DistanceGrid::eval2(const Coord& x) const
+{
+    SReal d2;
+    if (inGrid(x))
+    {
+        SReal d = interp(x);
+        d2 = d*d;
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        SReal d = interp(xclamp);
+        d2 = ((x-xclamp).norm2() + d*d); // we underestimate the distance
+    }
+    return d2;
+}
+
+SReal DistanceGrid::quickeval2(const Coord& x) const
+{
+    SReal d2;
+    if (inGrid(x))
+    {
+        SReal d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
+        d2 = d*d;
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        SReal d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
+        d2 = ((x-xclamp).norm2() + d*d);
+    }
+    return d2;
+}
+
+SReal DistanceGrid::interp(int index, const Coord& coefs) const
+{
+    return interp(coefs[2],interp(coefs[1],interp(coefs[0],dists[index          ],dists[index+1        ]),
+            interp(coefs[0],dists[index  +nx     ],dists[index+1+nx     ])),
+            interp(coefs[1],interp(coefs[0],dists[index     +nxny],dists[index+1   +nxny]),
+                    interp(coefs[0],dists[index  +nx+nxny],dists[index+1+nx+nxny])));
+}
+
+
+SReal DistanceGrid::interp(const Coord& p) const
+{
+    Coord coefs;
+    int i = index(p, coefs);
+    return interp(i, coefs);
+}
+
+Coord DistanceGrid::grad(int index, const Coord& coefs) const
+{
+    // val = dist[0][0][0] * (1-x) * (1-y) * (1-z)
+    //     + dist[1][0][0] * (  x) * (1-y) * (1-z)
+    //     + dist[0][1][0] * (1-x) * (  y) * (1-z)
+    //     + dist[1][1][0] * (  x) * (  y) * (1-z)
+    //     + dist[0][0][1] * (1-x) * (1-y) * (  z)
+    //     + dist[1][0][1] * (  x) * (1-y) * (  z)
+    //     + dist[0][1][1] * (1-x) * (  y) * (  z)
+    //     + dist[1][1][1] * (  x) * (  y) * (  z)
+    // dval / dx = (dist[1][0][0]-dist[0][0][0]) * (1-y) * (1-z)
+    //           + (dist[1][1][0]-dist[0][1][0]) * (  y) * (1-z)
+    //           + (dist[1][0][1]-dist[0][0][1]) * (1-y) * (  z)
+    //           + (dist[1][1][1]-dist[0][1][1]) * (  y) * (  z)
+    const SReal dist000 = dists[index          ];
+    const SReal dist100 = dists[index+1        ];
+    const SReal dist010 = dists[index  +nx     ];
+    const SReal dist110 = dists[index+1+nx     ];
+    const SReal dist001 = dists[index     +nxny];
+    const SReal dist101 = dists[index+1   +nxny];
+    const SReal dist011 = dists[index  +nx+nxny];
+    const SReal dist111 = dists[index+1+nx+nxny];
+    return Coord(
+            interp(coefs[2],interp(coefs[1],dist100-dist000,dist110-dist010),interp(coefs[1],dist101-dist001,dist111-dist011)), //*invCellWidth[0],
+            interp(coefs[2],interp(coefs[0],dist010-dist000,dist110-dist100),interp(coefs[0],dist011-dist001,dist111-dist101)), //*invCellWidth[1],
+            interp(coefs[1],interp(coefs[0],dist001-dist000,dist101-dist100),interp(coefs[0],dist011-dist010,dist111-dist110))); //*invCellWidth[2]);
+}
+
+Coord DistanceGrid::grad(const Coord& p) const
+{
+    Coord coefs;
+    int i = index(p, coefs);
+    return grad(i, coefs);
+}
+
+SReal DistanceGrid::eval(const Coord& x) const
+{
+    SReal d;
+    if (inGrid(x))
+    {
+        d = interp(x);
+    }
+    else
+    {
+        Coord xclamp = clamp(x);
+        d = interp(xclamp);
+        d = helper::rsqrt((x-xclamp).norm2() + d*d); // we underestimate the distance
+    }
+    return d;
+}
+
+int DistanceGrid::index(const Coord& p, Coord& coefs) const
+{
+    coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
+    coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
+    coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
+    int x = helper::rfloor(coefs[0]);
+    if (x<0) x=0; else if (x>=nx-1) x=nx-2;
+    coefs[0] -= x;
+    int y = helper::rfloor(coefs[1]);
+    if (y<0) y=0; else if (y>=ny-1) y=ny-2;
+    coefs[1] -= y;
+    int z = helper::rfloor(coefs[2]);
+    if (z<0) z=0; else if (z>=nz-1) z=nz-2;
+    coefs[2] -= z;
+    return x+nx*(y+ny*(z));
+}
+
+bool DistanceGrid::DistanceGridParams::operator==(const DistanceGridParams& v) const
+{
+    if (!(filename == v.filename)) return false;
+    if (!(scale    == v.scale   )) return false;
+    if (!(sampling == v.sampling)) return false;
+    if (!(nx       == v.nx      )) return false;
+    if (!(ny       == v.ny      )) return false;
+    if (!(nz       == v.nz      )) return false;
+    if (!(pmin[0]  == v.pmin[0] )) return false;
+    if (!(pmin[1]  == v.pmin[1] )) return false;
+    if (!(pmin[2]  == v.pmin[2] )) return false;
+    if (!(pmax[0]  == v.pmax[0] )) return false;
+    if (!(pmax[1]  == v.pmax[1] )) return false;
+    if (!(pmax[2]  == v.pmax[2] )) return false;
+    return true;
+}
+
+bool DistanceGrid::DistanceGridParams::operator<(const DistanceGridParams& v) const
+{
+    if (filename < v.filename) return false;
+    if (filename > v.filename) return true;
+    if (scale    < v.scale   ) return false;
+    if (scale    > v.scale   ) return true;
+    if (sampling < v.sampling) return false;
+    if (sampling > v.sampling) return true;
+    if (nx       < v.nx      ) return false;
+    if (nx       > v.nx      ) return true;
+    if (ny       < v.ny      ) return false;
+    if (ny       > v.ny      ) return true;
+    if (nz       < v.nz      ) return false;
+    if (nz       > v.nz      ) return true;
+    if (pmin[0]  < v.pmin[0] ) return false;
+    if (pmin[0]  > v.pmin[0] ) return true;
+    if (pmin[1]  < v.pmin[1] ) return false;
+    if (pmin[1]  > v.pmin[1] ) return true;
+    if (pmin[2]  < v.pmin[2] ) return false;
+    if (pmin[2]  > v.pmin[2] ) return true;
+    if (pmax[0]  < v.pmax[0] ) return false;
+    if (pmax[0]  > v.pmax[0] ) return true;
+    if (pmax[1]  < v.pmax[1] ) return false;
+    if (pmax[1]  > v.pmax[1] ) return true;
+    if (pmax[2]  < v.pmax[2] ) return false;
+    if (pmax[2]  > v.pmax[2] ) return true;
+    return false;
+}
+
+bool DistanceGrid::DistanceGridParams::operator>(const DistanceGridParams& v) const
+{
+    if (filename > v.filename) return false;
+    if (filename < v.filename) return true;
+    if (scale    > v.scale   ) return false;
+    if (scale    < v.scale   ) return true;
+    if (sampling < v.sampling) return false;
+    if (sampling > v.sampling) return true;
+    if (nx       > v.nx      ) return false;
+    if (nx       < v.nx      ) return true;
+    if (ny       > v.ny      ) return false;
+    if (ny       < v.ny      ) return true;
+    if (nz       > v.nz      ) return false;
+    if (nz       < v.nz      ) return true;
+    if (pmin[0]  > v.pmin[0] ) return false;
+    if (pmin[0]  < v.pmin[0] ) return true;
+    if (pmin[1]  > v.pmin[1] ) return false;
+    if (pmin[1]  < v.pmin[1] ) return true;
+    if (pmin[2]  > v.pmin[2] ) return false;
+    if (pmin[2]  < v.pmin[2] ) return true;
+    if (pmax[0]  > v.pmax[0] ) return false;
+    if (pmax[0]  < v.pmax[0] ) return true;
+    if (pmax[1]  > v.pmax[1] ) return false;
+    if (pmax[1]  < v.pmax[1] ) return true;
+    if (pmax[2]  > v.pmax[2] ) return false;
+    if (pmax[2]  < v.pmax[2] ) return true;
+    return false;
+}
+
 std::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShared()
 {
     static std::map<DistanceGridParams, DistanceGrid*> instance;
     return instance;
 }
 
+} // namespace _distancegrid_
 
 } // namespace container
 

@@ -142,8 +142,9 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
         if (!rendered) // do the rendering
         {
-            std::cerr << "VisualLoop error: no visualManager rendered the scene. Please make sure the final visualManager(Secondary)Pass has a renderToScreen=\"true\" attribute" << std::endl;
+            msg_error() << "No visualManager rendered the scene. Please make sure the final visualManager(Secondary)Pass has a renderToScreen=\"true\" attribute" ;
         }
+
         //postDraw sequence
         sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)

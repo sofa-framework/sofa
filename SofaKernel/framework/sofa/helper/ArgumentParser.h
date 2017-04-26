@@ -28,6 +28,7 @@
 #define SOFA_HELPER_ARGUMENTPARSER_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -148,17 +149,17 @@ Example: run -D ELEM1 -D ELEM2 ...
 template<class TE> inline
 bool Argument< std::vector<TE> >::read( std::list<std::string>& str)
 {
-	if (str.empty()) return false;
-	std::string s = str.front();
-	str.pop_front();
-	TE val;
-	istrstream istr( s.c_str() );
-	if( ! (istr >> val) ) return false;
-	else {
-		isSet = true;
-		*ptr.push_back(vak);
-		return true;
-	}
+    if (str.empty()) return false;
+    std::string s = str.front();
+    str.pop_front();
+    TE val;
+    istrstream istr( s.c_str() );
+    if( ! (istr >> val) ) return false;
+    else {
+        isSet = true;
+        *ptr.push_back(vak);
+        return true;
+    }
 }
 */
 
@@ -279,24 +280,24 @@ public:
 
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
-            std::cerr << "name " << sn << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << sn << " already used !";
             exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
-            std::cerr << "name " << ln << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << ln << " already used !" ;
             exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
-            std::cerr << "name " << sho << " reserved for help !" << std::endl;
+            msg_fatal("ArgumentParser") <<sho << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
-            std::cerr << "name " << lon << " reserved for help !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << lon << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
 
@@ -320,24 +321,24 @@ public:
 
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
-            std::cerr << "name " << sn << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << sn << " already used !"  ;
             exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
-            std::cerr << "name " << ln << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << ln << " already used !" ;
             exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
-            std::cerr << "name " << sho << " reserved for help !" << std::endl;
+            msg_error("ArgumentParser") << "name " << sho << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
-            std::cerr << "name " << lon << " reserved for help !" << std::endl;
+            msg_error("ArgumentParser") << "name " << lon << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
 

@@ -63,6 +63,19 @@ OglLabel::OglLabel(): stepCounter(0)
 
 void OglLabel::init()
 {
+    this->getContext()->getRootContext()->get(backgroundSetting, sofa::core::objectmodel::BaseContext::SearchRoot);
+    if (color.getValue() == "contrast")
+    {
+        if (!backgroundSetting)
+        {
+            color.setValue("white");
+        }
+        else
+        {
+            msg_info() << " background color is " << backgroundSetting->color.getValue() ;
+        }
+    }
+
     reinit();
 }
 
@@ -130,6 +143,95 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 
     // Restore state
     glPopAttrib();
+}
+
+void OglLabel::setColor(float r, float g, float b, float a)
+{
+    this->r = r;
+    this->g = g;
+    this->b = b;
+    this->a = a;
+
+    msg_info() << " set color to: " << r << ", " << g << ", " << b << ", " << a ;
+}
+
+static int hexval(char c)
+{
+    if (c>='0' && c<='9') return c-'0';
+    else if (c>='a' && c<='f') return (c-'a')+10;
+    else if (c>='A' && c<='F') return (c-'A')+10;
+    else return 0;
+}
+
+void OglLabel::setColor(std::string color)
+{
+    //TODO(dmarchal): color FIX
+    if (color.empty()) return;
+    float r = 1.0f;
+    float g = 1.0f;
+    float b = 1.0f;
+    float a = 1.0f;
+    if (color[0]>='0' && color[0]<='9')
+    {
+        sscanf(color.c_str(),"%f %f %f %f", &r, &g, &b, &a);
+    }
+    else if (color[0]=='#' && color.length()>=7)
+    {
+        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
+        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
+        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
+        if (color.length()>=9)
+            a = (hexval(color[7])*16+hexval(color[8]))/255.0f;
+    }
+    else if (color[0]=='#' && color.length()>=4)
+    {
+        r = (hexval(color[1])*17)/255.0f;
+        g = (hexval(color[2])*17)/255.0f;
+        b = (hexval(color[3])*17)/255.0f;
+        if (color.length()>=5)
+            a = (hexval(color[4])*17)/255.0f;
+    }
+    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
+    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
+    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
+    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
+    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
+    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
+    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
+    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
+    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
+    else if (color == "contrast")
+    {
+        if (backgroundSetting)
+        {
+            //in contrast mode, the text color is selected between black or white depending on the background color
+            defaulttype::Vector3 backgroundColor = backgroundSetting->color.getValue();
+            backgroundColor *= 255;
+            float yiq = (float)(backgroundColor[0]*299 + backgroundColor[1]*587 + backgroundColor[2]*114);
+            yiq /= 1000;
+            if (yiq >= 128)
+            {
+                msg_info() << "Black is selected to display text on this background" ;
+                r = 0.0f; g = 0.0f; b = 0.0f;
+            }
+            else
+            {
+                msg_info() << "White is selected to display text on this background" ;
+                r = 1.0f; g = 1.0f; b = 1.0f;
+            }
+        }
+        else
+        {
+            msg_info() << "Background setting not found, cannot use contrast on color data (set white instead)" ;
+            r = 1.0f; g = 1.0f; b = 1.0f;
+        }
+    }
+    else
+    {
+        msg_warning() <<"Unknown color "<<color ;
+        return;
+    }
+    setColor(r,g,b,a);
 }
 
 } // namespace visualmodel

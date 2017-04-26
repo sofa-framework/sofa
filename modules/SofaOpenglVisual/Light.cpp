@@ -771,8 +771,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
             if (z < zNear) zNear = z;
             if (z > zFar)  zFar = z;
         }
-        if (this->f_printLog.getValue())
-            sout << "zNear = " << zNear << "  zFar = " << zFar << sendl;
+        msg_info() << "zNear = " << zNear << "  zFar = " << zFar ;
 
         if (zNear <= 0)
             zNear = 1;

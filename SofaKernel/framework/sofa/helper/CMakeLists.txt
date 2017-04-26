@@ -108,6 +108,8 @@ set(HEADER_FILES
     types/RGBAColor.h
     logging/Messaging.h
     logging/Message.h
+    logging/ComponentInfo.h
+    logging/FileInfo.h
     logging/MessageDispatcher.h
     logging/MessageHandler.h
     logging/ConsoleMessageHandler.h
@@ -188,6 +190,7 @@ set(SOURCE_FILES
     types/RGBAColor.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
     logging/DefaultStyleMessageFormatter.cpp
@@ -198,7 +201,6 @@ set(SOURCE_FILES
     logging/LoggingMessageHandler.cpp
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
-    logging/RichConsoleStyleMessageFormatter.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
