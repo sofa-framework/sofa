@@ -63,6 +63,7 @@ public:
     Data<unsigned int> y;
     Data<unsigned int> fontsize;
     Data<defaulttype::RGBAColor> color;
+    Data<bool> m_selectContrastingColor ;
     Data<unsigned int> updateLabelEveryNbSteps;
     Data<bool> f_visible;
 
@@ -72,6 +73,9 @@ public:
     void drawVisual(const core::visual::VisualParams* vparams);
 
     void handleEvent(sofa::core::objectmodel::Event *);
+
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) ;
+    void setColor(float r, float g, float b, float a) ;
 
 private:
     std::string internalLabel;

@@ -135,8 +135,7 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
     else if (str == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
     else if (str == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
     else if (str == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else
-    {
+    else {
         return false ;
     }
 

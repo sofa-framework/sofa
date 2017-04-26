@@ -124,7 +124,6 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
-    logging/RichConsoleStyleMessageFormatter.h
 )
 
 set(SOURCE_FILES
