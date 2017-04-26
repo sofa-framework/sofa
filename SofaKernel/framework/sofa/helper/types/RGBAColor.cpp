@@ -163,7 +163,7 @@ RGBAColor RGBAColor::fromString(const std::string& c)
 }
 
 
-RGBAColor RGBAColor::fromDouble(const float r, const float g, const float b, const float a)
+RGBAColor RGBAColor::fromFloat(const float r, const float g, const float b, const float a)
 {
     return RGBAColor(r,g,b,a);
 }

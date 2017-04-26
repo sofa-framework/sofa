@@ -50,7 +50,7 @@ class SOFA_HELPER_API RGBAColor : public fixed_array<float, 4>
 {
 public:
     static RGBAColor fromString(const std::string& str) ;
-    static RGBAColor fromDouble(const float r, const float g, const float b, const float a) ;
+    static RGBAColor fromFloat(const float r, const float g, const float b, const float a) ;
     static RGBAColor fromVec4(const fixed_array<float, 4>& color) ;
     static RGBAColor fromVec4(const fixed_array<double, 4>& color) ;
 
