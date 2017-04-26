@@ -125,7 +125,6 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
             if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
             {
                 m_shaderPostproc->setInt(0, (currentSecondaryPass->getOutputName()).c_str(), nbFbo);
-                //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentSecondaryPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                 nbFbo++;
             }
         }
@@ -136,10 +135,8 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
                 if(input_tags.getValue().includes(currentPass->getTags()))
                 {
                     m_shaderPostproc->setInt(0, (currentPass->getOutputName()).c_str(), nbFbo);
-                    //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
                     m_shaderPostproc->setInt(0, (currentPass->getOutputName()+"_Z").c_str(), nbFbo);
-                    //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"_Z\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
                 }
             }

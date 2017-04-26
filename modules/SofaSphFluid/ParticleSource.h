@@ -135,7 +135,7 @@ public:
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {
-            std::cout << "PSRemovalFunction\n";
+            dmsg_info("ParticleSource") << "PSRemovalFunction";
             if(ps)
             {
                 /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);

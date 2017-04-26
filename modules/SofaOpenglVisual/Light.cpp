@@ -448,11 +448,6 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
     mat[13] = 0;
     mat[14] = (sceneBBox.maxBBox()[2] - sceneBBox.minBBox()[2])*-0.5;
 
-    //std::cout << "BB " << sceneBBox << std::endl;
-    //std::cout << "LightBB " << lightBBox << std::endl;
-    //std::cout << "Position " << position << std::endl;
-    //std::cout << "Center " << center << std::endl;
-
     //w
     mat[15] = 1;
 
