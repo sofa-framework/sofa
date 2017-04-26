@@ -40,27 +40,22 @@ namespace component
 namespace visualmodel
 {
 
-using sofa::defaulttype::RGBAColor ;
 using sofa::component::configurationsetting::BackgroundSetting ;
 using sofa::core::objectmodel::BaseObjectDescription ;
+using sofa::defaulttype::RGBAColor ;
 
-SOFA_DECL_CLASS(OglLabel)
-
-int OglLabelClass = core::RegisterObject("A simple visualization for 2D text.")
-        .add< OglLabel >()
-        ;
-
-OglLabel::OglLabel(): stepCounter(0)
-  ,prefix(initData(&prefix, std::string(""), "prefix", "The prefix of the text to display"))
-  ,label(initData(&label, std::string(""), "label", "The text to display"))
-  ,suffix(initData(&suffix, std::string(""), "suffix", "The suffix of the text to display"))
-  ,x(initData(&x, (unsigned int)10, "x", "The x position of the text on the screen"))
-  ,y(initData(&y, (unsigned int)10, "y", "The y position of the text on the screen"))
-  ,fontsize(initData(&fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
-  ,color(initData(&color, defaulttype::RGBAColor::fromString("gray"), "color", "The color of the text to display. (default='gray')"))
-  ,m_selectContrastingColor(initData(&m_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
-  ,updateLabelEveryNbSteps(initData(&updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
-  ,f_visible(initData(&f_visible,true,"visible","Is label displayed"))
+OglLabel::OglLabel():
+   d_prefix(initData(&d_prefix, std::string(""), "prefix", "The prefix of the text to display"))
+  ,d_label(initData(&d_label, std::string(""), "label", "The text to display"))
+  ,d_suffix(initData(&d_suffix, std::string(""), "suffix", "The suffix of the text to display"))
+  ,d_x(initData(&d_x, (unsigned int)10, "x", "The x position of the text on the screen"))
+  ,d_y(initData(&d_y, (unsigned int)10, "y", "The y position of the text on the screen"))
+  ,d_fontsize(initData(&d_fontsize, (unsigned int)14, "fontsize", "The size of the font used to display the text on the screen"))
+  ,d_color(initData(&d_color, defaulttype::RGBAColor::fromString("gray"), "color", "The color of the text to display. (default='gray')"))
+  ,d_selectContrastingColor(initData(&d_selectContrastingColor, false, "selectContrastingColor", "Overide the color value but one that contrast with the background color"))
+  ,d_updateLabelEveryNbSteps(initData(&d_updateLabelEveryNbSteps, (unsigned int)0, "updateLabelEveryNbSteps", "Update the display of the label every nb of time steps"))
+  ,d_visible(initData(&d_visible,true,"visible","Is label displayed"))
+  ,m_stepCounter(0)
 {
     f_listening.setValue(true);
 }
@@ -69,17 +64,23 @@ void OglLabel::parse(BaseObjectDescription *arg)
 {
     // BACKWARD COMPATIBILITY April 2017
     const char* value = arg->getAttribute("color") ;
-    if(strcmp(value, "contrast"))
+    if(value==nullptr || strcmp(value, "contrast")){
+        VisualModel::parse(arg);
         return ;
+    }
 
+    arg->setAttribute("selectContrastingColor", "true");
+    arg->removeAttribute("color") ;
+
+    VisualModel::parse(arg);
+
+    /// A send the message after the parsing of the base class so that the "name" of the component
+    /// is correctly reported in the message.
     msg_deprecated() << "Attribute color='contrast' is deprecated since Sofa 17.06.  " << msgendl
-                     << "Using deprecated attribute may result in lower performance and un-expected behavior" << msgendl
+                     << "Using deprecated attributes may result in lower performance or un-expected behaviors" << msgendl
                      << "To remove this message you need to update your scene by replacing color='contrast' with "
                         " selectConstrastingColor='true'" ;
 
-    arg->setAttribute("selectContrastingColor", "true");
-
-    Base::parse(arg);
 }
 
 void OglLabel::init()
@@ -89,10 +90,15 @@ void OglLabel::init()
 
 void OglLabel::reinit()
 {
-    internalLabel = label.getValue();
+    if( d_selectContrastingColor.isSet() && d_color.isSet() ){
+        msg_warning() << "The selectContrastingColor and color attributes are both set. " << msgendl
+                      << "The color attribute will be overriden by the contrasting color. ";
+    }
 
-    if( m_selectContrastingColor.getValue() ){
-        msg_info() << "Select the color from background." ;
+    m_internalLabel = d_label.getValue();
+
+    if( d_selectContrastingColor.getValue() ){
+        msg_info() << "Automatically select a color to contrast against the background." ;
         BackgroundSetting* backgroundSetting ;
         this->getContext()->getRootContext()->get(backgroundSetting, sofa::core::objectmodel::BaseContext::SearchRoot);
         if (backgroundSetting)
@@ -103,18 +109,18 @@ void OglLabel::reinit()
             yiq /= 1000;
             if (yiq >= 128)
             {
-                msg_info() << "Black is selected to display text on this background" ;
+                msg_info() << "Black is selected to display text on this background." ;
                 setColor(0,0,0,1);
             }
             else
             {
-                msg_info() << "White is selected to display text on this background" ;
+                msg_info() << "White is selected to display text on this background." ;
                 setColor(1,1,1,1);
             }
         }
         else
         {
-            msg_info() << "Background setting not found, cannot use contrast on color data (set white instead)" ;
+            msg_info() << "Background setting not found, cannot use contrast on color data (set white instead)." ;
             setColor(1,1,1,1);
         }
     }
@@ -122,20 +128,20 @@ void OglLabel::reinit()
 
 void OglLabel::updateVisual()
 {
-    if (!updateLabelEveryNbSteps.getValue()) internalLabel = label.getValue();
+    if (!d_updateLabelEveryNbSteps.getValue()) m_internalLabel = d_label.getValue();
 }
 
 void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
 {
-    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
+    if ( dynamic_cast<simulation::AnimateBeginEvent*>(event) )
     {
-        if (updateLabelEveryNbSteps.getValue())
+        if (d_updateLabelEveryNbSteps.getValue())
         {
-            stepCounter++;
-            if(stepCounter > updateLabelEveryNbSteps.getValue())
+            m_stepCounter++;
+            if(m_stepCounter > d_updateLabelEveryNbSteps.getValue())
             {
-                stepCounter = 0;
-                internalLabel = label.getValue();
+                m_stepCounter = 0;
+                m_internalLabel = d_label.getValue();
             }
         }
     }
@@ -144,7 +150,7 @@ void OglLabel::handleEvent(sofa::core::objectmodel::Event *event)
 void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 {
 
-    if (!f_visible.getValue() ) return;
+    if (!d_visible.getValue() ) return;
 
     // Save state and disable clipping plane
     glPushAttrib(GL_ENABLE_BIT);
@@ -156,25 +162,23 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
     glDepthMask(1);
 
     vparams->drawTool()->setLightingEnabled(false);
-    // vparams->drawTool()->setPolygonMode(1,true);
 
     // color of the text
-    glColor4fv( color.getValue().data() );
+    glColor4fv( d_color.getValue().data() );
 
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color.getValue().data() );
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, d_color.getValue().data() );
     static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
     static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
     glMaterialf  (GL_FRONT_AND_BACK, GL_SHININESS, 20);
 
-    std::string text = prefix.getValue() + internalLabel.c_str() + suffix.getValue();
+    std::string text = d_prefix.getValue() + m_internalLabel.c_str() + d_suffix.getValue();
 
     vparams->drawTool()->writeOverlayText(
-        x.getValue(), y.getValue(), fontsize.getValue(),  // x, y, size
-        color.getValue(),
+        d_x.getValue(), d_y.getValue(), d_fontsize.getValue(),  // x, y, size
+        d_color.getValue(),
         text.c_str());
-
 
     // Restore state
     glPopAttrib();
@@ -182,22 +186,16 @@ void OglLabel::drawVisual(const core::visual::VisualParams* vparams)
 
 void OglLabel::setColor(float r, float g, float b, float a)
 {
-    color.beginEdit()->set(r,g,b,a);
-    color.endEdit();
+    d_color.beginEdit()->set(r,g,b,a);
+    d_color.endEdit();
 }
 
-/*
-void OglLabel::setColor(std::string scolor)
-{
-    if (scolor.empty())
-        return;
 
-    if(!color.read(scolor)){
-        msg_warning() << " '"<< scolor<< "' is not a valid color." ;
-    }
+SOFA_DECL_CLASS(OglLabel)
 
-    setColor(r,g,b,a);
-}*/
+int OglLabelClass = core::RegisterObject("Display 2D text in the viewport.")
+        .add< OglLabel >()
+        ;
 
 } // namespace visualmodel
 
