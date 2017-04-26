@@ -122,6 +122,8 @@ void Python_scene_test::run( const Python_test_data& data ) {
     loader.loadSceneWithArguments(data.filepath.c_str(),
                                   data.arguments,
                                   &root);
+
+    ASSERT_TRUE(bool(root)) << "scene creation failed!";
     
 	root->addObject( new Listener );
 
