@@ -10,8 +10,6 @@ if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
     endif()
 endif()
 
-set_property(GLOBAL PROPERTY JOB_POOLS one_job=1 two_jobs=2 ten_jobs=10)
-
 ## Default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
@@ -235,6 +233,9 @@ if(SOFA_BUILD_TESTS)
     enable_testing()
     add_subdirectory(extlibs/gtest)
 endif()
+
+### Ninja build pools
+option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
 ### Extlibs
 add_subdirectory(extlibs)
