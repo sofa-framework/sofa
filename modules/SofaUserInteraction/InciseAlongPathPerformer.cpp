@@ -133,14 +133,14 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 {
     if (firstIncisionBody.body == NULL || startBody.body == NULL)
     {
-        std::cout << "Error: One picked body is null." << std::endl;
+        msg_error("InciseAlongPathPerformer") << "One picked body is null." ;
         return;
     }
 
 
     if (firstIncisionBody.indexCollisionElement == startBody.indexCollisionElement)
     {
-        std::cout << "Error: picked body are the same." << std::endl;
+        msg_error("InciseAlongPathPerformer") << "Picked body are the same." ;
         return;
     }
 
@@ -158,7 +158,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     if (!findTri)
     {
-        std::cout << "Error: initial point of incision has not been found." << std::endl;
+        dmsg_error("InciseAlongPathPerformer") << " initial point of incision has not been found." ;
         return;
     }
 
@@ -178,7 +178,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
 
     if (the_triangle == -1)
     {
-        std::cout << "Error: initial triangle of incision has not been found." << std::endl;
+        msg_error("InciseAlongPathPerformer") << " initial triangle of incision has not been found." ;
         return;
     }
 
