@@ -40,7 +40,7 @@ namespace helper
 
     void StateMask::assign( size_t size, bool value )
     {
-        assert(size <= mask.size());
+        // assert(size <= mask.size());
         mask.assign( size, value );
     }
 
