@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -76,8 +76,14 @@ public:
     Data< SReal >              d_arrowSizeCoef;
 
     /// display color
-    Data< defaulttype::Vec4f > d_color;
-
+    Data< defaulttype::RGBAColor > d_color;
+    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
+    Data< bool > indexFromEnd;
+protected:
+    ConstantForceField();
+public:
+    /// Set a force to a given particle
+    void setForce( unsigned i, const Deriv& f );
 
 public:
     /// Init function

@@ -84,7 +84,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         else
         {
             CPos localPivot = p0[ext_index].getOrientation().inverseRotate(m_pivots[i] - p0[ext_index].getCenter());
-            //std::cout << "localPivot = " << localPivot << std::endl;
+            //std::cout << "localPivot = "e  << localPivot << std::endl;
             CPos rotatedPivot = p1[index].getOrientation().rotate(localPivot);
             CPos pivot2 = p1[index].getCenter() + rotatedPivot;
             CPos dx = pivot2 - m_pivots[i];
@@ -219,7 +219,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
             vertices.push_back(p0[index].getCenter());
         }
     }
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+    vparams->drawTool()->drawLines(vertices,5, Vec4f(springColor.getValue()));
     vparams->drawTool()->restoreLastState();
 }
 

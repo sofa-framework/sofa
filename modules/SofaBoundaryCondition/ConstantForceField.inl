@@ -63,9 +63,8 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef",
                                "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
 
-    , d_color(initData(&d_color, defaulttype::Vec4f(0.2f,0.9f,0.3f,1.0f), "showColor",
-                       "Color for object display (default: 0.2,0.9,0.3,1.0)"))
-
+    , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor",
+                       "Color for object display (default: [0.2,0.9,0.3,1.0])"))
 {
     d_arrowSizeCoef.setGroup("Visualization");
     d_color.setGroup("Visualization");

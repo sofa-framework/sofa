@@ -269,6 +269,11 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
         ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so)
 endif()
 
+if (SOFA_NINJA_BUILD_POOLS)
+    set(NINJA_BUILD_POOL_FLEXIBLE "1" CACHE STRING "Cores used to build Flexible with ninja")
+    set_property(GLOBAL APPEND PROPERTY JOB_POOLS flexible_pool=${NINJA_BUILD_POOL_FLEXIBLE})
+    set_property(TARGET ${PROJECT_NAME} PROPERTY JOB_POOL_COMPILE flexible_pool)
+endif()
 
 #if(UNIX)
 #    target_link_libraries(${PROJECT_NAME} pthread)
