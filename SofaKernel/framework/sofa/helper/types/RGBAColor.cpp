@@ -57,7 +57,7 @@ bool isValidEncoding(const std::string& s)
 }
 
 
-RGBAColor::RGBAColor()
+RGBAColor::RGBAColor() : fixed_array<float, 4>(1,1,1,1)
 {
 
 }
