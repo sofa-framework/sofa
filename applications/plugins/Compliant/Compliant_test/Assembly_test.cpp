@@ -44,7 +44,7 @@ struct Assembly_test : public CompliantSolver_test
         node->getContext()->executeVisitor( &assemblyVisitor );
         component::linearsolver::AssembledSystem sys;
         assemblyVisitor.assemble(sys); // assemble system
-        
+
         return sys.H;
     }
 
@@ -129,7 +129,7 @@ struct Assembly_test : public CompliantSolver_test
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
         string1->addObject(ff);
         helper::vector<unsigned>* indices = ff->points.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
-        helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->forces );
+        helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->d_forces );
         (*indices).resize(2);
         forces.resize(2);
         // pull the left-hand particle to the left
