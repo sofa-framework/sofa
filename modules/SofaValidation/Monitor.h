@@ -26,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -42,6 +43,7 @@ class Monitor: public virtual core::objectmodel::BaseObject
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Monitor,DataTypes), core::objectmodel::BaseObject);
 
+    typedef sofa::helper::types::RGBAColor RGBAColor;
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -96,19 +98,19 @@ public:
     Data < bool > saveFToGnuplot;
 
     Data < bool > showPositions;
-    Data <defaulttype::Vec4f> positionsColor;
+    Data <RGBAColor > positionsColor;
 
     Data < bool > showVelocities;
-    Data< defaulttype::Vec4f > velocitiesColor;
+    Data< RGBAColor > velocitiesColor;
 
     Data < bool > showForces;
-    Data< defaulttype::Vec4f > forcesColor;
+    Data< RGBAColor > forcesColor;
 
     Data < double > showMinThreshold;
 
     Data < bool > showTrajectories;
     Data < double > trajectoriesPrecision;
-    Data< defaulttype::Vector4 > trajectoriesColor;
+    Data< RGBAColor > trajectoriesColor;
 
     Data< double > showSizeFactor;
 

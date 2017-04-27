@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef MATERIAL_DATAWIDGET_H
-#define MATERIAL_DATAWIDGET_H
+#ifndef QRGBACOLORPICKER_H
+#define QRGBACOLORPICKER_H
 #include "DataWidget.h"
 #include <sofa/core/loader/Material.h>
 #include <sofa/defaulttype/Vec.h>
@@ -40,8 +40,6 @@
 #include <QValidator>
 #include <QColorDialog>
 
-#include "QRGBAColorPicker.h"
-
 namespace sofa
 {
 namespace gui
@@ -49,85 +47,47 @@ namespace gui
 namespace qt
 {
 /// Private namespace
-namespace materialdatawidget_h
+namespace qrgbacolorpicker_h
 {
-using sofa::gui::qt::QRGBAColorPicker ;
-using sofa::core::loader::Material ;
-using sofa::core::objectmodel::Data ;
+using sofa::defaulttype::Vec4f ;
 
-class MaterialDataWidget : public TDataWidget<Material>
-{
-    Q_OBJECT
-public:
-    MaterialDataWidget(QWidget* parent,
-                       const char* name,
-                       Data<Material>* data):
-        TDataWidget<Material>(parent,name,data)
-    {}
-
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-    virtual unsigned int numColumnWidget() {return 1;}
-
-protected:
-    virtual void readFromData();
-    virtual void writeToData();
-    QLineEdit* _nameEdit;
-    QRGBAColorPicker* _ambientPicker;
-    QRGBAColorPicker* _emissivePicker;
-    QRGBAColorPicker* _specularPicker;
-    QRGBAColorPicker* _diffusePicker;
-    QLineEdit*  _shininessEdit;
-    QCheckBox* _ambientCheckBox;
-    QCheckBox* _emissiveCheckBox;
-    QCheckBox* _specularCheckBox;
-    QCheckBox* _diffuseCheckBox;
-    QCheckBox* _shininessCheckBox;
-};
-
-
-typedef helper::vector<Material> VectorMaterial;
-class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
+/**
+    @class QRGBAColorPicker
+    Implement a widget to select a color either using a color wheel or by three values.
+*/
+class QRGBAColorPicker : public QWidget
 {
     Q_OBJECT
+
+signals:
+    void hasChanged();
+
 public:
-    VectorMaterialDataWidget(QWidget* parent,
-                             const char* name,
-                             Data< helper::vector<Material> >* data):
-        TDataWidget< helper::vector<Material> >(parent,name,data),
-        _materialDataWidget(NULL),
-        _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
-        _comboBox(NULL)
-    {
-
-    }
-
-    virtual bool createWidgets();
-    virtual void setDataReadOnly(bool readOnly);
-    virtual unsigned int numColumnWidget() {return 1;}
-
+    QRGBAColorPicker(QWidget* parent);
+    void setColor( const Vec4f& color );
+    Vec4f getColor() const;
 
 protected:
-    virtual void readFromData();
-    virtual void writeToData();
-
-    MaterialDataWidget* _materialDataWidget;
-    VectorMaterial _vectorEditedMaterial;
-    core::objectmodel::Data<Material> _currentMaterial;
-    QComboBox* _comboBox;
-    int _currentMaterialPos;
+    QRgb _rgba;
+    QLineEdit* _r;
+    QLineEdit* _g;
+    QLineEdit* _b;
+    QLineEdit* _a;
+    QPushButton* _colorButton;
 
 protected slots:
-    void changeMaterial( int );
+    void updateRGBAColor();
+    void redrawColorButton();
+    void raiseQColorDialog();
 };
 
-} /// namespace materialdatawidget_h
+} /// namespace qrgbacolorpicker_h
 
-using materialdatawidget_h::MaterialDataWidget ;
+using qrgbacolorpicker_h::QRGBAColorPicker ;
 
 } /// namespace qt
 } /// namespace gui
-} /// namespace ssofa
+} /// namespace sofa
 
-#endif
+#endif //QRGBACOLORPICKER
 

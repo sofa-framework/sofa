@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
 
@@ -54,8 +55,6 @@ namespace visualmodel
  *   - Spot light (position, direction, cutoff...).
  *
  */
-
-
 class SOFA_OPENGL_VISUAL_API Light : public sofa::core::visual::VisualModel
 {
 public:
@@ -83,9 +82,9 @@ protected:
     void computeShadowMapSize();
     void blurDepthTexture();
 public:
-    Data<sofa::defaulttype::Vector3> d_color;
+    Data<defaulttype::RGBAColor> d_color;
     Data<GLuint> d_shadowTextureSize;
-    Data<bool> d_drawSource; 
+    Data<bool> d_drawSource;
     Data<double> d_zNear, d_zFar;
     Data<bool> d_shadowsEnabled;
     Data<bool> d_softShadows;
@@ -126,7 +125,7 @@ public:
     virtual void setShadowTextureUnit(const unsigned short unit) { d_textureUnit.setValue(unit); }
     virtual defaulttype::Vector3 getDirection() { return defaulttype::Vector3(); }
     virtual float getShadowFactor() { return d_shadowFactor.getValue(); }
-    virtual float getVSMLightBleeding() { return d_VSMLightBleeding.getValue(); }    
+    virtual float getVSMLightBleeding() { return d_VSMLightBleeding.getValue(); }
     virtual float getVSMMinVariance() { return d_VSMMinVariance.getValue(); }
     virtual LightType getLightType() = 0;
 
@@ -148,7 +147,7 @@ public:
     virtual void drawLight();
     virtual void draw(const core::visual::VisualParams* vparams);
     virtual GLuint getDepthTexture();
-    virtual GLuint getColorTexture();   
+    virtual GLuint getColorTexture();
     virtual defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
     LightType getLightType() { return LightType::DIRECTIONAL; }
 private:
@@ -195,7 +194,7 @@ public:
     GLuint getColorTexture();
     defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
     LightType getLightType() { return LightType::SPOTLIGHT; }
-        
+
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float width, float height, float fov, float zNear, float zFar);
