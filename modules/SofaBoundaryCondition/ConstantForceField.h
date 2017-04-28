@@ -79,11 +79,6 @@ public:
     Data< defaulttype::RGBAColor > d_color;
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
-protected:
-    ConstantForceField();
-public:
-    /// Set a force to a given particle
-    void setForce( unsigned i, const Deriv& f );
 
 public:
     /// Init function
