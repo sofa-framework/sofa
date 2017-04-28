@@ -79,12 +79,7 @@ std::vector<MessageHandler*> getDefaultMessageHandlers(){
 class MessageDispatcherImpl
 {
 public:
-    mutex m_mutex ;
 
-    mutex& getMutex()
-    {
-        return m_mutex;
-    }
 
     std::vector<MessageHandler*> m_messageHandlers = getDefaultMessageHandlers();
 
@@ -121,36 +116,41 @@ public:
     }
 };
 
+mutex m_mutex ;
+mutex& getMutex()
+{
+    return m_mutex;
+}
 
 MessageDispatcherImpl s_messagedispatcher ;
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    lock_guard<mutex> guard(s_messagedispatcher.getMutex()) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    lock_guard<mutex> guard(s_messagedispatcher.getMutex()) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    lock_guard<mutex> guard(s_messagedispatcher.getMutex()) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     return s_messagedispatcher.rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    lock_guard<mutex> guard(s_messagedispatcher.getMutex()) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    lock_guard<mutex> guard(s_messagedispatcher.getMutex()) ;
+    lock_guard<mutex> guard(getMutex()) ;
 
     s_messagedispatcher.process(m);
 }
