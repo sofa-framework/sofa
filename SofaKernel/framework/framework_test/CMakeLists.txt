@@ -25,6 +25,7 @@ set(SOURCE_FILES
     helper/system/PluginManager_test.cpp
     helper/system/atomic_test.cpp
     helper/logging/logging_test.cpp
+    simulation/DefaultAnimationLoop_test.cpp
     main.cpp
 )
 
