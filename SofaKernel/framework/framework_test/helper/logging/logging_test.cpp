@@ -162,7 +162,7 @@ void f3()
 }
 
 
-TEST(LoggingTest, threadingTests_OpenIssue)
+TEST(LoggingTest, threadingTests)
 {
     MessageDispatcher::clearHandlers() ;
 
