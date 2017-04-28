@@ -25,6 +25,10 @@ using std::string ;
 #include <vector>
 using std::vector ;
 
+#include <map>
+using std::map ;
+using std::pair ;
+
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;
 
@@ -48,7 +52,8 @@ using namespace sofa::defaulttype;
 
 #include <SofaBoundaryCondition/ConstantForceField.h>
 using sofa::component::forcefield::ConstantForceField ;
-using sofa::core::ExecParams;
+using sofa::component::container::MechanicalObject ;
+using sofa::core::ExecParams ;
 
 
 template <typename TDataType, typename TMassType>
@@ -64,6 +69,7 @@ struct ConstantForceField_test : public Sofa_test<>
     typedef typename TTypeTuple::DataType DataTypes ;
     typedef typename TTypeTuple::MassType MassType ;
     typedef ConstantForceField<DataTypes> TheConstantForceField ;
+    typedef MechanicalObject<DataTypes>   TheMechanicalObject;
 
     void SetUp() {}
     void TearDown(){}
@@ -74,11 +80,14 @@ struct ConstantForceField_test : public Sofa_test<>
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
-                 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "<Node 	name='Root' gravity='-9.81 0 0' time='0' animate='0' >               \n"
                  "   <DefaultAnimationLoop/>                                                     \n"
-                 "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
-                 "   <ConstantForceField name='myForceField'/>                                   \n"
-                 "</Node>                                                                        \n" ;
+                 "   <CGLinearSolver/>                                                           \n"
+                 "   <EulerImplicitSolver/>                                                      \n"
+                 "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
+                 "   <UniformMass/>                                                                    \n"
+                 "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0'/>         \n"
+                 "</Node>                                                                                                                                                               \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
@@ -87,15 +96,89 @@ struct ConstantForceField_test : public Sofa_test<>
         EXPECT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
+        TheMechanicalObject* mechanicalobject ;
+        root->getTreeObject(mechanicalobject) ;
+        ASSERT_NE(nullptr, mechanicalobject) ;
+
         TheConstantForceField* forcefield ;
         root->getTreeObject(forcefield) ;
-
-        EXPECT_NE(nullptr, forcefield) ;
+        ASSERT_NE(nullptr, forcefield) ;
 
         Simulation* simulation = sofa::simulation::getSimulation() ;
         ASSERT_NE(nullptr, simulation) ;
-        for(int i=0; i<100; i++){
+
+        Real xi = mechanicalobject->x.getValue()[0][0];
+        Real ei = mechanicalobject->x.getValue()[1][0];
+        EXPECT_GT(xi, -0.1) << "Initialization problem...before simulation first value should be 0";
+        EXPECT_GT(ei, -0.1) << "Initialization problem...before simulation second value should be 0>";
+        for(int i=0; i<100; i++)
+        {
             simulation->animate(root.get(),(double)0.01);
+        }
+        Real xe=mechanicalobject->x.getValue()[0][0];
+        Real ee = mechanicalobject->x.getValue()[1][0];
+        EXPECT_GT(xe, -0.1) << "Simulation problem...after simulation the particle should not have fallen.";
+        EXPECT_GT(xe, xi) << "Simulation problem...after simulation the particle should be higher than initial position.";
+
+        EXPECT_LT(ee, -0.1) << "Simulation problem...after simulation the particle should have fallen.";
+    }
+
+
+ /*   : d_indices(initData(&d_indices, "indices",
+                         "indices where the forces are applied"))
+
+    , d_indexFromEnd(initData(&d_indexFromEnd,(bool)false,"indexFromEnd",
+                              "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
+
+    , d_forces(initData(&d_forces, "forces",
+                        "applied forces at each point"))
+
+    , d_force(initData(&d_force, "force",
+                       "applied force to all points if forces attribute is not specified"))
+
+    , d_totalForce(initData(&d_totalForce, "totalForce",
+                            "total force for all points, will be distributed uniformly over points"))
+
+    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef",
+                               "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
+
+    , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor",
+                       "Color for object display (default: [0.2,0.9,0.3,1.0])"))
+*/
+    void testMonkeyValueForAttributes()
+    {
+        map<string, vector< pair<string, string> >> values =
+        {
+            {"indices",   {{"",""}, {"'0 1'","'0 1'"} }}
+        };
+
+        for(auto& kv : values){
+            for(auto& v : kv.second){
+                std::stringstream scene ;
+                scene << "<?xml version='1.0'?>"
+                         "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                         "   <DefaultAnimationLoop/>                                                     \n"
+                         "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
+                         "   <ConstantForceField name='myForceField "<< kv.first << "='"<< v.first << "'/>  \n"
+                         "</Node>                                                                        \n" ;
+
+                Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                                  scene.str().c_str(),
+                                                                  scene.str().size()) ;
+                ASSERT_NE(root.get(), nullptr) ;
+                root->init(ExecParams::defaultInstance()) ;
+
+                sofa::core::objectmodel::BaseObject* constantff = root->getTreeNode("Level 1")->getObject("myForceField") ;
+                ASSERT_NE( constantff, nullptr) ;
+
+                ASSERT_NE( nullptr, constantff->findData(kv.first) ) << "Missing parameter '" << kv.first << "'";
+
+                EXPECT_STREQ(  constantff->findData(kv.first)->getValueString().c_str(), v.second.c_str() )
+                        << "When the attribute '"<<kv.first<< "' is set to the value '" << v.first.c_str()
+                        << "' it should be corrected during the component init to the valid value '" << v.second.c_str() << "'."
+                        << " If this is not the case this means that the init function is not working properly (or the default "
+                        << "value have changed and thus the test need to be fixed)";
+            }
         }
     }
 
@@ -138,7 +221,6 @@ struct ConstantForceField_test : public Sofa_test<>
         for(int i=0; i<100; i++){
             simulation->animate(root.get(),(double)0.01);
         }
-
     }
 
     void testMissingMechanicalObject()
@@ -163,23 +245,23 @@ struct ConstantForceField_test : public Sofa_test<>
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-               TypeTuple<Rigid2Types, Rigid2Mass>
-              ,TypeTuple<Rigid3Types, Rigid3Mass>
+TypeTuple<Rigid2Types, Rigid2Mass>
+,TypeTuple<Rigid3Types, Rigid3Mass>
 #ifdef SOFA_WITH_DOUBLE
-              ,TypeTuple<Vec1dTypes, double>
-              ,TypeTuple<Vec2dTypes, double>
-              ,TypeTuple<Vec3dTypes, double>
-              ,TypeTuple<Vec6dTypes, double>
-              ,TypeTuple<Rigid3dTypes, Rigid3dMass>
-              ,TypeTuple<Rigid2dTypes, Rigid2dMass>
+,TypeTuple<Vec1dTypes, double>
+,TypeTuple<Vec2dTypes, double>
+,TypeTuple<Vec3dTypes, double>
+,TypeTuple<Vec6dTypes, double>
+,TypeTuple<Rigid3dTypes, Rigid3dMass>
+,TypeTuple<Rigid2dTypes, Rigid2dMass>
 #endif
 #ifdef SOFA_WITH_FLOAT
-             ,TypeTuple<Vec1fTypes, float>
-             ,TypeTuple<Vec2fTypes, float>
-             ,TypeTuple<Vec3fTypes, float>
-             ,TypeTuple<Vec6fTypes, float>
-             ,TypeTuple<Rigid3fTypes, Rigid3fMass>
-             ,TypeTuple<Rigid2fTypes, Rigid2fMass>
+,TypeTuple<Vec1fTypes, float>
+,TypeTuple<Vec2fTypes, float>
+,TypeTuple<Vec3fTypes, float>
+,TypeTuple<Vec6fTypes, float>
+,TypeTuple<Rigid3fTypes, Rigid3fMass>
+,TypeTuple<Rigid2fTypes, Rigid2fMass>
 #
 #endif
 > DataTypes;
@@ -195,6 +277,19 @@ TYPED_TEST( ConstantForceField_test , testMissingMechanicalObject )
 {
     ASSERT_NO_THROW (this->testMissingMechanicalObject(););
 }
+
+
+TYPED_TEST( ConstantForceField_test , testSimpleBehavior )
+{
+    ASSERT_NO_THROW (this->testSimpleBehavior(););
+}
+
+TYPED_TEST( ConstantForceField_test , testMonkeyValueForAttributes )
+{
+    ASSERT_NO_THROW (this->testMonkeyValueForAttributes(););
+}
+
+
 
 
 
