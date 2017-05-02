@@ -123,33 +123,11 @@ struct ConstantForceField_test : public Sofa_test<>
         EXPECT_LT(ee, -0.1) << "Simulation problem...after simulation the particle should have fallen.";
     }
 
-
- /*   : d_indices(initData(&d_indices, "indices",
-                         "indices where the forces are applied"))
-
-    , d_indexFromEnd(initData(&d_indexFromEnd,(bool)false,"indexFromEnd",
-                              "Concerned DOFs indices are numbered from the end of the MState DOFs vector. (default=false)"))
-
-    , d_forces(initData(&d_forces, "forces",
-                        "applied forces at each point"))
-
-    , d_force(initData(&d_force, "force",
-                       "applied force to all points if forces attribute is not specified"))
-
-    , d_totalForce(initData(&d_totalForce, "totalForce",
-                            "total force for all points, will be distributed uniformly over points"))
-
-    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef",
-                               "Size of the drawn arrows (0->no arrows, sign->direction of drawing. (default=0)"))
-
-    , d_color(initData(&d_color, defaulttype::RGBAColor(0.2f,0.9f,0.3f,1.0f), "showColor",
-                       "Color for object display (default: [0.2,0.9,0.3,1.0])"))
-*/
-    void testMonkeyValueForAttributes()
+    void testMonkeyValueForIndices()
     {
         map<string, vector< pair<string, string> >> values =
         {
-            {"indices",   {{"",""}, {"'0 1'","'0 1'"} }}
+            {"indices",   { {"0 1","0 1"}, {"1 0", "1 0"}, {"-1 5", "0 5"} } }
         };
 
         for(auto& kv : values){
@@ -159,7 +137,7 @@ struct ConstantForceField_test : public Sofa_test<>
                          "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
                          "   <DefaultAnimationLoop/>                                                     \n"
                          "   <MechanicalObject name='mstate' template='"<<  DataTypes::Name() << "'/>    \n"
-                         "   <ConstantForceField name='myForceField "<< kv.first << "='"<< v.first << "'/>  \n"
+                         "   <ConstantForceField name='myForceField' "<< kv.first << "='"<< v.first << "'/>  \n"
                          "</Node>                                                                        \n" ;
 
                 Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -168,12 +146,12 @@ struct ConstantForceField_test : public Sofa_test<>
                 ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
                 root->init(ExecParams::defaultInstance()) ;
 
-                sofa::core::objectmodel::BaseObject* constantff = root->getTreeNode("Level 1")->getObject("myForceField") ;
+                sofa::core::objectmodel::BaseObject* constantff = root->getObject("myForceField") ;
                 ASSERT_NE( constantff, nullptr) ;
 
                 ASSERT_NE( nullptr, constantff->findData(kv.first) ) << "Missing parameter '" << kv.first << "'";
 
-                EXPECT_STREQ(  constantff->findData(kv.first)->getValueString().c_str(), v.second.c_str() )
+                EXPECT_STREQ(  v.second.c_str(), constantff->findData(kv.first)->getValueString().c_str() )
                         << "When the attribute '"<<kv.first<< "' is set to the value '" << v.first.c_str()
                         << "' it should be corrected during the component init to the valid value '" << v.second.c_str() << "'."
                         << " If this is not the case this means that the init function is not working properly (or the default "
@@ -181,6 +159,7 @@ struct ConstantForceField_test : public Sofa_test<>
             }
         }
     }
+
 
     void testBasicAttributes()
     {
@@ -274,19 +253,20 @@ TYPED_TEST( ConstantForceField_test , testBasicAttributes )
 
 TYPED_TEST( ConstantForceField_test , testMissingMechanicalObject )
 {
-    ASSERT_NO_THROW (this->testMissingMechanicalObject(););
+    ASSERT_NO_THROW (this->testMissingMechanicalObject());
 }
 
 
 TYPED_TEST( ConstantForceField_test , testSimpleBehavior )
 {
-    ASSERT_NO_THROW (this->testSimpleBehavior(););
+    ASSERT_NO_THROW (this->testSimpleBehavior());
 }
 
-TYPED_TEST( ConstantForceField_test , testMonkeyValueForAttributes )
+TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices_OpenIssue )
 {
-    ASSERT_NO_THROW (this->testMonkeyValueForAttributes(););
+    ASSERT_NO_THROW (this->testMonkeyValueForIndices());
 }
+
 
 
 
