@@ -165,7 +165,7 @@ struct ConstantForceField_test : public Sofa_test<>
                 Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                                   scene.str().c_str(),
                                                                   scene.str().size()) ;
-                ASSERT_NE(root.get(), nullptr) ;
+                ASSERT_NE(root.get(), nullptr) << "Problem to load scene: " << scene.str() ;
                 root->init(ExecParams::defaultInstance()) ;
 
                 sofa::core::objectmodel::BaseObject* constantff = root->getTreeNode("Level 1")->getObject("myForceField") ;
