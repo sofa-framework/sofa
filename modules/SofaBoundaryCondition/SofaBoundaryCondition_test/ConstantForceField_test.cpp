@@ -246,7 +246,6 @@ struct ConstantForceField_test : public Sofa_test<>
 using testing::Types;
 typedef Types<
 TypeTuple<Rigid2Types, Rigid2Mass>
-,TypeTuple<Rigid3Types, Rigid3Mass>
 #ifdef SOFA_WITH_DOUBLE
 ,TypeTuple<Vec1dTypes, double>
 ,TypeTuple<Vec2dTypes, double>
