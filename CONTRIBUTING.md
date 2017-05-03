@@ -25,11 +25,12 @@ When creating an issue, pay attention to the following tips:
 - **Check existing issues**. What you are running into may have been addressed already.
 - **Set the right label** to your issue among our label list or propose them in the description.
 - **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
+- If your issue reports a bug or any abnormal behavior in SOFA, a **test highlighting the issue** must be written and pull requested.
 
 For more information on issues, check out [this GitHub guide](https://guides.github.com/features/issues/).  
 
 
-# Pull-requests
+# Pull requests
 
 If you are able to patch the bug or add the feature yourself – fantastic, make a pull request with the code! Be sure you have read any documents on contributing and you understand [the SOFA license](https://github.com/sofa-framework/sofa/blob/master/LICENCE.txt). Once you have submitted a pull request the maintainer(s) can compare your branch to the existing one and decide whether or not to incorporate (pull in) your changes.
 
@@ -40,7 +41,7 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Create a branch** for your changes.
 - Make your changes.
 - Pull in changes from upstream often to [**sync your fork**](https://help.github.com/articles/syncing-a-fork/) so that merge conflicts will be less likely in your pull request.
-- [**Create a pull-request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
+- [**Create a pull request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
 
 ### Rules for SOFA pull requests
 
@@ -57,6 +58,10 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 - **Control the builds**: Dashboard > Details in the pull request checks.
+- Track the **status of the pull request** using labels:
+  - in progress "pr : wip"
+  - to be reviewed during the weekly SOFA meeting "pr : to review"
+  - to be merged "pr : ready"
 - Merge method: **prefer "rebase"** or "squash" over "merge" to keep linear history.
 
 
