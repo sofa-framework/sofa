@@ -58,7 +58,7 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 - **Control the builds**: Dashboard > Details in the pull request checks.
-- Track the **status of the pull request** using labels:
+- Track the **status of each pull request** using labels:
   - in progress "pr : wip"
   - to be reviewed during the weekly SOFA meeting "pr : to review"
   - to be merged "pr : ready"
