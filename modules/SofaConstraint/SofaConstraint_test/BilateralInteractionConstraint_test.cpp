@@ -38,11 +38,6 @@ namespace sofa {
 
 namespace {
 
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
 using sofa::simulation::Node ;
 using sofa::core::ExecParams ;
 using sofa::simulation::SceneLoaderXML ;

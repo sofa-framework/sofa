@@ -30,10 +30,6 @@
 
 
 namespace sofa {
-
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 
@@ -69,7 +65,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 

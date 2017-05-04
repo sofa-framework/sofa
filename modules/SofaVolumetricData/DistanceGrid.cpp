@@ -982,8 +982,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 }
                 else if (fmm_status[ind] != FMM_KNOWN_OUT)
                 {
-                    //todo(dmarchal) shouldn't this be handle like a real error ?
-                    //std::cerr << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind]<<std::endl;
                 }
             }
     msg_info("DistanceGrid")<< "FMM: DONE. "<< nbin << " points inside ( " << (nbin*100)/size() <<" % )";
