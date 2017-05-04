@@ -217,6 +217,7 @@ class Deformable:
         """ Add skinning (linear) mapping based on the armature in armatureNode using
         """
         self.mapping = self.node.createObject("LinearMapping", name="mapping", input="@"+armatureNode.getPathName(), indices=concat(indices), weights=concat(weights), assemble=assemble, mapForces=isMechanical, mapConstraints=isMechanical, mapMasses=isMechanical)
+        self.dofs.resize( len(indices) )
 
 
     def getFilename(self, filenamePrefix=None, directory=""):
