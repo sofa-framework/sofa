@@ -111,17 +111,23 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 {
     objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
+    
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
-    std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
-    std::string userresolved = templatename; // Copy in case we change for the default one
+
+    // Resolve template aliases
+    std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename);
+
+    // Copy in case we change for the default one
+    std::string userresolved = templatename; 
     ClassEntry::SPtr entry ;
 
     ClassEntryMap::iterator it = registry.find(classname);
     if (it != registry.end()) // Found the classname
     {
         entry = it->second;
-        // If no template has been given or if the template does not exist, first try with the default one
+        // If no template has been given or if the template does not exist,
+        // first try with the default one
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
             templatename = entry->defaultTemplate;
 
@@ -133,7 +139,8 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 creators.push_back(*it2);
         }
 
-        // If object cannot be created with the given template (or the default one), try all possible ones
+        // If object cannot be created with the given template (or the default
+        // one), try all possible ones
         if (creators.empty())
         {
             CreatorMap::iterator it3;
@@ -144,29 +151,40 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                     creators.push_back(*it3);
             }
         }
+    } else {
+        arg->logError("classname " + classname + " not found in the registry (plugin not loaded?)");
     }
 
-    if (creators.empty())
-    {	// The object cannot be created
-        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
-    }
-    else
-    {
+    if (creators.empty()) {	
+        // The object cannot be created
+        arg->logError("component type " + classname + "<" + templatename + "> creation failed");
+        
+        if(entry) {
+
+            auto it = entry->creatorMap.find(templatename);
+            if(it == entry->creatorMap.end() ) {
+                arg->logError("template: " + templatename + " is not available");
+            }
+        }
+    } else {
         object = creators[0].second->createInstance(context, arg);
 
         // The object has been created, but not with the template given by the user
-        if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
-        {
-            std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
-            object->serr << w << object->sendl;
+        if (!usertemplatename.empty() && object->getTemplateName() != userresolved) {
+            object->serr << "template <" << usertemplatename << "> incorrect, used <"
+                         << object->getTemplateName() + ">";
+        } else if (creators.size() > 1){	
+            // There was multiple possibilities, we used the first one (not
+            // necessarily the default, as it can be incompatible)
+            object->serr << "template <" << templatename << "> incorrect, used <"
+                         << object->getTemplateName() << "> in the list:";
+
+            for(unsigned int i = 0; i < creators.size(); ++i) {
+                object->serr << "\n\t* " << creators[i].first;
+            }
+            object->serr << object->sendl;
         }
-        else if (creators.size() > 1)
-        {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
-            std::string w = "Template <" + templatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string("> in the list:");
-            for(unsigned int i = 0; i < creators.size(); ++i)
-                w += std::string("\n\t* ") + creators[i].first;
-            object->serr << w << object->sendl;
-        }
+
         //TODO(dmarchal): Improve the error message & update the URL.
         //TODO(dmarchal): This code may be used to inform users that the Component has
         //been created with an Alias and thus
@@ -177,7 +195,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                                       << "You can find more informations about aliasing in sofa at this address: 'http://www.sofa-framework.org/wiki/alias'  \n"
                                       << "To remove this message you can replace <" << classname <<"/> with <'" << object->getClassName() << "'/> in your scene.";
         }*/
-
+    
         ///////////////////////// All this code is just there to implement the MakeDataAlias component.
         // TODO(dmarchal): I'm not sure it should stay there but I cannot find a better way with a
         // minimal number of change.
