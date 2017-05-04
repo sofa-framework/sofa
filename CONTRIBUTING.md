@@ -25,7 +25,7 @@ When creating an issue, pay attention to the following tips:
 - **Check existing issues**. What you are running into may have been addressed already.
 - **Set the right label** to your issue among our label list or propose them in the description.
 - **Be clear** about what your problem is: what was the expected outcome, what happened instead? Detail how someone else can recreate the problem.
-- If your issue reports a bug or any abnormal behavior in SOFA, a **test highlighting the issue** must be written and pull requested.
+- If your issue reports a bug or any abnormal behavior in SOFA, a **test highlighting the issue** should be written and pull requested.
 
 For more information on issues, check out [this GitHub guide](https://guides.github.com/features/issues/).  
 
