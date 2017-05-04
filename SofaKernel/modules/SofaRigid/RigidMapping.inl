@@ -335,7 +335,8 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, 
     eigenJacobian.resizeBlocks(out.size(),in.size());
 
     rotatedPoints.resize(pts.size());
-    out.resize(pts.size());
+    this->toModel->resize(pts.size());
+    // out.resize(pts.size());
 
     for (unsigned int i = 0; i < pts.size(); i++)
     {
@@ -358,10 +359,9 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
     const VecCoord& pts = this->getPoints();
-    out.resize(pts.size());
-
-    for( size_t i=0 ; i<this->maskTo->size() ; ++i)
-    {
+    this->toModel->resize(pts.size());
+    
+    for( size_t i = 0, n = this->maskTo->size(); i < n; ++i) {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
 
         unsigned int rigidIndex = getRigidIndex(i);
