@@ -181,7 +181,10 @@ void BaseData::update()
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
 #endif
         updateFromParentValue(parentBaseData);
-        cleanDirty();
+
+        // check if the parent have really been cleaned
+        if( parentBaseData->isDirty() ) setDirtyValue();
+        else cleanDirty();
     }
 }
 
