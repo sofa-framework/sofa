@@ -37,9 +37,11 @@ class Rigid3(np.ndarray):
         '''lie algebra element as (translation, rotation)'''
         __slots__ = ()
 
-
         def __new__(cls, *args, **kwargs):
             return np.ndarray.__new__(cls, 6)
+
+        def __init__(self):
+            self[:] = 0
         
         @property
         def linear(self):
@@ -84,7 +86,7 @@ class Rigid3(np.ndarray):
     def orient(self, value):
         self[orient_slice] = value
 
-    def __new__(cls, *args):
+    def __new__(cls, *args, **kwargs):
         return np.ndarray.__new__(cls, 7)
         
     def __init__(self, value = None, **kwargs):
