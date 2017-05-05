@@ -18,6 +18,7 @@ set(SOURCE_FILES
         PlaneROI_test.cpp
         TransformEngine_test.cpp
         IndicesFromValues_test.cpp
+        MergePoints_test.cpp
 
         )
 
