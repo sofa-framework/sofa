@@ -286,7 +286,9 @@ void STLExporter::writeSTLBinary()
     }
     strcpy(buffer, "Exported from Sofa");
     outfile->write(buffer,80);
-        
+
+    delete [] buffer;
+
     /* Number of facets */
     const unsigned int nbt = vecTri.size();
     outfile->write((char*)&nbt,4);
