@@ -17,6 +17,7 @@ set(SOURCE_FILES
         SphereROI_test.cpp
         PlaneROI_test.cpp
         TransformEngine_test.cpp
+        IndicesFromValues_test.cpp
 
         )
 
