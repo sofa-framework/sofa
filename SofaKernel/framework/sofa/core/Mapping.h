@@ -299,7 +299,7 @@ protected:
 
     typedef BaseMapping::ForceMask ForceMask;
     /// keep an eye on the dof masks (if the dofs are Mechanical)
-    ForceMask *maskFrom, *maskTo;
+    ForceMask *maskFrom = nullptr, *maskTo = nullptr;
 
     /// Useful when the mapping is applied only on a subset of parent dofs.
     /// It is automatically called by applyJT.
