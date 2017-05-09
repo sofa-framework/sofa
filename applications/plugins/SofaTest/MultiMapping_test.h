@@ -374,7 +374,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             // ================ test applyDJT()
             if( this->vectorMaxDiff(dfp[p],fp12[p])>this->epsilon()*errorMax ){
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << std::endl <<
+                ADD_FAILURE() << "applyDJT test failed, difference should be less than " << this->epsilon()*errorMax << std::endl <<
                                  "dfp["<<p<<"]    = " << dfp[p] << std::endl <<
                                  "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << std::endl;
             }
