@@ -61,6 +61,29 @@ template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Vec3fTypes, Vec1fTyp
 template class SOFA_MISC_MAPPING_API SquareDistanceMapping< Rigid3fTypes, Vec1fTypes >;
 #endif
 
+//////////////////
+
+
+int SquareDistanceMultiMappingClass = core::RegisterObject("Compute square edge extensions")
+#ifndef SOFA_FLOAT
+        .add< SquareDistanceMultiMapping< Vec3dTypes, Vec1dTypes > >()
+        .add< SquareDistanceMultiMapping< Rigid3dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SquareDistanceMultiMapping< Vec3fTypes, Vec1fTypes > >()
+        .add< SquareDistanceMultiMapping< Rigid3fTypes, Vec1fTypes > >()
+#endif
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_MISC_MAPPING_API SquareDistanceMultiMapping< Vec3dTypes, Vec1dTypes >;
+template class SOFA_MISC_MAPPING_API SquareDistanceMultiMapping< Rigid3dTypes, Vec1dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_MISC_MAPPING_API SquareDistanceMultiMapping< Vec3fTypes, Vec1fTypes >;
+template class SOFA_MISC_MAPPING_API SquareDistanceMultiMapping< Rigid3fTypes, Vec1fTypes >;
+#endif
 
 
 

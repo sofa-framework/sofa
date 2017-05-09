@@ -422,7 +422,7 @@ void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int
             break;
     if(i==this->fromModels.size())
     {
-        serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
+        serr<<"addPoint, parent "<<from->getName()<<" not found !"<< sendl;
         assert(0);
     }
 
@@ -672,7 +672,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             // note that computing a block is not efficient here, but it would
             // make sense for storing a stiffness matrix
 
-            InDeriv dx = parentDisplacement1[pair1[1]] - parentDisplacement0[pair0[1]];
+            const InDeriv dx = parentDisplacement1[pair1[1]] - parentDisplacement0[pair0[1]];
             InDeriv df;
             for(unsigned j=0; j<Nin; j++)
             {

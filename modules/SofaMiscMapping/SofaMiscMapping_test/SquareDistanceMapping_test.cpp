@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <SofaTest/Mapping_test.h>
+#include <SofaTest/MultiMapping_test.h>
 #include <SofaMiscMapping/SquareDistanceMapping.h>
 
 
@@ -124,6 +125,100 @@ TYPED_TEST( SquareDistanceMappingTest , test )
 //{
 //    ASSERT_TRUE(this->test_restLength());
 //}
+
+
+
+
+
+//////////////
+
+
+
+/**  Test suite for SquareDistanceMultiMapping.
+ *
+ * @author Matthieu Nesme
+ * @date 2017
+ */
+template <typename SquareDistanceMultiMapping>
+struct SquareDistanceMultiMappingTest : public MultiMapping_test<SquareDistanceMultiMapping>
+{
+    typedef typename SquareDistanceMultiMapping::In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::Coord InCoord;
+
+    typedef typename SquareDistanceMultiMapping::Out OutDataTypes;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::Coord OutCoord;
+
+
+    bool test(unsigned nbParents)
+    {
+        this->errorMax *= 10;
+
+        this->setupScene(nbParents); // nbParents parents, 1 child
+
+        SquareDistanceMultiMapping* map = static_cast<SquareDistanceMultiMapping*>( this->mapping );
+//        map->f_computeDistance.setValue(true);
+        map->d_geometricStiffness.setValue(1);
+
+        helper::vector<defaulttype::Vec2i> pairs;
+
+        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
+
+        // parent positions
+        helper::vector< InVecCoord > incoords(nbParents);
+
+        // expected child positions
+        OutVecCoord expectedoutcoord(nbParents*(nbParents-1)*.5); // link them all together
+
+        unsigned nb=0;
+        for( unsigned i=0; i<nbParents; i++ )
+        {
+            incoords[i].resize(1);
+            InDataTypes::set( incoords[i][0], i,i,i );
+
+            pairs.push_back( defaulttype::Vec2i(i,0) );
+
+            for( unsigned j=0;j<i;++j)
+            {
+                edges->addEdge( j, i );
+                expectedoutcoord[nb++][0] = 3.0*(i-j)*(i-j);
+            }
+        }
+
+        map->d_indexPairs.setValue(pairs);
+
+        return this->runTest( incoords, expectedoutcoord );
+    }
+
+};
+
+
+// Define the list of types to instanciate.
+using testing::Types;
+typedef Types<
+component::mapping::SquareDistanceMultiMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
+component::mapping::SquareDistanceMultiMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
+> MultiDataTypes; // the types to instanciate.
+
+// Test suite for all the instanciations
+TYPED_TEST_CASE( SquareDistanceMultiMappingTest, MultiDataTypes );
+
+// test case
+TYPED_TEST( SquareDistanceMultiMappingTest , twoParents )
+{
+    ASSERT_TRUE(this->test(2));
+}
+
+TYPED_TEST( SquareDistanceMultiMappingTest , threeParents )
+{
+    ASSERT_TRUE(this->test(3));
+}
+
+TYPED_TEST( SquareDistanceMultiMappingTest , fourParents )
+{
+    ASSERT_TRUE(this->test(4));
+}
 
 
 } // namespace
