@@ -99,7 +99,7 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 
-## Try to find an installed boost. If boost is not found, use miniBoost.
+## Try to find an installed boost.
 find_package(Boost REQUIRED)
 
 ### Dependency pack for Windows
