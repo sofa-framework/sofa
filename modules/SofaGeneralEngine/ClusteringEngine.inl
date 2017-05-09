@@ -224,7 +224,14 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
     if(this->topo && this->d_useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
     else Voronoi(ptIndices , distances, voronoi);
 
-    if (this->f_printLog.getValue()) for (unsigned int i=0; i<nbp; i++) std::cout<<"["<<i<<":"<<ptIndices[voronoi[i]]<<","<<distances[i]<<"]";
+
+    if (notMuted())
+    {
+        std::stringstream tmp;
+        for (unsigned int i=0; i<nbp; i++)
+            tmp<<"["<<i<<":"<<ptIndices[voronoi[i]]<<","<<distances[i]<<"]";
+        dmsg_info() << tmp.str() ;
+    }
 }
 
 template <class DataTypes>

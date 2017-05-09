@@ -68,10 +68,10 @@ public:
 protected:
     BaseNode() ;
     virtual ~BaseNode();
-	
+
 private:
-	BaseNode(const BaseNode& n) ;
-	BaseNode& operator=(const BaseNode& n) ;
+    BaseNode(const BaseNode& n) ;
+    BaseNode& operator=(const BaseNode& n) ;
 public:
     /// @name Scene hierarchy
     /// @{
@@ -148,15 +148,12 @@ public:
     virtual core::visual::VisualLoop* getVisualLoop() const;
 
     /// @}
-
 protected:
     /// Set the context of an object to this
     void setObjectContext(BaseObject::SPtr obj);
 
     /// Reset the context of an object
     void clearObjectContext(BaseObject::SPtr obj);
-
-
 
 
     /// @name virtual functions to add/remove special components direclty in the right Sequence

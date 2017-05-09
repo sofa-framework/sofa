@@ -2,16 +2,11 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaTopologyMapping)
 
 set(HEADER_FILES
-    Bezier2MeshMechanicalMapping.h
-    Bezier2MeshMechanicalMapping.inl
-    Bezier2MeshTopologicalMapping.h
-    BezierTetra2BezierTriangleTopologicalMapping.h
     CenterPointTopologicalMapping.h
     Edge2QuadTopologicalMapping.h
     Hexa2QuadTopologicalMapping.h
     Hexa2TetraTopologicalMapping.h
     IdentityTopologicalMapping.h
-    Mesh2BezierTopologicalMapping.h
     Mesh2PointMechanicalMapping.h
     Mesh2PointMechanicalMapping.inl
     Mesh2PointTopologicalMapping.h
@@ -28,15 +23,11 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    Bezier2MeshMechanicalMapping.cpp
-    Bezier2MeshTopologicalMapping.cpp
-    BezierTetra2BezierTriangleTopologicalMapping.cpp
     CenterPointTopologicalMapping.cpp
     Edge2QuadTopologicalMapping.cpp
     Hexa2QuadTopologicalMapping.cpp
     Hexa2TetraTopologicalMapping.cpp
     IdentityTopologicalMapping.cpp
-    Mesh2BezierTopologicalMapping.cpp
     Mesh2PointMechanicalMapping.cpp
     Mesh2PointTopologicalMapping.cpp
     Quad2TriangleTopologicalMapping.cpp

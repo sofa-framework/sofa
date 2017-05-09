@@ -36,11 +36,7 @@ BaseMatrix::BaseMatrix() {}
 BaseMatrix::~BaseMatrix()
 {}
 
-void BaseMatrix::compress() {
-//    std::cerr << "BaseMatrix::compress() : Do Nothing" << std::endl;
-}
-
-
+void BaseMatrix::compress() {}
 
 static inline void opVresize(BaseVector& vec, BaseVector::Index n) { vec.resize(n); }
 template<class Real2> static inline void opVresize(Real2* vec, BaseVector::Index n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }

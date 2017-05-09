@@ -276,7 +276,7 @@ void QtViewer::initializeGL(void)
 #ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
-            std::cerr << "Error: GL_ARB_multitexture not supported\n";
+            msg_error("QtViewer") << "GL_ARB_multitexture not supported.";
 #endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -805,7 +805,7 @@ void QtViewer::drawScene(void)
 
     if(!currentCamera)
     {
-        std::cerr << "ERROR: no camera defined" << std::endl;
+        msg_error("QtViewer") << "No camera defined.";
         return;
     }
 
@@ -1060,12 +1060,12 @@ void QtViewer::calcProjection(int width, int height)
 
     GLdouble projectionMatrix[16];
     currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
-    
+
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixd(projectionMatrix);
-    
+
     glMatrixMode(GL_MODELVIEW);
     glGetDoublev(GL_PROJECTION_MATRIX, lastProjectionMatrix);
 

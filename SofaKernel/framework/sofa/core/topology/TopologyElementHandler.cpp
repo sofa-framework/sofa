@@ -64,8 +64,8 @@ void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const ERen
 template<class TopologyElementType>
 void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const EMoved* /*event*/)
 {
-    std::cerr << "ERROR: MOVED topology event not handled on " << ElementInfo::name()
-        << " (it should not even exist!)" << std::endl;
+    msg_warning("TopologyElementHandler") << "MOVED topology event not handled on " << ElementInfo::name()
+                                          << " (it should not even exist!)" ;
 }
 
 /// Apply moving elements on points
@@ -86,8 +86,8 @@ void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const EMov
 template<>
 void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Adding* /* event */)
 {
-    std::cerr << "ERROR: MOVED_ADDING topology event not handled on " << ElementInfo::name()
-        << " (it should not even exist!)" << std::endl;
+    msg_warning("TopologyElementHandler") << "MOVED_ADDING topology event not handled on " << ElementInfo::name()
+                                          << " (it should not even exist!)" ;
 }
 
 /// Apply removing function on moved elements.
@@ -101,8 +101,8 @@ void TopologyElementHandler<TopologyElementType>::ApplyTopologyChange(const EMov
 template<>
 void TopologyElementHandler<Point>::ApplyTopologyChange(const EMoved_Removing* /* event */)
 {
-    std::cerr << "ERROR: MOVED_REMOVING topology event not handled on " << ElementInfo::name()
-        << " (it should not even exist!)" << std::endl;
+   msg_warning("TopologyElementHandler") << "MOVED_REMOVING topology event not handled on " << ElementInfo::name()
+                                         << " (it should not even exist!)" ;
 }
 
 template class SOFA_CORE_API TopologyElementHandler<Point>;

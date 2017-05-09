@@ -28,153 +28,23 @@ namespace gui
 {
 namespace qt
 {
+namespace materialdatawidget_h
+{
 
 helper::Creator<DataWidgetFactory,MaterialDataWidget> DWClass_MeshMaterial("default",true);
 helper::Creator<DataWidgetFactory,VectorMaterialDataWidget> DWClass_MeshVectorMaterial("default",true);
-RGBAColorPicker::RGBAColorPicker(QWidget* parent):QWidget(parent)
-{
-
-    _r = new QLineEdit(this);
-    _r->setValidator(new QIntValidator(0,255,this));
-    _g = new QLineEdit(this);
-    _g->setValidator(new QIntValidator(0,255,this));
-    _b = new QLineEdit(this);
-    _b->setValidator(new QIntValidator(0,255,this));
-    _a = new QLineEdit(this);
-    _a->setValidator(new QIntValidator(0,255,this));
-    _colorButton = new QPushButton(this);
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(_colorButton);
-    layout->addWidget(new QLabel("r",this));
-    layout->addWidget(_r);
-    layout->addWidget(new QLabel("g",this));
-    layout->addWidget(_g);
-    layout->addWidget(new QLabel("b",this));
-    layout->addWidget(_b);
-    layout->addWidget(new QLabel("a",this));
-    layout->addWidget(_a);
-    connect( _r , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
-    connect( _g , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
-    connect( _b , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
-    connect( _a , SIGNAL( textChanged(const QString & ) ) ,this , SIGNAL( hasChanged() ) );
-    connect( _r , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _g , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _b , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _a , SIGNAL( returnPressed() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _r , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _g , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _b , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _a , SIGNAL( editingFinished() ) ,this , SLOT( updateRGBAColor() ) );
-    connect( _colorButton, SIGNAL( clicked() ), this, SLOT( raiseQColorDialog() ) );
-
-}
-
-defaulttype::Vec4f RGBAColorPicker::getColor() const
-{
-    typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
-    defaulttype::Vec4f color;
-    float r = _r->text().toFloat();
-    float g = _g->text().toFloat();
-    float b = _b->text().toFloat();
-    float a = _a->text().toFloat();
-    r /= max;
-    g /= max;
-    b /= max;
-    a /= max;
-
-    color[0] = r;
-    color[1] = g;
-    color[2] = b;
-    color[3] = a;
-    return color;
-
-
-
-}
-
-void RGBAColorPicker::updateRGBAColor()
-{
-    typedef unsigned char uchar;
-    defaulttype::Vec4f color;
-    const uchar r = _r->text().toInt();
-    const uchar g = _g->text().toInt();
-    const uchar b = _b->text().toInt();
-    const uchar a = _a->text().toInt();
-    _rgba = qRgba(r,g,b,a);
-    redrawColorButton();
-}
-
-void RGBAColorPicker::setColor(const sofa::defaulttype::Vec4f& color)
-{
-    typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
-    const uchar r = uchar(  max * color[0] );
-    const uchar g = uchar(  max * color[1] );
-    const uchar b = uchar(  max * color[2] );
-    const uchar a = uchar(  max * color[3] );
-    QString str;
-    str.setNum(r);
-    _r->setText(str);
-    str.setNum(g);
-    _g->setText(str);
-    str.setNum(b);
-    _b->setText(str);
-    str.setNum(a);
-    _a->setText(str);
-    _rgba = qRgba(r,g,b,a);
-
-    redrawColorButton();
-
-}
-
-void RGBAColorPicker::redrawColorButton()
-{
-    int w=_colorButton->width();
-    int h=_colorButton->height();
-
-    QPixmap *pix=new QPixmap(25,20);
-    pix->fill(QColor(qRed(_rgba), qGreen(_rgba), qBlue(_rgba)));
-    _colorButton->setIcon(QIcon(*pix));
-
-    _colorButton->resize(w,h);
-}
-
-void RGBAColorPicker::raiseQColorDialog()
-{
-    typedef unsigned char uchar;
-    const uchar max = std::numeric_limits<uchar>::max();
-    int r,g,b,a;
-    bool ok;
-    defaulttype::Vec4f color;
-    QColor qcolor = QColorDialog::getRgba(_rgba,&ok,this);
-    if( ok )
-    {
-        QRgb rgba=qcolor.rgb();
-        r=qRed(rgba);
-        g=qGreen(rgba);
-        b=qBlue(rgba);
-        a=qAlpha(rgba);
-        color[0] = (float)r / max;
-        color[1] = (float)g / max;
-        color[2] = (float)b / max;
-        color[3] = (float)a / max;
-        setColor(color);
-        emit hasChanged();
-    }
-}
 
 bool MaterialDataWidget::createWidgets()
 {
 
     _nameEdit = new QLineEdit(this);
-    _ambientPicker = new RGBAColorPicker(this);
+    _ambientPicker = new QRGBAColorPicker(this);
     _ambientCheckBox = new QCheckBox(this);
-    _emissivePicker = new RGBAColorPicker(this);
+    _emissivePicker = new QRGBAColorPicker(this);
     _emissiveCheckBox = new QCheckBox(this);
-    _specularPicker = new RGBAColorPicker(this);
+    _specularPicker = new QRGBAColorPicker(this);
     _specularCheckBox = new QCheckBox(this);
-    _diffusePicker = new RGBAColorPicker(this);
+    _diffusePicker = new QRGBAColorPicker(this);
     _diffuseCheckBox = new QCheckBox(this);
     _shininessEdit = new QLineEdit(this);
     _shininessEdit->setValidator(new QDoubleValidator(this) );
@@ -256,7 +126,6 @@ void MaterialDataWidget::setDataReadOnly(bool readOnly)
 }
 void MaterialDataWidget::readFromData()
 {
-    using namespace sofa::core::loader;
     const Material& material = getData()->virtualGetValue();
     _nameEdit->setText( QString( material.name.c_str() ) );
     _ambientCheckBox->setChecked( material.useAmbient );
@@ -282,7 +151,6 @@ void MaterialDataWidget::readFromData()
 }
 void MaterialDataWidget::writeToData()
 {
-    using namespace sofa::core::loader;
     Material* material = getData()->virtualBeginEdit();
 
     material->name      = _nameEdit->text().toStdString();
@@ -354,8 +222,6 @@ void VectorMaterialDataWidget::readFromData()
 
 void VectorMaterialDataWidget::changeMaterial( int index )
 {
-    using namespace sofa::core::loader;
-
     //Save previous Material
     _materialDataWidget->updateDataValue();
     Material mat(_currentMaterial.virtualGetValue() );
@@ -372,8 +238,6 @@ void VectorMaterialDataWidget::changeMaterial( int index )
 
 void VectorMaterialDataWidget::writeToData()
 {
-    using namespace sofa::core::loader;
-
     _materialDataWidget->updateDataValue();
     Material mat(_currentMaterial.virtualGetValue() );
     _vectorEditedMaterial[_currentMaterialPos] = mat;
@@ -383,9 +247,9 @@ void VectorMaterialDataWidget::writeToData()
     std::copy(_vectorEditedMaterial.begin(), _vectorEditedMaterial.end(), vecMaterial->begin() );
 
     getData()->virtualEndEdit();
-
 }
 
-}
-}
-}
+} /// namespace materialdatawidget_h
+} /// namespace qt
+} /// namespace gui
+} /// namespace sofa

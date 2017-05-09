@@ -295,6 +295,12 @@ public:
         set( v, r1 );
     }
 
+    Vec(const helper::fixed_array<real, N>& p)
+    {
+        for(int i=0; i<N; i++)
+            this->elems[i] = p[i];
+    }
+
     /// Constructor from a different size vector (null default value and ignoring outside entries)
     template<int N2, typename real2>
     explicit Vec(const Vec<N2,real2>& v)
@@ -396,13 +402,13 @@ public:
     }
 
     /// Sets every element to 0.
-    void clear()
+    inline void clear()
     {
         this->assign(real());
     }
 
     /// Sets every element to r.
-    void fill(real r)
+    inline void fill(real r)
     {
         this->assign(r);
     }
@@ -956,7 +962,7 @@ struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defau
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
-        //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
+        //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for( unsigned i=0; i<N; ++i )
         {
             if( x[i]<y[i] )

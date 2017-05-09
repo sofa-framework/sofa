@@ -87,11 +87,9 @@ Light::Light()
     , m_depthShader(sofa::core::objectmodel::New<OglShader>())
     , m_blurShader(sofa::core::objectmodel::New<OglShader>())
 #endif
-    //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-    //This field should support the color="red" api.
-    , d_color(initData(&d_color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
-    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))    
+    , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , d_zNear(initData(&d_zNear, "zNear", "[Shadowing] Light's ZNear"))
     , d_zFar(initData(&d_zFar, "zFar", "[Shadowing] Light's ZFar"))
     , d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) true, "shadowsEnabled", "[Shadowing] Enable Shadow from this light"))
@@ -360,8 +358,8 @@ GLuint Light::getShadowMapSize()
 }
 
 GLfloat Light::getZNear()
-{ 
-    return d_zNear.getValue(); 
+{
+    return d_zNear.getValue();
 }
 
 GLfloat Light::getZFar()
@@ -435,14 +433,14 @@ void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa:
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
 //    Vector3 lightMinBBox = q.rotate(sceneBBox.minBBox() - center) + posLight;
 //    Vector3 lightMaxBBox = q.rotate(sceneBBox.maxBBox() - center) + posLight;
-    
+
     for (unsigned int i = 0; i < 3; i++)
     {
         mat[i * 4] = xAxis[i];
         mat[i * 4 + 1] = yAxis[i];
         mat[i * 4 + 2] = zAxis[i];
     }
-    
+
     //translation
     mat[12] = 0;
     mat[13] = 0;
@@ -490,7 +488,7 @@ void DirectionalLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float& lef
     mat[7] = 0.0;
     mat[11] = 0.0;
     mat[15] = 1.0;
-    
+
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();
@@ -634,10 +632,10 @@ void PositionalLight::draw(const core::visual::VisualParams* vparams)
 
         GLUquadric* quad = gluNewQuadric();
         const Vector3& pos = d_position.getValue();
-        const Vector3& col = d_color.getValue();
+        const auto& col = d_color.getValue();
 
         glDisable(GL_LIGHTING);
-        glColor3fv((float*)col.ptr());
+        glColor3fv((float*)col.data());
 
         glPushMatrix();
         glTranslated(pos[0], pos[1], pos[2]);
@@ -705,8 +703,7 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
     {
         float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
         float tipLength = (baseLength*0.5) * (zNear/ zFar);
-        const Vector3& col = d_color.getValue();
-        sofa::defaulttype::Vec4f color4(col[0], col[1], col[2], 1.0);
+
         Vector3 direction;
         if(d_lookat.getValue())
             direction = this->d_direction.getValue() - this->d_position.getValue();
@@ -720,8 +717,8 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
         centers.push_back(this->getPosition());
         vparams->drawTool()->setPolygonMode(0, true);
         vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->drawSpheres(centers, zNear*0.1,color4);
-        vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, color4);
+        vparams->drawTool()->drawSpheres(centers, zNear*0.1,d_color.getValue());
+        vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, d_color.getValue());
         vparams->drawTool()->setLightingEnabled(true);
         vparams->drawTool()->setPolygonMode(0, false);
     }
@@ -774,8 +771,7 @@ void SpotLight::computeClippingPlane(const core::visual::VisualParams* vp, float
             if (z < zNear) zNear = z;
             if (z > zFar)  zFar = z;
         }
-        if (this->f_printLog.getValue())
-            sout << "zNear = " << zNear << "  zFar = " << zFar << sendl;
+        msg_info() << "zNear = " << zNear << "  zFar = " << zFar ;
 
         if (zNear <= 0)
             zNear = 1;
@@ -919,7 +915,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
     mat[7] = 0.0;
     mat[11] = -1.0;
     mat[15] = 0.0;
-    
+
     //Save output as data for external shaders
     //we transpose it to get a standard matrix (and not OpenGL formatted)
     helper::vector<float>& wProjectionMatrix = *d_projectionMatrix.beginEdit();

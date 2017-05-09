@@ -615,32 +615,22 @@ void VTKExporter::writeVTKXML()
             +( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
             +( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
 
-    if (this->f_printLog.getValue())
-    {
-        std::cout << "### VTKExporter[" << this->getName() << "] ###" << std::endl;
-        std::cout << "Nb points: " << nbp << std::endl;
-        std::cout << "Nb edges: " << ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 ) << std::endl;
-        std::cout << "Nb triangles: " << ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 ) << std::endl;
-        std::cout << "Nb quads: " << ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 ) << std::endl;
-        std::cout << "Nb tetras: " << ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 ) << std::endl;
-        std::cout << "Nb hexas: " << ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 ) << std::endl;
-        std::cout << "### ###" << std::endl;
-        std::cout << "Total nb cells: " << numberOfCells << std::endl;
-    }
-//	unsigned int totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
-// 				   +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
-// 				   +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
-// 				   +( (writeTetras.getValue()) ? 5 *topology->getNbTetras() : 0 )
-// 				   +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
+    msg_info() << "### VTKExporter[" << this->getName() << "] ###" << msgendl
+               << "Nb points: " << nbp << msgendl
+               << "Nb edges: " << ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 ) << msgendl
+               << "Nb triangles: " << ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 ) << msgendl
+               << "Nb quads: " << ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 ) << msgendl
+               << "Nb tetras: " << ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 ) << msgendl
+               << "Nb hexas: " << ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 ) << msgendl
+               << "### ###" << msgendl
+               << "Total nb cells: " << numberOfCells << msgendl;
 
     //write header
     *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <UnstructuredGrid>" << std::endl;
+
     //write piece
     *outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
-
-
-
 
     //write point data
     if (!pointsData.empty())
