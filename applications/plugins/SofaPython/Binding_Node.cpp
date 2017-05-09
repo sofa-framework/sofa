@@ -36,6 +36,7 @@ using namespace sofa::core::objectmodel;
 #include "PythonScriptEvent.h"
 #include "PythonFactory.h"
 
+
 extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -393,6 +394,19 @@ extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
+
+extern "C" PyObject * Node_getMass(PyObject * self, PyObject * /*args*/)
+{
+    Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+
+    behavior::BaseMass* mass = node->mass.get();
+
+    if( mass ) return sofa::PythonFactory::toPython(mass);
+
+    Py_RETURN_NONE;
+}
+
+
 extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -452,8 +466,9 @@ SP_CLASS_METHOD(Node,detachFromGraph)
 SP_CLASS_METHOD(Node,sendScriptEvent)
 SP_CLASS_METHOD(Node,sendKeypressedEvent)
 SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
-SP_CLASS_METHOD(Node,getMechanicalState)
-SP_CLASS_METHOD(Node,getMechanicalMapping)
+SP_CLASS_METHOD(Node, getMechanicalState)
+SP_CLASS_METHOD(Node, getMechanicalMapping)
+SP_CLASS_METHOD(Node, getMass)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node,isInitialized)
 SP_CLASS_METHOD(Node,printGraph)
