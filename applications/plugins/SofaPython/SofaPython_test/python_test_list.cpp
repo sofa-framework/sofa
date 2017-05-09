@@ -57,6 +57,10 @@ static struct SceneTests : public Python_test_list
         addTest( "dataVecResize.py", scenePath );
         addTest( "automaticNodeInitialization.py", scenePath );
 
+        // call it several times in the same python environment to simulate a reload
+        for( int i=0 ; i<5 ; ++i )
+            addTest( "moduleReload.py",  scenePath );
+
         // add python scene tests here
     }
 } sceneTests;

@@ -25,8 +25,8 @@
 #include <Flexible/config.h>
 #include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
-#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaHighOrderTopology/HighOrderTetrahedronSetTopologyContainer.h>
+#include <SofaHighOrderTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 
 #include <algorithm>
 #include <iostream>
@@ -63,7 +63,7 @@ public:
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
 
-    typedef topology::BezierTetrahedronSetTopologyContainer BezierTopoContainer;
+    typedef topology::HighOrderTetrahedronSetTopologyContainer BezierTopoContainer;
     typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
     typedef topology::BezierTetrahedronSetGeometryAlgorithms<VecSpatialDimensionType> BezierGeoAlg;
     typedef typename BezierGeoAlg::Vec4 Vec4;
@@ -72,7 +72,7 @@ public:
 protected:
     BezierTopoContainer* container;
     BezierGeoAlg* geoAlgo;
-    helper::vector<topology::TetrahedronBezierIndex> tbiArray;
+    helper::vector<topology::TetrahedronIndexVector> tbiArray;
 
 public:
 
@@ -97,7 +97,7 @@ public:
         if(w.size()!=4) return;
 
        
-        const BezierTopoContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(this->cellIndex);
+        const BezierTopoContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfControlPoints(this->cellIndex);
 
         size_t nbRef = tbiArray.size();
         //        this->f_nbRef.setValue(nbRef);
@@ -109,14 +109,14 @@ public:
         {
             ref_n[i] = indexArray[i];
             Vec4 barycentricCoordinate(w[0],w[1],w[2],w[3]);
-            w_n[i] = this->geoAlgo->computeBernsteinPolynomial(tbiArray[i],barycentricCoordinate);
+            w_n[i] = this->geoAlgo->computeShapeFunction(tbiArray[i],barycentricCoordinate);
             if(dw)
             {
-                Vec4 dval = this->geoAlgo->computeBernsteinPolynomialGradient(tbiArray[i],barycentricCoordinate);
+                Vec4 dval = this->geoAlgo->computeShapeFunctionDerivatives(tbiArray[i],barycentricCoordinate);
                 for(unsigned j=0; j<4; ++j) dw_n[i]+=(*dw)[j]*dval[j];
                 if(ddw)
                 {
-                    Mat44 ddval = this->geoAlgo->computeBernsteinPolynomialHessian(tbiArray[i],barycentricCoordinate);
+                    Mat44 ddval = this->geoAlgo->computeShapeFunctionHessian(tbiArray[i],barycentricCoordinate);
                     for(unsigned j=0; j<4; ++j) ddw_n[i]+=(*ddw)[j]*dval[j];
                     for(unsigned j=0; j<4; ++j) for(unsigned k=0; k<4; ++k) ddw_n[i]+=covMN((*dw)[j],(*dw)[k])*ddval[j][k];
                 }
@@ -146,7 +146,7 @@ public:
             if(!this->geoAlgo) { serr<<"BezierGeometryAlgorithms not found"<<sendl; return; }
         }
 
-        tbiArray=container->getTetrahedronBezierIndexArray();
+        tbiArray=container->getTetrahedronIndexArray();
     }
 
 protected:

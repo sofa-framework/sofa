@@ -234,7 +234,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Control:
     {
         m_isControlPressed = true;
-        //cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<endl;
+        //msg_info()<<"QtViewer::keyPressEvent, CONTROL pressed"<<std::endl;
         break;
     }
     default:

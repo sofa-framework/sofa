@@ -165,7 +165,7 @@ Image::Image(const Image& rhs)
 {
     init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
     memcpy(data,rhs.data,getImageSize());
-	m_bLoaded = rhs.m_bLoaded;
+    m_bLoaded = rhs.m_bLoaded;
 }
 
 Image& Image::operator=(const Image& rhs)
@@ -173,7 +173,7 @@ Image& Image::operator=(const Image& rhs)
     clear();
     init(rhs.width,rhs.height,rhs.depth,rhs.mipmaps,rhs.dataType,rhs.channelFormat);
     memcpy(data,rhs.data,getImageSize());
-	m_bLoaded = rhs.m_bLoaded;
+    m_bLoaded = rhs.m_bLoaded;
     return *this;
 }
 
@@ -327,7 +327,7 @@ void Image::clear()
 {
     if (data) free(data);
     data = NULL;
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 }
 
 void Image::init(unsigned width, unsigned height, unsigned depth, unsigned mipmaps,
@@ -389,7 +389,7 @@ void Image::init(unsigned width, unsigned height, unsigned bpp)
         channels = RGBA;
         break;
     default:
-        std::cerr << "Image::init: Unsupported bpp: " << bpp << std::endl;
+        msg_error("Image") << "init(): Unsupported bpp: " << bpp << msgendl;
         return;
     }
 

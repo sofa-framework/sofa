@@ -262,7 +262,7 @@ void BasicShapesGL_FakeSphere<VertexType>::init()
     {
         if (!sofa::helper::gl::GLSLShader::InitGLSL())
         {
-            std::cerr << "InitGLSL failed" << std::endl;
+            msg_info("BasicShapesGL") << "InitGLSL failed" ;
             return;
         }
         std::string vertexShaderContent = sofa::helper::gl::generateSphereVS;

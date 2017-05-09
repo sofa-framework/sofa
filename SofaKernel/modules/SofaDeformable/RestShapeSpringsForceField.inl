@@ -28,6 +28,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
+
+#include <sofa/defaulttype/RGBAColor.h>
+
 #include <assert.h>
 #include <iostream>
 
@@ -52,7 +55,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , recompute_indices(initData(&recompute_indices, false, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , d_drawSpring(initData(&d_drawSpring, false, "drawSpring", "draw Spring"))
     , d_drawSpringLengthThreshold(initData(&d_drawSpringLengthThreshold, (Real)0.1, "drawSpringLengthThreshold", "Display : When spring length is under this threshold a sphere is displayed instead of a line"))
-    , d_springColor(initData(&d_springColor, sofa::defaulttype::Vec4f(0.f,1.f,0.f,1.f), "springColor", "Display : spring color"))
+    , d_springColor(initData(&d_springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor", "Display : spring color. (default=[0.0,1.0,0.0,1.0])"))
     , d_springSphereColor(initData(&d_springSphereColor, sofa::defaulttype::Vec4f(1.f,.5f,0.5f,1.f), "springSphereColor", "Display : spring sphere color (used when springs are used as fixed constraint)"))
     , d_springSphereRadius(initData(&d_springSphereRadius, (Real)0.2, "springSphereRadius", "Display : spring sphere radius (used when springs are used as fixed constraint)"))
     , restMState(NULL)
@@ -295,7 +298,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();   
+    // 	const VecReal& k = stiffness.getValue();
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
@@ -425,7 +428,8 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
         }
     }
 
-    vparams->drawTool()->drawLines(lines, 5.f, d_springColor.getValue());
+    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
+    vparams->drawTool()->drawLines(lines, 5.f, sofa::defaulttype::Vec4f(d_springColor.getValue()));
     vparams->drawTool()->drawSpheres(points, (float)d_springSphereRadius.getValue(), d_springSphereColor.getValue());
 }
 

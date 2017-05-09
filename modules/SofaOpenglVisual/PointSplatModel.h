@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/TopologyData.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -64,20 +65,15 @@ public:
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
 private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-private:
     Data<float>		radius;
     Data<int>		textureSize;
     Data<float>		alpha;
-    Data<std::string>	color;
+    Data<defaulttype::RGBAColor>	color;
 
     core::topology::BaseMeshTopology*	_topology;
     core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
-    float r,g,b,a;
     component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;

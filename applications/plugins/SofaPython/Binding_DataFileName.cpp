@@ -44,10 +44,26 @@ SP_CLASS_ATTR_SET(DataFileName, fullPath)(PyObject */*self*/, PyObject * /*args*
 }
 
 
+SP_CLASS_ATTR_GET(DataFileName, relativePath)(PyObject *self, void*)
+{
+    DataFileName* dataFilename = down_cast<DataFileName>( ((PyPtr<BaseData>*)self)->object );
+    return PyString_FromString(dataFilename->getRelativePath().c_str());
+}
+
+
+SP_CLASS_ATTR_SET(DataFileName, relativePath)(PyObject */*self*/, PyObject * /*args*/, void*)
+{
+    SP_MESSAGE_ERROR("relativePath attribute is read only")
+        PyErr_BadArgument();
+    return -1;
+}
+
+
 
 
 SP_CLASS_ATTRS_BEGIN(DataFileName)
 SP_CLASS_ATTR(DataFileName,fullPath)
+SP_CLASS_ATTR(DataFileName,relativePath)
 SP_CLASS_ATTRS_END
 
 

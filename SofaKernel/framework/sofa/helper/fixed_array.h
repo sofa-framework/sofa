@@ -32,6 +32,7 @@
  * This software is provided "as is" without express or implied
  * warranty, and with no claim as to its suitability for any purpose.
  *
+ * 16 Mar 2017 - stop printing an extra space at end of <<.
  * 17 Jan 2017 - add std::enable_if to replace static_assert (Damien Marchal)
  * 29 Jun 2005 - remove boost includes and reverse iterators. (Jeremie Allard)
  * 23 Aug 2002 - fix for Non-MSVC compilers combined with MSVC libraries.
@@ -331,17 +332,20 @@ public:
     }
 
     // assign one value to all elements
-    void assign (const T& value)
+    inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
         for (size_type i=0; i<N; i++)
             elems[i] = value;
     }
 
+    //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
-        for( size_type i=0; i<N; i++ )
-            out<<a.elems[i]<<" ";
+        static_assert(N>0, "Cannot create a zero size arrays") ;
+        for( size_type i=0; i<N-1; i++ )
+            out << a.elems[i]<<" ";
+        out << a.elems[N-1];
         return out;
     }
 
@@ -493,6 +497,10 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
     v[9] = v9;
     return v;
 }
+
+#ifndef FIXED_ARRAY_CPP
+extern template class fixed_array<float, 4> ;
+#endif //
 
 } // namespace helper
 

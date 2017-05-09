@@ -178,7 +178,7 @@ inline bool ISAPBox::moving(int axis,double alarmDist) const{
 //            return fabs(((static_cast<const PointModel*>(cm))->velocity(finE.getIndex()))[axis]) > tolerance;
 //            break;
 //        default:
-//            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
+//            msg_info()<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
 //            return true;
 //    }
 }
@@ -209,7 +209,7 @@ inline bool ISAPBox::moving(double alarmDist) const{
 //            return ((static_cast<const PointModel*>(cm))->velocity(finE.getIndex())).norm2() > tolerance*tolerance;
 //            break;
 //        default:
-//            std::cerr<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
+//            msg_info()<<"CollisionModel type not found within SAPBox::moving"<<std::endl;
 //            return true;
 //    }
 }

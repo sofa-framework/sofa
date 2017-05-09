@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
 #include "config.h"
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
@@ -85,7 +87,7 @@ public:
 
     Data< bool > d_drawSpring;
     Data< Real > d_drawSpringLengthThreshold;
-    Data< sofa::defaulttype::Vec4f > d_springColor;
+    Data< defaulttype::RGBAColor > d_springColor;
     Data< sofa::defaulttype::Vec4f > d_springSphereColor;
     Data< Real > d_springSphereRadius;
 

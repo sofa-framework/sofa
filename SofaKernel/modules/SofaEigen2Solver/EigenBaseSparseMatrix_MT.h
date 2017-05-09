@@ -585,7 +585,7 @@ class SparseTimeDenseProduct_MT
             internal::sparse_time_dense_product(m_lhs, m_rhs, dest, alpha);
         else
         {
-//            std::cerr<<"SparseTimeDenseProduct_MT: "<<m_nbThreads<<std::endl;
+//            msg_info()<<"SparseTimeDenseProduct_MT: "<<m_nbThreads<<std::endl;
             internal::sparse_time_dense_product_MT<Lhs,Rhs,Dest,Scalar>(m_lhs, m_rhs, dest, alpha, m_nbThreads);
         }
 #else

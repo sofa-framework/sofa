@@ -261,7 +261,7 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 
 		} 
 		//			for (unsigned int i=0;i<df.size();++i) {
-		//			std::cerr<<"df["<<i<<"]= "<<df[i]<<std::endl;
+		//			msg_info()<<"df["<<i<<"]= "<<df[i]<<std::endl;
 		//		}
 		d_df.endEdit();
 	}

@@ -46,9 +46,9 @@ set(ARCHIVE_OUTPUT_DIRECTORY lib)
 set(RUNTIME_OUTPUT_DIRECTORY bin)
 
 if(WIN32)
-	set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
+        set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
 else()
-	set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+        set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
 endif()
 
 ## Set the output directories globally
@@ -80,7 +80,7 @@ if(UNIX)
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(CMAKE_MACOSX_RPATH ON)
-        
+
     endif()
 
 endif(UNIX)
@@ -100,11 +100,11 @@ if(NOT Boost_FOUND)
     ## TODO: Set an other hint from the PATH, as the user should set it with the binaries directory when he launches Sofa
     if(WIN32)
         #set roots
-        set(BOOST_TEST_ROOTS 
+        set(BOOST_TEST_ROOTS
             "C:" "D:" "E:" "F:" "G:" "H:"
             )
         #set credible subdirectories
-        set(BOOST_TEST_SUBDIRECTORIES 
+        set(BOOST_TEST_SUBDIRECTORIES
             "/" "/local" "/Dependencies" "/Program Files" "/Program Files (x86)"
             )
 
@@ -222,6 +222,9 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 ### Mask
 option(SOFA_USE_MASK "Use mask optimization" ON)
 
+### SOFA_DEV_TOOL
+option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
+
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
@@ -230,6 +233,9 @@ if(SOFA_BUILD_TESTS)
     enable_testing()
     add_subdirectory(extlibs/gtest)
 endif()
+
+### Ninja build pools
+option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
 ### Extlibs
 add_subdirectory(extlibs)

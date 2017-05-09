@@ -187,7 +187,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
         }
     }
 
-    if (this->f_printLog.getValue()) std::cout << "Nb points in: " << nbIn << std::endl;
+    dmsg_info() << " number of points " << nbIn ;
 
     this->contacts.endEdit();
 
