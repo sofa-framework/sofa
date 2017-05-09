@@ -37,7 +37,7 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 
 
-extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
+static PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -50,7 +50,7 @@ extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
+static PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -59,7 +59,7 @@ extern "C" PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/)
 }
 
 // step the simulation
-extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
+static PyObject * Node_simulationStep(PyObject * self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     double dt;
@@ -76,7 +76,7 @@ extern "C" PyObject * Node_simulationStep(PyObject * self, PyObject * args)
 }
 
 // reset a node
-extern "C" PyObject * Node_reset(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_reset(PyObject * self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -86,7 +86,7 @@ extern "C" PyObject * Node_reset(PyObject * self, PyObject * /*args*/)
 }
 
 // init a node
-extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_init(PyObject * self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -95,7 +95,7 @@ extern "C" PyObject * Node_init(PyObject * self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 {
     // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -147,7 +147,7 @@ extern "C" PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject *
     return sofa::PythonFactory::toPython(childNode);
 }
 
-extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -164,7 +164,7 @@ extern "C" PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
-extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not bound in SofaPython, so getChildNode is bound in Node instead of BaseNode
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -181,7 +181,7 @@ extern "C" PyObject * Node_getParents(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
-extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -189,7 +189,7 @@ extern "C" PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/)
     return PyString_FromString(node->getPathName().c_str());
 }
 
-extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not bound in SofaPython, so getRootPath is bound in Node instead
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -198,13 +198,13 @@ extern "C" PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/)
 }
 
 // the same as 'getPathName' with a extra prefix '@'
-extern "C" PyObject * Node_getLinkPath(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     return PyString_FromString(("@"+node->getPathName()).c_str());
 }
 
-extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
+static PyObject * Node_createChild(PyObject *self, PyObject * args)
 {
     Node* obj=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char *nodeName;
@@ -214,7 +214,7 @@ extern "C" PyObject * Node_createChild(PyObject *self, PyObject * args)
     return sofa::PythonFactory::toPython(child);
 }
 
-extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject * kw, bool printWarnings)
+static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -255,17 +255,17 @@ extern "C" PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObj
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     return Node_addObject_Impl( self, args, kw, true );
 }
-extern "C" PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args)
+static PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("Node_addObject_noWarning is deprecated, use the keyword warning=False in Node_addObject instead.")
     return Node_addObject_Impl( self, args, NULL, false );
 }
 
-extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
+static PyObject * Node_removeObject(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -285,7 +285,7 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
+static PyObject * Node_addChild(PyObject *self, PyObject * args)
 {
     Node* obj=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -301,7 +301,7 @@ extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
+static PyObject * Node_removeChild(PyObject *self, PyObject * args)
 {
     Node* obj=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -317,7 +317,7 @@ extern "C" PyObject * Node_removeChild(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
+static PyObject * Node_moveChild(PyObject *self, PyObject * args)
 {
     Node* obj=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyChild;
@@ -333,14 +333,14 @@ extern "C" PyObject * Node_moveChild(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_detachFromGraph(PyObject *self, PyObject * /*args*/)
+static PyObject * Node_detachFromGraph(PyObject *self, PyObject * /*args*/)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     node->detachFromGraph();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
+static PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     PyObject* pyUserData;
@@ -355,7 +355,7 @@ extern "C" PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
+static PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char* eventName;
@@ -369,7 +369,7 @@ extern "C" PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
+static PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
 {
     Node* node=down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     char* eventName;
@@ -383,7 +383,7 @@ extern "C" PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -395,7 +395,7 @@ extern "C" PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args
 }
 
 
-extern "C" PyObject * Node_getMass(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getMass(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -407,7 +407,7 @@ extern "C" PyObject * Node_getMass(PyObject * self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -418,7 +418,7 @@ extern "C" PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*ar
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * /*args*/)
+static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 
@@ -429,13 +429,13 @@ extern "C" PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObjec
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_isInitialized(PyObject *self, PyObject * /*args*/)
+static PyObject * Node_isInitialized(PyObject *self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     return PyBool_FromLong( node->isInitialized() );
 }
 
-extern "C" PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
+static PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
     getSimulation()->print(node);
