@@ -65,6 +65,13 @@ if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
     set(SOFA_WITH_DOUBLE 1)
 endif()
 
+if(SOFA_WITH_THREADING)
+    set(SOFA_WITH_THREADING_ "true")
+else()
+    set(SOFA_WITH_THREADING_ "false")
+endif()
+
+
 ### Dependencies
 
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)

@@ -59,6 +59,11 @@ namespace helper
 namespace logging
 {
 
+#ifdef SOFA_WITH_THREADING
+   #define MUTEX_IF_THREADING lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+#else
+   #define MUTEX_IF_THREADING
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +85,6 @@ class MessageDispatcherImpl
 {
 public:
     mutex m_mutex ;
-
     mutex& getMutex()
     {
         return m_mutex;
@@ -126,33 +130,35 @@ MessageDispatcherImpl* getDispatcher(){
     return &s_messagedispatcher ;
 }
 
+
+
+
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
-
+    MUTEX_IF_THREADING ;
     return getDispatcher()->getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+    MUTEX_IF_THREADING ;
 
     return getDispatcher()->addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+    MUTEX_IF_THREADING ;
 
     return getDispatcher()->rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+    MUTEX_IF_THREADING ;
 
     getDispatcher()->clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+    MUTEX_IF_THREADING ;
 
     getDispatcher()->process(m);
 }

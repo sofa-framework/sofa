@@ -162,8 +162,12 @@ void f3()
 }
 
 
+
 TEST(LoggingTest, threadingTests)
 {
+    if(!SOFA_WITH_THREADING)
+        return ;
+
     MessageDispatcher::clearHandlers() ;
 
     CountingMessageHandler& mh = MainCountingMessageHandler::getInstance();
