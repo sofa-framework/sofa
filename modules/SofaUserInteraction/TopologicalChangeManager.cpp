@@ -46,12 +46,6 @@
 
 #include <SofaTopologyMapping/Hexa2TetraTopologicalMapping.h>
 
-#ifndef NDEBUG
-    #define DEBUG_MSG true
-#else
-    #define DEBUG_MSG false
-#endif
-
 namespace sofa
 {
 
@@ -520,8 +514,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!path_ok)
         {
-            if(DEBUG_MSG)
-                dmsg_error("TopologicalChangeManager") << " in computeIntersectedObjectsList" ;
+            dmsg_error("TopologicalChangeManager") << " in computeIntersectedObjectsList" ;
             return false;
         }
 
@@ -544,8 +537,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!incision_ok)
         {
-            if(DEBUG_MSG)
-                dmsg_error("TopologicalChangeManager") << " in InciseAlongEdgeList" ;
+            dmsg_error("TopologicalChangeManager") << " in InciseAlongEdgeList" ;
             return false;
         }
 
