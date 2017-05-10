@@ -22,13 +22,7 @@
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageAsTestFailure ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
 #include <sofa/defaulttype/Vec.h>
-
 
 #include <SofaVolumetricData/DistanceGrid.h>
 using sofa::component::container::DistanceGrid ;
@@ -46,8 +40,7 @@ using sofa::defaulttype::Vector3 ;
 struct DistanceGrid_test : public Sofa_test<SReal>
 {
     void chekcValidConstructorsCube(){
-        MessageAsTestFailure error(Message::Error);
-        MessageAsTestFailure warning(Message::Warning);
+        EXPECT_MSG_NOEMIT(Warning, Error) ;
 
         DistanceGrid grid(10, 10, 10,
                           DistanceGrid::Coord(-1,-1,-1),
