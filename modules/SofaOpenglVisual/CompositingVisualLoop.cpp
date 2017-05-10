@@ -26,7 +26,6 @@
  *      Author: Jeremy Ringard
  */
 
-#define DO_DEBUG_DRAW true
 
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
@@ -96,13 +95,13 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
     if (!(vparams->displayFlags().getShowRendering()))
     {
-        msg_info_when(DO_DEBUG_DRAW) << "Advanced Rendering is OFF" ;
+        dmsg_info() << "Advanced Rendering is OFF" ;
 
         defaultRendering(vparams);
         return;
     }
     else{
-        msg_info_when(DO_DEBUG_DRAW) << "Advanced Rendering is ON" ;
+        dmsg_info() << "Advanced Rendering is ON" ;
     }
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
@@ -126,7 +125,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
             VisualManagerPass* currentVMP=dynamic_cast<VisualManagerPass*>(*it);
             if( currentVMP!=NULL && !currentVMP->isPrerendered())
             {
-                msg_info_when(DO_DEBUG_DRAW) << "final pass is "<<currentVMP->getName()<< "end of predraw loop"  ;
+                msg_info() << "final pass is "<<currentVMP->getName()<< "end of predraw loop"  ;
                 break;
             }
         }

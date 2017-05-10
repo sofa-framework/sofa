@@ -28,12 +28,6 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>
 
-#ifndef NDEBUG
-    #define DO_DEBUG_PRINT true
-#else
-    #define DO_DEBUG_PRINT false
-#endif
-
 namespace sofa
 {
 
@@ -190,14 +184,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 
     HexahedralFEMForceFieldAndMassT::computeParticleMasses();
     HexahedralFEMForceFieldAndMassT::computeLumpedMasses();
-
-//                helper::vector<ElementMass>* ElementMassMatrices = this->_elementMasses.beginEdit();
-//                typename helper::vector<ElementMass>::iterator iter;
-//                for ( iter = ElementMassMatrices->begin(); iter != ElementMassMatrices->end() ; ++iter)
-//                {
-//                    computeCorrection(*iter);
-//                }
-//                this->_elementMasses.endEdit();
 }
 
 template<class T>
@@ -271,8 +257,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
-    msg_info_when(DO_DEBUG_PRINT)
-            << "HEXAHEDRAADDED hexaId: " << hexaModif ;
+    dmsg_info() << "HEXAHEDRAADDED hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
@@ -335,7 +320,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
 
-    dmsg_info_when(DO_DEBUG_PRINT) << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
+    dmsg_info() << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
     helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
@@ -381,7 +366,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
 {
     const sofa::helper::vector<unsigned int> &hexaModif = modEvent.getArray();
 
-    dmsg_info_when(DO_DEBUG_PRINT) << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif ;
+    dmsg_info() << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
@@ -585,47 +570,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             this->addHtfineHtoCoarse(H, M_fine, M);
             totalMass += mass_fine;
         }
-        /*
-        msg_info() << "M_fine" << std::endl;
-            for( int i = 0; i < 24; i++)
-            {
-                for( int j = 0; j < 24; j++)
-                    msg_info() << M_fine[i][j]*8 << " ";
-                msg_info() << endl;
-            }
-
-            msg_info() << "M" << std::endl;
-            for( int i = 0; i < 24; i++)
-            {
-                for( int j = 0; j < 24; j++)
-                    msg_info() << M[i][j] << " ";
-                msg_info() << endl;
-            }
-
-            msg_info() << "K_fine" << std::endl;
-            for( int i = 0; i < 24; i++)
-            {
-                for( int j = 0; j < 24; j++)
-                    msg_info() << K_fine[i][j]*2 << " ";
-                msg_info() << endl;
-            }
-
-            msg_info() << "K" << std::endl;
-            for( int i = 0; i < 24; i++)
-            {
-                for( int j = 0; j < 24; j++)
-                    msg_info() << K[i][j] << " ";
-                msg_info() << endl;
-            }
-
-            for( int i = 0; i < 24; i++)
-                for( int j = 0; j < 24; j++)
-                    if ((float)(M_fine[i][j]*8) != (float)(M[i][j])) msg_info() << "diff en M["<<i<<"]["<<j<<"]: " << M_fine[i][j]*8 << ", " << M[i][j] << std::endl;
-
-            for( int i = 0; i < 24; i++)
-                for( int j = 0; j < 24; j++)
-                    if ((float)(K_fine[i][j]*2) != (float)(K[i][j])) msg_info() << "diff en K["<<i<<"]["<<j<<"]: " << K_fine[i][j]*2 << ", " << K[i][j] << std::endl;
-            */
     }
     else
     {
@@ -1036,8 +980,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
     // mFactor > 0 , so we assume this is a product of the equation matrix done by an implicit solver
     if( matrixIsDirty )
     {
-//                    serr<<"NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx, recomputation of the matrix" << sendl;
-
         // Compute the matrix
         this->mbkMatrix.resize(hexahedra.size());
 
@@ -1053,7 +995,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
             for ( unsigned n1 = 0; n1 < 8; n1++ )
             {
                 for (unsigned n2=0; n2<8; n2++)
-//                            unsigned n2 = n1; /////////// WARNING Changed to compute only diag elements
                 {
                     // add M to matrix
                     Mat33 tmp( Deriv ( Me[3*n1+0][3*n2+0]*mFactor, Me[3*n1+0][3*n2+1]*mFactor, Me[3*n1+0][3*n2+2]*mFactor ),
