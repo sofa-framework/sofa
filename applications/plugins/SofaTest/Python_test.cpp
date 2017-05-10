@@ -136,10 +136,10 @@ static PyObject* except_hook(PyObject* self, PyObject* args) {
     PyArg_ParseTuple(self, "OO", &default_excepthook, &py_run);
     assert(default_excepthook); assert(py_run);
 
-    // stop simulation by desactivating root node
+    // disable `run` flag
     using simulation::Node;
     bool* run = (bool*)PyCapsule_GetPointer(py_run, NULL);
-    assert(run && "cannot get run flag");
+    assert(run && "cannot get `run` flag");
     *run = false;
     
     // TODO we should probably decref std_except_hook/py_root/self at this point
@@ -147,7 +147,7 @@ static PyObject* except_hook(PyObject* self, PyObject* args) {
     // TODO we should eventually distinguish between legit test failures
     // (e.g. catching assertion errors) vs. python errors
     
-    // call standard excepthook to provide user with feedback
+    // call standard excepthook
     return PyObject_CallObject(default_excepthook, args);
 }
 
@@ -160,18 +160,19 @@ static PyMethodDef except_hook_def = {
 
 
 static void install_sys_excepthook(bool* run) {
-    PyObject* sys = PyImport_ImportModule("sys") || fail("cannot import 'sys' module");
+    PyObject* sys = PyImport_ImportModule("sys") || fail("cannot import `sys` module");
     
-    PyObject* sys_dict = PyModule_GetDict(sys) || fail("cannot import 'sys' module dict");
+    PyObject* sys_dict = PyModule_GetDict(sys) || fail("cannot import `sys` module dict");
     
     PyObject* default_excepthook = PyDict_GetItemString(sys_dict, "__excepthook__")
         || fail("cannot get default excepthook");
 
-    PyObject* py_run = PyCapsule_New(run, NULL, NULL) || fail("cant wrap run flag");
+    PyObject* py_run = PyCapsule_New(run, NULL, NULL) || fail("cant wrap `run` flag");
     
-    PyObject* upvalue = PyTuple_Pack(2, default_excepthook, py_run) || fail("cannot pack upvalue");
+    PyObject* self = PyTuple_Pack(2, default_excepthook, py_run) || fail("cannot pack `self`");
     
-    PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, upvalue, NULL) || fail("cannot create excepthook");
+    PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, self, NULL)
+        || fail("cannot create excepthook closure");
     
     PyDict_SetItemString(sys_dict, "excepthook", excepthook) || fail("cannot set sys.excepthook");
 }
@@ -214,6 +215,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
 		while(run && root->isActive()) {
 			simulation::getSimulation()->animate(root.get(), root->getDt());
 		}
+        ASSERT_TRUE(run) << "python error occurred";
 	} catch( const result& test_result ) {
         ASSERT_TRUE(test_result.value);
         simulation::getSimulation()->unload( root.get() );
