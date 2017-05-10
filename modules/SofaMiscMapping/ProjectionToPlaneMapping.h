@@ -28,6 +28,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -80,7 +81,7 @@ public:
     Data< Real > d_factor;
 
     Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
 
     virtual void init();
@@ -177,8 +178,8 @@ public:
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< Real > d_factor;
 
-    Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< SReal >                   d_drawScale; ///< drawing scale
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
     virtual void init();
     virtual void reinit();
@@ -193,17 +194,13 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-
     // no geometric stiffness
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
 
-
-
     virtual void updateForceMask();
-
 
 protected:
     ProjectionToPlaneMultiMapping();

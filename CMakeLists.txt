@@ -234,6 +234,9 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+### Ninja build pools
+option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
+
 ### Extlibs
 add_subdirectory(extlibs)
 

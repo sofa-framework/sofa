@@ -67,6 +67,9 @@ public:
     typedef defaulttype::Vec<M,Real> Vec;
     typedef helper::vector<unsigned int> VecIndex;
 
+    typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::topology::BaseMeshTopology::Quad Quad;
+
 
 protected:
 

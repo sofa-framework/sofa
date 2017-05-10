@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 namespace sofa
 {
 
@@ -87,9 +87,9 @@ public:
     /// range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > d_localRange;
 
-    Data<bool>               d_drawIsEnabled;
-    Data<defaulttype::Vec3f> d_drawColor;
-    Data<Real>               d_drawSize;
+    Data<bool>                   d_drawIsEnabled;
+    Data<defaulttype::RGBAColor> d_drawColor;
+    Data<Real>                   d_drawSize;
 
 protected:
     PlaneForceField() ;
@@ -104,8 +104,8 @@ public:
     void setDamping(Real damp){ d_damping.setValue( damp ); }
     Real getDamping() const { return d_damping.getValue(); }
 
-    void setDrawColor(const defaulttype::Vec3f& newvalue){ d_drawColor.setValue(newvalue); }
-    const defaulttype::Vec3f& getDrawColor() const { return d_drawColor.getValue(); }
+    void setDrawColor(const defaulttype::RGBAColor& newvalue){ d_drawColor.setValue(newvalue); }
+    const defaulttype::RGBAColor& getDrawColor() const { return d_drawColor.getValue(); }
 
     //TODO(dmarchal): do we really need a rotate operation into a plan class ?
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
