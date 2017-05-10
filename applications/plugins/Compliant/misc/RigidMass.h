@@ -118,28 +118,30 @@ public:
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
 #ifndef SOFA_NO_OPENGL
+    // draw inertia axes as equivalent ellipsoid semi-axes
 	void draw(const core::visual::VisualParams* vparams) {
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
             return;
         helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-
+        
         for(unsigned i = 0, n = x.size(); i < n; ++i) {
             const unsigned index = clamp(i);
 
             const real& m00 = inertia.getValue()[index][0];
             const real& m11 = inertia.getValue()[index][1];
             const real& m22 = inertia.getValue()[index][2];
-			
-            defaulttype::Vec3d len;
-            len[0] = std::sqrt(m11+m22-m00);
-            len[1] = std::sqrt(m00+m22-m11);
-            len[2] = std::sqrt(m00+m11-m22);
+            const real& m = mass.getValue()[index];
 
-#ifndef SOFA_NO_OPENGL
+            const real factor = 5 / m; // 5: ellipsoid, 3: box
+            
+            defaulttype::Vec3d len;
+            len[0] = std::sqrt( factor * (m11+m22-m00) / 2);
+            len[1] = std::sqrt( factor * (m00+m22-m11) / 2);
+            len[2] = std::sqrt( factor * (m00+m11-m22) / 2);
+
             helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
-#endif
         }
 		
 	}
