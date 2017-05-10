@@ -451,14 +451,16 @@ struct Assembly_test : public CompliantSolver_test
         extension_node->addObject(extensions);
         extensions->setName("extensionsDOF");
 
-        EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
-        extension_node->addObject(edgeSet);
-        edgeSet->addEdge(0,1);
-
         DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
         extensionMapping->setModels(mappedDOF.get(),extensions.get());
         extension_node->addObject( extensionMapping );
         extensionMapping->setName("ConnectionExtension_mapping");
+
+        {
+        typename DistanceMapping31::VecPair pairs(1); // only one spring between dofs 0 and 1
+        pairs[0].set(0,1);
+        extensionMapping->d_pairs.setValue(pairs);
+        }
 
 
         UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
@@ -596,15 +598,16 @@ struct Assembly_test : public CompliantSolver_test
         extension_node->addObject(extensions);
         extensions->setName("extensionsDOF");
 
-        EdgeSetTopologyContainer::SPtr edgeSet = New<EdgeSetTopologyContainer>();
-        extension_node->addObject(edgeSet);
-        edgeSet->addEdge(0,1);
-
         DistanceMapping31::SPtr extensionMapping = New<DistanceMapping31>();
         extensionMapping->setModels(mappedDOF.get(),extensions.get());
         extension_node->addObject( extensionMapping );
         extensionMapping->setName("ConnectionExtension_mapping");
 
+        {
+        typename DistanceMapping31::VecPair pairs(1); // only one spring between dofs 0 and 1
+        pairs[0].set(0,1);
+        extensionMapping->d_pairs.setValue(pairs);
+        }
 
         UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
         extension_node->addObject(compliance);
@@ -752,14 +755,17 @@ struct Assembly_test : public CompliantSolver_test
 
         MechanicalObject1::SPtr extensionDOF = addNew<MechanicalObject1>(extension);
 
-        EdgeSetTopologyContainer::SPtr extensionEdgeSet = addNew<EdgeSetTopologyContainer>(extension);
-        extensionEdgeSet->addEdge(0,1);
-
         DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension);
         extensionMapping->setModels(pointPairDOF.get(),extensionDOF.get());
         //        helper::WriteAccessor< Data< vector< Real > > > restLengths( extensionMapping->f_restLengths );
         //        restLengths.resize(1);
         //        restLengths[0] = 1.0;
+
+        {
+        typename DistanceMapping31::VecPair pairs(1); // only one spring between dofs 0 and 1
+        pairs[0].set(0,1);
+        extensionMapping->d_pairs.setValue(pairs);
+        }
 
         rigidDOF->forceMask.assign( rigidDOF->getSize(), true );
         particleOnRigidDOF->forceMask.assign( particleOnRigidDOF->getSize(), true );
@@ -879,13 +885,18 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr extension_node = subset_node->createChild( "ExtensionNode");
 
         MechanicalObject1::SPtr extensions = addNew<MechanicalObject1>(extension_node);
-        EdgeSetTopologyContainer::SPtr edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
-        edgeSet->addEdge(0,1);
 
         DistanceMapping31::SPtr extensionMapping = addNew<DistanceMapping31>(extension_node);
         extensionMapping->setModels( allDofs.get(), extensions.get() );
         helper::vector<SReal> restLengths(1); restLengths[0]=1; // make it deformed at start, such as it creates a force and geometric stiffness
         extensionMapping->f_restLengths.setValue( restLengths );
+        {
+        typename DistanceMapping31::VecPair pairs(1); // only one spring between dofs 0 and 1
+        pairs[0].set(0,1);
+        extensionMapping->d_pairs.setValue(pairs);
+        }
+
+
         UniformCompliance1::SPtr compliance = addNew<UniformCompliance1>(extension_node);
         compliance->compliance.setValue(1.0/stiffness);
         compliance->isCompliance.setValue(false);
@@ -942,14 +953,21 @@ struct Assembly_test : public CompliantSolver_test
         extension_node = node1->createChild( "ExtensionNode");
         node2->addChild( extension_node );
         extensions = addNew<MechanicalObject1>(extension_node);
-        edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
-        edgeSet->addEdge(0,1);
+
         DistanceMultiMapping31::SPtr distanceMultiMapping = addNew<DistanceMultiMapping31>(extension_node);
         distanceMultiMapping->addInputModel( dof1.get() );
         distanceMultiMapping->addInputModel( dof2.get() );
         distanceMultiMapping->addOutputModel( extensions.get() );
-        distanceMultiMapping->addPoint( dof1.get(), 0 );
-        distanceMultiMapping->addPoint( dof2.get(), 0 );
+
+        typename DistanceMultiMapping31::VecPair pairs(1); // only one spring
+        // spring 0
+        // point 0
+        pairs[0][0][0] = 0; // mstate 0
+        pairs[0][0][1] = 0; // dof 0
+        // point 1
+        pairs[0][1][0] = 1; // mstate 1
+        pairs[0][1][1] = 0; // dof 0
+
         distanceMultiMapping->f_restLengths.setValue( restLengths );
         compliance = addNew<UniformCompliance1>(extension_node);
         compliance->compliance.setValue(1.0/stiffness);

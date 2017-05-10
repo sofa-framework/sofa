@@ -53,9 +53,12 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 //        map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
-        edges->addEdge( 0, 1 );
-        edges->addEdge( 2, 1 );
+        {
+        typename SquareDistanceMapping::VecPair pairs(2);
+        pairs[0].set(0,1);
+        pairs[1].set(2,1);
+        map->d_pairs.setValue(pairs);
+        }
 
         // parent positions
         InVecCoord incoord(3);
@@ -161,9 +164,6 @@ struct SquareDistanceMultiMappingTest : public MultiMapping_test<SquareDistanceM
 //        map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        helper::vector<defaulttype::Vec2i> pairs;
-
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
 
         // parent positions
         helper::vector< InVecCoord > incoords(nbParents);
@@ -171,22 +171,26 @@ struct SquareDistanceMultiMappingTest : public MultiMapping_test<SquareDistanceM
         // expected child positions
         OutVecCoord expectedoutcoord(nbParents*(nbParents-1)*.5); // link them all together
 
+
+        typename SquareDistanceMultiMapping::VecPair pairs;
         unsigned nb=0;
         for( unsigned i=0; i<nbParents; i++ )
         {
             incoords[i].resize(1);
             InDataTypes::set( incoords[i][0], i,i,i );
 
-            pairs.push_back( defaulttype::Vec2i(i,0) );
-
             for( unsigned j=0;j<i;++j)
             {
-                edges->addEdge( j, i );
+                typename SquareDistanceMultiMapping::Pair p;
+                p[0][0] = j; p[0][1] = 0;
+                p[1][0] = i; p[1][1] = 0;
+                pairs.push_back(p);
+
                 expectedoutcoord[nb++][0] = 3.0*(i-j)*(i-j);
             }
         }
 
-        map->d_indexPairs.setValue(pairs);
+        map->d_pairs.setValue(pairs);
 
         return this->runTest( incoords, expectedoutcoord );
     }

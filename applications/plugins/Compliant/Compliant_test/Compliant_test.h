@@ -39,7 +39,6 @@
 #include <SofaMiscMapping/DistanceMapping.h>
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
@@ -82,7 +81,6 @@ public:
 
     typedef sofa::component::linearsolver::AssembledSystem::rmat SMatrix;
 
-    typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef sofa::defaulttype::Vec<3,SReal> Vec3;
     typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
@@ -129,12 +127,11 @@ protected:
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
-        EdgeSetTopologyContainer::SPtr edgeSet = core::objectmodel::New<EdgeSetTopologyContainer>();
-        extension_node->addObject(edgeSet);
 
         DistanceMapping31::SPtr extensionMapping = core::objectmodel::New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
+
         extension_node->addObject( extensionMapping );
 
         UniformCompliance1::SPtr compliance = core::objectmodel::New<UniformCompliance1>();
@@ -149,17 +146,19 @@ protected:
         DOF->resize(numParticles);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
         helper::vector<SReal> restLengths;
+        typename DistanceMapping31::VecPair pairs;
         for( unsigned i=0; i<numParticles; i++ )
         {
             SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {
-                edgeSet->addEdge(i-1,i);
+                pairs.push_back( typename DistanceMapping31::Pair(i-1,i) );
                 restLengths.push_back( totalLength/(numParticles-1) );
             }
         }
         extensionMapping->f_restLengths.setValue( restLengths );
+        extensionMapping->d_pairs.setValue(pairs);
 
         return string_node;
 
@@ -176,7 +175,6 @@ protected:
 
         simulation::Node::SPtr extension_node;
         MechanicalObject1::SPtr extensions;
-        EdgeSetTopologyContainer::SPtr edgeSet;
         DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
 
@@ -208,9 +206,6 @@ protected:
         extension_node->addObject(extensions);
         extensions->setName(oss.str()+"_extensionsDOF");
 
-        edgeSet = core::objectmodel::New<EdgeSetTopologyContainer>();
-        extension_node->addObject(edgeSet);
-
         extensionMapping = core::objectmodel::New<DistanceMapping31>();
         extensionMapping->setName(oss.str()+"_extensionsMapping");
         extensionMapping->setModels( DOF.get(), extensions.get() );
@@ -226,17 +221,19 @@ protected:
         DOF->resize(numParticles);
         MechanicalObject3::WriteVecCoord x = DOF->writePositions();
         helper::vector<SReal> restLengths;
+        typename DistanceMapping31::VecPair pairs;
         for( unsigned i=0; i<numParticles; i++ )
         {
             SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {
-                edgeSet->addEdge(i-1,i);
+                pairs.push_back( typename DistanceMapping31::Pair(i-1,i) );
                 restLengths.push_back( totalLength/(numParticles-1) );
             }
         }
         extensionMapping->f_restLengths.setValue( restLengths );
+        extensionMapping->d_pairs.setValue(pairs);
 
 
         }

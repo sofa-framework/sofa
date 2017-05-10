@@ -26,7 +26,6 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
-#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -43,7 +42,9 @@ namespace mapping
 
 /** Maps point positions to distances (in distance unit).
   Type TOut corresponds to a scalar value.
-  The pairs are given in an EdgeSetTopologyContainer in the same node.
+
+  The pairs are given as couples (dof_i, dof_j) in Data 'pairs'.
+
   If the rest lengths are not defined, they are set using the initial values.
   If computeDistance is set to true, the rest lengths are set to 0.
 
@@ -53,7 +54,7 @@ namespace mapping
 
     Out: distance between point pairs, minus a rest distance.
 
-@author Francois Faure
+@author Francois Faure, Matthieu Nesme
   */
 template <class TIn, class TOut>
 class DistanceMapping : public core::Mapping<TIn, TOut>
@@ -84,9 +85,11 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
+    typedef defaulttype::Vec2u Pair; ///< links (dof_0, dof_1)
+    typedef helper::vector<Pair> VecPair;
+    Data<VecPair> d_pairs;
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
@@ -122,7 +125,6 @@ protected:
     DistanceMapping();
     virtual ~DistanceMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
@@ -137,8 +139,10 @@ protected:
 
 /** Maps point positions from serveral mstates to distances (in distance unit).
   Type TOut corresponds to a scalar value.
-  The pairs are given in an EdgeSetTopologyContainer in the same node.
-  The points index are given as pair(mstate_index,dof_index) in the Data indexPairs.
+
+  The link indices are given as ((mstate0_index,dof0_index),(mstate1_index,dof1_index)) in pairs.
+  If 'pairs' is empty and two mstates have the same size -> computing a links in-between each mstate dofs.
+
   If the rest lengths are not defined, they are set using the initial values.
   If computeDistance is set to true, the rest lengths are set to 0.
 
@@ -177,26 +181,23 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>   SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
-    typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
     typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
+
+    typedef defaulttype::Vec2u Index; ///< (mstate_index, dof_index)
+    typedef defaulttype::Vec<2,Index> Pair; ///< a link between two dofs
+    typedef helper::vector<Pair> VecPair;
+    Data<VecPair> d_pairs; ///< vector of ((mstate_0,dof_0),(mstate_1,dof_1))
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
-    Data< helper::vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
-    // Append particle of given index within the given model to the subset.
-    void addPoint(const core::BaseState* fromModel, int index);
-    // Append particle of given index within the given model to the subset.
-    void addPoint(int fromModel, int index);
-
-
-
     virtual void init();
+    virtual void parse( sofa::core::objectmodel::BaseObjectDescription* arg );
 
     virtual void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
     {
@@ -278,7 +279,6 @@ protected:
     DistanceMultiMapping();
     virtual ~DistanceMultiMapping();
 
-    topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     helper::vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     helper::vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)

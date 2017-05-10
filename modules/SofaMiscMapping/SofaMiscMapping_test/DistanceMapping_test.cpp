@@ -52,17 +52,25 @@ struct DistanceMappingTest : public Mapping_test<DistanceMapping>
         map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
-        edges->addEdge( 0, 1 );
+        {
+        typename DistanceMapping::VecPair pairs(2);
+        pairs[0].set(0,1);
+        pairs[1].set(2,1);
+        map->d_pairs.setValue(pairs);
+        }
+
+
 
         // parent positions
-        InVecCoord incoord(2);
+        InVecCoord incoord(3);
         InDataTypes::set( incoord[0], 0,0,0 );
         InDataTypes::set( incoord[1], 1,1,1 );
+        InDataTypes::set( incoord[2], 6,3,-1 );
 
         // expected child positions
         OutVecCoord expectedoutcoord;
         expectedoutcoord.push_back( defaulttype::Vector1( std::sqrt(3.0) ) );
+        expectedoutcoord.push_back( defaulttype::Vector1( std::sqrt(33.0) ) );
 
         return this->runTest( incoord, expectedoutcoord );
     }
@@ -117,9 +125,6 @@ struct DistanceMultiMappingTest : public MultiMapping_test<DistanceMultiMapping>
         map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        helper::vector<defaulttype::Vec2i> pairs;
-
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
 
         // parent positions
         helper::vector< InVecCoord > incoords(nbParents);
@@ -127,24 +132,27 @@ struct DistanceMultiMappingTest : public MultiMapping_test<DistanceMultiMapping>
         // expected child positions
         OutVecCoord expectedoutcoord(nbParents*(nbParents-1)*.5); // link them all together
 
+        typename DistanceMultiMapping::VecPair pairs;
         unsigned nb=0;
         for( unsigned i=0; i<nbParents; i++ )
         {
             incoords[i].resize(1);
             InDataTypes::set( incoords[i][0], i,i,i );
 
-            pairs.push_back( defaulttype::Vec2i(i,0) );
-
             for( unsigned j=0;j<i;++j)
             {
-                edges->addEdge( j, i );
+                typename DistanceMultiMapping::Pair p;
+                p[0][0] = j; p[0][1] = 0;
+                p[1][0] = i; p[1][1] = 0;
+                pairs.push_back(p);
+
                 expectedoutcoord[nb++][0] = std::sqrt(3.0*(i-j)*(i-j));
             }
         }
 
 //        msg_info("DistanceMultiMappingTest")<<"edges:"<<edges->d_edge;
 
-        map->d_indexPairs.setValue(pairs);
+        map->d_pairs.setValue(pairs);
 
         return this->runTest( incoords, expectedoutcoord );
     }
