@@ -7,8 +7,6 @@ import math
 import numpy as np
 
 from Compliant import mapping, easy, StructuralAPI as api
-from SofaTest import gtest
-
 
 
 def particle(node, position):
@@ -23,26 +21,30 @@ def particle(node, position):
 class Solver(easy.Solver):
 
     def factor(self, sys):
-        gtest.assert_true( (sys.H == np.identity(6)).all(), "H error" )
-        gtest.assert_true( (sys.J == np.array([-1, 0, 0, 1, 0, 0])).all(), "J error" )
-        gtest.assert_true( (sys.C == np.identity(1)).all(), "C error" )
-        gtest.assert_true( (sys.P == np.diag([0, 0, 0, 1, 1, 1])).all(), "P error" )
+        assert (sys.H == np.identity(6)).all(), "H error"
+        assert (sys.J == np.array([-1, 0, 0, 1, 0, 0])).all(), "J error"
+        assert (sys.C == np.identity(1)).all(), "C error"
+        assert (sys.P == np.diag([0, 0, 0, 1, 1, 1])).all(), "P error"
         
     def solve(self, res, sys, rhs):
         # wtf rhs is already projected?
-        gtest.assert_true( (rhs == np.array([0, 0, 0,
-                                             0, 1, 0,
-                                             0])).all(), "dynamics rhs error" )
+        assert (rhs == np.array([0, 0, 0,
+                                 0, 1, 0,
+                                 0])).all(), "dynamics rhs error"
         
     def correct(self, res, sys, rhs, damping):
-        gtest.assert_true( (rhs == np.zeros(7)).all(), "correction rhs error")
+        assert (rhs == np.zeros(7)).all(), "correction rhs error"
         
 
 
 class Script(api.Script):
 
+    def __init__(self, node):
+        api.Script.__init__(self, node)
+        self.node = node
+        
     def onEndAnimationStep(self, dt):
-        gtest.finish()
+        self.node.active = False
 
         
 def createScene(node):

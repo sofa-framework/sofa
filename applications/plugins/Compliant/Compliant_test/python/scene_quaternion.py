@@ -2,7 +2,6 @@ from __future__ import print_function, absolute_import
 
 import Sofa
 
-from SofaTest import gtest
 from Compliant import StructuralAPI as api
 from Compliant.types import *
 
@@ -12,15 +11,19 @@ import sys
 
 class Script(api.Script):
 
+    def __init__(self, node):
+        api.Script.__init__(self, node)
+        self.node = node
+        
     def onEndAnimationStep(self, dt):
         axis, angle = self.rigid.position.orient.axis_angle()
 
         error = norm(self.expected_angle - angle)
 
-        gtest.assert_true(error < 1e-10, 'quaternion integration error')
-        gtest.finish()
-    
+        assert error < 1e-10, 'quaternion integration error'
+        self.node.active = False
 
+        
 def createScene(node):
     ode = node.createObject('CompliantImplicitSolver')
     num = node.createObject('LDLTSolver')
@@ -28,7 +31,7 @@ def createScene(node):
     rigid = api.RigidBody(node, 'rigid')
     rigid.setManually()
 
-    script = Script(node)
+    script = Script(node) 
     script.rigid = rigid
 
     # TODO randomize these

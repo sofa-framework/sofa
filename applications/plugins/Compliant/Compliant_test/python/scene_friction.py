@@ -89,7 +89,8 @@ class Controller(SofaTest.Controller):
 
     
     def onBeginAnimationStep(self, dt):
-
+        self.sendSuccess()
+        
         # current mu from current plane angle
         currentMu = math.tan( self.currentAngle )
         

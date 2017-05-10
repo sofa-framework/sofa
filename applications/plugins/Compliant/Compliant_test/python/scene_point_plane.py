@@ -1,14 +1,16 @@
 import Sofa
 
-from SofaTest import gtest
 from Compliant import StructuralAPI as api
 
 import math
 
-
-
 class Script(api.Script):
 
+    def __init__(self, node):
+        api.Script.__init__(self, node)
+        self.node = node
+
+    
     def onEndAnimationStep(self, dt):
 
         force = self.dofs.force[0][1]
@@ -16,8 +18,8 @@ class Script(api.Script):
         if self.node.getTime() > 1:
 
             ok = math.fabs(force) == 9.81
-            gtest.assert_true( ok, 'contact force error' )
-            gtest.finish()
+            assert ok, 'contact force error'
+            self.node.active = False
             
             
 def createScene(node):

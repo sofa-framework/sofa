@@ -10,6 +10,9 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileSystem.h>
 
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonFactory.h>
+
 namespace sofa {
 
 
@@ -102,7 +105,79 @@ struct Listener : core::objectmodel::BaseObject {
 };
 
 
-static simulation::Node::SPtr root;
+
+
+
+struct fail {
+    const char* message;
+    fail(const char* message)
+        : message(message) { }
+};
+
+static PyObject* operator||(PyObject* obj, const fail& error) {
+    if(obj) return obj;
+    throw std::runtime_error(error.message);
+    return nullptr;
+}
+
+static void operator||(int code, const fail& error) {
+    if(code >= 0) return;
+    throw std::runtime_error(error.message);
+}
+
+
+
+
+static PyObject* except_hook(PyObject* self, PyObject* args) {
+    PyObject* default_excepthook = nullptr;
+    PyObject* py_run = nullptr;
+    
+    // parse upvalue
+    PyArg_ParseTuple(self, "OO", &default_excepthook, &py_run);
+    assert(default_excepthook); assert(py_run);
+
+    // stop simulation by desactivating root node
+    using simulation::Node;
+    bool* run = (bool*)PyCapsule_GetPointer(py_run, NULL);
+    assert(run && "cannot get run flag");
+    *run = false;
+    
+    // TODO we should probably decref std_except_hook/py_root/self at this point
+
+    // TODO we should eventually distinguish between legit test failures
+    // (e.g. catching assertion errors) vs. python errors
+    
+    // call standard excepthook to provide user with feedback
+    return PyObject_CallObject(default_excepthook, args);
+}
+
+static PyMethodDef except_hook_def = {
+    "sofa_excepthook",
+    except_hook,
+    METH_VARARGS,
+    NULL
+};
+
+
+static void install_sys_excepthook(bool* run) {
+    PyObject* sys = PyImport_ImportModule("sys") || fail("cannot import 'sys' module");
+    
+    PyObject* sys_dict = PyModule_GetDict(sys) || fail("cannot import 'sys' module dict");
+    
+    PyObject* default_excepthook = PyDict_GetItemString(sys_dict, "__excepthook__")
+        || fail("cannot get default excepthook");
+
+    PyObject* py_run = PyCapsule_New(run, NULL, NULL) || fail("cant wrap run flag");
+    
+    PyObject* upvalue = PyTuple_Pack(2, default_excepthook, py_run) || fail("cannot pack upvalue");
+    
+    PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, upvalue, NULL) || fail("cannot create excepthook");
+    
+    PyDict_SetItemString(sys_dict, "excepthook", excepthook) || fail("cannot set sys.excepthook");
+}
+
+
+
 
 void Python_scene_test::run( const Python_test_data& data ) {
 
@@ -118,19 +193,25 @@ void Python_scene_test::run( const Python_test_data& data ) {
     if( !simulation::getSimulation() ) {
         simulation::setSimulation( new sofa::simulation::graph::DAGSimulation() );
     }
+
+    bool run = true;
+    try {
+        install_sys_excepthook(&run);
+    } catch( std::runtime_error& e) {
+        ASSERT_TRUE(false) << "error setting up python excepthook, aborting test";
+    }
     
+    simulation::Node::SPtr root;
     loader.loadSceneWithArguments(data.filepath.c_str(),
                                   data.arguments,
                                   &root);
-
     ASSERT_TRUE(bool(root)) << "scene creation failed!";
-    
-	root->addObject( new Listener );
 
+    root->addObject( new Listener );
 	simulation::getSimulation()->init(root.get());
 
 	try {
-		while(root->isActive()) {
+		while(run && root->isActive()) {
 			simulation::getSimulation()->animate(root.get(), root->getDt());
 		}
 	} catch( const result& test_result ) {
@@ -143,27 +224,3 @@ void Python_scene_test::run( const Python_test_data& data ) {
 
 } // namespace sofa
 
-
-extern "C" {
-
-    void finish() {
-        if(sofa::root) {
-            sofa::root->setActive(false);
-        }
-    }
-
-    void expect_true(bool test, const char* msg) {
-	EXPECT_TRUE(test) << msg;
-    }
-    
-    void assert_true(bool test, const char* msg) {
-        auto trigger = [&] {
-            ASSERT_TRUE(test) << msg;
-        };
-
-        trigger();
-        if(!test) finish();
-    }
-    
-
-}
