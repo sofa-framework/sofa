@@ -359,7 +359,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/,
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
 
     const VecCoord& pts = this->getPoints();
-    this->toModel->resize(pts.size());
+//    this->toModel->resize(pts.size()); // not necessary (done in apply)
     
     for( size_t i = 0, n = this->maskTo->size(); i < n; ++i) {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(i) ) continue;
