@@ -148,6 +148,7 @@ GridTopology::GridTopology()
     , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
     , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_gridDim(GRID_3D)
 {
     setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
@@ -161,6 +162,7 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
     , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
     , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_gridDim(GRID_NULL)
 {
     nbPoints = _nx*_ny*_nz;
     this->d_n.setValue(Vec3i(_nx,_ny,_nz));
@@ -175,6 +177,7 @@ GridTopology::GridTopology( Vec3i np )
     , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
     , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    , m_gridDim(GRID_NULL)
 {
     nbPoints = np[0]*np[1]*np[2];
     this->d_n.setValue(np);
