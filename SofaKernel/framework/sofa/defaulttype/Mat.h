@@ -603,7 +603,7 @@ public:
 
     static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
     {
-        Mat<L,C,real> m;
+        Mat<L,C,real> m(NOINIT);
         m.identity();
         for (int i=0; i<C-1; ++i)
             m.elems[i][C-1] = t[i];
@@ -612,7 +612,7 @@ public:
 
     static Mat<L,C,real> transformScale(real s)
     {
-        Mat<L,C,real> m;
+        Mat<L,C,real> m(NOINIT);
         m.identity();
         for (int i=0; i<C-1; ++i)
             m.elems[i][i] = s;
@@ -621,7 +621,7 @@ public:
 
     static Mat<L,C,real> transformScale(const Vec<C-1,real>& s)
     {
-        Mat<L,C,real> m;
+        Mat<L,C,real> m(NOINIT);
         m.identity();
         for (int i=0; i<C-1; ++i)
             m.elems[i][i] = s[i];
@@ -631,7 +631,7 @@ public:
     template<class Quat>
     static Mat<L,C,real> transformRotation(const Quat& q)
     {
-        Mat<L,C,real> m;
+        Mat<L,C,real> m(NOINIT);
         m.identity();
         q.toMatrix(m);
         return m;
@@ -786,7 +786,7 @@ inline real trace(const Mat<N,N,real>& m)
 template<int N, class real>
 inline Vec<N,real> diagonal(const Mat<N,N,real>& m)
 {
-    Vec<N,real> v;
+    Vec<N,real> v(NOINIT);
     for( int i=0 ; i<N ; ++i ) v[i] = m[i][i];
     return v;
 }
@@ -800,8 +800,8 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
     int i, j, k;
     Vec<S,int> r, c, row, col;
 
-    Mat<S,S,real> m1 = from;
-    Mat<S,S,real> m2;
+    Mat<S,S,real> m1( from );
+    Mat<S,S,real> m2(NOINIT);
     m2.identity();
 
     for ( k = 0; k < S; k++ )
@@ -1037,7 +1037,7 @@ void printMaple(std::ostream& o, const Mat<L,C,real>& m)
 
 
 
-/// Create a matrix as \f$ u v^T \f$
+/// Dyadic product u (x) v
 template <int L, int C, typename T>
 inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 {
@@ -1045,6 +1045,20 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
     for( int i=0; i<L; i++ )
         for( int j=0; j<C; j++ )
             res[i][j] = u[i]*v[j];
+    return res;
+}
+
+/// Dyadic product between the same vectors  u (x) u
+template <int L, typename T>
+inline Mat<L,L,T> dyad( const Vec<L,T>& u )
+{
+    Mat<L,L,T> res(NOINIT);
+    for( int i=0; i<L; i++ )
+    {
+        res[i][i] = u[i]*u[i];
+        for( int j=i+1 ; j<L ; ++j )
+            res[i][j] = res[j][i] = u[i]*u[j];
+    }
     return res;
 }
 
@@ -1065,7 +1079,7 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
 template<class Real>
 inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3, Real>& v)
 {
-    defaulttype::Mat<3, 3, Real> res;
+    defaulttype::Mat<3, 3, Real> res(NOINIT);
     res[0][0]=0;
     res[0][1]=-v[2];
     res[0][2]=v[1];
@@ -1076,24 +1090,6 @@ inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3,
     res[2][1]=v[0];
     res[2][2]=0;
     return res;
-}
-
-
-/// return a * b^T
-template<int L,class Real>
-static Mat<L,L,Real> tensorProduct(const Vec<L,Real> a, const Vec<L,Real> b )
-{
-    typedef Mat<L,L,Real> Mat;
-    Mat m;
-
-    for( typename Mat::size_type i=0 ; i<L ; ++i )
-    {
-        m[i][i] = a[i]*b[i];
-        for( typename Mat::size_type j=i+1 ; j<L ; ++j )
-            m[i][j] = m[j][i] = a[i]*b[j];
-    }
-
-    return m;
 }
 
 
