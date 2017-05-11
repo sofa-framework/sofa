@@ -165,8 +165,10 @@ void f3()
 
 TEST(LoggingTest, threadingTests)
 {
-    if(!SOFA_WITH_THREADING)
+    if(!SOFA_WITH_THREADING){
+        std::cout << "Test canceled because sofa is not compiled with SOFA_WITH_THREADING option." << std::endl ;
         return ;
+    }
 
     MessageDispatcher::clearHandlers() ;
 
@@ -212,19 +214,19 @@ TEST(LoggingTest, withoutDevMode)
     EXPECT_TRUE( h.numMessages() == 4u ) ;
 }
 
-//TEST(LoggingTest, speedTest)
-//{
-//    MessageDispatcher::clearHandlers() ;
+TEST(LoggingTest, speedTest)
+{
+    MessageDispatcher::clearHandlers() ;
 
-//    MyMessageHandler h;
-//    MessageDispatcher::addHandler(&h) ;
+    MyMessageHandler h;
+    MessageDispatcher::addHandler(&h) ;
 
-//    for(unsigned int i=0;i<10000;i++){
-//        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
-//        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
-//        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
-//    }
-//}
+    for(unsigned int i=0;i<100000;i++){
+        msg_info("") << " info message with conversion" << 1.5 << "\n" ;
+        msg_warning("") << " warning message with conversion "<< 1.5 << "\n" ;
+        msg_error("") << " error message with conversion" << 1.5 << "\n" ;
+    }
+}
 
 
 

@@ -59,7 +59,7 @@ namespace helper
 namespace logging
 {
 
-#ifdef SOFA_WITH_THREADING
+#if(SOFA_WITH_THREADING==1)
    #define MUTEX_IF_THREADING lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
 #else
    #define MUTEX_IF_THREADING

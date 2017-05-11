@@ -66,9 +66,9 @@ if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
 endif()
 
 if(SOFA_WITH_THREADING)
-    set(SOFA_WITH_THREADING_ "true")
+    set(SOFA_WITH_THREADING_ "1")
 else()
-    set(SOFA_WITH_THREADING_ "false")
+    set(SOFA_WITH_THREADING_ "0")
 endif()
 
 
