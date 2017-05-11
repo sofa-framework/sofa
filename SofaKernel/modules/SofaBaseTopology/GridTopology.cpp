@@ -164,9 +164,6 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
     , m_gridDim(GRID_NULL)
 {
-    nbPoints = _nx*_ny*_nz;
-    this->d_n.setValue(Vec3i(_nx,_ny,_nz));
-
     checkGridResolution();
 }
 
@@ -179,9 +176,6 @@ GridTopology::GridTopology( Vec3i np )
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
     , m_gridDim(GRID_NULL)
 {
-    nbPoints = np[0]*np[1]*np[2];
-    this->d_n.setValue(np);
-
     checkGridResolution();
 }
 
@@ -189,6 +183,9 @@ void GridTopology::init()
 {
     // first check resolution
     checkGridResolution();
+
+    if (d_computePointList.getValue())
+        this->computePointList();
 
     if (d_createTexCoords.getValue())
         this->createTexCoords();
@@ -201,9 +198,6 @@ void GridTopology::init()
 
     if (d_computeEdgeList.getValue())
         this->computeEdgeList();
-
-    if (d_computePointList.getValue())
-        this->computePointList();
 
     Inherit1::init();
 }
@@ -232,10 +226,12 @@ void GridTopology::checkGridResolution()
                              "] is outside the validity range. At least a resolution of 2 is needed in each 3D direction."
                              " Continuing with default value=[2; 2; 2]."
                              " Set a valid grid resolution to remove this warning message.";
+
         this->d_n.setValue(Vec3i(2,2,2));
-        setNbGridPoints();
-        computePointList();
+        changeGridResolutionPostProcess();
     }
+
+    setNbGridPoints();
 }
 
 void GridTopology::setSize(Vec3i n)

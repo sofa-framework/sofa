@@ -104,6 +104,9 @@ protected:
     /// Method that will check current grid resolution, if invalide, will set default value: [2; 2; 2]
     void checkGridResolution();
 
+    /// Internal Method called by \sa checkGridResolution if resolution need to be changed. Should be overwritten by children.
+    virtual void changeGridResolutionPostProcess(){}
+
 public:
     /// BaseObject method should be overwritten by children
     virtual void init();

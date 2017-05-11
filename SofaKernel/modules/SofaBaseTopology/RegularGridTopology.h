@@ -55,6 +55,8 @@ protected:
     RegularGridTopology(int nx, int ny, int nz);
     /// Constructor for regular grid defined using number of vertices and size
     RegularGridTopology( Vec3i numVertices, BoundingBox box );
+
+    virtual void changeGridResolutionPostProcess();
 public:
     /// BaseObject method should be overwritten by children
     virtual void init();

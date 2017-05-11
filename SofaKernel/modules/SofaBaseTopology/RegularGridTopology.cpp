@@ -127,6 +127,11 @@ void RegularGridTopology::reinit()
     Inherit1::reinit();
 }
 
+void RegularGridTopology::changeGridResolutionPostProcess()
+{
+    setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
+}
+
 void RegularGridTopology::setPos(BoundingBox b)
 {
     Vector3 m=b.minBBox(), M=b.maxBBox();
