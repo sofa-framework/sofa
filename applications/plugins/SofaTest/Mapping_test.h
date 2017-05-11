@@ -434,7 +434,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         {
             if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << std::endl
+                ADD_FAILURE() << "applyDJT test failed, difference should be less than " << errorThreshold*errorFactorDJ  << std::endl
                     << "dfp    = " << dfp << std::endl
                     << "fp2-fp = " << fp12 << std::endl;
             }
