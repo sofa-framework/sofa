@@ -67,6 +67,9 @@ void PreassembledMass< DataTypes >::bwdInit()
         {
             // trigger masks computation as it is required by assembly
             simulation::MechanicalComputeForceVisitor visitor(&mparams, core::VecDerivId::force());
+
+            // warning: calling this will execute addM and friends and we're not
+            // yet initalized
             this->getContext()->executeVisitor( &visitor );
         }
         
@@ -103,11 +106,14 @@ void PreassembledMass< DataTypes >::bwdInit()
 
     // for human debug
     Real totalmass = 0;
-    for(typename MassMatrix::Index r=0;r<massMatrix.rows();++r)
-        for(typename MassMatrix::Index c=0;c<massMatrix.cols();++c)
-            totalmass+=massMatrix.element(r,c);
-    sout<<"total mass: "<<totalmass/this->mstate->getMatrixBlockSize()<<sendl;
-
+    for(typename MassMatrix::Index r = 0; r < massMatrix.rows(); ++r) {
+        for(typename MassMatrix::Index c = 0;c < massMatrix.cols(); ++c) {
+            totalmass+=massMatrix.element(r, c);
+        }
+    }
+    
+    sout << "total mass: "<< totalmass / this->mstate->getMatrixBlockSize() << sendl;
+    
     d_massMatrix.endEdit();
 }
 
@@ -207,7 +213,13 @@ void PreassembledMass< DataTypes >::addGravityToV(const core::MechanicalParams* 
 template < class DataTypes >
 void PreassembledMass< DataTypes >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
-    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    const MassMatrix& M = d_massMatrix.getValue();
+
+    // skip if we're not initialized yet (see bwdInit)
+    if(!M.rows() || !M.cols()) return;
+    
+    //if gravity was added separately (in solver's "solve" method), then nothing
+    //to do here
     if(this->m_separateGravity.getValue()) return;
 
     VecDeriv& _f = *f.beginEdit();
@@ -221,9 +233,11 @@ void PreassembledMass< DataTypes >::addForce(const core::MechanicalParams* /*mpa
 
     //TODO optimize this!!!
     VecDeriv gravities(_f.size());
-    for(size_t i=0 ; i<_f.size() ; ++i )
+    for(size_t i=0 ; i<_f.size() ; ++i ) {
         DataTypes::set( gravities[i], g[0], g[1], g[2] );
-    d_massMatrix.getValue().addMult( _f, gravities );
+    }
+
+    M.addMult( _f, gravities );
 
     f.endEdit();
 }
