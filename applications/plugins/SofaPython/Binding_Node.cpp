@@ -407,6 +407,24 @@ static PyObject * Node_getMass(PyObject * self, PyObject * /*args*/)
 }
 
 
+static PyObject * Node_getForceField(PyObject * self, PyObject * args)
+{
+    int index = 0;
+    if(!PyArg_ParseTuple(args, "i", &index)) {
+        return NULL;
+    }
+    
+    Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
+
+    behavior::BaseForceField* ff = node->forceField.get(index);
+    
+    if( ff ) return sofa::PythonFactory::toPython(ff);
+    
+    Py_RETURN_NONE;
+}
+
+
+
 static PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/)
 {
     Node* node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
@@ -469,6 +487,7 @@ SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
 SP_CLASS_METHOD(Node, getMechanicalState)
 SP_CLASS_METHOD(Node, getMechanicalMapping)
 SP_CLASS_METHOD(Node, getMass)
+SP_CLASS_METHOD(Node, getForceField)
 SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node,isInitialized)
 SP_CLASS_METHOD(Node,printGraph)
