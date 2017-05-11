@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <VisualStyle displayFlags="showVisual showBehavior hideWireframe" />
+
+  <MeshObjLoader name="mesh" filename="mesh/Armadillo_simplified.obj" triangulate="1"/>
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.2" padSize="1" rotateImage="true" />
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+
+  <MechanicalObject  template="Vec3" name="DOFs" position="-3.6 -4.5 1.1 5.2 7.7 -1.9 -5.6 6.8 -3.8" showObject="1" showObjectScale=".5" drawMode="2"/>
+
+  <VoronoiImageEngine template="ImageB" name="voronoi" src="@image" method="1" position="@DOFs.position" clearData="0"/>
+  <ImageViewer template="ImageUI" name="viewer" image="@voronoi.voronoi" transform="@voronoi.transform" />
+
+<!--	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Armadillo_simplified.obj" color="0.5 0.8 0.5 0.6"/> -->
+</Node>
+

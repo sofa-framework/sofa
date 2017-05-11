@@ -340,6 +340,7 @@ TEST_F(ImageEngine_test , testImageViewer )
 #include "TestImageEngine.h"
 #include "../TransferFunction.h"
 #include "../VoronoiToMeshEngine.h"
+#include "../VoronoiImageEngine.h"
 
 
 namespace sofa {
@@ -399,6 +400,7 @@ typedef testing::Types<
 ,TestDataEngine< component::engine::TestImageEngine<defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::TransferFunction<defaulttype::ImageUC,defaulttype::ImageUC> >
 ,TestDataEngine< component::engine::VoronoiToMeshEngine<defaulttype::ImageUC> >
+,TestDataEngine< component::engine::VoronoiImageEngine<defaulttype::ImageUC> >
 > TestTypes; // the types to instanciate.
 
 

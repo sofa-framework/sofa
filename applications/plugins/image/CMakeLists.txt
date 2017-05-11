@@ -30,6 +30,7 @@ set(SOURCE_FILES
     TransferFunction.cpp
     ThresholdingEngine.cpp
     VoronoiToMeshEngine.cpp
+    VoronoiImageEngine.cpp
     initImage.cpp
 )
 
@@ -59,6 +60,7 @@ set(HEADER_FILES
     ThresholdingEngine.h
     VectorVis.h
     VoronoiToMeshEngine.h
+    VoronoiImageEngine.h
 )
 
 
