@@ -85,8 +85,8 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
     sofa::helper::logging::MessageAsTestFailure m_error ; //(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
 
     //todo(dmarchal): reactive progressively the test (remove this todo after 07/04/2018)
-    ///sofa::helper::logging::MesssageAsTestFailure m_warning ; //(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
-    ///sofa::helper::logging::MesssageAsTestFailure m_deprecated ; //(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
+    ///sofa::helper::logging::MessageAsTestFailure m_warning ; //(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
+    ///sofa::helper::logging::MessageAsTestFailure m_deprecated ; //(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
 
 
     Sofa_test() :
