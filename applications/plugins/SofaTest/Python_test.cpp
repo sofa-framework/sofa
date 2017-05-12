@@ -163,7 +163,7 @@ static PyObject* except_hook(PyObject* self, PyObject* args) {
     }
 
     // TODO should we decref after use?
-    PyObject* default_excepthook = PySys_GetObject("__excepthook__") || fail("cannot get default excepthook");
+    PyObject* default_excepthook = PySys_GetObject((char*)"__excepthook__") || fail("cannot get default excepthook");
     
     // call default excepthook to get traceback etc
     return PyObject_CallObject(default_excepthook, args);
@@ -183,7 +183,7 @@ static void install_sys_excepthook(char* flags) {
     PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, self, NULL)
         || fail("cannot create excepthook closure");
 
-    PySys_SetObject("excepthook", excepthook) || fail("cannot set sys.excepthook");
+    PySys_SetObject((char*)"excepthook", excepthook) || fail("cannot set sys.excepthook");
 }
 
 

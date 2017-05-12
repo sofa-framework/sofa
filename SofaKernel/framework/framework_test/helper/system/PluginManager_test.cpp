@@ -69,12 +69,12 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
     ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
 
-    ASSERT_GT(pm.findPlugin(pluginName).size(), 0);
-    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0);
+    ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
+    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
 
     //It is better to unload the testPlugin in each test or it will stay loaded for the entire fixture
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
 }
 
@@ -86,12 +86,12 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
 
     std::string pluginPath = pm.findPlugin(pluginName);
-    ASSERT_GT(pluginPath.size(), 0);
-    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0);
+    ASSERT_GT(pluginPath.size(), 0u);
+    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
 
     //Same
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, pluginEntries)
@@ -110,7 +110,7 @@ TEST_F(PluginManager_test, pluginEntries)
     EXPECT_TRUE(p.getModuleComponentList.func != NULL);
 
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, pluginEntriesValues)
@@ -143,7 +143,7 @@ TEST_F(PluginManager_test, pluginEntriesValues)
     ASSERT_NE(0, std::string(p.getModuleComponentList()).compare(testModuleComponentList + "ComponentZ"));
 
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, testIniFile)
@@ -159,7 +159,7 @@ TEST_F(PluginManager_test, testIniFile)
     ASSERT_TRUE(sofa::helper::system::FileSystem::exists(pathIniFile));
     
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
     ASSERT_TRUE(sofa::helper::system::FileSystem::exists(pathIniFile));
 
@@ -167,5 +167,5 @@ TEST_F(PluginManager_test, testIniFile)
     ASSERT_EQ(pm.findPlugin(pluginName).compare(pluginPath), 0);
 
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }

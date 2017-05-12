@@ -37,14 +37,12 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 
 
-static Node* get_node(PyObject* self) {
-    Node * node = down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
-    return node;
+inline Node* get_node(PyObject* self) {
+    return down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
 }
 
-static BaseObject* get_object(PyObject* self) {
-    BaseObject* object = ((PySPtr<Base>*) self)->object->toBaseObject();
-    return object;
+inline BaseObject* get_object(PyObject* self) {
+    return ((PySPtr<Base>*) self)->object->toBaseObject();
 }
 
 
@@ -111,7 +109,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
         return NULL;
     }
 
-    // wtf is this supposed to do ? hazardous braces + no comments = ??!?
+    // looking for optional keywork "warning"
     bool warning = true;
     if (kw && PyDict_Size(kw) > 0) {
         PyObject* keys = PyDict_Keys(kw);
@@ -120,13 +118,11 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
             PyObject *key = PyList_GetItem(keys, i);
             PyObject *value = PyList_GetItem(values, i);
 
-            // god dammit use std::string this is 2017 now
             if( !strcmp(PyString_AsString(key), "warning") ) {
-                if( PyBool_Check(value) ) {
+                if PyBool_Check( value ) {
                     warning = (value==Py_True);
-                    // wtf ? should the break be included ? comments ffs
                 }
-                break;
+                break; // only looking for "warning", once it is found -> forget about keywords
             }
         }
         Py_DecRef(keys);
@@ -228,6 +224,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
         return NULL;
     }
 
+    // looking for optional keywork "warning"
     bool warning = printWarnings;
     if (kw && PyDict_Size(kw)>0) {
         PyObject* keys = PyDict_Keys(kw);
@@ -236,13 +233,11 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
         {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
-
-            // god dammit not again !?!?!?
             if( !strcmp(PyString_AsString(key),"warning") )
             {
                 if PyBool_Check(value)
                     warning = (value==Py_True);
-                break;
+                break; // only looking for "warning", once it is found -> forget about keywords
             }
         }
         Py_DecRef(keys);
@@ -461,7 +456,8 @@ static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * 
     // propagating position and velocity through non mechanical mappings
     node->execute<UpdateMappingVisitor>(instance);
 
-    // ????
+    // update visuals too (positions, normals, tangents, textures...)
+    // todo: make it optional?
     node->execute<VisualUpdateVisitor>(instance);
 
     Py_RETURN_NONE;
