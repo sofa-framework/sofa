@@ -1414,6 +1414,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
     this->core::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
+
+    // Need to affect a vector to the pointer even if it is empty.
+    if (_indexedElements == NULL)
+        _indexedElements = new VecElement();
+
     if (_mesh==NULL)
     {
         msg_error(this) << " object must have a mesh topology. The component is inactivated.  "
@@ -1430,8 +1435,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
                            "To remove this error message please add a tetrahedric topology component to your scene.";
         return;
     }
+
     if (!_mesh->getTetrahedra().empty())
     {
+        if (_indexedElements != NULL)
+            delete _indexedElements;
         _indexedElements = & (_mesh->getTetrahedra());
     }
     else
@@ -1529,6 +1537,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
             tetrahedra->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
         }
         */
+        if (_indexedElements != NULL)
+            delete _indexedElements;
         _indexedElements = tetrahedra;
     }
     /*if (_mesh->hasPos())
