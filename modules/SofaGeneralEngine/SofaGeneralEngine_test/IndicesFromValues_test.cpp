@@ -22,8 +22,9 @@
 #include <SofaGeneralEngine/IndicesFromValues.h>
 using sofa::component::engine::IndicesFromValues;
 
-
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::objectmodel::New ;
+
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaTest/Sofa_test.h>
 

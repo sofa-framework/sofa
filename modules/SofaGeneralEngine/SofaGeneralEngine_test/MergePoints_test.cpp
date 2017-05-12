@@ -23,9 +23,9 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
+using sofa::simulation::graph::DAGSimulation;
 using sofa::simulation::Simulation ;
 using sofa::core::objectmodel::New ;
-using sofa::simulation::graph::DAGSimulation;
 
 #include <SofaGeneralEngine/MergePoints.h>
 using sofa::component::engine::MergePoints ;
