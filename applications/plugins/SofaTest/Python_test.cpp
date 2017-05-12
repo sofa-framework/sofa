@@ -126,28 +126,46 @@ static void operator||(int code, const fail& error) {
 }
 
 
+enum flag : char {
+    stop = 1 << 1,
+    test_failure = 1 << 2,
+    python_error = 1 << 3
+};
 
 
+
+
+// TODO FIXME: there's probably a MEMLEAK hiding in there, figure it out
 static PyObject* except_hook(PyObject* self, PyObject* args) {
-    PyObject* default_excepthook = nullptr;
-    PyObject* py_run = nullptr;
+    // raise the stop flag 
+    char* flags = reinterpret_cast<char*>(PyCapsule_GetPointer(self, NULL));
+    assert(flags && "cannot get flags pointer (wtf?)");
+    if(!flags) std::exit(1);
     
-    // parse upvalue
-    PyArg_ParseTuple(self, "OO", &default_excepthook, &py_run);
-    assert(default_excepthook); assert(py_run);
+    *flags |= flag::stop;
+    
+    // switch on exception type
+    PyObject* type;
+    PyObject* value;
+    PyObject* traceback;
 
-    // disable `run` flag
-    using simulation::Node;
-    bool* run = (bool*)PyCapsule_GetPointer(py_run, NULL);
-    assert(run && "cannot get `run` flag");
-    *run = false;
-    
-    // TODO we should probably decref std_except_hook/py_root/self at this point
+    if( !PyArg_ParseTuple(args, "OOO", &type, &value, &traceback) ) {
+        assert(false && "cannot parse excepthook args (wtf?)");
+        std::exit(1);        
+    }
 
-    // TODO we should eventually distinguish between legit test failures
-    // (e.g. catching assertion errors) vs. python errors
+    if( type == PyExc_AssertionError ) {
+        // test failure 
+        *flags |= flag::test_failure;
+    } else {
+        // other python error
+        *flags |= flag::python_error;
+    }
+
+    // TODO should we decref after use?
+    PyObject* default_excepthook = PySys_GetObject("__excepthook__") || fail("cannot get default excepthook");
     
-    // call standard excepthook
+    // call default excepthook to get traceback etc
     return PyObject_CallObject(default_excepthook, args);
 }
 
@@ -159,26 +177,20 @@ static PyMethodDef except_hook_def = {
 };
 
 
-static void install_sys_excepthook(bool* run) {
-    PyObject* sys = PyImport_ImportModule("sys") || fail("cannot import `sys` module");
-    
-    PyObject* sys_dict = PyModule_GetDict(sys) || fail("cannot import `sys` module dict");
-    
-    PyObject* default_excepthook = PyDict_GetItemString(sys_dict, "__excepthook__")
-        || fail("cannot get default excepthook");
-
-    PyObject* py_run = PyCapsule_New(run, NULL, NULL) || fail("cant wrap `run` flag");
-    
-    PyObject* self = PyTuple_Pack(2, default_excepthook, py_run) || fail("cannot pack `self`");
+static void install_sys_excepthook(char* flags) {
+    PyObject* self = PyCapsule_New(flags, NULL, NULL) || fail("cant wrap flags pointer");
     
     PyObject* excepthook = PyCFunction_NewEx(&except_hook_def, self, NULL)
         || fail("cannot create excepthook closure");
-    
-    PyDict_SetItemString(sys_dict, "excepthook", excepthook) || fail("cannot set sys.excepthook");
+
+    PySys_SetObject("excepthook", excepthook) || fail("cannot set sys.excepthook");
 }
 
 
+Python_scene_test::Python_scene_test()
+    : max_steps(1000) {
 
+}
 
 void Python_scene_test::run( const Python_test_data& data ) {
 
@@ -195,29 +207,48 @@ void Python_scene_test::run( const Python_test_data& data ) {
         simulation::setSimulation( new sofa::simulation::graph::DAGSimulation() );
     }
 
-    bool run = true;
+    char flags = 0;
     try {
-        install_sys_excepthook(&run);
+        install_sys_excepthook(&flags);
     } catch( std::runtime_error& e) {
         ASSERT_TRUE(false) << "error setting up python excepthook, aborting test";
     }
-    
+
     simulation::Node::SPtr root;
-    loader.loadSceneWithArguments(data.filepath.c_str(),
-                                  data.arguments,
-                                  &root);
-    ASSERT_TRUE(bool(root)) << "scene creation failed!";
+        
+    try {
+        
+        loader.loadSceneWithArguments(data.filepath.c_str(),
+                                      data.arguments,
+                                      &root);
+        ASSERT_TRUE(bool(root)) << "scene creation failed!";
 
-    root->addObject( new Listener );
-	simulation::getSimulation()->init(root.get());
+        root->addObject( new Listener );
+        simulation::getSimulation()->init(root.get());
+        
+            
+        // TODO eventually tests should only stop by throwing SystemExit
+        unsigned i;
+        for(i = 0; (i < max_steps) && !(flags & flag::stop) && root->isActive(); ++i) {
+            simulation::getSimulation()->animate(root.get(), root->getDt());
+        }
 
-	try {
-		while(run && root->isActive()) {
-			simulation::getSimulation()->animate(root.get(), root->getDt());
-		}
-        ASSERT_TRUE(run) << "python error occurred";
-	} catch( const result& test_result ) {
+        ASSERT_TRUE(i != max_steps) << "maximum allowed steps reached: " << max_steps;
+
+        if( flags & flag::test_failure ) {
+            FAIL() << "test failure";
+        }
+
+        if( flags & flag::python_error) {
+            FAIL() << "python error";
+        }
+
+	} catch( simulation::PythonEnvironment::system_exit& e) {
+        SUCCEED() << "test terminated normally";
+    } catch( const result& test_result ) {
         ASSERT_TRUE(test_result.value);
+
+        // TODO raii for unloading
         simulation::getSimulation()->unload( root.get() );
 	}
 }

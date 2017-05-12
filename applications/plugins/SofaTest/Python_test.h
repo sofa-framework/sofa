@@ -85,7 +85,9 @@ public:
 class SOFA_TestPlugin_API Python_scene_test : public Python_test {
 
 public:
+    std::size_t max_steps;
 
+    Python_scene_test();
     void run( const Python_test_data& );
 
 };
