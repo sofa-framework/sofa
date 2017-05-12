@@ -66,6 +66,16 @@ int TransferFunctionClass = core::RegisterObject("Transforms pixel intensities")
         .add<TransferFunction<ImageUL,ImageD    > >()
         .add<TransferFunction<ImageF ,ImageD     > >()
         .add<TransferFunction<ImageB ,ImageD     > >()
+
+        .add<TransferFunction<ImageC ,ImageB     > >()
+        .add<TransferFunction<ImageI ,ImageB     > >()
+        .add<TransferFunction<ImageUI,ImageB    > >()
+        .add<TransferFunction<ImageS ,ImageB     > >()
+        .add<TransferFunction<ImageUS,ImageB    > >()
+        .add<TransferFunction<ImageL ,ImageB     > >()
+        .add<TransferFunction<ImageUL,ImageB    > >()
+        .add<TransferFunction<ImageF ,ImageB     > >()
+        .add<TransferFunction<ImageD ,ImageB     > >()
 #endif
         ;
 
@@ -102,6 +112,15 @@ template class SOFA_IMAGE_API TransferFunction<ImageUL  ,ImageD    >;
 template class SOFA_IMAGE_API TransferFunction<ImageF   ,ImageD     >;
 template class SOFA_IMAGE_API TransferFunction<ImageB   ,ImageD     >;
 
+template class SOFA_IMAGE_API TransferFunction<ImageC   ,ImageB     >;
+template class SOFA_IMAGE_API TransferFunction<ImageI   ,ImageB     >;
+template class SOFA_IMAGE_API TransferFunction<ImageUI  ,ImageB    >;
+template class SOFA_IMAGE_API TransferFunction<ImageS   ,ImageB     >;
+template class SOFA_IMAGE_API TransferFunction<ImageUS  ,ImageB    >;
+template class SOFA_IMAGE_API TransferFunction<ImageL   ,ImageB     >;
+template class SOFA_IMAGE_API TransferFunction<ImageUL  ,ImageB    >;
+template class SOFA_IMAGE_API TransferFunction<ImageF   ,ImageB     >;
+template class SOFA_IMAGE_API TransferFunction<ImageD   ,ImageB     >;
 #endif
 
 
