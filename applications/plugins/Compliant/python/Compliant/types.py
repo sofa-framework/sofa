@@ -40,9 +40,12 @@ class Rigid3(np.ndarray):
         def __new__(cls, *args, **kwargs):
             return np.ndarray.__new__(cls, 6)
 
-        def __init__(self):
-            self[:] = 0
-        
+        def __init__(self, value = None):
+            if value is None:
+                self[:] = 0
+            else:
+                self[:] = value
+                
         @property
         def linear(self):
             return self[linear_slice].view( np.ndarray )
