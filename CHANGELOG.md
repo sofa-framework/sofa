@@ -31,11 +31,18 @@
 - [all]
     - update containers to support c++x11 features (#113)
     - speed up spheres rendering + code cleaning (#170)
+    - updates externs/gtest to a fresh checkout (#213)
 - [SofaKernel]
     - creation of a defaulttype::RGBAColor (#119)
     - add a new method in BaseObjectDescription (#161)
     - adding listener mechanism to SceneLoader (#205)
     - common usage for DiagonalMass and tests (#230)
+    - add tests for DefaultAnimationLoop (#258)
+    - add tests for LocalMinDistance (#258)
+    - add a way to convert message type to string in Message.cpp (#213)
+    - MeshSTL.cpp replace a std:cerr by a msg_error so that FIX the corresponding failing test (#213)
+- [SofaGraphComponents]
+    - add tests for RequiredPlugin (#258)
 - [SofaHelper]
     - GLSL: load shader source code from a standard string (#158)
 - [SofaEngine]
@@ -47,13 +54,22 @@
 - [SofaPython]
     - macros to bind "sequence" types (#165)
     - module reload (#214)
+- [SofaOpenglVisual]
+    - add tests for ClipPlane (#258)
+- [SofaVolumetricData]
+    - add tests for DistanceGrid (#258)
+    - add tests for Light (#258)
+- [SofaBoundaryCondition]
+    - add tests for ConstantForceField, some of them are OpenIssue demonstrating existing problem, as crashing sofa when using negative or too large values in indices  (#258)
 - [SofaTest]
     - add Backtrace::autodump to all tests to ease debugging (#191)
     - add automatic tests for updateForceMask (#209)
     - add tests on PluginManager (#240)
+    - TestMessageHandler : new and robust implementation to connect msg_* message to test failure  (#213)
+    - update to use the new TestMessageHandler where msg_error generates test failures (#213)
+    - add tests for TestMessageHandler (#213)
 - [CI]
     - improvement of all test scripts
-
 
 ### Bug Fixes
 
@@ -68,6 +84,7 @@
     - implement a numerical integration for triangle (#249)
     - fix getRelativePath() in DataFileName (#250)
     - add brace initializer to helper::vector class (#252)
+    - FileMonitor: fix the recurrent problem with file 'SofaKernel/framework/framework_test/resources/existing.txt' pointed in Issue #146 (#258)
 - [SofaFramework]
     - fix the integration scheme for Quaternion (#172) and fix values with which the quaternion is being compared after creation from euler angles
 - [SofaBaseMechanics]
@@ -78,14 +95,19 @@
     - cleaning data binding (#166)
 
 ### Cleaning
-
-- Clean DefaultPipeline.cpp/h (API BREAKING) 
-- Clean the attributes names in BoxROI (API BREAKING)
-- Clean the consistency issues related to the readOnly flag (#115)
-- Clean SceneCreator with cosmetic changes and removed un-needed includes
-- Minor clean : tests, DistanceGrid
-
-
+- [all]
+    - clean the consistency issues related to the readOnly flag (#115)
+- [SofaKernel]
+    - clean DefaultPipeline.cpp/h (API BREAKING) 
+    - clean the attributes names in BoxROI (API BREAKING)
+- [SofaVolumetricData]
+    - Light: clean and strenghening the interface (#258)
+    - DistanceGrid
+- [SofaBoundaryCondition]
+    - ConstantForceField: clean to follow sofa guideline & fix the "visible dependencies" (#258)
+    - ConstantForceField: replace the "points" attribute by "indices" with backward compatibility & deprecation message (#258)
+- [SceneCreator]
+    - clean with cosmetic changes and removed un-needed includes
 
 ### Moved files
 - The module handling HighOrderTopologies moved into a [separate repository](https://github.com/sofa-framework/plugin.HighOrder) (#222)
