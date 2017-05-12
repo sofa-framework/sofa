@@ -275,7 +275,7 @@ class RigidBody(SingleMechanicalObject):
 
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
-        return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+        return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
     def setFixed(self, isFixed=True):
         """ Add/remove a fixed constraint for this rigid, also set speed to 0
@@ -369,7 +369,7 @@ class RigidBody(SingleMechanicalObject):
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
-            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
         def addMappedPoint(self, name, relativePosition=[0,0,0], isMechanical=True):
             ## adding a relative position to the rigid body
@@ -549,7 +549,7 @@ class GenericRigidJoint:
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))
-            self.force = self.node.createObject('ConstantForceField', template='Vec1'+template_suffix, forces=concat(forces), points=concat(points.tolist()) )
+            self.force = self.node.createObject('ConstantForceField', template='Vec1'+template_suffix, forces=concat(forces), indices=concat(points.tolist()) )
 
         def setForces( self, forces ):
             self.force.forces = concat(forces)

@@ -50,9 +50,9 @@ def addBeam(node,resolution,tr,smooth=False,drawPlain=False):
 	node.createObject("FixedConstraint", indices="@[-1].indices" )
 
 	node.createObject("BoxROI", template="Vec3d", position="@mesh.position", box=concat([-1+tr,-1,0.99,1+tr,1,1.1]),  drawBoxes="1" )
-	node.createObject("ConstantForceField", template="Vec3d", points="@[-1].indices", totalForce="0 -3 0")
-	# node.createObject("ConstantForceField", template="Vec3d", points="@[-1].indices", totalForce="0 -6 0")
-	# node.createObject("ConstantForceField", template="Vec3d", points="@[-1].indices", totalForce="0 0 100")
+	node.createObject("ConstantForceField", template="Vec3d", indices="@[-1].indices", totalForce="0 -3 0")
+	# node.createObject("ConstantForceField", template="Vec3d", indices="@[-1].indices", totalForce="0 -6 0")
+	# node.createObject("ConstantForceField", template="Vec3d", indices="@[-1].indices", totalForce="0 0 100")
 
 	node.createObject("UniformMass", totalMass="10" )
 

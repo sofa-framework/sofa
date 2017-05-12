@@ -93,10 +93,10 @@ def createChlothes(parent):
     parent.createObject('Line', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
     parent.createObject('Point', template='Vec3d', name='models', proximity='0', selfCollision=clothSelfCollision)
     
-    #parent.createObject('ConstantForceField', force='9.81 -9.81 9.81', points='0') #0 24 599 623
-    #parent.createObject('ConstantForceField', force='-9.81 -9.81 9.81', points='24')
-    #parent.createObject('ConstantForceField', force='9.81 -9.81 -9.81', points='599')
-    #parent.createObject('ConstantForceField', force='-9.81 -9.81 -9.81', points='623')
+    #parent.createObject('ConstantForceField', force='9.81 -9.81 9.81', indices='0') #0 24 599 623
+    #parent.createObject('ConstantForceField', force='-9.81 -9.81 9.81', indices='24')
+    #parent.createObject('ConstantForceField', force='9.81 -9.81 -9.81', indices='599')
+    #parent.createObject('ConstantForceField', force='-9.81 -9.81 -9.81', indices='623')
 	
     
     #parent.createObject('MeshSpringForceField', linesStiffness='1.e+4', linesDamping='0.1') // spring version

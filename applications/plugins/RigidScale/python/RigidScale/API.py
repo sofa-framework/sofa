@@ -255,7 +255,7 @@ class ShearlessAffineBody:
 
     def addMotor(self, forces=[0,0,0,0,0,0]):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
-        return self.rigidNode.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+        return self.rigidNode.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
     def addBehavior(self, youngModulus=1E2, numberOfGaussPoint=100, generatedDir=None):
         ## adding behavior to the component
@@ -349,7 +349,7 @@ class ShearlessAffineBody:
 
         def addMotor(self, forces=[0,0,0,0,0,0]):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
-            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
         def addMappedPoint(self, name, relativePosition=[0,0,0]):
             ## adding a relative position to the rigid body
