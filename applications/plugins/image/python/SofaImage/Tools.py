@@ -40,6 +40,7 @@ def getImageTransform(filename, scaleFactor=1):
     scale=[0,0,0]
     tr=[0,0,0]
     dim=[0,0,0]
+    R=numpy.identity(3)
 
     with open(filename,'r') as f:
         for line in f:
