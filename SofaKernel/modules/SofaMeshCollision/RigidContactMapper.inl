@@ -60,7 +60,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
         if (parent==NULL)
         {
-            std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
+            msg_error("RigidContactMapper") << "RigidContactMapper only works for scenegraph scenes.";
             return NULL;
         }
         child = parent->createChild(name);
@@ -76,7 +76,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent==NULL)
         {
-            std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
+            msg_error("RigidContactMapper") << "RigidContactMapper only works for scenegraph scenes.";
             return NULL;
         }
         child = parent->createChild(name);

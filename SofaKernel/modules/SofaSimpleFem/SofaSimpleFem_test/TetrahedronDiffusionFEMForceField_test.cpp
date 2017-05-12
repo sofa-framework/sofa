@@ -130,7 +130,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         if(!tetraNode || !temperatureNode)
         {
-          std::cerr << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" << std::endl;
+          msg_error("TetrahedronDiffusionFEMForceField_test") << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" ;
           return;
         }
 

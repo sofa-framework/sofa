@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -71,7 +72,7 @@ private:
 private:
     Data<float>		radius;
     // Data<float>		alpha;
-    Data<std::string>	color;
+    Data<defaulttype::RGBAColor>	color;
     Data<bool> d_depthTest;
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;

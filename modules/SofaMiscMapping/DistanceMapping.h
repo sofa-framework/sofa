@@ -28,6 +28,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 
 namespace sofa
@@ -94,7 +95,7 @@ public:
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::Vec4f > d_color;         ///< drawing color
+    Data< defaulttype::RGBAColor > d_color;         ///< drawing color
     Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     virtual void init();
@@ -190,11 +191,11 @@ public:
     Data<VecPair> d_pairs; ///< vector of ((mstate_0,dof_0),(mstate_1,dof_1))
 
 
-    Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
-    Data< helper::vector< Real > > f_restLengths;		///< rest length of each link
-    Data< Real >           d_showObjectScale;   ///< drawing size
-    Data< defaulttype::Vec4f > d_color;         ///< drawing color
-    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
+    Data< bool >		                       f_computeDistance;	///< computeDistance = true ---> restDistance = 0
+    Data< helper::vector< Real > >             f_restLengths;		///< rest length of each link
+    Data< Real >                               d_showObjectScale;   ///< drawing size
+    Data< defaulttype::RGBAColor >             d_color;         ///< drawing color
+    Data< unsigned >                           d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     virtual void init();
     virtual void parse( sofa::core::objectmodel::BaseObjectDescription* arg );

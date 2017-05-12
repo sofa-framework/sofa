@@ -100,6 +100,9 @@ TEST(FileMonitor, addFileExist_test)
 {
     MyFileListener listener ;
 
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
+
     // Add an existing file.It should work.
     EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
 

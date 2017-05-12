@@ -42,9 +42,9 @@ int OglCylinderModelClass = core::RegisterObject("A simple visualization for set
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel() 
+OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder."))
-    , color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+    , color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
 	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
@@ -66,7 +66,6 @@ void OglCylinderModel::init()
 
 void OglCylinderModel::reinit()
 {
-    setColor(color.getValue());
 }
 
 void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)

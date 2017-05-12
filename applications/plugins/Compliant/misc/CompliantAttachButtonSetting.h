@@ -27,6 +27,8 @@
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <functional>
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 namespace sofa
 {
 
@@ -51,8 +53,8 @@ public:
     std::string getOperationType() {return  "CompliantAttach";}
     Data<SReal> compliance;
     Data<bool> isCompliance;
-    Data<float> arrowSize;
-    Data<defaulttype::Vec4f> color;
+    Data<SReal> arrowSize;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> visualmodel;
 
     static std::function<void(CompliantAttachButtonSetting*)> s_initFunction;

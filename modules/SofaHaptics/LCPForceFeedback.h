@@ -67,10 +67,7 @@ public:
     void draw( const core::visual::VisualParams* )
     {
         // draw the haptic_freq in the openGL window
-
-        //std::cout << "num_constraints = " << std::fixed << num_constraints << " " << '\xd';
-
-        if (this->f_printLog.getValue()) std::cout << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
+        dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
     Data< double > forceCoef;
@@ -78,8 +75,8 @@ public:
 
     Data< double > solverTimeout;
 
-    // deriv (or not) the rotations when updating the violations 
-    Data <bool> d_derivRotations; 
+    // deriv (or not) the rotations when updating the violations
+    Data <bool> d_derivRotations;
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );

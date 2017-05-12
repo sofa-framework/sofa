@@ -23,17 +23,89 @@
 using sofa::Sofa_test ;
 
 #include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::MessageAsTestFailure ;
+using sofa::helper::logging::ExpectMessage ;
+using sofa::helper::logging::Message ;
 
-/// I don't use namespace in tests because i see no reason to do so and it
-/// make the code uglier to read.
+#include <sofa/defaulttype/Vec.h>
+
+
+#include <SofaVolumetricData/DistanceGrid.h>
+using sofa::component::container::DistanceGrid ;
+
+namespace sofa
+{
+namespace component
+{
+namespace container
+{
+namespace _distancegrid_
+{
+using sofa::defaulttype::Vector3 ;
 
 struct DistanceGrid_test : public Sofa_test<SReal>
 {
-    void checkConstructors(){
+    void chekcValidConstructorsCube(){
+        MessageAsTestFailure error(Message::Error);
+        MessageAsTestFailure warning(Message::Warning);
 
+        DistanceGrid grid(10, 10, 10,
+                          DistanceGrid::Coord(-1,-1,-1),
+                          DistanceGrid::Coord(1.0,1.0,1.0)) ;
+
+        EXPECT_EQ(grid.getNx(), 10) ;
+        EXPECT_EQ(grid.getNy(), 10) ;
+        EXPECT_EQ(grid.getNz(), 10) ;
+
+        EXPECT_FALSE(grid.inBBox(Vector3(-2, 0, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(Vector3( 0,-2, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(Vector3( 0, 0,-2), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(Vector3( 2, 0, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(Vector3( 0, 2, 0), 0.0f)) ;
+        EXPECT_FALSE(grid.inBBox(Vector3( 0, 0, 2), 0.0f)) ;
+
+        EXPECT_EQ(grid.size(), 10*10*10);
+
+        //todo(dmarchal:2017-05-02) This "isCube" & "getCubeDim" stuff is ugly as hell !
+        EXPECT_FALSE(grid.isCube());
+    }
+
+    void checInvalidConstructorsCube(int x, int y, int z,
+                                     float mx, float my, float mz,
+                                     float ex, float ey, float ez){
+        std::cout << "x-y-z:" << x << ", " << y << ", " << z << std::endl ;
+        std::cout << "mx-my-mz:" << mx << ", " << my << ", " << mz << std::endl  ;
+        std::cout << "ex-ey-ez:" << ex << ", " << ey << ", " << ez << std::endl ;
+
+        DistanceGrid grid(x, y, z,
+                          DistanceGrid::Coord(mx,my,mz),
+                          DistanceGrid::Coord(ex,ey,ez)) ;
     }
 };
 
-TEST_F(DistanceGrid_test, checkConstructor) {
-    ASSERT_NO_THROW(this->checkConstructors()) ;
+TEST_F(DistanceGrid_test, chekcValidConstructorsCube) {
+    ASSERT_NO_THROW(this->chekcValidConstructorsCube()) ;
 }
+
+TEST_F(DistanceGrid_test, chekcInvalidConstructorsCube_OpenIssue) {
+    std::vector< std::vector< float >> values = {
+        {-10, 10, 10,  -1,-1,-1,  1, 1,1},
+        { 10,-10, 10,  -1,-1,-1,  1, 1,1},
+        { 10, 10,-10,  -1,-1,-1,  1, 1,1},
+        { 10, 10,  0,  -1,-1,-1,  1, 1,1},
+        { 10,  0, 10,  -1,-1,-1,  1, 1,1},
+        {  0, 10,  0,  -1,-1,-1,  1, 1,1},
+        {  0, 10,  0,  -1, 1,-1,  1,-1,1} };
+    for(auto& v : values ){
+        ASSERT_NO_THROW( this->checInvalidConstructorsCube(
+                           (int)v[0], (int)v[1], (int)v[2],
+                                v[3],      v[4],      v[5],
+                                v[6],      v[7],      v[8])) ;
+    }
+}
+
+
+} // __distance_grid__
+} // container
+} // component
+} // sofa

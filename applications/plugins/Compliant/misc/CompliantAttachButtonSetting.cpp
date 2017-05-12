@@ -45,8 +45,8 @@ int CompliantAttachButtonSettingClass = core::RegisterObject("CompliantAttach (C
 CompliantAttachButtonSetting::CompliantAttachButtonSetting()
     : compliance(initData(&compliance, (SReal)1e-3, "compliance", "Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense."))
     , isCompliance(initData(&isCompliance, false, "isCompliance", "Is the mouse interaction treated as a compliance? (otherwise as a stiffness)"))
-    , arrowSize(initData(&arrowSize, 0.f, "arrowSize", ""))
-    , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", ""))
+    , arrowSize(initData(&arrowSize, SReal(0), "arrowSize", ""))
+    , color(initData(&color, defaulttype::RGBAColor(1,0,0,1), "color", ""))
     , visualmodel(initData(&visualmodel, false, "visualmodel", ""))
 {
 }

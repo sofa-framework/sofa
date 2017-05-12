@@ -29,6 +29,7 @@
 using std::endl ;
 using std::string ;
 
+
 namespace sofa
 {
 
@@ -38,16 +39,16 @@ namespace helper
 namespace logging
 {
 
-Message Message::emptyMsg(CEmpty, TEmpty, "", EmptyFileInfo) ;
+Message::TypeSet Message::AnyTypes = {Type::Info,Type::Advice,Type::Deprecated,
+                                      Type::Warning,Type::Error,Type::Fatal};
+
+Message Message::emptyMsg(CEmpty, TEmpty, ComponentInfo::SPtr(), EmptyFileInfo) ;
 
 Message::Message(Class mclass, Type type,
-                 const string& sender,
-                 const FileInfo::SPtr& fileInfo,
-                 const ComponentInfo::SPtr& componentInfo
-                 ):
-    m_sender(sender),
-    m_fileInfo(fileInfo),
+                 const ComponentInfo::SPtr& componentInfo,
+                 const FileInfo::SPtr& fileInfo) :
     m_componentinfo(componentInfo),
+    m_fileInfo(fileInfo),
     m_class(mclass),
     m_type(type),
     m_id(-1)
@@ -55,9 +56,8 @@ Message::Message(Class mclass, Type type,
 }
 
 Message::Message( const Message& msg )
-    : m_sender(msg.sender())
-    , m_fileInfo(msg.fileInfo())
-    , m_componentinfo(msg.componentInfo())
+    : m_componentinfo(msg.componentInfo())
+, m_fileInfo(msg.fileInfo())
     , m_class(msg.context())
     , m_type(msg.type())
 {
@@ -66,7 +66,6 @@ Message::Message( const Message& msg )
 
 Message& Message::operator=( const Message& msg )
 {
-    m_sender = msg.sender();
     m_fileInfo = msg.fileInfo();
     m_componentinfo = msg.componentInfo();
     m_class = msg.context();
@@ -83,8 +82,9 @@ std::ostream& operator<< (std::ostream& s, const Message& m){
 
     if(m.fileInfo())
         s << "    source code loc: " << m.fileInfo()->filename << ":" << m.fileInfo()->line << endl ;
+
     if(m.componentInfo())
-        s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
+        s << "      component: " << m.componentInfo() ;
 
     return s;
 }

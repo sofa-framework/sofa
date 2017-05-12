@@ -23,6 +23,7 @@
 #define SOFA_HELPER_FNDISPATCHER_INL
 
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h> // for gettypename()
 #include <iostream>
 #include <string>
@@ -41,9 +42,9 @@ namespace helper
 template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)
 {
-    std::cerr << "ERROR DISPATCH ("
+    msg_info("BasicDispatcher") << "ERROR DISPATCH ("
             << gettypename(typeid(arg1)) << ", "
-            << gettypename(typeid(arg2)) << ")\n";
+            << gettypename(typeid(arg2)) << ")" << msgendl;
     this->ignore(typeid(arg1), typeid(arg2));
     return ResulT();
 }

@@ -40,8 +40,9 @@ using sofa::component::visualmodel::OglTexture ;
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::RegisterObject ;
 
-using sofa::defaulttype::Vec4f ;
 using sofa::defaulttype::Mat ;
+
+using sofa::helper::types::RGBAColor ;
 
 namespace sofa
 {
@@ -68,7 +69,7 @@ int LightManagerClass = RegisterObject
 LightManager::LightManager()
     : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
     , d_softShadowsEnabled(initData(&d_softShadowsEnabled, (bool) false, "softShadows", "If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)"))
-    , d_ambient(initData(&d_ambient, Vec4f(0.0f,0.0f,0.0f,0.0f), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
+    , d_ambient(initData(&d_ambient, RGBAColor::black(), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "debugDraw", "enable/disable drawing of lights shadow textures. (default=false)"))
 {
     //listen by default, in order to get the keys to activate shadows
@@ -220,7 +221,7 @@ void LightManager::makeShadowMatrix(unsigned int i)
 void LightManager::fwdDraw(core::visual::VisualParams* vp)
 {
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().ptr());
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().data());
     unsigned int id = 0;
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {

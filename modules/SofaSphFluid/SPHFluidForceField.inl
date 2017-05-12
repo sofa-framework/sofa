@@ -251,11 +251,9 @@ void SPHFluidForceField<DataTypes>::addForce(const core::MechanicalParams* mpara
         break;
     }
     }
-    if (this->f_printLog.getValue())
-    {
-        sout << "density[" << 0 << "] = " << particles[0].density  << "(" << particles[0].neighbors.size() << " neighbors)"<< sendl;
-        sout << "density[" << particles.size()/2 << "] = " << particles[particles.size()/2].density << sendl;
-    }
+
+    msg_info() << "density[" << 0 << "] = " << particles[0].density  << "(" << particles[0].neighbors.size() << " neighbors)"
+               << "density[" << particles.size()/2 << "] = " << particles[particles.size()/2].density ;
 }
 
 

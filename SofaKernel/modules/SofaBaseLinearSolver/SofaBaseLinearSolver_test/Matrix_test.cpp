@@ -464,7 +464,7 @@ typedef TestSparseMatrices<double,4,8,2,2> Ts4822;
 typedef TestSparseMatrices<double,360,300,3,3> TsProductTimings;
 TEST_F(TsProductTimings, benchmark )
 {
-    std::cerr<<"=== Matrix-Matrix Products:"<<std::endl;
+    msg_info()<<"=== Matrix-Matrix Products:"<<std::endl;
 
     double start, stop;
 
@@ -472,41 +472,41 @@ TEST_F(TsProductTimings, benchmark )
     start = get_time();
     matMultiplication = mat * matMultiplier;
     stop = get_time();
-    std::cerr<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Mat:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     fullMultiplication.clear();
     start = get_time();
     fullMat.mul( fullMultiplication, fullMultiplier );
     stop = get_time();
-    std::cerr<<"Full:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Full:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     crsMultiplication.clear();
     start = get_time();
     crs1.mul( crsMultiplication, crsMultiplier );
     stop = get_time();
-    std::cerr<<"CRS:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"CRS:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     eiBaseMultiplication.clear();
     start = get_time();
     eiBase.mul( eiBaseMultiplication, eiBaseMultiplier );
     stop = get_time();
-    std::cerr<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
     start = get_time();
     eiDenseMultiplication = eiBase.compressedMatrix * eiDenseMultiplier;
     stop = get_time();
-    std::cerr<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
+    msg_info()<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
-    std::cerr<<"=== Eigen Matrix-Vector Products:"<<std::endl;
+    msg_info()<<"=== Eigen Matrix-Vector Products:"<<std::endl;
     unsigned nbrows = 100, nbcols;
-    std::cerr<<"=== nb rows:"<<nbrows<<std::endl;
+    msg_info()<<"=== nb rows:"<<nbrows<<std::endl;
 
 
     for( int j=1; j<300 ; j+=30 )
     {
         nbcols = 100 * j;
 
-        std::cerr<<"=== nb cols:"<<nbcols<<std::endl;
+        msg_info()<<"=== nb cols:"<<nbcols<<std::endl;
 
         Eigen::SparseMatrix<SReal,Eigen::RowMajor> A;
         A.resize(nbrows,nbcols);
@@ -538,7 +538,7 @@ TEST_F(TsProductTimings, benchmark )
             if( current>max ) max=current;
         }
 
-        std::cerr<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
+        msg_info()<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
 
     }
 

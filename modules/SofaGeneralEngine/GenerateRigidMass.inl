@@ -206,13 +206,12 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
     SReal volume = afIntegral[0];
     if (volume == 0.0)
     {
-        serr << "ERROR: Mesh volume is nul" << sendl;
+        msg_error() << "Mesh volume is nul." ;
         return;
     }
     else if (volume < 0.0)
     {
-        if (this->f_printLog.getValue())
-            sout << "WARNING: Mesh volume is negative" << sendl;
+        msg_info() << "Mesh volume is negative" ;
     }
 
     MassType *rigidmass = this->rigidMass.beginWriteOnly();

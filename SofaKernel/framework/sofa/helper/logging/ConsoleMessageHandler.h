@@ -40,10 +40,15 @@ namespace logging
 
 class MessageFormatter;
 
+/// Print the message on the console using a specified formatter.
+/// The Message::Error, Message::Fatal are going to std:cerr while the others
+/// are going to std::cout.
 class SOFA_HELPER_API ConsoleMessageHandler : public MessageHandler
 {
 public:
-    ConsoleMessageHandler(MessageFormatter* formatter = 0); // by default, uses the DefaultStyleMessageFormatter
+    /// Create a new ConsoleMessageHandler. By default the handler is using the
+    /// DefaultStyleMessageFormatter object to format the message.
+    ConsoleMessageHandler(MessageFormatter* formatter = 0);
     virtual void process(Message &m) ;
     void setMessageFormatter( MessageFormatter* formatter );
 

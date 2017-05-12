@@ -24,7 +24,7 @@ public:
 
     void helloWorld()
     {
-        std::cerr<<"ExternalComponent \""<<this->getName()<<"\" says hello world"<<std::endl;
+        msg_info()<<"ExternalComponent \""<<this->getName()<<"\" says hello world";
         ++nbcalls;
     }
 

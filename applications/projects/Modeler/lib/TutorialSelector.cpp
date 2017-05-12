@@ -97,7 +97,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
     TiXmlNode* node=hDoc.FirstChildElement().ToElement();
     if (!node)
     {
-        std::cerr << "Error loading file: " << fileTutorial << std::endl;
+        msg_error("TutorialSelector") << "Unable to load file '"  << fileTutorial << "'";
         return;
     }
     openNode(node, 0, true);
