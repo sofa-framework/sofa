@@ -30,6 +30,9 @@
 
 #include <sofa/simulation/Simulation.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa {
 
 using namespace modeling;
@@ -52,6 +55,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

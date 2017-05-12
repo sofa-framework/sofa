@@ -23,6 +23,7 @@ set(SOURCE_FILES
     Elasticity_test.cpp
     InitPlugin_test.cpp
     PrimitiveCreation.cpp
+    TestMessageHandler.cpp
     Sofa_test.cpp
 )
 

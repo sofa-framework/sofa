@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -106,10 +109,12 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(DilateEngine_test, DataTypes);
 
 TYPED_TEST(DilateEngine_test, NormalBehavior) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DilateEngine_test, UpdateTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 

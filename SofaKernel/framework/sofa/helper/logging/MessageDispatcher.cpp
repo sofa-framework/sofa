@@ -109,43 +109,51 @@ public:
 
     void process(sofa::helper::logging::Message& m)
     {
-        for( size_t i=0 ; i<m_messageHandlers.size() ; i++ )
+        for( size_t i=0 ; i<m_messageHandlers.size() ; i++ ){
             m_messageHandlers[i]->process(m) ;
+        }
     }
 };
 
 
-MessageDispatcherImpl s_messagedispatcher ;
+MessageDispatcherImpl* s_messagedispatcher = nullptr ;
+
+MessageDispatcherImpl* getMainInstance(){
+    if(s_messagedispatcher==nullptr){
+        s_messagedispatcher = new MessageDispatcherImpl();
+    }
+    return s_messagedispatcher;
+}
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
     //lock_guard<mutex> guard(getMutex()) ;
 
-    return s_messagedispatcher.getHandlers();
+    return getMainInstance()->getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
     //lock_guard<mutex> guard(getMutex()) ;
 
-    return s_messagedispatcher.addHandler(o);
+    return getMainInstance()->addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
     //lock_guard<mutex> guard(getMutex()) ;
 
-    return s_messagedispatcher.rmHandler(o);
+    return getMainInstance()->rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
     //lock_guard<mutex> guard(getMutex()) ;
 
-    s_messagedispatcher.clearHandlers();
+    getMainInstance()->clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
     //lock_guard<mutex> guard(getMutex()) ;
 
-    s_messagedispatcher.process(m);
+    getMainInstance()->process(m);
 }
 
 

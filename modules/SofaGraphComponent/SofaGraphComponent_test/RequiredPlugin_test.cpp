@@ -1,11 +1,6 @@
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::MessageAsTestFailure;
-
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
@@ -19,7 +14,7 @@ struct RequiredPlugin_test : public Sofa_test<>
 {
     void testNotExistingPlugin()
     {
-        ExpectMessage raii(Message::Error);
+        EXPECT_MSG_EMIT(Error);
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
@@ -37,7 +32,7 @@ struct RequiredPlugin_test : public Sofa_test<>
 
     void testNoParameter()
     {
-        ExpectMessage raii(Message::Error);
+        EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
