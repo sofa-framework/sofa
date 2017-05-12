@@ -21,6 +21,7 @@ INSTANTIATE_TEST_CASE_P(Batch,
 
 TEST_P(Python_scene_test, sofa_python_scene_tests)
 {
+    max_steps *= 10; // scene_friction.py test requires tons of steps
     run(GetParam());
 }
 
