@@ -61,7 +61,10 @@ void waitForFileEvents()
 {
 	// on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
-	Sleep(100);
+    Sleep(100);
+#endif
+#ifdef __APPLE__
+    sleep(1);
 #endif
 }
 
@@ -113,6 +116,9 @@ TEST(FileMonitor, addFileTwice_test)
 {
     MyFileListener listener ;
 
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
+
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener);
 
@@ -135,6 +141,9 @@ TEST(FileMonitor, noUpdate_test)
 {
     MyFileListener listener ;
 
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
+
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     EXPECT_EQ( listener.m_files.size(), 0u) ;
@@ -145,6 +154,10 @@ TEST(FileMonitor, noUpdate_test)
 TEST(FileMonitor, updateNoChange_test)
 {
     MyFileListener listener ;
+
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
+    waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     waitForFileEvents();
@@ -157,6 +170,9 @@ TEST(FileMonitor, updateNoChange_test)
 TEST(FileMonitor, fileChange_test)
 {
     MyFileListener listener ;
+
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //waitForFileEvents();
@@ -174,6 +190,9 @@ TEST(FileMonitor, fileChange_test)
 TEST(FileMonitor, fileChangeTwice_test)
 {
     MyFileListener listener ;
+
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //FileMonitor::updates(2) ;
@@ -194,6 +213,9 @@ TEST(FileMonitor, fileListenerRemoved_test)
 {
     MyFileListener listener1 ;
     MyFileListener listener2 ;
+
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -220,6 +242,9 @@ TEST(FileMonitor, listenerRemoved_test)
     MyFileListener listener1 ;
     MyFileListener listener2 ;
 
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
+
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
     //FileMonitor::updates(2) ;
@@ -243,6 +268,9 @@ TEST(FileMonitor, listenerRemoved_test)
 TEST(FileMonitor, fileChange2_test)
 {
     MyFileListener listener ;
+
+    // create the file
+    createAFilledFile(getPath("existing.txt"), 1) ;
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
     //waitForFileEvents();
