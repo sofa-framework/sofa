@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/vectorData.h>
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -77,7 +78,6 @@ struct VoronoiImageEngineSpecialization<defaulttype::Image<T>>
     static void compute( VoronoiImageEngineT* engine,const bool bias=false, const unsigned int method=DIJKSTRA )
     {
         typedef typename VoronoiImageEngineT::Real Real;
-        typedef typename VoronoiImageEngineT::Coord Coord;
 
         // get transform and image at time t
         typename VoronoiImageEngineT::raImage in(engine->d_image);
@@ -86,7 +86,6 @@ struct VoronoiImageEngineSpecialization<defaulttype::Image<T>>
         const cimg_library::CImg<T>* biasFactor=bias?&inimg:NULL;
 
         // data access
-        typename VoronoiImageEngineT::raPositions fpos(engine->d_position);
         typename VoronoiImageEngineT::imCoord dim = in->getDimensions();
 
         // init voronoi and distances
@@ -102,15 +101,15 @@ struct VoronoiImageEngineSpecialization<defaulttype::Image<T>>
         // list of seed points
         std::set<std::pair<Real,sofa::defaulttype::Vec<3,int> > > trial;
 
-        // add fixed points
-        helper::vector<unsigned int> fpos_voronoiIndex;
-        helper::vector<Coord> fpos_VoxelIndex;
+        // add points from position. One point per region
+        typename VoronoiImageEngineT::raPositions fpos(engine->d_position);
+        for(unsigned int i=0; i<fpos.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, inT->toImage(fpos[i]), i+1);
 
-        for(unsigned int i=0; i<fpos.size(); i++)
+        // add points from positionGroups. several points per region
+        for( unsigned i=0; i<engine->d_nbGroups.getValue() ; i++ )
         {
-            fpos_voronoiIndex.push_back(i+1);
-            fpos_VoxelIndex.push_back(inT->toImage(fpos[i]));
-            AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i],fpos_voronoiIndex[i]);
+            typename VoronoiImageEngineT::raPositions pos(*engine->vd_positionGroup[i]);
+            for(unsigned int j=0; j<pos.size(); j++) AddSeedPoint<Real>(trial,dist,voronoi, inT->toImage(pos[j]), i+1);
         }
 
         switch(method)
@@ -171,6 +170,9 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     Data< SeqPositions > d_position;
+
+    Data<unsigned int> d_nbGroups;
+    helper::vectorData< SeqPositions > vd_positionGroup;
     /**@}*/
 
     //@name distances (may be used for shape function computation)
@@ -196,12 +198,16 @@ public:
       , d_transform(initData(&d_transform,TransformType(),"transform",""))
       , d_bias ( initData ( &d_bias,"bias","bias distances using image intensities?" ) )
       , d_method ( initData ( &d_method,"method","method" ) )
-      , d_position(initData(&d_position,SeqPositions(),"position","output positions"))
+      , d_position(initData(&d_position,SeqPositions(),"position","vector of positions, one point per voronoi region"))
+      , d_nbGroups( initData (&d_nbGroups, (unsigned)0, "nbGroups", "number of point groups, one group defines one voronoi region") )
+      , vd_positionGroup(this, "positionGroup", "group of position vector, several points per voronoi region", helper::DataEngineInput)
       , d_distances(initData(&d_distances,DistTypes(),"distances",""))
       , d_clearData(initData(&d_clearData,true,"clearData","clear distance image after computation"))
-      , d_voronoi(initData(&d_voronoi,VorTypes(),"voronoi",""))
+      , d_voronoi(initData(&d_voronoi,VorTypes(),"voronoi","voronoi image. Intensity= point or group index + 1, or 0 outside mask"))
       , time((unsigned int)0)
     {
+        vd_positionGroup.resize(d_nbGroups.getValue());
+
         d_image.setReadOnly(true);
         d_transform.setReadOnly(true);
         f_listening.setValue(true);
@@ -217,6 +223,8 @@ public:
 
     virtual void init()
     {
+        addInput(&d_nbGroups);
+        vd_positionGroup.resize(d_nbGroups.getValue());
         addInput(&d_image);
         addInput(&d_transform);
         addInput(&d_position);
@@ -227,8 +235,26 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit()
+    {
+        vd_positionGroup.resize(d_nbGroups.getValue());
+        update();
+    }
 
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        vd_positionGroup.parseSizeData(arg, d_nbGroups);
+        Inherit1::parse(arg);
+    }
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str )
+    {
+        vd_positionGroup.parseFieldsSizeData(str, d_nbGroups);
+        Inherit1::parseFields(str);
+    }
 protected:
 
     unsigned int time;
