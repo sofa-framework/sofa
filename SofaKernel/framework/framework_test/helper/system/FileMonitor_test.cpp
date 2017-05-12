@@ -66,6 +66,9 @@ void waitForFileEvents()
 #ifdef __APPLE__
     sleep(1);
 #endif
+#ifdef __linux__
+    sleep(1);
+#endif
 }
 
 class MyFileListener : public FileEventListener
