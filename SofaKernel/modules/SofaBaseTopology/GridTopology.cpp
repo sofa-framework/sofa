@@ -220,10 +220,26 @@ void GridTopology::setSize(int nx, int ny, int nz)
 void GridTopology::checkGridResolution()
 {
     const Vec3i& _n = d_n.getValue();
-    if (_n[0] < 2 || _n[1] < 2 || _n[2] < 2)
+
+    int dim = 0;
+    bool badDim = false; // In case one of the dimension is null.
+
+    for (int i=0; i<3; i++)
+    {
+        if (_n[i] < 1){
+            badDim = true;
+            break;
+        }
+        else if(_n[i] > 2)
+            dim++;
+    }
+
+    m_gridDim = (Grid_dimension)dim;
+
+    if (badDim)
     {
         msg_warning(this) << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
-                             "] is outside the validity range. At least a resolution of 2 is needed in each 3D direction."
+                             "] is outside the validity range. At least a resolution of 1 is needed in each 3D direction."
                              " Continuing with default value=[2; 2; 2]."
                              " Set a valid grid resolution to remove this warning message.";
 
