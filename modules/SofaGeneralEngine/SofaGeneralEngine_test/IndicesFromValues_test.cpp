@@ -27,18 +27,9 @@ using sofa::component::engine::IndicesFromValues;
 #include <sofa/defaulttype/RigidTypes.h>
 #include <SofaTest/Sofa_test.h>
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageAsTestFailure ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-using sofa::core::objectmodel::New ;
-
 namespace sofa
 {
-struct TestIndicesFromValues : public Sofa_test<double>{
-
-
-
+struct TestIndicesFromValues : public Sofa_test<>{
     // Test computation on a simple example
     void search_one_index(){
         IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
@@ -47,7 +38,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "7");
-
     }
 
     void search_two_indices(){
@@ -57,7 +47,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "7 5");
-
     }
 
 
@@ -68,7 +57,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
-
     }
 
     void search_in_nothing(){
@@ -78,7 +66,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"");
-
     }
 
     void search_nothing_in_nothing(){
@@ -88,7 +75,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"");
-
     }
 
     void search_existing_and_nonexisting(){
@@ -108,7 +94,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
-
     }
 
     void search_a_sequence(){
@@ -118,7 +103,6 @@ struct TestIndicesFromValues : public Sofa_test<double>{
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
-
     }
 
 

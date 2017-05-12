@@ -53,7 +53,6 @@ struct MergePoints_test : public Sofa_test<typename _DataTypes::Real>,
     {
         setSimulation(m_simu = new DAGSimulation());
         m_thisObject = New<ThisClass >();
-
     }
 
     /// It is important to freeze what are the available Data field
