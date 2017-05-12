@@ -78,13 +78,13 @@ class GtestMessageFrame;
 ///    EXPECT_MSG_NOEMIT(Error) as a more 'good looking' version of
 ///
 /// sofa::helper::logging::MessageAsTestFailure failure(sofa::helper::logging::Message::Error, __FILE__, __LINE__);
-class SOFA_TestPlugin_API MesssageAsTestFailure
+class SOFA_TestPlugin_API MessageAsTestFailure
 {
 public:
-    MesssageAsTestFailure(Message::Type t,
+    MessageAsTestFailure(Message::Type t,
                            const char* filename="unknown", int lineno=0) ;
 
-    virtual ~MesssageAsTestFailure() ;
+    virtual ~MessageAsTestFailure() ;
 
 private:
     GtestMessageFrame* m_frame ;

@@ -222,14 +222,14 @@ void MainGtestMessageHandlerPrivate::popFrame(Message::Type type){
 ///
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-MesssageAsTestFailure::MesssageAsTestFailure(Message::Type type,
+MessageAsTestFailure::MessageAsTestFailure(Message::Type type,
                                                const char* filename, int lineno)
 {
     m_frame = new GtestMessageFrameFailure(type, filename, lineno) ;
     MainGtestMessageHandlerPrivate::pushFrame(type, m_frame) ;
 }
 
-MesssageAsTestFailure::~MesssageAsTestFailure(){
+MessageAsTestFailure::~MessageAsTestFailure(){
     MainGtestMessageHandlerPrivate::popFrame( m_frame->m_type ) ;
     m_frame->finalize() ;
     delete m_frame ;
