@@ -74,6 +74,7 @@ private:
     protected:
         void updateEdges();
         void updateQuads();
+        void updateTriangles();
         void updateHexas();
     private:
         GridTopology* topology;

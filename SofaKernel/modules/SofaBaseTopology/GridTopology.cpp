@@ -55,6 +55,7 @@ void GridTopology::GridUpdate::update()
 {
     updateEdges();
     updateQuads();
+    updateTriangles();
     updateHexas();
 }
 
@@ -82,6 +83,23 @@ void GridTopology::GridUpdate::updateEdges()
             for (int x=0; x<n[0]; x++)
                 edges.push_back(Edge(topology->point(x,y,z),topology->point(x,y,z+1)));
     topology->seqEdges.endEdit();
+}
+
+void GridTopology::GridUpdate::updateTriangles()
+{
+    // base on quads
+    const SeqQuads& quads = topology->seqQuads.getValue();
+    SeqTriangles& triangles = *topology->seqTriangles.beginEdit();
+    triangles.clear();
+    triangles.reserve(quads.size()*2);
+
+    for (unsigned int i=0; i<quads.size(); ++i)
+    {
+        triangles.push_back(Triangle(quads[i][0], quads[i][1], quads[i][2]));
+        triangles.push_back(Triangle(quads[i][0], quads[i][2], quads[i][3]));
+    }
+
+    topology->seqTriangles.endEdit();
 }
 
 void GridTopology::GridUpdate::updateQuads()
