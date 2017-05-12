@@ -45,13 +45,13 @@ public:
 protected:
     DefaultPipeline();
 public:
+    void init();
     void draw(const core::visual::VisualParams* vparams);
 
     /// get the set of response available with the current collision pipeline
     std::set< std::string > getResponseList() const;
 protected:
     // -- Pipeline interface
-
     /// Remove collision response from last step
     virtual void doCollisionReset();
     /// Detect new collisions. Note that this step must not modify the simulation graph

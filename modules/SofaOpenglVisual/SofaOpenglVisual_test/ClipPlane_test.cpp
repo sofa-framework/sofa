@@ -99,7 +99,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
 
 TEST_F(TestClipPlane, checkClipPlaneIdInValidValues_OpenIssue)
 {
-    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     checkClipPlaneAttributesValues("id", "-1");
 }
@@ -109,14 +109,6 @@ TEST_F(TestClipPlane, checkClipPlaneNormalInvalidNormalValue)
     EXPECT_MSG_EMIT(Warning) ;
 
     checkClipPlaneAttributesValues("normal", "1 0");
-}
-
-// Normal should be "normalized :) "
-TEST_F(TestClipPlane, checkClipPlanePassingNotNormalizedAsNormal_OpenIssue)
-{
-    EXPECT_MSG_EMIT(Warning) ;
-
-    checkClipPlaneAttributesValues("normal", "2 0 0");
 }
 
 

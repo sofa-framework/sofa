@@ -76,6 +76,16 @@ DefaultPipeline::DefaultPipeline()
 typedef simulation::Visitor::ctime_t ctime_t;
 #endif
 
+void DefaultPipeline::init()
+{
+    if(d_depth.getValue() < 0)
+    {
+        msg_warning() << "Invalid value 'depth'="<<d_depth.getValue() << "." << msgendl
+                      << "Replaced with the default value = 6." ;
+        d_depth.setValue(6) ;
+    }
+}
+
 void DefaultPipeline::doCollisionReset()
 {
     msg_info_when(d_doPrintInfoMessage.getValue())

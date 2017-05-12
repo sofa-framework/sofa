@@ -195,19 +195,17 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTriangleDestructi
         {
             /// get the triangle to be added
             const Triangle &t=dm->_topology->getTriangle(triangleRemoved[i]);
-            // compute its mass based on the mass density and the triangle area
+
+            /// compute its mass based on the mass density and the triangle area
             if(dm->triangleGeo)
             {
                 mass=(md*dm->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)3.0;
             }
-            // removed  mass on its three vertices
+
+            /// removed  mass on its three vertices
             masses[t[0]]-=mass;
             masses[t[1]]-=mass;
             masses[t[2]]-=mass;
-            // Commented to prevent from printing in case of triangle removal
-            //serr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<sendl;
-            //serr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<sendl;
-            //serr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<sendl;
         }
     }
 }
@@ -249,12 +247,14 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::applyTetrahedronCreati
         {
             /// get the tetrahedron to be added
             const Tetrahedron &t=dm->_topology->getTetrahedron(tetrahedronAdded[i]);
-            // compute its mass based on the mass density and the tetrahedron volume
+
+            /// compute its mass based on the mass density and the tetrahedron volume
             if(dm->tetraGeo)
             {
                 mass=(md*dm->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)4.0;
             }
-            // added  mass on its four vertices
+
+            /// added  mass on its four vertices
             masses[t[0]]+=mass;
             masses[t[1]]+=mass;
             masses[t[2]]+=mass;
