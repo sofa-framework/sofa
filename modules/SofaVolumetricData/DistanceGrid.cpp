@@ -207,8 +207,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         pmax = Coord(fpmax.ptr());
         //std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        for (int i=0; i< grid->nxnynz; i++)
-            grid->dists[i] = mesh.distmap->data[i]*scale;
+        for (int i=0; i< grid->m_nxnynz; i++)
+            grid->m_dists[i] = mesh.distmap->data[i]*scale;
         if (sampling)
             grid->sampleSurface(sampling);
         else if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
@@ -239,8 +239,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         }
         if (scale < 0)
         {
-            grid->bbmin = grid->pmin;
-            grid->bbmax = grid->pmax;
+            grid->m_bbmin = grid->pmin;
+            grid->m_bbmax = grid->pmax;
         }
         else
             grid->computeBBox();
