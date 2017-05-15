@@ -139,7 +139,6 @@ MessageDispatcherImpl* getMainInstance(){
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
     MUTEX_IF_THREADING ;
- 
     return getMainInstance()->getHandlers();
 }
 
