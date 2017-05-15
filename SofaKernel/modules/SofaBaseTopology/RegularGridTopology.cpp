@@ -114,7 +114,6 @@ void RegularGridTopology::init()
         grid[2]= (int)ceil((d_max.getValue()[2]-d_min.getValue()[2]) / w)+1;
         d_n.setValue(grid);
         setNbGridPoints();
-        sout << "Grid size: " << d_n.getValue() << sendl;
     }
 
     Inherit1::init();
@@ -287,9 +286,6 @@ Vector3 RegularGridTopology::getCubeCoordinate(int i) const
 
 void RegularGridTopology::createTexCoords()
 {
-#ifndef NDEBUG
-    std::cout << "createTexCoords" << std::endl;
-#endif
     unsigned int nPts = this->getNbPoints();
     const Vec3i& _n = d_n.getValue();
 
@@ -299,9 +295,6 @@ void RegularGridTopology::createTexCoords()
         return;
     }
 
-#ifndef NDEBUG
-    std::cout << "nbP: " << nPts << std::endl;
-#endif
     helper::WriteAccessor< Data< vector<Vector2> > > _texCoords = this->seqUVs;
     _texCoords.resize(nPts);
 
@@ -324,10 +317,6 @@ void RegularGridTopology::createTexCoords()
         {
             unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
             unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
-#ifndef NDEBUG
-            std::cout << "pt1: " << pt1 << std::endl;
-            std::cout << "pt2: " << pt2 << std::endl;
-#endif
             _texCoords[pt1] = Vector2(n0*Uscale, n1*Vscale);
             _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n1*Vscale);
         }

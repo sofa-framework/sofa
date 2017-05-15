@@ -256,10 +256,10 @@ void GridTopology::checkGridResolution()
 
     if (badDim)
     {
-        msg_warning(this) << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
-                             "] is outside the validity range. At least a resolution of 1 is needed in each 3D direction."
-                             " Continuing with default value=[2; 2; 2]."
-                             " Set a valid grid resolution to remove this warning message.";
+        msg_warning() << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
+                         "] is outside the validity range. At least a resolution of 1 is needed in each 3D direction."
+                         " Continuing with default value=[2; 2; 2]."
+                         " Set a valid grid resolution to remove this warning message.";
 
         this->d_n.setValue(Vec3i(2,2,2));
         changeGridResolutionPostProcess();
