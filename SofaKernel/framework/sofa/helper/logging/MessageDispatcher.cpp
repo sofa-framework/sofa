@@ -60,7 +60,7 @@ namespace logging
 {
 
 #if(SOFA_WITH_THREADING==1)
-   #define MUTEX_IF_THREADING lock_guard<mutex> guard(getDispatcher()->getMutex()) ;
+   #define MUTEX_IF_THREADING lock_guard<mutex> guard(getMainInstance()->getMutex()) ;
 #else
    #define MUTEX_IF_THREADING
 #endif
