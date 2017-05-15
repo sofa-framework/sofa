@@ -26,6 +26,8 @@ using testing::Types;
 #include <sofa/helper/vector.h>
 using sofa::helper::vector ;
 
+#include <sofa/defaulttype/Vec.h>
+
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data ;
 
@@ -36,111 +38,164 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
 template<class T>
-class vector_test : public Sofa_test<>
+class vector_test : public Sofa_test<>,
+        public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
     void SetUp() {}
     void TearDown() {}
-    void checkBasicReadFromString(const std::string& values) ;
-    void checkIntervalReadFromString(const std::string& values,
-                                     const std::string& results) ;
-    void checkVectorDataField() ;
+    void checkVector(const std::vector<std::string>& params) ;
 };
 
 template<class T>
-void vector_test<T>::checkBasicReadFromString(const std::string& values)
+void vector_test<T>::checkVector(const std::vector<std::string>& params)
 {
+    std::string result = params[1];
+    std::string errtype = params[2];
+
     vector<T> v;
-    std::stringstream in(values);
+    std::stringstream in(params[0]);
     std::stringstream out ;
 
     CountingMessageHandler& counter = MainCountingMessageHandler::getInstance() ;
-    int numErrors = counter.getMessageCountFor(Message::Warning) ;
-
+    int numMessage = 0 ;
+    if(errtype == "Error")
+        numMessage =  counter.getMessageCountFor(Message::Error) ;
+    else if(errtype == "Warning")
+        numMessage =  counter.getMessageCountFor(Message::Warning) ;
+    else if(errtype == "None")
+    {
+        numMessage  =  counter.getMessageCountFor(Message::Warning) ;
+        numMessage += counter.getMessageCountFor(Message::Error) ;
+    }
     MessageDispatcher::addHandler( &counter ) ;
     v.read(in) ;
     v.write(out) ;
+
     /// If the parsed version is different that the written version & there is no warning...this
     /// means a problem will be un-noticed.
-    if( in.str() != out.str() && counter.getMessageCountFor(Message::Warning) == numErrors ){
-        FAIL() << "Input string [" << in.str() << "] return this vector [" << out.str() << "]"  ;
-    }
+    EXPECT_EQ( result, out.str() ) ;
+
+    if (errtype == "Error")
+        EXPECT_NE( counter.getMessageCountFor(Message::Error), numMessage ) ;
+    else if (errtype == "Warning")
+        EXPECT_NE( counter.getMessageCountFor(Message::Warning), numMessage ) ;
+    else if (errtype == "None")
+        EXPECT_EQ( counter.getMessageCountFor(Message::Warning)+
+                   counter.getMessageCountFor(Message::Error), numMessage ) ;
+
+
     MessageDispatcher::rmHandler( &counter ) ;
 }
 
-template<class T>
-void vector_test<T>::checkIntervalReadFromString(const std::string& values,
-                                                 const std::string& results)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// TEST THE vector<int> behavior
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef vector_test<int> vector_test_int;
+TEST_P(vector_test_int, checkReadWriteBehavior_OpenIssue)
 {
-    std::cout << "Input: " << values << std::endl ;
-    vector<T> v;
-    std::stringstream in(values);
-    std::stringstream out ;
-
-    CountingMessageHandler& counter = MainCountingMessageHandler::getInstance() ;
-
-    MessageDispatcher::addHandler( &counter ) ;
-    v.read(in) ;
-    v.write(out) ;
-    /// If the parsed version is different that the written version & there is no warning...this
-    /// means a problem will be un-noticed.
-    if( out.str() != results ){
-        FAIL() << "Input string [" << in.str() << "] return this vector [" << out.str() << "] while ["<< results << "]"  ;
-    }
-    MessageDispatcher::rmHandler( &counter ) ;
+    this->checkVector(GetParam()) ;
 }
 
-template<class T>
-void vector_test<T>::checkVectorDataField()
+std::vector<std::vector<std::string>> intvalues={
+    /// First test valid values
+    {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
+    {"0 -1 2 -3 4 5 6", "0 -1 2 -3 4 5 6", "None"},
+    {"100", "100", "None"},
+    {"-100", "-100", "None"},
+    {"", "", "None"},
+
+    /// The test the A-B range notation
+    {"10-15 21", "10 11 12 13 14 15 21", "None"},
+    {"15-10 21", "15 14 13 12 11 10 21", "None"},
+    {"10-15 -2 21", "10 11 12 13 14 15 -2 21", "None"},
+    {"15-10 -2 21", "15 14 13 12 11 10 -2 21", "None"},
+
+    /// Test the A-B-INC range notation
+    {"10-16-2 21", "10 12 14 16 21", "None"},
+
+    /// The test the A-B negative range notation
+    {"-5-0", "-5 -4 -3 -2 -1 0", "None"},
+    {"-5-5", "-5 -4 -3 -2 -1 0 1 2 3 4 5", "None"},
+    {"5--5", "5 4 3 2 1 0 -1 -2 -3 -4 -5", "None"},
+    {"-10--5", "-10 -9 -8 -7 -6 -5", "None"},
+    {"-5--10", "-5 -6 -7 -8 -9 -10", "None"},
+
+    /// Test the A-B-INC range notation
+    {"10-16-2 21", "10 12 14 16 21", "None"},
+
+    /// Test the A-B-INC negative range notation
+    {"10-16--2 21", "16 14 12 10 21", "None"},
+    {"-10--16--2 21", "-10 -12 -14 -16 21", "None"},
+
+    /// Now we test correct handling of problematic input
+    {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
+    {"5 6---10 0", "Undefined", "Warning"},
+    {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
+    {"3.14 4.15 5.16", "0 0 0", "Warning"}
+};
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
+                        vector_test_int,
+                        ::testing::ValuesIn(intvalues));
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// TEST THE vector<int> behavior
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+typedef vector_test<unsigned int> vector_test_unsigned_int;
+TEST_P(vector_test_unsigned_int, checkReadWriteBehavior_OpenIssue)
 {
-    /*
-    Data<RGBAColor> color ;
-
-    EXPECT_FALSE(color.read("invalidcolor"));
-
-    EXPECT_TRUE(color.read("white"));
-    EXPECT_EQ(color.getValue(), RGBAColor(1.0,1.0,1.0,1.0));
-
-    EXPECT_TRUE(color.read("blue"));
-    EXPECT_EQ(color.getValue(), RGBAColor(0.0,0.0,1.0,1.0));
-
-    std::stringstream tmp;
-    tmp << color ;
-    EXPECT_TRUE(color.read(tmp.str()));
-    EXPECT_EQ(color.getValue(), RGBAColor(0.0,0.0,1.0,1.0));
-    */
+    this->checkVector(GetParam()) ;
 }
 
-typedef Types<
-   int,
-   char,
-   float,
-   double,
-   unsigned char,
-   unsigned int
-> DataTypes;
-TYPED_TEST_CASE(vector_test, DataTypes);
+std::vector<std::vector<std::string>> uintvalues={
+    /// First test valid values
+    {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
+    {"100", "100", "None"},
+    {"", "", "None"},
 
-TYPED_TEST(vector_test, checkBasicReadFromString_OpenIssue)
-{
-    this->checkBasicReadFromString("0 1 2 3 4 5 6") ;
-    this->checkBasicReadFromString("zero un deux trois quatre cinq six") ;
-    this->checkBasicReadFromString("0  un deux trois 4 5 6") ;
-    this->checkBasicReadFromString("0 1 -2 3 4 -5 6") ;
-    this->checkBasicReadFromString("") ;
-    this->checkBasicReadFromString("0") ;
-    this->checkBasicReadFromString("-10") ;
-    this->checkBasicReadFromString("5 10 - 66") ;
-    this->checkBasicReadFromString("3.14 3.15 3.16") ;
-}
+    /// The test the A-B range notation
+    {"10-15 21", "10 11 12 13 14 15 21", "None"},
+    {"15-10 21", "15 14 13 12 11 10 21", "None"},
+
+    /// The test the A-B range notation
+    {"10-16-2 21", "10 12 14 16 21", "None"},
+    {"10-16--2 21", "16 14 12 10 21", "None"},
+
+    /// The test the A-B negative range notation
+    //{"-5", "0", "None"},
+
+    /*{"-5-5", "-5 -4 -3 -2 -1 0 1 2 3 4 5", "None"},
+        {"5--5", "5 4 3 2 1 0 -1 -2 -3 -4 -5", "None"},
+        {"-10--5", "-10 -9 -8 -7 -6 -5", "None"},
+        {"-5--10", "-5 -6 -7 -8 -9 -10", "None"},
+        */
+
+    /// Now we test correct handling of problematic input
+    {"-5", "0", "Warning"},
+    {"0 -1 2 -3 4 5 6", "0 0 2 0 4 5 6", "Warning"},
+    {"-100", "0", "Warning"},
+    {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
+    {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
+    {"3.14 4.15 5.16", "0 0 0", "Warning"},
+    {"5 6---10 0", "Undefined", "Warning"}
+};
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
+                        vector_test_unsigned_int,
+                        ::testing::ValuesIn(uintvalues));
 
 
-TYPED_TEST(vector_test, checkIntervalReadFromString_OpenIssue)
-{
-    this->checkIntervalReadFromString("10-20", "10 11 12 13 14 15 16 17 18 19 20") ;
-    this->checkIntervalReadFromString("20-10", "20 19 18 17 16 15 14 13 12 11 10") ;
+//TEST_F(vector_test, checkIntervalReadFromString_OpenIssue)
+//{
+//    this->checkIntervalReadFromString("10-20", "10 11 12 13 14 15 16 17 18 19 20") ;
+//   this->checkIntervalReadFromString("20-10", "20 19 18 17 16 15 14 13 12 11 10") ;
 
-    /*
+/*
     this->checkIntervalReadFromString("10--20", "") ;
     this->checkIntervalReadFromString("1--0", "") ;
 
@@ -151,9 +206,4 @@ TYPED_TEST(vector_test, checkIntervalReadFromString_OpenIssue)
     this->checkIntervalReadFromString("10-", "") ;
     this->checkIntervalReadFromString("-", "") ;
     */
-}
-
-TYPED_TEST(vector_test, checkVectorDataField)
-{
-    this->checkVectorDataField() ;
-}
+//}
