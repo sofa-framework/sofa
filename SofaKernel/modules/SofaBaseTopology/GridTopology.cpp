@@ -183,6 +183,8 @@ GridTopology::GridTopology(int _nx, int _ny, int _nz)
     , m_gridDim(GRID_NULL)
 {
     checkGridResolution();
+    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    this->addSlave(gridUpdate);
 }
 
 GridTopology::GridTopology( Vec3i np )
@@ -195,6 +197,8 @@ GridTopology::GridTopology( Vec3i np )
     , m_gridDim(GRID_NULL)
 {
     checkGridResolution();
+    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
+    this->addSlave(gridUpdate);
 }
 
 void GridTopology::init()
