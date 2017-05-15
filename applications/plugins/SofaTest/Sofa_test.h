@@ -81,12 +81,12 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
     /// By default all test based on Sofa_test are failing if there is one of the following.
     /// To prevent that you simply need to add the line
     /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::helper::logging::MesssageAsTestFailure m_fatal ; //(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ );
-    sofa::helper::logging::MesssageAsTestFailure m_error ; //(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
+    sofa::helper::logging::MessageAsTestFailure m_fatal ; //(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ );
+    sofa::helper::logging::MessageAsTestFailure m_error ; //(sofa::helper::logging::Message::Error, __FILE__, __LINE__ );
 
     //todo(dmarchal): reactive progressively the test (remove this todo after 07/04/2018)
-    ///sofa::helper::logging::MesssageAsTestFailure m_warning ; //(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
-    ///sofa::helper::logging::MesssageAsTestFailure m_deprecated ; //(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
+    ///sofa::helper::logging::MessageAsTestFailure m_warning ; //(sofa::helper::logging::Message::Warning, __FILE__, __LINE__ );
+    ///sofa::helper::logging::MessageAsTestFailure m_deprecated ; //(sofa::helper::logging::Message::Deprecated, __FILE__, __LINE__ );
 
 
     Sofa_test() :
