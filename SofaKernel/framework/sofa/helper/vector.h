@@ -189,6 +189,7 @@ public:
 
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
+//TODO(dmarchal 2017-05-13 (remove in 1 year if not done)): This code may have problem and requires a review.
 template<>
 inline std::istream& vector<int >::read( std::istream& in )
 {
