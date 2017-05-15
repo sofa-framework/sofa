@@ -239,8 +239,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         }
         if (scale < 0)
         {
-            grid->m_bbmin = grid->pmin;
-            grid->m_bbmax = grid->pmax;
+            grid->m_bbmin = grid->m_pmin;
+            grid->m_bbmax = grid->m_pmax;
         }
         else
             grid->computeBBox();
