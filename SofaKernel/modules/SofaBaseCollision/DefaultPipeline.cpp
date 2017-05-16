@@ -66,7 +66,8 @@ DefaultPipeline::DefaultPipeline()
                                     "Display extra informations at each computation step. (default=false)"))
     , d_doDebugDraw(initData(&d_doDebugDraw, false, "draw",
                              "Draw the detected collisions. (default=false)"))
-    //TODO(dmarchal) fix the min & max value with response from discussion.
+
+    //TODO(dmarchal 2017-05-16) Fix the min & max value with response from a github issue. Remove in 1 year if not done.
     , d_depth(initData(&d_depth, 6, "depth",
                        "Max depth of bounding trees. (default=6, min=?, max=?)"))
 {
@@ -78,6 +79,7 @@ typedef simulation::Visitor::ctime_t ctime_t;
 
 void DefaultPipeline::init()
 {
+    Inherit1::init() ;
     if(d_depth.getValue() < 0)
     {
         msg_warning() << "Invalid value 'depth'="<<d_depth.getValue() << "." << msgendl
@@ -274,7 +276,7 @@ void DefaultPipeline::draw(const core::visual::VisualParams* )
     if (!d_doDebugDraw.getValue()) return;
     if (!narrowPhaseDetection) return;
 
-//TODO(dmarchal): remove this code or reactivate or do a proper #ifdef
+//TODO(dmarchal 2017-05-17): remove this code or reactivate or do a proper #ifdef
 //TODO(dmarchal): it makes also no sense to keep a 'draw' attribute while nothing is displayed.
 #if 0
     glDisable(GL_LIGHTING);
