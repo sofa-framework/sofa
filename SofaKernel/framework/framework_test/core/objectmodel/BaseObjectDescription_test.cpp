@@ -184,7 +184,7 @@ TEST_F(BaseObjectDescription_test ,  checkGetAttributeAsInt)
     this->checkGetAttributeAsFloat();
 }
 
-TEST_F(BaseObjectDescription_test ,  checkRemoveAnAttribute_OpenIssue)
+TEST_F(BaseObjectDescription_test ,  checkRemoveAnAttribute)
 {
     this->checkRemoveAnAttribute();
 }

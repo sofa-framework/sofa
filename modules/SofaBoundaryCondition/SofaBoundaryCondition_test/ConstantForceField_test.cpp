@@ -257,7 +257,7 @@ TYPED_TEST( ConstantForceField_test , testSimpleBehavior )
     ASSERT_NO_THROW (this->testSimpleBehavior());
 }
 
-TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices_OpenIssue )
+TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices )
 {
     ASSERT_NO_THROW (this->testMonkeyValueForIndices());
 }

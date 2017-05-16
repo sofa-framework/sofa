@@ -92,7 +92,7 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef vector_test<int> vector_test_int;
-TEST_P(vector_test_int, checkReadWriteBehavior_OpenIssue)
+TEST_P(vector_test_int, checkReadWriteBehavior)
 {
     this->checkVector(GetParam()) ;
 }
@@ -134,7 +134,7 @@ std::vector<std::vector<std::string>> intvalues={
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"}
 };
-INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_int,
                         ::testing::ValuesIn(intvalues));
 
@@ -146,7 +146,7 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef vector_test<unsigned int> vector_test_unsigned_int;
-TEST_P(vector_test_unsigned_int, checkReadWriteBehavior_OpenIssue)
+TEST_P(vector_test_unsigned_int, checkReadWriteBehavior)
 {
     this->checkVector(GetParam()) ;
 }
@@ -181,7 +181,7 @@ std::vector<std::vector<std::string>> uintvalues={
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
     {"5 6---10 0", "5 0 0", "Warning"}
 };
-INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 

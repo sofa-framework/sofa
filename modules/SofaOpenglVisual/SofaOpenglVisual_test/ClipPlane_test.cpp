@@ -97,7 +97,7 @@ void TestClipPlane::checkClipPlaneAttributesValues(const std::string& dataname, 
     clearSceneGraph();
 }
 
-TEST_F(TestClipPlane, checkClipPlaneIdInValidValues_OpenIssue)
+TEST_F(TestClipPlane, checkClipPlaneIdInValidValues)
 {
     EXPECT_MSG_EMIT(Error) ;
 

@@ -258,15 +258,8 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
 }
 
 
-
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
-//TODO(dmarchal 2017-05-13 (remove in 1 year if not done)): This code may have problem and requires a review.
-// This implementation is broken !!
-// -10--20 should return [-10 -11 -12 -13 -14 ....]
-// -10--20-3 should rise a warning [-10 -11 -12 -13 -14 ....]
-// -10--20--3 should work....
-//
 template<> inline
 std::istream& vector<int>::read( std::istream& in )
 {
