@@ -132,7 +132,7 @@ std::vector<std::vector<std::string>> intvalues={
 
     /// Now we test correct handling of problematic input
     {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
-    {"5 6---10 0", "Undefined", "Warning"},
+    {"5 6---10 0", "5 0 0", "Warning"},
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"}
 };
@@ -181,7 +181,7 @@ std::vector<std::vector<std::string>> uintvalues={
     {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
     {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
-    {"5 6---10 0", "Undefined", "Warning"}
+    {"5 6---10 0", "5 0 0", "Warning"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
                         vector_test_unsigned_int,
