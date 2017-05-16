@@ -117,7 +117,7 @@ unsigned int getUnsignedInteger(const std::string& s, std::stringstream& msg, un
 // -10--20--3 should work....
 //
 template<>
-std::istream& vector<int>::read( std::istream& in )
+std::istream& SOFA_HELPER_API vector<int>::read( std::istream& in )
 {
     int t;
     this->clear();
@@ -196,7 +196,7 @@ std::istream& vector<int>::read( std::istream& in )
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-std::istream& vector<unsigned int>::read( std::istream& in )
+std::istream& SOFA_HELPER_API vector<unsigned int>::read( std::istream& in )
 {
     std::stringstream errmsg ;
     unsigned int errcnt = 0 ;
@@ -267,7 +267,7 @@ std::istream& vector<unsigned int>::read( std::istream& in )
 /// Output stream
 /// Specialization for writing vectors of unsigned char
 template<>
-std::ostream& vector<unsigned char>::write(std::ostream& os) const
+std::ostream& SOFA_HELPER_API vector<unsigned char>::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
@@ -281,7 +281,7 @@ std::ostream& vector<unsigned char>::write(std::ostream& os) const
 /// Input stream
 /// Specialization for reading vectors of unsigned char
 template<>
-std::istream&  vector<unsigned char>::read(std::istream& in)
+std::istream& SOFA_HELPER_API vector<unsigned char>::read(std::istream& in)
 {
     int t;
     this->clear();

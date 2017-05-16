@@ -247,11 +247,11 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
     v.pop_back();
 }
 
-template<> std::istream& vector<int>::read( std::istream& in ) ;
-template<> std::istream& vector<unsigned int>::read( std::istream& in ) ;
+template<> std::istream& SOFA_HELPER_API vector<int>::read( std::istream& in ) ;
+template<> std::istream& SOFA_HELPER_API vector<unsigned int>::read( std::istream& in ) ;
 
-template<> std::ostream& vector<unsigned char>::write(std::ostream& os) const ;
-template<> std::istream& vector<unsigned char>::read( std::istream& in ) ;
+template<> std::ostream& SOFA_HELPER_API vector<unsigned char>::write(std::ostream& os) const ;
+template<> std::istream& SOFA_HELPER_API vector<unsigned char>::read( std::istream& in ) ;
 
 
 //@}
