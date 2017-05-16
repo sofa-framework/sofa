@@ -51,6 +51,7 @@ class ShearlessAffineBody:
         self.image = None
         self.sampler = None
         self.shapeFunction = None
+        self.offsets = []
         # class attributes: sofa components
         self.collision = None # the added collision mesh if any
         self.visual = None # the added visual model if any
@@ -221,13 +222,14 @@ class ShearlessAffineBody:
                     ind = i
             # add of the offset according to this position
             offset_computed = (self.frame[ind]*offset_abs).offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind)
+            self.offsets.append(ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, ind))
+            return self.offsets[-1]
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], index=-1):
         ## adding a offset given in absolute coordinates to the rigid body
         #return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index) # this line does not cover the case where the shapeFunction is within the affineNode
         if index > -1:
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index)
+            self.offsets.append(ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset, index))
         else :
             # computation of the index of the closest point to the offset
             index_computed = 0
@@ -240,7 +242,8 @@ class ShearlessAffineBody:
                     index_computed = i
             # add of the offset according to this position
             offset_computed = frameOffset.offset()
-            return ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed)
+            self.offsets.append(ShearlessAffineBody.Offset(self.rigidNode, self.scaleNode, name, offset_computed, index_computed))
+        return self.offsets[-1]
 
     def addMappedPoint(self, name, relativePosition=[0,0,0]):
         ## adding a relative position to the rigid body
