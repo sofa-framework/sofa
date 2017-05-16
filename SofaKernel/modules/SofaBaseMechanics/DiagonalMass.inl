@@ -422,7 +422,6 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor)
 {
     const MassVector &masses= d_mass.getValue();
-    //std::cout << "DIAGONALMASS: dx size = " << dx.size() << " res size = " << res.size() << " masses size = " << masses.size() << std::endl;
     helper::WriteAccessor< DataVecDeriv > _res = res;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
 
@@ -769,7 +768,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     Inherited::init();
     initTopologyHandlers();
 
-    // TODO(dmarchal): this code is duplicated with the one in RigidImpl
+    // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
     if (this->mstate && d_mass.getValue().size() > 0 && d_mass.getValue().size() < (unsigned)this->mstate->getSize())
     {
         MassVector &masses= *d_mass.beginEdit();
