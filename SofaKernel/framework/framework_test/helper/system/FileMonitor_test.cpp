@@ -44,7 +44,7 @@ static std::string getPath(std::string s) {
     return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
 }
 
-void createAFilledFile(const string filename, unsigned int rep){
+void createAFilledFile(const string filename, unsigned int rep, bool resetFileMonitor=true){
     ofstream file1 ;
     file1.open(filename.c_str(), ofstream::out) ;
 
@@ -55,6 +55,10 @@ void createAFilledFile(const string filename, unsigned int rep){
         file1.write(sample.c_str(), sample.size()) ;
     }
     file1.close();
+
+    // dirty fix to avoid interferences between successive tests using the same file
+    if (resetFileMonitor)
+        FileMonitor::updates();
 }
 
 void waitForFileEvents()
@@ -67,7 +71,7 @@ void waitForFileEvents()
     sleep(1);
 #endif
 #ifdef __linux__
-    sleep(1);
+  //  sleep(1);
 #endif
 }
 
@@ -160,11 +164,11 @@ TEST(FileMonitor, updateNoChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     waitForFileEvents();
     FileMonitor::updates(2) ;
+
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -182,7 +186,7 @@ TEST(FileMonitor, fileChange_test)
     //FileMonitor::updates(2) ;
 
     // change the file content..
-    createAFilledFile(getPath("existing.txt"), 10) ;
+    createAFilledFile(getPath("existing.txt"), 10,false) ;
     waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
@@ -202,8 +206,8 @@ TEST(FileMonitor, fileChangeTwice_test)
 
     // change the file content 2x to test if the events are coalesced.
     listener.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 100) ;
-    createAFilledFile(getPath("existing.txt"), 200) ;
+    createAFilledFile(getPath("existing.txt"), 100,false) ;
+    createAFilledFile(getPath("existing.txt"), 200,false) ;
 
     waitForFileEvents();
     FileMonitor::updates(2) ;
@@ -227,7 +231,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
     listener2.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 200) ;
+    createAFilledFile(getPath("existing.txt"), 200, false) ;
 
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
@@ -255,7 +259,7 @@ TEST(FileMonitor, listenerRemoved_test)
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
     listener2.m_files.clear() ;
-    createAFilledFile(getPath("existing.txt"), 200) ;
+    createAFilledFile(getPath("existing.txt"), 200,false) ;
 
     FileMonitor::removeListener(&listener1) ;
 
@@ -280,7 +284,7 @@ TEST(FileMonitor, fileChange2_test)
     //FileMonitor::updates(2) ;
 
     // change the file content..
-    createAFilledFile(getPath("existing.txt"), 10) ;
+    createAFilledFile(getPath("existing.txt"), 10,false) ;
 
     waitForFileEvents();
     FileMonitor::updates(2) ;
