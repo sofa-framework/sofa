@@ -42,8 +42,6 @@ class vector_test : public Sofa_test<>,
         public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
-    //void SetUp() {}
-    //void TearDown() {}
     void checkVector(const std::vector<std::string>& params) ;
 };
 
