@@ -223,7 +223,7 @@ std::istream& vector<unsigned int>::read( std::istream& in )
             {
                 std::string s2(s,hyphen+1);
                 t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = (t1<t2) ? 1 : -1;
+                tinc = (t1<=t2) ? 1 : -1;
             }
             else
             {
@@ -233,23 +233,25 @@ std::istream& vector<unsigned int>::read( std::istream& in )
                 tinc = getInteger(s3, errmsg, errcnt);
                 if (tinc == 0)
                 {
-                    tinc = (t1<t2) ? 1 : -1;
+                    tinc = (t1<=t2) ? 1 : -1;
                     errmsg << "- problem while parsing '"<<s<<"': increment is 0. Use " << tinc << " instead." ;
                 }
                 if (((int)(t2-t1))*tinc < 0)
                 {
-                    // increment not of the same sign as t2-t1 : swap t1<->t2
+                    /// increment not of the same sign as t2-t1 : swap t1<->t2
                     t = t1;
                     t1 = t2;
                     t2 = t;
                 }
             }
-            if (tinc < 0)
-                for (t=t1; t>=t2; t=(unsigned int)((int)t+tinc))
+            if (tinc < 0){
+                for (t=t1; t>t2; t=t+tinc)
                     this->push_back(t);
-            else
-                for (t=t1; t<=t2; t=(unsigned int)((int)t+tinc))
+                this->push_back(t2);
+            } else {
+                for (t=t1; t<=t2; t=t+tinc)
                     this->push_back(t);
+            }
         }
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }

@@ -42,8 +42,8 @@ class vector_test : public Sofa_test<>,
         public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
-    void SetUp() {}
-    void TearDown() {}
+    //void SetUp() {}
+    //void TearDown() {}
     void checkVector(const std::vector<std::string>& params) ;
 };
 
@@ -159,24 +159,22 @@ std::vector<std::vector<std::string>> uintvalues={
     {"100", "100", "None"},
     {"", "", "None"},
 
-    /// The test the A-B range notation
+    /// Test the A-B range notation
     {"10-15 21", "10 11 12 13 14 15 21", "None"},
     {"15-10 21", "15 14 13 12 11 10 21", "None"},
 
-    /// The test the A-B range notation
+    /// Test the A-B range notation
     {"10-16-2 21", "10 12 14 16 21", "None"},
     {"10-16--2 21", "16 14 12 10 21", "None"},
 
-    /// The test the A-B negative range notation
-    //{"-5", "0", "None"},
+    /// Test the A-B negative range notation
+    {"-5-5", "0 1 2 3 4 5", "Warning"},
+    {"0--5", "0", "Warning"},
+    {"5--5", "5 4 3 2 1 0", "Warning"},
+    {"-10--5", "0", "Warning"},
+    {"-5--10", "0", "Warning"},
 
-    /*{"-5-5", "-5 -4 -3 -2 -1 0 1 2 3 4 5", "None"},
-        {"5--5", "5 4 3 2 1 0 -1 -2 -3 -4 -5", "None"},
-        {"-10--5", "-10 -9 -8 -7 -6 -5", "None"},
-        {"-5--10", "-5 -6 -7 -8 -9 -10", "None"},
-        */
-
-    /// Now we test correct handling of problematic input
+    /// Test correct handling of problematic input
     {"-5", "0", "Warning"},
     {"0 -1 2 -3 4 5 6", "0 0 2 0 4 5 6", "Warning"},
     {"-100", "0", "Warning"},
@@ -189,21 +187,3 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior_OpenIssue,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
-
-//TEST_F(vector_test, checkIntervalReadFromString_OpenIssue)
-//{
-//    this->checkIntervalReadFromString("10-20", "10 11 12 13 14 15 16 17 18 19 20") ;
-//   this->checkIntervalReadFromString("20-10", "20 19 18 17 16 15 14 13 12 11 10") ;
-
-/*
-    this->checkIntervalReadFromString("10--20", "") ;
-    this->checkIntervalReadFromString("1--0", "") ;
-
-    this->checkIntervalReadFromString("--0", "") ;
-    this->checkIntervalReadFromString("-0", "") ;
-    this->checkIntervalReadFromString("0--", "") ;
-    this->checkIntervalReadFromString("0-", "") ;
-    this->checkIntervalReadFromString("10-", "") ;
-    this->checkIntervalReadFromString("-", "") ;
-    */
-//}
