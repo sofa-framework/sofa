@@ -55,7 +55,7 @@ TPtr Factory<TKey, TObject, TArgument, TPtr>::createObject(Key key, Argument arg
         }
         ++it;
     }
-//	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+//	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
     return NULL;
 }
 
@@ -76,7 +76,7 @@ TPtr Factory<TKey, TObject, TArgument, TPtr>::createAnyObject(Argument arg)
         }
         ++it;
     }
-//	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+//	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
     return NULL;
 }
 

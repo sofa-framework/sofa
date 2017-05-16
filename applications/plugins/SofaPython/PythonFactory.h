@@ -108,7 +108,7 @@ protected:
     /// check for the corresponding type in the given list
     static PyObject* toPython( const PythonBoundTypes& list, sofa::core::objectmodel::Base* obj, PyTypeObject* pyTypeObject  )
     {
-//        std::cerr<<"toPython "<<obj->getClassName()<<std::endl;
+//        msg_info()<<"toPython "<<obj->getClassName()<<std::endl;
 
         for(PythonBoundTypes::const_reverse_iterator it=list.rbegin(),itend=list.rend();it!=itend;++it)
             if( (*it)->canCast( obj ) ) return BuildPySPtr<sofa::core::objectmodel::Base>(obj,(*it)->pyTypeObject);
@@ -125,7 +125,7 @@ public:
     template<class T>
     static void add( PyTypeObject* pyTypeObject )
     {
-//        std::cerr<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
+//        msg_info()<<"ADD "<<T::template className<T>()<<" "<<T::template typeName<T>()<<std::endl;
 
         PythonBoundType<T>* t = new PythonBoundType<T>(pyTypeObject);
 
@@ -177,7 +177,7 @@ public:
     /// could be improve for known types, but since it is only setup...
     static PyObject* toPython(sofa::core::objectmodel::Base* obj)
     {
-//        std::cerr<<"toPython0 "<<obj->getClassName()<<std::endl;
+//        msg_info()<<"toPython0 "<<obj->getClassName()<<std::endl;
 
         if( obj->toBaseObject() )
         {

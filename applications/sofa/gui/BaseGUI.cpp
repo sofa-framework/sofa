@@ -151,11 +151,11 @@ static void setDirectoryPath(std::string& outputVariable, const std::string& pat
 
     if (!pathExists && !createIfNecessary)
     {
-        std::cerr << "Error: No such directory: " << path << std::endl;
+        msg_error("BaseGUI") << "No such directory '" << path << "'";
     }
     else if (pathExists && !FileSystem::isDirectory(path))
     {
-        std::cerr << "Error: Not a directory: " << path << std::endl;
+         msg_error("BaseGUI") << "Not a directory: " << path << "'";
     }
     else
     {

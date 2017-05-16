@@ -350,12 +350,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
 
         if (in.size() > rotatedPoints.size())
         {
-            bool log = this->f_printLog.getValue();
-            //std::cout<<"+++++++++++ LOG +++++++++ "<<log<<std::endl;
-            //this->f_printLog.setValue(true);
-            serr<<"Warning: applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")"<<sendl;
-            //this->propagateX();
-            //	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL)
+            bool log = this->notMuted();
+
+            msg_warning()<<" applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")";
+
             const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());
             const InVecCoord xfrom = xfromData->getValue();
             OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
@@ -564,10 +562,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 {
     core::topology::BaseMeshTopology* from = t->toBaseMeshTopology();
     if(from == NULL ) {
-		this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl; 
-		return;
-	}
-	std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+        this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl;
+        return;
+    }
+    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
     std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
 
     for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
@@ -576,19 +574,19 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
         switch ( changeType )
         {
-			case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
-			{
+            case core::topology::TRIANGLESADDED:       ///< To notify the end for the current sequence of topological change events
+            {
                 core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::restPosition(), core::ConstVecCoordId::restPosition());
-				if(this->f_applyRestPosition.getValue() )
+                if(this->f_applyRestPosition.getValue() )
                     core::Multi2Mapping<TIn, TInRoot, TOut>::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(), core::ConstVecCoordId::position());
-				break;
-			}
-			default:
-				break;
+                break;
+            }
+            default:
+                break;
 
-		}
+        }
 
-	}
+    }
 
 }
 
@@ -665,7 +663,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		apply(*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue(),m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
 //
 //
-//	if( this->f_printLog.getValue())	{
+//	if( notMuted())	{
 //		serr<<"DeformableOnRigidFrameMapping::propageX processed :"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
@@ -681,7 +679,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL)
 //		apply(*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), *m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()));
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propageXfree processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
@@ -697,7 +695,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
 //		applyJ(m_toModel->read(core::ConstVecDerivId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
@@ -715,7 +713,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		applyJ(*m_toModel->getDx(), *m_fromModel->getDx(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getDx()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateDx processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
 //			serr<<"input root: "<<*m_fromRootModel->getDx();
@@ -733,7 +731,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //		applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::accumulateForce processed"<<sendl;
 //		serr<<" input f : "<<*m_toModel->getF();
 //		if (m_fromRootModel!=NULL)
@@ -752,7 +750,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //	applyJT(*m_fromModel->getF(), *m_toModel->getF(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getF()));
 //
 //
-//	if( this->f_printLog.getValue()){
+//	if( notMuted()){
 //		serr<<"DeformableOnRigidFrameMapping::accumulateDf processed"<<sendl;
 //		serr<<" input df : "<<*m_toModel->getF();
 //		if (m_fromRootModel!=NULL)

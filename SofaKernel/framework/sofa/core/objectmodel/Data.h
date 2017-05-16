@@ -32,7 +32,7 @@
 #include <sofa/helper/vector.h>
 #include <memory>
 #include <string>
-
+#include <sofa/helper/logging/Message.h>
 namespace sofa
 {
 
@@ -638,11 +638,11 @@ public:
     typedef core::objectmodel::Data<T> data_container_type;
     typedef typename Inherit::container_type container_type;
 
-	// these are forbidden (until c++11 move semantics) as they break
-	// RAII encapsulation. the reference member 'data' prevents them
-	// anyways, but the intent is more obvious like this.
-	WriteAccessor(const WriteAccessor& );
-	WriteAccessor& operator=(const WriteAccessor& );
+    // these are forbidden (until c++11 move semantics) as they break
+    // RAII encapsulation. the reference member 'data' prevents them
+    // anyways, but the intent is more obvious like this.
+    WriteAccessor(const WriteAccessor& );
+    WriteAccessor& operator=(const WriteAccessor& );
 
 protected:
     data_container_type& data;

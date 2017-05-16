@@ -242,7 +242,7 @@ public:
                 }
             }
         } else {
-            std::cerr << "rotateMatrix for this kind of matrix is not implemented" << std::endl;
+            dmsg_warning("RotationMatrix") << "rotateMatrix for this kind of matrix is not implemented" ;
         }
     }
 

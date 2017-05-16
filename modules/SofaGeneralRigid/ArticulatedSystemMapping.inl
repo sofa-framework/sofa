@@ -123,7 +123,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::bwdInit()
         (*ac)->DisplacementArticulationCenter.clear();
         (*ac)->Disp_Rotation.clear();
 
-        // sout << "(*ac)->OrientationArticulationCenter : " << (*ac)->OrientationArticulationCenter << sendl;
         // todo : warning if a (*a)->articulationIndex.getValue() exceed xfrom size !
     }
 }
@@ -324,7 +323,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         CoordinateBuf[c].x() = in[c].x();
     }
 
-    //if( this->f_printLog.getValue())
+    //if( notMuted() )
     //{
     //	serr<<"ArticulatedSystemMapping::propageX processed :"<<sendl;
     //	if (m_fromRootModel!=NULL)
@@ -332,7 +331,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     //	serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
     //}
 
-    //if( this->f_printLog.getValue())
+    //if( notMuted())
     //{
     //	serr<<"ArticulatedSystemMapping::propageXfree processed"<<sendl;
     //	if (rootModel!=NULL)
@@ -415,7 +414,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 
         }
     }
-    //if( this->f_printLog.getValue())
+    //if(notMuted())
     //{
     //	serr<<" propagateV processed"<<sendl;
     //	if (m_fromRootModel!=NULL)
@@ -423,7 +422,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     //	serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
     //}
 
-    //if( this->f_printLog.getValue())
+    //if(notMuted())
     //{
     //	serr<<"ArticulatedSystemMapping::propagateDx processed"<<sendl;
     //	if (m_fromRootModel!=NULL)
@@ -501,7 +500,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
         (*outroot)[m_fromRootModel->getSize()-1] += fObjects6DBuf[0];
     }
 
-    //if( this->f_printLog.getValue())
+    //if(notMuted())
     //{
     //	serr<<"ArticulatedSystemMapping::accumulateForce processed"<<sendl;
     //	serr<<" input f : "<<*m_toModel->getF();
@@ -510,7 +509,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     //	serr<<"  - output F: "<<*m_fromModel->getF()<<sendl;
     //}
 
-    //if( this->f_printLog.getValue())
+    //if(notMuted())
     //{
     //	serr<<"ArticulatedSystemMapping::accumulateDf processed"<<sendl;
     //	serr<<" input df : "<<*m_toModel->getF();

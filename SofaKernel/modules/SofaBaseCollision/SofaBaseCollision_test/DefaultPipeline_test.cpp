@@ -48,9 +48,6 @@ using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageAsTestFailure ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
@@ -75,8 +72,8 @@ public:
 
 void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
 {
-    MessageAsTestFailure warning(Message::Warning) ;
-    MessageAsTestFailure error(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -99,8 +96,9 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
 
 void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
 {
-    ExpectMessage warning(Message::Warning) ;
-    MessageAsTestFailure error(Message::Error) ;
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -165,15 +163,18 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
     };
 
     for(auto is : testvalues){
-        MessageAsTestFailure error(Message::Error) ;
+        EXPECT_MSG_NOEMIT(Error) ;
+
         if(is.second){
-            MessageAsTestFailure warning(Message::Warning) ;
+            EXPECT_MSG_NOEMIT(Warning) ;
+
             // Check the returned value.
             if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first)!=is.first){
                 ADD_FAILURE() << "User provided depth parameter value '" << is.first << "' has been un-expectedly overriden." ;
             }
         }else{
-            ExpectMessage warning(Message::Warning) ;
+            EXPECT_MSG_NOEMIT(Warning) ;
+
             // Check the default value.
             if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first)!=6){
                 ADD_FAILURE() << "User provided invalid depth parameter value '" << is.first << "' have not been replaced with the default value = 6." ;

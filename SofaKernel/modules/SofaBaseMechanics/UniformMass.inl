@@ -334,8 +334,9 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( Real ) (mparams->dt());
-        if ( this->f_printLog.getValue() )
-            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg<<sendl;
+
+        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg ;
+
         for ( unsigned int i=0; i<v.size(); i++ )
         {
             v[i] += hg;
@@ -371,8 +372,8 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     ( theGravity, g[0], g[1], g[2] );
     const MassType& m = d_mass.getValue();
     Deriv mg = theGravity * m;
-    if ( this->f_printLog.getValue() )
-        serr<<"UniformMass::addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg<<sendl;
+
+    dmsg_info() <<" addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg;
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -586,11 +587,11 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
 template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)
 {
-    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while \n"
-                         " the current object is not based on a Rigid template. It is thus ignored.      \n"
-                         "To remove this warning you can: \n"
-                         "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>.\n"
-                         "  - use a Rigid mechanical object instead of a VecXX one. " ;
+    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<
+                         " the current object is not based on a Rigid template. It is thus ignored. " << msgendl <<
+                         "To remove this warning you can: " << msgendl <<
+                         "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>." << msgendl <<
+                         "  - use a Rigid mechanical object instead of a VecXX one." ;
 }
 
 } // namespace mass

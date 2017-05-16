@@ -39,7 +39,6 @@ set(SOURCE_FILES
     # RigidInertia.cpp
     SolidTypes.cpp
     TemplatesAliases.cpp
-    Color.cpp
     init.cpp
 )
 

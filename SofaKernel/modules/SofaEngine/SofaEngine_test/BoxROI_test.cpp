@@ -59,17 +59,6 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::MessageDispatcher ;
 
-#include <sofa/helper/logging/ClangMessageHandler.h>
-using sofa::helper::logging::ClangMessageHandler ;
-
-int initMessage(){
-    MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
-
-
 template <typename TDataType>
 struct BoxROITest :  public ::testing::Test
 {

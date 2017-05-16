@@ -37,7 +37,9 @@
 #include <vector>
 #include <fstream>
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 #include <SofaBaseTopology/TopologyData.h>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace sofa
 {
@@ -481,40 +483,40 @@ protected :
 };
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
 #endif
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 

@@ -23,31 +23,13 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
 
-#include <gtest/gtest.h>
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-using sofa::helper::logging::MainLoggingMessageHandler ;
-
-#include <sofa/helper/logging/CountingMessageHandler.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
-
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
 
-
-class ImagePNG_test : public ::testing::Test
+class ImagePNG_test : public Sofa_test<>
 {
 protected:
-    ImagePNG_test() {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-        MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
-    }
 
     void SetUp()
     {
@@ -88,13 +70,12 @@ protected:
             EXPECT_TRUE(0 == std::memcmp(data, testdata, width*height*bpp));
         }
     };
-
 };
 
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
 {
     /// This generate a test failure if no error message is generated.
-    ExpectMessage raii(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     sofa::helper::io::ImagePNG imgNoFile;
     EXPECT_FALSE(imgNoFile.load("image/randomnamewhichdoesnotexist.png"));
@@ -102,6 +83,9 @@ TEST_F(ImagePNG_test, ImagePNG_NoFile)
 
 TEST_F(ImagePNG_test, ImagePNG_NoImg)
 {
+    /// This generate a test failure if no error message is generated.
+    EXPECT_MSG_EMIT(Error) ;
+
     sofa::helper::io::ImagePNG imgNoImage;
     EXPECT_FALSE(imgNoImage.load("image/imagetest_noimage.png"));
 }

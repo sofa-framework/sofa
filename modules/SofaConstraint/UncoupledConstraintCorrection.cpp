@@ -463,8 +463,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const VecReal& usedComp = compliance.getValue();
 
-    if (this->f_printLog.getValue()) // debug
-        std::cout<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end <<std::endl;
+    msg_info()<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end ;
 
     Deriv weightedNormal, C_n;
 

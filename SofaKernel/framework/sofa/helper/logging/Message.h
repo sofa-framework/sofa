@@ -31,8 +31,11 @@
 #include <cstring>
 #include <sofa/helper/helper.h>
 #include <sstream>
-
+#include <set>
 #include <boost/shared_ptr.hpp>
+
+#include "ComponentInfo.h"
+#include "FileInfo.h"
 
 namespace sofa
 {
@@ -43,76 +46,19 @@ namespace helper
 namespace logging
 {
 
-static const char * s_unknownFile = "unknown-file";
-
-/// To keep a trace (file,line) from where the message have been created
-/// The filename must be a valid pointer throughoug the message processing
-/// If this cannot be guaranteed then use the FileInfoOwningFilename class
-/// instead.
-struct FileInfo
-{
-    typedef boost::shared_ptr<FileInfo> SPtr;
-
-    const char *filename {nullptr};
-    int line             {0};
-    FileInfo(const char *f, int l): filename(f), line(l) {}
-
-protected:
-    FileInfo(): filename(s_unknownFile), line(0) {}
-};
-
-/// To keep a trace (file,line) from where the message have been created
-struct FileInfoOwningFilename : public FileInfo
-{
-    FileInfoOwningFilename(const char *f, int l) {
-        char *tmp  = new char[strlen(f)+1] ;
-        strcpy(tmp, f) ;
-        filename = tmp ;
-        line = l ;
-    }
-
-    FileInfoOwningFilename(const std::string& f, int l) {
-        char *tmp  = new char[f.size()+1] ;
-        strcpy(tmp, f.c_str()) ;
-        filename = tmp ;
-        line = l ;
-    }
-
-    ~FileInfoOwningFilename(){
-        if(filename)
-            delete filename ;
-    }
-};
-
-
-/// To keep track component informations associated with a message.
-struct ComponentInfo
-{
-public:
-    typedef boost::shared_ptr<ComponentInfo> SPtr;
-
-    std::string m_name ;
-    std::string m_path ;
-
-    ComponentInfo(const std::string& name, const std::string& path)
-    {
-        m_name = name ;
-        m_path = path ;
-    }
-
-};
-
-static FileInfo::SPtr EmptyFileInfo(new FileInfo(s_unknownFile, 0)) ;
-
-#define SOFA_FILE_INFO sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfo(__FILE__, __LINE__))
-#define SOFA_FILE_INFO2(file,line) sofa::helper::logging::FileInfo::SPtr(new sofa::helper::logging::FileInfoOwningFilename(file,line))
-
+/// A message is the core object of the msg_* API.
+/// A message contains a textual description provided by the user as well as
+/// the location in source file (or in a separated file) from where the message have been
+/// emitted.
+/// A message also contains a ComponentInfo which can be used to provide additional details
+/// about the emitter's context.
 class SOFA_HELPER_API Message
 {
 public:
-
     /// possible levels of messages (ordered)
     enum Type {Info=0, Advice, Deprecated, Warning, Error, Fatal, TEmpty, TypeCount};
+    typedef std::set<Type> TypeSet;
+    static TypeSet AnyTypes ;
 
     /// class of messages
     enum Class {Dev, Runtime, Log, CEmpty, ClassCount};
@@ -120,9 +66,8 @@ public:
     Message() {}
     Message( const Message& msg );
     Message(Class mclass, Type type,
-            const std::string& sender = "",
-            const FileInfo::SPtr& fileInfo = EmptyFileInfo,
-            const ComponentInfo::SPtr& = ComponentInfo::SPtr());
+            const ComponentInfo::SPtr& = ComponentInfo::SPtr(),
+            const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
 
     Message& operator=( const Message& msg );
 
@@ -131,8 +76,9 @@ public:
     const std::stringstream& message() const  { return m_stream; }
     Class                    context() const  { return m_class; }
     Type                     type() const     { return m_type; }
-    const std::string&       sender() const   { return m_sender; }
+    const std::string&       sender() const   { return m_componentinfo->sender(); }
 
+    const std::string messageAsString() const  { return m_stream.str(); }
     bool empty() const;
 
     template<class T>
@@ -145,9 +91,8 @@ public:
     static Message emptyMsg ;
 
 protected:
-    std::string         m_sender; ///< who send the message (component or module)
-    FileInfo::SPtr      m_fileInfo; ///< a trace (file,line) from where the message have been created
     ComponentInfo::SPtr m_componentinfo; /// a trace (name, path) from whom has emitted this message.
+    FileInfo::SPtr      m_fileInfo; ///< a trace (file,line) from where the message have been created
     std::stringstream   m_stream; ///< the actual message
     Class               m_class; ///< who is the attender of the message (developers or users)?
     Type                m_type; ///< the message level
@@ -156,6 +101,7 @@ protected:
 };
 
 SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
+SOFA_HELPER_API const std::string toString(const Message::Type type) ;
 
 } // logging
 } // helper

@@ -44,18 +44,14 @@ namespace gui
 class SOFA_Compliant_gui_API CompliantAttachOperation : public Operation
 {
 public:
-    CompliantAttachOperation(sofa::component::configurationsetting::CompliantAttachButtonSetting::SPtr s = sofa::core::objectmodel::New<sofa::component::configurationsetting::CompliantAttachButtonSetting>()) : Operation(s), setting(s){}
-//    virtual void start() ;
-//    virtual void execution() ;
-//    virtual void end() ;
-//    virtual void endOperation() ;
+    CompliantAttachOperation(component::configurationsetting::CompliantAttachButtonSetting::SPtr s = core::objectmodel::New<component::configurationsetting::CompliantAttachButtonSetting>()) : Operation(s), setting(s){}
     static std::string getDescription() {return "CompliantAttach";}
 
 protected:
     virtual std::string defaultPerformerType() { return "CompliantAttach"; }
 
-    virtual void setSetting(sofa::component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<sofa::component::configurationsetting::CompliantAttachButtonSetting>(s); }
-    sofa::component::configurationsetting::CompliantAttachButtonSetting::SPtr setting;
+    virtual void setSetting(component::configurationsetting::MouseButtonSetting* s) { Operation::setSetting(s); setting = down_cast<component::configurationsetting::CompliantAttachButtonSetting>(s); }
+    component::configurationsetting::CompliantAttachButtonSetting::SPtr setting;
 };
 }
 
@@ -74,11 +70,11 @@ template <class DataTypes>
 class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerformer<DataTypes>
 {
     typedef typename DataTypes::Real                                  Real;
-    typedef sofa::component::container::MechanicalObject< DataTypes > Point3dState;
+    typedef component::container::MechanicalObject< DataTypes > Point3dState;
 
     typedef defaulttype::Vec<DataTypes::spatial_dimensions,Real> MouseVec;
     typedef defaulttype::StdVectorTypes<MouseVec,MouseVec,Real> MouseTypes;
-    typedef sofa::component::collision::BaseContactMapper< MouseTypes > MouseContactMapper;
+    typedef component::collision::BaseContactMapper< MouseTypes > MouseContactMapper;
 
 
 
@@ -105,7 +101,7 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     SReal _compliance;
     bool _isCompliance;
     SReal _arrowSize;
-    defaulttype::Vec<4,SReal> _color;
+    defaulttype::RGBAColor _color;
     bool _visualmodel;  // to be able to export the mouse spring in obj
 
 

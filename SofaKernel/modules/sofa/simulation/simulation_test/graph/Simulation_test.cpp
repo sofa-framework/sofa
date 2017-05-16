@@ -20,13 +20,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBaseMechanics/UniformMass.h>
-
 
 namespace sofa {
 using namespace modeling;
@@ -63,7 +65,7 @@ struct Scene_test: public Sofa_test<SReal>
 
     Scene_test()
     {
-        //std::cerr << "Simulation_test::Simulation_test" << std::endl;
+        //msg_info("SimulationTest") << "Simulation_test::Simulation_test" ;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         //sofa::simulation::setSimulation(simulation = new sofa::simulation::tree::TreeSimulation());
     }
@@ -232,19 +234,53 @@ protected:
 };
 
 // run the tests
-TEST_F( Scene_test,computeBBox) { this->computeBBox(); }
+TEST_F( Scene_test,computeBBox) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->computeBBox();
+}
 
 // component destruction
-TEST_F( Scene_test,objectDestruction_replace) { this->objectDestruction_replace(); }
-TEST_F( Scene_test,objectDestruction_delete) { this->objectDestruction_delete(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_setNull) { this->objectDestruction_setNull(); }
-TEST_F( Scene_test,objectDestruction_reset) { this->objectDestruction_reset(); }
-TEST_F( Scene_test,objectDestruction_subObject) { this->objectDestruction_subObject(); checkDeletions(); }
-TEST_F( Scene_test,objectDestruction_subNodeAndStep) { this->objectDestruction_subNodeAndStep(); }
+TEST_F( Scene_test,objectDestruction_replace) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_replace();
+}
+
+TEST_F( Scene_test,objectDestruction_delete) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_delete(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_setNull) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_setNull();
+}
+
+TEST_F( Scene_test,objectDestruction_reset) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_reset();
+}
+
+TEST_F( Scene_test,objectDestruction_subObject) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_subObject(); checkDeletions();
+}
+
+TEST_F( Scene_test,objectDestruction_subNodeAndStep) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectDestruction_subNodeAndStep();
+}
 
 // graph destruction
-TEST_F( Scene_test,sceneDestruction_unload) { this->sceneDestruction_unload(); }
-TEST_F( Scene_test,sceneDestruction_createnewgraph) { this->sceneDestruction_createnewgraph(); }
+TEST_F( Scene_test,sceneDestruction_unload) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->sceneDestruction_unload();
+}
+
+TEST_F( Scene_test,sceneDestruction_createnewgraph) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->sceneDestruction_createnewgraph();
+}
+
 // Node destruction does not trigger sub-graph destruction. You need to unload the node before. The two following tests are thus irrelevant.
 //TEST_F( Simulation_test,sceneDestruction_reset) { this->sceneDestruction_reset(); }
 //TEST_F( Simulation_test,sceneDestruction_setNull) { this->sceneDestruction_setNull(); }

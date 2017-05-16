@@ -46,7 +46,7 @@ public:
 
     template <class Elem1,class Elem2>
     static bool testIntersection(Elem1&,Elem2&,SReal){
-        std::cerr<<"testIntersection should not be used with theese types"<<std::endl;
+        msg_info("BaseIntTool")<<"testIntersection should not be used with theese types";
         return false;
     }
 
