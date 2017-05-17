@@ -1392,6 +1392,21 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 //////////////////////////////////////////////////////////////////////
 
 template <class DataTypes>
+TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
+{
+    // Need to unaffect a vector to the pointer
+    if (_mesh == NULL && _indexedElements != NULL)
+        delete _indexedElements;
+
+    // 	    if (_gatherPt) delete _gatherPt;
+    // 	    if (_gatherBsize)  delete _gatherBsize;
+    // 	    _gatherPt = NULL;
+    // 	    _gatherBsize = NULL
+}
+
+
+
+template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid ;
@@ -1415,14 +1430,15 @@ void TetrahedronFEMForceField<DataTypes>::init()
     this->core::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
 
-    // Need to affect a vector to the pointer even if it is empty.
-    if (_indexedElements == NULL)
-        _indexedElements = new VecElement();
-
     if (_mesh==NULL)
     {
         msg_error(this) << " object must have a mesh topology. The component is inactivated.  "
                            "To remove this error message please add a topology component to your scene.";
+
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -1433,13 +1449,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
         msg_error(this) << " object must have a tetrahedric topology. The component is inactivated.  "
                            "To remove this error message please add a tetrahedric topology component to your scene.";
+
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
         return;
     }
 
     if (!_mesh->getTetrahedra().empty())
     {
-        if (_indexedElements != NULL)
-            delete _indexedElements;
         _indexedElements = & (_mesh->getTetrahedra());
     }
     else
@@ -1537,8 +1556,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
             tetrahedra->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
         }
         */
-        if (_indexedElements != NULL)
-            delete _indexedElements;
         _indexedElements = tetrahedra;
     }
     /*if (_mesh->hasPos())
@@ -1585,7 +1602,14 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-    if (!this->mstate) return;
+    if (!this->mstate || !_mesh){
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
+        return;
+    }
+
     if (!_mesh->getTetrahedra().empty())
     {
         _indexedElements = & (_mesh->getTetrahedra());
