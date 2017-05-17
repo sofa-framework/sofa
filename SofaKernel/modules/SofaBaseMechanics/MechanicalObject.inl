@@ -30,7 +30,6 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -1232,37 +1231,14 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    Vector3 p0;
-    sofa::component::topology::RegularGridTopology *grid;
-    this->getContext()->get(grid, sofa::core::objectmodel::BaseContext::Local);
-    if (grid) p0 = grid->getP0();
-
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
-    {
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-        if (grid) p0 = p0.linearProduct(scale.getValue());
-    }
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-    {
         this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
 
-        if (grid)
-        {
-            msg_warning(this) << "MechanicalObject initial rotation is not applied to its grid topology. \n"
-                                 "Regular grid topologies rotations are unsupported.\n" ;
-        }
-    }
-
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-    {
         this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
-        if (grid) p0 += translation.getValue();
-    }
-
-
-    if (grid)
-        grid->setP0(p0);
 }
 
 template <class DataTypes>
