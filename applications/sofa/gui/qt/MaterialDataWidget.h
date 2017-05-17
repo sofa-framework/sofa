@@ -40,44 +40,29 @@
 #include <QValidator>
 #include <QColorDialog>
 
+#include "QRGBAColorPicker.h"
+
 namespace sofa
 {
 namespace gui
 {
 namespace qt
 {
-
-class RGBAColorPicker : public QWidget
+/// Private namespace
+namespace materialdatawidget_h
 {
-    Q_OBJECT
-signals:
-    void hasChanged();
-public:
-    RGBAColorPicker(QWidget* parent);
-    void setColor( const sofa::defaulttype::Vec4f& color );
-    sofa::defaulttype::Vec4f getColor() const;
-protected:
-    QRgb _rgba;
-    QLineEdit* _r;
-    QLineEdit* _g;
-    QLineEdit* _b;
-    QLineEdit* _a;
-    QPushButton* _colorButton;
+using sofa::gui::qt::QRGBAColorPicker ;
+using sofa::core::loader::Material ;
+using sofa::core::objectmodel::Data ;
 
-protected slots:
-    void updateRGBAColor();
-    void redrawColorButton();
-    void raiseQColorDialog();
-};
-
-class MaterialDataWidget : public TDataWidget<sofa::core::loader::Material>
+class MaterialDataWidget : public TDataWidget<Material>
 {
     Q_OBJECT
 public:
     MaterialDataWidget(QWidget* parent,
-            const char* name,
-            core::objectmodel::Data<sofa::core::loader::Material>* data):
-        TDataWidget<sofa::core::loader::Material>(parent,name,data)
+                       const char* name,
+                       Data<Material>* data):
+        TDataWidget<Material>(parent,name,data)
     {}
 
     virtual bool createWidgets();
@@ -88,10 +73,10 @@ protected:
     virtual void readFromData();
     virtual void writeToData();
     QLineEdit* _nameEdit;
-    RGBAColorPicker* _ambientPicker;
-    RGBAColorPicker* _emissivePicker;
-    RGBAColorPicker* _specularPicker;
-    RGBAColorPicker* _diffusePicker;
+    QRGBAColorPicker* _ambientPicker;
+    QRGBAColorPicker* _emissivePicker;
+    QRGBAColorPicker* _specularPicker;
+    QRGBAColorPicker* _diffusePicker;
     QLineEdit*  _shininessEdit;
     QCheckBox* _ambientCheckBox;
     QCheckBox* _emissiveCheckBox;
@@ -101,21 +86,21 @@ protected:
 };
 
 
-typedef helper::vector<sofa::core::loader::Material> VectorMaterial;
+typedef helper::vector<Material> VectorMaterial;
 class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
 {
     Q_OBJECT
 public:
     VectorMaterialDataWidget(QWidget* parent,
-            const char* name,
-            core::objectmodel::Data< helper::vector<sofa::core::loader::Material> >* data):
-        TDataWidget< helper::vector<sofa::core::loader::Material> >(parent,name,data),
+                             const char* name,
+                             Data< helper::vector<Material> >* data):
+        TDataWidget< helper::vector<Material> >(parent,name,data),
         _materialDataWidget(NULL),
         _currentMaterial(0,data->isDisplayed(),data->isReadOnly()),
         _comboBox(NULL)
     {
 
-    };
+    }
 
     virtual bool createWidgets();
     virtual void setDataReadOnly(bool readOnly);
@@ -128,17 +113,21 @@ protected:
 
     MaterialDataWidget* _materialDataWidget;
     VectorMaterial _vectorEditedMaterial;
-    core::objectmodel::Data<sofa::core::loader::Material> _currentMaterial;
+    core::objectmodel::Data<Material> _currentMaterial;
     QComboBox* _comboBox;
     int _currentMaterialPos;
+
 protected slots:
     void changeMaterial( int );
 };
-}
-}
 
+} /// namespace materialdatawidget_h
 
-}
+using materialdatawidget_h::MaterialDataWidget ;
+
+} /// namespace qt
+} /// namespace gui
+} /// namespace ssofa
 
 #endif
 

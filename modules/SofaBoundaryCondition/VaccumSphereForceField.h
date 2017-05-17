@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/Event.h>
 
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -98,7 +99,7 @@ public:
     Data<Real> sphereRadius;
     Data<Real> stiffness;
     Data<Real> damping;
-    Data<defaulttype::Vec3f> color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> bDraw;
     Data<std::string> centerState;
     Data < bool > active;
@@ -112,9 +113,7 @@ protected:
         , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
+        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f,1.0f), "color", "sphere color. (default=[0,0,1,1])"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
         , centerState(initData(&centerState, "centerState", "path to the MechanicalState controlling the center point"))
         , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )

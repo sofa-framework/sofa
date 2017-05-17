@@ -518,6 +518,25 @@ bool pointInTriangle(const Coord& p, const Coord& p0, const Coord& p1, const Coo
     return true;
 }
 
+int DistanceGrid::index(const Coord& p, Coord& coefs) const
+{
+    coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
+    coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
+    coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
+    int x = helper::rfloor(coefs[0]);
+    if (x<0) x=0; else if (x>=nx-1) x=nx-2;
+    coefs[0] -= x;
+    int y = helper::rfloor(coefs[1]);
+    if (y<0) y=0; else if (y>=ny-1) y=ny-2;
+    coefs[1] -= y;
+    int z = helper::rfloor(coefs[2]);
+    if (z<0) z=0; else if (z>=nz-1) z=nz-2;
+    coefs[2] -= z;
+    return x+nx*(y+ny*(z));
+}
+
+
+
 void DistanceGrid::computeBBox()
 {
     if (!meshPts.empty())
@@ -1363,23 +1382,6 @@ SReal DistanceGrid::eval(const Coord& x) const
         d = helper::rsqrt((x-xclamp).norm2() + d*d); // we underestimate the distance
     }
     return d;
-}
-
-int DistanceGrid::index(const Coord& p, Coord& coefs) const
-{
-    coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
-    coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
-    coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
-    int x = helper::rfloor(coefs[0]);
-    if (x<0) x=0; else if (x>=nx-1) x=nx-2;
-    coefs[0] -= x;
-    int y = helper::rfloor(coefs[1]);
-    if (y<0) y=0; else if (y>=ny-1) y=ny-2;
-    coefs[1] -= y;
-    int z = helper::rfloor(coefs[2]);
-    if (z<0) z=0; else if (z>=nz-1) z=nz-2;
-    coefs[2] -= z;
-    return x+nx*(y+ny*(z));
 }
 
 bool DistanceGrid::DistanceGridParams::operator==(const DistanceGridParams& v) const

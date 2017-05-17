@@ -28,6 +28,9 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa {
 using namespace component;
 using namespace defaulttype;
@@ -227,6 +230,7 @@ TYPED_TEST_CASE(ProjectToPlaneConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -234,6 +238,7 @@ TYPED_TEST( ProjectToPlaneConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPlaneConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

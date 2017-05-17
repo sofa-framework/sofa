@@ -30,6 +30,8 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 namespace {
@@ -226,6 +228,7 @@ TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -233,6 +236,7 @@ TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

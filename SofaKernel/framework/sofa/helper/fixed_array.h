@@ -332,7 +332,7 @@ public:
     }
 
     // assign one value to all elements
-    void assign (const T& value)
+    inline void assign (const T& value)
     {
         //std::fill_n(begin(),size(),value);
         for (size_type i=0; i<N; i++)
@@ -497,6 +497,10 @@ inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, cons
     v[9] = v9;
     return v;
 }
+
+#ifndef FIXED_ARRAY_CPP
+extern template class fixed_array<float, 4> ;
+#endif //
 
 } // namespace helper
 

@@ -32,6 +32,9 @@
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa{
 namespace {
 using namespace modeling;
@@ -144,6 +147,7 @@ TYPED_TEST_CASE(PointConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PointConstraint_test , testValue )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8) );
 }
 

@@ -28,7 +28,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <string.h>
-
+#include <sofa/helper/types/RGBAColor.h>
 //#ifdef SOFA_HAVE_GLEW
 //#include <sofa/helper/gl/GLSLShader.h>
 //#endif // SOFA_HAVE_GLEW
@@ -243,16 +243,16 @@ void OglModel::drawGroup(int ig, bool transparent)
 //        }
     }
 
-    Vec4f ambient = m.useAmbient?m.ambient:Vec4f();
-    Vec4f diffuse = m.useDiffuse?m.diffuse:Vec4f();
-    Vec4f specular = m.useSpecular?m.specular:Vec4f();
-    Vec4f emissive = m.useEmissive?m.emissive:Vec4f();
+    RGBAColor ambient = m.useAmbient?m.ambient:RGBAColor::black();
+    RGBAColor diffuse = m.useDiffuse?m.diffuse:RGBAColor::black();
+    RGBAColor specular = m.useSpecular?m.specular:RGBAColor::black();
+    RGBAColor emissive = m.useEmissive?m.emissive:RGBAColor::black();
     float shininess = m.useShininess?m.shininess:45;
     if( shininess > 128.0f ) shininess = 128.0f;
 
     if (shininess == 0.0f)
     {
-        specular.clear();
+        specular = RGBAColor::black() ;
         shininess = 1;
     }
 
@@ -263,10 +263,10 @@ void OglModel::drawGroup(int ig, bool transparent)
         //diffuse[3] = 0;
         specular[3] = 0;
     }
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
@@ -274,7 +274,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     {
         //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
-        glColor4fv(diffuse.ptr());
+        glColor4fv(diffuse.data());
         glDrawArrays(GL_POINTS, 0, vertices.size());
         glEnable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
