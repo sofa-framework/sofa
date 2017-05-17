@@ -4,6 +4,8 @@
 namespace sofa
 {
 
+using sofa::core::objectmodel::New ;
+using sofa::defaulttype::Vector3 ;
 using namespace sofa::component::topology;
 
 struct RegularGridTopology_test : public Sofa_test<>
@@ -17,25 +19,25 @@ struct RegularGridTopology_test : public Sofa_test<>
 bool RegularGridTopology_test::regularGridCreation()
 {
     // Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid3 = sofa::core::objectmodel::New<RegularGridTopology>(5, 5, 5);
+    RegularGridTopology::SPtr regGrid3 =New<RegularGridTopology>(5, 5, 5);
     EXPECT_NE(regGrid3, nullptr);
-    EXPECT_EQ(regGrid3->d_p0.getValue(), sofa::defaulttype::Vector3(0.0f,0.0f,0.0f));
+    EXPECT_EQ(regGrid3->d_p0.getValue(), Vector3(0.0f,0.0f,0.0f));
     EXPECT_EQ(regGrid3->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 2D
-    RegularGridTopology::SPtr regGrid2 = sofa::core::objectmodel::New<RegularGridTopology>(5, 5, 1);
+    RegularGridTopology::SPtr regGrid2 =New<RegularGridTopology>(5, 5, 1);
     EXPECT_NE(regGrid2, nullptr);
-    EXPECT_EQ(regGrid2->d_p0.getValue(), sofa::defaulttype::Vector3(0.0f,0.0f,0.0f));
+    EXPECT_EQ(regGrid2->d_p0.getValue(), Vector3(0.0f,0.0f,0.0f));
     EXPECT_EQ(regGrid2->d_cellWidth.getValue(), 0.0);
 
     // Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid1 = sofa::core::objectmodel::New<RegularGridTopology>(5, 1, 1);
+    RegularGridTopology::SPtr regGrid1 =New<RegularGridTopology>(5, 1, 1);
     EXPECT_NE(regGrid1, nullptr);
-    EXPECT_EQ(regGrid1->d_p0.getValue(), sofa::defaulttype::Vector3(0.0f,0.0f,0.0f));
+    EXPECT_EQ(regGrid1->d_p0.getValue(), Vector3(0.0f,0.0f,0.0f));
     EXPECT_EQ(regGrid1->d_cellWidth.getValue(), 0.0);
 
     // Creating a bad Grid
-    RegularGridTopology::SPtr regGrid0 = sofa::core::objectmodel::New<RegularGridTopology>(-1, 0, 1);
+    RegularGridTopology::SPtr regGrid0 =New<RegularGridTopology>(-1, 0, 1);
     // EXPECT_EQ(regGrid2, nullptr);
 
     return true;
@@ -48,7 +50,7 @@ bool RegularGridTopology_test::regularGridSize()
     int nz = 5;
 
     // Creating a good Grid in 3D
-    RegularGridTopology::SPtr regGrid3 = sofa::core::objectmodel::New<RegularGridTopology>(nx, ny, nz);
+    RegularGridTopology::SPtr regGrid3 =New<RegularGridTopology>(nx, ny, nz);
     regGrid3->init();
     //regGrid3->getGridUpdate()->update();
 
@@ -64,7 +66,7 @@ bool RegularGridTopology_test::regularGridSize()
 
     // Creating a good Grid in 2D
     nz = 1;
-    RegularGridTopology::SPtr regGrid2 = sofa::core::objectmodel::New<RegularGridTopology>(nx, ny, nz);
+    RegularGridTopology::SPtr regGrid2 =New<RegularGridTopology>(nx, ny, nz);
     regGrid2->init();
 
     // check topology
@@ -79,7 +81,7 @@ bool RegularGridTopology_test::regularGridSize()
     // Creating a good Grid in 2D
     nz = 1;
     ny = 1;
-    RegularGridTopology::SPtr regGrid1 = sofa::core::objectmodel::New<RegularGridTopology>(nx, ny, nz);
+    RegularGridTopology::SPtr regGrid1 =New<RegularGridTopology>(nx, ny, nz);
     regGrid1->init();
 
     // check topology
@@ -98,7 +100,7 @@ bool RegularGridTopology_test::regularGridPosition()
     int nx = 8;
     int ny = 8;
     int nz = 5;
-    RegularGridTopology::SPtr regGrid = sofa::core::objectmodel::New<RegularGridTopology>(nx, ny, nz);
+    RegularGridTopology::SPtr regGrid =New<RegularGridTopology>(nx, ny, nz);
     regGrid->init();
 
     // Check first circle with
