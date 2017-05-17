@@ -60,6 +60,7 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 #include "Binding_OBJExporter.h"
+#include "Binding_STLExporter.h"
 #include "Binding_DataEngine.h"
 #include "PythonFactory.h"
 
@@ -121,6 +122,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(GridTopology,sofa::component::topology::GridTopology)
     SP_ADD_CLASS_IN_FACTORY(RegularGridTopology,sofa::component::topology::RegularGridTopology)
     SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
+    SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
     //SP_ADD_CLASS_IN_FACTORY(BaseController)
     //SP_ADD_CLASS_IN_FACTORY(Controller)
     //SP_ADD_CLASS_IN_FACTORY(ScriptController)
