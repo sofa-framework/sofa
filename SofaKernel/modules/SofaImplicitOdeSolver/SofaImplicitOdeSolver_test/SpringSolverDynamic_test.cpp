@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
 
 #include <sofa/core/ExecParams.h>
 
@@ -55,14 +57,14 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;      
+    simulation::Node::SPtr root;
     /// Tested simulation
-    simulation::Simulation* simulation;  
+    simulation::Simulation* simulation;
 
-    
+
     /// Create the context for the scene
     void SetUp()
-    { 
+    {
         // Init simulation
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
@@ -91,7 +93,7 @@ struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 
         // Animate
         do
-        {              
+        {
             // Record the mass position
             Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
 
@@ -130,6 +132,7 @@ TYPED_TEST_CASE(SpringSolverDynamic_test, DataTypes);
 // Test case EulerImplicit Solver
 TYPED_TEST( SpringSolverDynamic_test , EulerImplicitSolverDynamicTest )
 {
+   EXPECT_MSG_NOEMIT(Error) ;
    this->loadScene("EulerImplicitSpringDynamicTest.xml");
    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(0.01));
 }

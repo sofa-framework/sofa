@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -206,30 +209,37 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(MeshROI_test, DataTypes);
 
 TYPED_TEST(MeshROI_test, attributesTests) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(MeshROI_test, initTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, computeBoundingBoxTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->computeBoundingBoxTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isPointInMeshTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isPointInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isEdgeInMeshTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isEdgeInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isTriangleInMeshTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTriangleInMeshTest()) ;
 }
 
 TYPED_TEST(MeshROI_test, isTetrahedraInMeshTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTetrahedraInMeshTest()) ;
 }
 
