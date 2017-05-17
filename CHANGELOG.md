@@ -41,6 +41,7 @@
     - add tests for LocalMinDistance (#258)
     - add a way to convert message type to string in Message.cpp (#213)
     - MeshSTL.cpp replace a std:cerr by a msg_error so that FIX the corresponding failing test (#213)
+    - FileRepository::getRelativePath() lowering the case on WIN32 is now a deprecated behavior (#264)
 - [SofaGraphComponents]
     - add tests for RequiredPlugin (#258)
 - [SofaHelper]
