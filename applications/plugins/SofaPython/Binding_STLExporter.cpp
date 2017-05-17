@@ -19,76 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STLEXPORTER_H_
-#define STLEXPORTER_H_
-#include "config.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/core/objectmodel/GUIEvent.h>
 
-#include <fstream>
+#include "Binding_STLExporter.h"
+#include "Binding_BaseObject.h"
 
-namespace sofa
+using namespace sofa::component::misc;
+using namespace sofa::core::objectmodel;
+
+extern "C" PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
-
-namespace component
-{
-
-namespace misc
-{
-
-class SOFA_EXPORTER_API STLExporter : public core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(STLExporter,core::objectmodel::BaseObject);
-
-private:
-    sofa::core::topology::BaseMeshTopology* topology;
-    sofa::core::behavior::BaseMechanicalState* mstate;
-    sofa::core::visual::VisualModel* vmodel;
-    
-    unsigned int stepCounter;
-    unsigned int maxStep;
-
-    std::ofstream* outfile;
-    
-    int nbFiles;
-
-public:
-
-    void writeSTL();
-    void writeSTLBinary();
-
-    sofa::core::objectmodel::DataFileName stlFilename;
-    Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
-    Data<defaulttype::Vec3Types::VecCoord> m_position;
-    Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
-    Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad;
-    
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-
-protected:
-    STLExporter();
-    virtual ~STLExporter();
-public:
-    void init();
-    void cleanup();
-    void bwdInit();
-
-    void handleEvent(sofa::core::objectmodel::Event *);
-};
-
+    STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
+    obj->writeSTL();
+    Py_RETURN_NONE;
 }
 
+
+extern "C" PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
+{
+    STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
+    obj->writeSTLBinary();
+    Py_RETURN_NONE;
 }
 
-}
 
-#endif /* STLEXPORTER_H_ */
+SP_CLASS_METHODS_BEGIN(STLExporter)
+SP_CLASS_METHOD(STLExporter,writeSTL)
+SP_CLASS_METHOD(STLExporter,writeSTLBinary)
+SP_CLASS_METHODS_END
+
+
+SP_CLASS_TYPE_SPTR(STLExporter,STLExporter,BaseObject)
+
+

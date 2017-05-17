@@ -19,76 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef STLEXPORTER_H_
-#define STLEXPORTER_H_
-#include "config.h"
+#ifndef BINDING_STLEXPORTER_H
+#define BINDING_STLEXPORTER_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/core/objectmodel/GUIEvent.h>
+#include "PythonMacros.h"
 
-#include <fstream>
+#include <SofaExporter/STLExporter.h>
 
-namespace sofa
-{
+SP_DECLARE_CLASS_TYPE(STLExporter)
 
-namespace component
-{
-
-namespace misc
-{
-
-class SOFA_EXPORTER_API STLExporter : public core::objectmodel::BaseObject
-{
-public:
-    SOFA_CLASS(STLExporter,core::objectmodel::BaseObject);
-
-private:
-    sofa::core::topology::BaseMeshTopology* topology;
-    sofa::core::behavior::BaseMechanicalState* mstate;
-    sofa::core::visual::VisualModel* vmodel;
-    
-    unsigned int stepCounter;
-    unsigned int maxStep;
-
-    std::ofstream* outfile;
-    
-    int nbFiles;
-
-public:
-
-    void writeSTL();
-    void writeSTLBinary();
-
-    sofa::core::objectmodel::DataFileName stlFilename;
-    Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
-    Data<defaulttype::Vec3Types::VecCoord> m_position;
-    Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
-    Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad;
-    
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-
-protected:
-    STLExporter();
-    virtual ~STLExporter();
-public:
-    void init();
-    void cleanup();
-    void bwdInit();
-
-    void handleEvent(sofa::core::objectmodel::Event *);
-};
-
-}
-
-}
-
-}
-
-#endif /* STLEXPORTER_H_ */
+#endif
