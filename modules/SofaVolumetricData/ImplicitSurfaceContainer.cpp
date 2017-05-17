@@ -154,8 +154,8 @@ void ImplicitSurface::projectPointonSurface(defaulttype::Vec3d& point, int i)
 
     if (it==10)
     {
-        std::cout<<"No Convergence in projecting the contact point"<<std::endl;
-        std::cout<<"-  grad :"	<< grad <<std::endl;
+        msg_warning() << "No Convergence in projecting the contact point" << msgendl
+                      << "-  grad :"	<< grad  ;
     }
 }
 
@@ -168,7 +168,7 @@ bool ImplicitSurface::projectPointonSurface2(defaulttype::Vec3d& point, int i, d
     defaulttype::Vec3d posInside, posOutside;
     if (dir.norm()< 0.001)
     {
-        printf("Warning : grad is null \n");
+        msg_warning() << "grad is too small" ;
         return false;
     }
 
@@ -203,7 +203,7 @@ bool ImplicitSurface::projectPointonSurface2(defaulttype::Vec3d& point, int i, d
     }
     if (count == 30)
     {
-        printf("\n WARNING : no projection found in  ImplSurf::projectPointonSurface(Vec3d& point, Vec3d& dir)");
+        dmsg_warning() << "no projection found in ImplSurf::projectPointonSurface(Vec3d& point, Vec3d& dir)";
         return false;
     }
     return computeSegIntersection(posInside, posOutside, point, i);
@@ -223,7 +223,7 @@ bool ImplicitSurface::projectPointOutOfSurface(defaulttype::Vec3d& point, int i,
         point += grad*dist_out;
         return true;
     }
-    printf(" pb in projectPointOutOfSurface \n");
+    dmsg_warning() << " problem while computing 'projectPointOutOfSurface" ;
     return false;
 
 

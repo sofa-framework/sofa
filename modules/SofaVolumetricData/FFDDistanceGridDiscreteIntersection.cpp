@@ -77,7 +77,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
     const SReal margin = (SReal)((e1.getProximity() + e2.getProximity() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
-    //std::cout << "margin="<<margin<<std::endl;
     const bool singleContact = e1.getCollisionModel()->singleContact.getValue();
 
     // transform from grid1 to grid2
@@ -127,7 +126,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     contacts->resize(contacts->size()+1);
                 DetectionOutput *detection = &*(contacts->end()-1);
                 double value = d + margin - d0;
-                //std::cout << "value = d + margin - d0 = " << d << " + " << margin << " - " << d0 << " = " << value << std::endl;
                 if (!singleContact || first || (value < detection->value))
                 {
                     detection->point[0] = grid1->meshPts[c1.points[i].index];

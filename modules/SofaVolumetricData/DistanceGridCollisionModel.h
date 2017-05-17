@@ -460,8 +460,7 @@ public:
     core::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     core::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
-    // alias used by ContactMapper
-
+    /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
     core::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
 
@@ -479,8 +478,7 @@ public:
 
     void setGrid(DistanceGrid* surf, int index=0);
 
-    // -- CollisionModel interface
-
+    /// CollisionModel interface
     void resize(int size);
 
     /// Create or update the bounding volume hierarchy.
@@ -515,13 +513,8 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         defaulttype::Vector3 bary;
-        int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
+        int elem = this->model->getDeformCube(index).elem;
         bary = this->model->getDeformCube(index).baryCoords(P);
-        //if (elem == -1)
-        //{
-        //    msg_info()<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
-        //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
-        //}
         return this->mapper->addPointInCube(elem,bary.ptr());
     }
 };
@@ -548,6 +541,7 @@ public:
         MMechanicalState* outmodel = Inherit::createMapping(name);
         if (this->child!=NULL && this->mapping==NULL)
         {
+            //TODO(dmarchal):2017-05-26 This comment may become a conditional code.
             // add velocity visualization
             /*        sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
                     this->child->addObject(visu);
@@ -603,7 +597,6 @@ public:
                     {
                         DistanceGrid::Coord n = prevGrid->grad(i,coefs);
                         v += n * (d  / ( n.norm() * gdt));
-                        //std::cout << "Estimated v at "<<P<<" = "<<v<<" using distance from previous model "<<d<<std::endl;
                     }
                 }
             }
@@ -614,13 +607,6 @@ public:
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_CPP)
-
-//#ifndef SOFA_DOUBLE
-//extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3fTypes>;
-//#endif
-//#ifndef SOFA_FLOAT
-//extern template class SOFA_VOLUMETRIC_DATA_API RigidContactMapper<RigidDistanceGridCollisionModel,Vec3dTypes>;
-//#endif
 
 extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<FFDDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_VOLUMETRIC_DATA_API ContactMapper<RigidDistanceGridCollisionModel, sofa::defaulttype::Vec3Types>;

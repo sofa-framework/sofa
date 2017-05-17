@@ -792,11 +792,9 @@ bool OglModel::loadTextures()
 //                textureFile = this->fileMesh.getFullPath();
 //                unsigned int position = textureFile.rfind("/");
 //                textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[i].bumpTextureFilename);
-////                std::cout << "Loading texture: " << textureFile << std::endl;
 //
 //                if (!sofa::helper::system::DataRepository.findFile(textureFile))
 //                {
-//                    std::cout <<  std::endl;
 //                    serr << "Texture \"" << this->materials.getValue()[i].bumpTextureFilename << "\" not found"
 //                            << " in material " << this->materials.getValue()[i].name << " for OglModel " << this->name
 //                            << "(\""<< this->fileMesh.getFullPath() << "\")" << sendl;
@@ -807,7 +805,6 @@ bool OglModel::loadTextures()
 //            helper::io::Image *img = helper::io::Image::Create(textureFile);
 //            if (!img)
 //            {
-//                std::cout <<  std::endl;
 //               msg_error() << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
 //               return false;
 //            }
@@ -815,11 +812,10 @@ bool OglModel::loadTextures()
 //            materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
 //            textures.push_back( text );
 //
-//            std::cout << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()
+//            msg_info() << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()
 //                    << "(loading "<<textureFile << ")"<< std::flush;
 //       }
 //    }
-//    std::cout << "\r\033[K" << std::flush;
     return result;
 }
 
