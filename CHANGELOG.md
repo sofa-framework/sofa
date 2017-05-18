@@ -55,13 +55,26 @@
 - [SofaPython]
     - macros to bind "sequence" types (#165)
     - module reload (#214)
+    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaOpenglVisual]
     - add tests for ClipPlane (#258)
+    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaVolumetricData]
     - add tests for DistanceGrid (#258)
     - add tests for Light (#258)
+    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaBoundaryCondition]
     - add tests for ConstantForceField, some of them are OpenIssue demonstrating existing problem, as crashing sofa when using negative or too large values in indices  (#258)
+- [SofaNonUniformFem]
+    - Trivial replacement of std::cout by msg_info (#255)
+- [SofaSparseSolver]
+    - Trivial replacement of std::cout by msg_info (#255)
+- [SofaSphFluid]
+    - Trivial replacement of std::cout by msg_info (#255)
+- [SofaTopology]
+    - Trivial replacement of std::cout by msg_info (#255)
+- [SofaUserInteraction]
+    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaTest]
     - add Backtrace::autodump to all tests to ease debugging (#191)
     - add automatic tests for updateForceMask (#209)
@@ -69,6 +82,8 @@
     - TestMessageHandler : new and robust implementation to connect msg_* message to test failure  (#213)
     - update to use the new TestMessageHandler where msg_error generates test failures (#213)
     - add tests for TestMessageHandler (#213)
+- [SofaValidation]
+    - Trivial replacement of std::cout by msg_info (#255)
 - [CI]
     - improvement of all test scripts
 
