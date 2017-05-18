@@ -83,9 +83,17 @@ extern "C" PyObject * VisualModel_updateVisual(PyObject *self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * VisualModel_initVisual(PyObject *self, PyObject * /*args*/)
+{
+    VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
+    obj->initVisual();
+    Py_RETURN_NONE;
+}
+
 SP_CLASS_METHODS_BEGIN(VisualModel)
 SP_CLASS_METHOD(VisualModel,exportOBJ)
 SP_CLASS_METHOD(VisualModel,updateVisual)
+SP_CLASS_METHOD(VisualModel,initVisual)
 SP_CLASS_METHODS_END
 
 SP_CLASS_METHODS_BEGIN(VisualModelImpl)
