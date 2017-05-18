@@ -159,46 +159,36 @@ void GridTopology::GridUpdate::updateHexas()
     topology->seqHexahedra.endEdit();
 }
 
+/// To avoid duplicating the code in the different variants of the constructor
+/// this object is using the delegating constructor feature of c++ x11.
+/// The following constructor is "chained" by the other constructors to
+/// defined only one the member initialization.
 GridTopology::GridTopology()
-    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
-    , m_gridDim(GRID_3D)
+    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
+    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
+    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
+    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
+    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
+    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
+    , m_gridDim(Grid_dimension::GRID_NULL)
 {
     setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
 
-GridTopology::GridTopology(int _nx, int _ny, int _nz)
-    : d_n(initData(&d_n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
-    , m_gridDim(GRID_NULL)
+/// This constructor is chained with the one without parameter
+GridTopology::GridTopology(const Vec3i& dimXYZ ) :
+    GridTopology()
 {
+    d_n.setValue(dimXYZ);
     checkGridResolution();
-    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
-    this->addSlave(gridUpdate);
 }
 
-GridTopology::GridTopology( Vec3i np )
-    : d_n(initData(&d_n,np,"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
-    , m_gridDim(GRID_NULL)
+/// This constructor is chained with the one with a Vec3i parameter
+GridTopology::GridTopology(int nx, int ny, int nz) :
+    GridTopology(Vec3i(nx,ny,nz))
 {
-    checkGridResolution();
-    GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
-    this->addSlave(gridUpdate);
 }
 
 void GridTopology::init()

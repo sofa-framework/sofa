@@ -34,7 +34,15 @@ namespace component
 namespace topology
 {
 
- 
+
+enum class Grid_dimension
+{
+    GRID_NULL = 0,
+    GRID_1D,
+    GRID_2D,
+    GRID_3D
+};
+
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
@@ -52,13 +60,6 @@ using MeshTopology::getHexahedron;
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
     friend class GridUpdate;
-
-    typedef enum{
-        GRID_NULL = 0,
-        GRID_1D,
-        GRID_2D,
-        GRID_3D
-    } Grid_dimension;
 
 
 private:
@@ -86,7 +87,7 @@ protected:
     /// Constructor with grid size by int
     GridTopology(int nx, int ny, int nz);
     /// Constructor with grid size by Vec3
-    GridTopology(Vec3i nXnYnZ );
+    GridTopology(const Vec3i& dimXYZ);
 
     /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
     virtual void setNbGridPoints();
@@ -200,6 +201,7 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
+    Grid_dimension getDimensions() const { return m_gridDim; }
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;
