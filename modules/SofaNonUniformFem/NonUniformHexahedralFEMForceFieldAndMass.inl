@@ -258,7 +258,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
     const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
     dmsg_info() << "HEXAHEDRAADDED hexaId: " << hexaModif ;
-
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
     switch(this->method)

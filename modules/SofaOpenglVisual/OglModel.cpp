@@ -1226,8 +1226,7 @@ GLenum OglModel::getGLenum(const char* c ) const
 #endif // SOFA_HAVE_GLEW
     else
     {
-        // error: not valid
-        std::cerr   << " OglModel - not valid or not supported openGL enum value: " << c ;
+        msg_warning()   << " OglModel - not valid or not supported openGL enum value: " << c ;
         return GL_ZERO;
     }
 

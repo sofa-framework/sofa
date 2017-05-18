@@ -92,7 +92,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 solver = SolverMerger::merge(group1->solver[0], group2->solver[0]);
 
 
-            //else std::cout << "New integration group below multi-group solver" << std::endl;
             if (!mergeSolvers || solver.odeSolver!=NULL)
             {
                 bool group1IsColl = groupSet.find(group1)!=groupSet.end();
@@ -103,9 +102,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
                     // create a new group
                     group = parent->createChild(groupName);
-
-                    //core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());
-                    //group->copyVisualContext( (*current_context));
 
                     group->moveChild((simulation::Node*)group1);
                     group->moveChild((simulation::Node*)group2);
@@ -126,7 +122,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         if (mergeSolvers)
                         {
                             solver2.odeSolver = group2->solver[0];
-//                            solver2.odeSolver->cleanup();
                             group2->removeObject(solver2.odeSolver);
                             if (!group2->linearSolver.empty())
                             {
@@ -163,21 +158,17 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                 if (!group->solver.empty())
                 {
                     core::behavior::OdeSolver* solver2 = group->solver[0];
-//                    solver2->cleanup();
                     group->removeObject(solver2);
-                    //delete solver2;
                 }
                 if (!group->linearSolver.empty())
                 {
                     core::behavior::BaseLinearSolver* solver2 = group->linearSolver[0];
                     group->removeObject(solver2);
-                    //delete solver2;
                 }
                 if (!group->constraintSolver.empty())
                 {
                     core::behavior::ConstraintSolver* solver2 = group->constraintSolver[0];
                     group->removeObject(solver2);
-                    //delete solver2;
                 }
                 if (solver.odeSolver)
                 {
@@ -236,8 +227,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     groups.clear();
     for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groups.push_back(*it);
-    //if (!groups.empty())
-    //	sout << groups.size()<<" collision groups created."<<sendl;
 }
 
 
@@ -268,28 +257,30 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     core::behavior::BaseLinearSolver * linearSolver = solvernode->linearSolver[0];
     if (!linearSolver->isMultiGroup())
     {
-        //std::cout << "Linear solver " << linearSolver->getName() << " of CM " << model->getName() << " is not multi-group" << std::endl;
         return solvernode;
     }
     // This solver handles multiple groups, we have to find which group contains this collision model
     // First move up to the node of the initial mechanical object
     while (node->mechanicalMapping && node->mechanicalMapping->getMechFrom()[0])
         node = static_cast<simulation::Node*>(node->mechanicalMapping->getMechFrom()[0]->getContext());
+
     // Then check if it is one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
         if (*it == node)
         {
-            //std::cout << "Group of CM " << model->getName() << " is " << (*it)->getName() << " child of " << solvernode->getName() << std::endl;
             return it->get();
         }
+
     // Then check if it is a child of one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
         if (node->hasParent(it->get()))
             return it->get();
+
     // Then check if it is a grand-childs of one of the child nodes of the solver node
     for (simulation::Node::ChildIterator it = solvernode->child.begin(), itend = solvernode->child.end(); it != itend; ++it)
         if (node->getContext()->hasAncestor(it->get()))
             return it->get();
+
     // group not found, simply return the solver node
     return solvernode;
 }

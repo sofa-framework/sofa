@@ -32,10 +32,6 @@
 
 
 namespace sofa {
-
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 
