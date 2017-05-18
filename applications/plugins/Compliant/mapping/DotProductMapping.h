@@ -207,11 +207,23 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         virtual void reinit()
         {
-            if(!pairs.getValue().size() && this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // if no pair is defined-> map all dofs
+            if(!pairs.getValue().size() ) // if no pair is defined
             {
-                helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
-                p.resize(this->getFromModels()[0]->getSize());
-                for( unsigned j = 0; j < p.size(); ++j) p[j]=pair(index_pair(0,j),index_pair(1,j));
+                if( this->getFromModels()[0]->getSize()==this->getFromModels()[1]->getSize()) // -> map all dofs
+                {
+                    helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                    p.resize(this->getFromModels()[0]->getSize());
+                    for( unsigned j = 0; j < p.size(); ++j) p[j]=pair(index_pair(0,j),index_pair(1,j));
+                }
+                else // -> map all dofs by duplicating the last one
+                {
+                    helper::WriteOnlyAccessor<Data<pairs_type> > p(pairs);
+                    const unsigned size0 = this->getFromModels()[0]->getSize();
+                    const unsigned size1 = this->getFromModels()[1]->getSize();
+                    p.resize( std::max( size0, size1 ) );
+                    for( unsigned j=0, jend=p.size() ; j < jend; ++j )
+                        p[j]=pair( index_pair(0,std::min(j,size0-1)),index_pair(1,std::min(j,size1-1)));
+                }
             }
             this->getToModels()[0]->resize( pairs.getValue().size() );
             AssembledMultiMapping<TIn, TOut>::reinit();
