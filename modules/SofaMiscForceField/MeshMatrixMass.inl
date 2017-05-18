@@ -79,7 +79,7 @@ MeshMatrixMass<DataTypes, MassType>::~MeshMatrixMass()
 {
     if (vertexMassHandler) delete vertexMassHandler;
     if (edgeMassHandler) delete edgeMassHandler;
-	if (tetrahedronMassHandler) delete tetrahedronMassHandler;
+    if (tetrahedronMassHandler) delete tetrahedronMassHandler;
 }
 
 template< class DataTypes, class MassType>
@@ -844,16 +844,16 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->Inherited::init();
     massLumpingCoeff = 0.0;
 
-	if (d_integrationMethod.getValue() == "analytical")
-		integrationMethod= AFFINE_ELEMENT_INTEGRATION;
-	else if (d_integrationMethod.getValue() == "numerical") 
-		integrationMethod= NUMERICAL_INTEGRATION;
-	else if (d_integrationMethod.getValue() == "exact") 
-		integrationMethod= EXACT_INTEGRATION;
-	else
-	{
-		serr << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"" << sendl;
-	}
+    if (d_integrationMethod.getValue() == "analytical")
+        integrationMethod= AFFINE_ELEMENT_INTEGRATION;
+    else if (d_integrationMethod.getValue() == "numerical")
+        integrationMethod= NUMERICAL_INTEGRATION;
+    else if (d_integrationMethod.getValue() == "exact")
+        integrationMethod= EXACT_INTEGRATION;
+    else
+    {
+        serr << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"" << sendl;
+    }
 
     _topology = this->getContext()->getMeshTopology();
     savedMass = m_massDensity.getValue();
@@ -945,10 +945,10 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             edgeMassHandler->applyHexahedronCreation(hexahedraAdded, _topology->getHexahedra(), emptyAncestors, emptyCoefficients);
             massLumpingCoeff = 2.5;
         }
-        
 
-		
-		else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
+
+
+        else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
         {
             // create vector tensor by calling the tetrahedron creation function on the entire mesh
             sofa::helper::vector<unsigned int> tetrahedraAdded;
@@ -1009,13 +1009,13 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 {
     MassVector& vertexMass = *vertexMassInfo.beginEdit();
     MassVector& edgeMass = *edgeMassInfo.beginEdit();
-	MassVectorVector& tetrahedronMass = *tetrahedronMassInfo.beginEdit();
+    MassVectorVector& tetrahedronMass = *tetrahedronMassInfo.beginEdit();
     vertexMass.clear();
     edgeMass.clear();
-	tetrahedronMass.clear();
+    tetrahedronMass.clear();
     vertexMassInfo.endEdit();
     edgeMassInfo.endEdit();
-	tetrahedronMassInfo.endEdit();
+    tetrahedronMassInfo.endEdit();
 }
 
 
@@ -1039,51 +1039,51 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
             res[i] += dx[i] * vertexMass[i] * massLumpingCoeff * (Real)factor;
             massTotal += vertexMass[i]*massLumpingCoeff * (Real)factor;
         }
-        
+
     }
 
 
     //using a sparse matrix---------------
-	else
-	{
-		size_t nbEdges=_topology->getNbEdges();
-		size_t v0,v1;
+    else
+    {
+        size_t nbEdges=_topology->getNbEdges();
+        size_t v0,v1;
 
-		for (unsigned int i=0; i<dx.size(); i++)
-		{
-			res[i] += dx[i] * vertexMass[i] * (Real)factor;
-			massTotal += vertexMass[i] * (Real)factor;
-		}
+        for (unsigned int i=0; i<dx.size(); i++)
+        {
+            res[i] += dx[i] * vertexMass[i] * (Real)factor;
+            massTotal += vertexMass[i] * (Real)factor;
+        }
 
-		Real tempMass=0.0;
+        Real tempMass=0.0;
 
-		for (unsigned int j=0; j<nbEdges; ++j)
-		{
-			tempMass = edgeMass[j] * (Real)factor;
+        for (unsigned int j=0; j<nbEdges; ++j)
+        {
+            tempMass = edgeMass[j] * (Real)factor;
 
-			v0=_topology->getEdge(j)[0];
-			v1=_topology->getEdge(j)[1];
+            v0=_topology->getEdge(j)[0];
+            v1=_topology->getEdge(j)[1];
 
-			res[v0] += dx[v1] * tempMass;
-			res[v1] += dx[v0] * tempMass;
+            res[v0] += dx[v1] * tempMass;
+            res[v1] += dx[v0] * tempMass;
 
-			massTotal += 2*edgeMass[j] * (Real)factor;
-		}
-	} 
-	if(printMass.getValue() && (this->getContext()->getTime()==0.0))
+            massTotal += 2*edgeMass[j] * (Real)factor;
+        }
+    }
+    if(printMass.getValue() && (this->getContext()->getTime()==0.0))
         sout<<"Total Mass = "<<massTotal<<sendl;
 
-	if(printMass.getValue())
-	{
-		std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-		sofa::helper::vector<double>& graph_error = graph["Mass variations"];
-		graph_error.push_back(massTotal+0.000001);
+    if(printMass.getValue())
+    {
+        std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+        sofa::helper::vector<double>& graph_error = graph["Mass variations"];
+        graph_error.push_back(massTotal+0.000001);
 
-		f_graph.endEdit();
-	}
+        f_graph.endEdit();
+    }
 
-        
-    
+
+
 
 }
 
@@ -1187,15 +1187,15 @@ SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechani
     {
         e += dot(v[i],v[i]) * vertexMass[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
     }
-	
-	for (unsigned int i = 0; i < nbEdges; ++i)
-	{
-		v0 = _topology->getEdge(i)[0];
-		v1 = _topology->getEdge(i)[1];
 
-		e += 2 * dot(v[v0], v[v1])*edgeMass[i];
+    for (unsigned int i = 0; i < nbEdges; ++i)
+    {
+        v0 = _topology->getEdge(i)[0];
+        v1 = _topology->getEdge(i)[1];
 
-	}
+        e += 2 * dot(v[v0], v[v1])*edgeMass[i];
+
+    }
 
     return e/2;
 }
@@ -1285,7 +1285,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
         }
 
         if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Total Mass = "<<massTotal<<std::endl;
+            msg_info() <<"Total Mass = "<<massTotal ;
 
         if(printMass.getValue())
         {
@@ -1300,27 +1300,27 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
     else
     {
-	
-		for (size_t i = 0; i < vertexMass.size(); i++)
-		{
-			calc(r.matrix, vertexMass[i], r.offset + N*i, mFactor);
-			massTotal += vertexMass[i];
-		}
+
+        for (size_t i = 0; i < vertexMass.size(); i++)
+        {
+            calc(r.matrix, vertexMass[i], r.offset + N*i, mFactor);
+            massTotal += vertexMass[i];
+        }
 
 
-		for (size_t j = 0; j < nbEdges; ++j)
-		{
-			v0 = _topology->getEdge(j)[0];
-			v1 = _topology->getEdge(j)[1];
+        for (size_t j = 0; j < nbEdges; ++j)
+        {
+            v0 = _topology->getEdge(j)[0];
+            v1 = _topology->getEdge(j)[1];
 
-			calc(r.matrix, edgeMass[j], r.offset + N*v0, r.offset + N*v1, mFactor);
-			calc(r.matrix, edgeMass[j], r.offset + N*v1, r.offset + N*v0, mFactor);
+            calc(r.matrix, edgeMass[j], r.offset + N*v0, r.offset + N*v1, mFactor);
+            calc(r.matrix, edgeMass[j], r.offset + N*v1, r.offset + N*v0, mFactor);
 
-			massTotal += 2 * edgeMass[j];
-		}
+            massTotal += 2 * edgeMass[j];
+        }
 
         if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-            std::cout<<"Total Mass  = "<<massTotal<<std::endl;
+            msg_info() <<"Total Mass  = "<<massTotal ;
 
         if(printMass.getValue())
         {
@@ -1374,17 +1374,17 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
     Coord gravityCenter;
     Real totalMass=0.0;
 
-	std::vector<  defaulttype::Vector3 > points;
-	for (unsigned int i=0; i<x.size(); i++)
-	{
-		defaulttype::Vector3 p;
-		p = DataTypes::getCPos(x[i]);
+    std::vector<  defaulttype::Vector3 > points;
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        defaulttype::Vector3 p;
+        p = DataTypes::getCPos(x[i]);
 
-		points.push_back(p);
-		gravityCenter += x[i]*vertexMass[i]*massLumpingCoeff;
-		totalMass += vertexMass[i]*massLumpingCoeff;
-	}
- 
+        points.push_back(p);
+        gravityCenter += x[i]*vertexMass[i]*massLumpingCoeff;
+        totalMass += vertexMass[i]*massLumpingCoeff;
+    }
+
 
 
     vparams->drawTool()->drawPoints(points, 2, defaulttype::Vec<4,float>(1,1,1,1));

@@ -67,13 +67,12 @@ bool SphereLoader::load()
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
     }
 
     helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *positions.beginEdit();
     helper::vector<SReal>& my_radius = *radius.beginEdit();
-// 	std::cout << "Loading model'" << filename << "'" << std::endl;
 
     int totalNumSpheres=0;
 
@@ -117,8 +116,6 @@ bool SphereLoader::load()
             skipToEOL(file);
         }
     }
-// 	printf("Model contains %d spheres\n", totalNumSpheres);
-
 
     (void) fclose(file);
 

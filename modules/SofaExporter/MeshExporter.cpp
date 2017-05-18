@@ -98,17 +98,17 @@ void MeshExporter::init()
 
     nbFiles = 0;
     /*
-    	const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
-    	const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+        const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
+        const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
-    	if (!pointsData.empty())
-    	{
-    		fetchDataFields(pointsData, pointsDataObject, pointsDataField, pointsDataName);
-    	}
-    	if (!cellsData.empty())
-    	{
-    		fetchDataFields(cellsData, cellsDataObject, cellsDataField, cellsDataName);
-    	}
+        if (!pointsData.empty())
+        {
+            fetchDataFields(pointsData, pointsDataObject, pointsDataField, pointsDataName);
+        }
+        if (!cellsData.empty())
+        {
+            fetchDataFields(cellsData, cellsDataObject, cellsDataField, cellsDataName);
+        }
     */
 }
 
@@ -233,20 +233,20 @@ void MeshExporter::writeMeshVTKXML()
     outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">\n";
 
     /*
-    	//write point data
-    	if (!pointsData.empty())
-    	{
-    		outfile << "      <PointData>\n";
-    		writeDataArray(pointsDataObject, pointsDataField, pointsDataName);
-    		outfile << "      </PointData>\n";
-    	}
-    		//write cell data
-    	if (!cellsData.empty())
-    	{
-    		outfile << "      <CellData>\n";
-    		writeDataArray(cellsDataObject, cellsDataField, cellsDataName);
-    		outfile << "      </CellData>\n";
-    	}
+        //write point data
+        if (!pointsData.empty())
+        {
+            outfile << "      <PointData>\n";
+            writeDataArray(pointsDataObject, pointsDataField, pointsDataName);
+            outfile << "      </PointData>\n";
+        }
+            //write cell data
+        if (!cellsData.empty())
+        {
+            outfile << "      <CellData>\n";
+            writeDataArray(cellsDataObject, cellsDataField, cellsDataName);
+            outfile << "      </CellData>\n";
+        }
 
     */
 
@@ -490,18 +490,18 @@ void MeshExporter::writeMeshVTK()
             outfile << 12 << "\n";
     }
     /*
-    	//write dataset attributes
-    	if (!pointsData.empty())
-    	{
-    		outfile << "POINT_DATA " << nbp << "\n";
-    		writeData(pointsDataObject, pointsDataField, pointsDataName);
-    	}
+        //write dataset attributes
+        if (!pointsData.empty())
+        {
+            outfile << "POINT_DATA " << nbp << "\n";
+            writeData(pointsDataObject, pointsDataField, pointsDataName);
+        }
 
-    	if (!cellsData.empty())
-    	{
-    		outfile << "CELL_DATA " << numberOfCells << "\n";
-    		writeData(cellsDataObject, cellsDataField, cellsDataName);
-    	}
+        if (!cellsData.empty())
+        {
+            outfile << "CELL_DATA " << numberOfCells << "\n";
+            writeData(cellsDataObject, cellsDataField, cellsDataName);
+        }
     */
     sout << filename << " written" << sendl;
 }
@@ -848,8 +848,6 @@ void MeshExporter::handleEvent(sofa::core::objectmodel::Event *event)
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
-
-        //std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 
