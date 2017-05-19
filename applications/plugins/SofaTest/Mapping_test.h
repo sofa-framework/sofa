@@ -367,11 +367,11 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // then compare results
 
 //            OutMatrixDeriv outMatrices(  ); // how to build that, what size?
-//            /*WriteInMatrixDeriv min = */inDofs->write( MatrixDerivId::holonomicC() );
-//            WriteOutMatrixDeriv mout = outDofs->write( MatrixDerivId::holonomicC() );
+//            /*WriteInMatrixDeriv min = */inDofs->write( MatrixDerivId::constraintMatrix() );
+//            WriteOutMatrixDeriv mout = outDofs->write( MatrixDerivId::constraintMatrix() );
 //            copyToData(mout,outMatrices);
 
-//            mapping->applyJt(  ConstraintParams*, MatrixDerivId::holonomicC(), MatrixDerivId::holonomicC() );
+//            mapping->applyJt(  ConstraintParams*, MatrixDerivId::constraintMatrix(), MatrixDerivId::constraintMatrix() );
 
 
         }

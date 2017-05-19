@@ -168,6 +168,8 @@ public:
     Data<double> showCellWidth;
     Data<defaulttype::Vector3> showTranslation;
     Data<defaulttype::Vector3> showLevelTranslation;
+    Data< sofa::helper::vector<double> > delta;
+    Data< sofa::helper::vector<double> > lambda;
 
     ConstraintProblem* getConstraintProblem();
     void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
