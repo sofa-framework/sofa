@@ -83,10 +83,10 @@ unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::strin
     const char* attrstr=s.c_str();
     char* end=nullptr;
 
-    assert( !isspace(attrstr[0]) ) ;
+    long long tmp = strtoll(attrstr, &end, 10);
 
     /// If there is minus sign we exit.
-    if(attrstr[0] == '-' ){
+    if( tmp<0 ){
         if(numErrors<5)
             msg << "   - problem while parsing '" << s <<"' as Unsigned Integer because the minus sign is not allowed'. Replaced by 0 instead." << msgendl ;
         if(numErrors==5)
@@ -94,8 +94,6 @@ unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::strin
         numErrors++ ;
         return 0 ;
     }
-
-    unsigned int retval = strtoll(attrstr, &end, 10);
 
     /// It is important to check that the string was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
@@ -108,7 +106,8 @@ unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::strin
         numErrors++ ;
         return 0 ;
     }
-    return retval ;
+
+    return (unsigned int)tmp ;
 }
 
 

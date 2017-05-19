@@ -43,6 +43,7 @@ class vector_test : public Sofa_test<>,
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
+    void benchmark(const std::vector<std::string>& params) ;
 };
 
 template<class T>
@@ -185,3 +186,63 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// BENCHMARK THE vector<int> behavior
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+template<class T>
+class vector_benchmark : public Sofa_test<>,
+        public ::testing::WithParamInterface<std::vector<std::string>>
+{
+public:
+    void benchmark(const std::vector<std::string>& params) ;
+};
+
+
+template<class T>
+void vector_benchmark<T>::benchmark(const std::vector<std::string>& params)
+{
+    int loop1 = atoi(params[0].c_str());
+    int loop2 = atoi(params[1].c_str());
+    std::stringstream tmp;
+    for(int i=0;i<loop1;i++)
+    {
+        tmp << i << " ";
+    }
+
+    if(loop2==0)
+        return ;
+
+    sofa::helper::vector<T> v;
+    for(int i=0;i<loop2;i++){
+        std::stringstream ntmp;
+        ntmp << tmp.str() ;
+        v.read(ntmp);
+    }
+    EXPECT_EQ((int)v.size(), loop1) ;
+}
+
+std::vector<std::vector<std::string>> benchvalues =
+    {{"10","0"},
+     {"10","10000"},
+     {"10","100000"},
+     {"10","1000000"},
+     {"1000","0"},
+     {"1000","1000"},
+     {"1000","10000"},
+     {"1000","100000"},
+     {"100000","0"},
+     {"100000","1000"}
+    } ;
+
+typedef vector_benchmark<unsigned int> vector_benchmark_unsigned_int;
+TEST_P(vector_benchmark_unsigned_int, benchmark)
+{
+   this->benchmark(GetParam());
+}
+
+INSTANTIATE_TEST_CASE_P(benchmark,
+                        vector_benchmark_unsigned_int,
+                        ::testing::ValuesIn(benchvalues));
