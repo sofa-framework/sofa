@@ -53,15 +53,19 @@ ClipPlane::~ClipPlane()
 {
 }
 
-void ClipPlane::init()
+sofa::core::objectmodel::ComponentState ClipPlane::checkDataValues()
 {
     if(id.getValue() < 0)
     {
         msg_error() << "plane ID cannot be negative. The component is disabled." ;
-        m_componentstate = ComponentState::Invalid ;
+        return ComponentState::Invalid;
     }
+    return ComponentState::Valid;
+}
 
-    m_componentstate = ComponentState::Valid ;
+void ClipPlane::init()
+{
+    m_componentstate = checkDataValues() ;
 }
 
 void ClipPlane::reinit()
