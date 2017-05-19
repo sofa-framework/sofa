@@ -43,8 +43,6 @@ using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
 
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()

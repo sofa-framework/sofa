@@ -36,6 +36,8 @@
 
 #include <sofa/helper/logging/Messaging.h>
 
+#define FMM_VERBOSE false
+
 namespace sofa
 {
 
@@ -191,7 +193,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
             msg_error("DistanceGrid")<<"loading FlowVR mesh file "<<filename;
             return NULL;
         }
-        //std::cout << "bbox = "<<mesh.bb<<std::endl;
 
         if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
         {
@@ -205,7 +206,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)absscale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
-        //std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         for (int i=0; i< grid->m_nxnynz; i++)
             grid->m_dists[i] = mesh.distmap->data[i]*scale;
@@ -219,7 +219,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
                 if (mesh.getGP0(i) >= 0)
                     ++nbpos;
             }
-            //std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(nbpos);
             int p = 0;
             for (int i=0; i<mesh.nbg(); i++)
@@ -232,7 +231,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         else
         {
             int nbpos = mesh.nbp();
-            //std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(nbpos);
             for (int i=0; i<nbpos; i++)
                 grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*absscale;
@@ -244,7 +242,6 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
         }
         else
             grid->computeBBox();
-        //std::cout<< "Distance grid creation DONE."<<std::endl;
         return grid;
 #else
         msg_error("DistanceGrid")<<"Loading a .fmesh file requires the FlowVR library (activatable with the CMake option 'SOFA_BUILD_MINIFLOWVR')";
@@ -318,7 +315,7 @@ bool DistanceGrid::save(const std::string& filename)
     }
     else
     {
-        msg_error("DistanceGrid")<<"save(): Unsupported extension: "<<filename;
+        msg_error("DistanceGrid")<<" save(): Unsupported extension: "<<filename;
         return false;
     }
     return true;
@@ -616,10 +613,10 @@ void DistanceGrid::calcCubeDistance(SReal dim, int np)
 /// Compute distance field from given mesh
 void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
 {
-    m_fmm_status.resize(m_nxnynz);
-    m_fmm_heap.resize(m_nxnynz);
-    m_fmm_heap_size = 0;
-    msg_info("DistanceGrid")<< "FMM: Init.";
+    fmm_status.resize(m_nxnynz);
+    fmm_heap.resize(m_nxnynz);
+    fmm_heap_size = 0;
+    dmsg_info("DistanceGrid")<< "FMM: Init.";
 
     std::fill(m_fmm_status.begin(), m_fmm_status.end(), FMM_FAR);
     std::fill(m_dists.begin(), m_dists.end(), maxDist());
@@ -628,7 +625,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     const helper::vector<helper::vector<helper::vector<int> > > & facets = mesh->getFacets();
 
     // Initialize distance of edges crossing triangles
-    msg_info("DistanceGrid")<< "FMM: Initialize distance of edges crossing triangles.";
+    dmsg_info("DistanceGrid")<< "FMM: Initialize distance of edges crossing triangles.";
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
@@ -1013,8 +1010,6 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                 }
                 else if (m_fmm_status[ind] != FMM_KNOWN_OUT)
                 {
-                    //todo(dmarchal) shouldn't this be handle like a real error ?
-                    //std::cerr << "FMM ERROR: cell "<<x<<" "<<y<<" "<<z<<" not computed. dist="<<dists[ind]<<std::endl;
                 }
             }
     msg_info("DistanceGrid")<< "FMM: DONE. "<< nbin << " points inside ( " << (nbin*100)/size() <<" % )";
@@ -1032,12 +1027,14 @@ inline void DistanceGrid::fmm_swap(int entry1, int entry2)
 
 int DistanceGrid::fmm_pop()
 {
-    int res = m_fmm_heap[0];
-#ifdef FMM_VERBOSE
-    msg_info("DistanceGrid")<< "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<dists[res];
-#endif
-    --m_fmm_heap_size;
-    if (m_fmm_heap_size>0)
+
+    int res = fmm_heap[0];
+
+    if(FMM_VERBOSE)
+        msg_info("DistanceGrid")<< "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<dists[res];
+
+    --fmm_heap_size;
+    if (fmm_heap_size>0)
     {
         fmm_swap(0, m_fmm_heap_size);
         int i=0;
@@ -1076,13 +1073,15 @@ int DistanceGrid::fmm_pop()
             else break;
         }
     }
-#ifdef FMM_VERBOSE
-    std::cout << "fmm_heap = [";
-    for (int i=0; i<fmm_heap_size; i++)
-        std::cout << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
-    std::cout << std::endl;
-#endif
-    //fmm_status[res] = FMM_KNOWN;
+
+    if(FMM_VERBOSE){
+        std::stringstream tmp;
+        tmp << "fmm_heap = [";
+        for (int i=0; i<fmm_heap_size; i++)
+            tmp << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
+        msg_info("DistanceGrid") << tmp.str() ;
+    }
+
     return res;
 }
 
@@ -1092,11 +1091,12 @@ void DistanceGrid::fmm_push(int index)
     int i;
     if (m_fmm_status[index] >= FMM_FRONT0)
     {
-        i = m_fmm_status[index] - FMM_FRONT0;
-#ifdef FMM_VERBOSE
-        std::cout << "fmm update <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index]<<" from entry "<<i<<std::endl;
-#endif
-        while (i>0 && phi < (m_dists[m_fmm_heap[(i-1)/2]]))
+        i = fmm_status[index] - FMM_FRONT0;
+
+        if(FMM_VERBOSE)
+           dmsg_info("DistanceGrid") << "fmm update <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index]<<" from entry "<<i ;
+
+        while (i>0 && phi < (dists[fmm_heap[(i-1)/2]]))
         {
             fmm_swap(i,(i-1)/2);
             i = (i-1)/2;
@@ -1137,25 +1137,27 @@ void DistanceGrid::fmm_push(int index)
     }
     else
     {
-#ifdef FMM_VERBOSE
-        std::cout << "fmm push <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index]<<std::endl;
-#endif
+        if(FMM_VERBOSE)
+           dmsg_info("DistanceGrid") << "fmm push <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index] ;
+
         i = m_fmm_heap_size;
         ++m_fmm_heap_size;
         m_fmm_heap[i] = index;
         m_fmm_status[index] = i;
-        while (i>0 && phi < (m_dists[m_fmm_heap[(i-1)/2]]))
+        while (i>0 && phi < (dists[m_fmm_heap[(i-1)/2]]))
         {
             fmm_swap(i,(i-1)/2);
             i = (i-1)/2;
         }
     }
-#ifdef FMM_VERBOSE
-    std::cout << "fmm_heap = [";
-    for (int i=0; i<fmm_heap_size; i++)
-        std::cout << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
-    std::cout << std::endl;
-#endif
+
+    if(FMM_VERBOSE){
+        std::stringstream tmp;
+        tmp << "fmm_heap = [";
+        for (int i=0; i<fmm_heap_size; i++)
+            tmp << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
+        msg_info("DistanceGrid") << tmp.str() ;
+    }
 }
 
 /// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
@@ -1193,8 +1195,9 @@ void DistanceGrid::sampleSurface(double sampling)
                     }
                     if (it == 10 && rabs(d) > 0.1f*maxD)
                     {
-                        msg_warning("DistanceGrid")<< "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
-                                << " pos0 = " << coord(x,y,z) << " d0 = " << m_dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                        msg_warning("DistanceGrid")
+                                << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                                << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
                                 << " pos = " << pos << " d = " << d << " grad = " << n;
                         continue;
                     }
