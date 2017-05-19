@@ -27,9 +27,6 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 
 #include <math.h>
-#include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -145,7 +142,7 @@ void RecordedCamera::moveCamera_navigation()
             Vec3 _pos = m_translationPositions.getValue()[currentIndexPoint];
             Vec3 cameraFocal = m_translationPositions.getValue()[currentIndexPoint + 1] - _pos;
 
-            // Set camera's position: linear interpolation 
+            // Set camera's position: linear interpolation
             p_position.setValue( m_translationPositions.getValue()[currentIndexPoint] + cameraFocal * ratio);
 
             // Set camera's orientation: slerp quaternion interpolation
@@ -272,17 +269,17 @@ void RecordedCamera::moveCamera_translation()
             // Set camera's orientation
             Vec3 zAxis = - (p_lookAt.getValue() - _pos);
             Vec3 xAxis = m_cameraUp.getValue().cross(zAxis);
-            Vec3 yAxis = zAxis.cross(xAxis);    
+            Vec3 yAxis = zAxis.cross(xAxis);
             xAxis.normalize();
             yAxis.normalize();
             zAxis.normalize();
-           
+
 #ifdef my_debug
     std::cout << "xAxis: " << xAxis << std::endl;
     std::cout << "yAxis: " << yAxis << std::endl;
     std::cout << "zAxis: " << zAxis << std::endl;
 #endif
-         
+
             m_cameraUp.setValue(yAxis);
             Quat orientation  = Quat::createQuaterFromFrame(xAxis, yAxis, zAxis);
             orientation.normalize();
@@ -317,7 +314,7 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
        if(firstIterationforRotation & m_rotationMode.getValue())
             this->configureRotation();
 
-        if(m_rotationMode.getValue())  
+        if(m_rotationMode.getValue())
             this->moveCamera_rotation();
 
         if (firstIterationforTranslation & m_translationMode.getValue())
@@ -330,12 +327,12 @@ void RecordedCamera::handleEvent(sofa::core::objectmodel::Event *event)
             this->configureNavigation();
 
         if(m_navigationMode.getValue())
-            this->moveCamera_navigation();	
+            this->moveCamera_navigation();
     }
     else if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent* ke = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
-        cerr<<"RecordedCamera::handleEvent gets character " << ke->getKey() << endl;
+        msg_info() <<" handleEvent gets character '" << ke->getKey() <<"'. ";
     }
 
 }
@@ -455,7 +452,7 @@ void RecordedCamera::initializeViewUp()
     {
         Vec3 zAxis = m_translationPositions.getValue()[1] -  m_translationPositions.getValue()[0];
         zAxis.normalize();
-        Vec3 xRef(1,0,0); 
+        Vec3 xRef(1,0,0);
         // Initialize the view-up vector with the reference vector the "most perpendicular" to zAxis.
          m_cameraUp.setValue(xRef);
         double normCrossProduct = cross(zAxis,xRef).norm();

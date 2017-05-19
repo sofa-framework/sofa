@@ -75,7 +75,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
 
         double residu = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
 
-        std::cout<<"externalTime.getValue() = "<<externalTime.getValue() <<"  frame= "<<frame<<" residu = "<<residu<<std::endl;
+        msg_info() << "externalTime.getValue() = "<<externalTime.getValue() <<"  frame= "<<frame<<" residu = "<<residu ;
 
         if(frame > ahc->numOfFrames-2)
         {
@@ -83,12 +83,6 @@ void ArticulatedHierarchyBVHController::applyController(void)
         }
 
         alpha = residu;
-
-
-        // ndiv=1.0;
-        // n = residu;
-
-
     }
     else
     {

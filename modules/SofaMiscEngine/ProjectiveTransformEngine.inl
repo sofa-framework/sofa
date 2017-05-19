@@ -72,31 +72,30 @@ void ProjectiveTransformEngine<DataTypes>::update()
 
     out.resize(in.size());
     double f=double(fdist.ref());
-    double r,s;    
+    double r,s;
     ProjMat P=ProjMat(pmat.ref());
 
     unsigned j,k;
     for (j=0;j<3; j++)
-    	{
-	for (k=0; k<4; k++)
-		std::cout << P[j][k] << " ";
-	std::cout << std::endl;
-	}
+    {
+        std::stringstream tmp;
+        for (k=0; k<4; k++)
+            tmp << P[j][k] << " ";
+        dmsg_info() << tmp.str() ;
+    }
 
     unsigned int i;
     for (i=0; i< in.size(); ++i)
-        {
-	out[i]=Vec3(in[i][0],in[i][1],in[i][2]);
-       	    out[i]=P*Vec4(out[i],1);
-	    s = out[i][2];
-	    if (fabs(s) < 1e-10) s=s<0 ? -1e-10 : 1e-10; // handle undefined case where out[i][2] == 0 -> set it to 1e-10 (and keep its sign)
-	    r = f/out[i][2]; 
-	    out[i] *= r;
-	std::cout << in[i] << " <-> " << out[i] << std::endl;
-        }
+    {
+        out[i]=Vec3(in[i][0],in[i][1],in[i][2]);
+        out[i]=P*Vec4(out[i],1);
+        s = out[i][2];
+        if (fabs(s) < 1e-10) s=s<0 ? -1e-10 : 1e-10; // handle undefined case where out[i][2] == 0 -> set it to 1e-10 (and keep its sign)
+        r = f/out[i][2];
+        out[i] *= r;
+        dmsg_info() << in[i] << " <-> " << out[i] ;
+    }
 }
-
-
 
 } // namespace engine
 
