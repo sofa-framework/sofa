@@ -61,7 +61,7 @@ void GridTopology::GridUpdate::update()
 
 void GridTopology::GridUpdate::updateEdges()
 {
-    SeqEdges& edges = *topology->seqEdges.beginEdit();
+    SeqEdges& edges = *topology->seqEdges.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     edges.clear();
     edges.reserve( (n[0]-1)*n[1]*n[2] +
@@ -89,7 +89,7 @@ void GridTopology::GridUpdate::updateTriangles()
 {
     // base on quads
     const SeqQuads& quads = topology->seqQuads.getValue();
-    SeqTriangles& triangles = *topology->seqTriangles.beginEdit();
+    SeqTriangles& triangles = *topology->seqTriangles.beginWriteOnly();
     triangles.clear();
     triangles.reserve(quads.size()*2);
 
@@ -104,7 +104,7 @@ void GridTopology::GridUpdate::updateTriangles()
 
 void GridTopology::GridUpdate::updateQuads()
 {
-    SeqQuads& quads = *topology->seqQuads.beginEdit();
+    SeqQuads& quads = *topology->seqQuads.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     quads.clear();
     quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
@@ -138,7 +138,7 @@ void GridTopology::GridUpdate::updateQuads()
 
 void GridTopology::GridUpdate::updateHexas()
 {
-    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginEdit();
+    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     hexahedra.clear();
     hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
@@ -296,7 +296,7 @@ void GridTopology::computePointList()
 {
     int nbPoints= this->getNbPoints();
     // put the result in seqPoints
-    SeqPoints& seq_P= *(seqPoints.beginEdit());
+    SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
 
     for (int i=0; i<nbPoints; i++)
