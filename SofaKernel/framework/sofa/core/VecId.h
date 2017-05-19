@@ -155,7 +155,9 @@ public:
     static MyVecId mappingMatrix() { return MyVecId(2);}         // accumulated matrix of the mappings
 
     static MyVecId holonomicC()    { return MyVecId(1);
-                                     msg_deprecated("") << "holonomicC is deprecated. See VecId.h"; }
+                                     dmsg_deprecated("") << "holonomicC is deprecated."
+                                                           "See VecId.h to remove this message and replace by constraintMatrix"
+                                                           "Update your code ! It will be removed after May 2018"; }
 
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
