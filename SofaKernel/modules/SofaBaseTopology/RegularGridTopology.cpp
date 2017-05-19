@@ -290,7 +290,7 @@ void RegularGridTopology::createTexCoords()
 
     if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
     {
-        std::cerr << "Error: can't create Texture coordinates as at least 2 dimensions of the grid are null."  << std::endl;
+        msg_error() << "Can't create Texture coordinates as at least 2 dimensions of the grid are null." ;
         return;
     }
 

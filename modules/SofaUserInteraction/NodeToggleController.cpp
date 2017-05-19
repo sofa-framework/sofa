@@ -210,7 +210,7 @@ void NodeToggleController::onHapticDeviceEvent(core::objectmodel::HapticDeviceEv
     // toggle on button 2 pressed
     if (oev->getButton(1))
     {
-        std::cout << "NodeToggleController: switching active node" << std::endl;
+        msg_info() << "switching active node" ;
         toggle();
     }
 }
@@ -224,7 +224,7 @@ void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent 
         case 'A':
         case 'a':
         {
-            msg_info() << "NodeToggleController: switching active node" ;
+            msg_info() << "switching active node" ;
             toggle();
             break;
         }
@@ -236,7 +236,7 @@ void NodeToggleController::onKeyPressedEvent(core::objectmodel::KeypressedEvent 
     {
         if(d_key.getValue()==oev->getKey())
         {
-            msg_info() << "NodeToggleController: switching active node" ;
+            msg_info() << "switching active node" ;
             toggle();
         }
     }

@@ -484,9 +484,6 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                     ++colIt;
                 }
 
-                //std::cout << "omega = " << omega.norm() << std::endl;
-                //std::cout << "v = " << v.norm() << std::endl;
-
                 const InRootDeriv result(m_rootLinearForceScaleFactor.getValue() * v, m_rootAngularForceScaleFactor.getValue() * omega);
 
                 if (!indexFromEnd.getValue())
@@ -496,6 +493,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
                 else
                 {
                     // Commented by PJ. Bug??
+                    // todo(dmarchal 2017-05-03) so what ?
                     // oRoot.addCol(out.size() - 1 - index.getValue(), result);
 
                     const unsigned int numDofs = m_fromModel->getSize();
