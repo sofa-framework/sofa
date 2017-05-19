@@ -613,9 +613,9 @@ void DistanceGrid::calcCubeDistance(SReal dim, int np)
 /// Compute distance field from given mesh
 void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
 {
-    fmm_status.resize(m_nxnynz);
-    fmm_heap.resize(m_nxnynz);
-    fmm_heap_size = 0;
+    m_fmm_status.resize(m_nxnynz);
+    m_fmm_heap.resize(m_nxnynz);
+    m_fmm_heap_size = 0;
     dmsg_info("DistanceGrid")<< "FMM: Init.";
 
     std::fill(m_fmm_status.begin(), m_fmm_status.end(), FMM_FAR);
@@ -1028,13 +1028,13 @@ inline void DistanceGrid::fmm_swap(int entry1, int entry2)
 int DistanceGrid::fmm_pop()
 {
 
-    int res = fmm_heap[0];
+    int res = m_fmm_heap[0];
 
     if(FMM_VERBOSE)
-        msg_info("DistanceGrid")<< "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<dists[res];
+        msg_info("DistanceGrid")<< "fmm_pop -> <"<<(res%m_nx)<<','<<((res/m_nx)%m_ny)<<','<<(res/m_nxny)<<">="<<m_dists[res];
 
-    --fmm_heap_size;
-    if (fmm_heap_size>0)
+    --m_fmm_heap_size;
+    if (m_fmm_heap_size>0)
     {
         fmm_swap(0, m_fmm_heap_size);
         int i=0;
@@ -1077,8 +1077,8 @@ int DistanceGrid::fmm_pop()
     if(FMM_VERBOSE){
         std::stringstream tmp;
         tmp << "fmm_heap = [";
-        for (int i=0; i<fmm_heap_size; i++)
-            tmp << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
+        for (int i=0; i<m_fmm_heap_size; i++)
+            tmp << " <"<<(m_fmm_heap[i]%m_nx)<<','<<((m_fmm_heap[i]/m_nx)%m_ny)<<','<<(m_fmm_heap[i]/m_nxny)<<">="<<m_dists[m_fmm_heap[i]];
         msg_info("DistanceGrid") << tmp.str() ;
     }
 
@@ -1091,12 +1091,12 @@ void DistanceGrid::fmm_push(int index)
     int i;
     if (m_fmm_status[index] >= FMM_FRONT0)
     {
-        i = fmm_status[index] - FMM_FRONT0;
+        i = m_fmm_status[index] - FMM_FRONT0;
 
         if(FMM_VERBOSE)
-           dmsg_info("DistanceGrid") << "fmm update <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index]<<" from entry "<<i ;
+           dmsg_info("DistanceGrid") << "fmm update <"<<(index%m_nx)<<','<<((index/m_nx)%m_ny)<<','<<(index/m_nxny)<<">="<<m_dists[index]<<" from entry "<<i ;
 
-        while (i>0 && phi < (dists[fmm_heap[(i-1)/2]]))
+        while (i>0 && phi < (m_dists[m_fmm_heap[(i-1)/2]]))
         {
             fmm_swap(i,(i-1)/2);
             i = (i-1)/2;
@@ -1138,13 +1138,13 @@ void DistanceGrid::fmm_push(int index)
     else
     {
         if(FMM_VERBOSE)
-           dmsg_info("DistanceGrid") << "fmm push <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<dists[index] ;
+           dmsg_info("DistanceGrid") << "fmm push <"<<(index%m_nx)<<','<<((index/m_nx)%m_ny)<<','<<(index/m_nxny)<<">="<<m_dists[index] ;
 
         i = m_fmm_heap_size;
         ++m_fmm_heap_size;
         m_fmm_heap[i] = index;
         m_fmm_status[index] = i;
-        while (i>0 && phi < (dists[m_fmm_heap[(i-1)/2]]))
+        while (i>0 && phi < (m_dists[m_fmm_heap[(i-1)/2]]))
         {
             fmm_swap(i,(i-1)/2);
             i = (i-1)/2;
@@ -1154,8 +1154,8 @@ void DistanceGrid::fmm_push(int index)
     if(FMM_VERBOSE){
         std::stringstream tmp;
         tmp << "fmm_heap = [";
-        for (int i=0; i<fmm_heap_size; i++)
-            tmp << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<dists[fmm_heap[i]];
+        for (int i=0; i<m_fmm_heap_size; i++)
+            tmp << " <"<<(m_fmm_heap[i]%m_nx)<<','<<((m_fmm_heap[i]/m_nx)%m_ny)<<','<<(m_fmm_heap[i]/m_nxny)<<">="<<m_dists[m_fmm_heap[i]];
         msg_info("DistanceGrid") << tmp.str() ;
     }
 }
@@ -1197,7 +1197,7 @@ void DistanceGrid::sampleSurface(double sampling)
                     {
                         msg_warning("DistanceGrid")
                                 << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
-                                << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                                << " pos0 = " << coord(x,y,z) << " d0 = " << m_dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
                                 << " pos = " << pos << " d = " << d << " grad = " << n;
                         continue;
                     }
