@@ -74,6 +74,8 @@ int SOFA_HELPER_API getInteger(const std::string& s, std::stringstream& msg, uns
     return retval ;
 }
 
+
+
 /// Convert the string 's' into an unsigned int. The error are reported in msg & numErrors
 /// is incremented.
 unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::stringstream& msg, unsigned int& numErrors)
@@ -81,8 +83,10 @@ unsigned int SOFA_HELPER_API getUnsignedInteger(const std::string& s, std::strin
     const char* attrstr=s.c_str();
     char* end=nullptr;
 
+    assert( !isspace(attrstr[0]) ) ;
+
     /// If there is minus sign we exit.
-    if(s.find_first_of('-') != std::string::npos ){
+    if(attrstr[0] == '-' ){
         if(numErrors<5)
             msg << "   - problem while parsing '" << s <<"' as Unsigned Integer because the minus sign is not allowed'. Replaced by 0 instead." << msgendl ;
         if(numErrors==5)
