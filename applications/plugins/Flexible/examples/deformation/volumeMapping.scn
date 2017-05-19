@@ -4,7 +4,7 @@
       <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="Compliant"/>
   
-    <VisualStyle displayFlags="hideBehaviorModels  hideWireframe" />
+    <VisualStyle displayFlags="showVisualModels hideBehaviorModels  hideWireframe" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
@@ -75,7 +75,7 @@
         <Node 	name="behavior_vol"   >
 	    <MechanicalObject  template="Vec1d" name="Volume"   />
     	    <VolumeMapping template="Vec3d,Vec1d" geometricStiffness="false" triangles="@../mesh.triangles" offset="0"/>
-	    <ConstantForceField points="0" force="1000"/>
+	    <ConstantForceField indices="0" force="1000"/>
         </Node>
 <!--  This is equivalent to      <SurfacePressureForceField pressure="1000" volumeConservationMode="0"/>-->
 

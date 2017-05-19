@@ -903,7 +903,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 {
                     if(j<size1) In1::get(edge[0][0],edge[0][1],edge[0][2],in1[ref[i][j]]);
                     else In2::get(edge[0][0],edge[0][1],edge[0][2],in2[ref[i][j]-size1]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.*core::behavior::WeightTraits<WeightType>::get(w[i][j]),1.,.8,1.);
+                    col = helper::types::RGBAColor::fromHSVA(240.*core::behavior::WeightTraits<WeightType>::get(w[i][j]),1.,.8,1.);
                     vparams->drawTool()->drawLines ( edge, 1, col );
                 }
         }
@@ -993,7 +993,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                 {
                     size_t index = (*triangles)[i][j];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    colors[count] = helper::types::RGBAColor::fromHSVA(val[index],1.,.8,1.);
                     count++;
                 }
         if(extTriangles)
@@ -1003,7 +1003,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
                     size_t index = (*extTriangles)[i][j];
                     if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                     if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                    sofa::helper::gl::Color::getHSVA(&colors[count][0],val[index],1.,.8,1.);
+                    colors[count] = helper::types::RGBAColor::fromHSVA(val[index],1.,.8,1.);
                     count++;
                 }
 

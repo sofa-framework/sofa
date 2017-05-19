@@ -880,7 +880,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                 if(core::behavior::WeightTraits<WeightType>::get(w[i][j]))
                 {
                     In::get(edge[0][0],edge[0][1],edge[0][2],in[ref[i][j]]);
-                    sofa::helper::gl::Color::getHSVA(&col[0],240.f*(float)core::behavior::WeightTraits<WeightType>::get(w[i][j]),1.f,.8f,1.f);
+                    col = helper::types::RGBAColor::fromHSVA(240.f*(float)core::behavior::WeightTraits<WeightType>::get(w[i][j]),1.f,.8f,1.f);
                     vparams->drawTool()->drawLines ( edge, 1, col );
                 }
         }
@@ -985,7 +985,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                     {
                         size_t index = (*triangles)[i][j];
                         if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        colors[count] = helper::types::RGBAColor::fromHSVA((float)val[index],1.f,.8f,1.f);
                         count++;
                     }
             if(extTriangles)
@@ -995,7 +995,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
                         size_t index = (*extTriangles)[i][j];
                         if(this->extvertPosIdx) index=(*extvertPosIdx)[index];
                         if(OutDataTypesInfo<Out>::positionMapped) Out::get(points[count][0],points[count][1],points[count][2],out[index]); else points[count]=f_pos[index];
-                        sofa::helper::gl::Color::getHSVA(&colors[count][0],(float)val[index],1.f,.8f,1.f);
+                        colors[count] = helper::types::RGBAColor::fromHSVA((float)val[index],1.f,.8f,1.f);
                         count++;
                     }
 
