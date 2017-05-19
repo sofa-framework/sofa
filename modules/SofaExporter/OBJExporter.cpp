@@ -32,6 +32,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/helper/io/File.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -92,18 +93,20 @@ void OBJExporter::writeOBJ()
     if( f_printLog.getValue() )
         sout << "Exporting OBJ as: " << filename.c_str() << " (with MTL file)" << sendl;
 
-    std::ofstream outfile(filename.c_str());
+    sofa::helper::io::File outFile(filename.c_str(), std::ios_base::out);
+    std::ostream outStream(outFile.streambuf());
 
     std::string mtlfilename = objFilename.getFullPath();
     if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
         mtlfilename += ".mtl";
     else
         mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
-    std::ofstream mtlfile(mtlfilename.c_str());
-    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
+
+    sofa::helper::io::File mtlFile(mtlfilename.c_str(), std::ios_base::out);
+    std::ostream mtlStream(mtlFile.streambuf());
+
+    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(), &outStream, &mtlStream);
     context->executeVisitor(&exportOBJ);
-    outfile.close();
-    mtlfile.close();
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
