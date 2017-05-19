@@ -85,8 +85,7 @@ bool MeshObjLoader::load()
         return false;
 
     const char* filename = m_filename.getFullPath().c_str();
-    File file;
-    file.open(filename);
+    File file(filename);
     istream stream(file.streambuf());
 
     // -- Reading file

@@ -43,8 +43,8 @@ namespace io
 class SOFA_HELPER_API File
 {
 public:
-    File();
-    File(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary);
+    File(BaseFileAccess* fileAccess = BaseFileAccess::Create());
+    File(const std::string& filename, std::ios_base::openmode openMode = std::ios_base::in | std::ios_base::binary, BaseFileAccess* fileAccess = BaseFileAccess::Create());
 
     ~File();
 

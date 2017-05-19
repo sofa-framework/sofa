@@ -215,8 +215,15 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 bool FileRepository::findFile(std::string& filename, const std::string& basedir, std::ostream* errlog)
 {
     if (filename.empty()) return false; // no filename
-    if (!directAccessProtocolPrefix.empty() && filename.substr(0, directAccessProtocolPrefix.size()) == directAccessProtocolPrefix)
-        return true;
+    if(!accessProtocols.empty())
+        for(auto iterator : accessProtocols)
+        {
+            const std::string& prefix = iterator.first;
+            const AccessProtocolFunction& function = iterator.second;
+
+            if(function && (prefix.empty() || filename.substr(0, prefix.size()) == prefix))
+                return function(filename, basedir, errlog);
+        }
 
     std::string currentDir = SetDirectory::GetCurrentDir();
     if (!basedir.empty())
