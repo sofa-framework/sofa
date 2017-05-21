@@ -56,7 +56,7 @@ public:
     Data<unsigned> f_maxIter;
     Data<double> f_tolerance;
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph;
 #ifdef DISPLAY_TIME
     double time1;
     double time2;
