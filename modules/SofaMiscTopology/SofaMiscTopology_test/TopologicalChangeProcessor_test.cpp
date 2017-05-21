@@ -39,7 +39,7 @@ namespace sofa {
 /**  Test TopologicalChangeProcessor incise process
   */
 
-struct TopologicalChangeProcessor_test: public Sofa_test<double>
+struct TopologicalChangeProcessor_test: public Sofa_test<SReal>
 {
     // root
    simulation::Node::SPtr root;
