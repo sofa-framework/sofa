@@ -80,6 +80,13 @@ typedef simulation::Visitor::ctime_t ctime_t;
 void DefaultPipeline::init()
 {
     Inherit1::init() ;
+
+    /// Insure that all the value provided by the user are valid and report message if it is not.
+    checkDataValues() ;
+}
+
+void DefaultPipeline::checkDataValues()
+{
     if(d_depth.getValue() < 0)
     {
         msg_warning() << "Invalid value 'depth'="<<d_depth.getValue() << "." << msgendl

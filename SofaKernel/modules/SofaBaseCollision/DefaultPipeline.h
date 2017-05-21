@@ -58,6 +58,8 @@ protected:
     virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels);
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse();
+
+    virtual void checkDataValues() ;
 };
 
 } // namespace collision
