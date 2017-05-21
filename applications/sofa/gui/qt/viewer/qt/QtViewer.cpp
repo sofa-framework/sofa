@@ -1612,17 +1612,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vec3d& pos, Quat& ori) const
+void QtViewer::getView(Vector3& pos, Quat& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vec3d& pos, const Quat &ori)
+void QtViewer::setView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vec3d& pos, const Quat &ori)
+void QtViewer::moveView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::moveView(pos, ori);
 }
