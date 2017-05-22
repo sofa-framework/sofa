@@ -24,9 +24,8 @@
 
 #include <sstream>
 #include <string>
-#include <cstdlib>
-#include <cstdio>
 
+#include <sofa/helper/io/File.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/objectmodel/Event.h>
@@ -68,8 +67,7 @@ STLExporter::STLExporter()
 
 STLExporter::~STLExporter()
 {
-    if (outfile)
-        delete outfile;
+
 }
 
 void STLExporter::init()
@@ -131,14 +129,13 @@ void STLExporter::writeSTL()
     }
     filename += ".stl";
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    sofa::helper::io::File outFile;
+    if(!outFile.open(filename.c_str(), std::ios_base::out))
     {
         serr << "Error creating file " << filename << sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
+    std::ostream outStream(outFile.streambuf());
     
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
@@ -187,27 +184,26 @@ void STLExporter::writeSTL()
     std::cout.precision(6);
     
     /* solid */
-    *outfile << "solid Exported from Sofa" << std::endl;
+    outStream << "solid Exported from Sofa" << std::endl;
     
     
     for(int i=0;i<nbt;i++)
     {
         /* normal */
-        *outfile << "facet normal 0 0 0" << std::endl;
-        *outfile << "outer loop" << std::endl;
+        outStream << "facet normal 0 0 0" << std::endl;
+        outStream << "outer loop" << std::endl;
         for (int j=0;j<3;j++)
         {
             /* vertices */
-            *outfile << "vertex " << std::fixed << positionIndices[ vecTri[i][j] ] << std::endl;
+            outStream << "vertex " << std::fixed << positionIndices[ vecTri[i][j] ] << std::endl;
         }
-        *outfile << "endloop" << std::endl;
-        *outfile << "endfacet" << std::endl;
+        outStream << "endloop" << std::endl;
+        outStream << "endfacet" << std::endl;
     }
     
     /* endsolid */
-    *outfile << "endsolid Exported from Sofa" << std::endl;
+    outStream << "endsolid Exported from Sofa" << std::endl;
     
-    outfile->close();
     std::cout << filename << " written" << std::endl;
     nbFiles++;
 }
@@ -224,16 +220,15 @@ void STLExporter::writeSTLBinary()
         filename += oss.str();
     }
     filename += ".stl";
-    
-    outfile = new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary);
-    if( !outfile->is_open() )
+
+    sofa::helper::io::File outFile;
+    if(!outFile.open(filename.c_str(), std::ios_base::out | std::ios::binary))
     {
         serr << "Error creating file " << filename << sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
-    
+    std::ostream outStream(outFile.streambuf());
+
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
@@ -285,40 +280,39 @@ void STLExporter::writeSTLBinary()
         buffer[i]='\0';
     }
     strcpy(buffer, "Exported from Sofa");
-    outfile->write(buffer,80);
+    outStream.write(buffer,80);
 
     delete [] buffer;
 
     /* Number of facets */
     const unsigned int nbt = vecTri.size();
-    outfile->write((char*)&nbt,4);
+    outStream.write((char*)&nbt,4);
     
     // Parsing facets
     for(unsigned long i=0;i<nbt;i++)
     {
         /* normal */
         float nul = 0.; // normals are set to 0
-        outfile->write((char*)&nul, 4);
-        outfile->write((char*)&nul, 4);
-        outfile->write((char*)&nul, 4);
+        outStream.write((char*)&nul, 4);
+        outStream.write((char*)&nul, 4);
+        outStream.write((char*)&nul, 4);
         for (int j=0;j<3;j++)
         {
             /* vertices */
             float iOne = (float)positionIndices[ vecTri[i][j] ][0];
             float iTwo = (float)positionIndices[ vecTri[i][j] ][1];
             float iThree = (float)positionIndices[ vecTri[i][j] ][2];
-            outfile->write( (char*)&iOne, 4);
-            outfile->write( (char*)&iTwo, 4);
-            outfile->write( (char*)&iThree, 4);
+            outStream.write( (char*)&iOne, 4);
+            outStream.write( (char*)&iTwo, 4);
+            outStream.write( (char*)&iThree, 4);
         }
         
         /* Attribute byte count */
         // attribute count is currently not used, it's garbage
         unsigned int zero = 0;
-        outfile->write((char*)&zero, 2);
+        outStream.write((char*)&zero, 2);
     }
     
-    outfile->close();
     std::cout << filename << " written" << std::endl;
     nbFiles++;
 }

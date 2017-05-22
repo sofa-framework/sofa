@@ -55,8 +55,6 @@ private:
     unsigned int stepCounter;
     unsigned int maxStep;
 
-    std::ofstream* outfile;
-    
     int nbFiles;
 
 public:
