@@ -191,4 +191,13 @@ inline std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set
 
 } // namespace std
 
+namespace sofa
+{
+namespace helper
+{
+    /// Export the 'set' implementation into the sofa::helper:: namespace.
+    using std::set ;
+}
+}
+
 #endif
