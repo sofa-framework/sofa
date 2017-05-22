@@ -246,3 +246,13 @@ TEST_P(vector_benchmark_unsigned_int, benchmark)
 INSTANTIATE_TEST_CASE_P(benchmark,
                         vector_benchmark_unsigned_int,
                         ::testing::ValuesIn(benchvalues));
+
+typedef vector_benchmark<int> vector_benchmark_int;
+TEST_P(vector_benchmark_int, benchmark)
+{
+   this->benchmark(GetParam());
+}
+
+INSTANTIATE_TEST_CASE_P(benchmark,
+                        vector_benchmark_int,
+                        ::testing::ValuesIn(benchvalues));
