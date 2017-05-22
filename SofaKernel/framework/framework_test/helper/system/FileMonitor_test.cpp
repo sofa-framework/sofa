@@ -58,7 +58,7 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
 
     // dirty fix to avoid interferences between successive tests using the same file
     if (resetFileMonitor)
-        FileMonitor::updates();
+        FileMonitor::updates(1);
 }
 
 void waitForFileEvents()
@@ -125,6 +125,7 @@ TEST(FileMonitor, addFileTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener);
@@ -180,6 +181,7 @@ TEST(FileMonitor, fileChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //waitForFileEvents();
@@ -200,6 +202,7 @@ TEST(FileMonitor, fileChangeTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //FileMonitor::updates(2) ;
@@ -223,6 +226,7 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -251,6 +255,7 @@ TEST(FileMonitor, listenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -278,6 +283,7 @@ TEST(FileMonitor, fileChange2_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
+	waitForFileEvents();
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
     //waitForFileEvents();
