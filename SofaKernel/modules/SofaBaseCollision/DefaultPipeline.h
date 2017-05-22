@@ -48,7 +48,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const;
+    sofa::helper::set< std::string > getResponseList() const;
 protected:
     // -- Pipeline interface
 

@@ -93,7 +93,7 @@ public:
         typedef std::shared_ptr<ClassEntry> SPtr;
 
         std::string className;
-        std::set<std::string> aliases;
+        sofa::helper::set<std::string> aliases;
         std::string description;
         std::string authors;
         std::string license;

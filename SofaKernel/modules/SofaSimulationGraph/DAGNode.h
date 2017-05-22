@@ -176,7 +176,7 @@ protected:
 
 
     /// all child nodes (unordered)
-    std::set<DAGNode*> _descendancy;
+    sofa::helper::set<DAGNode*> _descendancy;
 
     /// bottom-up traversal removing descendancy
     void setDirtyDescendancy();

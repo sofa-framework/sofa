@@ -82,7 +82,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;
@@ -215,7 +215,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;
@@ -351,7 +351,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;
@@ -485,7 +485,7 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;

@@ -260,8 +260,8 @@ void IncrSAP::init()
 
 //
 //void IncrSAP::initIntersectors(){
-//    for(typename std::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
-//        for(std::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
+//    for(typename sofa::helper::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
+//        for(sofa::helper::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
 
 //        }
 //    }

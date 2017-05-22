@@ -281,7 +281,7 @@ void ObjectFactory::dump(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "  aliases :";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
+            for (sofa::helper::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
                 out << " " << *it;
             out << "\n";
         }
@@ -323,7 +323,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
         ClassEntry::SPtr entry = it->second;
         if (entry->className != it->first) continue;
         out << "<class name=\"" << xmlencode(entry->className) <<"\">\n";
-        for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
+        for (sofa::helper::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
             out << "<alias>" << xmlencode(*it) << "</alias>\n";
         if (!entry->description.empty())
             out << "<description>"<<entry->description<<"</description>\n";
@@ -355,7 +355,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
         if (!entry->aliases.empty())
         {
             out << "<li>Aliases:<i>";
-            for (std::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
+            for (sofa::helper::set<std::string>::iterator it = entry->aliases.begin(), itend = entry->aliases.end(); it != itend; ++it)
                 out << " " << xmlencode(*it);
             out << "</i></li>\n";
         }
@@ -470,7 +470,7 @@ RegisterObject::operator int()
                 reg.creatorMap.insert(*itc);
             }
         }
-        for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
+        for (sofa::helper::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)
         {
             if (reg.aliases.find(*it) == reg.aliases.end())
             {

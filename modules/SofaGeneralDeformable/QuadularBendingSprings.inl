@@ -562,7 +562,7 @@ void QuadularBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, IndexPair > edgeMap;
-    std::set< IndexPair > springSet;
+    sofa::helper::set< IndexPair > springSet;
 
     sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );

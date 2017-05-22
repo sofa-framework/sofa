@@ -493,7 +493,7 @@ int TriangleOctree::trace (defaulttype::Vector3 origin, defaulttype::Vector3 dir
 
 void TriangleOctree::allTriangles (const defaulttype::Vector3 & /*origin*/,
         const defaulttype::Vector3 & /*direction*/,
-        std::set<int>& results)
+        sofa::helper::set<int>& results)
 {
     for (unsigned int i = 0; i < objects.size (); i++)
         results.insert(objects[i]);
@@ -724,7 +724,7 @@ void TriangleOctree::traceAll(defaulttype::Vector3 origin, defaulttype::Vector3 
     traceAllStart(origin, direction, results);
 }
 
-void TriangleOctree::traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, std::set<int>& results)
+void TriangleOctree::traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, sofa::helper::set<int>& results)
 {
     traceAllStart(origin, direction, results);
 }
@@ -787,7 +787,7 @@ void TriangleOctree::traceAllStart(defaulttype::Vector3 origin, defaulttype::Vec
 
 void TriangleOctree::bbAllTriangles(const defaulttype::Vector3 & bbmin,
         const defaulttype::Vector3 & bbmax,
-        std::set<int>& results)
+        sofa::helper::set<int>& results)
 {
     const TriangleOctreeRoot::VecCoord& pos = *tm->octreePos;
     const TriangleOctreeRoot::SeqTriangles& tri = *tm->octreeTriangles;
@@ -847,7 +847,7 @@ void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttyp
             }
 }
 
-void TriangleOctree::bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, std::set<int>& results)
+void TriangleOctree::bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, sofa::helper::set<int>& results)
 {
     bbAll(bbmin, bbmax, results);
 }

@@ -92,7 +92,7 @@ protected:
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up
-        std::set<T> selectLabelsSet;
+        sofa::helper::set<T> selectLabelsSet;
         selectLabelsSet.insert(selectLabels.begin(), selectLabels.end());
 
         helper::ReadAccessor< Data< helper::vector<helper::SVector<T> >  > > labels = d_labels;

@@ -125,7 +125,7 @@ protected:
         // convert connectLabels to set for efficient look-up
         helper::ReadAccessor<Data< helper::vector<T> > > connectL(this->d_connectLabels);
         typedef std::pair<T,T>  TPair;
-        std::set<TPair> connectS;
+        sofa::helper::set<TPair> connectS;
         for(unsigned int i=0;i<connectL.size()/2;i++)
         {
             connectS.insert(TPair(connectL[2*i],connectL[2*i+1]));

@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/set.h>
 #include <memory>
 #include <string>
 #include <sofa/helper/logging/Message.h>
@@ -41,6 +42,8 @@ namespace core
 
 namespace objectmodel
 {
+    using sofa::helper::operator << ;
+    using sofa::helper::operator >> ;
 
 /** \brief Abstract base class template for Data. */
 template < class T >

@@ -915,7 +915,7 @@ protected:
     topology::HexahedronSetTopologyContainer*		_fromContainer;
     topology::HexahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 
-    std::set<int>	_invalidIndex;
+    sofa::helper::set<int>	_invalidIndex;
     MatrixType* matrixJ;
     bool updateJ;
 

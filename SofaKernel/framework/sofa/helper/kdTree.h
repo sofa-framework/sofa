@@ -54,7 +54,7 @@ public:
     typedef vector<Coord> VecCoord;
 
     typedef std::pair<Real,unsigned int> distanceToPoint;
-    typedef std::set<distanceToPoint> distanceSet;
+    typedef sofa::helper::set<distanceToPoint> distanceSet;
     typedef typename distanceSet::iterator distanceSetIt;
     typedef std::list<unsigned int> UIlist;
 

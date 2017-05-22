@@ -124,7 +124,7 @@ void VoxelGridLoader::reinit()
 
         //    const unsigned int numPoints = numPointsX * numPointsY * numPointsZ;
 
-        std::set<unsigned int> keepPoint;
+        sofa::helper::set<unsigned int> keepPoint;
 
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]; ++k )
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )

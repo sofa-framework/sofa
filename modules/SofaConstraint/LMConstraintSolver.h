@@ -55,9 +55,9 @@ protected:
     typedef linearsolver::SparseMatrixEigen    SparseMatrixEigen;
     typedef linearsolver::SparseVectorEigen    SparseVectorEigen;
 
-    typedef std::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
+    typedef sofa::helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, std::set<unsigned int> > DofToMask;
+    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, sofa::helper::set<unsigned int> > DofToMask;
     typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
 
 public:
@@ -136,14 +136,14 @@ protected:
             bool isPositionChangesUpdateVelocity,
             const SparseMatrixEigen  &invM_Ltrans,
             const VectorEigen  &Lambda,
-            const std::set< unsigned int > &dofUsed,
+            const sofa::helper::set< unsigned int > &dofUsed,
             sofa::core::behavior::BaseMechanicalState* dof) const;
 
 
     ///
     virtual void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
             const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
-            SparseMatrixEigen& L, std::set< unsigned int > &dofUsed ) const;
+            SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
     virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseConstraintCorrection* constraintCorrection,
             SparseMatrixEigen& matrix) const;

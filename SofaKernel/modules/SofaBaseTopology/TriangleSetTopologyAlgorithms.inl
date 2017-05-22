@@ -1590,7 +1590,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     // m_modifier->propagateTopologicalChanges();
 
     // Create new edges with full ancestry information
-    std::set<Edge> edges_processed;
+    sofa::helper::set<Edge> edges_processed;
     sofa::helper::vector<Edge> edges_added;
     sofa::helper::vector<core::topology::EdgeAncestorElem> edges_src;
     for (unsigned int ti = 0; ti < new_triangles.size(); ++ti)
@@ -2352,7 +2352,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 2: Find all triangles that need to be attached to the new points
-    std::set<TriangleID> updatedTriangles;
+    sofa::helper::set<TriangleID> updatedTriangles;
 
     //TODO : WARNING THERE SEEMS TO BE A SEG FAULT HERE
     TriangleID t0 = m_container->getTrianglesAroundEdge(edges[0])[0];
@@ -2426,7 +2426,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 3: Create new triangles by replacing indices of split points in the list of triangles to update
-    for (std::set<TriangleID>::const_iterator it = updatedTriangles.begin(), itend = updatedTriangles.end(); it != itend; ++it)
+    for (sofa::helper::set<TriangleID>::const_iterator it = updatedTriangles.begin(), itend = updatedTriangles.end(); it != itend; ++it)
     {
         TriangleID tid = *it;
         Triangle t = m_container->getTriangle(tid);

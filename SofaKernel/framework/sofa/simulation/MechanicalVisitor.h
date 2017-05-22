@@ -449,7 +449,7 @@ class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor : public BaseMechanicalVi
 public:
     typedef sofa::core::TVecId<vtype,sofa::core::V_WRITE> MyVecId;
     typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> MyMultiVecId;
-    typedef std::set<sofa::core::BaseState*> StateSet;
+    typedef sofa::helper::set<sofa::core::BaseState*> StateSet;
     MyVecId& v;
     StateSet states;
     MechanicalVAvailVisitor( const core::ExecParams* params, MyVecId& v)

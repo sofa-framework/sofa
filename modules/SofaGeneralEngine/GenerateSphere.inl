@@ -700,8 +700,8 @@ void GenerateSphere<DataTypes>::update()
 		}
 
 		if (degreeTetrahedron>2) {
-			std::set<Triangle> triangleSet;
-			std::set<Triangle>::iterator itemtr;
+			sofa::helper::set<Triangle> triangleSet;
+			sofa::helper::set<Triangle>::iterator itemtr;
 			for (itt=tetras.begin();itt!=tetras.end();++itt) {
 				for (k=0;k<4;++k){
 					// add inside points

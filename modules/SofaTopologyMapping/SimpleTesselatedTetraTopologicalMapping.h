@@ -127,7 +127,7 @@ protected:
             pointMappedFromEdgeData[-source-1] = i;
         }
     }
-    std::set<unsigned int> tetrahedraToRemove;
+    sofa::helper::set<unsigned int> tetrahedraToRemove;
 
 
     void swapInputPoints(int i1, int i2);

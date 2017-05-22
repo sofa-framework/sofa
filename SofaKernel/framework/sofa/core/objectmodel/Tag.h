@@ -88,7 +88,7 @@ protected:
     int id;
 };
 
-class SOFA_CORE_API TagSet : public std::set<Tag>
+class SOFA_CORE_API TagSet : public sofa::helper::set<Tag>
 {
 public:
     TagSet() {}

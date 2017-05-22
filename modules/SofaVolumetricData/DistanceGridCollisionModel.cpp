@@ -556,7 +556,7 @@ void FFDDistanceGridCollisionModel::init()
     resize(c);
 
     /// compute neighbors
-    helper::vector<std::set<int> > shells;
+    helper::vector<sofa::helper::set<int> > shells;
     shells.resize(ffdMesh->getNbPoints());
     for (unsigned i = 0; i < elems.size(); ++i)
     {

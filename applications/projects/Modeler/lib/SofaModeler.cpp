@@ -767,7 +767,7 @@ void SofaModeler::exportSofaClasses()
     std::vector< ClassEntry::SPtr > entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     //Set of categories found in the Object Factory
-    std::set< std::string > mainCategories;
+    sofa::helper::set< std::string > mainCategories;
     //Data containing all the entries for a given category
     std::multimap< std::string, ClassEntry::SPtr > inventory;
 
@@ -784,7 +784,7 @@ void SofaModeler::exportSofaClasses()
         }
     }
 
-    std::set< std::string >::iterator itCategory;
+    sofa::helper::set< std::string >::iterator itCategory;
     typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
     //We add the components category by category

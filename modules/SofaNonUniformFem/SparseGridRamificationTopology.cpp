@@ -364,7 +364,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
             Hexa& hexa = hexahedra[ (*it)->_hexaIdx ]; // the hexa corresponding to the connexion
 
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
                 neig != (*it)->_neighbors[BEFORE].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
@@ -375,7 +375,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
                 changeIndices( hexa[3], neighbor[7] );
             }
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
                 neig != (*it)->_neighbors[DOWN].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
@@ -386,7 +386,7 @@ void SparseGridRamificationTopology::buildRamifiedFinestLevel()
                 changeIndices( hexa[1], neighbor[2] );
             }
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
                 neig != (*it)->_neighbors[LEFT].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
@@ -676,7 +676,7 @@ void SparseGridRamificationTopology::buildFromFiner()
 
                         for( unsigned i=0; i<NUM_CONNECTED_NODES; ++i) // in all directions
                         {
-                            for(std::set<Connexion*>::iterator n = fineConnexion1->_neighbors[i].begin(); n!=fineConnexion1->_neighbors[i].end(); ++n)
+                            for(sofa::helper::set<Connexion*>::iterator n = fineConnexion1->_neighbors[i].begin(); n!=fineConnexion1->_neighbors[i].end(); ++n)
                             {
 
                                 Connexion* fineConnexion2 = *n;
@@ -748,7 +748,7 @@ void SparseGridRamificationTopology::buildFromFiner()
             Hexa& hexa = hexahedra[ (*it)->_hexaIdx ]; // the hexa corresponding to the connexion
 
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[BEFORE].begin();
                 neig != (*it)->_neighbors[BEFORE].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
@@ -759,7 +759,7 @@ void SparseGridRamificationTopology::buildFromFiner()
                 changeIndices( hexa[3], neighbor[7] );
             }
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[DOWN].begin();
                 neig != (*it)->_neighbors[DOWN].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion
@@ -770,7 +770,7 @@ void SparseGridRamificationTopology::buildFromFiner()
                 changeIndices( hexa[1], neighbor[2] );
             }
 
-            for(std::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
+            for(sofa::helper::set<Connexion*>::iterator neig = (*it)->_neighbors[LEFT].begin();
                 neig != (*it)->_neighbors[LEFT].end(); ++neig)
             {
                 Hexa& neighbor = hexahedra[ (*neig)->_hexaIdx ]; // the hexa corresponding to the neighbor connexion

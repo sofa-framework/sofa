@@ -66,8 +66,8 @@ public:
 
 protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned, std::set<IndexPair>& );
-    void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, std::set<IndexPair>&);
+    void addSpring( unsigned, unsigned, sofa::helper::set<IndexPair>& );
+    void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, sofa::helper::set<IndexPair>&);
 
 };
 

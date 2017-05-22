@@ -69,9 +69,9 @@ protected:
     void runTask();
     void killAllTasks();
 
-    std::map<std::string, std::set<std::string> > presetFilters;
+    std::map<std::string, sofa::helper::set<std::string> > presetFilters;
     bool settingFilter;
-    std::set<std::string> getCurrentFilter();
+    sofa::helper::set<std::string> getCurrentFilter();
 };
 
 } // namespace qt

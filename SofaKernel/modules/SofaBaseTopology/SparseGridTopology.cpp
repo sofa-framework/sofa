@@ -831,7 +831,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
     //// find all initial mesh edges to compute intersection with cubes
     //const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-    //std::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
+    //sofa::helper::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
     //for (unsigned int i=0;i<facets.size();i++)
     //{
     //	const helper::vector<int>& facet = facets[i][0];
@@ -1347,7 +1347,7 @@ void SparseGridTopology::buildFromFiner(  )
     // 		for(int o=0;o<_hierarchicalPointMap.size();++o)
     // 		{
     // 			serr<<o<<" : ";
-    // 			for(std::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
+    // 			for(sofa::helper::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
     // 				serr<<*it<<" ";
     // 			serr<<sendl;
     // 		}

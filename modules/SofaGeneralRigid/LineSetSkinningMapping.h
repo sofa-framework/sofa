@@ -180,12 +180,12 @@ private:
     /*!
     	Stores the first level line neighborhood
     */
-    helper::vector<std::set<int> > neighborhoodLinesSet;
+    helper::vector<sofa::helper::set<int> > neighborhoodLinesSet;
 
     /*!
     	Stores the n level line neighborhood
     */
-    helper::vector<std::set<int> > neighborhood;
+    helper::vector<sofa::helper::set<int> > neighborhood;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP)

@@ -155,7 +155,7 @@ void PythonEnvironment::Release()
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
-    static std::set<std::string> addedPath;
+    static sofa::helper::set<std::string> addedPath;
     if (addedPath.find(path)==addedPath.end()) {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.

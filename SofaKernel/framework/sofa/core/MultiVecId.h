@@ -362,10 +362,10 @@ public:
     }
 
     template<class State>
-    void setId(const std::set<State>& states, const MyVecId& id)
+    void setId(const sofa::helper::set<State>& states, const MyVecId& id)
     {
         IdMap& map = writeIdMap();
-        for (typename std::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
+        for (typename sofa::helper::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
             map[*it] = id;
     }
 

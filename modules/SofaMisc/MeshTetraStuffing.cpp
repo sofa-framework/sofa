@@ -202,7 +202,7 @@ void MeshTetraStuffing::init()
                 helper::vector< collision::TriangleOctree::traceResult > results;
 #ifdef USE_OCTREE
                 octree.octreeRoot->traceAll(origin, direction, results);
-                std::set< int > tris;
+                sofa::helper::set< int > tris;
                 for (unsigned int i=0; i<results.size(); ++i)
                 {
                     if (tris.find(results[i].tid) != tris.end())
@@ -291,8 +291,8 @@ void MeshTetraStuffing::init()
         const Real alphaShort = this->alphaShort.getValue();
         vector<bool> pViolated;
         pViolated.resize(nbp);
-        std::set<int> violatedInsidePoints;
-        std::set<int> violatedOutsidePoints;
+        sofa::helper::set<int> violatedInsidePoints;
+        sofa::helper::set<int> violatedOutsidePoints;
         for (int p=0; p<nbp; ++p)
         {
             bool in1 = (pInside[p] > 0);
@@ -329,7 +329,7 @@ void MeshTetraStuffing::init()
         do
         {
             nwraps = 0;
-            for (std::set<int>::const_iterator it = violatedOutsidePoints.begin(), itend = violatedOutsidePoints.end(); it != itend; ++it)
+            for (sofa::helper::set<int>::const_iterator it = violatedOutsidePoints.begin(), itend = violatedOutsidePoints.end(); it != itend; ++it)
             {
                 int p = *it;
                 if (pInside[p] == 0) continue; // point already wrapped
@@ -399,7 +399,7 @@ void MeshTetraStuffing::init()
         }
         while (nwraps > 0);
         // then order remaining violated inside points
-        for (std::set<int>::const_iterator it = violatedInsidePoints.begin(), itend = violatedInsidePoints.end(); it != itend; ++it)
+        for (sofa::helper::set<int>::const_iterator it = violatedInsidePoints.begin(), itend = violatedInsidePoints.end(); it != itend; ++it)
         {
             int p = *it;
             if (pInside[p] == 0)
@@ -547,7 +547,7 @@ void MeshTetraStuffing::init()
         for (int i=0; i<4; ++i)
             outT[t][i] = newPid[outT[t][i]];
 
-    std::set<Triangle> triSet;
+    sofa::helper::set<Triangle> triSet;
 
     // Check if all tetrahedra volumes are positive
     for (unsigned int t=0; t<outT.size(); ++t)

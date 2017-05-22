@@ -76,7 +76,7 @@ GenGraphForm::GenGraphForm()
 
     // init preset filters
     {
-        std::set<std::string>& filt = presetFilters["Full Graph"];
+        sofa::helper::set<std::string>& filt = presetFilters["Full Graph"];
         filt.insert("showNodes");
         filt.insert("showObjects");
         filt.insert("showBehaviorModels");
@@ -95,16 +95,16 @@ GenGraphForm::GenGraphForm()
         filt.insert("showMechanicalMappings");
     }
     {
-        std::set<std::string>& filt = presetFilters["All Objects"];
+        sofa::helper::set<std::string>& filt = presetFilters["All Objects"];
         filt = presetFilters["Full Graph"];
         filt.erase("showNodes");
     }
     {
-        std::set<std::string>& filt = presetFilters["All Nodes"];
+        sofa::helper::set<std::string>& filt = presetFilters["All Nodes"];
         filt.insert("showNodes");
     }
     {
-        std::set<std::string>& filt = presetFilters["Mechanical Graph"];
+        sofa::helper::set<std::string>& filt = presetFilters["Mechanical Graph"];
         filt = presetFilters["Full Graph"];
         filt.erase("showCollisionModels");
         filt.erase("showVisualModels");
@@ -112,35 +112,35 @@ GenGraphForm::GenGraphForm()
         filt.erase("showCollisionPipeline");
     }
     {
-        std::set<std::string>& filt = presetFilters["Mechanical Objects"];
+        sofa::helper::set<std::string>& filt = presetFilters["Mechanical Objects"];
         filt = presetFilters["Mechanical Graph"];
         filt.erase("showNodes");
     }
     {
-        std::set<std::string>& filt = presetFilters["Visual Graph"];
+        sofa::helper::set<std::string>& filt = presetFilters["Visual Graph"];
         filt.insert("showNodes");
         filt.insert("showObjects");
         filt.insert("showVisualModels");
     }
     {
-        std::set<std::string>& filt = presetFilters["Visual Objects"];
+        sofa::helper::set<std::string>& filt = presetFilters["Visual Objects"];
         filt = presetFilters["Visual Graph"];
         filt.erase("showNodes");
     }
     {
-        std::set<std::string>& filt = presetFilters["Collision Graph"];
+        sofa::helper::set<std::string>& filt = presetFilters["Collision Graph"];
         filt.insert("showNodes");
         filt.insert("showObjects");
         filt.insert("showCollisionModels");
         filt.insert("showCollisionPipeline");
     }
     {
-        std::set<std::string>& filt = presetFilters["Collision Objects"];
+        sofa::helper::set<std::string>& filt = presetFilters["Collision Objects"];
         filt = presetFilters["Collision Graph"];
         filt.erase("showNodes");
     }
     {
-        std::set<std::string>& filt = presetFilters["Collision Response Graph"];
+        sofa::helper::set<std::string>& filt = presetFilters["Collision Response Graph"];
         filt.insert("showNodes");
         filt.insert("showObjects");
         //filt.insert("showBehaviorModels");
@@ -159,7 +159,7 @@ GenGraphForm::GenGraphForm()
         filt.insert("showMechanicalMappings");
     }
     {
-        std::set<std::string>& filt = presetFilters["Collision Response Objects"];
+        sofa::helper::set<std::string>& filt = presetFilters["Collision Response Objects"];
         filt = presetFilters["Collision Response Graph"];
         filt.erase("showNodes");
     }
@@ -178,8 +178,8 @@ void GenGraphForm::changeFilter()
 {
     displayButton->setEnabled(false);
     if (settingFilter) return;
-    std::set<std::string> filt = getCurrentFilter();
-    for (std::map<std::string,std::set<std::string> >::const_iterator it = presetFilters.begin(); it != presetFilters.end(); ++it)
+    sofa::helper::set<std::string> filt = getCurrentFilter();
+    for (std::map<std::string,sofa::helper::set<std::string> >::const_iterator it = presetFilters.begin(); it != presetFilters.end(); ++it)
     {
         if (it->second == filt)
         {
@@ -427,7 +427,7 @@ void GenGraphForm::setFilter()
     std::string name = fname.toStdString();
     if (presetFilters.count(name) > 0)
     {
-        const std::set<std::string> & filt = presetFilters[name];
+        const sofa::helper::set<std::string> & filt = presetFilters[name];
         settingFilter = true;
         this->showNodes->setChecked(filt.find("showNodes")!=filt.end());
         this->showObjects->setChecked(filt.find("showObjects")!=filt.end());
@@ -457,9 +457,9 @@ void GenGraphForm::setFilter()
     }
 }
 
-std::set<std::string> GenGraphForm::getCurrentFilter()
+sofa::helper::set<std::string> GenGraphForm::getCurrentFilter()
 {
-    std::set<std::string> filt;
+    sofa::helper::set<std::string> filt;
     if (this->showNodes->isChecked()) filt.insert("showNodes");
     if (this->showObjects->isChecked()) filt.insert("showObjects");
     if (this->showBehaviorModels->isChecked()) filt.insert("showBehaviorModels");

@@ -62,7 +62,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
     }
 
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
-    std::set< std::pair<int,int> > edges;
+    sofa::helper::set< std::pair<int,int> > edges;
     for (size_t i=0; i<facets.size(); i++)
     {
         const vector<int>& facet = facets[i][0];

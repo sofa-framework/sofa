@@ -61,7 +61,7 @@ public:
     Data < double > closedAngle;
 
 protected:
-    std::set<ToolModel*> modelTools;
+    sofa::helper::set<ToolModel*> modelTools;
     ToolDOFs* mstateTool;
     core::collision::ContactManager* contactManager;
     bool wasActive;

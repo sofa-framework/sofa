@@ -3586,7 +3586,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;

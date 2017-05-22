@@ -93,7 +93,7 @@ public:
     virtual void addContact(BaseRayContact* contact) { contacts.insert(contact); }
     virtual void removeContact(BaseRayContact* contact) { contacts.erase(contact); }
 
-    virtual const std::set<BaseRayContact*> &getContacts() const { return contacts;}
+    virtual const sofa::helper::set<BaseRayContact*> &getContacts() const { return contacts;}
 
 protected:
     sofa::helper::vector<SReal> length;
@@ -101,7 +101,7 @@ protected:
 
     Data<SReal> defaultLength;
 
-    std::set<BaseRayContact*> contacts;
+    sofa::helper::set<BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };

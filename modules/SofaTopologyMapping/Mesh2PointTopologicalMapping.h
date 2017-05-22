@@ -138,7 +138,7 @@ protected:
 
     helper::vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
-    std::set<unsigned int> pointsToRemove;
+    sofa::helper::set<unsigned int> pointsToRemove;
 
     size_t addInputPoint(unsigned int i, PointSetTopologyModifier* toPointMod=NULL); ///< Returns the number of points added inside the output topology. 
     void addInputEdge(unsigned int i, PointSetTopologyModifier* toPointMod=NULL);

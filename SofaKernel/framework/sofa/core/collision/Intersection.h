@@ -123,7 +123,7 @@ protected:
 
     InternalMap intersectorsMap;
     std::map< helper::TypeInfo, helper::TypeInfo > castMap;
-    std::set< const objectmodel::ClassInfo* > classes;
+    sofa::helper::set< const objectmodel::ClassInfo* > classes;
 };
 
 /** @brief Given 2 collision elements, test if an intersection is possible (for bounding volumes), or compute intersection points if any

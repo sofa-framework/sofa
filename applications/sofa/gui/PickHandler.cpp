@@ -394,8 +394,8 @@ component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
     const double& maxLength                     = mouseCollision->getRay(0).l();
 
     BodyPicked result;
-    const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
-    for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
+    const sofa::helper::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
+    for (sofa::helper::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
     {
 
         const sofa::helper::vector<core::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();

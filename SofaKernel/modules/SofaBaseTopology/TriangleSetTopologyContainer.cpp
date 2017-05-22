@@ -699,7 +699,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
     if (hasTrianglesAroundVertex())
     {
         std::set <int> triangleSet;
-        std::set<int>::iterator it;
+        sofa::helper::set<int>::iterator it;
 
         for (unsigned int i=0; i<m_trianglesAroundVertex.size(); ++i)
         {
@@ -733,7 +733,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
     if (hasTrianglesAroundEdge())
     {
         std::set <int> triangleSet;
-        std::set<int>::iterator it;
+        sofa::helper::set<int>::iterator it;
 
         for (unsigned int i=0; i<m_trianglesAroundEdge.size(); ++i)
         {

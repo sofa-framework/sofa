@@ -1660,7 +1660,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        helper::fixed_array< std::set<int>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
+        helper::fixed_array< sofa::helper::set<int>, 27 > fineNodesPerPositions; // list of fine nodes at each fine positions
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {
             finerK[i].resize( finerChildrenRamificationOriginal[i].size() );
@@ -1700,7 +1700,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  for(int i=0;i<27;++i)
         // 			  {
         // 				  serr<<i<<" : ";
-        // 				  for(std::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
+        // 				  for(sofa::helper::set<int>::iterator it=fineNodesPerPositions[i].begin();it!=fineNodesPerPositions[i].end();++it)
         // 					  serr<<*it<<", ";
         // 				  serr<<sendl;
         // 			  }
@@ -1762,7 +1762,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         for(int i=0; i<27; ++i)
         {
-            for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+            for( sofa::helper::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
             {
                 map_idxq_idxass[*it] = idxass;
                 idxass++;
@@ -1892,7 +1892,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     break;
                 }
 
-                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                for( sofa::helper::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutasscoarse;
                     map_idxq_coarse[*it] = whichCoarseNode;
@@ -1912,7 +1912,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             }
             else
             {
-                for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+                for( sofa::helper::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
                 {
                     map_idxq_idxcutass[*it] = idxcutass;
                     map_idxq_coarse[*it] = -1;
@@ -2107,7 +2107,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         // 			  for(int i=0;i<27;++i)
         // 			  {
-        // 					  for( std::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
+        // 					  for( sofa::helper::set<int>::iterator it = fineNodesPerPositions[i].begin() ; it != fineNodesPerPositions[i].end() ; ++it )
         // 					  {
         // 						  int localidx = map_idxq_idxass[ *it ];
         //

@@ -115,7 +115,7 @@ public:
                     this->countEdge(edgeCount,edge);
                 }
 
-        std::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
+        sofa::helper::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
         for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
             if(it->second==1)
             {

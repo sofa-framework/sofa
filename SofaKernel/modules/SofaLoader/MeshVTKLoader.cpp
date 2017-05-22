@@ -267,7 +267,7 @@ bool MeshVTKLoader::setInputsMesh()
 
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{1,3},{2,3}};
-        std::set<Edge> edgeSet;
+        sofa::helper::set<Edge> edgeSet;
         size_t j;
         int nbf = reader->numberOfCells;
         int i = 0;

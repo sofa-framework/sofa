@@ -66,7 +66,7 @@ void RuleBasedContactManager::createVariableData ( std::string variable )
     if (sep != std::string::npos)
     {
         // store group names in static set so that pointer to string content is kept valid
-        static std::set<std::string> groupNames;
+        static sofa::helper::set<std::string> groupNames;
         const std::string& group = *groupNames.insert(variable.substr(0,sep)).first;
         d->setGroup(group.c_str());
     }

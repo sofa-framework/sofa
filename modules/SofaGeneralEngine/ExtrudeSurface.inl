@@ -96,7 +96,7 @@ void ExtrudeSurface<DataTypes>::update()
 
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
-    std::set<int> pointsUsed;
+    sofa::helper::set<int> pointsUsed;
     std::map<int, std::pair<Vec3, unsigned int> > normals;
     //first loop to compute normals per point
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)

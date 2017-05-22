@@ -95,7 +95,7 @@ public:
     {
         Connexion():_parent(NULL), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
-        helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
+        helper::fixed_array< sofa::helper::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 
         typedef std::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
         std::list<Children> _children;	// the hierarchical graph to finer level
@@ -115,7 +115,7 @@ public:
 
             _tmp = connexionNumber;
             for(int i=0; i<NUM_CONNECTED_NODES; ++i)
-                for(std::set<Connexion*>::iterator n = _neighbors[i].begin(); n!=_neighbors[i].end(); ++n)
+                for(sofa::helper::set<Connexion*>::iterator n = _neighbors[i].begin(); n!=_neighbors[i].end(); ++n)
                     if( find( allFineConnexions.begin(),allFineConnexions.end(),*n ) != allFineConnexions.end() ) // the neighbors is in the good child of the coarse hexa
                         (*n)->propagateConnexionNumberToNeighbors(connexionNumber,allFineConnexions);
         }

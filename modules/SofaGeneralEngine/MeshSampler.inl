@@ -193,8 +193,8 @@ void MeshSampler<DataTypes>::computeDistances(VD& distances, VI& voronoi,const V
     else
     {
         typedef std::pair<Real,ID> DistanceToPoint;
-        std::set<DistanceToPoint> q; // priority queue
-        typename std::set<DistanceToPoint>::iterator qit;
+        sofa::helper::set<DistanceToPoint> q; // priority queue
+        typename sofa::helper::set<DistanceToPoint>::iterator qit;
 
         for (unsigned int i=0; i<ind.size(); i++)
         {

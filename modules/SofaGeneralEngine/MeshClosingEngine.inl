@@ -59,7 +59,7 @@ void MeshClosingEngine<DataTypes>::update()
 
     // get list of border edges
     typedef std::pair<unsigned int,unsigned int> edge; // orinted edges
-    typedef std::set< edge > edgeset;
+    typedef sofa::helper::set< edge > edgeset;
     typedef typename edgeset::iterator edgesetit;
 
     edgeset edges;

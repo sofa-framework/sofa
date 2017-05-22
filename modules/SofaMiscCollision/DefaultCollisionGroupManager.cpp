@@ -225,14 +225,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // finally recreate group vector
     groups.clear();
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (sofa::helper::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groups.push_back(*it);
 }
 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (sofa::helper::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
         if (*it) clearGroup( (*it)->getParents(), *it );
     }

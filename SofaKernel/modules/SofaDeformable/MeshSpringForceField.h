@@ -65,7 +65,7 @@ protected:
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
 
-    void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
+    void addSpring(sofa::helper::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
 
     MeshSpringForceField()

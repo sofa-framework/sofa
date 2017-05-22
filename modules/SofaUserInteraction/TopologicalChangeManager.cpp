@@ -77,7 +77,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     if(topo_curr == NULL)
         return 0;
 
-    std::set< unsigned int > items;
+    sofa::helper::set< unsigned int > items;
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
@@ -126,11 +126,11 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                 is_topoMap = true;
                 //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
                 //ind_curr = topoMap->getFromIndex(ind_glob);
-                std::set< unsigned int > loc_items = items;
+                sofa::helper::set< unsigned int > loc_items = items;
                 items.clear();
                 if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
@@ -139,7 +139,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
@@ -186,7 +186,7 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
     if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
         return 0;
 
-    std::set< unsigned int > items;
+    sofa::helper::set< unsigned int > items;
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
@@ -207,11 +207,11 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
-                std::set< unsigned int > loc_items = items;
+                sofa::helper::set< unsigned int > loc_items = items;
                 items.clear();
                 if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
@@ -221,7 +221,7 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
@@ -267,7 +267,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
     if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
         return 0;
 
-    std::set< unsigned int > items;
+    sofa::helper::set< unsigned int > items;
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
@@ -288,11 +288,11 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
             if(topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
             {
                 is_topoMap = true;
-                std::set< unsigned int > loc_items = items;
+                sofa::helper::set< unsigned int > loc_items = items;
                 items.clear();
                 if( topoMap->isTheOutputTopologySubdividingTheInputOne())
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
@@ -301,7 +301,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                 }
                 else
                 {
-                    for (std::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
+                    for (sofa::helper::set< unsigned int >::const_iterator it=loc_items.begin(); it != loc_items.end(); ++it)
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);

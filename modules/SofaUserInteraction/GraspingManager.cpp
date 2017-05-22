@@ -72,7 +72,7 @@ void GraspingManager::init()
             modelTools.insert(models[i]);
         }
     }
-    for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
+    for (sofa::helper::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
         (*it)->setActive(false);
     sout << "GraspingManager: "<<modelTools.size()<<"/"<<models.size()<<" collision models selected."<<sendl;
     mstateTool = getContext()->get<ToolDOFs>(core::objectmodel::BaseContext::SearchDown);
@@ -93,13 +93,13 @@ void GraspingManager::doGrasp()
     {
         sout << "GraspingManager activated" << sendl;
         // activate CMs for one iteration
-        for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
+        for (sofa::helper::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
             (*it)->setActive(true);
     }
     else
     {
         // deactivate CMs
-        for (std::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
+        for (sofa::helper::set<ToolModel*>::iterator it=modelTools.begin(), itend=modelTools.end(); it != itend; ++it)
             (*it)->setActive(false);
     }
 

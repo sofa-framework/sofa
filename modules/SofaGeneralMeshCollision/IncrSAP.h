@@ -253,7 +253,7 @@ private:
     double _alarmDist_d2;
 
 
-    std::set<core::CollisionModel*> collisionModels;
+    sofa::helper::set<core::CollisionModel*> collisionModels;
 protected:
     IncrSAP();
 

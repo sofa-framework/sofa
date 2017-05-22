@@ -587,7 +587,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
 
 void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanicalState *dof,
         const std::list<unsigned int> &idxEquations, unsigned int constraintOffset,
-        SparseMatrixEigen& L, std::set< unsigned int > &dofUsed) const
+        SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed) const
 {
     const unsigned int dimensionDofs=dof->getDerivDimension();
     typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
@@ -664,7 +664,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
     VectorEigen LambdaPrevious=Lambda;
 
     //Store the invalid block of the W matrix
-    std::set< int > emptyBlock;
+    sofa::helper::set< int > emptyBlock;
     helper::vector< std::pair<MatrixEigen,VectorEigen> > constraintToBlock;
     helper::vector< MatrixEigen> constraintInvWBlock;
     helper::vector< MatrixEigen> constraintWBlock;
@@ -811,7 +811,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         bool isPositionChangesUpdateVelocity,
         const SparseMatrixEigen  &invM_Ltrans,
         const VectorEigen  &c,
-        const std::set< unsigned int > &dofUsed,
+        const sofa::helper::set< unsigned int > &dofUsed,
         sofa::core::behavior::BaseMechanicalState* dofs) const
 {
 
@@ -866,7 +866,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         }
         else
         {
-            std::set< unsigned int >::const_iterator it;
+            sofa::helper::set< unsigned int >::const_iterator it;
             for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
                 unsigned int offset=(*it);
@@ -879,7 +879,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             const double h=1.0/getContext()->getDt();
 
-            std::set< unsigned int >::const_iterator it;
+            sofa::helper::set< unsigned int >::const_iterator it;
             for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
                 unsigned int offset=(*it);
@@ -892,7 +892,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     }
     else
     {
-        std::set< unsigned int >::const_iterator it;
+        sofa::helper::set< unsigned int >::const_iterator it;
         for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
         {
             unsigned int offset=(*it);

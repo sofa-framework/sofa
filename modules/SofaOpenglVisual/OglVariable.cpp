@@ -218,7 +218,7 @@ void OglIntVariable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const int v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setInt(idShader, idstr.c_str(), v);
 }
 
@@ -228,7 +228,7 @@ void OglInt2Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec<2,int>& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setInt2(idShader, idstr.c_str(), v[0], v[1]);
 }
 
@@ -237,7 +237,7 @@ void OglInt3Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec<3,int>& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setInt3(idShader, idstr.c_str(), v[0], v[1], v[2]);
 }
 
@@ -246,7 +246,7 @@ void OglInt4Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec<4,int>& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setInt4(idShader, idstr.c_str(), v[0], v[1], v[2], v[3]);
 }
 
@@ -276,7 +276,7 @@ void OglFloatVariable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const float v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloat(idShader, idstr.c_str(), v);
 }
 
@@ -286,7 +286,7 @@ void OglFloat2Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec2f& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloat2(idShader, idstr.c_str(), v[0], v[1]);
 }
 
@@ -295,7 +295,7 @@ void OglFloat3Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec3f& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloat3(idShader, idstr.c_str(), v[0], v[1], v[2]);
 }
 
@@ -304,7 +304,7 @@ void OglFloat4Variable::initVisual()
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
     const defaulttype::Vec4f& v = value.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloat4(idShader, idstr.c_str(), v[0], v[1], v[2], v[3]);
 }
 
@@ -382,7 +382,7 @@ void OglIntVectorVariable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? NULL : &(v[0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setIntVector(idShader, idstr.c_str(), v.size(), vptr);
 }
 
@@ -392,7 +392,7 @@ void OglIntVector2Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? NULL : &(v[0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setIntVector2(idShader, idstr.c_str(), v.size()/2, vptr);
 }
 
@@ -402,7 +402,7 @@ void OglIntVector3Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? NULL : &(v[0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setIntVector3(idShader, idstr.c_str(), v.size()/3, vptr);
 }
 
@@ -412,7 +412,7 @@ void OglIntVector4Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<GLint>& v = value.getValue();
     const GLint* vptr = v.empty() ? NULL : &(v[0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setIntVector4(idShader, idstr.c_str(), v.size()/4, vptr);
 }
 
@@ -464,7 +464,7 @@ void OglFloatVectorVariable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloatVector(idShader, idstr.c_str(), v.size(), vptr);
 }
 
@@ -474,7 +474,7 @@ void OglFloatVector2Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec2f>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0][0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloatVector2(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
@@ -484,7 +484,7 @@ void OglFloatVector3Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec3f>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0][0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloatVector3(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
@@ -494,7 +494,7 @@ void OglFloatVector4Variable::initVisual()
     const std::string& idstr = id.getValue();
     const helper::vector<defaulttype::Vec4f>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0][0]);
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setFloatVector4(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
@@ -528,7 +528,7 @@ void OglMatrix2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix2(idShader, idstr.c_str(), v.size()/4, transp, vptr);
 }
 
@@ -560,7 +560,7 @@ void OglMatrix3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix3(idShader, idstr.c_str(), v.size()/9, transp, vptr);
 }
 
@@ -592,7 +592,7 @@ void OglMatrix4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix4(idShader, idstr.c_str(), v.size()/16, transp, vptr);
 }
 
@@ -624,7 +624,7 @@ void OglMatrix2x3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix2x3(idShader, idstr.c_str(), v.size()/6, transp, vptr);
 }
 
@@ -657,7 +657,7 @@ void OglMatrix3x2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix3x2(idShader, idstr.c_str(), v.size()/6, transp, vptr);
 }
 
@@ -689,7 +689,7 @@ void OglMatrix2x4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix2x4(idShader, idstr.c_str(), v.size()/8, transp, vptr);
 }
 
@@ -721,7 +721,7 @@ void OglMatrix4x2Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix4x2(idShader, idstr.c_str(), v.size()/8, transp, vptr);
 }
 
@@ -753,7 +753,7 @@ void OglMatrix3x4Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix3x4(idShader, idstr.c_str(), v.size()/12, transp, vptr);
 }
 
@@ -785,7 +785,7 @@ void OglMatrix4x3Variable::initVisual()
     const helper::vector<float>& v = value.getValue();
     const float* vptr = v.empty() ? NULL : &(v[0]);
     const bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix4x3(idShader, idstr.c_str(), v.size()/12, transp, vptr);
 }
 
@@ -806,7 +806,7 @@ void OglMatrix4VectorVariable::initVisual()
     //serr << "OglMatrix4VectorVariable::initVisual(), v = " << v << sendl;
     const float* vptr = v.empty() ? NULL : &(v[0][0][0]);
     bool transp = transpose.getValue();
-    for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
+    for(sofa::helper::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)
         (*it)->setMatrix4(idShader, idstr.c_str(), v.size(), transp, vptr);
 }
 

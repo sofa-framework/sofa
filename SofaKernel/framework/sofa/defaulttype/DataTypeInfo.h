@@ -1274,9 +1274,9 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 };
 
 template<class T, class Compare, class Alloc>
-struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T,Compare,Alloc> >
+struct DataTypeInfo< sofa::helper::set<T,Compare,Alloc> > : public SetTypeInfo<sofa::helper::set<T,Compare,Alloc> >
 {
-    static std::string name() { std::ostringstream o; o << "std::set<" << DataTypeName<T>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "sofa::helper::set<" << DataTypeName<T>::name() << ">"; return o.str(); }
 };
 
 

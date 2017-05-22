@@ -47,7 +47,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(MergeSets,T),core::DataEngine);
     typedef T Index;
     typedef sofa::helper::vector<T> VecIndex;
-    typedef std::set<T> SetIndex;
+    typedef sofa::helper::set<T> SetIndex;
 
 protected:
     MergeSets();

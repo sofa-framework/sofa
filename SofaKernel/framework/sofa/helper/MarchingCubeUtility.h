@@ -194,7 +194,7 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
+    void findConnectedVoxels ( sofa::helper::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
@@ -210,7 +210,7 @@ private:
             unsigned char* data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
-            std::set<Vec3i>& generatedCubes,
+            sofa::helper::set<Vec3i>& generatedCubes,
             std::map< Vector3, PointID>& map_vertices,
             helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL,
             bool propagate = true ) const;

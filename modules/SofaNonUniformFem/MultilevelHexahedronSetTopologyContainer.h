@@ -129,7 +129,7 @@ public:
 
     int getHexaInFineRegularGrid(const Vec3i& id) const;
 
-    const std::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
+    const sofa::helper::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
 
     Data<int> _level;
     Data<Vec3i>	fineResolution;		// width, height, depth (number of hexa in each direction)
@@ -143,7 +143,7 @@ private:
     class SOFA_NON_UNIFORM_FEM_API Component
     {
     public:
-        Component(const Vec3i& id, const std::set<Vec3i>& voxels);
+        Component(const Vec3i& id, const sofa::helper::set<Vec3i>& voxels);
         virtual ~Component();
 
         bool isEmpty() const;
@@ -152,10 +152,10 @@ private:
         bool getConnection(const Component* other, Vec3i& connection) const;
         bool merge(Component* other);
 
-        void split(std::set<Component*>& newComponents);
+        void split(sofa::helper::set<Component*>& newComponents);
 
         void clear();
-        void removeVoxels(const std::set<Vec3i>& voxels);
+        void removeVoxels(const sofa::helper::set<Vec3i>& voxels);
 
         bool hasVoxel(const Vec3i& voxel) const;
 
@@ -177,12 +177,12 @@ private:
 
     private:
         Component(const Vec3i& id);
-        bool isConnected(const std::set<Vec3i>&, const Vec3i&) const;
+        bool isConnected(const sofa::helper::set<Vec3i>&, const Vec3i&) const;
 
     public:
         Component*				_parent;
-        std::set<Component*>	_children;
-        std::set<Vec3i>			_voxels;
+        sofa::helper::set<Component*>	_children;
+        sofa::helper::set<Vec3i>			_voxels;
 
     private:
         Vec3i					_id;		// voxel id in the corresponding level

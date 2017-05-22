@@ -125,7 +125,7 @@ private:
     EndPointList _end_points;//end points of _boxes
     int _cur_axis;//the current greatest variance axis
 
-    std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
+    sofa::helper::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
     std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
 
     double _alarmDist;
