@@ -36,12 +36,15 @@
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
 
 
-namespace std
+namespace sofa
 {
+namespace helper
+{
+using std::deque ;
 
 /// Output stream
 template<class T>
-std::ostream& operator<< ( std::ostream& os, const std::deque<T>& d )
+std::ostream& operator<< ( std::ostream& os, const sofa::helper::deque<T>& d )
 {
     if( d.size()>0 )
     {
@@ -53,7 +56,7 @@ std::ostream& operator<< ( std::ostream& os, const std::deque<T>& d )
 
 /// Input stream
 template<class T>
-std::istream& operator>> ( std::istream& in, std::deque<T>& d )
+std::istream& operator>> ( std::istream& in, sofa::helper::deque<T>& d )
 {
     T t=T();
     d.clear();
@@ -72,7 +75,7 @@ std::istream& operator>> ( std::istream& in, std::deque<T>& d )
 /// Input stream
 /// Specialization for reading deques of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-inline std::istream& operator>>( std::istream& in, std::deque<int>& d )
+inline std::istream& operator>>( std::istream& in, sofa::helper::deque<int>& d )
 {
     int t;
     d.clear();
@@ -131,7 +134,7 @@ inline std::istream& operator>>( std::istream& in, std::deque<int>& d )
 /// Output stream
 /// Specialization for writing deques of unsigned char
 template<>
-inline std::ostream& operator<<(std::ostream& os, const std::deque<unsigned char>& d)
+inline std::ostream& operator<<(std::ostream& os, const sofa::helper::deque<unsigned char>& d)
 {
     if( d.size()>0 )
     {
@@ -145,7 +148,7 @@ inline std::ostream& operator<<(std::ostream& os, const std::deque<unsigned char
 /// Inpu stream
 /// Specialization for writing deques of unsigned char
 template<>
-inline std::istream& operator>>(std::istream& in, std::deque<unsigned char>& d)
+inline std::istream& operator>>(std::istream& in, sofa::helper::deque<unsigned char>& d)
 {
     int t;
     d.clear();
@@ -160,7 +163,7 @@ inline std::istream& operator>>(std::istream& in, std::deque<unsigned char>& d)
 /// Input stream
 /// Specialization for reading deques of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-inline std::istream& operator>>( std::istream& in, std::deque<unsigned int>& d )
+inline std::istream& operator>>( std::istream& in, sofa::helper::deque<unsigned int>& d )
 {
     unsigned int t;
     d.clear();
@@ -217,6 +220,7 @@ inline std::istream& operator>>( std::istream& in, std::deque<unsigned int>& d )
     return in;
 }
 
-} // namespace std
+} // namespace helper
+} // namespace sofa
 
 #endif
