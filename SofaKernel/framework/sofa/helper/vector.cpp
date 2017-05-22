@@ -62,16 +62,15 @@ int SOFA_HELPER_API getInteger(const std::string& s, std::stringstream& msg, uns
 
     /// It is important to check that the string was totally parsed to report
     /// message to users because a silent error is the worse thing that can happen in UX.
-    if(end !=  attrstr+strlen(attrstr))
-    {
-        if(numErrors<5)
-            msg << "    - problem while parsing '" << s <<"' as Integer'. Replaced by 0 instead." << msgendl ;
-        if(numErrors==5)
-            msg << "   - ... " << msgendl;
-        numErrors++ ;
-        return 0 ;
-    }
-    return retval ;
+    if(end ==  attrstr+strlen(attrstr))
+        return retval ;
+
+    if(numErrors<5)
+        msg << "    - problem while parsing '" << s <<"' as Integer'. Replaced by 0 instead." << msgendl ;
+    if(numErrors==5)
+        msg << "   - ... " << msgendl;
+    numErrors++ ;
+    return 0 ;
 }
 
 
