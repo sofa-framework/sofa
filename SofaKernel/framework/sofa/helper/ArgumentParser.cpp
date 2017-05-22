@@ -86,13 +86,13 @@ ArgumentParser::~ArgumentParser()
 */
 void ArgumentParser::operator () ( int argc, char** argv )
 {
-    std::list<std::string> str;
+    sofa::helper::list<std::string> str;
     for (int i=1; i<argc; ++i)
         str.push_back(std::string(argv[i]));
     (*this)(str);
 }
 
-void ArgumentParser::operator () ( std::list<std::string> str )
+void ArgumentParser::operator () ( sofa::helper::list<std::string> str )
 {
     string shHelp("-");  shHelp.push_back( helpShortName );
     string lgHelp("--"); lgHelp.append( helpLongName );

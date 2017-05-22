@@ -29,7 +29,7 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/Line.h>
 #include <sofa/core/CollisionElement.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
@@ -175,8 +175,8 @@ void TLineModel<DataTypes>::handleTopologyChange()
 
     if (bmt)
     {
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin = bmt->beginChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd = bmt->endChange();
 
         while( itBegin != itEnd )
         {

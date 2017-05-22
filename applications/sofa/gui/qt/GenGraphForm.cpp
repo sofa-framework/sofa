@@ -179,7 +179,7 @@ void GenGraphForm::changeFilter()
     displayButton->setEnabled(false);
     if (settingFilter) return;
     sofa::helper::set<std::string> filt = getCurrentFilter();
-    for (std::map<std::string,sofa::helper::set<std::string> >::const_iterator it = presetFilters.begin(); it != presetFilters.end(); ++it)
+    for (sofa::helper::map<std::string,sofa::helper::set<std::string> >::const_iterator it = presetFilters.begin(); it != presetFilters.end(); ++it)
     {
         if (it->second == filt)
         {

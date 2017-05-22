@@ -67,7 +67,7 @@ public:
 protected:
     static sofa::core::collision::DetectionOutput::ContactId cpt;
     sofa::core::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
+    static sofa::helper::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
 };
 
 
@@ -102,7 +102,7 @@ protected:
 
     Data<double> mu, tol;
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
-    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+    std::vector< sofa::helper::pair< sofa::helper::pair<int, int>, double > > mappedContacts;
 
     void activateMappers();
 
@@ -115,7 +115,7 @@ protected:
 public:
     void cleanup();
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    sofa::helper::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
     void setDetectionOutputs(OutputVector* outputs);
 

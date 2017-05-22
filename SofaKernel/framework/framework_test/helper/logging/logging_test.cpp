@@ -27,7 +27,7 @@
 #include <iostream>
 using std::endl ;
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector ;
 
 #include <sofa/helper/logging/Messaging.h>

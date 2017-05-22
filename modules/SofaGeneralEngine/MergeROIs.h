@@ -86,7 +86,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const sofa::helper::map<std::string,std::string*>& str )
     {
         f_indices.parseFieldsSizeData(str, nbROIs);
         Inherit1::parseFields(str);

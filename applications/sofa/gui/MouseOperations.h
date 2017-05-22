@@ -24,7 +24,7 @@
 
 #include "SofaGUI.h"
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 #include <SofaGraphComponent/AttachBodyButtonSetting.h>

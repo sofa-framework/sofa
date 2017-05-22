@@ -36,7 +36,7 @@
 #include <sofa/simulation/Node.h>
 
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

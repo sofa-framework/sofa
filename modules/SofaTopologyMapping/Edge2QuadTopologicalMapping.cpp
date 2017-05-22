@@ -30,7 +30,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
@@ -274,8 +274,8 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
         if (toModel)
         {
 
-            std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-            std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
@@ -372,7 +372,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int k = tab[i];
                             sofa::helper::vector<unsigned int> ind_k;
 
-                            std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_1 = In2OutMap.find(k);
+                            sofa::helper::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_1 = In2OutMap.find(k);
                             if(iter_1 != In2OutMap.end())
                             {
 
@@ -387,7 +387,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 ind_k = In2OutMap[k];
                                 ind_real_last = ind_k;
 
-                                std::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_2 = In2OutMap.find(last);
+                                sofa::helper::map<unsigned int, sofa::helper::vector<unsigned int> >::iterator iter_2 = In2OutMap.find(last);
                                 if(iter_2 != In2OutMap.end())
                                 {
 

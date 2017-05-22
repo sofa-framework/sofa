@@ -96,7 +96,7 @@ public:
 /// to register all derived collision models (i.e. an intersector registered for RayModel will also be used for RayPickIntersector).
 class SOFA_CORE_API IntersectorMap
 {
-    typedef std::map<std::pair<helper::TypeInfo, helper::TypeInfo>, ElementIntersector*> InternalMap;
+    typedef sofa::helper::map<sofa::helper::pair<helper::TypeInfo, helper::TypeInfo>, ElementIntersector*> InternalMap;
     typedef InternalMap::key_type MapKey;
     typedef InternalMap::value_type MapValue;
 public:
@@ -122,7 +122,7 @@ protected:
     void insert(const helper::TypeInfo& t1, const helper::TypeInfo& t2, ElementIntersector* intersector);
 
     InternalMap intersectorsMap;
-    std::map< helper::TypeInfo, helper::TypeInfo > castMap;
+    sofa::helper::map< helper::TypeInfo, helper::TypeInfo > castMap;
     sofa::helper::set< const objectmodel::ClassInfo* > classes;
 };
 

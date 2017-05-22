@@ -28,8 +28,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/map.h>
 #include <iostream>
 
 namespace sofa

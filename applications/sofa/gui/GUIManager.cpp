@@ -46,7 +46,7 @@ namespace gui
 
 /*STATIC FIELD DEFINITIONS */
 BaseGUI* GUIManager::currentGUI = NULL;
-std::list<GUIManager::GUICreator> GUIManager::guiCreators;
+sofa::helper::list<GUIManager::GUICreator> GUIManager::guiCreators;
 std::vector<std::string> GUIManager::guiOptions;
 const char* GUIManager::valid_guiname = NULL;
 
@@ -70,8 +70,8 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
 {
     if(guiCreators.size())
     {
-        std::list<GUICreator>::iterator it = guiCreators.begin();
-        std::list<GUICreator>::iterator itend = guiCreators.end();
+        sofa::helper::list<GUICreator>::iterator it = guiCreators.begin();
+        sofa::helper::list<GUICreator>::iterator itend = guiCreators.end();
         while (it != itend && strcmp(name, it->name))
             ++it;
         if (it != itend)
@@ -93,7 +93,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
 std::vector<std::string> GUIManager::ListSupportedGUI()
 {
     std::vector<std::string> names;
-    for(std::list<GUICreator>::iterator it = guiCreators.begin(), itend = guiCreators.end(); it != itend; ++it)
+    for(sofa::helper::list<GUICreator>::iterator it = guiCreators.begin(), itend = guiCreators.end(); it != itend; ++it)
     {
         names.push_back(it->name);
     }
@@ -104,7 +104,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 {
     std::string names;
     bool first = true;
-    for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
+    for(sofa::helper::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
     {
         if (!first) names += separator; else first = false;
         names += it->name;
@@ -135,8 +135,8 @@ const char* GUIManager::GetValidGUIName()
             const char* lastGuiNameChar = lastGuiName.c_str();
 
             // const char* lastGuiNameChar = "qt";
-            std::list<GUICreator>::iterator it1 = guiCreators.begin();
-            std::list<GUICreator>::iterator itend1 = guiCreators.end();
+            sofa::helper::list<GUICreator>::iterator it1 = guiCreators.begin();
+            sofa::helper::list<GUICreator>::iterator itend1 = guiCreators.end();
             while(++it1 != itend1)
             {
                 if( strcmp(lastGuiNameChar, it1->name) == 0 )
@@ -151,8 +151,8 @@ const char* GUIManager::GetValidGUIName()
             msg_info("GUIManager") << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI.";
         }
 
-        std::list<GUICreator>::iterator it =guiCreators.begin();
-        std::list<GUICreator>::iterator itend =guiCreators.end();
+        sofa::helper::list<GUICreator>::iterator it =guiCreators.begin();
+        sofa::helper::list<GUICreator>::iterator itend =guiCreators.end();
         name = it->name;
         int prio = it->priority;
         while (++it != itend)
@@ -170,8 +170,8 @@ const char* GUIManager::GetValidGUIName()
 GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 {
     if (!name) name = GetValidGUIName();
-    std::list<GUICreator>::iterator it =guiCreators.begin();
-    std::list<GUICreator>::iterator itend =guiCreators.end();
+    sofa::helper::list<GUICreator>::iterator it =guiCreators.begin();
+    sofa::helper::list<GUICreator>::iterator itend =guiCreators.end();
     while (it != itend && strcmp(name, it->name))
         ++it;
     if (it == itend)
@@ -204,7 +204,7 @@ int GUIManager::Init(const char* argv0, const char* name)
     // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
     const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
     const std::string sofaIniFilePath = etcDir + "/sofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    sofa::helper::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
 
     // and add them to DataRepository
     if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())

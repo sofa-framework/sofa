@@ -33,8 +33,8 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
-#include <map>
-#include <list>
+#include <sofa/helper/map.h>
+#include <sofa/helper/list.h>
 
 //#ifdef SOFA_HAVE_GLEW
 //#include <SofaOpenglVisual/OglShaderVisualModel.h>

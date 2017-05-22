@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/fixed_array.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <set>
 
 

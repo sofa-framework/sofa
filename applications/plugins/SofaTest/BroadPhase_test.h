@@ -142,7 +142,7 @@ void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 
 //CLASS FUNCTIONS
 
 struct CItCompare{
-    void rearrenge(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2,sofa::core::CollisionElementIterator & e11,
+    void rearrenge(const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2,sofa::core::CollisionElementIterator & e11,
                     sofa::core::CollisionElementIterator & e12,sofa::core::CollisionElementIterator & e21,sofa::core::CollisionElementIterator & e22)const{
         if(p1.first.getCollisionModel()->getLast() == p1.second.getCollisionModel()->getLast()){
             if(p1.first.getIndex() < p1.second.getIndex()){
@@ -183,7 +183,7 @@ struct CItCompare{
         }
     }
 
-    bool operator()(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
+    bool operator()(const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
         sofa::core::CollisionElementIterator e11,e12,e21,e22;
         rearrenge(p1,p2,e11,e12,e21,e22);
 
@@ -199,7 +199,7 @@ struct CItCompare{
         return e12.getIndex() < e22.getIndex();
     }
 
-    bool same(const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
+    bool same(const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p1,const sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> & p2)const{
         sofa::core::CollisionElementIterator e11,e12,e21,e22;
         rearrenge(p1,p2,e11,e12,e21,e22);
 
@@ -222,7 +222,7 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 //        col_detection.addCollisionModel(cm2);
 
     std::vector<MyBox> boxes;
-    std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > brutInter;
+    std::vector<sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > brutInter;
 
     getMyBoxes(cm1,boxes);
     if(cm2 != 0x0)
@@ -270,7 +270,7 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
     col_detection.addCollisionPairs(col_detection.getCollisionModelPairs());
     col_detection.endNarrowPhase();
 
-    std::vector<std::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > broadPhaseInter;
+    std::vector<sofa::helper::pair<sofa::core::CollisionElementIterator,sofa::core::CollisionElementIterator> > broadPhaseInter;
 
     sofa::helper::vector<sofa::core::collision::DetectionOutput> * res = dynamic_cast<sofa::helper::vector<sofa::core::collision::DetectionOutput> *>(col_detection.getDetectionOutputs(cm1,cm1));
     if(res != 0x0)

@@ -33,7 +33,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologyData.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/map.h>
 
 namespace sofa
@@ -353,9 +353,9 @@ public:
 
 #ifdef PLOT_CURVE
     //structures to save values for each element along time
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphStress;
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphCriteria;
-    sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
+    sofa::helper::vector<sofa::helper::map<std::string, sofa::helper::vector<double> > > allGraphStress;
+    sofa::helper::vector<sofa::helper::map<std::string, sofa::helper::vector<double> > > allGraphCriteria;
+    sofa::helper::vector<sofa::helper::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
 
     //the index of element we want to display the graphs
     Data<Real>  elementID;

@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/Topology.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 

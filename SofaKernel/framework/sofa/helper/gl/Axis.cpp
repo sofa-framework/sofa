@@ -40,7 +40,7 @@ namespace gl
 static const int quadricDiscretisation = 16;
 //GLuint Axis::displayList;
 //GLUquadricObj *Axis::quadratic = NULL;
-std::map < std::pair<std::pair<float,float>,float>, Axis* > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
+std::map < sofa::helper::pair<sofa::helper::pair<float,float>,float>, Axis* > Axis::axisMap; // great idea but no more valid when creating a new opengl context when switching sofa viewer
 
 void Axis::initDraw()
 {

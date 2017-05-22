@@ -28,7 +28,8 @@
 
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
-#include <vector>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/pair.h>
 
 namespace sofa
 {
@@ -73,7 +74,7 @@ public:
     virtual void process(Message& m) ;
 
 private:
-    std::vector<std::pair<FilterFunction, MessageHandler*> > m_filters;
+    std::vector<sofa::helper::pair<FilterFunction, MessageHandler*> > m_filters;
 } ;
 
 ///

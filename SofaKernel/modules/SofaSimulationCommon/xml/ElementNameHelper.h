@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_XML_ELEMENTNAMEHELPER
 
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <string>
 
 namespace sofa
@@ -37,7 +37,7 @@ namespace xml
 class ElementNameHelper
 {
 protected:
-    std::map<std::string, int> instanceCounter;
+    sofa::helper::map<std::string, int> instanceCounter;
     void registerName(const std::string& name);
 
 public:

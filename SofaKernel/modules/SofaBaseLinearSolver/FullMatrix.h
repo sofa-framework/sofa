@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include "FullVector.h"
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {

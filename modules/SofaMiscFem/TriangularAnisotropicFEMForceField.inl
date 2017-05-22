@@ -31,7 +31,7 @@
 #include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <algorithm>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <assert.h>

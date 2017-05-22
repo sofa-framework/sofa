@@ -226,13 +226,13 @@ public:
 
     /// TopologyChange interactions
     /// @{
-    const std::list<const TopologyChange *> &getChangeList() const { return m_changeList.getValue(); }
+    const sofa::helper::list<const TopologyChange *> &getChangeList() const { return m_changeList.getValue(); }
 
-    const std::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList.getValue(); }
+    const sofa::helper::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList.getValue(); }
 
-    const Data <std::list<const TopologyChange *> > &getDataChangeList() const { return m_changeList; }
+    const Data <sofa::helper::list<const TopologyChange *> > &getDataChangeList() const { return m_changeList; }
 
-    const Data <std::list<const TopologyChange *> > &getDataStateChangeList() const { return m_stateChangeList; }
+    const Data <sofa::helper::list<const TopologyChange *> > &getDataStateChangeList() const { return m_stateChangeList; }
 
     /** \brief Adds a TopologyChange to the list.
     *
@@ -250,19 +250,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator beginChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator endChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator beginStateChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator endStateChange() const;
+    sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -279,7 +279,7 @@ public:
 
     /// TopologyEngine interactions
     ///@{
-    const std::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
+    const sofa::helper::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
 
     /** \brief Adds a TopologyEngine to the list.
     */
@@ -288,11 +288,11 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
      */
-    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
      */
-    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
+    sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -307,13 +307,13 @@ protected:
     virtual void updateTopologyEngineGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
-    Data <std::list<const TopologyChange *> >m_changeList;
+    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
 
     /// Array of state modifications that have already occured (addition) or will occur next (deletion).
-    Data <std::list<const TopologyChange *> >m_stateChangeList;
+    Data <sofa::helper::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    std::list<TopologyEngine *> m_topologyEngineList;
+    sofa::helper::list<TopologyEngine *> m_topologyEngineList;
 
 public:
 

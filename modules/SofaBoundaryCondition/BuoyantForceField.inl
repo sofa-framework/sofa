@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/BuoyantForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <set>
 #include <iostream>
 #include <math.h>

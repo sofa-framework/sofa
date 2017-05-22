@@ -329,7 +329,7 @@ void GLSLShader::InitShaders()
 
     bool ready = true;
 
-    for (std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+    for (sofa::helper::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
     {
         ready &= CompileShader(it->first, it->second, header);
     }
@@ -344,7 +344,7 @@ void GLSLShader::InitShaders()
     m_hProgramObject = glCreateProgramObjectARB();
 
     // We attach each shader we just loaded to our program object
-    for (std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.begin(), itend = m_hShaders.end(); it != itend; ++it)
+    for (sofa::helper::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.begin(), itend = m_hShaders.end(); it != itend; ++it)
     {
         glAttachObjectARB(m_hProgramObject, it->second);
     }
@@ -373,7 +373,7 @@ void GLSLShader::InitShaders()
         glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
         msg_error("GLSLShader") << logString;
         free(logString);
-        for (std::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
+        for (sofa::helper::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
             if(!it->second.filename.empty())
                 msg_error("GLSLShader") << GetShaderStageName(it->first) << " shader file: " << it->second.filename ;
             else
@@ -387,19 +387,19 @@ void GLSLShader::InitShaders()
 
 std::string GLSLShader::GetShaderFileName(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    sofa::helper::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return ((it != m_hShaderContents.end()) ? it->second.filename : std::string());
 }
 
 bool GLSLShader::IsSet(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    sofa::helper::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return it != m_hShaderContents.end();
 }
 
 std::string GLSLShader::GetShaderString(GLint type) const
 {
-    std::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
+    sofa::helper::map<GLint, ShaderContents>::const_iterator it = m_hShaderContents.find(type);
     return ((it != m_hShaderContents.end()) ? it->second.text : std::string());
 }
 
@@ -410,7 +410,7 @@ std::string GLSLShader::GetHeader() const
 
 GLhandleARB GLSLShader::GetShaderID(GLint type) const
 {
-    std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type);
+    sofa::helper::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type);
     return ((it != m_hShaders.end()) ? it->second : 0);
 }
 
@@ -481,7 +481,7 @@ GLint GLSLShader::GetAttributeVariable(std::string strVariable)
 ///	This function frees all of our shader data
 void GLSLShader::Release()
 {
-    for (std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.begin(), itend = m_hShaders.end(); it != itend; ++it)
+    for (sofa::helper::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.begin(), itend = m_hShaders.end(); it != itend; ++it)
     {
         GLhandleARB shader = it->second;
         if (shader && m_hProgramObject)

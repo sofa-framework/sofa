@@ -48,7 +48,7 @@ void MeshSubsetEngine<DataTypes>::update()
     helper::WriteOnlyAccessor<Data< SeqQuads > > oqd(this->quads);
 
     opos.resize(ind.size());
-    std::map<PointID,PointID> FtoS;
+    sofa::helper::map<PointID,PointID> FtoS;
     for(size_t i=0; i<ind.size(); i++)
     {
         opos[i]=pos[ind[i]];

@@ -37,10 +37,10 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <deque>
 #include <string>
-#include <map>
-
+#include <sofa/helper/map.h>
+#include <sofa/helper/list.h>
+#include <sofa/helper/deque.h>
 
 // forward declaration of castable classes
 // @author Matthieu Nesme, 2015
@@ -214,13 +214,13 @@ public:
     virtual void parse ( BaseObjectDescription* arg );
 
     /// Assign the field values stored in the given list of name + value pairs of strings
-    void parseFields ( const std::list<std::string>& str );
+    void parseFields ( const sofa::helper::list<std::string>& str );
 
     /// Assign the field values stored in the given map of name -> value pairs
-    virtual void parseFields ( const std::map<std::string,std::string*>& str );
+    virtual void parseFields ( const sofa::helper::map<std::string,std::string*>& str );
 
     /// Write the current field values to the given map of name -> value pairs
-    void writeDatas (std::map<std::string,std::string*>& str);
+    void writeDatas (sofa::helper::map<std::string,std::string*>& str);
 
     /// Write the current field values to the given output stream
     /// separated with the given separator (" " used by default for XML)
@@ -338,7 +338,7 @@ public:
 private:
     /// effective ostringstream for logging
     mutable std::ostringstream _serr, _sout;
-    mutable std::deque<sofa::helper::logging::Message> m_messageslog ;
+    mutable sofa::helper::deque<sofa::helper::logging::Message> m_messageslog ;
 
 public:
     /// write into component buffer + Message processedby message handlers
@@ -362,7 +362,7 @@ public:
 
     void addMessage(const sofa::helper::logging::Message& m) const ;
     size_t  countLoggedMessages(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
-    const std::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
+    const sofa::helper::deque<sofa::helper::logging::Message>& getLoggedMessages() const ;
     const std::string getLoggedMessagesAsString(sofa::helper::logging::Message::TypeSet t=sofa::helper::logging::Message::AnyTypes) const ;
 
     void clearLoggedMessages() const ;

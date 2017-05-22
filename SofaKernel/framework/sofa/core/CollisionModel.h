@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_COLLISIONMODEL_H
 #define SOFA_CORE_COLLISIONMODEL_H
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
@@ -250,7 +250,7 @@ public:
     /// intersection method.
     ///
     /// Default to empty (i.e. two identical iterators)
-    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren(int /*index*/) const
+    virtual sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren(int /*index*/) const
     {
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
@@ -262,7 +262,7 @@ public:
     /// parent (often corresponding to the final elements).
     ///
     /// Default to empty (i.e. two identical iterators)
-    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren(int /*index*/) const
+    virtual sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren(int /*index*/) const
     {
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }

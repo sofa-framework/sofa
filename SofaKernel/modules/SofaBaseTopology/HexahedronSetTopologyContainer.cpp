@@ -101,7 +101,7 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge,unsigned int> edgeMap;
+    sofa::helper::map<Edge,unsigned int> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
@@ -163,7 +163,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
     }
 
     // create a temporary map to find redundant quads
-    std::map<Quad,unsigned int> quadMap;
+    sofa::helper::map<Quad,unsigned int> quadMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
@@ -192,7 +192,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         // sort vertices in lexicographics order
         unsigned int quadIndex;
         Quad qu(v[0],v[3],v[2],v[1]);
-        std::map<Quad,unsigned int>::iterator itt = quadMap.find(qu);
+        sofa::helper::map<Quad,unsigned int>::iterator itt = quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one

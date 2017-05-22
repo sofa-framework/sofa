@@ -29,7 +29,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa
@@ -126,16 +126,16 @@ protected:
     // using matrix buffer in case of interaction between mapped model
 
     //map used for real mechanical state (non-mapped only)
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
+    sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int > realStateOffsets;
 
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)
     //by method "getMatrix" in order to fill its matrix
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
+    mutable sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 
     //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
-    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
-    mutable std::map< std::pair<const sofa::core::behavior::BaseMechanicalState*, const sofa::core::behavior::BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
+    mutable sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
+    mutable sofa::helper::map< sofa::helper::pair<const sofa::core::behavior::BaseMechanicalState*, const sofa::core::behavior::BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
 
     //The list of validated mapping in the order of visitor, to be read in the inverted direction for propagation contribution
     std::vector<sofa::core::BaseMapping*> mappingList;

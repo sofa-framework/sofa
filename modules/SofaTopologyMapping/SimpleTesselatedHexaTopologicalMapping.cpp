@@ -30,7 +30,7 @@
 
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -88,7 +88,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 Vector3 p7(fromModel->getPX(h[7]), fromModel->getPY(h[7]), fromModel->getPZ(h[7]));
 
                 // points mapped from edges
-                std::pair<std::map<fixed_array<int,2>, int>::iterator, bool> insert_result;
+                sofa::helper::pair<sofa::helper::map<fixed_array<int,2>, int>::iterator, bool> insert_result;
                 insert_result = pointMappedFromEdge.insert(std::make_pair(fixed_array<int,2>(h[0],h[1]),pointIndex));
                 if(insert_result.second)
                 {
@@ -186,7 +186,7 @@ void SimpleTesselatedHexaTopologicalMapping::init()
                 }
 
                 // points mapped from facets
-                std::pair<std::map<fixed_array<int,4>, int>::iterator, bool> insert_facets_result;
+                sofa::helper::pair<sofa::helper::map<fixed_array<int,4>, int>::iterator, bool> insert_facets_result;
                 insert_facets_result = pointMappedFromFacet.insert(std::make_pair(fixed_array<int,4>(h[0], h[1], h[2], h[3]), pointIndex));
                 if (insert_facets_result.second)
                 {

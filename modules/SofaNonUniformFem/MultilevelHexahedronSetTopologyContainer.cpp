@@ -258,7 +258,7 @@ int MultilevelHexahedronSetTopologyContainer::getHexaInFineRegularGrid(const Vec
 int MultilevelHexahedronSetTopologyContainer::getHexaChildren(const unsigned int hexaId,
         helper::vector<unsigned int>& children) const
 {
-    std::list<Component*>	compList;
+    sofa::helper::list<Component*>	compList;
     compList.push_back(_coarseComponents.getValue()[hexaId]);
 
     Component* comp = compList.front();
@@ -311,7 +311,7 @@ int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int h
 }
 
 void MultilevelHexahedronSetTopologyContainer::connectionToNodeAdjacency(const Vec3i& connection,
-        std::map<unsigned int, unsigned int>& nodeMap) const
+        sofa::helper::map<unsigned int, unsigned int>& nodeMap) const
 {
     for(unsigned int i=0; i<8; ++i)
         nodeMap[i] = i;
@@ -750,8 +750,8 @@ void MultilevelHexahedronSetTopologyContainer::Component::split(sofa::helper::se
     // create new Components with corresponding voxels and children
     if(!this->isStronglyConnected())
     {
-        std::list<Component*> set1;
-        std::list<Component*> set2;
+        sofa::helper::list<Component*> set1;
+        sofa::helper::list<Component*> set2;
 
         set2.insert(set2.end(), _children.begin(), _children.end());
 
@@ -767,15 +767,15 @@ void MultilevelHexahedronSetTopologyContainer::Component::split(sofa::helper::se
             {
                 change = false;
 
-                for(std::list<Component*>::iterator iter = set1.begin();
+                for(sofa::helper::list<Component*>::iterator iter = set1.begin();
                     iter != set1.end(); ++iter)
-                    for(std::list<Component*>::iterator iter2 = set2.begin();
+                    for(sofa::helper::list<Component*>::iterator iter2 = set2.begin();
                         iter2 != set2.end(); /*++iter2*/)
                     {
                         if((*iter2)->isConnected(*iter))
                         {
                             set1.push_back(*iter2);
-                            std::list<Component*>::iterator it = iter2;
+                            sofa::helper::list<Component*>::iterator it = iter2;
                             ++iter2;
                             set2.erase(it);
                             change = true;

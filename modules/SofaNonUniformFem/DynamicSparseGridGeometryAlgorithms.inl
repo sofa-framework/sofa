@@ -56,7 +56,7 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 template < class DataTypes >
 core::topology::BaseMeshTopology::HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing )
 {
-    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
+    sofa::helper::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
     existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {
@@ -90,9 +90,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( currentIndex[1] > resolution[1]) currentIndex[1] = resolution[1];
     if( currentIndex[2] > resolution[2]) currentIndex[2] = resolution[2];
 
-    const std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
+    const sofa::helper::map< unsigned int, core::topology::BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
     unsigned int regularGridIndex;
-    std::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it;
+    sofa::helper::map< unsigned int, core::topology::BaseMeshTopology::HexaID>::const_iterator it;
     for( int k = 0; k < 3; k++)
     {
         if((((int)currentIndex[2])-1+k < 0) || (currentIndex[2]-1+k > resolution[2])) continue;

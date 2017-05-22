@@ -34,7 +34,7 @@
 #define SOFA_CORE_OBJECTMODEL_JOYSTICKEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

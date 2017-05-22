@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 
@@ -43,7 +43,7 @@ class NumericalIntegrationDescriptor {
  
 public:
     typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
-	typedef std::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
+	typedef sofa::helper::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
 	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
 	
 	typedef enum {
@@ -55,10 +55,10 @@ public:
 		GAUSS_CUBE_METHOD=5
 	} QuadratureMethod; 
 	typedef size_t IntegrationOrder;
-	typedef std::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
+	typedef sofa::helper::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
 
 protected:
-	std::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
+	sofa::helper::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
 public:
 	/// empty constructor
 	NumericalIntegrationDescriptor(){}

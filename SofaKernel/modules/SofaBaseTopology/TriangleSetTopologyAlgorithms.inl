@@ -2305,7 +2305,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     //this->serr << "Points on the path: " << init_points << this->sendl;
 
-    sofa::helper::vector< std::pair<TriangleID,TriangleID> > init_triangles;
+    sofa::helper::vector< sofa::helper::pair<TriangleID,TriangleID> > init_triangles;
     for (size_t i=0; i<nbEdges; ++i)
     {
         const sofa::helper::vector<TriangleID>& shell = m_container->getTrianglesAroundEdge(edges[i]);
@@ -2336,7 +2336,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     /// STEP 1: Create the new points corresponding the one of the side of the now separated edges
     const size_t first_new_point = beginOnBorder ? 0 : 1;
     const size_t last_new_point = endOnBorder ? init_points.size()-1 : init_points.size()-2;
-    std::map<PointID, PointID> splitMap;
+    sofa::helper::map<PointID, PointID> splitMap;
     for (size_t i = first_new_point ; i <= last_new_point ; ++i)
     {
         PointID p = init_points[i];
@@ -2433,7 +2433,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         bool changed = false;
         for (int c = 0; c < 3; ++c)
         {
-            std::map<PointID, PointID>::iterator itsplit = splitMap.find(t[c]);
+            sofa::helper::map<PointID, PointID>::iterator itsplit = splitMap.find(t[c]);
             if (itsplit != splitMap.end())
             {
                 t[c] = itsplit->second;

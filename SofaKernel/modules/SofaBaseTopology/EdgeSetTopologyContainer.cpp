@@ -27,7 +27,7 @@
 
 #include <boost/config.hpp>
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <utility>
 
 #include <boost/graph/adjacency_list.hpp>

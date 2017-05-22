@@ -115,7 +115,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typename OutDOFs::SPtr outDofs; ///< mapping output
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
-    std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    sofa::helper::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  errorMax * numeric_limits<Real>::epsilon
     Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 

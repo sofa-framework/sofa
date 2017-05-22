@@ -26,7 +26,7 @@
 
 #include <cstdio>
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sstream>
 #include <string>
 

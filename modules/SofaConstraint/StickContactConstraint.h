@@ -70,7 +70,7 @@ protected:
     core::objectmodel::BaseContext* parent;
 
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
-    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+    std::vector< sofa::helper::pair< sofa::helper::pair<int, int>, double > > mappedContacts;
     void activateMappers();
 
     StickContactConstraint() : model1(NULL), model2(NULL), intersectionMethod(NULL), parent(NULL) {}
@@ -89,7 +89,7 @@ public:
 
     void cleanup();
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    sofa::helper::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
     void setDetectionOutputs(OutputVector* outputs);
 

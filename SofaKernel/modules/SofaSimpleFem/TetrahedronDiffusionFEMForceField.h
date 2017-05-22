@@ -49,7 +49,7 @@
 
 //FOR the graph :
 #include <sofa/core/visual/VisualModel.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/map.h>
 
 //FOR the timer

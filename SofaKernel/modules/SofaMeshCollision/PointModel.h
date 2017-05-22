@@ -28,7 +28,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

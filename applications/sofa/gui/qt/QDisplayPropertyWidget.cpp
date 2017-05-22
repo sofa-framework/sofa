@@ -149,7 +149,7 @@ void QDisplayPropertyWidget::addComponent(const QString& component, core::object
     componentItem->setForeground(1, *foregroundBrush);
     componentItem->setTextAlignment(1, Qt::AlignRight);
 
-    objects[componentItem] = std::pair<core::objectmodel::Base*, QTreeWidgetItem*>(base, listItem);
+    objects[componentItem] = sofa::helper::pair<core::objectmodel::Base*, QTreeWidgetItem*>(base, listItem);
 
     // add data
     for(sofa::core::objectmodel::Base::VecData::const_iterator it = fields.begin(); it != fields.end(); ++it)
@@ -569,7 +569,7 @@ void QDisplayPropertyWidget::clearAll()
 
 void QDisplayPropertyWidget::updateListViewItem()
 {
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, QTreeWidgetItem*> >::iterator objectIterator;
+    sofa::helper::map<QTreeWidgetItem*, sofa::helper::pair<core::objectmodel::Base*, QTreeWidgetItem*> >::iterator objectIterator;
     for(objectIterator = objects.begin(); objectIterator != objects.end(); ++objectIterator)
     {
         core::objectmodel::Base* object = objectIterator->second.first;

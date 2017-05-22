@@ -27,7 +27,7 @@
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <memory>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 

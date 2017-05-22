@@ -623,7 +623,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     helper::vector<ElementMass> finestMasses(finestChildren.size());
 
 
-    std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+    sofa::helper::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
     int idxass = 0;
 
 
@@ -670,9 +670,9 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+    sofa::helper::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
     int idxcutass = 0;
-    std::map<int,bool> map_idxq_coarse;
+    sofa::helper::map<int,bool> map_idxq_coarse;
     helper::fixed_array<int,8> map_idxcoarse_idxfine;
     const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
@@ -680,7 +680,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
     for(int i=0; i<sizeass; ++i)
     {
-        for( std::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
+        for( sofa::helper::map<int,int>::iterator it = map_idxq_idxass.begin(); it!=map_idxq_idxass.end(); ++it)
             if( (*it).second==i)
             {
                 // 					serr<<(*it).first<<" "<<(*it).second<<sendl;
@@ -711,7 +711,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    // 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
+    // 		for( sofa::helper::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
     // 		{
     // 			bool ok=false;
     // 			Coord finesommet = finestSparseGrid->getPointPos( (*it).first );
@@ -755,18 +755,18 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // 		}
 
 
-    // 		for( std::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
+    // 		for( sofa::helper::map<int,int>::iterator it = map_idxq_idxass.begin();it!=map_idxq_idxass.end();++it)
     // 		{
     // 			serr<<(*it).first<<" "<<(*it).second<<sendl;
     // 		}
     //
-    // 		for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it!=map_idxq_idxcutass.end();++it)
+    // 		for( sofa::helper::map<int,int>::iterator it = map_idxq_idxcutass.begin();it!=map_idxq_idxcutass.end();++it)
     // 		{
     // 			serr<<(*it).second<<",";
     // 		}
     // 		serr<<sendl;
     //
-    // 		for( std::map<int,bool>::iterator it = map_idxq_coarse.begin();it!=map_idxq_coarse.end();++it)
+    // 		for( sofa::helper::map<int,bool>::iterator it = map_idxq_coarse.begin();it!=map_idxq_coarse.end();++it)
     // 		{
     // 			serr<<(*it).second<<",";
     // 		}
@@ -1569,7 +1569,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 		  serr<<"\nKcsofa = ";
         // 		  printMatlab( serr, finerK[0] );
 
-        // // 		  std::map<int,helper::fixed_array<int,8> > maptmp;
+        // // 		  sofa::helper::map<int,helper::fixed_array<int,8> > maptmp;
         // //
         // // 		  for(int i=0;i<27;++i)
         // // 			  for(int j=0;j<8;++j)
@@ -1580,7 +1580,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // // 				  maptmp[ FineHexa_FineNode_IndiceForAssembling[i][j] ][i] = j;
         // //
         // // 		  serr<<"MAP = {";
-        // // 		  for( std::map<int,helper::fixed_array<int,8> >::iterator it = maptmp.begin();it != maptmp.end() ;++it)
+        // // 		  for( sofa::helper::map<int,helper::fixed_array<int,8> >::iterator it = maptmp.begin();it != maptmp.end() ;++it)
         // // 		  {
         // // 			  serr<<"{";
         // // 			  for(int i=0;i<8;++i)
@@ -1756,7 +1756,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        std::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
+        sofa::helper::map<int,int> map_idxq_idxass; // map a fine point idx to a assembly (local) idx
         int idxass = 0;
 
 
@@ -1774,7 +1774,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // 			  serr<<"map_idxq_idxass : "<<sendl;
-        // 			  for(std::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
+        // 			  for(sofa::helper::map<int,int>::iterator it = map_idxq_idxass.begin();it != map_idxq_idxass.end();++it)
         // 			  {
         // 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
         // 			  }
@@ -1848,15 +1848,15 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  assembledStiffnessStatic.printMatlab( serr );
 
 
-        std::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
+        sofa::helper::map<int,int> map_idxq_idxcutass; // map a fine point idx to a the cut assembly (local) idx
         int idxcutass = 0,idxcutasscoarse = 0;
-        std::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
+        sofa::helper::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
         helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
 
         linearsolver::NewMatMatrix  mask;
         mask.resize(sizeass*3,8*3);
 
-        // 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
+        // 			  sofa::helper::map<int,sofa::helper::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
 
 
         for(int i=0; i<27; ++i)
@@ -1907,7 +1907,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
                     // 						  helper::vector<int> coarsedepending; coarsedepending.push_back(whichCoarseNode);
-                    // 						  map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, 0 );
+                    // 						  map_mask[ *it ] = sofa::helper::pair< helper::vector<int> ,unsigned >( coarsedepending, 0 );
                 }
             }
             else
@@ -1935,14 +1935,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
                     }
 
 
-                    // 						map_mask[ *it ] = std::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
+                    // 						map_mask[ *it ] = sofa::helper::pair< helper::vector<int> ,unsigned >( coarsedepending, MIDDLE_AXES[i] );
                 }
             }
         }
 
 
         // 			  serr<<"map_idxq_idxcutass : "<<sendl;
-        // 			  for(std::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
+        // 			  for(sofa::helper::map<int,int>::iterator it = map_idxq_idxcutass.begin();it != map_idxq_idxcutass.end();++it)
         // 			  {
         // 				  serr<<(*it).first<<" "<<(*it).second<<sendl;
         // 			  }
@@ -1955,14 +1955,14 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         linearsolver::NewMatMatrix  Ainv;
 
         // 			  serr<<"map_idxq_coarse : "<<sendl;
-        // 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
+        // 			  for( sofa::helper::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
         // 			  {
         // 				  serr<<(*it).second<<sendl;
         // 			  }
 
         // 			  serr<<"cutting :"<<sendl;
         // 			  for ( int i=0;i<sizeass;++i)
-        for( std::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
+        for( sofa::helper::map<int,int>::iterator it = map_idxq_idxcutass.begin(); it!=map_idxq_idxcutass.end(); ++it)
         {
             // 				  int col = map_idxq_idxcutass[i];
             int colcut = (*it).second;
@@ -2055,7 +2055,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
 
 
-        for( std::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
+        for( sofa::helper::map<int,int>::iterator it= map_idxq_coarse.begin(); it!=map_idxq_coarse.end(); ++it)
         {
             if( it->second != -1 )
             {
@@ -2376,7 +2376,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weig
         // 			  }
 
         // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
-        _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+        _finalWeights[ elementIndice ] = sofa::helper::pair<int,Weight>(coarseElementIndice, A);
 
     }
     else
@@ -2415,7 +2415,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification
         // 			  }
 
         // 			  _weights[ this->_nbVirtualFinerLevels.getValue()-level ][elementIndice] = A;
-        _finalWeights[ elementIndice ] = std::pair<int,Weight>(coarseElementIndice, A);
+        _finalWeights[ elementIndice ] = sofa::helper::pair<int,Weight>(coarseElementIndice, A);
     }
     else
     {

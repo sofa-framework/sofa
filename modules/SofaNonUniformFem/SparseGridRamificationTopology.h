@@ -97,8 +97,8 @@ public:
 
         helper::fixed_array< sofa::helper::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 
-        typedef std::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
-        std::list<Children> _children;	// the hierarchical graph to finer level
+        typedef sofa::helper::pair<unsigned,Connexion*> Children; // the unsigned indicates the fine place 0->7 in the coarse element
+        sofa::helper::list<Children> _children;	// the hierarchical graph to finer level
         Connexion* _parent;	// the hierarchical graph to coarser level
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
@@ -126,7 +126,7 @@ protected:
     helper::vector<helper::vector<Connexion*> > _connexions; // for each initial, regular SparseGrid::hexa -> a list of independant connexion
 
 
-    std::map<int, std::pair<helper::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
+    sofa::helper::map<int, sofa::helper::pair<helper::vector<Connexion*>,int> > _mapHexa_Connexion; // a hexa idx -> the corresponding connexion
 
     bool intersectionSegmentTriangle(Vector3 s0, Vector3 s1, Vector3 t0, Vector3 t1, Vector3 t2);
 

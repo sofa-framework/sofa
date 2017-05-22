@@ -44,7 +44,7 @@ MeshSpringForceField<DataTypes>::~MeshSpringForceField()
 }
 
 template<class DataTypes>
-void MeshSpringForceField<DataTypes>::addSpring(sofa::helper::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
+void MeshSpringForceField<DataTypes>::addSpring(sofa::helper::set<sofa::helper::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
 {
     if (localRange.getValue()[0] >= 0)
     {
@@ -83,7 +83,7 @@ void MeshSpringForceField<DataTypes>::init()
 
         if (topology != NULL)
         {
-            sofa::helper::set< std::pair<int,int> > sset;
+            sofa::helper::set< sofa::helper::pair<int,int> > sset;
             int n;
             Real s, d;
             if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)

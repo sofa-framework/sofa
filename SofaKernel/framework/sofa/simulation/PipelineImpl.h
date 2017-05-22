@@ -25,7 +25,7 @@
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/simulation/simulationcore.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

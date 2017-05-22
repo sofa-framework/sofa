@@ -24,7 +24,7 @@
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <queue>
 #include <stack>
 #include <sofa/helper/AdvancedTimer.h>
@@ -177,10 +177,10 @@ bool BruteForceDetection::keepCollisionBetween(core::CollisionModel *cm1, core::
 
 
 
-void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
+void BruteForceDetection::addCollisionPair(const sofa::helper::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {
     sofa::helper::AdvancedTimer::StepVar bfTimer("BruteForceDetection::addCollisionPair");
-    typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
+    typedef sofa::helper::pair< sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator>, sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
     core::CollisionModel *cm1 = cmPair.first; //->getNext();
     core::CollisionModel *cm2 = cmPair.second; //->getNext();
@@ -226,10 +226,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
     std::queue< TestPair > externalCells;
 
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren1 = cm1->begin().getInternalChildren();
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren2 = cm2->begin().getInternalChildren();
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren1 = cm1->begin().getExternalChildren();
-    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren2 = cm2->begin().getExternalChildren();
+    sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren1 = cm1->begin().getInternalChildren();
+    sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren2 = cm2->begin().getInternalChildren();
+    sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren1 = cm1->begin().getExternalChildren();
+    sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren2 = cm2->begin().getExternalChildren();
     if (internalChildren1.first != internalChildren1.second)
     {
         if (internalChildren2.first != internalChildren2.second)

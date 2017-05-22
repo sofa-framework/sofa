@@ -667,7 +667,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     const VecDeriv& childForces = childForceId[this->toModel.get(mparams)].read()->getValue();
 
     // sorted in-out
-    typedef std::map<unsigned, helper::vector<unsigned> > in_out_type;
+    typedef sofa::helper::map<unsigned, helper::vector<unsigned> > in_out_type;
     in_out_type in_out;
 
     // wahoo it is heavy, can't we find lighter?

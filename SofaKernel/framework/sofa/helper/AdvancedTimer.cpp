@@ -87,7 +87,7 @@ public:
         StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
     };
 
-    std::map<AdvancedTimer::IdStep, StepData> stepData;
+    sofa::helper::map<AdvancedTimer::IdStep, StepData> stepData;
     helper::vector<AdvancedTimer::IdStep> steps;
 
     class ValData
@@ -103,7 +103,7 @@ public:
         ValData() : num(0), numIt(0), vmin(0), vmax(0), vtotal(0), vtotal2(0), vtotalIt(0), lastIt(-1) {}
     };
 
-    std::map<AdvancedTimer::IdVal, ValData> valData;
+    sofa::helper::map<AdvancedTimer::IdVal, ValData> valData;
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
@@ -130,7 +130,7 @@ public:
     void print(std::ostream& result);
 };
 
-std::map< AdvancedTimer::IdTimer, TimerData > timers;
+sofa::helper::map< AdvancedTimer::IdTimer, TimerData > timers;
 
 helper::system::atomic<int> activeTimers;
 SOFA_THREAD_SPECIFIC_PTR(std::stack<AdvancedTimer::IdTimer>, curTimerThread);
@@ -164,9 +164,9 @@ void setCurRecords(helper::vector<Record>* ptr)
 AdvancedTimer::SyncCallBack syncCallBack = NULL;
 void* syncCallBackData = NULL;
 
-std::pair<AdvancedTimer::SyncCallBack,void*> AdvancedTimer::setSyncCallBack(SyncCallBack cb, void* userData)
+sofa::helper::pair<AdvancedTimer::SyncCallBack,void*> AdvancedTimer::setSyncCallBack(SyncCallBack cb, void* userData)
 {
-    std::pair<AdvancedTimer::SyncCallBack,void*> old;
+    sofa::helper::pair<AdvancedTimer::SyncCallBack,void*> old;
     old.first = syncCallBack;
     old.second = syncCallBackData;
     syncCallBack = cb;

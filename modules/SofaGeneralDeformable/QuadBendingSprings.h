@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <set>
 
 namespace sofa
@@ -65,9 +65,9 @@ public:
     void setObject2(MechanicalState* object2) {this->mstate2=object2;}
 
 protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
+    typedef sofa::helper::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned, sofa::helper::set<IndexPair>& );
-    void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, sofa::helper::set<IndexPair>&);
+    void registerEdge( IndexPair, IndexPair, sofa::helper::map<IndexPair, IndexPair>&, sofa::helper::set<IndexPair>&);
 
 };
 

@@ -28,7 +28,7 @@
 
 #include <sofa/simulation/Visitor.h>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 
 extern "C" {
     struct PyMethodDef;
@@ -88,7 +88,7 @@ protected:
 
     std::ostream& m_out; ///< the output stream
 
-    std::map<core::objectmodel::BaseNode*, std::string > m_mapNodeVariable; ///< gives a python variable name per node
+    sofa::helper::map<core::objectmodel::BaseNode*, std::string > m_mapNodeVariable; ///< gives a python variable name per node
     unsigned m_variableIndex; ///< unique index per node to garanty a unique variablename
 
 public:

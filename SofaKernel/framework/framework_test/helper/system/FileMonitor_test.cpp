@@ -23,7 +23,7 @@
 #include <exception>
 #include <algorithm>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector ;
 
 #include <fstream>

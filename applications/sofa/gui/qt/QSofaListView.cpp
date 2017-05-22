@@ -129,7 +129,7 @@ void QSofaListView::Clear(Node* rootNode)
     header()->hide();
     graphListener_->addChild ( NULL, rootNode );
     graphListener_->freeze ( rootNode );
-    std::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
+    sofa::helper::map<Base*, QTreeWidgetItem* >::iterator graph_iterator;
 
     for (graph_iterator = graphListener_->items.begin();
             graph_iterator != graphListener_->items.end();
@@ -421,7 +421,7 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
     nameToUse=/*QString("MultiNode ")+*/nameToUse;
 
     typedef std::multimap<QTreeWidgetItem *, QTreeWidgetItem*>::iterator ItemIterator;
-    std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
+    sofa::helper::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
 
     for (ItemIterator it=range.first; it!=range.second; ++it) it->second->setText(0,nameToUse);
 }
@@ -537,7 +537,7 @@ void QSofaListView::Modify()
 
         //Opening of a dialog window automatically created
 
-        std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
+        sofa::helper::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
         if ( testWindow != map_modifyObjectWindow.end())
         {
             //Object already being modified: no need to open a new window
@@ -571,7 +571,7 @@ void QSofaListView::Modify()
 
 void QSofaListView::UpdateOpenedDialogs()
 {
-    std::map<void*,QDialog*>::const_iterator iter;
+    sofa::helper::map<void*,QDialog*>::const_iterator iter;
     for(iter = map_modifyObjectWindow.begin(); iter != map_modifyObjectWindow.end() ; ++iter)
     {
         ModifyObject* modify = reinterpret_cast<ModifyObject*>(iter->second);
@@ -612,7 +612,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
         return false;
     }
     // check if there is already a dialog opened for that item in the graph
-    std::map< void*, QTreeWidgetItem*>::iterator it;
+    sofa::helper::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
@@ -658,7 +658,7 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     //the object will be added to the root node
     if ( currentItem() == NULL )
     {
-        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = graphListener_->items.begin() ;
+        for ( sofa::helper::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = graphListener_->items.begin() ;
                 it != graphListener_->items.end() ; ++ it )
         {
             if ( ( *it ).second->parent() == NULL ) //Root node position

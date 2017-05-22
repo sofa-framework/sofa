@@ -252,8 +252,8 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
     //assert(bmt != 0);
 
-    //std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-    //std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
+    //sofa::helper::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
+    //sofa::helper::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
 
     //m_pointInfo.handleTopologyEvents(itBegin, itEnd);
 }

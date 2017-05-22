@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <set>
 
 #include <sofa/core/BaseMapping.h>
@@ -119,7 +119,7 @@ public:
     const helper::vector< Vec3d >& getTetraBaryCoords() const { return tetraBaryCoords.getValue(); }
     const helper::vector< Vec3d >& getHexaBaryCoords() const { return hexaBaryCoords.getValue(); }
 
-    const helper::vector< std::pair<Element,int> >& getPointSource() const { return pointSource;}
+    const helper::vector< sofa::helper::pair<Element,int> >& getPointSource() const { return pointSource;}
 
 protected:
 
@@ -136,7 +136,7 @@ protected:
 
     helper::fixed_array< helper::vector< helper::vector<int> >, NB_ELEMENTS > pointsMappedFrom; ///< Points mapped from the differents elements (see the enum Element declared before)
 
-    helper::vector< std::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
+    helper::vector< sofa::helper::pair<Element,int> > pointSource; ///< Correspondance between the points mapped and the elements from which are mapped
 
     sofa::helper::set<unsigned int> pointsToRemove;
 

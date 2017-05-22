@@ -202,7 +202,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataT
 
     const SReal theory_contactDist = e1.radius() + e2.radius() + contactDist;
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->value = helper::rsqrt( norm2 );
     detection->normal = PQ / detection->value;

@@ -83,14 +83,14 @@ TEST(UtilsTest, getSofaPathPrefix)
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
 {
     // this test will raise an error on purpose
-    std::map<std::string, std::string> values = Utils::readBasicIniFile("this-file-does-not-exist");
+    sofa::helper::map<std::string, std::string> values = Utils::readBasicIniFile("this-file-does-not-exist");
     EXPECT_TRUE(values.empty());
 }
 
 TEST(UtilsTest, readBasicIniFile)
 {
     const std::string path = std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/UtilsTest.ini";
-    std::map<std::string, std::string> values = Utils::readBasicIniFile(path);
+    sofa::helper::map<std::string, std::string> values = Utils::readBasicIniFile(path);
     EXPECT_EQ(3u, values.size());
     EXPECT_EQ(1u, values.count("a"));
     EXPECT_EQ("b again", values["a"]);

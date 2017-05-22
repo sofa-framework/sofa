@@ -217,8 +217,8 @@ void OglShaderVisualModel::handleTopologyChange()
     if (m_topology && shader)
     {
 //        bool update=false;
-        std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
 //        while( itBegin != itEnd )
 //        {

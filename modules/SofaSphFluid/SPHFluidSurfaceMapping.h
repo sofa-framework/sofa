@@ -34,7 +34,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -183,7 +183,7 @@ protected:
     typedef typename Grid::Cell Cell;
     typedef typename Grid::Grid SubGrid;
     typedef typename Grid::Key SubKey;
-    typedef std::pair<SubKey,SubGrid*> GridEntry;
+    typedef sofa::helper::pair<SubKey,SubGrid*> GridEntry;
     enum { GRIDDIM = Grid::GRIDDIM };
     enum { DX = Grid::DX };
     enum { DY = Grid::DY };

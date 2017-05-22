@@ -22,7 +22,7 @@
 #include "TemplatesAliases.h"
 
 #include <iostream>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
@@ -31,67 +31,67 @@ namespace sofa
 namespace defaulttype
 {
 
-typedef std::map<std::string, std::string> TemplateAliasesMap;
+typedef sofa::helper::map<std::string, std::string> TemplateAliasesMap;
 typedef TemplateAliasesMap::const_iterator TemplateAliasesMapIterator;
 TemplateAliasesMap& getTemplateAliasesMap()
 {
-	static TemplateAliasesMap theMap;
-	return theMap;
+    static TemplateAliasesMap theMap;
+    return theMap;
 }
 
 bool TemplateAliases::addAlias(const std::string& name, const std::string& result)
 {
-	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-	if (templateAliases.find(name) != templateAliases.end())
+    TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
+    if (templateAliases.find(name) != templateAliases.end())
     {
         msg_warning("ObjectFactory") << "cannot create template alias " << name << " as it already exists";
-		return false;
-	}
-	else
-	{
-		templateAliases[name] = result;
-		return true;
-	}
+        return false;
+    }
+    else
+    {
+        templateAliases[name] = result;
+        return true;
+    }
 }
 
 std::string TemplateAliases::resolveAlias(const std::string& name)
 {
-	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-	TemplateAliasesMapIterator it = templateAliases.find(name);
-	if (it != templateAliases.end())
-		return it->second;
-	else if (name.find(",") != std::string::npos) // Multiple templates, resolve each one
-	{
-		std::string resolved = name;
-		std::string::size_type first = 0;
-		while (true)
-		{
-			std::string::size_type last = resolved.find_first_of(",", first);
-			if (last == std::string::npos) // Take until the end of the string if there is no more comma
-				last = resolved.size();
-			std::string token = resolved.substr(first, last-first);
+    TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
+    TemplateAliasesMapIterator it = templateAliases.find(name);
+    if (it != templateAliases.end())
+        return it->second;
+    else if (name.find(",") != std::string::npos) // Multiple templates, resolve each one
+    {
+        std::string resolved = name;
+        std::string::size_type first = 0;
+        while (true)
+        {
+            std::string::size_type last = resolved.find_first_of(",", first);
+            if (last == std::string::npos) // Take until the end of the string if there is no more comma
+                last = resolved.size();
+            std::string token = resolved.substr(first, last-first);
 
-			// Replace the token with the alias (if there is one)
-			it = templateAliases.find(token);
-			if (it != templateAliases.end())
-				resolved.replace(first, last-first, it->second);
+            // Replace the token with the alias (if there is one)
+            it = templateAliases.find(token);
+            if (it != templateAliases.end())
+                resolved.replace(first, last-first, it->second);
 
-			// Recompute the start of next token as we can have changed the length of the string
-			first = resolved.find_first_of(",", first);
-			if (first == std::string::npos)
-				break;
-			++first;
-		}
+            // Recompute the start of next token as we can have changed the length of the string
+            first = resolved.find_first_of(",", first);
+            if (first == std::string::npos)
+                break;
+            ++first;
+        }
 
-		return resolved;
-	}
-	else
-		return name;
+        return resolved;
+    }
+    else
+        return name;
 }
-	
+
 RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std::string& result)
 {
-	TemplateAliases::addAlias(alias, result);
+    TemplateAliases::addAlias(alias, result);
 }
 
 #ifndef SOFA_FLOAT

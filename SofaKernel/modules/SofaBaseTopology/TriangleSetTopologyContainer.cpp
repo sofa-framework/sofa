@@ -179,7 +179,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge, unsigned int> edgeMap;
+    sofa::helper::map<Edge, unsigned int> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
@@ -234,7 +234,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
 
         // create a temporary map to find redundant edges
-        std::map<Edge, unsigned int> edgeMap;
+        sofa::helper::map<Edge, unsigned int> edgeMap;
         helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
         for (unsigned int i=0; i<m_triangle.size(); ++i)
@@ -277,8 +277,8 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
         for (unsigned int edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
         {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+            edgesAroundVertexMap.insert(sofa::helper::pair<PointID, EdgeID> (m_edge[edge][0],edge));
+            edgesAroundVertexMap.insert(sofa::helper::pair<PointID, EdgeID> (m_edge[edge][1],edge));
         }
 
         for(unsigned int i=0; i<numTriangles; ++i)
@@ -288,7 +288,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
             for(unsigned int j=0; j<3; ++j)
             {
                 //finding edge i in edge array
-                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[(j+1)%3]);
+                sofa::helper::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[(j+1)%3]);
 
                 foundEdge=false;
                 for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)

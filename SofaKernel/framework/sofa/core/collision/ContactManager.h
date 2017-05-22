@@ -26,7 +26,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -86,9 +86,9 @@ protected:
 
 
     /// All intersection methods
-    std::map<Instance,Intersection*> storedIntersectionMethod;
+    sofa::helper::map<Instance,Intersection*> storedIntersectionMethod;
 
-    std::map<Instance,ContactVector> storedContacts;
+    sofa::helper::map<Instance,ContactVector> storedContacts;
 
     virtual void changeInstance(Instance inst)
     {

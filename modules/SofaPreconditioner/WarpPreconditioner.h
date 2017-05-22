@@ -35,7 +35,7 @@
 #include <sofa/core/behavior/RotationMatrix.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {

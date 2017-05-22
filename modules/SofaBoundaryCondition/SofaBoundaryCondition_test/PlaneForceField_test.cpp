@@ -48,7 +48,7 @@ using sofa::simulation::SceneLoaderXML ;
 
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace;

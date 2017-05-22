@@ -203,7 +203,7 @@ protected:
     QDisplayPropertyWidget* propertyWidget;
 
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
-    std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
+    sofa::helper::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
 
     QWidget* currentTab;

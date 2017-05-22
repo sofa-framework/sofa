@@ -47,7 +47,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     //typedef double Real;
-    typedef typename std::pair< Coord,Real > TData;
+    typedef typename sofa::helper::pair< Coord,Real > TData;
 
 
     Data < double > f_period;

@@ -101,7 +101,7 @@ public:
 
     helper::vector<int> pInside;
     helper::vector< helper::fixed_array<Real,EDGESHELL> > eBDist;
-    std::map<std::pair<int,int>, int> splitPoints;
+    sofa::helper::map<sofa::helper::pair<int,int>, int> splitPoints;
 
     SeqPoints rays;
     SeqPoints intersections;

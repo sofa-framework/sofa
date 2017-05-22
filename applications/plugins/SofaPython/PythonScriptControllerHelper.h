@@ -24,7 +24,7 @@
 
 #include "PythonMacros.h"
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
 
 #include <SofaPython/config.h>

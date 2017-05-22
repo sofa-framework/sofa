@@ -26,7 +26,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <list>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -63,17 +63,17 @@ void JoinPoints<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-bool JoinPoints<DataTypes>::getNearestPoint(const typename std::list<Coord>::iterator &itCurrentPoint,
-        std::list<Coord>& listPoints,
-        std::list<int>& listCoeffs,
-        typename std::list<Coord>::iterator &itNearestPoint,
-        std::list<int>::iterator &itNearestCoeff,
+bool JoinPoints<DataTypes>::getNearestPoint(const typename sofa::helper::list<Coord>::iterator &itCurrentPoint,
+        sofa::helper::list<Coord>& listPoints,
+        sofa::helper::list<int>& listCoeffs,
+        typename sofa::helper::list<Coord>::iterator &itNearestPoint,
+        sofa::helper::list<int>::iterator &itNearestCoeff,
         const Real &distance)
 {
 
-    typename std::list<Coord>::iterator itPoint = listPoints.begin();
+    typename sofa::helper::list<Coord>::iterator itPoint = listPoints.begin();
 
-    std::list<int>::iterator itCoeff = listCoeffs.begin();
+    sofa::helper::list<int>::iterator itCoeff = listCoeffs.begin();
 
     Real min = 9999999.0;
 
@@ -113,21 +113,21 @@ void JoinPoints<DataTypes>::update()
     VecCoord& mergedPoints = *f_mergedPoints.beginEdit();
     mergedPoints.clear();
 
-    std::list<Coord> copyPoints;
-    std::list<int> coeffs;
+    sofa::helper::list<Coord> copyPoints;
+    sofa::helper::list<int> coeffs;
     for (unsigned int i=0 ; i<points.size() ; i++)
     {
         copyPoints.push_back(points[i]);
         coeffs.push_back(1);
     }
 
-    typename std::list<Coord>::iterator itCurrentPoint = copyPoints.begin();
-    std::list<int>::iterator itCurrentCoeff = coeffs.begin();
+    typename sofa::helper::list<Coord>::iterator itCurrentPoint = copyPoints.begin();
+    sofa::helper::list<int>::iterator itCurrentCoeff = coeffs.begin();
 
     while (itCurrentPoint != copyPoints.end())
     {
-        typename std::list<Coord>::iterator itNearestPoint;
-        std::list<int>::iterator itNearestCoeff;
+        typename sofa::helper::list<Coord>::iterator itNearestPoint;
+        sofa::helper::list<int>::iterator itNearestCoeff;
         bool hasNearestPoint = getNearestPoint(itCurrentPoint, copyPoints, coeffs, itNearestPoint, itNearestCoeff, distance);
 
         //if we get a point in the sphere's ROI

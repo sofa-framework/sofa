@@ -26,7 +26,7 @@
 #include <ui_VideoRecorderManager.h>
 #include "SofaGUIQt.h"
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <QComboBox>
 #include <QSpinBox>

@@ -23,9 +23,9 @@
 #define SOFA_HELPER_UTILS_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/map.h>
 
 #include <string>
-#include <map>
 
 namespace sofa
 {
@@ -85,7 +85,7 @@ static const std::string& getSofaPathPrefix();
 ///
 /// For each line that contains a '=' character, (e.g. "key=value"), the returned
 /// map will contains a pair <"key", "value">.  Other lines will be ignored.
-static std::map<std::string, std::string> readBasicIniFile(const std::string& path);
+static sofa::helper::map<std::string, std::string> readBasicIniFile(const std::string& path);
 
 };
 

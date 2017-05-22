@@ -71,7 +71,7 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, sofa::hel
 }
 
 template<class DataTypes>
-void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, std::map<IndexPair, IndexPair>& edgeMap, sofa::helper::set<IndexPair>& springSet)
+void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, sofa::helper::map<IndexPair, IndexPair>& edgeMap, sofa::helper::set<IndexPair>& springSet)
 {
     if (ab.first > ab.second)
     {
@@ -96,7 +96,7 @@ void QuadBendingSprings<DataTypes>::init()
 {
     // Set the bending springs
 
-    std::map< IndexPair, IndexPair > edgeMap;
+    sofa::helper::map< IndexPair, IndexPair > edgeMap;
     sofa::helper::set< IndexPair > springSet;
 
     sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();

@@ -104,11 +104,11 @@ void QSofaStatWidget::CreateStats(Node* root)
 
 void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v)
 {
-    std::map< BaseContext*, QTreeWidgetItem* > listStats;
+    sofa::helper::map< BaseContext*, QTreeWidgetItem* > listStats;
     for (unsigned int i=0; i<v.size(); i++)
     {
         if ( !v[i]->isActive()) continue;
-        std::map< BaseContext*, QTreeWidgetItem* >::iterator it = listStats.find(v[i]->getContext());
+        sofa::helper::map< BaseContext*, QTreeWidgetItem* >::iterator it = listStats.find(v[i]->getContext());
         QTreeWidgetItem *item;
         if (it != listStats.end())
         {
@@ -143,7 +143,7 @@ void QSofaStatWidget::addCollisionModelsStat(const sofa::helper::vector< sofa::c
 void QSofaStatWidget::addSummary()
 {
     sofa::helper::set< std::string > nameElement;
-    std::map< std::string, int > mapElement;
+    sofa::helper::map< std::string, int > mapElement;
     for (unsigned int i=0; i < items_stats.size(); i++)
         nameElement.insert(items_stats[i].first->getClassName());
 
@@ -153,7 +153,7 @@ void QSofaStatWidget::addSummary()
 
 
     std::string textStats("<hr>Collision Elements present: <ul>");
-    std::map< std::string, int >::const_iterator it;
+    sofa::helper::map< std::string, int >::const_iterator it;
 
     for (it=mapElement.begin(); it!=mapElement.end(); ++it)
     {

@@ -379,7 +379,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // for( sofa::helper::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
     // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
@@ -389,7 +389,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
 #endif
     // Declare all engines to dirty:
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    sofa::helper::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
@@ -417,7 +417,7 @@ void PointSetTopologyModifier::propagateTopologicalChangesWithoutReset()
     sofa::simulation::TopologyChangeVisitor a(params, m_container);
 
     // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // for( sofa::helper::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
     // std:: cout << (*it)->getChangeType() << sendl;
 
     getContext()->executeVisitor(&a);
@@ -437,7 +437,7 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     // get directly the list of engines created at init: case of removing.... for the moment
-    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
+    sofa::helper::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
     std::cout << "points is dirty" << std::endl;

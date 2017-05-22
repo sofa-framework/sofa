@@ -140,9 +140,9 @@ protected :
     helper::vector< Weight > _weights; // a weight matrix for each vertex, such as dp=W.dq with q the 8 values of the embedding element
 
     // for method 2
-    helper::vector< std::pair< int, helper::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
+    helper::vector< sofa::helper::pair< int, helper::fixed_array<Real,8> > > _finestBarycentricCoord; // barycentric coordinates for each mapped points into the finest elements (fine element idx + weights)
 
-    helper::vector< std::map< int, Weight > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
+    helper::vector< sofa::helper::map< int, Weight > > _finestWeights; // for each fine nodes -> a list of incident coarse element idx and the corresponding weight
 
     // necessary objects
     SparseGridTopologyT* _sparseGrid;

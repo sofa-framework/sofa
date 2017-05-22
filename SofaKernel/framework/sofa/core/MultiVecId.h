@@ -24,7 +24,7 @@
 
 #include <sofa/core/VecId.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -222,7 +222,7 @@ class TMultiVecId
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
 
-    typedef std::map<const BaseState*, MyVecId> IdMap;
+    typedef sofa::helper::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
 
@@ -490,7 +490,7 @@ class TMultiVecId<V_ALL, vaccess>
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
 
-    typedef std::map<const BaseState*, MyVecId> IdMap;
+    typedef sofa::helper::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
 

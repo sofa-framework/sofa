@@ -26,7 +26,7 @@
 
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa

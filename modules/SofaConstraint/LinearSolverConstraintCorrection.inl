@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/ConstraintCorrection.inl>
 
 #include <sstream>
-#include <list>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -548,7 +548,7 @@ void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering)
+void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& renumbering)
 {
 
     //std::cout<<" \n \n \n +++++++ resetForUnbuiltResolution  +++++++++ "<<std::endl;
@@ -655,7 +655,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
 
 //        std::cout<<" +++++ RENUBERING END= [";
-//        for (std::list<unsigned int>::iterator it_c = renumbering.begin(); it_c!=  renumbering.end(); it_c++)
+//        for (sofa::helper::list<unsigned int>::iterator it_c = renumbering.begin(); it_c!=  renumbering.end(); it_c++)
 //            std::cout<<(*it_c)<<" ";
 //        std::cout<<"]"<<std::endl;
     }
@@ -799,7 +799,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 
 
     // course on indices of the dofs involved invoved in the bloc //
-    std::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
+    sofa::helper::list<int>::const_iterator it_dof(Vec_I_list_dof[last_force].begin()), it_end(Vec_I_list_dof[last_force].end());
     for(; it_dof!=it_end; ++it_dof)
     {
         int dof =(*it_dof) ;

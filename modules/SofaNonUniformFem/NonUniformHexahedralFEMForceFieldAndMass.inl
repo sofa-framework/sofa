@@ -192,8 +192,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
     if(t != this->_topology)
         return;
 #ifdef TODOTOPO
-    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 
     // handle point events
     //this->_particleMasses.handleTopologyEvents(itBegin,itEnd);
@@ -201,10 +201,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
     //if( this->_useLumpedMass.getValue() )
     //    this->_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
 
-    for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
+    for(sofa::helper::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)
     {
-        std::list<const TopologyChange *>::const_iterator next_iter = iter;
+        sofa::helper::list<const TopologyChange *>::const_iterator next_iter = iter;
         ++next_iter;
 
         switch((*iter)->getChangeType())
@@ -388,8 +388,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
         ElementMass M;
         Real totalMass = (Real) 0.0;
 
-        const std::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
-        for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
+        const sofa::helper::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
+        for(sofa::helper::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
         {
             const Vec3i& voxelId = *it;
 
@@ -577,8 +577,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         for(unsigned int l=1; l<=voxels.size(); l <<= 3)
             ++intervalLevels;
 
-        typedef std::pair< unsigned int, unsigned int > t_int_interval;
-        typedef std::list< t_int_interval > t_interval_list;
+        typedef sofa::helper::pair< unsigned int, unsigned int > t_int_interval;
+        typedef sofa::helper::list< t_int_interval > t_interval_list;
 
         helper::vector< t_interval_list >	intervals(intervalLevels);
 

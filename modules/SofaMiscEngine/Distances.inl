@@ -351,11 +351,11 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
     const sofa::helper::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
-    const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
+    const sofa::helper::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
     {
-        std::map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
+        sofa::helper::map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
         if ( it != zones.end())
         {
             if ( it->second == mapIndex)

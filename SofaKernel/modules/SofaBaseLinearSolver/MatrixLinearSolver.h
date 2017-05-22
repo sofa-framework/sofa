@@ -174,7 +174,7 @@ public:
 
     typedef BaseMatrixLinearSolver<Matrix, Vector> Inherit;
     typedef NoThreadManager ThreadManager;
-    typedef std::list<int> ListIndex;
+    typedef sofa::helper::list<int> ListIndex;
     typedef typename Vector::Real Real;
     typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
     typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
@@ -388,7 +388,7 @@ protected:
         }
     };
 
-    typedef std::map<simulation::Node*,GroupData> GroupDataMap;
+    typedef sofa::helper::map<simulation::Node*,GroupData> GroupDataMap;
     typedef typename GroupDataMap::iterator GroupDataMapIter;
     simulation::Node* currentNode;
     GroupData* currentGroup;

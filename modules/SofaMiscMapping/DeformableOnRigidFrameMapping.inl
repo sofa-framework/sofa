@@ -519,7 +519,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ma
     //	{
     //		Vector v,omega;
     //		OutConstraintIterator itIn;
-    //		std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+    //		sofa::helper::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
 
     //		for (itIn=iter.first;itIn!=iter.second;itIn++)
     //		{
@@ -563,10 +563,10 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
         this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl;
         return;
     }
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
 
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+    for ( sofa::helper::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
     {
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();

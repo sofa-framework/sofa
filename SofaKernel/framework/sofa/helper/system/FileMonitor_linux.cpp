@@ -33,9 +33,9 @@
 //////////////////// C++ Header ///////////////////////////////////////////////
 #include <algorithm>
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;

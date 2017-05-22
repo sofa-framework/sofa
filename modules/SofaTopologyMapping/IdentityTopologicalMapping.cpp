@@ -41,7 +41,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -94,8 +94,8 @@ void IdentityTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if (!fromModel || !toModel) return;
 
-    std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
     if (itBegin == itEnd) return;
 

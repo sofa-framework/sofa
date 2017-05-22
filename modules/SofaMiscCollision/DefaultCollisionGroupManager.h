@@ -89,7 +89,7 @@ protected:
     }
 
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    sofa::helper::map<Instance,GroupSet> storedGroupSet;
 
 
 };

@@ -79,7 +79,7 @@ class Distances : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Distances,DataTypes),core::DataEngine);
 
-    typedef std::pair< core::topology::BaseMeshTopology::HexaID, double> Distance;
+    typedef sofa::helper::pair< core::topology::BaseMeshTopology::HexaID, double> Distance;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -105,7 +105,7 @@ public:
     Data<sofa::helper::OptionsGroup> distanceType;
     Data<bool> initTarget;
     Data<int> initTargetStep;
-    Data<std::map<unsigned int, unsigned int> > zonesFramePair;
+    Data<sofa::helper::map<unsigned int, unsigned int> > zonesFramePair;
     Data<double> harmonicMaxValue;
 
     void init();

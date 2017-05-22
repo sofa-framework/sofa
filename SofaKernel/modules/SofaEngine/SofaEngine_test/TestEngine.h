@@ -72,7 +72,7 @@ public:
 
     static int instance;
 
-    static std::list<int> updateCallList;
+    static sofa::helper::list<int> updateCallList;
 
 };
 

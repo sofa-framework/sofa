@@ -127,7 +127,7 @@ int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,typename
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[1]=Q;
     detection->normal=PQ;
@@ -183,7 +183,7 @@ int MeshIntTool::computeIntersection(Line& e2, TSphere<DataTypes>& e1,typename D
 
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->normal=QP;
@@ -217,7 +217,7 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
 
         contacts->resize(contacts->size()+1);
         DetectionOutput *detection = &*(contacts->end()-1);
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(tri, sph);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(tri, sph);
         detection->id = sph.getIndex();
         detection->point[0]=proj_p;
         detection->normal = proj_p_sph_center;

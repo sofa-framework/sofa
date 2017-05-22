@@ -474,7 +474,7 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
     of totally below the isolevel.
     */
 int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float isolevel, sofa::helper::vector< PointID > &triangles,
-        std::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
+        sofa::helper::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
 {
 
     int i,ntriang;
@@ -525,7 +525,7 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
 
     /* Create the triangle */
     ntriang = 0;
-    std::map< Vector3, PointID>::iterator iter;
+    sofa::helper::map< Vector3, PointID>::iterator iter;
     Vector3 current_P;
     PointID current_ID;
     for ( i=0; MarchingCubeTriTable[cubeConf][i]!=-1; i+=3 )
@@ -566,7 +566,7 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
         sofa::helper::set<Vec3i>& generatedCubes,
-        std::map< Vector3, PointID>& map_vertices,
+        sofa::helper::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid,
         bool propagate
                                         ) const
@@ -625,7 +625,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3>& vertices,
-        std::map< Vector3, PointID>& map_vertices,
+        sofa::helper::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
@@ -664,7 +664,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
-    std::map< Vector3, PointID> map_vertices;
+    sofa::helper::map< Vector3, PointID> map_vertices;
     for ( size_t i = map_vertices.size(); i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
@@ -697,7 +697,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
         data = _data;
     }
 
-    std::map< Vector3, PointID> map_vertices;
+    sofa::helper::map< Vector3, PointID> map_vertices;
     for ( size_t i = 0; i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 

@@ -23,7 +23,7 @@
 #define SOFA_CORE_DATATRACKER_H
 
 #include <sofa/core/objectmodel/DDGNode.h>
-
+#include <sofa/helper/map.h>
 namespace sofa
 {
 
@@ -60,7 +60,7 @@ namespace core
     protected:
 
         /// map a tracked Data to a DataTracker (storing its call-counter at each 'clean')
-        typedef std::map<const objectmodel::BaseData*,int> DataTrackers;
+        typedef sofa::helper::map<const objectmodel::BaseData*,int> DataTrackers;
         DataTrackers m_dataTrackers;
 
     };

@@ -75,7 +75,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
 
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
-    std::map<Edge,unsigned int> edgeMap;
+    sofa::helper::map<Edge,unsigned int> edgeMap;
     unsigned int edgeIndex;
 
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
@@ -83,7 +83,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
         const Tetra &t=tetrahedra[i];
-        std::map<Edge,unsigned int>::iterator ite;
+        sofa::helper::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<6; ++j)
         {
@@ -122,7 +122,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
         const Hexa &h=hexahedra[i];
-        std::map<Edge,unsigned int>::iterator ite;
+        sofa::helper::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<12; ++j)
         {
@@ -161,7 +161,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     typedef MeshTopology::Triangle     Triangle;
     typedef MeshTopology::Quad         Quad;
 
-    std::map<Edge,unsigned int> edgeMap;
+    sofa::helper::map<Edge,unsigned int> edgeMap;
     unsigned int edgeIndex;
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
@@ -169,7 +169,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     for (unsigned int i = 0; i < triangles.size(); ++i)
     {
         const Triangle &t=triangles[i];
-        std::map<Edge,unsigned int>::iterator ite;
+        sofa::helper::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<3; ++j)
         {
@@ -200,7 +200,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     for (unsigned int i = 0; i < quads.size(); ++i)
     {
         const Quad &t=quads[i];
-        std::map<Edge,unsigned int>::iterator ite;
+        sofa::helper::map<Edge,unsigned int>::iterator ite;
         Edge e;
         for (unsigned int j=0; j<4; ++j)
         {
@@ -248,8 +248,8 @@ void MeshTopology::TriangleUpdate::update()
     SeqTriangles& seqTriangles = *topology->seqTriangles.beginEdit();
     seqTriangles.clear();
     // create a temporary map to find redundant triangles
-    std::map<Triangle,unsigned int> triangleMap;
-    std::map<Triangle,unsigned int>::iterator itt;
+    sofa::helper::map<Triangle,unsigned int> triangleMap;
+    sofa::helper::map<Triangle,unsigned int>::iterator itt;
     Triangle tr;
     unsigned int triangleIndex;
     unsigned int v[3],val;
@@ -317,8 +317,8 @@ void MeshTopology::QuadUpdate::update()
     const SeqHexahedra& hexahedra = topology->getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
 
     // create a temporary map to find redundant quads
-    std::map<Quad,unsigned int> quadMap;
-    std::map<Quad,unsigned int>::iterator itt;
+    sofa::helper::map<Quad,unsigned int> quadMap;
+    sofa::helper::map<Quad,unsigned int>::iterator itt;
     Quad qu;
     unsigned int v[4],val;
     unsigned int quadIndex;

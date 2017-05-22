@@ -90,7 +90,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
         //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
         detection->id = cap.getIndex();
 
@@ -114,7 +114,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
         //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
         detection->id = cap.getIndex();
 
@@ -139,7 +139,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
         contacts->resize(contacts->size()+1);
         sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, sph);
         //detection->id = (cap.getCollisionModel()->getSize() > sph.getCollisionModel()->getSize()) ? cap.getIndex() : sph.getIndex();
         detection->id = cap.getIndex();
 

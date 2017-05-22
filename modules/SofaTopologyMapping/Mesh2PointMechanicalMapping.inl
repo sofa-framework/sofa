@@ -388,7 +388,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
     if (!topoMap)
         return;
 
-    const sofa::helper::vector< std::pair< Mesh2PointTopologicalMapping::Element, int> >& pointSource = topoMap->getPointSource();
+    const sofa::helper::vector< sofa::helper::pair< Mesh2PointTopologicalMapping::Element, int> >& pointSource = topoMap->getPointSource();
 
     if (pointSource.empty())
         return;
@@ -418,7 +418,7 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
             {
                 const unsigned int indexIn = colIt.index();
                 const OutDeriv data = colIt.val();
-                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexIn];
+                sofa::helper::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexIn];
 
                 switch (source.first)
                 {

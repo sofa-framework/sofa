@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <memory>
 

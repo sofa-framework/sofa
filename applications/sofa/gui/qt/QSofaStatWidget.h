@@ -63,7 +63,7 @@ protected:
     QTreeWidget* statsCounter;
     void addSummary();
     void addCollisionModelsStat(const sofa::helper::vector< sofa::core::CollisionModel* >& v);
-    std::vector<std::pair<core::objectmodel::Base*, QTreeWidgetItem*> > items_stats;
+    std::vector<sofa::helper::pair<core::objectmodel::Base*, QTreeWidgetItem*> > items_stats;
 
 };
 } //qt

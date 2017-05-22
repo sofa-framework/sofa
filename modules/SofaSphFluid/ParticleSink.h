@@ -46,7 +46,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/RGBAColor.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <iterator>
 #include <iostream>
 #include <ostream>

@@ -160,7 +160,7 @@ protected:
     /// @name Full system matrix assembly support
     /// @{
 
-    typedef std::pair<int,Real> Col_Value;
+    typedef sofa::helper::pair<int,Real> Col_Value;
     typedef helper::vector< Col_Value > CompressedValue;
     typedef helper::vector< CompressedValue > CompressedMatrix;
 

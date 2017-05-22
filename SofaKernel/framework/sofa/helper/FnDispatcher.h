@@ -22,10 +22,9 @@
 #ifndef SOFA_HELPER_FNDISPATCHER_H
 #define SOFA_HELPER_FNDISPATCHER_H
 
-#include <map>
-#include <typeinfo>
-
 #include <sofa/helper/helper.h>
+#include <sofa/helper/map.h>
+#include <typeinfo>
 
 namespace sofa
 {
@@ -55,8 +54,8 @@ public:
     typedef ResulT (*F)(BaseClass &,BaseClass &);
 
 protected:
-    typedef std::pair<TypeInfo,TypeInfo> KeyType;
-    typedef std::map<KeyType, F> MapType;
+    typedef sofa::helper::pair<TypeInfo,TypeInfo> KeyType;
+    typedef sofa::helper::map<KeyType, F> MapType;
     MapType callBackMap;
     virtual ~BasicDispatcher() {}
 public:
@@ -139,18 +138,18 @@ public:
     template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
     static void Add()
     {
-    	getInstance()->add<ConcreteClass1,ConcreteClass2,F,symetric>();
+        getInstance()->add<ConcreteClass1,ConcreteClass2,F,symetric>();
     }
 
     template <class ConcreteClass1, class ConcreteClass2, bool symetric>
     static void Ignore()
     {
-    	getInstance()->ignore<ConcreteClass1,ConcreteClass2,symetric>();
+        getInstance()->ignore<ConcreteClass1,ConcreteClass2,symetric>();
     }
 
     static ResulT Go(BaseClass &arg1,BaseClass &arg2)
     {
-    	getInstance()->go(arg1,arg2);
+        getInstance()->go(arg1,arg2);
     }
     */
 };

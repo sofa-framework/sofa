@@ -45,7 +45,7 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sstream>
-#include <map>
+#include <sofa/helper/map.h>
 #include <memory>
 
 namespace sofa
@@ -324,7 +324,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     int nbVIn = verticesImport.size();
     // First we compute for each point how many pair of normal/texcoord indices are used
     // The map store the final index of each combinaison
-    vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+    vector< sofa::helper::map< sofa::helper::pair<int,int>, int > > vertTexNormMap;
     vertTexNormMap.resize(nbVIn);
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
@@ -390,8 +390,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         if (m_initRestPositions.getValue())
             restPositions[i] = verticesImport[i];
 
-        std::map<int, int> normMap;
-        for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+        sofa::helper::map<int, int> normMap;
+        for (sofa::helper::map<sofa::helper::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
              it != vertTexNormMap[i].end(); ++it)
         {
             int t = it->first.first;
@@ -1356,8 +1356,8 @@ void VisualModelImpl::handleTopologyChange()
     m_positions.beginEdit();
 
 
-    std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
 
     while( itBegin != itEnd )
     {

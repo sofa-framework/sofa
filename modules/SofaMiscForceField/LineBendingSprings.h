@@ -35,7 +35,7 @@
 #include "config.h"
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -72,7 +72,7 @@ protected:
 
     typedef unsigned Index;
     void addSpring( unsigned, unsigned );
-    void registerLine( unsigned, unsigned, std::map<Index, unsigned>& );
+    void registerLine( unsigned, unsigned, sofa::helper::map<Index, unsigned>& );
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP)

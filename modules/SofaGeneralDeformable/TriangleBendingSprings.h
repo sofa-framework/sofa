@@ -35,7 +35,7 @@
 #include "config.h"
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -74,9 +74,9 @@ public:
     //}
 
 protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
+    typedef sofa::helper::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
+    void registerTriangle( unsigned, unsigned, unsigned, sofa::helper::map<IndexPair, unsigned>& );
 
 };
 

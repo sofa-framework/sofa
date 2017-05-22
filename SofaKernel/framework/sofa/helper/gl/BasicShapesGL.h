@@ -29,7 +29,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/gl/GLSLShader.h>
 #include <cmath>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -92,7 +92,7 @@ private:
     void internalDraw(const GLBuffers &buffer, const VertexType& center, const float& radius);
     void afterDraw(const GLBuffers &buffer);
 
-    std::map<SphereDescription, GLBuffers> m_mapBuffers;
+    sofa::helper::map<SphereDescription, GLBuffers> m_mapBuffers;
 
 };
 

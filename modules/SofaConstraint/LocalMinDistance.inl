@@ -222,7 +222,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
 
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+        //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
         detection->elem.first = e2;
         detection->elem.second = e1;
         detection->id = e1.getIndex();
@@ -293,7 +293,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
 
             const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+            //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
             detection->elem.first = e2;
             detection->elem.second = e1;
             detection->id = e1.getIndex();
@@ -450,7 +450,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
         contacts->resize(contacts->size()+1);
         DetectionOutput *detection = &*(contacts->end()-1);
-        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+        //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
         detection->elem.first = e2;
         detection->elem.second = e1;
         detection->id = e1.getIndex();
@@ -513,7 +513,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
             contacts->resize(contacts->size()+1);
             DetectionOutput *detection = &*(contacts->end()-1);
-            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+            //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
             detection->elem.first = e2;
             detection->elem.second = e1;
             detection->id = e1.getIndex();

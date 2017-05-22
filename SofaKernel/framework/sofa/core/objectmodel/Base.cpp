@@ -26,7 +26,7 @@
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <typeinfo>
 #include <string.h>
 #include <sstream>
@@ -278,7 +278,7 @@ void Base::clearLoggedMessages() const
 }
 
 
-const std::deque<sofa::helper::logging::Message>& Base::getLoggedMessages() const
+const sofa::helper::deque<sofa::helper::logging::Message>& Base::getLoggedMessages() const
 {
     return m_messageslog ;
 }
@@ -335,7 +335,7 @@ BaseData* Base::findData( const std::string &name ) const
     if(m_aliasData.size())
     {
         typedef MapData::const_iterator mapIterator;
-        std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+        sofa::helper::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
         if (range.first != range.second)
             return range.first->second;
         else
@@ -350,7 +350,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
     std::vector<BaseData*> result;
     //Search in the aliases
     typedef MapData::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+    sofa::helper::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
     for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -363,7 +363,7 @@ BaseLink* Base::findLink( const std::string &name ) const
 {
     //Search in the aliases
     typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    sofa::helper::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
     if (range.first != range.second)
         return range.first->second;
     else
@@ -376,7 +376,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     std::vector<BaseLink*> result;
     //Search in the aliases
     typedef MapLink::const_iterator mapIterator;
-    std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
+    sofa::helper::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
     for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
@@ -480,10 +480,10 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     return ok;
 }
 
-void  Base::parseFields ( const std::list<std::string>& str )
+void  Base::parseFields ( const sofa::helper::list<std::string>& str )
 {
     string name,value;
-    std::list<std::string>::const_iterator it = str.begin(), itend = str.end();
+    sofa::helper::list<std::string>::const_iterator it = str.begin(), itend = str.end();
     while(it != itend)
     {
         name = *it;
@@ -495,10 +495,10 @@ void  Base::parseFields ( const std::list<std::string>& str )
     }
 }
 
-void  Base::parseFields ( const std::map<std::string,std::string*>& args )
+void  Base::parseFields ( const sofa::helper::map<std::string,std::string*>& args )
 {
     std::string key,val;
-    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
+    for( sofa::helper::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
     {
         if( (*i).second!=NULL )
         {
@@ -541,7 +541,7 @@ void Base::updateLinks(bool logErrors)
     }
 }
 
-void  Base::writeDatas ( std::map<std::string,std::string*>& args )
+void  Base::writeDatas ( sofa::helper::map<std::string,std::string*>& args )
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {

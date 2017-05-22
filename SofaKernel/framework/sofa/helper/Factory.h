@@ -22,11 +22,11 @@
 #ifndef SOFA_HELPER_FACTORY_H
 #define SOFA_HELPER_FACTORY_H
 
-#include <map>
+#include <sofa/helper/helper.h>
+#include <sofa/helper/pair.h>
+#include <sofa/helper/map.h>
 #include <iostream>
 #include <typeinfo>
-
-#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -74,7 +74,7 @@ public:
         logFactoryRegister(gettypename(typeid(Object)), gettypename(creator->type()), key, multi);
         //std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
         //          << gettypename(creator->type()) << " registered as " << key << std::endl;
-        this->registry.insert(std::pair<Key, Creator*>(key, creator));
+        this->registry.insert(sofa::helper::pair<Key, Creator*>(key, creator));
         return true;
     }
 
@@ -147,11 +147,11 @@ public:
         return typeid(RealObject);
     }
 
-	// Dummy function to avoid dead stripping symbol
-	void registerInFactory()
-	{
-		printf("[SOFA]Registration of class : %s\n", type().name());
-	}
+    // Dummy function to avoid dead stripping symbol
+    void registerInFactory()
+    {
+        printf("[SOFA]Registration of class : %s\n", type().name());
+    }
 
 };
 /*
@@ -159,7 +159,7 @@ public:
 template<class Object, class Argument>
 Object create(Object* obj, Argument arg)
 {
-	return new Object(arg);
+    return new Object(arg);
 }
 */
 template <class Factory, class RealObject>

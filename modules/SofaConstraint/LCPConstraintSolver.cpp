@@ -551,7 +551,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         newConstraintDirections.clear();
         newConstraintAreas.clear();
 
-        std::map<ConstCoord, int> coord2coarseId;
+        sofa::helper::map<ConstCoord, int> coord2coarseId;
 
         for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
         {
@@ -604,7 +604,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                     p = p / merge_spatial_step;
                     posCoarse[i] = p;
                 }
-                std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
+                sofa::helper::pair< sofa::helper::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(sofa::helper::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
                 int idCoarse = res.first->second * 3;
                 if (res.second)
                 {
@@ -824,14 +824,14 @@ void LCPConstraintSolver::computeInitialGuess()
     {
         const ConstraintBlockInfo& info = constraintBlockInfo[cb];
         if (!info.hasId) continue;
-        std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        sofa::helper::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
         const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;
         const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
         for (int c = 0; c < info.nbGroups; ++c)
         {
-            std::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(constraintIds[info.offsetId + c]);
+            sofa::helper::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(constraintIds[info.offsetId + c]);
             if (it == buf.persistentToConstraintIdMap.end()) continue;
             int prevIndex = it->second;
             if (prevIndex >= 0 && prevIndex+nbl <= (int) _previousForces.size())
@@ -853,10 +853,10 @@ void LCPConstraintSolver::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = (*_result)[c];
     // clear previous history
-    for (std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (sofa::helper::map<core::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
         ConstraintBlockBuf& buf = it->second;
-        for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
+        for (sofa::helper::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
             it2->second = -1;
     }
     // fill info from current ids
@@ -919,7 +919,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     /// each constraintCorrection has an internal force vector that is set to "0"
 
     // indirection of the sequence of contact
-    std::list<unsigned int> contact_sequence;
+    sofa::helper::list<unsigned int> contact_sequence;
 
     for (unsigned int c=0; c< _numConstraints; c++)
     {
@@ -1068,7 +1068,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     for (it=0; it<_maxIt; it++)
     {
-        std::list<unsigned int>::iterator it_c ;
+        sofa::helper::list<unsigned int>::iterator it_c ;
         error =0;
 
         for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
@@ -1206,7 +1206,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     int _maxIt = maxIt.getValue();
 
     // indirection of the sequence of contact
-    std::list<unsigned int> contact_sequence;
+    sofa::helper::list<unsigned int> contact_sequence;
 
     for (unsigned int c=0; c< _numConstraints; c++)
     {
@@ -1308,7 +1308,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
 
     for (it=0; it<_maxIt; it++)
     {
-        std::list<unsigned int>::iterator it_c;
+        sofa::helper::list<unsigned int>::iterator it_c;
         error =0;
 
         for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); ++it_c)

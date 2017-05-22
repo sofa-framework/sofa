@@ -69,11 +69,11 @@ struct BaseMatrixLinearOpMV_BlockDiagonal
         Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
+        for (sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
-            std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
+            sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
             if (colRange.first != colRange.second) // diagonal bloc exists
             {
                 BlockConstAccessor block = colRange.first.bloc();
@@ -147,7 +147,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
         Vec<NL,Real> vtmpi;
         if (!add)
             opVresize(result, (transpose ? colSize : rowSize));
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
+        for (sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = mat->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
@@ -162,7 +162,7 @@ struct BaseMatrixLinearOpMV_BlockSparse
                 for (int bi = 0; bi < NL; ++bi)
                     vtmpi[bi] = (Real)opVget(v, i+bi);
             }
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
+            for (sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
                     ++colRange.first)
             {
@@ -482,13 +482,13 @@ struct BaseMatrixLinearOpAM_BlockSparse
         //const Index colSize = m1->colSize();
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
+        for (sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
             const Index i = rowRange.first.row() * NL;
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
+            for (sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
                     ++colRange.first)
             {
@@ -534,13 +534,13 @@ struct BaseMatrixLinearOpAMS_BlockSparse
         //const Index colSize = m1->colSize();
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
+        for (sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
             const Index i = rowRange.first.row() * NL;
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
+            for (sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
                     ++colRange.first)
             {
@@ -587,13 +587,13 @@ struct BaseMatrixLinearOpAM1_BlockSparse
     {
         BlockData buffer;
 
-        for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
+        for (sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
                 rowRange.first != rowRange.second;
                 ++rowRange.first)
         {
             const Index i = rowRange.first.row();
 
-            for (std::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
+            for (sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> colRange = rowRange.first.range();
                     colRange.first != colRange.second;
                     ++colRange.first)
             {

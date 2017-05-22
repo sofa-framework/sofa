@@ -64,7 +64,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     int groupIndex = 1;
 
     // Map storing group merging history
-    std::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
+    sofa::helper::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
     sofa::helper::vector< simulation::Node::SPtr > contactGroup;
     sofa::helper::vector< simulation::Node::SPtr > removedGroup;
     contactGroup.reserve(contacts.size());

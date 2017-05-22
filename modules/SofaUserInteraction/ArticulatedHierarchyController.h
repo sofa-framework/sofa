@@ -41,7 +41,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/vector.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -121,7 +121,7 @@ protected:
     Data< bool > propagateUserInteraction; ///< Says wether or not to apportion the articulation modification to its children in the hierarchy.
 
     sofa::helper::vector< bool > activeArticulations; ///< Stores activated articulations information.
-    std::map<int, sofa::helper::vector< int > > articulationsPropagationChains;
+    sofa::helper::map<int, sofa::helper::vector< int > > articulationsPropagationChains;
 
     /**
      * @brief Build the articulations list related to each controlled articulation.

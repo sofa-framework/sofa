@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 

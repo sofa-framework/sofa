@@ -25,10 +25,10 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <utility> // for std::pair
+#include <sofa/helper/pair.h>
 #include <cstddef> // for NULL and std::size_t
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <cassert>
 #include <limits.h>
 
@@ -917,7 +917,7 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
+    virtual sofa::helper::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         return std::make_pair(bRowBegin(ib), bRowEnd(ib));
     }
@@ -987,11 +987,11 @@ public:
             return matrix->itEndRowBlock(&internal);
         }
 
-        std::pair<ColBlockConstIterator,ColBlockConstIterator> range()
+        sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> range()
         {
             return matrix->itRangeRowBlock(&internal);
         }
-        std::pair<ColBlockConstIterator,ColBlockConstIterator> operator->()
+        sofa::helper::pair<ColBlockConstIterator,ColBlockConstIterator> operator->()
         {
             return range();
         }
@@ -1054,7 +1054,7 @@ protected:
         Index row = (it->data[0]);
         return bRowEnd(row);
     }
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
+    virtual sofa::helper::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
     {
         Index row = (it->data[0]);
         return bRowRange(row);
@@ -1109,7 +1109,7 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
+    virtual sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
     {
         return std::make_pair(bRowsBegin(), bRowsEnd());
     }

@@ -24,8 +24,8 @@
 
 #include <sofa/helper/vector.h>
 #include <string>
-#include <list>
-#include <map>
+#include <sofa/helper/list.h>
+#include <sofa/helper/map.h>
 
 #include <sofa/core/core.h>
 
@@ -66,7 +66,7 @@ public:
         void setAccessed(bool v) { accessed = v; }
     };
 
-    typedef std::map<std::string,Attribute> AttributeMap;
+    typedef sofa::helper::map<std::string,Attribute> AttributeMap;
 
     BaseObjectDescription(const char* name=NULL, const char* type=NULL);
 

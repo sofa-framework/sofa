@@ -100,7 +100,7 @@ void MapIndices<T>::update()
     out.clear();
     out.reserve(in.size());
 
-    std::map<Index, Index> old2new;
+    sofa::helper::map<Index, Index> old2new;
     for (unsigned int i=0; i<indices.size(); ++i)
     {
         if (transpose) old2new[i] = indices[i];

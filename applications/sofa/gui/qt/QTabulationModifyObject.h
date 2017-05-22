@@ -89,7 +89,7 @@ protected:
     unsigned int size;
 
     bool dirty;
-    std::map< QObject*, QString> m_dataValueModified;
+    sofa::helper::map< QObject*, QString> m_dataValueModified;
 
     unsigned int pixelSize;
     unsigned int pixelMaxSize;

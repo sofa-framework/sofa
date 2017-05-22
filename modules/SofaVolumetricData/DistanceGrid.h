@@ -262,7 +262,7 @@ protected:
         bool operator>(const DistanceGridParams& v) const ;
     };
 
-    static std::map<DistanceGridParams, DistanceGrid*>& getShared();
+    static sofa::helper::map<DistanceGridParams, DistanceGrid*>& getShared();
 };
 
 } // namespace _distancegrid

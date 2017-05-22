@@ -22,7 +22,8 @@
 #ifndef SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
-#include <map>
+#include <sofa/helper/pair.h>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ class MapMapSparseMatrix
 public:
     typedef T Data;
     typedef unsigned int KeyType;
-    typedef typename std::map< KeyType, T > RowType;
+    typedef typename sofa::helper::map< KeyType, T > RowType;
 
     /// Removes every matrix elements
     void clear()
@@ -114,7 +115,7 @@ public:
 
 protected:
 
-    typedef std::map< KeyType, RowType > SparseMatrix;
+    typedef sofa::helper::map< KeyType, RowType > SparseMatrix;
 
     /// Data container
     SparseMatrix m_data;
@@ -135,7 +136,7 @@ public:
     protected:
 
         /*ColConstIterator()
-        	{
+            {
 
         }*/
 
@@ -180,13 +181,13 @@ public:
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        const std::pair< KeyT, T >& operator*() const
+        const sofa::helper::pair< KeyT, T >& operator*() const
         {
             return *m_internal;
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        const std::pair< KeyT, T >& operator->() const
+        const sofa::helper::pair< KeyT, T >& operator->() const
         {
             return *m_internal;
         }
@@ -250,7 +251,7 @@ public:
     protected:
 
         /*RowConstIterator()
-        	{
+            {
 
         }*/
 
@@ -283,7 +284,7 @@ public:
             m_internal = it2.m_internal;
         }
 
-        const std::pair< KeyT, RowType >& operator*() const
+        const sofa::helper::pair< KeyT, RowType >& operator*() const
         {
             return *m_internal;
         }
@@ -300,7 +301,7 @@ public:
         }
 
 
-        const std::pair< KeyT, RowType >& operator->() const
+        const sofa::helper::pair< KeyT, RowType >& operator->() const
         {
             return *m_internal;
         }
@@ -381,7 +382,7 @@ public:
     protected:
 
         /*ColIterator()
-        	{
+            {
 
         }*/
 
@@ -426,13 +427,13 @@ public:
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        std::pair< KeyT, T >& operator*()
+        sofa::helper::pair< KeyT, T >& operator*()
         {
             return *m_internal;
         }
 
         /// @return the DOF index the constraint is applied on and its value
-        std::pair< KeyT, T >& operator->()
+        sofa::helper::pair< KeyT, T >& operator->()
         {
             return *m_internal;
         }
@@ -495,7 +496,7 @@ public:
     protected:
 
         /*RowIterator()
-        	{
+            {
 
         }*/
 
@@ -528,12 +529,12 @@ public:
             m_internal = it2.m_internal;
         }
 
-        std::pair< KeyT, RowType >& operator*()
+        sofa::helper::pair< KeyT, RowType >& operator*()
         {
             return *m_internal;
         }
 
-        std::pair< KeyT, RowType >& operator->()
+        sofa::helper::pair< KeyT, RowType >& operator->()
         {
             return *m_internal;
         }
@@ -655,7 +656,7 @@ public:
         }
         else
         {
-            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, RowType()));
+            sofa::helper::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, RowType()));
             return RowIterator(res.first);
         }
     }
@@ -664,7 +665,7 @@ public:
     /// @param lIndex row Index
     /// @param row constraint itself
     /// If lindex already exists, overwrite existing constraint
-    std::pair< RowIterator, bool > writeLine(KeyType lIndex, RowType row)
+    sofa::helper::pair< RowIterator, bool > writeLine(KeyType lIndex, RowType row)
     {
         RowIterator it(m_data.find(lIndex));
 
@@ -674,7 +675,7 @@ public:
             m_data.erase(m_data.find(lIndex));
         }
 
-        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
+        sofa::helper::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
         return std::make_pair(RowIterator(res.first), res.second);
     }
 
@@ -682,13 +683,13 @@ public:
     /// @param lIndex row Index
     /// @param row constraint itself
     /// If lindex doesn't exists, creates the row
-    std::pair< RowIterator, bool > addLine(KeyType lIndex, RowType row)
+    sofa::helper::pair< RowIterator, bool > addLine(KeyType lIndex, RowType row)
     {
         RowIterator it(m_data.find(lIndex));
 
         if (it == this->end())
         {
-            std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
+            sofa::helper::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(lIndex, row));
             return std::make_pair(RowIterator(res.first), res.second);
         }
         else
@@ -712,7 +713,7 @@ public:
     {
         KeyType newId = m_data.empty() ? 0 : (m_data.rbegin()->first + 1);
 
-        std::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(newId, RowType()));
+        sofa::helper::pair< typename SparseMatrix::iterator, bool > res = m_data.insert(std::make_pair(newId, RowType()));
         return RowIterator(res.first);
     }
 };

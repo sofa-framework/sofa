@@ -6,7 +6,7 @@
 #include <sofa/helper/io/Image.h>
 #include <string>
 #include <cassert>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/logging/MessageDispatcher.h>

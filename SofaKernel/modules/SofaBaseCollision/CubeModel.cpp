@@ -88,7 +88,7 @@ void CubeModel::setLeafCube(int cubeIndex, int childIndex)
     //elems[cubeIndex].maxBBox = max;
 }
 
-void CubeModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
+void CubeModel::setLeafCube(int cubeIndex, sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
 {
     elems[cubeIndex].minBBox = min;
     elems[cubeIndex].maxBBox = max;
@@ -111,7 +111,7 @@ int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 
 void CubeModel::updateCube(int index)
 {
-    const std::pair<Cube,Cube>& subcells = elems[index].subcells;
+    const sofa::helper::pair<Cube,Cube>& subcells = elems[index].subcells;
     if (subcells.first != subcells.second)
     {
         Cube c = subcells.first;
@@ -200,12 +200,12 @@ void CubeModel::draw(const core::visual::VisualParams* vparams)
         getPrevious()->draw(vparams);
 }
 
-std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const
+sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const
 {
     return elems[index].subcells;
 }
 
-std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
+sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
 {
     return elems[index].children;
     /*
@@ -233,7 +233,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
 //        return;
 
     //sout << ">CubeModel::computeBoundingTree("<<maxDepth<<")"<<sendl;
-    std::list<CubeModel*> levels;
+    sofa::helper::list<CubeModel*> levels;
     levels.push_front(createPrevious<CubeModel>());
     for (int i=0; i<maxDepth; i++)
         levels.push_front(levels.front()->createPrevious<CubeModel>());
@@ -255,14 +255,14 @@ void CubeModel::computeBoundingTree(int maxDepth)
         }
         // Then clear all existing levels
         {
-            for (std::list<CubeModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
+            for (sofa::helper::list<CubeModel*>::iterator it = levels.begin(); it != levels.end(); ++it)
                 (*it)->resize(0);
         }
         // Then build root cell
         //sout << "CubeModel: add root cube"<<sendl;
         root->addCube(Cube(this,0),Cube(this,size));
         // Construct tree by splitting cells along their biggest dimension
-        std::list<CubeModel*>::iterator it = levels.begin();
+        sofa::helper::list<CubeModel*>::iterator it = levels.begin();
         CubeModel* level = *it;
         ++it;
         int lvl = 0;
@@ -273,7 +273,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
             clevel->elems.reserve(level->size*2);
             for(Cube cell = Cube(level->begin()); level->end() != cell; ++cell)
             {
-                const std::pair<Cube,Cube>& subcells = cell.subcells();
+                const sofa::helper::pair<Cube,Cube>& subcells = cell.subcells();
                 int ncells = subcells.second.getIndex() - subcells.first.getIndex();
                 //sout << "CubeModel: level "<<lvl<<" cell "<<cell.getIndex()<<": current subcells "<<subcells.first.getIndex() << " - "<<subcells.second.getIndex()<<sendl;
                 if (ncells > 4)
@@ -335,7 +335,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
     {
         // Simply update the existing tree, starting from the bottom
         int lvl = 0;
-        for (std::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
+        for (sofa::helper::list<CubeModel*>::reverse_iterator it = levels.rbegin(); it != levels.rend(); ++it)
         {
             //sout << "CubeModel: update level "<<lvl<<sendl;
             (*it)->updateCubes();

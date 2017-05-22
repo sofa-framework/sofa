@@ -26,7 +26,7 @@
 #pragma once
 #endif
 
-#include <list>
+#include <sofa/helper/list.h>
 #include <iostream>
 #include <typeinfo>
 #include <sofa/core/core.h>

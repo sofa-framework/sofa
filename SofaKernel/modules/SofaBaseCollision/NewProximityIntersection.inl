@@ -53,7 +53,7 @@ inline int NewProximityIntersection::doIntersectionPointPoint(SReal dist2, const
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;

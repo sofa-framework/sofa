@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

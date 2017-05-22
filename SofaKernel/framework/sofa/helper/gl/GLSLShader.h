@@ -23,7 +23,7 @@
 #define SOFA_HELPER_GL_GLSLSHADER_H
 
 #include <sofa/helper/helper.h>
-
+#include <sofa/helper/map.h>
 
 /// Forward declaration.
 namespace sofa {
@@ -47,8 +47,7 @@ namespace sofa {
 #include <string.h>
 
 #include <sofa/helper/helper.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
 #include <sofa/helper/system/FileMonitor.h>
@@ -147,7 +146,7 @@ public:
     std::string GetHeader() const;
 
     bool        IsSet(GLint type) const;
-    GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
+    GLhandleARB GetShaderID(GLint type) const; //	{	sofa::helper::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
     std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
     GLhandleARB GetVertexShaderID        () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
     std::string GetFragmentShaderFileName() const { return GetShaderFileName(GL_FRAGMENT_SHADER_ARB); }
@@ -256,9 +255,9 @@ protected:
 
     std::string header;
 
-    std::map<GLint, ShaderContents> m_hShaderContents;
-    
-    std::map<GLint, GLhandleARB> m_hShaders;
+    sofa::helper::map<GLint, ShaderContents> m_hShaderContents;
+
+    sofa::helper::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader
     GLhandleARB m_hProgramObject;

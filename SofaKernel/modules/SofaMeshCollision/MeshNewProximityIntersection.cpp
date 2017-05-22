@@ -81,7 +81,7 @@ int MeshNewProximityIntersection::computeIntersection(Point& e1, Point& e2, Outp
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -99,7 +99,7 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Point& e2, Outpu
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -118,7 +118,7 @@ int MeshNewProximityIntersection::computeIntersection(Line& e1, Line& e2, Output
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -135,7 +135,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, O
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -189,7 +189,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Ou
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -285,7 +285,7 @@ int MeshNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2
         const SReal contactDist = intersection->getContactDistance() + e1.getProximity() + e2.getProximity();
         for (int i = 0; i < n; ++i)
         {
-            (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            (*contacts)[contacts->size()-n+i].elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             (*contacts)[contacts->size()-n+i].value -= contactDist;
         }
     }

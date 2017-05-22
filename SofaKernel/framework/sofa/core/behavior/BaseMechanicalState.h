@@ -142,12 +142,12 @@ public:
 #endif
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
-    class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >
+    class VMultiOpEntry : public sofa::helper::pair< MultiVecId, helper::vector< sofa::helper::pair< ConstMultiVecId, SReal > > >
     {
     public:
-        typedef std::pair< ConstMultiVecId, SReal > Fact;
+        typedef sofa::helper::pair< ConstMultiVecId, SReal > Fact;
         typedef helper::vector< Fact > VecFact;
-        typedef std::pair< MultiVecId, VecFact > Inherit;
+        typedef sofa::helper::pair< MultiVecId, VecFact > Inherit;
         VMultiOpEntry() : Inherit(MultiVecId::null(), VecFact()) {}
         VMultiOpEntry(MultiVecId v) : Inherit(v, VecFact()) {}
         VMultiOpEntry(MultiVecId v, ConstMultiVecId a, SReal af = 1.0) : Inherit(v, VecFact())
@@ -243,8 +243,8 @@ public:
     };
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const
-    {  return std::list<ConstraintBlock>();  }
+    virtual sofa::helper::list<ConstraintBlock> constraintBlocks( const sofa::helper::list<unsigned int> &/* indices */) const
+    {  return sofa::helper::list<ConstraintBlock>();  }
 
     /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int /*line*/, ConstVecId /*id*/)
@@ -303,7 +303,7 @@ public:
     virtual bool pickParticles(const ExecParams* /* params */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
             double /*rayDx*/, double /*rayDy*/, double /*rayDz*/,
             double /*radius0*/, double /*dRadius*/,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)
+            std::multimap< double, sofa::helper::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)
     {
         return false;
     }

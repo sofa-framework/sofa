@@ -350,7 +350,7 @@ void ArticulatedHierarchyController::applyController(void)
         if (i < activeArticulations.size())
         {
             std::vector< int > articulationPropagationChain;
-            std::map< int, sofa::helper::vector< int > >::iterator iter = articulationsPropagationChains.find(articulationIndex);
+            sofa::helper::map< int, sofa::helper::vector< int > >::iterator iter = articulationsPropagationChains.find(articulationIndex);
             if( iter != articulationsPropagationChains.end())
                 articulationPropagationChain = iter->second;
 

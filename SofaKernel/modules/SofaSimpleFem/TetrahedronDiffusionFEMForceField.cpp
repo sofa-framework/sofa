@@ -26,7 +26,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa

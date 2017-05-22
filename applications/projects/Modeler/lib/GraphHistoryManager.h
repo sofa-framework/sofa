@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 
 #include <QObject>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -94,7 +94,7 @@ protected:
     std::vector< Operation > historyOperation;
     std::vector< Operation > historyUndoOperation;
 
-    std::map<Base*, std::string> componentPriorModificationState;
+    sofa::helper::map<Base*, std::string> componentPriorModificationState;
 
     GraphModeler *graph;
 };

@@ -27,7 +27,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa
@@ -45,7 +45,7 @@ public :
     SOFA_CLASS(DefaultContactManager,sofa::core::collision::ContactManager);
 
 protected:
-    typedef sofa::helper::map_ptr_stable_compare<std::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
+    typedef sofa::helper::map_ptr_stable_compare<sofa::helper::pair<core::CollisionModel*,core::CollisionModel*>,core::collision::Contact::SPtr> ContactMap;
     ContactMap contactMap;
 
 public:
@@ -118,7 +118,7 @@ public:
 protected:
     static sofa::helper::OptionsGroup initializeResponseOptions(core::collision::Pipeline *pipeline);
 
-    std::map<Instance,ContactMap> storedContactMap;
+    sofa::helper::map<Instance,ContactMap> storedContactMap;
 
     virtual void changeInstance(Instance inst)
     {
@@ -128,7 +128,7 @@ protected:
     }
 
     // count failure messages, so we don't continuously repeat them
-    std::map<std::pair<std::string,std::pair<std::string,std::string> >, int> errorMsgCount;
+    sofa::helper::map<sofa::helper::pair<std::string,sofa::helper::pair<std::string,std::string> >, int> errorMsgCount;
 };
 
 } // namespace collision

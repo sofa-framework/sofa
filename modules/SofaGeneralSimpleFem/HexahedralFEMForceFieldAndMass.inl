@@ -88,8 +88,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
 
 	HexahedralFEMForceFieldT::handleTopologyChange();
 
-	std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-	std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
+	sofa::helper::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
+	sofa::helper::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 #ifdef TODOTOPO
 	// handle point events
 	_particleMasses.handleTopologyEvents(itBegin,itEnd);
@@ -102,7 +102,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::handleTopologyChange(core::topol
 	_elementTotalMass.handleTopologyEvents(itBegin,itEnd);
 #endif
 
-	for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
+	for(sofa::helper::list<const TopologyChange *>::const_iterator iter = itBegin;
 		iter != itEnd; ++iter)
 	{
 		switch((*iter)->getChangeType())

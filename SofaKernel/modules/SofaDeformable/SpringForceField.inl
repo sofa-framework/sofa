@@ -307,8 +307,8 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
         if(_topology != NULL)
         {
-            std::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+            sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+            sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
             while( itBegin != itEnd )
             {
@@ -337,8 +337,8 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
 
         if(_topology != NULL)
         {
-            std::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
-            std::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+            sofa::helper::list<const core::topology::TopologyChange *>::const_iterator changeIt=_topology->beginChange();
+            sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
             while( changeIt != itEnd )
             {

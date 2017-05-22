@@ -30,7 +30,7 @@ namespace core
 namespace objectmodel
 {
 
-std::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
+sofa::helper::map<sofa::helper::TypeInfo, ClassInfo*> ClassInfo::classes;
 
 } // namespace objectmodel
 

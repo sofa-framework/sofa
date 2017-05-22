@@ -148,7 +148,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
                 baryCoefs[6] = (Real)((coefs[0]) * (coefs[1]) * (coefs[2]));
                 baryCoefs[7] = (Real)((1-coefs[0]) * (coefs[1]) * (coefs[2]));
 
-                _finestBarycentricCoord[i] = std::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
+                _finestBarycentricCoord[i] = sofa::helper::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
             }
             else
                 serr<<"HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<sendl;
@@ -205,7 +205,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 // 	for(unsigned i=0;i<_finestWeights.size();++i)
 // 	{
-// 		std::map< int, Weight >::iterator it = _finestWeights[i].begin();
+// 		sofa::helper::map< int, Weight >::iterator it = _finestWeights[i].begin();
 //
 // 		SparseGridTopologyT::Hexa& coarsehexa = _sparseGrid.getHexahedron( (*it).first );
 //
@@ -264,7 +264,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
     {
         _qFine[i] = InCoord();
 // 		helper::Quater<Real> meanRotation;
-        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
+        for(sofa::helper::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
 // 			meanRotation += _rotations[ _finestWeights[i][j].first ];
             Transformation& rotation = _rotations[(*it).first ];
@@ -328,7 +328,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
 
     for(unsigned i=0; i<_finestWeights.size(); ++i)
     {
-        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
+        for(sofa::helper::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
             Transformation& rotation = _rotations[ (*it).first ];
 
@@ -380,7 +380,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
     for(unsigned i=0; i<fineForces.size(); ++i)
     {
 
-        for(std::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
+        for(sofa::helper::map< int, Weight >::iterator it = _finestWeights[i].begin(); it!=_finestWeights[i].end(); ++it)
         {
             Transformation& rotation = _rotations[ (*it).first];
 

@@ -64,7 +64,7 @@ signals:
 protected:
     QTreeWidget* listView;
     GraphModeler* mainGraph;
-    std::map<QTreeWidgetItem*, sofa::core::loader::BaseLoader*> items2components;
+    sofa::helper::map<QTreeWidgetItem*, sofa::core::loader::BaseLoader*> items2components;
     QTreeWidgetItem* selectedComponent;
     unsigned int loaderNum;
 };

@@ -57,8 +57,8 @@ public:
     //Q3ListView* widget;
     QTreeWidget* widget;
     bool frozen;
-    std::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
-    std::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
+    sofa::helper::map<core::objectmodel::Base*, QTreeWidgetItem* > items;
+    sofa::helper::map<core::objectmodel::BaseData*, QTreeWidgetItem* > datas;
     std::multimap<QTreeWidgetItem *, QTreeWidgetItem*> nodeWithMultipleParents;
 
     GraphListenerQListView(QTreeWidget* w)

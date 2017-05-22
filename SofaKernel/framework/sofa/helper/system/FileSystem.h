@@ -26,7 +26,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

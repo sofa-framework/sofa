@@ -582,7 +582,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
         Real minStress = 0;
         Real maxStress = 0;
         std::vector<Real> stresses;
-        std::vector<std::pair<int,Real> > pstresses;
+        std::vector<sofa::helper::pair<int,Real> > pstresses;
         std::vector<Deriv> stressVectors;
         std::vector<Real> stresses2;
         std::vector<Deriv> stressVectors2;

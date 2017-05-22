@@ -314,7 +314,7 @@ void GraphModeler::dropEvent(QDropEvent* event)
 Base* GraphModeler::getComponent(QTreeWidgetItem *item) const
 {
     if (!item) return NULL;
-    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
+    sofa::helper::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->second == item)
@@ -359,7 +359,7 @@ Node *GraphModeler::getNode(QTreeWidgetItem *item) const
 QTreeWidgetItem *GraphModeler::getItem(Base *component) const
 {
     if (!component) return NULL;
-    std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
+    sofa::helper::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it;
     for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->first == component)
@@ -411,7 +411,7 @@ void GraphModeler::openModifyObject(QTreeWidgetItem *item)
 
     //Unicity and identification of the windows
 
-    std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
+    sofa::helper::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
     if ( testWindow != map_modifyObjectWindow.end())
     {
         //Object already being modified: no need to open a new window
@@ -1063,7 +1063,7 @@ bool GraphModeler::isNodeErasable ( BaseNode* node)
         return false;
     }
     // check if there is already a dialog opened for that item in the graph
-    std::map< void*, QTreeWidgetItem*>::iterator it;
+    sofa::helper::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
@@ -1087,7 +1087,7 @@ bool GraphModeler::isNodeErasable ( BaseNode* node)
 bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
 {
     QTreeWidgetItem* item = graphListener->items[element];
-    std::map< void*, QTreeWidgetItem*>::iterator it;
+    sofa::helper::map< void*, QTreeWidgetItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
@@ -1197,7 +1197,7 @@ void GraphModeler::dragMoveEvent( QDragMoveEvent* event)
 
 void GraphModeler::closeDialogs()
 {
-    std::map< void*, QDialog* >::iterator it;    ;
+    sofa::helper::map< void*, QDialog* >::iterator it;    ;
     for (it=map_modifyObjectWindow.begin();
             it!=map_modifyObjectWindow.end();
             ++it)

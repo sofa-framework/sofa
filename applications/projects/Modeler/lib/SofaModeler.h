@@ -245,15 +245,15 @@ protected:
 
     QTextBrowser *infoItem;
     /// Correspondance between a name clicked in the menu and a path to the preset
-    std::map< QMenu*, std::map< std::string, std::string > > mapPreset;
+    sofa::helper::map< QMenu*, sofa::helper::map< std::string, std::string > > mapPreset;
 
 
     /// Map between a tabulation from the modeler to an object of type GraphModeler
-    std::map<  QWidget*, GraphModeler*> mapGraph;
+    sofa::helper::map<  QWidget*, GraphModeler*> mapGraph;
     /// Map between a tabulation from the modeler to a Sofa Application
     std::multimap<  const QWidget*, QProcess*> mapSofa;
     /// Map between an index of tabulation to the tabulation itself
-    std::map< QAction*, QWidget*> mapWindow;
+    sofa::helper::map< QAction*, QWidget*> mapWindow;
 
 
 

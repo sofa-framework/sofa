@@ -33,7 +33,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SRea
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
         DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, pnt);
 
         return 1;
     }
@@ -101,7 +101,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Line & lin,SReal
         OutputVector::iterator detection = contacts->end()-1;
         //detection->id = cap.getCollisionModel()->getSize() > lin.getCollisionModel()->getSize() ? cap.getIndex() : lin.getIndex();
         detection->id = cap.getIndex();
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, lin);
         return 1;
     }
 
@@ -148,7 +148,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
             detection1->point[1] = (detection1->point[1] + detection2->point[1])/2.0;
             detection1->normal = (detection1->normal + detection2->normal)/2.0;
             detection1->value = (detection1->value + detection2->value)/2.0 - substract_dist;
-            detection1->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection1->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
 
             contacts->pop_back();
             n = 1;
@@ -156,7 +156,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
         else{
             for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
                 detection->value -= substract_dist;
-                detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+                detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
                 detection->id = id;
             }
         }
@@ -164,7 +164,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     else{
         for(OutputVector::iterator detection = contacts->end() - n; detection != contacts->end() ; ++detection){
             detection->value -= substract_dist;
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
             detection->id = id;
         }
     }
@@ -180,7 +180,7 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
         n += doCapLineInt(cap_p1,cap_p2,cap_rad,tri_p3,tri_p1,alarmDist,contactDist,contacts,!(tri_flg&TriangleModel::FLAG_P3),!(tri_flg&TriangleModel::FLAG_P1));
 
     for(OutputVector::iterator detection = contacts->end()-n ; detection != contacts->end() ; ++detection){
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(cap, tri);
         detection->id = id;
     }
 

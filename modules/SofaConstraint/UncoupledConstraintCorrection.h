@@ -108,7 +108,7 @@ public:
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)  ;
+    virtual void resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& /*renumbering*/)  ;
 
     virtual void addConstraintDisplacement(double *d, int begin,int end) ;
 
@@ -127,7 +127,7 @@ public:
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
-    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
+    sofa::helper::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
 

@@ -23,7 +23,7 @@
 #define SOFA_CORE_COLLISION_BROADPHASEDETECTION_H
 
 #include <sofa/core/collision/Detection.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <algorithm>
 
 namespace sofa
@@ -67,15 +67,15 @@ public:
     }
 
     /// Get the potentially colliding pairs detected
-    sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
+    sofa::helper::vector<sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
 
     /// Returns true because it needs a deep bounding tree i.e. a depth that can be superior to 1.
     inline virtual bool needsDeepBoundingTree()const{return true;}
 protected:
 
     /// Potentially colliding pairs
-    sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
-    std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
+    sofa::helper::vector< sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
+    sofa::helper::map<Instance,sofa::helper::vector< sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
 
     virtual void changeInstanceBP(Instance inst)
     {

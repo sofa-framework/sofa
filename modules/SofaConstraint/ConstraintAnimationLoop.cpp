@@ -47,7 +47,7 @@
 
 #include <math.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <string>
 #include <sstream>
 

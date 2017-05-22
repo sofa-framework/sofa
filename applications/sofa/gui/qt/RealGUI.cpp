@@ -1283,7 +1283,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
             return;
     }
 
-    for (std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
+    for (sofa::helper::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
             iter_map != viewerMap.end() ; ++iter_map )
     {
         if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
@@ -1895,10 +1895,10 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     node->executeVisitor(&v);
 
     using core::objectmodel::BaseNode;
-    std::list< BaseNode* > nodeToProcess;
+    sofa::helper::list< BaseNode* > nodeToProcess;
     nodeToProcess.push_front((BaseNode*)node);
 
-    std::list< BaseNode* > nodeToChange;
+    sofa::helper::list< BaseNode* > nodeToChange;
     //Breadth First approach to activate all the nodes
     while (!nodeToProcess.empty())
     {
@@ -2393,7 +2393,7 @@ void RealGUI::changeViewer()
     QAction* action = static_cast<QAction*>(obj);
     action->setChecked(true);
 
-    std::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
+    sofa::helper::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
     {
         if ( iter_map->second == action )
@@ -2419,7 +2419,7 @@ void RealGUI::updateViewerList()
 {
     // the current list of viewer key with associate QAction
     helper::vector< helper::SofaViewerFactory::Key > currentKeys;
-    std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
+    sofa::helper::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
     for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
         currentKeys.push_back((*iter_map).first);
     std::sort(currentKeys.begin(),currentKeys.end());
@@ -2442,7 +2442,7 @@ void RealGUI::updateViewerList()
     for( it = diffKeys.begin(); it != diffKeys.end(); ++it)
     {
         // delete old
-        std::map< helper::SofaViewerFactory::Key, QAction* >::iterator itViewerMap;
+        sofa::helper::map< helper::SofaViewerFactory::Key, QAction* >::iterator itViewerMap;
         if( (itViewerMap = viewerMap.find(*it)) != viewerMap.end() )
         {
             if( (*itViewerMap).second->isChecked() )

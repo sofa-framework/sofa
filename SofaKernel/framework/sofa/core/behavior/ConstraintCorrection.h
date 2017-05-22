@@ -78,7 +78,7 @@ public:
     virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
     virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
 private:
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
+    sofa::helper::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 
 public:
@@ -143,18 +143,18 @@ public:
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
     /// @param activeDofs stores constrained dofs indices
-    void setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
+    void setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, sofa::helper::list< int > &activeDofs);
 
-    void setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
+    void setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, sofa::helper::list< int > &activeDofs);
 
     /// Converts constraint force from the constraints space to the motion space and accumulates it in f vector
     ///
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
     /// @param activeDofs stores constrained dofs indices
-    void addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
+    void addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector * lambda, sofa::helper::list< int > &activeDofs);
 
-    void addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, std::list< int > &activeDofs);
+    void addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector * lambda, sofa::helper::list< int > &activeDofs);
 
 
     /// Pre-construction check method called by ObjectFactory.

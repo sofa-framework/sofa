@@ -168,7 +168,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge, unsigned int> edgeMap;
+    sofa::helper::map<Edge, unsigned int> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 

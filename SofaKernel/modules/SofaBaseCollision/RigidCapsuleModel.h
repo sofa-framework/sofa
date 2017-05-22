@@ -117,7 +117,7 @@ protected:
     Data<Real> _default_radius;
     Data<Real> _default_height;
 
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
+    sofa::helper::vector<sofa::helper::pair<int,int> > _capsule_points;
 
     TCapsuleModel();
     TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate );

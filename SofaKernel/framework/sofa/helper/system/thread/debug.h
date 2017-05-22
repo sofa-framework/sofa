@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_DEBUG_H
 #define SOFA_HELPER_SYSTEM_THREAD_DEBUG_H
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string.h>

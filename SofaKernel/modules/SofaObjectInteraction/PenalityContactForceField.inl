@@ -222,7 +222,7 @@ template<class DataTypes>
 void PenalityContactForceField<DataTypes>::grabPoint(
     const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
     const helper::vector< unsigned int > &index,
-    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+    helper::vector< sofa::helper::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
     helper::vector< unsigned int > &triangle,
     helper::vector< unsigned int > &index_point)
 {

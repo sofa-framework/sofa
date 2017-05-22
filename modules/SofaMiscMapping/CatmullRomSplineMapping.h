@@ -29,7 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

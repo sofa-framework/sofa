@@ -111,7 +111,7 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
@@ -167,7 +167,7 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = id;
     if (swapElems)
     {
@@ -206,7 +206,7 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
@@ -377,7 +377,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    //detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     if (swapElems)
     {
@@ -431,7 +431,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2, 
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -463,7 +463,7 @@ int LMDNewProximityIntersection::computeIntersection(TSphere<T1>& e1, TSphere<T2
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -491,7 +491,7 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, TSphere<T>& e2, O
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }
@@ -554,7 +554,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             detection->value -= contactDist;
         }
     }

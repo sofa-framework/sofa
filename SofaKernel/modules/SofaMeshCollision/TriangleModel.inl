@@ -31,7 +31,7 @@
 #include <sofa/simulation/Node.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 
@@ -197,7 +197,7 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
     //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
     vector<bool> pflags(mstate->getSize());
-    sofa::helper::set<std::pair<int,int> > eflags;
+    sofa::helper::set<sofa::helper::pair<int,int> > eflags;
     for (unsigned i=0; i<triangles->size(); i++)
     {
         int f = 0;
@@ -243,8 +243,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     {
         // We use the same triangle array as the topology -> only resize and recompute flags
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
         //elems.handleTopologyEvents(itBegin,itEnd);
 
         while( itBegin != itEnd )
@@ -293,8 +293,8 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
     if (topoMod)   // dynamic topology
     {
 
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=_topology->beginChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=_topology->endChange();
 
 
         while( itBegin != itEnd )

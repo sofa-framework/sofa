@@ -92,7 +92,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         const std::string& categoryName = *itCategory;
         IteratorInventory itComponent;
 
-        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        sofa::helper::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
 
 

@@ -24,7 +24,8 @@
 #include <sofa/core/core.h>
 
 #include <cstddef>
-#include <vector>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/pair.h>
 
 namespace sofa
 {
@@ -211,12 +212,12 @@ public:
     /// Return the list (as a pair of iterators) of <i>internal children</i> of this element.
     ///
     /// @see CollisionModel::getInternalChildren
-    std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren() const;
+    sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren() const;
 
     /// Return the list (as a pair of iterators) of <i>external children</i> of this element.
     ///
     /// @see CollisionModel::getExternalChildren
-    std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren() const;
+    sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren() const;
 
     /// Test if this element is a leaf.
     ///
@@ -315,13 +316,13 @@ public:
 
 
 template<class Model>
-std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getInternalChildren() const
+sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getInternalChildren() const
 {
     return model->getInternalChildren(index);
 }
 
 template<class Model>
-std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getExternalChildren() const
+sofa::helper::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getExternalChildren() const
 {
     return model->getExternalChildren(index);
 }

@@ -78,7 +78,7 @@ public:
     /// building eventual virtual finer levels (cf _nbVirtualFinerLevels)
     virtual void buildVirtualFinerLevels();
 
-    typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
+    typedef sofa::helper::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
     /// connexion between several coarsened levels
     typedef std::vector<helper::fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
@@ -86,7 +86,7 @@ public:
     typedef helper::vector<int> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
 
-    typedef std::map<int,float> AHierarchicalPointMap;
+    typedef sofa::helper::map<int,float> AHierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation

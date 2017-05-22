@@ -27,8 +27,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
-#include <map>
-#include <deque>
+#include <sofa/helper/map.h>
+#include <sofa/helper/deque.h>
 
 
 namespace sofa
@@ -79,7 +79,7 @@ public:
     }
 
 protected:
-    std::deque<double> forces;
+    sofa::helper::deque<double> forces;
     bool resetFlag; // We delete all forces that were not read
 };
 

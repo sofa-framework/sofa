@@ -406,8 +406,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
     sofa::core::topology::GeometryAlgorithms *geoAlgo = NULL;
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 
-    std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = m_topology->endStateChange();
+    sofa::helper::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
+    sofa::helper::list< const TopologyChange * >::const_iterator itEnd = m_topology->endStateChange();
 
     while( itBegin != itEnd )
     {
@@ -2629,7 +2629,7 @@ void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vecto
 }
 
 template <class DataTypes>
-std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
+sofa::helper::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const sofa::helper::list<unsigned int> &indices) const
 {
     const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
     assert( indices.size() > 0 );
@@ -2640,11 +2640,11 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     typedef sofa::component::linearsolver::SparseMatrix<SReal> matrix_t;
     // typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
 
-    typedef std::map<unsigned int, matrix_t* > blocks_t;
+    typedef sofa::helper::map<unsigned int, matrix_t* > blocks_t;
     blocks_t blocks;
 
     // for all row indices
-    typedef std::list<unsigned int> indices_t;
+    typedef sofa::helper::list<unsigned int> indices_t;
 
     const MatrixDeriv& constraints = c.getValue();
 
@@ -2685,7 +2685,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     }
 
     // put all blocks in a list and we're done
-    std::list<ConstraintBlock> res;
+    sofa::helper::list<ConstraintBlock> res;
     for(blocks_t::const_iterator b = blocks.begin(); b != blocks.end(); ++b)
     {
         res.push_back( ConstraintBlock( b->first, b->second ) );
@@ -3413,7 +3413,7 @@ void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostr
 /// Returns false if this object does not support picking
 template <class DataTypes>
 bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-                                                std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
+                                                std::multimap< double, sofa::helper::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
 {
     if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
             || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))

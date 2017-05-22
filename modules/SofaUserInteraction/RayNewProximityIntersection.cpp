@@ -111,7 +111,7 @@ int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
     detection->point[1]=P;
     detection->point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -180,7 +180,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
         contacts->resize(contacts->size()+1);
         DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
         detection->point[1] = v3ContactPoint;
         detection->point[0] = v3ContactPoint;
         detection->normal = v3Normal;
@@ -211,7 +211,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
             contacts->resize(contacts->size()+1);
             DetectionOutput *detection = &*(contacts->end()-1);
 
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
             detection->point[1] = v3ContactPoint;
             detection->point[0] = v3ContactPoint;
             detection->normal = v3Normal;
@@ -236,7 +236,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
             contacts->resize(contacts->size()+1);
             DetectionOutput *detection = &*(contacts->end()-1);
 
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+            detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
             detection->point[1] = v3ContactPoint;
             detection->point[0] = v3ContactPoint;
             detection->normal = v3Normal;

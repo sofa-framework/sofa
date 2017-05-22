@@ -31,6 +31,9 @@
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
+#include <sofa/helper/list.h>
+#include <sofa/helper/map.h>
+#include <sofa/helper/pair.h>
 #include <memory>
 #include <string>
 #include <sofa/helper/logging/Message.h>
@@ -124,7 +127,6 @@ public:
             virtualEndEdit();
             return resized;
         }
-        //serr<<"Field::read "<<s.c_str()<<sendl;
         std::istringstream istr( s.c_str() );
         istr >> *virtualBeginEdit();
         virtualEndEdit();

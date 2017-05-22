@@ -52,7 +52,7 @@ public:
     typedef core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef core::topology::BaseMeshTopology::PointID PointID;
     typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
-    typedef std::pair<PointID, PointID> PointPair;
+    typedef sofa::helper::pair<PointID, PointID> PointPair;
 
     /// inputs
     Data< SeqTriangles > d_triangles;
@@ -99,7 +99,7 @@ public:
         helper::WriteOnlyAccessor<Data< SetIndex > >  indices(this->d_indices);
         indices.clear();
 
-        std::map<PointPair, unsigned int> edgeCount;
+        sofa::helper::map<PointPair, unsigned int> edgeCount;
         for(size_t i=0;i<triangles.size();i++)
             if(inROI(triangles[i][0]) && inROI(triangles[i][1]) && inROI(triangles[i][2]))
                 for(unsigned int j=0;j<3;j++)
@@ -116,7 +116,7 @@ public:
                 }
 
         sofa::helper::set<PointID> indexset; // enforce uniqueness since SetIndex is not a set..
-        for(std::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
+        for(sofa::helper::map<PointPair, unsigned int>::iterator it=edgeCount.begin();it!=edgeCount.end();++it)
             if(it->second==1)
             {
                 indexset.insert(it->first.first);
@@ -125,7 +125,7 @@ public:
         indices.wref().insert(indices.end(), indexset.begin(), indexset.end());
     }
 
-    void countEdge(std::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
+    void countEdge(sofa::helper::map<PointPair, unsigned int>& edgeCount,PointPair& edge) const
     {
         if(edge.first>edge.second)
         {
@@ -133,7 +133,7 @@ public:
             edge.first=edge.second;
             edge.second=i;
         }
-        std::map<PointPair, unsigned int>::iterator it=edgeCount.find(edge);
+        sofa::helper::map<PointPair, unsigned int>::iterator it=edgeCount.find(edge);
         if(it!=edgeCount.end()) it->second++;
         else  edgeCount[edge]=1;
     }

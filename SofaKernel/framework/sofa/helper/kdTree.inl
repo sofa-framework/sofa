@@ -24,7 +24,7 @@
 
 #include "kdTree.h"
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <limits>
 #include <iterator>
 #include <cmath>

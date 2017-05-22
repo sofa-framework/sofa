@@ -56,9 +56,9 @@ protected:
     typedef linearsolver::SparseVectorEigen    SparseVectorEigen;
 
     typedef sofa::helper::set< sofa::core::behavior::BaseMechanicalState* > SetDof;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, sofa::helper::set<unsigned int> > DofToMask;
-    typedef std::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
+    typedef sofa::helper::map< const sofa::core::behavior::BaseMechanicalState *, SparseMatrixEigen > DofToMatrix;
+    typedef sofa::helper::map< const sofa::core::behavior::BaseMechanicalState *, sofa::helper::set<unsigned int> > DofToMask;
+    typedef sofa::helper::map< const sofa::core::behavior::BaseMechanicalState *, core::behavior::BaseConstraintCorrection* > DofToConstraintCorrection;
 
 public:
     SOFA_CLASS(LMConstraintSolver, sofa::core::behavior::ConstraintSolver);
@@ -142,7 +142,7 @@ protected:
 
     ///
     virtual void buildLMatrix          ( const sofa::core::behavior::BaseMechanicalState *dof,
-            const std::list<unsigned int> &idxEquations,unsigned int constraintOffset,
+            const sofa::helper::list<unsigned int> &idxEquations,unsigned int constraintOffset,
             SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed ) const;
     virtual void buildInverseMassMatrix( const sofa::core::behavior::BaseMechanicalState* mstate,
             const core::behavior::BaseConstraintCorrection* constraintCorrection,

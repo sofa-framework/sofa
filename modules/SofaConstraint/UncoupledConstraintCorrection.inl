@@ -112,13 +112,13 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
     if (defaultCompliance.isSet() && compliance.getValue().empty())
         return; // uniform compliance, no need to update it
 
-    std::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
+    sofa::helper::list< const TopologyChange * >::const_iterator itBegin = topology->beginChange();
+    sofa::helper::list< const TopologyChange * >::const_iterator itEnd = topology->endChange();
 
     VecReal& comp = *(compliance.beginEdit());
     const Real comp0 = defaultCompliance.getValue();
 
-    for (std::list< const TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd; ++changeIt)
+    for (sofa::helper::list< const TopologyChange * >::const_iterator changeIt = itBegin; changeIt != itEnd; ++changeIt)
     {
         const TopologyChangeType changeType = (*changeIt)->getChangeType();
 
@@ -318,7 +318,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
-    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
+    typedef sofa::helper::list< sofa::helper::pair< int, Deriv > > CIndicesAndValues;
 
     helper::vector< CIndicesAndValues > dofsIndexedConstraints;
     const unsigned int numDOFs = this->mstate->getSize();
@@ -565,7 +565,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 
 
 template<class DataTypes>
-void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
+void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& /*renumbering*/)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 

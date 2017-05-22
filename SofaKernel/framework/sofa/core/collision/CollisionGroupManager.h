@@ -25,7 +25,7 @@
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/collision/Contact.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -79,7 +79,7 @@ public:
 
 protected:
 
-    std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
+    sofa::helper::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
 
     virtual void changeInstance(Instance inst)
     {

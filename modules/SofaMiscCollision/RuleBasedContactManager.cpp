@@ -50,7 +50,7 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
+    for(sofa::helper::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
         itend = variablesData.end(); it != itend; ++it)
     {
         //this->removeData(it->second);
@@ -105,7 +105,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
             {
                 std::string varname = response.substr(var+1,varEnd-var-1);
                 std::string varvalue;
-                std::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
+                sofa::helper::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
                 if (it == variablesData.end())
                 {
                     serr << "Unknown variables " << varname << sendl;

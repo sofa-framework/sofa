@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/PairInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/MechanicalParams.h>
 

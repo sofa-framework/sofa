@@ -83,8 +83,8 @@ void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
     core::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
     if (t != topoFrom) return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
     f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getSize());
     f_indices.endEdit();
 }
@@ -287,7 +287,7 @@ void SubsetMapping<TIn, TOut>::applyJT ( const core::ConstraintParams * /*cparam
     //for(unsigned int i = 0; i < in.size(); ++i)
     //{
     //  OutConstraintIterator itOut;
-    //  std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+    //  sofa::helper::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
     //
     //  for (itOut=iter.first;itOut!=iter.second;itOut++)
     //    {

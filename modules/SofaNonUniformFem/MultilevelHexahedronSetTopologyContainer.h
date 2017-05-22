@@ -84,7 +84,7 @@ public:
 
     void resetTopologyChangeListFine()
     {
-        for(std::list<const core::topology::TopologyChange *>::iterator it = m_changeListFine.begin();
+        for(sofa::helper::list<const core::topology::TopologyChange *>::iterator it = m_changeListFine.begin();
             it != m_changeListFine.end(); ++it)
         {
             delete (*it);
@@ -92,17 +92,17 @@ public:
         m_changeListFine.clear();
     }
 
-    std::list<const core::topology::TopologyChange *>::const_iterator beginChangeFine() const
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator beginChangeFine() const
     {
         return m_changeListFine.begin();
     }
 
-    std::list<const core::topology::TopologyChange *>::const_iterator endChangeFine() const
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator endChangeFine() const
     {
         return m_changeListFine.end();
     }
 
-    const std::list<const core::topology::TopologyChange *>& getChangeListFine() const
+    const sofa::helper::list<const core::topology::TopologyChange *>& getChangeListFine() const
     {
         return m_changeListFine;
     }
@@ -138,7 +138,7 @@ public:
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }
 
-    void connectionToNodeAdjacency(const Vec3i& connection, std::map<unsigned int, unsigned int>& nodeMap) const;
+    void connectionToNodeAdjacency(const Vec3i& connection, sofa::helper::map<unsigned int, unsigned int>& nodeMap) const;
 
     class SOFA_NON_UNIFORM_FEM_API Component
     {
@@ -191,7 +191,7 @@ private:
 private:
 
 
-    std::list<const core::topology::TopologyChange *>	m_changeListFine;
+    sofa::helper::list<const core::topology::TopologyChange *>	m_changeListFine;
 
     HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	// map between hexahedra and components - coarse
     HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	// map between hexahedra and components - fine
@@ -212,7 +212,7 @@ public:
     typedef defaulttype::Vec<3,int>	Vec3i;
 
     MultilevelModification(const sofa::helper::vector<unsigned int>& _tArray,
-            const std::map<unsigned int, std::list<Vec3i> >& removedVoxels)
+            const sofa::helper::map<unsigned int, sofa::helper::list<Vec3i> >& removedVoxels)
         : core::topology::TopologyChange((core::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
         , _modifiedHexahedraArray(_tArray)
         , _removedFineVoxels(removedVoxels)
@@ -223,9 +223,9 @@ public:
         return _modifiedHexahedraArray;
     }
 
-    const std::list<Vec3i> &getRemovedVoxels(const unsigned int hexaId) const
+    const sofa::helper::list<Vec3i> &getRemovedVoxels(const unsigned int hexaId) const
     {
-        std::map<unsigned int, std::list<Vec3i> >::const_iterator it = _removedFineVoxels.find(hexaId);
+        sofa::helper::map<unsigned int, sofa::helper::list<Vec3i> >::const_iterator it = _removedFineVoxels.find(hexaId);
         if(it != _removedFineVoxels.end())
             return it->second;
         else
@@ -239,9 +239,9 @@ public:
 
 private:
     sofa::helper::vector<unsigned int>		_modifiedHexahedraArray;
-    std::map<unsigned int, std::list<Vec3i> > _removedFineVoxels;
+    sofa::helper::map<unsigned int, sofa::helper::list<Vec3i> > _removedFineVoxels;
 
-    const std::list<Vec3i>	__dummyList;
+    const sofa::helper::list<Vec3i>	__dummyList;
 };
 
 } // namespace topology

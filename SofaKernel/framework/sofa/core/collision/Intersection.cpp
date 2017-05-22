@@ -45,7 +45,7 @@ IntersectorMap::~IntersectorMap()
 helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
 {
     helper::TypeInfo t(typeid(*model));
-    const std::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
+    const sofa::helper::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
     if (it == castMap.end())
     {
         helper::TypeInfo t2 = t;

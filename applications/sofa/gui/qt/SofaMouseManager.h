@@ -57,7 +57,7 @@ public:
 
     void setPickHandler(PickHandler *);
 
-    std::map< int, std::string >& getMapIndexOperation()
+    sofa::helper::map< int, std::string >& getMapIndexOperation()
     {
         return mapIndexOperation;
     }
@@ -72,7 +72,7 @@ public slots:
 protected:
     void updateOperation(Operation* op);
     PickHandler *pickHandler;
-    std::map< int, std::string > mapIndexOperation;
+    sofa::helper::map< int, std::string > mapIndexOperation;
 
     helper::fixed_array< std::string,NONE > usedOperations;
 };

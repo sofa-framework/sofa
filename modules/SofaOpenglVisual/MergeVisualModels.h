@@ -267,7 +267,7 @@ public:
         vl_input.parseSizeLinks(arg, d_nbInput);
         Inherit1::parse(arg);
     }
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const sofa::helper::map<std::string,std::string*>& str )
     {
         vl_input.parseFieldsSizeLinks(str, d_nbInput);
         Inherit1::parseFields(str);

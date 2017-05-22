@@ -465,7 +465,7 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
         const core::behavior::BaseMechanicalState *dof2=constraint->getSimulatedMechModel2();
 
         //Get the entries in the Vector of constraints corresponding to the constraint equations
-        std::list< unsigned int > equationsUsed;
+        sofa::helper::list< unsigned int > equationsUsed;
         constraint->getEquationsUsed(Order, equationsUsed);
 
         if (equationsUsed.empty()) continue;
@@ -586,13 +586,13 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::behavior::Bas
 }
 
 void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanicalState *dof,
-        const std::list<unsigned int> &idxEquations, unsigned int constraintOffset,
+        const sofa::helper::list<unsigned int> &idxEquations, unsigned int constraintOffset,
         SparseMatrixEigen& L, sofa::helper::set< unsigned int > &dofUsed) const
 {
     const unsigned int dimensionDofs=dof->getDerivDimension();
     typedef core::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
     //Get blocks of values from the Mechanical States
-    std::list< ConstraintBlock > blocks=dof->constraintBlocks( idxEquations );
+    sofa::helper::list< ConstraintBlock > blocks=dof->constraintBlocks( idxEquations );
 
 
     //Fill the matrices
@@ -602,7 +602,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     {
         const int idxRow=constraintOffset+eq;
 
-        for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
+        for (sofa::helper::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
         {
             const ConstraintBlock &b=(*itBlock);
             const defaulttype::BaseMatrix &m=b.getMatrix();
@@ -619,7 +619,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
             }
         }
     }
-    for (std::list< ConstraintBlock >::iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
+    for (sofa::helper::list< ConstraintBlock >::iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
     {
         delete itBlock->getMatrix();
     }
@@ -665,7 +665,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
 
     //Store the invalid block of the W matrix
     sofa::helper::set< int > emptyBlock;
-    helper::vector< std::pair<MatrixEigen,VectorEigen> > constraintToBlock;
+    helper::vector< sofa::helper::pair<MatrixEigen,VectorEigen> > constraintToBlock;
     helper::vector< MatrixEigen> constraintInvWBlock;
     helper::vector< MatrixEigen> constraintWBlock;
 
@@ -739,7 +739,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
                 const MatrixEigen &Wblock   =constraintWBlock[idxBlocks];
                 const MatrixEigen &invWblock=constraintInvWBlock[idxBlocks];
 
-                const std::pair<MatrixEigen,VectorEigen> &blocks=constraintToBlock[idxBlocks];
+                const sofa::helper::pair<MatrixEigen,VectorEigen> &blocks=constraintToBlock[idxBlocks];
                 const VectorEigen &cb=blocks.second;
                 const MatrixEigen &wb=blocks.first;
 

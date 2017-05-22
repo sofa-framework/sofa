@@ -56,7 +56,7 @@ public:
     virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
     virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
 private:
-    std::list<core::behavior::ConstraintSolver*> constraintsolvers;
+    sofa::helper::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 public:
     virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);

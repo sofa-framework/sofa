@@ -206,7 +206,7 @@ void GenerateSphere<DataTypes>::update()
 
 	std::vector<Edge> edgeArray;
 	std::vector<Triangle> edgeTriangleArray;
-	std::map<Edge,size_t> edgeMap;
+	sofa::helper::map<Edge,size_t> edgeMap;
 
 	if (solid==TETRAHEDRON) {
 		nbVertices=4;
@@ -218,7 +218,7 @@ void GenerateSphere<DataTypes>::update()
 		for (i=0;i<6;++i) {
 			e=Edge(tetrahedron_edge_vertex[i][0],tetrahedron_edge_vertex[i][1]);
 			edgeArray.push_back(e);
-			edgeMap.insert(std::pair<Edge,size_t>(e,i));
+			edgeMap.insert(sofa::helper::pair<Edge,size_t>(e,i));
 		}
 		nbTriangles=4;
 		for(i=0;i<4;++i) {
@@ -238,7 +238,7 @@ void GenerateSphere<DataTypes>::update()
 		for (i=0;i<12;++i) {
 			e=Edge(octahedron_edge_vertex[i][0],octahedron_edge_vertex[i][1]);
 			edgeArray.push_back(e);
-			edgeMap.insert(std::pair<Edge,size_t>(e,i));
+			edgeMap.insert(sofa::helper::pair<Edge,size_t>(e,i));
 		}
 		nbTriangles=8;
 
@@ -258,7 +258,7 @@ void GenerateSphere<DataTypes>::update()
 		for (i=0;i<30;++i) {
 			e=Edge(icosahedron_edge_vertex[i][0],icosahedron_edge_vertex[i][1]);
 			edgeArray.push_back(e);
-			edgeMap.insert(std::pair<Edge,size_t>(e,i));
+			edgeMap.insert(sofa::helper::pair<Edge,size_t>(e,i));
 		}
 		nbTriangles=20;
 		for(i=0;i<nbTriangles;++i) {
@@ -277,7 +277,7 @@ void GenerateSphere<DataTypes>::update()
 				Edge e=Edge(platonicTriangles[i][(j+1)%3],platonicTriangles[i][(j+2)%3]);
 				// sort edge
 				Edge se=Edge(std::min(e[0],e[1]),std::max(e[0],e[1]));
-				std::map<Edge,size_t>::iterator itm;
+				sofa::helper::map<Edge,size_t>::iterator itm;
 				itm=edgeMap.find(se);
 
 				assert(itm!=edgeMap.end());
@@ -310,11 +310,11 @@ void GenerateSphere<DataTypes>::update()
 		size_t nbVerticesInsideTriangle=(frequency-2)*(frequency-1)/2;
 		// create subtriangle array
 		//create a temporary map associating Triangle coordinate with its index
-		std::map<Triangle,size_t> triangleIndexMap;
+		sofa::helper::map<Triangle,size_t> triangleIndexMap;
 		// insert triangle vertex
-		triangleIndexMap.insert(std::pair<Triangle,size_t>(Triangle((PointID)frequency,0,0),0));
-		triangleIndexMap.insert(std::pair<Triangle,size_t>(Triangle(0,frequency,0),1));
-		triangleIndexMap.insert(std::pair<Triangle,size_t>(Triangle(0,0,frequency),2));
+		triangleIndexMap.insert(sofa::helper::pair<Triangle,size_t>(Triangle((PointID)frequency,0,0),0));
+		triangleIndexMap.insert(sofa::helper::pair<Triangle,size_t>(Triangle(0,frequency,0),1));
+		triangleIndexMap.insert(sofa::helper::pair<Triangle,size_t>(Triangle(0,0,frequency),2));
 		vertexRank=3;
 		// insert edge vertex;
 		for (j=0;j<3;++j) {
@@ -323,7 +323,7 @@ void GenerateSphere<DataTypes>::update()
 				tr[j]=0;
 				tr[(j+1)%3]=frequency-k;
 				tr[(j+2)%3]=k;
-				triangleIndexMap.insert(std::pair<Triangle,size_t>(tr,vertexRank++));
+				triangleIndexMap.insert(sofa::helper::pair<Triangle,size_t>(tr,vertexRank++));
 			}
 		}
 		// insert triangle vertex
@@ -332,12 +332,12 @@ void GenerateSphere<DataTypes>::update()
 				l=frequency-j-k;
 				Triangle tr;
 				tr[0]=j;tr[1]=k;tr[2]=l;
-				triangleIndexMap.insert(std::pair<Triangle,size_t>(tr,vertexRank++));
+				triangleIndexMap.insert(sofa::helper::pair<Triangle,size_t>(tr,vertexRank++));
 			}
 		}
 		// now create the array subtriangleArray where the frequency*frequency subtriangles are defined
 		std::vector<Triangle> subtriangleArray;
-		std::map<Triangle,size_t>::iterator omi;
+		sofa::helper::map<Triangle,size_t>::iterator omi;
 		Triangle tbi[3],tr;
 		for ( i=1;i<=frequency;++i) {
 			for (size_t j=0;j<(frequency-i+1);++j) {
@@ -457,7 +457,7 @@ void GenerateSphere<DataTypes>::update()
 
 		// parse edges
 		edgeMap.clear();
-		std::map<Edge,size_t>::iterator item;
+		sofa::helper::map<Edge,size_t>::iterator item;
 		SeqTriangles::iterator itt;
 		Real phi,ctheta;
 		Coord posTmp,posTmp2,normal;
@@ -475,7 +475,7 @@ void GenerateSphere<DataTypes>::update()
 					se=e;
 				}
 				if ((item=edgeMap.find(se))==edgeMap.end()){
-					edgeMap.insert(std::pair<Edge,size_t>(se,edgeArray.size()));
+					edgeMap.insert(sofa::helper::pair<Edge,size_t>(se,edgeArray.size()));
 					edgeArray.push_back(e);
 					// add Bezier points along the edge
 					phi=acos(dot(posTrian[se[0]],posTrian[se[1]]));
@@ -595,7 +595,7 @@ void GenerateSphere<DataTypes>::update()
 
 		// parse edges
 		edgeMap.clear();
-		std::map<Edge,size_t>::iterator item;
+		sofa::helper::map<Edge,size_t>::iterator item;
 		SeqTetrahedra::iterator itt;
 		Real phi,ctheta;
 		Coord posTmp,posTmp2,normal;
@@ -615,7 +615,7 @@ void GenerateSphere<DataTypes>::update()
 					se=e;
 				}
 				if ((item=edgeMap.find(se))==edgeMap.end()){
-					edgeMap.insert(std::pair<Edge,size_t>(se,edgeArray.size()));
+					edgeMap.insert(sofa::helper::pair<Edge,size_t>(se,edgeArray.size()));
 					edgeArray.push_back(e);
 					// check if the edge is on the sphere
 					bool onSphere=false;

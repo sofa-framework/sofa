@@ -255,17 +255,17 @@ struct Transform
         return op;
     }
 
-    std::list< Op* > &getOperations() {return list;}
+    sofa::helper::list< Op* > &getOperations() {return list;}
 
     void operator()(typename DataTypes::Coord &v) const
     {
-        for (typename std::list< Op* >::const_iterator it=list.begin(); it != list.end() ; ++it)
+        for (typename sofa::helper::list< Op* >::const_iterator it=list.begin(); it != list.end() ; ++it)
         {
             (*it)->execute(v);
         }
     }
 private:
-    std::list< Op* > list;
+    sofa::helper::list< Op* > list;
 };
 
 
@@ -307,7 +307,7 @@ void TransformEngine<DataTypes>::update()
     std::for_each(out.begin(), out.end(), transformation);
 
     //Deleting operations
-    std::list< TransformOperation<DataTypes>* > operations=transformation.getOperations();
+    sofa::helper::list< TransformOperation<DataTypes>* > operations=transformation.getOperations();
     while (!operations.empty())
     {
         delete operations.back();

@@ -27,7 +27,7 @@
 #include "FullVector.h"
 #include "MatrixExpr.h"
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -49,8 +49,8 @@ class SparseMatrix : public defaulttype::BaseMatrix
 {
 public:
     typedef T Real;
-    typedef std::map<Index,Real> Line;
-    typedef std::map<Index,Line> Data;
+    typedef sofa::helper::map<Index,Real> Line;
+    typedef sofa::helper::map<Index,Line> Data;
     typedef typename Line::iterator LElementIterator;
     typedef typename Line::const_iterator LElementConstIterator;
     typedef typename Data::iterator LineIterator;

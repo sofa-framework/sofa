@@ -28,7 +28,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -76,8 +76,8 @@ void CenterPointTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if(fromModel && toModel)
     {
-        std::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator changeIt = fromModel->beginChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itEnd = fromModel->endChange();
 
         PointSetTopologyModifier *to_pstm;
         toModel->getContext()->get(to_pstm);

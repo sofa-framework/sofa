@@ -804,7 +804,7 @@ bool MeshTetraStuffing::flipDiag(const SeqPoints& outP, int a, int b, int c, int
 
 int MeshTetraStuffing::getSplitPoint(int from, int to)
 {
-    std::map<std::pair<int,int>, int>::const_iterator it = splitPoints.find(std::make_pair(from,to));
+    sofa::helper::map<sofa::helper::pair<int,int>, int>::const_iterator it = splitPoints.find(std::make_pair(from,to));
     if (it != splitPoints.end()) return it->second;
     it = splitPoints.find(std::make_pair(to, from));
     if (it != splitPoints.end()) return it->second;

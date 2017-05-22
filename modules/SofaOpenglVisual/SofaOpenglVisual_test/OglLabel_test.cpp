@@ -20,7 +20,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector;
 
 #include <string>

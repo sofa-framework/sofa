@@ -282,7 +282,7 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::co
             for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
                 const sofa::core::behavior::ConstraintGroup* group=*itGroup;
-                std::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();
+                sofa::helper::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();
                 for ( sofa::core::behavior::ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
                 {
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(it->idx));

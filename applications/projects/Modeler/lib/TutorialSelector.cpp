@@ -60,7 +60,7 @@ void TutorialSelector::init()
 
     //Store all the categories we have for the software
     helper::vector< Category > allCategories;
-    std::map< QTreeWidgetItem *, Category>::const_iterator itCategory;
+    sofa::helper::map< QTreeWidgetItem *, Category>::const_iterator itCategory;
     for (itCategory=itemToCategory.begin(); itCategory!=itemToCategory.end(); ++itCategory)
     {
         allCategories.push_back(itCategory->second);
@@ -73,7 +73,7 @@ void TutorialSelector::init()
         const Category& currentCategory=allCategories.back();
 
         openCategory(currentCategory);
-        std::map< QTreeWidgetItem *, Tutorial>::const_iterator itTuto;
+        sofa::helper::map< QTreeWidgetItem *, Tutorial>::const_iterator itTuto;
         for (itTuto=itemToTutorial.begin(); itTuto!=itemToTutorial.end(); ++itTuto)
         {
             listTutoFromFile.insert(std::make_pair(currentCategory, itTuto->second));
@@ -149,7 +149,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  QTreeWidgetItem *it
     TiXmlAttribute* attribute=element->FirstAttribute();
     std::string typeElement=element->Value() ;
 
-    std::map<std::string, std::string> attributes;
+    sofa::helper::map<std::string, std::string> attributes;
 
     while (attribute)
     {
@@ -254,7 +254,7 @@ void TutorialSelector::changeRequested( QTreeWidgetItem *item )
 
 void TutorialSelector::openCategory( const QString &name)
 {
-    std::map< QTreeWidgetItem *, Category>::const_iterator it;
+    sofa::helper::map< QTreeWidgetItem *, Category>::const_iterator it;
     for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)
     {
         if (it->second.name == name.toStdString())
@@ -313,7 +313,7 @@ void TutorialSelector::usingScene(const std::string &filename)
             }
             emit openHTML(t.htmlFilename);
 
-            std::map< QTreeWidgetItem *, Tutorial>::const_iterator it;
+            sofa::helper::map< QTreeWidgetItem *, Tutorial>::const_iterator it;
             for (it=itemToTutorial.begin(); it!=itemToTutorial.end(); ++it)
             {
                 //select in the list the current tutorial
@@ -329,9 +329,9 @@ void TutorialSelector::usingScene(const std::string &filename)
     }
 }
 
-std::list< std::string >TutorialSelector::getCategories() const
+sofa::helper::list< std::string >TutorialSelector::getCategories() const
 {
-    std::list<std::string> list;
+    sofa::helper::list<std::string> list;
     std::multimap< Category, Tutorial>::const_iterator it;
     std::string catName;
     for (it=listTutoFromFile.begin(); it!=listTutoFromFile.end(); ++it)

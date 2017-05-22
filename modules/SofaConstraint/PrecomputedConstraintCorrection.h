@@ -110,7 +110,7 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)  ;
+    virtual void resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& /*renumbering*/)  ;
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
@@ -136,9 +136,9 @@ public:
     Real* appCompliance;
     unsigned int dimensionAppCompliance;
 
-    static std::map<std::string, InverseStorage>& getInverseMap()
+    static sofa::helper::map<std::string, InverseStorage>& getInverseMap()
     {
-        static std::map<std::string, InverseStorage> registry;
+        static sofa::helper::map<std::string, InverseStorage> registry;
         return registry;
     }
 
@@ -155,14 +155,14 @@ public:
     //VecDeriv constraint_disp, constraint_force;
     helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
     helper::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
-    std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
+    sofa::helper::list<unsigned int> active_local_force; // table of local index of the non-null forces;
     linearsolver::FullMatrix< Real > localW;
     double* constraint_force;
 
     // NEW METHOD FOR UNBUILT
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_D, constraint_F;
-    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
+    sofa::helper::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
 public:
     Real* getInverse()
@@ -195,7 +195,7 @@ protected:
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(const Data< VecDeriv > &f, std::list< int > &activeDofs);
+    void computeDx(const Data< VecDeriv > &f, sofa::helper::list< int > &activeDofs);
 };
 
 

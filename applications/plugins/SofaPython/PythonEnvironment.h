@@ -28,7 +28,7 @@
 #include "Binding.h"
 #include <SofaPython/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
 
 namespace sofa

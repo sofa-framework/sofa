@@ -25,9 +25,9 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/Node.h>
 #include "SofaGUI.h"
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
-#include <list>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -93,7 +93,7 @@ protected:
     static GUICreator* GetGUICreator(const char* name = NULL);
     /* CLASS FIELDS */
 
-    static std::list<GUICreator> guiCreators;
+    static sofa::helper::list<GUICreator> guiCreators;
 
     static std::vector<std::string> guiOptions;
     static BaseGUI* currentGUI;

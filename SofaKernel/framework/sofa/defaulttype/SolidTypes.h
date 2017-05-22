@@ -33,7 +33,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
-#include <map>
+#include <sofa/helper/map.h>
 
 #ifdef PS3
 typedef float GLdouble;

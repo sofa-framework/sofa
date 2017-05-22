@@ -53,7 +53,7 @@ void DevTensionMonitor<DataTypes>::eval()
         //Compute tension
         // ....
         defaulttype::Vec1d tension = defaulttype::Vec1d(xPos[0].getOrientation()[0]);
-        std::pair<sofa::defaulttype::Vec1d, Real> temp;
+        sofa::helper::pair<sofa::defaulttype::Vec1d, Real> temp;
         temp.first = tension;
         temp.second = timestamp;
 

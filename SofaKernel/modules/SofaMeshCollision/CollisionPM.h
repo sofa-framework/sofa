@@ -106,7 +106,7 @@ namespace collision
         };
 
 
-        typedef std::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
+        typedef std::unordered_map<sofa::helper::pair<int,int>,CollidingPair> umap_collision;
 
 
         CollidingPM(){

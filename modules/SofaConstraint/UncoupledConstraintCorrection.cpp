@@ -199,7 +199,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     Deriv weightedNormal;
     Deriv comp_wN;
 
-    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
+    typedef sofa::helper::list< sofa::helper::pair< int, Deriv > > CIndicesAndValues;
 
     helper::vector< CIndicesAndValues > dofsIndexedConstraints;
     const unsigned int numDOFs = this->mstate->getSize();

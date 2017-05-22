@@ -110,7 +110,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
-    std::vector< std::pair<std::string, Creator::SPtr> > creators;
+    std::vector< sofa::helper::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
     std::string usertemplatename = arg->getAttribute( "template", "");
     std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases

@@ -22,10 +22,11 @@
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/helper.h>
+#include <sofa/helper/pair.h>
 
 #include <iostream>
 #include <string>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -193,14 +194,14 @@ public:
         Id() : id(0) {}
 
         /// An Id is constructed from a string and appears like one after, without actually storing a string
-		Id(const std::string& s): id(0)
+        Id(const std::string& s): id(0)
         {
             if (!s.empty())
                 id = IdFactory::getID(s);
         }
 
         /// An Id is constructed from a string and appears like one after, without actually storing a string
-		Id(const char* s): id(0)
+        Id(const char* s): id(0)
         {
             if (s && *s)
                 id = IdFactory::getID(std::string(s));
@@ -383,7 +384,7 @@ public:
 
 
     typedef void (*SyncCallBack)(void* userData);
-    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
+    static sofa::helper::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
 
 };
 

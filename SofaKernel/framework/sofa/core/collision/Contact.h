@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/Factory.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -67,7 +67,7 @@ private:
 	
 public:
     /// Get the pair of collision models which are in contact
-    virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
+    virtual sofa::helper::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
 
     /// Set the generic description of a contact point
     virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
@@ -83,7 +83,7 @@ public:
     virtual void setKeepAlive(bool /* val */) {}
 
     //Todo adding TPtr parameter
-    class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*>, Contact::SPtr >
+    class Factory : public helper::Factory< std::string, Contact, sofa::helper::pair<sofa::helper::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*>, Contact::SPtr >
     {
     public:
         static Factory SOFA_CORE_API *getInstance();
@@ -103,7 +103,7 @@ public:
     static Contact::SPtr Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod, bool verbose=true);
 
     template<class RealContact>
-        static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
+        static typename RealContact::SPtr create(RealContact*, sofa::helper::pair<sofa::helper::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
     {
         typedef typename RealContact::CollisionModel1 RealCollisionModel1;
         typedef typename RealContact::CollisionModel2 RealCollisionModel2;

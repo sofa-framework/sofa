@@ -32,7 +32,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -146,8 +146,8 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
         if (toModel)
         {
 
-            std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-            std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
@@ -187,7 +187,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     {
                         unsigned int k = tab[i];
 
-                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                        sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                         if(iter_1 != Glob2LocMap.end())
                         {
 
@@ -196,7 +196,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int ind_k = Glob2LocMap[k];
 //                            ind_real_last = ind_k;
 
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                            sofa::helper::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())
                             {
 
@@ -327,7 +327,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         nb_elems+=1;
 
                                         Loc2GlobVec.push_back(k);
-                                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                                        sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
                                             sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
@@ -426,7 +426,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                 			nb_elems+=1;
 
                 			Loc2GlobVec.push_back(k);
-                			std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                			sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                 			if(iter_1 != Glob2LocMap.end() ) {
                 				sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;
                 				Glob2LocMap.erase(Glob2LocMap.find(k));
@@ -466,7 +466,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                             {
                                 unsigned int k = (fromModel->getEdgesInTriangle(ind_elem))[j];
 
-                                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                                sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                 bool is_present = (iter_1 != Glob2LocMap.end()) && fromModel->getTrianglesAroundEdge(k).size()>1;
 
                                 if (is_present)   // remove as visible the edge indexed by k
@@ -509,7 +509,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         edgesIndexList.push_back(Loc2GlobVec.size());
 
                                         Loc2GlobVec.push_back(k);
-                                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                                        sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
                                             sout << "INFO_print : Triangle2EdgeTopologicalMapping - fail to add edge " << k << "which already exists" << sendl;

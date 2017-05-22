@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
     const std::string sofaIniFilePath = etcDir + "/sofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    sofa::helper::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
 
     if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
     {

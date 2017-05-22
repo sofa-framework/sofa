@@ -30,7 +30,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -565,8 +565,8 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if(fromModel && toModel && initDone)
     {
-        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
         PointSetTopologyModifier *toPointMod = NULL;
         EdgeSetTopologyModifier *toEdgeMod = NULL;
@@ -917,8 +917,8 @@ void Mesh2PointTopologicalMapping::renumberInput(Element elem, const sofa::helpe
 
 void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeLast)
 {
-    std::pair<Element, int> i1Source = pointSource[i1];
-    std::pair<Element, int> i2Source = pointSource[i2];
+    sofa::helper::pair<Element, int> i1Source = pointSource[i1];
+    sofa::helper::pair<Element, int> i2Source = pointSource[i2];
     pointSource[i1] = i2Source;
     pointSource[i2] = i1Source;
     if (i1Source.second != -1)

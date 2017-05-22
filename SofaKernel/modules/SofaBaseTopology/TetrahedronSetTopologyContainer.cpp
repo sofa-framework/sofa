@@ -128,7 +128,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge,unsigned int> edgeMap;
+    sofa::helper::map<Edge,unsigned int> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
@@ -181,7 +181,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
         m_edgesInTetrahedron.resize (numTetra);
 
         // create a temporary map to find redundant edges
-        std::map<Edge,unsigned int> edgeMap;
+        sofa::helper::map<Edge,unsigned int> edgeMap;
         helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
         /// create the m_edge array at the same time than it fills the m_edgesInTetrahedron array
@@ -222,8 +222,8 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 
         for (unsigned int edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
         {
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
-            edgesAroundVertexMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+            edgesAroundVertexMap.insert(sofa::helper::pair<PointID, EdgeID> (m_edge[edge][0],edge));
+            edgesAroundVertexMap.insert(sofa::helper::pair<PointID, EdgeID> (m_edge[edge][1],edge));
         }
 
         for(unsigned int i=0; i<numTetra; ++i)
@@ -233,7 +233,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
             for(unsigned int j=0; j<6; ++j)
             {
                 //finding edge i in edge array
-                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[edgesInTetrahedronArray[j][0]]);
+                sofa::helper::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgesAroundVertexMap.equal_range(t[edgesInTetrahedronArray[j][0]]);
 
                 foundEdge=false;
                 for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
@@ -266,7 +266,7 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
     }
 
     // create a temporary map to find redundant triangles
-    std::map<Triangle,unsigned int> triangleMap;
+    sofa::helper::map<Triangle,unsigned int> triangleMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 

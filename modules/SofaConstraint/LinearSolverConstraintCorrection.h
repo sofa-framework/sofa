@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    typedef std::list<int> ListIndex;
+    typedef sofa::helper::list<int> ListIndex;
     typedef sofa::core::behavior::ConstraintCorrection< TDataTypes > Inherit;
 protected:
     LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -118,7 +118,7 @@ public:
 
     virtual bool hasConstraintNumber(int index) ;  // virtual ???
 
-    virtual void resetForUnbuiltResolution(double * f, std::list<unsigned int>& renumbering);
+    virtual void resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& renumbering);
 
     virtual void addConstraintDisplacement(double *d, int begin,int end) ;
 
@@ -155,7 +155,7 @@ protected:
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;
-    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint // TODO : verify if useful !!
+    sofa::helper::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint // TODO : verify if useful !!
     defaulttype::BaseMatrix* systemMatrix_buf;
     defaulttype::BaseVector* systemRHVector_buf;
     defaulttype::BaseVector* systemLHVector_buf;

@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include <SofaBaseMechanics/UniformMass.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector ;
 
 #include <string>

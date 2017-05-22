@@ -49,7 +49,7 @@ public:
 
     const sofa::defaulttype::Vector3& maxVect() const;
 
-    const std::pair<Cube,Cube>& subcells() const;
+    const sofa::helper::pair<Cube,Cube>& subcells() const;
 };
 
 class SOFA_BASE_COLLISION_API CubeModel : public core::CollisionModel
@@ -60,8 +60,8 @@ public:
     struct CubeData
     {
         sofa::defaulttype::Vector3 minBBox, maxBBox;
-        std::pair<Cube,Cube> subcells;
-        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
+        sofa::helper::pair<Cube,Cube> subcells;
+        sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
     };
 
     class CubeSortPredicate
@@ -111,12 +111,12 @@ public:
 
     void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
     void setLeafCube(int cubeIndex, int childIndex);
-    void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
+    void setLeafCube(int cubeIndex, sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
 
 
     unsigned int getNumberCells() { return (unsigned int)elems.size();}
 
-    void getBoundingTree ( sofa::helper::vector< std::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
+    void getBoundingTree ( sofa::helper::vector< sofa::helper::pair< sofa::defaulttype::Vector3, sofa::defaulttype::Vector3> > &bounding )
     {
         bounding.resize(elems.size());
         for (unsigned int index=0; index<elems.size(); index++)
@@ -150,9 +150,9 @@ public:
       */
     virtual void computeBoundingTree(int maxDepth=0);
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const;
+    virtual sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const;
+    virtual sofa::helper::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const;
 
     virtual bool isLeaf( int index ) const;
 
@@ -183,7 +183,7 @@ inline const sofa::defaulttype::Vector3& Cube::maxVect() const
 }
 
 
-inline const std::pair<Cube,Cube>& Cube::subcells() const
+inline const sofa::helper::pair<Cube,Cube>& Cube::subcells() const
 {
     return model->elems[index].subcells;
 }

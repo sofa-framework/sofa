@@ -190,11 +190,11 @@ template<class DataTypes> template<class NeighborListener>
 void SpatialGrid<DataTypes>::findNeighbors(NeighborListener* dest, const Real dist2, const Cell** cellsBegin, const Cell** cellsEnd)
 {
     const Cell* c0 = *cellsBegin;
-    const typename std::list<Entry>::const_iterator end = c0->plist.end();
-    for (typename std::list<Entry>::const_iterator it = c0->plist.begin(); it != end; it++)
+    const typename sofa::helper::list<Entry>::const_iterator end = c0->plist.end();
+    for (typename sofa::helper::list<Entry>::const_iterator it = c0->plist.begin(); it != end; it++)
     {
         const Entry& p1 = *it;
-        typename std::list<Entry>::const_iterator it2 = it;
+        typename sofa::helper::list<Entry>::const_iterator it2 = it;
         ++it2;
         for (; it2 != end; it2++)
         {
@@ -205,8 +205,8 @@ void SpatialGrid<DataTypes>::findNeighbors(NeighborListener* dest, const Real di
         }
         for (const Cell** c = cellsBegin+1; c != cellsEnd; ++c)
         {
-            const typename std::list<Entry>::const_iterator end2 = (*c)->plist.end();
-            for (typename std::list<Entry>::const_iterator it2 = (*c)->plist.begin(); it2 != end2; it2++)
+            const typename sofa::helper::list<Entry>::const_iterator end2 = (*c)->plist.end();
+            for (typename sofa::helper::list<Entry>::const_iterator it2 = (*c)->plist.begin(); it2 != end2; it2++)
             {
                 const Entry& p2 = *it2;
                 const Real r2 = (p2.pos - p1.pos).norm2();
@@ -317,9 +317,9 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
                         {
                             int x0 = (x<r)?0:x-r+1;
                             int x1 = (x>GRIDDIM-1-r)?GRIDDIM-1:x+r;
-                            typename std::list<Entry>::const_iterator begin = c->plist.begin();
-                            typename std::list<Entry>::const_iterator end = c->plist.end();
-                            typename std::list<Entry>::const_iterator it;
+                            typename sofa::helper::list<Entry>::const_iterator begin = c->plist.begin();
+                            typename sofa::helper::list<Entry>::const_iterator end = c->plist.end();
+                            typename sofa::helper::list<Entry>::const_iterator it;
                             c2 = g->cell+(x0*DX+y0*DY+z0*DZ);
                             const int dy = DY-(x1-x0+1)*DX;
                             const int dz = DZ-(y1-y0+1)*DY;
@@ -390,9 +390,9 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
                                 {
                                     if (!c->plist.empty())
                                     {
-                                        typename std::list<Entry>::const_iterator begin = c->plist.begin();
-                                        typename std::list<Entry>::const_iterator end = c->plist.end();
-                                        typename std::list<Entry>::const_iterator it;
+                                        typename sofa::helper::list<Entry>::const_iterator begin = c->plist.begin();
+                                        typename sofa::helper::list<Entry>::const_iterator end = c->plist.end();
+                                        typename sofa::helper::list<Entry>::const_iterator it;
                                         int x0 = x + gx*GRIDDIM - r+1; if (x0<0) x0 = 0;
                                         int x1 = x + gx*GRIDDIM + r; if (x1>GRIDDIM-1) x1 = GRIDDIM-1;
                                         int y0 = y + gy*GRIDDIM - r+1; if (y0<0) y0 = 0;
@@ -534,7 +534,7 @@ void SpatialGrid<DataTypes>::reorderIndices(helper::vector<unsigned int>* old2ne
                 for(int c=0; c<3; ++c)
                     j += ((i>>(3*s+c))&1)<<(GRIDDIM_LOG2*c+s);
             Cell* c = g->cell+j;
-            for (typename std::list<Entry>::iterator it = c->plist.begin(), itend = c->plist.end(); it != itend; ++it)
+            for (typename sofa::helper::list<Entry>::iterator it = c->plist.begin(), itend = c->plist.end(); it != itend; ++it)
             {
                 unsigned int old = it->index;
                 if (old2new != NULL)

@@ -207,8 +207,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
                     const sofa::core::topology::BaseMeshTopology::TrianglesInTetrahedron& tetraTri = topo_curr->getTrianglesInTetrahedron(selectedElem[0]);
 
                     int volTmp = -1;
-                    std::map<unsigned int, unsigned int> MappingMap = topoMap->getGlob2LocMap();
-                    std::map<unsigned int, unsigned int>::iterator it;
+                    sofa::helper::map<unsigned int, unsigned int> MappingMap = topoMap->getGlob2LocMap();
+                    sofa::helper::map<unsigned int, unsigned int>::iterator it;
 
                     for (unsigned int j = 0; j<4; ++j)
                     {

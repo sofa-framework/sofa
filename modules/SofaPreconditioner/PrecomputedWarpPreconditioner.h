@@ -75,7 +75,7 @@ public :
 
     static FullMatrix<Real>* getSharedMatrix(const std::string& name)
     {
-        static std::map< std::string,FullMatrix<Real> > matrices;
+        static sofa::helper::map< std::string,FullMatrix<Real> > matrices;
         return &(matrices[name]);
     }
 

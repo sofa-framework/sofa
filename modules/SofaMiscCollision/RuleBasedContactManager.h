@@ -122,7 +122,7 @@ protected:
     RuleBasedContactManager();
     ~RuleBasedContactManager();
 
-    std::map<std::string,Data<std::string>* > variablesData;
+    sofa::helper::map<std::string,Data<std::string>* > variablesData;
 
     std::string replaceVariables(std::string response);
 };
