@@ -74,16 +74,16 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using testing::Types;
 typedef Types<
+#ifndef SOFA_FLOAT
+    defaulttype::Rigid3dTypes
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+    ,
+#endif
+#endif
 #ifndef SOFA_DOUBLE
     defaulttype::Rigid3fTypes
-#endif
-#ifndef SOFA_DOUBLE
-#ifndef SOFA_FLOAT
-	,
-#endif
-#endif
-#ifndef SOFA_FLOAT
-	defaulttype::Rigid3dTypes
 #endif
 > DataTypes; // the types to instanciate.
 
