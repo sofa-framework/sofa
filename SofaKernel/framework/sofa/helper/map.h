@@ -38,10 +38,7 @@ namespace sofa
 {
 namespace helper
 {
-template<class Key, class Value>
-struct map final : std::map<Key, Value> {
-    using std::map<Key, Value>::map;
-};
+using std::map;
 
 /// Output stream
 template<class K, class T>
