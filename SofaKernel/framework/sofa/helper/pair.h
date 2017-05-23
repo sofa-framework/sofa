@@ -17,12 +17,7 @@ namespace sofa
 {
 namespace helper
 {
-
-template<class T1, class T2>
-struct pair : std::pair<T1,T2> {
-    using std::pair<T1,T2>::pair;
-};
-
+using std::pair ;
 
 /// Output stream
 template<class T1, class T2>
