@@ -24,6 +24,7 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/map.h>
+#include <sofa/helper/pair.h>
 #include <typeinfo>
 
 namespace sofa

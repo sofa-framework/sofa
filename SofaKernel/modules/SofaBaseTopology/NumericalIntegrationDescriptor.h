@@ -27,6 +27,7 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
+#include <sofa/helper/pair.h>
 
 namespace sofa
 {
@@ -40,36 +41,36 @@ namespace topology
 /// Cross product for 3-elements vectors.
 template< typename Real, int N>
 class NumericalIntegrationDescriptor {
- 
+
 public:
     typedef sofa::defaulttype::Vec<N, Real> BarycentricCoordinatesType;
-	typedef sofa::helper::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
-	typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
-	
-	typedef enum {
-		GAUSS_LEGENDRE_METHOD =0,
-		GAUSS_LOBATO_METHOD=1,
-		NEWTON_COTES_METHOD=2,
-		GAUSS_SIMPLEX_METHOD=3,
-		GAUSS_QUAD_METHOD=4,
-		GAUSS_CUBE_METHOD=5
-	} QuadratureMethod; 
-	typedef size_t IntegrationOrder;
-	typedef sofa::helper::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
+    typedef sofa::helper::pair<BarycentricCoordinatesType,Real> QuadraturePoint;
+    typedef sofa::helper::vector<QuadraturePoint> QuadraturePointArray;
+
+    typedef enum {
+        GAUSS_LEGENDRE_METHOD =0,
+        GAUSS_LOBATO_METHOD=1,
+        NEWTON_COTES_METHOD=2,
+        GAUSS_SIMPLEX_METHOD=3,
+        GAUSS_QUAD_METHOD=4,
+        GAUSS_CUBE_METHOD=5
+    } QuadratureMethod;
+    typedef size_t IntegrationOrder;
+    typedef sofa::helper::pair<QuadratureMethod,IntegrationOrder> QuadratureMethodKey;
 
 protected:
-	sofa::helper::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
+    sofa::helper::map<QuadratureMethodKey, QuadraturePointArray>  quadratureMap;
 public:
-	/// empty constructor
-	NumericalIntegrationDescriptor(){}
-	/// returns the set of quadrature points associated with a given quadrature method and integration order
-	QuadraturePointArray getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const;
-	/// returns all the indices corresponding to all available quadrature methods
+    /// empty constructor
+    NumericalIntegrationDescriptor(){}
+    /// returns the set of quadrature points associated with a given quadrature method and integration order
+    QuadraturePointArray getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const;
+    /// returns all the indices corresponding to all available quadrature methods
     sofa::helper::set<QuadratureMethod> getQuadratureMethods() const;
-	/// returns the quadrature integration orders available for a given method
+    /// returns the quadrature integration orders available for a given method
     sofa::helper::set<IntegrationOrder> getIntegrationOrders(const QuadratureMethod qt) const;
-	/// add a quadrature method in the map
-	void addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa);
+    /// add a quadrature method in the map
+    void addQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order, QuadraturePointArray qpa);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_NUMERICALINTEGRATIONDESCRIPTOR_CPP)

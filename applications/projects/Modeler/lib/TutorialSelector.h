@@ -25,13 +25,13 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QKeyEvent>
+#include <tinyxml.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <tinyxml.h>
-
 #include <sofa/helper/map.h>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {

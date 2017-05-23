@@ -24,7 +24,7 @@
 
 #include <sofa/gui/qt/SofaGUIQt.h>
 #include <sofa/helper/vector.h>
-
+#include <sofa/helper/pair.h>
 #include <QLabel>
 #include <QWidget>
 #include <QTreeWidget>
