@@ -28,7 +28,6 @@
 #include <iostream>
 #include <SofaBaseMechanics/IdentityMapping.h>
 
-#define USE_COMPRESSED_ROW_SPARSE 1
 namespace sofa
 {
 
@@ -50,33 +49,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
 
-#ifdef USE_COMPRESSED_ROW_SPARSE
-    for( unsigned i=0; i<baseMatrices.size(); i++ )
-         delete baseMatrices[i];
 
-     typedef defaulttype::Mat<3,3,Real> Mat33;
-     typedef typename linearsolver::CompressedRowSparseMatrix<Mat33> Jacobian;
-     baseMatrices.resize( this->getFrom().size() );
-     helper::vector<Jacobian*> jacobians( this->getFrom().size() );
-     for(unsigned i=0; i<baseMatrices.size(); i++ )
-     {
-         baseMatrices[i] = jacobians[i] = new Jacobian();
-         jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
-     }
-     // fill the jacobians
-     for(unsigned i=0; i<indexPairSize; i++)
-     {
-         unsigned parent = indexPairs.getValue()[i*2];
-         Jacobian* jacobian = jacobians[parent];
-         unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
-         for(unsigned k=0; k<Nin; k++ )
-         {
-             unsigned row = i*Nout + k;
-             jacobian->set( row, Nin*bcol +k, (SReal)1. );
- //			jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
-         }
-     }
-#else
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
 
@@ -103,7 +76,6 @@ void SubsetMultiMapping<TIn, TOut>::init()
             jacobian->add( row, Nin*bcol +k, (SReal)1. );
         }
     }
-#endif
     // finalize the Jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
         baseMatrices[i]->compress();
