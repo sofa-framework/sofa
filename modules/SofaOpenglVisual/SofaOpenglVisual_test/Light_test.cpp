@@ -33,7 +33,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestLight : public Sofa_test<SReal> {
+class TestLight : public Sofa_test<> {
 public:
     void checkSpotLightValidAttributes();
     void checkDirectionalLightValidAttributes();

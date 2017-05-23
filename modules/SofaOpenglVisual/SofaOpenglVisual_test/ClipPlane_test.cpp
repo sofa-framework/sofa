@@ -33,7 +33,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestClipPlane : public Sofa_test<SReal> {
+class TestClipPlane : public Sofa_test<> {
 public:
     void checkClipPlaneValidAttributes();
     void checkClipPlaneAttributesValues(const std::string& dataname, const std::string& value);
