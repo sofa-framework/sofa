@@ -88,6 +88,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     const VecCellData &quadData = f_quadData.getValue();
     const VecPointData &pointTriData = f_pointTriangleData.getValue();
     const VecPointData &pointQuadData = f_pointQuadData.getValue();
+    const bool disableLighting = d_disableLighting.getValue();
 
     bool bDrawPointData = false;
     bool bDrawCellData = false;
@@ -206,6 +207,11 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
     d_currentMax.endEdit();
 
     glPushAttrib ( GL_LIGHTING_BIT );
+    if(disableLighting)
+        glDisable(GL_LIGHTING );
+    else
+        glEnable( GL_LIGHTING );
+
 
     static const Vec4f emptyColor = Vec4f();
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, emptyColor.ptr());
@@ -224,7 +230,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     if (bDrawCellData) {
 
-        glDisable( GL_LIGHTING );
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
 
         if( !triData.empty() )
@@ -238,6 +243,8 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     ? f_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(triData[i]));
                 const Triangle& t = topology->getTriangle(i);
+
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color.ptr());
                 vparams->drawTool()->drawTriangle(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ],
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
@@ -247,7 +254,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointTriData.empty() )
         {
-            glEnable( GL_LIGHTING );
             // Triangles
             int nbTriangles = topology->getNbTriangles();
             glBegin(GL_TRIANGLES);
@@ -282,7 +288,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
         if( !quadData.empty() )
         {
-            glDisable( GL_LIGHTING );
             int nbQuads = topology->getNbQuads();
             glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
@@ -291,6 +296,7 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     ? f_colorNaN.getValue()
                     : defaulttype::RGBAColor::fromVec4(eval(quadData[i]));
                 const Quad& t = topology->getQuad(i);
+                glMaterialfv(GL_FRONT,GL_DIFFUSE,color.ptr());
                 vparams->drawTool()->drawQuad(
                     x[ t[0] ], x[ t[1] ], x[ t[2] ], x[ t[3] ],
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
@@ -300,7 +306,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         }
         else if( !pointQuadData.empty() )
         {
-            glEnable( GL_LIGHTING );
             int nbQuads = topology->getNbQuads();
             glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
@@ -356,8 +361,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     } else if (bDrawPointData) {
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
-
-        glEnable ( GL_LIGHTING );
 
         // Triangles
         glBegin(GL_TRIANGLES);

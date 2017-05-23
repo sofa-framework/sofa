@@ -60,6 +60,7 @@ public:
     Data<defaulttype::Vec2f> d_userRange;
     Data<float> d_currentMin, d_currentMax;
     Data<float> d_shininess;
+    Data<bool> d_disableLighting;
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;
@@ -89,6 +90,7 @@ protected:
           , d_currentMin(initData(&d_currentMin, 0.f, "currentMin", "Current min range"))
           , d_currentMax(initData(&d_currentMax, 0.f, "currentMax", "Current max range"))
           , d_shininess(initData(&d_shininess, -1.f, "shininess", "Shininess for rendering point-based data [0,128].  <0 means no specularity"))
+          , d_disableLighting(initData(&d_disableLighting, false, "disableLighting", "Disable lighting?"))
           , state(NULL)
           , topology(NULL)
           , oldMin(0)
