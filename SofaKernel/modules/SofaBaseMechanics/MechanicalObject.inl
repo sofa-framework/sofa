@@ -151,7 +151,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::dx().index, &dx);
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::constraintMatrix().index, &c);
+    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -2588,7 +2588,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintMatrix());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2599,7 +2599,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintMatrix())->getValue();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 

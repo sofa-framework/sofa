@@ -421,12 +421,12 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
 
     // calling applyConstraint on each constraint
 
-    MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintMatrix(), numConstraints).execute(context);
+    MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::constraintMatrix()).execute(context);
+    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::constraintJacobian()).execute(context);
 
     //if (debug)
     //    sout << "   1. resize constraints : numConstraints=" << numConstraints << sendl;
