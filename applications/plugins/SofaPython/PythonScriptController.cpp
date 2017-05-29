@@ -113,6 +113,8 @@ PythonScriptController::PythonScriptController()
                           "Python script filename"))
     , m_classname(initData(&m_classname, "classname",
                            "Python class implemented in the script to instanciate for the controller"))
+    , m_modulename(initData(&m_modulename, std::string("__main__"), "modulename", 
+                            "Python module holding the class"))
     , m_variables(initData(&m_variables, "variables",
                            "Array of string variables (equivalent to a c-like argv)" ) )
     , m_timingEnabled(initData(&m_timingEnabled, true, "timingEnabled",
@@ -123,6 +125,8 @@ PythonScriptController::PythonScriptController()
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
     , m_doOnEvent( initData(&m_doOnEvent, false, "receive_all_events", "listens to all events through onEvent"))
+    , manual_create_graph( initData(&manual_create_graph, false,
+                                    "manual_create_graph", "call createGraph manually after parse"))
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
@@ -188,8 +192,8 @@ void PythonScriptController::loadScript()
     }
 
     // classe
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-    m_ScriptControllerClass = PyDict_GetItemString(pDict,m_classname.getValueString().c_str());
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule(m_modulename.getValue().c_str()));
+    m_ScriptControllerClass = PyDict_GetItemString(pDict, m_classname.getValueString().c_str());
     if (!m_ScriptControllerClass)
     {
         SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" not found)." )
@@ -258,6 +262,25 @@ void PythonScriptController::script_onLoaded(Node *node)
 {
     SP_CALL_MODULEFUNC(m_Func_onLoaded, "(O)", sofa::PythonFactory::toPython(node))
 }
+
+
+void PythonScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+{
+    Controller::parse(arg);
+
+    //std::cout<<getName()<<" ScriptController::parse"<<std::endl;
+
+    // load & bind script
+    loadScript();
+    // call script notifications...
+    script_onLoaded( down_cast<simulation::Node>(getContext()) );
+
+    if(!manual_create_graph.getValue()) {
+        script_createGraph( down_cast<simulation::Node>(getContext()) );
+    }
+}
+
+
 
 void PythonScriptController::script_createGraph(Node *node)
 {

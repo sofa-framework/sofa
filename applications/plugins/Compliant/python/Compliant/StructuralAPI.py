@@ -63,37 +63,22 @@ def numpy_property(attr_name, attr_data, index = 0):
 
 
 class Script(Sofa.PythonScriptController):
-
-    __slots__ = ('controller', )
+    
+    __slots__ = ('component', )
     
     def __new__(cls, node, *args, **kwargs):
+
+        component = node.createObject('PythonScriptController', 
+                                      classname = cls.__name__, 
+                                      modulename = cls.__module__)
         
-        # obtain classname/filename from class object
-        classname = cls.__name__
-        module = sys.modules[cls.__module__]
-        filename = module.__file__
+        self = component.instance()
 
-        # create script object
-        controller = node.createObject('PythonScriptController',
-                                       filename = filename,
-                                       classname = classname)
-
-        # obtain python instance
-        self = controller.instance()
-
-        # keep a handle to the sofa object
-        self.controller = controller
-
-        # update class object as it's been reconstructed on the python
-        # side when loading the script (wtf)
-        cls = type(self)
+        # TODO gc cycle?
+        self.component = component
         
-        # initialize instance
-        cls.__init__(self, node, *args, **kwargs)
-        
-        # and return it
         return self
-
+    
 
 
 class MechanicalObject(object):
