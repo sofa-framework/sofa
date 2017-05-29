@@ -34,8 +34,6 @@
 
 #include <Eigen/LU>
 #include <Eigen/QR>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

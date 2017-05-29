@@ -70,7 +70,6 @@ public:
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax,
                  ExtVectorAllocator<SReal>* alloc);
 
-protected:
     ~DistanceGrid();
 
 public:

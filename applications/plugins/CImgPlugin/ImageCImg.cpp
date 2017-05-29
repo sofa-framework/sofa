@@ -54,10 +54,7 @@ void ImageCImg::setCimgCreators()
 
 bool ImageCImg::load(std::string filename)
 {
-     cimg_library::cimg::exception_mode(0);
-
-    //msg_info("ImageCImg") << "Using CImgPlugin for " << filename;
-
+    cimg_library::cimg::exception_mode(0);
     m_bLoaded = 0;
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
