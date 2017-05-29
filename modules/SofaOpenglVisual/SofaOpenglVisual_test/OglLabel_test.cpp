@@ -41,10 +41,6 @@ using sofa::simulation::Node ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage;
-using sofa::helper::logging::Message ;
-
 #include <SofaOpenglVisual/OglLabel.h>
 using sofa::component::visualmodel::OglLabel ;
 
@@ -56,7 +52,7 @@ class OglLabelTest : public Sofa_test<>
 public:
     void checkExcludingAttributes()
     {
-        ExpectMessage raii(Message::Warning) ;
+        EXPECT_MSG_EMIT(Warning) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
@@ -86,8 +82,7 @@ public:
 
     void checkDeprecatedAttribute()
     {
-
-        ExpectMessage raii(Message::Deprecated) ;
+        EXPECT_MSG_EMIT(Deprecated) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
