@@ -140,11 +140,27 @@ extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defa
 /** Maps point positions to their projections on a plane defined by a center and a normal.
     Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
-    In: parent point positions, plane (center, normal)
+    In: parent point positions, plane (center, normal) @warning normal must be normalized
 
     Out: orthogonal projection of each point on the plane
 
     @author Matthieu Nesme
+
+
+    out = p - factor * n * ( ( p - o ) * n ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
+    out_i = p_i - factor * n_i * sum_j( ( p_j - o_j ) * n_j ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
+
+    dout_i/dp_i = 1 - factor * n_i * n_i
+    dout_i/dp_j =   - factor * n_i * n_j
+
+    dout_i/do_i = factor * n_i * n_i
+    dout_i/do_j = factor * n_i * n_j
+
+    dout_i/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
+    dout_i/dn_j = - factor * n_i * (p_j-o_j)
+
+
+
   */
 template <class TIn, class TOut>
 class ProjectionToPlaneMultiMapping : public core::MultiMapping<TIn, TOut>
