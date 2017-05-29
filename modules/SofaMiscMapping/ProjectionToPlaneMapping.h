@@ -147,18 +147,31 @@ extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defa
     @author Matthieu Nesme
 
 
+    // mapping
     out = p - factor * n * ( ( p - o ) * n ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
     out_i = p_i - factor * n_i * sum_j( ( p_j - o_j ) * n_j ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
 
-    dout_i/dp_i = 1 - factor * n_i * n_i
-    dout_i/dp_j =   - factor * n_i * n_j
+    // Jacobians
+    dout/dp_i = 1 - factor * n_i * n_i
+    dout/dp_j =   - factor * n_i * n_j
 
-    dout_i/do_i = factor * n_i * n_i
-    dout_i/do_j = factor * n_i * n_j
+    dout/do_i = factor * n_i * n_i
+    dout/do_j = factor * n_i * n_j
 
-    dout_i/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
-    dout_i/dn_j = - factor * n_i * (p_j-o_j)
+    dout/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
+    dout/dn_j = - factor * n_i * (p_j-o_j)
 
+    // geometric stiffness
+    d2out/dp_ij = 0
+    d2out/do_ij = 0
+    d2out/dp_i.do_j = 0
+
+    d2out/dpi.dnj = - factor*n_i
+    d2out/doi.dnj =   factor*n_i
+
+    d2out/dn_ii = - factor * ( 2*(p_i-o_i) )
+    d2out/dn_ij = d2out/dn_ji  = - factor (p_j-o_j)
+    d2out/dn_jj = 0
 
 
   */
@@ -188,6 +201,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
@@ -210,10 +224,11 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+    // geometric stiffness
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ );
+    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ );
+    virtual const defaulttype::BaseMatrix* getK(){ return &K; }
+
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
 
     virtual void updateForceMask();
@@ -224,6 +239,7 @@ protected:
 
     SparseMatrixEigen jacobian0, jacobian1;                      ///< Jacobians of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobians of the mapping, in a vector
+    SparseKMatrixEigen K; ///< geometric stiffness
 };
 
 

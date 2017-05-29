@@ -42,6 +42,8 @@ using sofa::helper::vector;
 template <typename ProjectionToPlaneMultiMapping>
 struct ProjectionToPlaneMultiMappingTest : public MultiMapping_test<ProjectionToPlaneMultiMapping>
 {
+    typedef MultiMapping_test<ProjectionToPlaneMultiMapping> Inherit;
+
     typedef typename ProjectionToPlaneMultiMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
     typedef typename InDataTypes::Coord InCoord;
@@ -53,10 +55,9 @@ struct ProjectionToPlaneMultiMappingTest : public MultiMapping_test<ProjectionTo
 
     bool test()
     {
+        this->errorMax *= 500;
+
         this->setupScene(2); // 2 parents, 1 child
-
-//        ProjectionToPlaneMultiMapping* pttlm = static_cast<ProjectionToPlaneMultiMapping*>( this->mapping );
-
 
         // parent positions
         vector< InVecCoord > incoords(2);

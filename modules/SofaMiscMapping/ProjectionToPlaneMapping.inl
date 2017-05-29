@@ -342,6 +342,140 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* ProjectionToPlaneMultiMapp
 
 
 
+
+
+template <class TIn, class TOut>
+void ProjectionToPlaneMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId)
+{
+    const SReal& kfactor = mparams->kFactor();
+
+    unsigned size = this->getFromModels().size();
+
+    // TODO not optimized but at least it is implemented
+
+    // merge all parent displacements
+    InVecDeriv parentDisplacements;
+    for( unsigned i=0; i< size ; i++ )
+    {
+        const core::State<In>* fromModel = this->getFromModels()[i];
+        const InVecDeriv& parentDisplacement = mparams->readDx(fromModel)->getValue();
+        parentDisplacements.insert(parentDisplacements.end(), parentDisplacement.begin(), parentDisplacement.end());
+    }
+
+    // merged parent forces
+    InVecDeriv parentForces(parentDisplacements.size());
+    K.addMult( parentForces, parentDisplacements, kfactor );
+
+    // un-merge parent forces
+    size_t offset=0;
+    for( unsigned i=0; i< size ; i++ )
+    {
+        core::State<In>* fromModel = this->getFromModels()[i];
+        InVecDeriv& parentForce = *parentDfId[fromModel].write()->beginEdit();
+        for( size_t j=0;j<parentForce.size();++j)
+            parentForce[j] += parentForces[offset+j];
+        offset += parentForce.size();
+        parentDfId[fromModel].write()->endEdit();
+    }
+}
+
+
+template <class TIn, class TOut>
+void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForceId )
+{
+    helper::ReadAccessor<Data<OutVecDeriv> > childForces( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
+
+    static const core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
+
+    const core::State<TIn>* pointState = this->getFromModels()[0];
+    helper::ReadAccessor< Data<InVecCoord> > points( *pos[pointState].read() );
+
+    const core::State<TIn>* planeState = this->getFromModels()[1];
+    helper::ReadAccessor< Data<InVecCoord> > plane( *pos[planeState].read() );
+
+    const InCoord& o = plane[0];
+    const InCoord& n = plane[1];
+
+    helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
+
+
+    size_t nb = indices.empty() ? this->getFromModels()[0]->getSize() : indices.size(); // if indices is empty, mapping every input dofs
+
+    K.resizeBlocks(this->getFromModels()[0]->getSize()+2, this->getFromModels()[0]->getSize()+2); // all projected point + plane center + plane normal
+
+
+    const Real factor = d_factor.getValue();
+
+
+
+    typedef defaulttype::Mat<Nin,Nin,Real> Block;
+
+    Block dodn, dodnf, dpdnf, d2nf;
+
+    // d2out/doi.dnj
+    for(unsigned j=0; j<Nin; j++)
+    {
+        for(unsigned k=0; k<Nin; k++)
+        {
+            dodn[j][k] = factor * n[j];
+        }
+    }
+
+
+
+    for(unsigned i=0; i<nb; i++ )
+    {
+        const unsigned& index = indices.empty() ? i : indices[i] ;
+
+        const OutDeriv& childForce = childForces[i];
+
+        const InCoord& p = points[index];
+
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                dpdnf[j][k] = dodn[j][k] * childForce[j];
+                dodnf[j][k] += dpdnf[j][k];
+            }
+        }
+
+
+        // d2out/dpi.dnj
+        K.addBlock( i, nb+1, -dpdnf ); // position i -> current point to project
+
+
+        //d2out/dn_ij
+        for(unsigned j=0; j<Nin; j++)
+        {
+            d2nf[j][j] += 2 * ( p[j]-o[j] ) * childForce[j];
+            for(unsigned k=j+1; k<Nin; k++)
+            {
+                d2nf[j][k] += ( p[k]-o[k] ) * childForce[j]; // only one side
+            }
+        }
+
+    }
+
+    K.addBlock( nb, nb+1, dodnf ); // position nb -> plane center, position nb+1 -> plane normal
+
+    // symmetrization
+    for(unsigned j=0; j<Nin; j++)
+    {
+        d2nf[j][j] *= -factor;
+        for(unsigned k=j+1; k<Nin; k++)
+        {
+            d2nf[j][k] *= -factor;
+            d2nf[k][j] = d2nf[j][k];
+        }
+    }
+    K.addBlock( nb+1, nb+1, d2nf );
+
+    K.compress();
+}
+
+
+
 template <class TIn, class TOut>
 void ProjectionToPlaneMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
