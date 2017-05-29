@@ -22,10 +22,6 @@
 
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
-// verify timing
-#include <sofa/helper/system/thread/CTime.h>
-
-#include <sofa/helper/BackTrace.h>
 
 using sofa::core::behavior::BaseMechanicalState;
 
@@ -94,11 +90,6 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
 void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* mapping)
 {
-    double timeScale, time ;
-    sofa::helper::system::thread::CTime *timer;
-    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
-    time = (double)timer->getTime();
-
     const sofa::defaulttype::BaseMatrix* jmatrix = NULL;
     if (mapping->isMechanical() && mapping->areMatricesMapped())
         jmatrix = mapping->getJ();
