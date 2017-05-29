@@ -86,7 +86,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
         helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
-        core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
+        static const core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
         
 		for( unsigned i = 0; i < n; ++i ) {
             const core::State<TIn>* from = this->getFromModels()[i];
