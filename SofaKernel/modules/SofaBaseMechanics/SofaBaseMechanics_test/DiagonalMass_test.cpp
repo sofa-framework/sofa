@@ -148,6 +148,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
 
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -184,6 +185,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
 
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -237,7 +239,7 @@ public:
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
-
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -270,7 +272,7 @@ public:
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
-
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -304,6 +306,7 @@ public:
                                                           scene.c_str(),
                                                           scene.size()) ;
 
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -317,18 +320,18 @@ public:
         return ;
     }
 
-    void checkAttributeLoadFromFile(){
-        string scene =
-                "<?xml version='1.0'?>"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <DiagonalMass name='m_mass' filename='BehaviorModels/card.rigid'/>      "
-                "</Node>                                                     " ;
+    void checkAttributeLoadFromFile(const std::string& filename, int masscount, double totalMass){
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>"
+                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
+                 "   <MechanicalObject position='0 0 0 4 5 6'/>               "
+                 "   <DiagonalMass name='m_mass' filename='"<< filename <<"'/>      "
+                 "</Node>                                                     " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+        ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
@@ -337,12 +340,11 @@ public:
         if(mass!=nullptr){
             // The number of mass in card.rigid is one so this should be
             // returned from the getMassCount()
-            EXPECT_EQ( mass->getMassCount(), 1 ) ;
+            EXPECT_EQ( mass->getMassCount(), masscount ) ;
 
-            // TODO(dmarchal): The totalmass shouldn't be at -1 because
             // it indicate it has not been properly initialized.
             // the source code should be fixed.
-            EXPECT_NE( mass->getTotalMass(), -1 ) ;
+            EXPECT_NE( mass->getTotalMass(), totalMass ) ;
         }
 
         return ;
@@ -497,9 +499,13 @@ TEST_F(DiagonalMass3_test, checkMassDensityFromTotalMass_Tetra){
     checkMassDensityFromTotalMass_Tetra();
 }
 
+/// Rigid file are not handled only xs3....
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromXps){
+    checkAttributeLoadFromFile("BehaviorModels/card.rigid", 0, 0);
+}
 
-TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile_OpenIssue){
-    checkAttributeLoadFromFile(); ;
+TEST_F(DiagonalMass3_test, checkAttributeLoadFromFile){
+    checkAttributeLoadFromFile("BehaviorModels/chain.xs3", 6, 0.6);
 }
 
 
