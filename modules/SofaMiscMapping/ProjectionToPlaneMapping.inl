@@ -282,34 +282,36 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::apply(const core::MechanicalParam
         const InCoord& p = in[index];
         out[i] = p - factor * n * ( ( p - o ) * n ); // projection on the plane
 
-        defaulttype::Matrix3 Jo = factor * dyad( n, n );
-        defaulttype::Matrix3 Jp = defaulttype::Matrix3::Identity() - Jo;
+        const defaulttype::Matrix3 Jo = factor * dyad( n, n );
+        const defaulttype::Matrix3 Jp = defaulttype::Matrix3::Identity() - Jo;
+
+        const InCoord op = p-o;
+        const defaulttype::Matrix3 nop = dyad( n, op );
 
         defaulttype::Matrix3 Jn;
-        Jn[0][0] = -factor * ( n[1]*(p[1]-o[1]) + n[2]*(p[2]-o[2]) + 2*n[0]*(p[0]-o[0]) );
-        Jn[0][1] = -factor * ( n[0]*(p[1]-o[1]) );
-        Jn[0][2] = -factor * ( n[0]*(p[2]-o[2]) );
-
-        Jn[1][0] = -factor * ( n[1]*(p[0]-o[0]) );
-        Jn[1][1] = -factor * ( n[0]*(p[0]-o[0]) + n[2]*(p[2]-o[2]) + 2*n[1]*(p[1]-o[1]) );
-        Jn[1][2] = -factor * ( n[1]*(p[2]-o[2]) );
-
-        Jn[2][0] = -factor * ( n[2]*(p[0]-o[0]) );
-        Jn[2][1] = -factor * ( n[2]*(p[1]-o[1]) );
-        Jn[2][2] = -factor * ( n[0]*(p[0]-o[0]) + n[1]*(p[1]-o[1]) + 2*n[2]*(p[2]-o[2]) );
+        Jn[0][0] = -factor * ( nop[1][1] + nop[2][2] + 2*nop[0][0] );
+        Jn[0][1] = -factor * ( nop[0][1] );
+        Jn[0][2] = -factor * ( nop[0][2] );
+        Jn[1][0] = -factor * ( nop[1][0] );
+        Jn[1][1] = -factor * ( nop[0][0] + nop[2][2] + 2*nop[1][1] );
+        Jn[1][2] = -factor * ( nop[1][2] );
+        Jn[2][0] = -factor * ( nop[2][0] );
+        Jn[2][1] = -factor * ( nop[2][1] );
+        Jn[2][2] = -factor * ( nop[0][0] + nop[1][1] + 2*nop[2][2] );
 
         for(unsigned j=0; j<Nout; j++)
         {
-            jacobian0.beginRow( i*Nout+j );
-            jacobian1.beginRow( i*Nout+j );
+            size_t row = i*Nout+j;
+            jacobian0.beginRow( row );
+            jacobian1.beginRow( row );
             for(unsigned k=0; k<Nout; k++ )
             {
-                jacobian0.insertBack( i*Nout+j, index*Nin+k, Jp[j][k] ); // dp
-                jacobian1.insertBack( i*Nout+j, k, Jo[j][k] ); // do
+                jacobian0.insertBack( row, index*Nin+k, Jp[j][k] ); // dp
+                jacobian1.insertBack( row, k, Jo[j][k] ); // do
             }
 
             for(unsigned k=0; k<Nout; k++ )
-                jacobian1.insertBack( i*Nout+j, Nout+k, Jn[j][k] ); // dn
+                jacobian1.insertBack( row, Nout+k, Jn[j][k] ); // dn
         }
     }
 
@@ -322,7 +324,7 @@ template <class TIn, class TOut>
 void ProjectionToPlaneMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams */*mparams*/, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     jacobian0.mult(*dataVecOutVel[0],*dataVecInVel[0]);
-    jacobian1.mult(*dataVecOutVel[0],*dataVecInVel[1]);
+    jacobian1.addMult(*dataVecOutVel[0],*dataVecInVel[1]);
 }
 
 template <class TIn, class TOut>
@@ -403,24 +405,32 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalPar
 
     K.resizeBlocks(this->getFromModels()[0]->getSize()+2, this->getFromModels()[0]->getSize()+2); // all projected point + plane center + plane normal
 
-
     const Real factor = d_factor.getValue();
 
 
 
     typedef defaulttype::Mat<Nin,Nin,Real> Block;
+    typedef defaulttype::Mat<Nin*Nout,Nin,Real> HessianBlock;
 
-    Block dodn, dodnf, dpdnf, d2nf;
+    HessianBlock dodn, d2n;
+    Block dodnf, d2nf;
 
-    // d2out/doi.dnj
-    for(unsigned j=0; j<Nin; j++)
+    // dout_l/doj.dnk
+    for(unsigned l=0; l<Nout; l++) // dout
     {
-        for(unsigned k=0; k<Nin; k++)
+        for(unsigned j=0; j<Nin; j++) // do
         {
-            dodn[j][k] = factor * n[j];
+            for(unsigned k=0; k<Nin; k++) // dn
+            {
+                if( l==j && k==l )
+                    dodn[l*Nout+j][k] = factor * 2 * n[l];
+                else if( l==k )
+                    dodn[l*Nout+j][k] = factor * n[j];
+                else if( j==k )
+                    dodn[l*Nout+j][k] = factor * n[l];
+            }
         }
     }
-
 
 
     for(unsigned i=0; i<nb; i++ )
@@ -431,44 +441,71 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalPar
 
         const InCoord& p = points[index];
 
-        for(unsigned j=0; j<Nin; j++)
+        // dout_l/doj.dnk x f
+        for(unsigned l=0; l<Nout; l++) // dout
         {
-            for(unsigned k=0; k<Nin; k++)
+            for(unsigned j=0; j<Nin; j++) // do
             {
-                dpdnf[j][k] = dodn[j][k] * childForce[j];
-                dodnf[j][k] += dpdnf[j][k];
+                for(unsigned k=0; k<Nin; k++) // dn
+                {
+                    dodnf[j][k] += dodn[l*Nout+j][k] * childForce[l];
+                }
+            }
+        }
+
+        Block dpdnf;
+        // dout_l/dpj.dnk x f
+        for(unsigned l=0; l<Nout; l++) // dout
+        {
+            for(unsigned j=0; j<Nin; j++) // do
+            {
+                for(unsigned k=0; k<Nin; k++) // dn
+                {
+                    dpdnf[j][k] -= dodn[l*Nout+j][k] * childForce[l];
+                }
+            }
+        }
+        K.addBlock( index, nb+1, dpdnf ); // position index -> current point to project, position nb+1 -> plane normal
+        K.addBlock( nb+1, index, dpdnf.transposed() );
+
+
+        const InCoord op = p-o;
+        // d2out/d2n
+        for(unsigned l=0; l<Nout; l++) // dout
+        {
+            for(unsigned j=0; j<Nin; j++) // dn
+            {
+                for(unsigned k=0; k<Nin; k++) // dn
+                {
+                    if( l==j && k==l )
+                        d2n[l*Nout+j][k] = -factor * 2 * op[l];
+                    else if( l==j )
+                        d2n[l*Nout+j][k] = -factor * op[k];
+                    else if( l==k )
+                        d2n[l*Nout+j][k] = -factor * op[j];
+                }
             }
         }
 
 
-        // d2out/dpi.dnj
-        K.addBlock( i, nb+1, -dpdnf ); // position i -> current point to project
-
-
-        //d2out/dn_ij
-        for(unsigned j=0; j<Nin; j++)
+        //d2out/d2n x f
+        for(unsigned l=0; l<Nout; l++) // dout
         {
-            d2nf[j][j] += 2 * ( p[j]-o[j] ) * childForce[j];
-            for(unsigned k=j+1; k<Nin; k++)
+            for(unsigned j=0; j<Nin; j++) // do
             {
-                d2nf[j][k] += ( p[k]-o[k] ) * childForce[j]; // only one side
+                for(unsigned k=0; k<Nin; k++) // dn
+                {
+                    d2nf[j][k] += d2n[l*Nout+j][k] * childForce[l];
+                }
             }
         }
+
 
     }
 
     K.addBlock( nb, nb+1, dodnf ); // position nb -> plane center, position nb+1 -> plane normal
+    K.addBlock( nb+1, nb, dodnf.transposed() );
 
-    // symmetrization
-    for(unsigned j=0; j<Nin; j++)
-    {
-        d2nf[j][j] *= -factor;
-        for(unsigned k=j+1; k<Nin; k++)
-        {
-            d2nf[j][k] *= -factor;
-            d2nf[k][j] = d2nf[j][k];
-        }
-    }
     K.addBlock( nb+1, nb+1, d2nf );
 
     K.compress();

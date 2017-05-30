@@ -152,26 +152,37 @@ extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defa
     out_i = p_i - factor * n_i * sum_j( ( p_j - o_j ) * n_j ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
 
     // Jacobians
-    dout/dp_i = 1 - factor * n_i * n_i
-    dout/dp_j =   - factor * n_i * n_j
+    dout_i/dp_i = 1 - factor * n_i * n_i
+    dout_i/dp_j =   - factor * n_i * n_j
 
-    dout/do_i = factor * n_i * n_i
-    dout/do_j = factor * n_i * n_j
+    dout_i/do_i = factor * n_i * n_i
+    dout_i/do_j = factor * n_i * n_j
 
-    dout/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
-    dout/dn_j = - factor * n_i * (p_j-o_j)
+    dout_i/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
+    dout_i/dn_j = - factor * n_i * (p_j-o_j)
 
     // geometric stiffness
-    d2out/dp_ij = 0
-    d2out/do_ij = 0
-    d2out/dp_i.do_j = 0
+    d2out/d2p = 0
+    d2out/d2o = 0
+    d2out/dp.do = 0
 
-    d2out/dpi.dnj = - factor*n_i
-    d2out/doi.dnj =   factor*n_i
+    d2out_i/dp_i.dn_i = - factor*2*n_i
+    d2out_i/dp_i.dn_j = 0
+    d2out_i/dp_j.dn_i = - factor*n_j
+    d2out_i/dp_j.dn_j = - factor*n_i
+    d2out_i/dp_j.dn_k = 0
 
-    d2out/dn_ii = - factor * ( 2*(p_i-o_i) )
-    d2out/dn_ij = d2out/dn_ji  = - factor (p_j-o_j)
-    d2out/dn_jj = 0
+    d2out_i/do_i.dn_i = factor*2*n_i
+    d2out_i/do_i.dn_j = 0
+    d2out_i/do_j.dn_i = factor*n_j
+    d2out_i/do_j.dn_j = factor*n_i
+    d2out_i/do_j.dn_k = 0
+
+
+    d2out_i/dn_ii = - factor * ( 2*(p_i-o_i) )
+    d2out_i/dn_ij = d2out/dn_ji  = - factor (p_j-o_j)
+    d2out_i/dn_jj = 0
+    d2out_i/dn_jk = 0
 
 
   */

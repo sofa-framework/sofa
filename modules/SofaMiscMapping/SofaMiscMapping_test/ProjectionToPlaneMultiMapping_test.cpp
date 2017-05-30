@@ -55,7 +55,7 @@ struct ProjectionToPlaneMultiMappingTest : public MultiMapping_test<ProjectionTo
 
     bool test()
     {
-        this->errorMax *= 500;
+        this->errorMax *= 2; // slightly increasing tolerance
 
         this->setupScene(2); // 2 parents, 1 child
 
@@ -67,12 +67,12 @@ struct ProjectionToPlaneMultiMappingTest : public MultiMapping_test<ProjectionTo
 
         incoords[1].resize(2); // center / normal
         InDataTypes::set( incoords[1][0], 0,0,0 );
-        InDataTypes::set( incoords[1][1], 1,1,1 );
+        InDataTypes::set( incoords[1][1], 1,1,1 ); incoords[1][1].normalize();
 
 
         // expected child positions
         OutVecCoord expectedoutcoord(1);
-        OutDataTypes::set( expectedoutcoord[0], -10,-10,0 );
+        OutDataTypes::set( expectedoutcoord[0], -10./3., -10./3., 20./3. );
 
         return this->runTest( incoords, expectedoutcoord );
     }
