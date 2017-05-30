@@ -161,7 +161,7 @@ extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defa
     dout_i/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
     dout_i/dn_j = - factor * n_i * (p_j-o_j)
 
-    // geometric stiffness
+    // Hessian
     d2out/d2p = 0
     d2out/d2o = 0
     d2out/dp.do = 0
