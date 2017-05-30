@@ -412,7 +412,7 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalPar
     typedef defaulttype::Mat<Nin,Nin,Real> Block;
     typedef defaulttype::Mat<Nin*Nout,Nin,Real> HessianBlock;
 
-    HessianBlock dodn, d2n;
+    HessianBlock dodn;
     Block dodnf, d2nf;
 
     // dout_l/doj.dnk
@@ -441,32 +441,26 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalPar
 
         const InCoord& p = points[index];
 
-        // dout_l/doj.dnk x f
-        for(unsigned l=0; l<Nout; l++) // dout
-        {
-            for(unsigned j=0; j<Nin; j++) // do
-            {
-                for(unsigned k=0; k<Nin; k++) // dn
-                {
-                    dodnf[j][k] += dodn[l*Nout+j][k] * childForce[l];
-                }
-            }
-        }
+        Block dpdnf; // dout_l/dpj.dnk x f
 
-        Block dpdnf;
-        // dout_l/dpj.dnk x f
         for(unsigned l=0; l<Nout; l++) // dout
         {
             for(unsigned j=0; j<Nin; j++) // do
             {
                 for(unsigned k=0; k<Nin; k++) // dn
                 {
+                    if( l!=k && j!=k ) continue; // dodn[l*Nout+j][k]==0
+
                     dpdnf[j][k] -= dodn[l*Nout+j][k] * childForce[l];
                 }
             }
         }
+
         K.addBlock( index, nb+1, dpdnf ); // position index -> current point to project, position nb+1 -> plane normal
         K.addBlock( nb+1, index, dpdnf.transposed() );
+
+        // dout_l/doj.dnk x f  (note that dout_l/doj.dnk == -dout_l/dpj.dnk)
+        dodnf -= dpdnf;
 
 
         const InCoord op = p-o;
@@ -477,29 +471,20 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::updateK(const core::MechanicalPar
             {
                 for(unsigned k=0; k<Nin; k++) // dn
                 {
+                    Real d2n;
                     if( l==j && k==l )
-                        d2n[l*Nout+j][k] = -factor * 2 * op[l];
+                        d2n = 2 * op[l];
                     else if( l==j )
-                        d2n[l*Nout+j][k] = -factor * op[k];
+                        d2n = op[k];
                     else if( l==k )
-                        d2n[l*Nout+j][k] = -factor * op[j];
+                        d2n = op[j];
+                    else
+                        continue; // 0
+
+                    d2nf[j][k] -= factor * d2n * childForce[l];
                 }
             }
         }
-
-
-        //d2out/d2n x f
-        for(unsigned l=0; l<Nout; l++) // dout
-        {
-            for(unsigned j=0; j<Nin; j++) // do
-            {
-                for(unsigned k=0; k<Nin; k++) // dn
-                {
-                    d2nf[j][k] += d2n[l*Nout+j][k] * childForce[l];
-                }
-            }
-        }
-
 
     }
 
