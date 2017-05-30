@@ -329,11 +329,11 @@ protected:
         if(canCast(data)) {
 
             if( alias(result, data) ) {
-                this->map(result) = (this->compressedMatrix *
-                                     this->map(data).template cast<Real>()).template cast<OutReal>();
+                map(result) = (this->compressedMatrix *
+                                     map(data).template cast<Real>()).template cast<OutReal>();
             } else {
-                this->map(result).noalias() = (this->compressedMatrix *
-                                               this->map(data).template cast<Real>()).template cast<OutReal>();
+                map(result).noalias() = (this->compressedMatrix *
+                                               map(data).template cast<Real>()).template cast<OutReal>();
             }
 			
 			return;
