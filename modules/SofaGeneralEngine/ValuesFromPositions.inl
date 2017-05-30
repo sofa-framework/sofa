@@ -169,24 +169,15 @@ typename ValuesFromPositions<DataTypes>::Real ValuesFromPositions<DataTypes>::va
 {
     int nbv = data.inputValues.size();
 
-    //std::cout << "nbv: " << nbv << std::endl;
-
     if (nbv == 0) return 0;
     else if (nbv == 1) return data.inputValues[0];
     Real coef = dot(p,data.dir);
-    //std::cout << "coef1: " << coef << std::endl;
     coef = (coef - data.bmin) / (data.bmax - data.bmin);
-    //std::cout << "data.bmax: " << data.bmax << std::endl;
-    //std::cout << "data.bmin: " << data.bmin << std::endl;
-    //std::cout << "coef2: " << coef << std::endl;
     coef *= (nbv-1);
-    //std::cout << "coef3: " << coef << std::endl;
     int v = (int)floor(coef);
-    //std::cout << "v: " << v << std::endl;
     if (v < 0) return data.inputValues[0];
     else if (v >= nbv-1) return data.inputValues[nbv-1];
     coef -= v;
-    //std::cout << "coef4: " << coef << std::endl;
     return data.inputValues[v] * (1-coef) + data.inputValues[v+1] * coef;
 }
 
@@ -307,9 +298,6 @@ void ValuesFromPositions<DataTypes>::update()
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     data.bmin = (Real)*sceneMinBBox.ptr(); /// @todo: shouldn't this be dot(sceneMinBBox,data.dir) ?
     data.bmax = (Real)*sceneMaxBBox.ptr(); /// @todo: shouldn't this be dot(sceneMaxBBox,data.dir) ?
-
-    //std::cout << "data.bmax: " << sceneMaxBBox << std::endl;
-    //std::cout << "data.bmin: " << sceneMinBBox << std::endl;
 
     if (p_fieldType.getValue().getSelectedId() == 0)
         this->updateValues(data);

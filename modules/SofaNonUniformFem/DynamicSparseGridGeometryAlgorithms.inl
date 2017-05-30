@@ -82,7 +82,6 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     const sofa::defaulttype::Vec3d& translation = dof->getTranslation();
     defaulttype::Vec3i currentIndex = defaulttype::Vec3i( (int)((pos[0] - translation[0]) / topoContainer->voxelSize.getValue()[0]), (int)((pos[1] - translation[1]) / topoContainer->voxelSize.getValue()[1]), (int)((pos[2] - translation[2]) / topoContainer->voxelSize.getValue()[2]));
 
-//        std::cout << "Find Nearest : " << pos << " ; " << baryC << " distance " << distance << " : " << resolution << " : resolution " << currentIndex << " : currentIndex\n";
     // Projection sur la bbox si l'element est en dehors.
     if( currentIndex[0] < 0) currentIndex[0] = 0;
     if( currentIndex[1] < 0) currentIndex[1] = 0;
@@ -104,12 +103,10 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
             {
                 if((((int)currentIndex[0])-1+i < 0) || (currentIndex[0]-1+i > resolution[0])) continue;
                 regularGridIndex = (currentIndex[0]-1+i) + (currentIndex[1]-1+j)*resolution[0] + (currentIndex[2]-1+k)*resolution[0]*resolution[1];
-//              std::cout << regularGridIndex << " Regular Grid Index\n";
                 it = regular2topo.find( regularGridIndex);
                 if( it != regular2topo.end())
                 {
                     const Real d = this->computeElementRestDistanceMeasure(it->second, pos);
-//                std::cout << "Distance : " << d << "\n";
                     if(d<distance)
                     {
                         distance = d;
@@ -123,8 +120,6 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexahedra, il faut alors tous les parcourrir.
         serr << "findNearestElementInRestPos(). Index not found" << sendl;
-        //sout << "findNearestElementInRestPos(). Index not found => Search in all the hexahedra ! SLOW." << sendl;
-        //sout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << sendl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }
 

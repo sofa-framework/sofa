@@ -101,7 +101,7 @@ TEST_F(PluginManager_test, pluginEntries)
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
     sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
-    
+
     EXPECT_TRUE(p.initExternalModule.func != NULL);
     EXPECT_TRUE(p.getModuleName.func != NULL);
     EXPECT_TRUE(p.getModuleVersion.func != NULL);
@@ -157,7 +157,7 @@ TEST_F(PluginManager_test, testIniFile)
 
     //writeToIniFile does not return anything to say if the file was created without error...
     ASSERT_TRUE(sofa::helper::system::FileSystem::exists(pathIniFile));
-    
+
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
 

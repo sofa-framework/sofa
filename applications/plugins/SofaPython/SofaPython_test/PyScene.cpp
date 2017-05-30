@@ -16,8 +16,6 @@ struct PyScene_test : public ::testing::Test
     bool loadPySceneWithPyCtrlr()
     {
         static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PySceneWithPyCtlr.py");
-        //std::cout<<scenePath<<std::endl;
-
         //Init
 
         simulation::Simulation* simulation;
@@ -34,8 +32,6 @@ struct PyScene_test : public ::testing::Test
 
         if (!ctr->scriptControllerInstance())
             return false; // script not loaded correctly
-
-        //std::cout<<ctr->getName()<<std::endl;
 
         return true;
     }
@@ -43,8 +39,6 @@ struct PyScene_test : public ::testing::Test
     bool loadXmlSceneWithPyCtrlr()
     {
         static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_XmlSceneWithPyCtlr.scn");
-        //std::cout<<scenePath<<std::endl;
-
         //Init
 
         simulation::Simulation* simulation;
@@ -61,8 +55,6 @@ struct PyScene_test : public ::testing::Test
 
         if (!ctr->scriptControllerInstance())
             return false; // script not loaded correctly
-
-        //std::cout<<ctr->getName()<<std::endl;
 
         return true;
     }

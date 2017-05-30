@@ -225,6 +225,8 @@ option(SOFA_USE_MASK "Use mask optimization" ON)
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
+### Threading
+option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)

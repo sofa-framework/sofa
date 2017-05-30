@@ -76,8 +76,6 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
 {
     BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
 
-//    std::cout << "<PYTHON> BaseContext_createObject PyTuple_Size=" << PyTuple_Size(args) << " PyDict_Size=" << PyDict_Size(kw) << std::endl;
-
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
     {
@@ -106,7 +104,6 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             }
             else
             {
-            //    std::cout << PyString_AsString(PyList_GetItem(keys,i)) << "=\"" << PyString_AsString(PyObject_Str(PyList_GetItem(values,i))) << "\"" << std::endl;
                 if (PyString_Check(value))
                     desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
                 else
@@ -250,7 +247,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     }
 
     sofa::core::objectmodel::BaseContext::SearchDirection search_direction_enum= sofa::core::objectmodel::BaseContext::Local;
-    if ( search_direction ) 
+    if ( search_direction )
     {
         std::string search_direction_str ( search_direction );
         if ( search_direction_str == "SearchUp" )
@@ -273,7 +270,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         {
             search_direction_enum= sofa::core::objectmodel::BaseContext::SearchParents;
         }
-        else 
+        else
         {
             SP_MESSAGE_WARNING( "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." )
         }

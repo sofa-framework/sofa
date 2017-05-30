@@ -19,17 +19,6 @@ using sofa::simulation::Node ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::core::ExecParams ;
 
-#include <sofa/helper/logging/Messaging.h>
-using sofa::helper::logging::MessageDispatcher ;
-
-#include <sofa/helper/logging/ClangMessageHandler.h>
-using sofa::helper::logging::ClangMessageHandler ;
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::MessageAsTestFailure ;
-
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
@@ -39,8 +28,6 @@ namespace light_test
 int initMessage(){
     /// Install the backtrace so that we have more information in case of test segfault.
     BackTrace::autodump() ;
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
     return 0;
 }
 
@@ -56,8 +43,8 @@ public:
 
 void TestLight::checkLightMissingLightManager(const std::string& lighttype)
 {
-    MessageAsTestFailure error(Message::Error) ;
-    ExpectMessage warning(Message::Warning) ;
+    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -82,8 +69,7 @@ void TestLight::checkLightMissingLightManager(const std::string& lighttype)
 
 void TestLight::checkPositionalLightValidAttributes()
 {
-    MessageAsTestFailure warning(Message::Warning) ;
-    MessageAsTestFailure error(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Warning, Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -125,8 +111,7 @@ void TestLight::checkPositionalLightValidAttributes()
 
 void TestLight::checkDirectionalLightValidAttributes()
 {
-    MessageAsTestFailure warning(Message::Warning) ;
-    MessageAsTestFailure error(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Warning, Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
@@ -168,8 +153,7 @@ void TestLight::checkDirectionalLightValidAttributes()
 
 void TestLight::checkSpotLightValidAttributes()
 {
-    MessageAsTestFailure warning(Message::Warning) ;
-    MessageAsTestFailure error(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Warning, Error) ;
 
     if(sofa::simulation::getSimulation()==nullptr)
         sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());

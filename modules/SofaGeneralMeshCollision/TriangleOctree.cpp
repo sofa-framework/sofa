@@ -806,7 +806,6 @@ void TriangleOctree::bbAllTriangles(const defaulttype::Vector3 & bbmin,
                 tmin[1] <= bbmax[1] && tmax[1] >= bbmin[1] &&
                 tmin[2] <= bbmax[2] && tmax[2] >= bbmin[2])
         {
-            //std::cout << "Found tri " << t << std::endl;
             results.insert(t);
         }
     }
@@ -816,9 +815,6 @@ template<class Res>
 void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttype::Vector3 & bbmax, Res& results)
 {
     defaulttype::Vector3 c(x+size/2,y+size/2,z+size/2);
-    //static int level = 0;
-    //for (int l=0;l<level;++l) std::cout << ' ';
-    //std::cout << "-> " << c[0] << " " << c[1] << " " << c[2] << " " << size << " -> " << objects.size() << std::endl;
     bbAllTriangles (bbmin, bbmax, results);
     if (is_leaf)
     {
@@ -827,8 +823,6 @@ void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttyp
     int dx0 = (bbmin[0] > c[0]) ? 1 : 0;    int dx1 = (bbmax[0] >= c[0]) ? 1 : 0;
     int dy0 = (bbmin[1] > c[1]) ? 1 : 0;    int dy1 = (bbmax[1] >= c[1]) ? 1 : 0;
     int dz0 = (bbmin[2] > c[2]) ? 1 : 0;    int dz1 = (bbmax[2] >= c[2]) ? 1 : 0;
-    //dx0 = dy0 = dz0 = 0;
-    //dx1 = dy1 = dz1 = 1;
     for (int dx = dx0; dx <= dx1; ++dx)
         for (int dy = dy0; dy <= dy1; ++dy)
             for (int dz = dz0; dz <= dz1; ++dz)
@@ -836,13 +830,7 @@ void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttyp
                 int i = dx * 4 + dy * 2 + dz;
                 if (childVec[i])
                 {
-                    //for (int l=0;l<level;++l) std::cout << ' ';
-                    //std::cout << "> " << i << std::endl;
-                    //++level;
                     childVec[i]->bbAll (bbmin, bbmax, results);
-                    //--level;
-                    //for (int l=0;l<level;++l) std::cout << ' ';
-                    //std::cout << "< " << i << std::endl;
                 }
             }
 }

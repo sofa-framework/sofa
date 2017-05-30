@@ -396,7 +396,6 @@ void Fluid2D::updateVisual()
             }
         }
     }
-    //std::cout << points.size() << " points, "<<facets.size() <<" faces"<<std::endl;
 
     for (unsigned int i=0; i<points.size(); i++)
     {

@@ -34,11 +34,6 @@ using sofa::Sofa_test;
 
 #include <SceneCreator/SceneCreator.h>
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::MessageAsTestFailure;
-
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation ;
 
@@ -76,7 +71,7 @@ struct ConstantForceField_test : public Sofa_test<>
 
     void testSimpleBehavior()
     {
-        MessageAsTestFailure raii(Message::Error);
+        EXPECT_MSG_NOEMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
@@ -163,7 +158,7 @@ struct ConstantForceField_test : public Sofa_test<>
 
     void testBasicAttributes()
     {
-        MessageAsTestFailure raii(Message::Error);
+        EXPECT_MSG_NOEMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
@@ -204,7 +199,7 @@ struct ConstantForceField_test : public Sofa_test<>
 
     void testMissingMechanicalObject()
     {
-        ExpectMessage raii(Message::Error);
+        EXPECT_MSG_EMIT(Error) ;
 
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
@@ -262,7 +257,7 @@ TYPED_TEST( ConstantForceField_test , testSimpleBehavior )
     ASSERT_NO_THROW (this->testSimpleBehavior());
 }
 
-TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices_OpenIssue )
+TYPED_TEST( ConstantForceField_test , testMonkeyValueForIndices )
 {
     ASSERT_NO_THROW (this->testMonkeyValueForIndices());
 }
