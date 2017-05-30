@@ -91,7 +91,6 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
         f[_topology->getQuad(my_map[i])[3]]+=force;
 
     }
-    //std::cout << "force = " << force << std::endl;
     d_f.endEdit();
     updateQuadInformation();
 }

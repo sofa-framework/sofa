@@ -123,10 +123,11 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'P':
         case 'p':
         {
-            if (!activateExport)
-                std::cout << "Starting OBJ sequece export..." << std::endl;
-            else
-                std::cout << "Ending OBJ sequece export..." << std::endl;
+            if (!activateExport){
+                msg_info() << "Starting OBJ sequence export..." ;
+            }else{
+                msg_info() << "Ending OBJ sequence export..." ;
+            }
             activateExport = !activateExport;
             break;
         }

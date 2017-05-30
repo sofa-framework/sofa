@@ -177,52 +177,41 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
     if(material=="ArrudaBoyce") {
         fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
         myMaterial = BoyceAndArrudaMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() << "The model is "<<material ;
     }
     else if (material=="StVenantKirchhoff"){
         fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
         myMaterial = STVenantKirchhoffMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() << "The model is "<<material ;
     }
     else if (material=="NeoHookean"){
         fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
         myMaterial = NeoHookeanMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() <<"The model is "<<material ;
     }
     else if (material=="MooneyRivlin"){
         fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
         myMaterial = MooneyRivlinMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() << "The model is "<<material ;
     }
     else if (material=="VerondaWestman"){
         fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
         myMaterial = VerondaWestmanMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() << "The model is "<<material ;
     }
-
     else if (material=="Costa"){
         fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>();
         myMaterial =CostaMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info() <<"The model is "<<material ;
     }
     else if (material=="Ogden"){
         fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>();
         myMaterial =OgdenMaterial;
-        std::cout<<"The model is "<<material<<std::endl;
-        //	materialTermArray =  myMaterial->getMaterialTermArray();
+        msg_info()<<"The model is "<<material ;
     }
-
-
     else {
         msg_error() << "Material name '" << material << "' is not valid." ;
     }
-
 
     if (!_topology->getNbTetrahedra())
     {
