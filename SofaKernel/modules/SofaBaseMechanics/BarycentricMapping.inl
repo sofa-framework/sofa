@@ -3570,10 +3570,10 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
     if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
         return;
 
-    std::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
-    std::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->beginChange();
+    sofa::helper::list<const core::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->endChange();
 
-    for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+    for ( sofa::helper::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
             changeIt != itEnd; ++changeIt )
     {
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
@@ -3586,7 +3586,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
             {
                 helper::vector<MappingData>& mapData = *(map.beginEdit());
 
-                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                for ( sofa::helper::set<int>::const_iterator iter = _invalidIndex.begin();
                         iter != _invalidIndex.end(); ++iter )
                 {
                     const int j = *iter;

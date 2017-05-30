@@ -93,7 +93,7 @@ void DevMonitorManager::eval()
         {
             DevTensionMonitor<RigidTypes>* tm = dynamic_cast<DevTensionMonitor<RigidTypes>*>(*it);
 
-            sofa::helper::vector<std::pair<Vector1, SReal> > d = tm->getData();
+            sofa::helper::vector<sofa::helper::pair<Vector1, SReal> > d = tm->getData();
             for (unsigned int i=0 ; i<d.size() ; i++)
                 sout << "Tension is " << d[i].first << " at " << d[i].second << sendl;
         }

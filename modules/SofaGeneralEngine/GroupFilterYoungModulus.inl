@@ -86,7 +86,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
 
             //does not matter if primitives is empty
             int maxSize = primitives.size();
-            std::map<sofa::core::loader::PrimitiveGroup, Real> mapMG;
+            sofa::helper::map<sofa::core::loader::PrimitiveGroup, Real> mapMG;
 
             //read string and tokenize
             while(end != std::string::npos )
@@ -128,7 +128,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
             youngModulusVector.resize(maxSize);
             std::fill(youngModulusVector.begin(), youngModulusVector.end(), defaultModulus);
 
-            typename std::map<sofa::core::loader::PrimitiveGroup, Real>::const_iterator itMapMG;
+            typename sofa::helper::map<sofa::core::loader::PrimitiveGroup, Real>::const_iterator itMapMG;
             for (itMapMG = mapMG.begin() ; itMapMG != mapMG.end() ; itMapMG++)
             {
                 sofa::core::loader::PrimitiveGroup pg = (*itMapMG).first;

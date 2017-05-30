@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/State.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <assert.h>
 #include <fstream>
 

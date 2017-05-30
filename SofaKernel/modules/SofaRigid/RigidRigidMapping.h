@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

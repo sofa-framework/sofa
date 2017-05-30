@@ -81,7 +81,7 @@ void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector * v, const
     for (size_t idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         ConstraintGroup *group=constraints[idxGroupConstraint];
-        std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+        sofa::helper::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
 
         for (ConstraintGroup::EquationIterator equation = range.first; equation != range.second; ++equation)
         {
@@ -93,7 +93,7 @@ void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector * v, const
 
 void BaseLMConstraint::resetConstraint()
 {
-    std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup*> >::iterator it;
+    sofa::helper::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup*> >::iterator it;
     for (it=constraintOrder.begin(); it!=constraintOrder.end(); ++it)
     {
         helper::vector< ConstraintGroup* > &v=it->second;

@@ -34,14 +34,17 @@
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
 
 
-namespace std
+namespace sofa
 {
+namespace helper
+{
+using std::map;
 
 /// Output stream
 template<class K, class T>
-std::ostream& operator<< ( std::ostream& o, const std::map<K,T>& m )
+std::ostream& operator<< ( std::ostream& o, const sofa::helper::map<K,T>& m )
 {
-    typename std::map<K,T>::const_iterator it=m.begin(), itend=m.end();
+    typename sofa::helper::map<K,T>::const_iterator it=m.begin(), itend=m.end();
     if (it == itend) return o;
     o << it->first << " " << it->second; it++;
     for ( ; it != itend ; ++it)
@@ -54,7 +57,7 @@ std::ostream& operator<< ( std::ostream& o, const std::map<K,T>& m )
 
 /// Input stream
 template<class K, class T>
-std::istream& operator>> ( std::istream& i, std::map<K,T>& m )
+std::istream& operator>> ( std::istream& i, sofa::helper::map<K,T>& m )
 {
     m.clear();
     std::string line;
@@ -71,6 +74,7 @@ std::istream& operator>> ( std::istream& i, std::map<K,T>& m )
     return i;
 }
 
-} // namespace std
+} // namespace helper
+} // namespace sofa
 
 #endif

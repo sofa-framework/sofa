@@ -41,7 +41,7 @@
 #include <newmat/newmatap.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <algorithm>
 #include <limits>
 
@@ -327,19 +327,19 @@ void TriangularFEMForceField<DataTypes>::reinit()
     triangleInfo.endEdit();
 
 #ifdef PLOT_CURVE
-    std::map<std::string, sofa::helper::vector<double> > &stress = *(f_graphStress.beginEdit());
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &stress = *(f_graphStress.beginEdit());
     stress.clear();
     if (allGraphStress.size() > elementID.getValue())
         stress = allGraphStress[elementID.getValue()];
     f_graphStress.endEdit();
 
-    std::map<std::string, sofa::helper::vector<double> > &criteria = *(f_graphCriteria.beginEdit());
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &criteria = *(f_graphCriteria.beginEdit());
     criteria.clear();
     if (allGraphCriteria.size() > elementID.getValue())
         criteria = allGraphCriteria[elementID.getValue()];
     f_graphCriteria.endEdit();
 
-    std::map<std::string, sofa::helper::vector<double> > &orientation = *(f_graphOrientation.beginEdit());
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &orientation = *(f_graphOrientation.beginEdit());
     orientation.clear();
     if (allGraphOrientation.size() > elementID.getValue())
         orientation = allGraphOrientation[elementID.getValue()];
@@ -921,9 +921,9 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementInd
     if (allGraphOrientation.size() <= elementIndex)
         allGraphOrientation.resize(elementIndex+1);
 
-    std::map<std::string, sofa::helper::vector<double> > &stressMap = allGraphStress[elementIndex];
-    std::map<std::string, sofa::helper::vector<double> > &criteriaMap = allGraphCriteria[elementIndex];
-    std::map<std::string, sofa::helper::vector<double> > &orientationMap = allGraphOrientation[elementIndex];
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &stressMap = allGraphStress[elementIndex];
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &criteriaMap = allGraphCriteria[elementIndex];
+    sofa::helper::map<std::string, sofa::helper::vector<double> > &orientationMap = allGraphOrientation[elementIndex];
 
     stressMap["first stress eigenvalue"].push_back((double)(triangleInf[elementIndex].maxStress));
     stressMap["second stress eigenvalue"].push_back((double)(fabs(D(1,1))));
@@ -1522,7 +1522,7 @@ void TriangularFEMForceField<DataTypes>::addForce(const core::MechanicalParams* 
     }
     }
 
-    //			std::vector< std::pair< double, unsigned int > > mostDeformableVertexIndexA(nbPoints);
+    //			std::vector< sofa::helper::pair< double, unsigned int > > mostDeformableVertexIndexA(nbPoints);
     //			for( unsigned int i=0; i<nbPoints; i++ )
     //			{
     //				mostDeformableVertexIndexA[i].first = vertexInfo[i].sumEigenValues;

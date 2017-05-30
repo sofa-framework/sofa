@@ -27,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/core/MechanicalParams.h>
 
 namespace sofa
@@ -127,7 +127,7 @@ public:
     // -- tool grabing utility
     void grabPoint( const core::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
             const helper::vector< unsigned int > &index,
-            helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+            helper::vector< sofa::helper::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
             helper::vector< unsigned int > &triangle,
             helper::vector< unsigned int > &index_point) ;
 

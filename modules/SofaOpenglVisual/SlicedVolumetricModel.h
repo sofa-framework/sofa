@@ -97,8 +97,8 @@ protected:
     void computePlaneSeparations();
 
     typedef core::topology::BaseMeshTopology::Edge Edge;
-    typedef std::pair< Coord , Coord > Intersection; // position, texture coord
-    typedef std::map< Edge, Intersection > EdgesMap;
+    typedef sofa::helper::pair< Coord , Coord > Intersection; // position, texture coord
+    typedef sofa::helper::map< Edge, Intersection > EdgesMap;
 
     static const int __edges__[12][2];
 

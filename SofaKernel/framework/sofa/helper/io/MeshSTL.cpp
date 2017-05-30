@@ -23,6 +23,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/map.h>
 using std::cout;
 using std::endl;
 
@@ -120,7 +121,7 @@ void MeshSTL::readSTL(std::ifstream &file)
     Vec3f result;
 
     std::string line;
-    std::map< defaulttype::Vec3f, unsigned > map;
+    sofa::helper::map< defaulttype::Vec3f, unsigned > map;
     unsigned positionCounter = 0u, vertexCounter=0u;
 
     // there must be a way to perform it at compile time with initializer_list
@@ -190,7 +191,7 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     Vec3f result;
     unsigned int attributeCount;
 
-    std::map< defaulttype::Vec3f, unsigned > map;
+    sofa::helper::map< defaulttype::Vec3f, unsigned > map;
     unsigned positionCounter = 0u;
 
 

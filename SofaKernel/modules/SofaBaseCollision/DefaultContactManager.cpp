@@ -57,7 +57,7 @@ DefaultContactManager::~DefaultContactManager()
 
 sofa::helper::OptionsGroup DefaultContactManager::initializeResponseOptions(core::collision::Pipeline *pipeline)
 {
-    std::set<std::string> listResponse;
+    sofa::helper::set<std::string> listResponse;
     if (pipeline) listResponse=pipeline->getResponseList();
     else
     {
@@ -111,7 +111,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
         outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
     {
-        std::pair<ContactMap::iterator,bool> contactInsert =
+        sofa::helper::pair<ContactMap::iterator,bool> contactInsert =
             contactMap.insert(ContactMap::value_type(outputsIt->first,Contact::SPtr()));
         ContactMap::iterator contactIt = contactInsert.first;
         if (contactInsert.second)
@@ -226,10 +226,10 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
     }
 
     // compute number of contacts attached to each collision model
-    std::map< CollisionModel*, int > nbContactsMap;
+    sofa::helper::map< CollisionModel*, int > nbContactsMap;
     for (unsigned int i = 0; i < contacts.size(); ++i)
     {
-        std::pair< CollisionModel*, CollisionModel* > cms = contacts[i]->getCollisionModels();
+        sofa::helper::pair< CollisionModel*, CollisionModel* > cms = contacts[i]->getCollisionModels();
         nbContactsMap[cms.first]++;
         if (cms.second != cms.first)
             nbContactsMap[cms.second]++;

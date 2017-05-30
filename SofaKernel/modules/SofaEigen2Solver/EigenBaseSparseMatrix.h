@@ -27,7 +27,7 @@
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <Eigen/Sparse>
 
 #ifdef _OPENMP

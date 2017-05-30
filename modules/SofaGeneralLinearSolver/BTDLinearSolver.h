@@ -747,10 +747,10 @@ public:
     typedef typename Vector::Real Real;
     typedef typename Matrix::BlocType BlocType;
     typedef typename Matrix::Index Index;
-    typedef std::list<Index> ListIndex;
-    typedef std::pair<Index,Index> IndexPair;
-    typedef std::map<IndexPair, SubMatrix> MysparseM;
-    typedef typename std::map<IndexPair, SubMatrix>::iterator MysparseMit;
+    typedef sofa::helper::list<Index> ListIndex;
+    typedef sofa::helper::pair<Index,Index> IndexPair;
+    typedef sofa::helper::map<IndexPair, SubMatrix> MysparseM;
+    typedef typename sofa::helper::map<IndexPair, SubMatrix>::iterator MysparseMit;
 
     //helper::vector<SubMatrix> alpha;
     helper::vector<SubMatrix> alpha_inv;

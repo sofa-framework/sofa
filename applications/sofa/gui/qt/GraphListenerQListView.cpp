@@ -184,7 +184,7 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
     if(haveErrors)
         flags |= 1 << (ALLCOLORS+1) ;
 
-    static std::map<unsigned int, QPixmap*> pixmaps;
+    static sofa::helper::map<unsigned int, QPixmap*> pixmaps;
     if (!pixmaps.count(flags))
     {
         int nc = 0;
@@ -638,7 +638,7 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const QTreeWidgetIte
 
     if(item)
     {
-        for ( std::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
+        for ( sofa::helper::map<core::objectmodel::Base*, QTreeWidgetItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
         {
             if ( ( *it ).second == item )
             {
@@ -665,7 +665,7 @@ core::objectmodel::BaseData* GraphListenerQListView::findData(const QTreeWidgetI
     BaseData* data = NULL;
     if(item)
     {
-        std::map<BaseData*,QTreeWidgetItem*>::const_iterator it;
+        sofa::helper::map<BaseData*,QTreeWidgetItem*>::const_iterator it;
         for( it = datas.begin(); it != datas.end(); ++it)
         {
             if((*it).second == item)
@@ -722,7 +722,7 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
                 new_item = createItem(items[parent]);
                 name += "  ";
                 name += data->getName();
-                datas.insert(std::pair<BaseData*,QTreeWidgetItem*>(data,new_item));
+                datas.insert(sofa::helper::pair<BaseData*,QTreeWidgetItem*>(data,new_item));
                 new_item->setText(0, name.c_str());
                 new_item->setIcon(0, QIcon(pixData));
                 //                widget->ensureItemVisible(new_item);

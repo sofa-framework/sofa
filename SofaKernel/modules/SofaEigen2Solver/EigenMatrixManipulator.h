@@ -25,6 +25,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/pair.h>
 
 #include <Eigen/Core>
 #ifndef EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
@@ -49,7 +50,7 @@ struct LMatrixManipulator;
 
 struct SOFA_EIGEN2_SOLVER_API LLineManipulator
 {
-    typedef std::pair<unsigned int, SReal> LineCombination;
+    typedef sofa::helper::pair<unsigned int, SReal> LineCombination;
     typedef helper::vector< LineCombination > InternalData;
 public:
     LLineManipulator& addCombination(unsigned int idxConstraint, SReal factor=1.0);

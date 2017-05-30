@@ -25,7 +25,7 @@
 #include "SofaGUIQt.h"
 
 #include <ui_DialogAddObject.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

@@ -294,19 +294,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
     */
-    virtual std::list<const TopologyChange *>::const_iterator beginChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
     */
-    virtual std::list<const TopologyChange *>::const_iterator endChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
     */
-    virtual std::list<const TopologyChange *>::const_iterator beginStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
     */
-    virtual std::list<const TopologyChange *>::const_iterator endStateChange() const;
+    virtual sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
 
     /** \brief Adds a TopologyEngine to the list.
     */
@@ -314,11 +314,11 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
     */
-    virtual std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    virtual sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
     */
-    virtual std::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
+    virtual sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
     /// @}
 
     // functions returning border elements. To be moved in a mapping.

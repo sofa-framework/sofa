@@ -29,8 +29,8 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <SofaSimulationCommon/common.h>
 #include <string>
-#include <list>
-#include <map>
+#include <sofa/helper/list.h>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -60,11 +60,11 @@ private:
     int m_srcline;
 
     BaseElement* parent;
-    typedef std::list<BaseElement*> ChildList;
+    typedef sofa::helper::list<BaseElement*> ChildList;
     ChildList children;
     IncludeNodeType includeNodeType;
 protected:
-    std::map< std::string, std::string > replaceAttribute;
+    sofa::helper::map< std::string, std::string > replaceAttribute;
 public:
     BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
@@ -119,10 +119,10 @@ public:
     void setIncludeNodeType(IncludeNodeType t) { includeNodeType=t; }
 
     ///// Get all attribute data, read-only
-    //const std::map<std::string,std::string*>& getAttributeMap() const;
+    //const sofa::helper::map<std::string,std::string*>& getAttributeMap() const;
 
     ///// Get all attribute data
-    //std::map<std::string,std::string*>& getAttributeMap();
+    //sofa::helper::map<std::string,std::string*>& getAttributeMap();
 
     ///// Get an attribute given its name (return defaultVal if not present)
     //const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
@@ -238,12 +238,12 @@ public:
         return end<BaseElement>();
     }
 
-    typedef helper::Factory< std::string, BaseElement, std::pair<std::string, std::string> > NodeFactory;
+    typedef helper::Factory< std::string, BaseElement, sofa::helper::pair<std::string, std::string> > NodeFactory;
 
     static BaseElement* Create(const std::string& nodeClass, const std::string& name, const std::string& type);
 
     template<class Node>
-    static Node* create(Node*, std::pair<std::string,std::string> arg)
+    static Node* create(Node*, sofa::helper::pair<std::string,std::string> arg)
     {
         return new Node(arg.first,arg.second);
     }
@@ -257,7 +257,7 @@ public:
 namespace helper
 {
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_SIMULATION_COMMON_XML_BASEELEMENT_CPP)
-extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+extern template class SOFA_SIMULATION_COMMON_API Factory< std::string, sofa::simulation::xml::BaseElement, sofa::helper::pair<std::string, std::string> >;
 #endif
 } // namespace helper
 

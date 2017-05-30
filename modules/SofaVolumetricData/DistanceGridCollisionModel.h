@@ -289,7 +289,7 @@ public:
         DistanceGrid* grid;
         DeformedCube() : grid(NULL) {}
         int elem; ///< Index of the corresponding element in the topology
-        std::set<int> neighbors; ///< Index of the neighbors (used for self-collisions)
+        sofa::helper::set<int> neighbors; ///< Index of the neighbors (used for self-collisions)
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates

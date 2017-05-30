@@ -34,7 +34,7 @@ simulation::Visitor::Result CleanupVisitor::processNodeTopDown(Node* node)
     // some object will modify the graph during cleanup (removing other nodes or objects)
     // so we cannot assume that the list of object will stay constant
 
-    std::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
+    sofa::helper::set<sofa::core::objectmodel::BaseObject*> done; // list of objects we already processed
     bool stop = false;
     while (!stop)
     {

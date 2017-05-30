@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_IO_BVH_BVHCHANNELS_H
 #define SOFA_HELPER_IO_BVH_BVHCHANNELS_H
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/helper.h>
 
 namespace sofa

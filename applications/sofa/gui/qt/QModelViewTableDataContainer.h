@@ -780,10 +780,10 @@ public:
 ////////////////////////////////////////////////////////////////
 
 template<class T>
-class vector_data_trait < std::map<std::string, T> >
+class vector_data_trait < sofa::helper::map<std::string, T> >
 {
 public:
-    typedef std::map<std::string, T> data_type;
+    typedef sofa::helper::map<std::string, T> data_type;
     typedef T value_type;
     enum { NDIM = 1 };
     static int size(const data_type& d) { return d.size(); }
@@ -832,10 +832,10 @@ public:
 ////////////////////////////////////////////////////////////////
 
 template<class T>
-class vector_data_trait < std::deque<T> >
+class vector_data_trait < sofa::helper::deque<T> >
 {
 public:
-    typedef std::deque<T> data_type;
+    typedef sofa::helper::deque<T> data_type;
     typedef T value_type;
     enum { NDIM = 1 };
     static int size(const data_type& d) { return d.size(); }

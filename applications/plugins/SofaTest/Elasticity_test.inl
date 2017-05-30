@@ -359,7 +359,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
     mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
     MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-    vector< std::pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
+    vector< sofa::helper::pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
 
     // independent particles
     size_t independentIndex=0;

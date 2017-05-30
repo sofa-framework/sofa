@@ -38,7 +38,7 @@ namespace gl
 static const int quadricDiscretisation = 16;
 //GLuint Cylinder::displayList;
 //GLUquadricObj *Cylinder::quadratic = NULL;
-std::map < std::pair<std::pair<float,float>,float>, Cylinder* > Cylinder::CylinderMap;
+std::map < sofa::helper::pair<sofa::helper::pair<float,float>,float>, Cylinder* > Cylinder::CylinderMap;
 
 void Cylinder::initDraw()
 {

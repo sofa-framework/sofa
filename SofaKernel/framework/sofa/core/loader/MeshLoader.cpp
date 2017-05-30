@@ -201,7 +201,7 @@ void MeshLoader::updateElements()
     {
         helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->d_hexahedra;
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
-        std::set<Quad > eSet;
+        sofa::helper::set<Quad > eSet;
         for (size_t i = 0; i < quads.size(); ++i)
             eSet.insert(uniqueOrder(quads[i]));
         int nbnew = 0;
@@ -233,12 +233,12 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
 
-        std::set<Quad > eSetQuad;
+        sofa::helper::set<Quad > eSetQuad;
         for (size_t i = 0; i < quads.size(); ++i)
             eSetQuad.insert(uniqueOrder(quads[i]));
         int nbnewQuad = 0;
 
-        std::set<Triangle > eSetTri;
+        sofa::helper::set<Triangle > eSetTri;
         for (size_t i = 0; i < triangles.size(); ++i)
             eSetTri.insert(uniqueOrder(triangles[i]));
         int nbnewTri = 0;
@@ -285,12 +285,12 @@ void MeshLoader::updateElements()
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
 
-        std::set<Quad > eSetQuad;
+        sofa::helper::set<Quad > eSetQuad;
         for (size_t i = 0; i < quads.size(); ++i)
             eSetQuad.insert(uniqueOrder(quads[i]));
         int nbnewQuad = 0;
 
-        std::set<Triangle > eSetTri;
+        sofa::helper::set<Triangle > eSetTri;
         for (size_t i = 0; i < triangles.size(); ++i)
             eSetTri.insert(uniqueOrder(triangles[i]));
         int nbnewTri = 0;
@@ -333,7 +333,7 @@ void MeshLoader::updateElements()
     {
         helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->d_tetrahedra;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
-        std::set<Triangle > eSet;
+        sofa::helper::set<Triangle > eSet;
         for (size_t i = 0; i < triangles.size(); ++i)
             eSet.insert(uniqueOrder(triangles[i]));
         int nbnew = 0;
@@ -368,7 +368,7 @@ void MeshLoader::updateElements()
     {
         helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->d_quads;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
-        std::set<Edge > eSet;
+        sofa::helper::set<Edge > eSet;
         for (size_t i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
@@ -392,7 +392,7 @@ void MeshLoader::updateElements()
     {
         helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->d_triangles;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->d_edges;
-        std::set<Edge > eSet;
+        sofa::helper::set<Edge > eSet;
         for (size_t i = 0; i < edges.size(); ++i)
             eSet.insert(uniqueOrder(edges[i]));
         int nbnew = 0;
@@ -418,7 +418,7 @@ void MeshLoader::updatePoints()
 {
     if (d_onlyAttachedPoints.getValue())
     {
-        std::set<unsigned int> attachedPoints;
+        sofa::helper::set<unsigned int> attachedPoints;
         {
             helper::ReadAccessor<Data< helper::vector< Edge > > > elems = d_edges;
             for (size_t i=0; i<elems.size(); ++i)
@@ -467,7 +467,7 @@ void MeshLoader::updatePoints()
         helper::vector<unsigned int> old2new;
         old2new.resize(waPositions.size());
         unsigned int p = 0;
-        for (std::set<unsigned int>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        for (sofa::helper::set<unsigned int>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
         {
             unsigned int newp = *it;
             old2new[newp] = p;

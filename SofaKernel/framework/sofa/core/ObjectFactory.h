@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <memory>
 #include <iostream>
 #include <typeinfo>
@@ -84,7 +84,7 @@ public:
 
         virtual const char* getHeaderFileLocation() = 0;
     };
-    typedef std::map<std::string, Creator::SPtr> CreatorMap;
+    typedef sofa::helper::map<std::string, Creator::SPtr> CreatorMap;
 
     /// Record storing information about a class
     class ClassEntry
@@ -93,15 +93,15 @@ public:
         typedef std::shared_ptr<ClassEntry> SPtr;
 
         std::string className;
-        std::set<std::string> aliases;
+        sofa::helper::set<std::string> aliases;
         std::string description;
         std::string authors;
         std::string license;
         std::string defaultTemplate;
         CreatorMap creatorMap;
-        std::map<std::string, std::vector<std::string>> m_dataAlias ;
+        sofa::helper::map<std::string, std::vector<std::string>> m_dataAlias ;
     };
-    typedef std::map<std::string, ClassEntry::SPtr> ClassEntryMap;
+    typedef sofa::helper::map<std::string, ClassEntry::SPtr> ClassEntryMap;
 
 protected:
     /// Main class registry

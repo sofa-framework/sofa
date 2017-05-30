@@ -93,7 +93,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     helper::vector<sofa::defaulttype::Vector3>& my_normals = *(this->d_normals.beginWriteOnly());
     helper::vector<Triangle >& my_triangles = *(this->d_triangles.beginWriteOnly());
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
+    sofa::helper::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 
@@ -215,7 +215,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
     helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
 
 
-    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
+    sofa::helper::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     core::topology::Topology::index_type positionCounter = 0;
     bool useMap = d_mergePositionUsingMap.getValue();
 

@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 #include <string>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 #include <sofa/helper/helper.h>
 

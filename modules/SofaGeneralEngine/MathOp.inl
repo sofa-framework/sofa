@@ -224,10 +224,10 @@ struct MathOpTraits
 template<typename T>
 struct MathOpTraitsReal
 {
-    typedef std::pair<std::pair<
-        std::pair< MathOpAdd <T>, MathOpSub <T> > ,
-        std::pair< MathOpMul <T>, MathOpDiv <T> > > ,
-        std::pair< MathOpMin <T>, MathOpMax <T> >   >
+    typedef sofa::helper::pair<sofa::helper::pair<
+        sofa::helper::pair< MathOpAdd <T>, MathOpSub <T> > ,
+        sofa::helper::pair< MathOpMul <T>, MathOpDiv <T> > > ,
+        sofa::helper::pair< MathOpMin <T>, MathOpMax <T> >   >
         Ops;
 };
 
@@ -245,7 +245,7 @@ template<typename T>
 struct MathOpTraitsVecReal
 {
     typedef 
-        std::pair< MathOpAdd <T>, MathOpSub <T> >
+        sofa::helper::pair< MathOpAdd <T>, MathOpSub <T> >
         Ops;
 };
 
@@ -256,10 +256,10 @@ class MathOpTraits< defaulttype::Vec<N,Real> > : public MathOpTraitsVecReal< def
 template<typename T>
 struct MathOpTraitsBool
 {
-    typedef std::pair<MathOpNot<T>, std::pair<std::pair<
-        std::pair< MathOpOr  <T>, MathOpNOr <T> > ,
-        std::pair< MathOpAnd <T>, MathOpNAnd<T> > > ,
-        std::pair< MathOpXor <T>, MathOpXNor<T> > > >
+    typedef sofa::helper::pair<MathOpNot<T>, sofa::helper::pair<sofa::helper::pair<
+        sofa::helper::pair< MathOpOr  <T>, MathOpNOr <T> > ,
+        sofa::helper::pair< MathOpAnd <T>, MathOpNAnd<T> > > ,
+        sofa::helper::pair< MathOpXor <T>, MathOpXNor<T> > > >
         Ops;
 };
 
@@ -276,7 +276,7 @@ struct MathOpNames
 };
 
 template<typename TOps1,typename TOps2>
-struct MathOpNames< std::pair<TOps1, TOps2> >
+struct MathOpNames< sofa::helper::pair<TOps1, TOps2> >
 {
     static void get(helper::vector<std::string>& out)
     {
@@ -342,7 +342,7 @@ struct MathOpApply
 };
 
 template<typename TOps1, typename TOps2>
-struct MathOpApply< std::pair<TOps1, TOps2> >
+struct MathOpApply< sofa::helper::pair<TOps1, TOps2> >
 {
     static bool isSupported(const std::string& op)
     {
@@ -428,9 +428,9 @@ void MathOp<VecT>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 
 /// Assign the field values stored in the given map of name -> value pairs
 template <class VecT>
-void MathOp<VecT>::parseFields ( const std::map<std::string,std::string*>& str )
+void MathOp<VecT>::parseFields ( const sofa::helper::map<std::string,std::string*>& str )
 {
-    std::map<std::string,std::string*>::const_iterator it = str.find(f_nbInputs.getName());
+    sofa::helper::map<std::string,std::string*>::const_iterator it = str.find(f_nbInputs.getName());
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;

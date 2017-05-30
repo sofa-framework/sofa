@@ -40,7 +40,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     std::vector<ClassEntry::SPtr> entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     //Set of categories found in the Object Factory
-    std::set< std::string > mainCategories;
+    sofa::helper::set< std::string > mainCategories;
     //Data containing all the entries for a given category
     std::multimap< std::string, ClassEntry::SPtr> inventory;
 
@@ -82,7 +82,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
     //-----------------------------------------------------------------------
     //Using the inventory, Add each component to the Sofa Library
     //-----------------------------------------------------------------------
-    std::set< std::string >::iterator itCategory;
+    sofa::helper::set< std::string >::iterator itCategory;
     typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
 
@@ -92,7 +92,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
         const std::string& categoryName = *itCategory;
         IteratorInventory itComponent;
 
-        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        sofa::helper::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
 
 

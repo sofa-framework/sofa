@@ -24,8 +24,9 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/list.h>
+
 #include <set>
-#include <list>
 
 
 namespace sofa
@@ -53,10 +54,10 @@ public:
     enum { dim=Coord::total_size };
     typedef vector<Coord> VecCoord;
 
-    typedef std::pair<Real,unsigned int> distanceToPoint;
-    typedef std::set<distanceToPoint> distanceSet;
+    typedef sofa::helper::pair<Real,unsigned int> distanceToPoint;
+    typedef sofa::helper::set<distanceToPoint> distanceSet;
     typedef typename distanceSet::iterator distanceSetIt;
-    typedef std::list<unsigned int> UIlist;
+    typedef sofa::helper::list<unsigned int> UIlist;
 
     typedef struct
     {

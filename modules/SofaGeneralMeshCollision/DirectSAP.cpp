@@ -28,7 +28,7 @@
 #include <SofaMeshCollision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <queue>
 #include <stack>
 
@@ -314,7 +314,7 @@ void DirectSAP::update(){
 }
 
 //
-//void DirectSAP::collidingBoxes(std::vector<std::pair<Cube,Cube> > & col_cubes){
+//void DirectSAP::collidingBoxes(std::vector<sofa::helper::pair<Cube,Cube> > & col_cubes){
 //    for()
 //}
 
@@ -363,7 +363,7 @@ void DirectSAP::beginNarrowPhase()
 //    }
     sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
 
-    std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    sofa::helper::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
                                  //                                                                                                      b1_min---------------------b1_max
                                  //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
@@ -483,7 +483,7 @@ void DirectSAP::beginNarrowPhase()
 ////    }
 
 //    sofa::helper::AdvancedTimer::stepBegin("Direct SAP intersection");
-//    std::set<int> active_boxes;  //active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+//    sofa::helper::set<int> active_boxes;  //active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
 //                                 //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
 //                                 //                                                                                                      b1_min---------------------b1_max
 //                                 //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.
@@ -501,7 +501,7 @@ void DirectSAP::beginNarrowPhase()
 //            int new_box = (**it).boxID();
 
 //            SAPBox & box0 = _boxes[new_box];
-//            for(std::set<int>::iterator i = active_boxes.begin() ; i != active_boxes.end() ; ++i){
+//            for(sofa::helper::set<int>::iterator i = active_boxes.begin() ; i != active_boxes.end() ; ++i){
 //                SAPBox & box1 = _boxes[(*i)];
 
 //                core::CollisionModel *finalcm1 = box0.cube.getCollisionModel()->getLast();//get the finnest CollisionModel which is not a CubeModel

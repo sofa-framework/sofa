@@ -27,8 +27,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
+#include <sofa/helper/map.h>
 #include <sofa/helper/io/Mesh.h>
-#include <map>
 
 namespace sofa
 {
@@ -76,7 +76,7 @@ public:
     void setBoundingBoxFromRealCoords ( const Vector3& min, const Vector3& max )
     {
         Vector3 gridSize = dataVoxelSize * cubeStep;
-		gridSize = Vector3 ( (SReal) 1.0 / gridSize[0], (SReal) 1.0 / gridSize[1], (SReal) 1.0 / gridSize[2] );
+        gridSize = Vector3 ( (SReal) 1.0 / gridSize[0], (SReal) 1.0 / gridSize[1], (SReal) 1.0 / gridSize[2] );
 
 //          Vec3i bbMin = ( min - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
 //          Vec3i bbMax = ( max - verticesTranslation - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
@@ -132,7 +132,7 @@ public:
             const float isolevel,
             sofa::helper::vector< PointID >& mesh,
             sofa::helper::vector< Vector3>& vertices,
-            std::map< Vector3, PointID>& map_vertices,
+            sofa::helper::map< Vector3, PointID>& map_vertices,
             helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
             bool propagate ) const;
 
@@ -185,7 +185,7 @@ private:
 
     int polygonise ( const GridCell &grid, int& cubeConf, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
-            std::map< Vector3, PointID> &map_vertices,
+            sofa::helper::map< Vector3, PointID> &map_vertices,
             sofa::helper::vector< Vector3 > &map_indices ) const ;
 
     bool getVoxel ( unsigned int index, const unsigned char *dataVoxels ) const
@@ -194,7 +194,7 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
+    void findConnectedVoxels ( sofa::helper::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
@@ -210,8 +210,8 @@ private:
             unsigned char* data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
-            std::set<Vec3i>& generatedCubes,
-            std::map< Vector3, PointID>& map_vertices,
+            sofa::helper::set<Vec3i>& generatedCubes,
+            sofa::helper::map< Vector3, PointID>& map_vertices,
             helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL,
             bool propagate = true ) const;
 

@@ -58,8 +58,8 @@ void MeshClosingEngine<DataTypes>::update()
     cltri.clear();
 
     // get list of border edges
-    typedef std::pair<unsigned int,unsigned int> edge; // orinted edges
-    typedef std::set< edge > edgeset;
+    typedef sofa::helper::pair<unsigned int,unsigned int> edge; // orinted edges
+    typedef sofa::helper::set< edge > edgeset;
     typedef typename edgeset::iterator edgesetit;
 
     edgeset edges;
@@ -82,7 +82,7 @@ void MeshClosingEngine<DataTypes>::update()
     if(edges.empty()) return; // no hole
 
     // get loops
-    typedef std::map<PointID,PointID> edgemap;
+    typedef sofa::helper::map<PointID,PointID> edgemap;
     edgemap emap;
     for(edgesetit it=edges.begin(); it!=edges.end(); it++)  emap[it->first]=it->second;
 

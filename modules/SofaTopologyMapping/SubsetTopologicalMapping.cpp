@@ -41,7 +41,7 @@
 
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -177,7 +177,7 @@ void SubsetTopologicalMapping::init()
         {
             if (fromModel->hasPos() && toModel->hasPos())
             {
-                std::map<sofa::defaulttype::Vec3d,Index> pmapS;
+                sofa::helper::map<sofa::defaulttype::Vec3d,Index> pmapS;
                 for (Index ps = 0; ps < npS; ++ps)
                 {
                     defaulttype::Vec3d key(fromModel->getPX(ps),fromModel->getPY(ps),fromModel->getPZ(ps));
@@ -187,7 +187,7 @@ void SubsetTopologicalMapping::init()
                 for (Index pd = 0; pd < npD; ++pd)
                 {
                     defaulttype::Vec3d key(toModel->getPX(pd),toModel->getPY(pd),toModel->getPZ(pd));
-                    std::map<sofa::defaulttype::Vec3d,Index>::const_iterator it = pmapS.find(key);
+                    sofa::helper::map<sofa::defaulttype::Vec3d,Index>::const_iterator it = pmapS.find(key);
                     if (it == pmapS.end())
                     {
                         serr << "Point " << pd << " not found in source topology" << sendl;
@@ -216,7 +216,7 @@ void SubsetTopologicalMapping::init()
         }
         if (handleEdges.getValue() && neS > 0 && neD > 0)
         {
-            std::map<core::topology::Topology::Edge,Index> emapS;
+            sofa::helper::map<core::topology::Topology::Edge,Index> emapS;
             for (Index es = 0; es < neS; ++es)
             {
                 core::topology::Topology::Edge key(make_unique(fromModel->getEdge(es)));
@@ -226,7 +226,7 @@ void SubsetTopologicalMapping::init()
             for (Index ed = 0; ed < neD; ++ed)
             {
                 core::topology::Topology::Edge key(make_unique(apply_map(toModel->getEdge(ed), pD2S)));
-                std::map<core::topology::Topology::Edge,Index>::const_iterator it = emapS.find(key);
+                sofa::helper::map<core::topology::Topology::Edge,Index>::const_iterator it = emapS.find(key);
                 if (it == emapS.end())
                 {
                     serr << "Edge " << ed << " not found in source topology" << sendl;
@@ -241,7 +241,7 @@ void SubsetTopologicalMapping::init()
         }
         if (handleTriangles.getValue() && ntS > 0 && ntD > 0)
         {
-            std::map<core::topology::Topology::Triangle,Index> tmapS;
+            sofa::helper::map<core::topology::Topology::Triangle,Index> tmapS;
             for (Index ts = 0; ts < ntS; ++ts)
             {
                 core::topology::Topology::Triangle key(make_unique(fromModel->getTriangle(ts)));
@@ -251,7 +251,7 @@ void SubsetTopologicalMapping::init()
             for (Index td = 0; td < ntD; ++td)
             {
                 core::topology::Topology::Triangle key(make_unique(apply_map(toModel->getTriangle(td), pD2S)));
-                std::map<core::topology::Topology::Triangle,Index>::const_iterator it = tmapS.find(key);
+                sofa::helper::map<core::topology::Topology::Triangle,Index>::const_iterator it = tmapS.find(key);
                 if (it == tmapS.end())
                 {
                     serr << "Triangle " << td << " not found in source topology" << sendl;
@@ -266,7 +266,7 @@ void SubsetTopologicalMapping::init()
         }
         if (handleQuads.getValue() && nqS > 0 && nqD > 0)
         {
-            std::map<core::topology::Topology::Quad,Index> qmapS;
+            sofa::helper::map<core::topology::Topology::Quad,Index> qmapS;
             for (Index qs = 0; qs < nqS; ++qs)
             {
                 core::topology::Topology::Quad key(make_unique(fromModel->getQuad(qs)));
@@ -276,7 +276,7 @@ void SubsetTopologicalMapping::init()
             for (Index qd = 0; qd < nqD; ++qd)
             {
                 core::topology::Topology::Quad key(make_unique(apply_map(toModel->getQuad(qd), pD2S)));
-                std::map<core::topology::Topology::Quad,Index>::const_iterator it = qmapS.find(key);
+                sofa::helper::map<core::topology::Topology::Quad,Index>::const_iterator it = qmapS.find(key);
                 if (it == qmapS.end())
                 {
                     serr << "Quad " << qd << " not found in source topology" << sendl;
@@ -291,7 +291,7 @@ void SubsetTopologicalMapping::init()
         }
         if (handleTetrahedra.getValue() && nteS > 0 && nteD > 0)
         {
-            std::map<core::topology::Topology::Tetrahedron,Index> temapS;
+            sofa::helper::map<core::topology::Topology::Tetrahedron,Index> temapS;
             for (Index tes = 0; tes < nteS; ++tes)
             {
                 core::topology::Topology::Tetrahedron key(make_unique(fromModel->getTetrahedron(tes)));
@@ -301,7 +301,7 @@ void SubsetTopologicalMapping::init()
             for (Index ted = 0; ted < nteD; ++ted)
             {
                 core::topology::Topology::Tetrahedron key(make_unique(apply_map(toModel->getTetrahedron(ted), pD2S)));
-                std::map<core::topology::Topology::Tetrahedron,Index>::const_iterator it = temapS.find(key);
+                sofa::helper::map<core::topology::Topology::Tetrahedron,Index>::const_iterator it = temapS.find(key);
                 if (it == temapS.end())
                 {
                     serr << "Tetrahedron " << ted << " not found in source topology" << sendl;
@@ -316,7 +316,7 @@ void SubsetTopologicalMapping::init()
         }
         if (handleHexahedra.getValue() && nheS > 0 && nheD > 0)
         {
-            std::map<core::topology::Topology::Hexahedron,Index> hemapS;
+            sofa::helper::map<core::topology::Topology::Hexahedron,Index> hemapS;
             for (Index hes = 0; hes < nheS; ++hes)
             {
                 core::topology::Topology::Hexahedron key(make_unique(fromModel->getHexahedron(hes)));
@@ -326,7 +326,7 @@ void SubsetTopologicalMapping::init()
             for (Index hed = 0; hed < nheD; ++hed)
             {
                 core::topology::Topology::Hexahedron key(make_unique(apply_map(toModel->getHexahedron(hed), pD2S)));
-                std::map<core::topology::Topology::Hexahedron,Index>::const_iterator it = hemapS.find(key);
+                sofa::helper::map<core::topology::Topology::Hexahedron,Index>::const_iterator it = hemapS.find(key);
                 if (it == hemapS.end())
                 {
                     serr << "Hexahedron " << hed << " not found in source topology" << sendl;
@@ -399,8 +399,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
 {
     if (!fromModel || !toModel) return;
 
-    std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
     if (itBegin == itEnd) return;
 

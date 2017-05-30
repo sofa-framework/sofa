@@ -54,7 +54,7 @@ void MergeVectors<VecT>::parse( sofa::core::objectmodel::BaseObjectDescription* 
 }
 
 template <class VecT>
-void MergeVectors<VecT>::parseFields( const std::map<std::string,std::string*>& str )
+void MergeVectors<VecT>::parseFields( const sofa::helper::map<std::string,std::string*>& str )
 {
     vf_inputs.parseFieldsSizeData(str, f_nbInputs);
     Inherit1::parseFields(str);

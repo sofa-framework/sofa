@@ -163,7 +163,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->normal=QP;
     detection->value = detection->normal.norm();
@@ -249,7 +249,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->normal=QP;
     detection->value = detection->normal.norm();
@@ -302,7 +302,7 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
 
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     //detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->id = e1.getIndex();
     detection->normal=PQ;

@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <memory>
 
 namespace sofa

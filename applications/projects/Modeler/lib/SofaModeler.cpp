@@ -393,7 +393,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Create the Preset Menu
-    std::multimap< std::string, std::pair< std::string,std::string> > presetArchitecture;
+    std::multimap< std::string, sofa::helper::pair< std::string,std::string> > presetArchitecture;
 
     std::ifstream end(presetFile.c_str());
     std::string s;
@@ -421,7 +421,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     }
     end.close();
 
-    std::multimap< std::string, std::pair< std::string,std::string> >::iterator it_preset = presetArchitecture.begin();
+    std::multimap< std::string, sofa::helper::pair< std::string,std::string> >::iterator it_preset = presetArchitecture.begin();
     while(it_preset != presetArchitecture.end())
     {
         std::string directoryName = it_preset->first;
@@ -430,7 +430,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
         directory->setTitle( tr( it_preset->first.c_str()));
         preset->addMenu(directory);
 
-        std::map< std::string, std::string > &mPreset=mapPreset[directory];
+        sofa::helper::map< std::string, std::string > &mPreset=mapPreset[directory];
 
         for (unsigned int i=0; i<presetArchitecture.count(directoryName); i++,it_preset++)
         {
@@ -620,7 +620,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         mapSofa.find(curTab) != mapSofa.end())
     {
         typedef std::multimap< const QWidget*, QProcess* >::iterator multimapIterator;
-        std::pair< multimapIterator,multimapIterator > range;
+        sofa::helper::pair< multimapIterator,multimapIterator > range;
         range=mapSofa.equal_range(curTab);
         for (multimapIterator it=range.first; it!=range.second; ++it)
         {
@@ -631,7 +631,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
     }
 
     //Find the scene in the window menu
-    std::map< QAction*, QWidget* >::const_iterator it;
+    sofa::helper::map< QAction*, QWidget* >::const_iterator it;
     for (it = mapWindow.begin(); it!=mapWindow.end(); ++it)
     {
         if (it->second == curTab) break;
@@ -767,7 +767,7 @@ void SofaModeler::exportSofaClasses()
     std::vector< ClassEntry::SPtr > entries;
     sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
     //Set of categories found in the Object Factory
-    std::set< std::string > mainCategories;
+    sofa::helper::set< std::string > mainCategories;
     //Data containing all the entries for a given category
     std::multimap< std::string, ClassEntry::SPtr > inventory;
 
@@ -784,7 +784,7 @@ void SofaModeler::exportSofaClasses()
         }
     }
 
-    std::set< std::string >::iterator itCategory;
+    sofa::helper::set< std::string >::iterator itCategory;
     typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
     //We add the components category by category
@@ -792,7 +792,7 @@ void SofaModeler::exportSofaClasses()
     {
         const std::string& categoryName = *itCategory;
 
-        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        sofa::helper::pair< IteratorInventory,IteratorInventory > rangeCategory;
         rangeCategory = inventory.equal_range(categoryName);
 
         simulation::Node::SPtr node = root->createChild(categoryName);
@@ -857,7 +857,7 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
     }
     //Update the name of the tab
     {
-        std::map<QWidget*, GraphModeler*>::iterator it;
+        sofa::helper::map<QWidget*, GraphModeler*>::iterator it;
 
 
         for (it=mapGraph.begin(); it!=mapGraph.end(); ++it)
@@ -877,7 +877,7 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
 
     //Update the Scene menu
     {
-        std::map< QAction*, QWidget *>::iterator it;
+        sofa::helper::map< QAction*, QWidget *>::iterator it;
         for (it=mapWindow.begin(); it!=mapWindow.end(); ++it)
         {
             if (it->second == tabGraph)

@@ -403,7 +403,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
 
                 density += m*Kd.W(0); // density from current particle
 
-                for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+                for (typename std::vector< sofa::helper::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
                 {
                     const int j = it->first;
                     const Real r_h = it->second;
@@ -425,7 +425,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
         for (int i=0; i<n; i++)
         {
             Particle& Pi = particles[i];
-            for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+            for (typename std::vector< sofa::helper::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
             {
                 const int j = it->first;
                 const Real r_h = it->second;
@@ -448,7 +448,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
             // Gravity
             //f[i] += g*(m*Pi.density);
 
-            for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+            for (typename std::vector< sofa::helper::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
             {
                 const int j = it->first;
                 const Real r_h = it->second;
@@ -593,7 +593,7 @@ void SPHFluidForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
             }
         }
 #else
-        for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
+        for (typename std::vector< sofa::helper::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
         {
             const int j = it->first;
             const float r_h = (float)it->second;

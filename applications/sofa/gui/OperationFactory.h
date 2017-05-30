@@ -25,7 +25,7 @@
 #include <sofa/gui/MouseOperations.h>
 
 #include <iostream>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -55,7 +55,7 @@ public:
 class SOFA_SOFAGUI_API OperationFactory
 {
 public:
-    typedef std::map< std::string, OperationCreator* > RegisterStorage;
+    typedef sofa::helper::map< std::string, OperationCreator* > RegisterStorage;
     RegisterStorage registry;
 
     static OperationFactory* getInstance()

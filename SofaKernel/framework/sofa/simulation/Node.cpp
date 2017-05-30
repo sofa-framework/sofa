@@ -984,7 +984,7 @@ void Node::sortComponents()
     // map vertex->component
     boost::property_map< DependencyGraph, component_t >::type  component_from_vertex = boost::get( component_t(), dependencyGraph );
     // map component->vertex
-    std::map< BaseObject::SPtr, Vertex > vertex_from_component;
+    sofa::helper::map< BaseObject::SPtr, Vertex > vertex_from_component;
 
     // build the graph
     for (int i = object.size() - 1; i >= 0; i--) // in the reverse order for a final order more similar to the current one

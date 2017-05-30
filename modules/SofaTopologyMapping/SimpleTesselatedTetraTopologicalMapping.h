@@ -26,7 +26,7 @@
 #include <sofa/core/topology/TopologicalMapping.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <set>
 
 #include <sofa/core/BaseMapping.h>
@@ -127,7 +127,7 @@ protected:
             pointMappedFromEdgeData[-source-1] = i;
         }
     }
-    std::set<unsigned int> tetrahedraToRemove;
+    sofa::helper::set<unsigned int> tetrahedraToRemove;
 
 
     void swapInputPoints(int i1, int i2);

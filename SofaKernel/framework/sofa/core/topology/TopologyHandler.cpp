@@ -35,13 +35,13 @@ namespace topology
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void TopologyHandler::ApplyTopologyChanges(const std::list<const core::topology::TopologyChange *> &_topologyChangeEvents, const unsigned int _dataSize)
+void TopologyHandler::ApplyTopologyChanges(const sofa::helper::list<const core::topology::TopologyChange *> &_topologyChangeEvents, const unsigned int _dataSize)
 {
     if(!this->isTopologyDataRegistered())
         return;
 
-    std::list<const core::topology::TopologyChange *>::iterator changeIt;
-    std::list<const core::topology::TopologyChange *> _changeList = _topologyChangeEvents;
+    sofa::helper::list<const core::topology::TopologyChange *>::iterator changeIt;
+    sofa::helper::list<const core::topology::TopologyChange *> _changeList = _topologyChangeEvents;
 
     this->setDataSetArraySize(_dataSize);
 

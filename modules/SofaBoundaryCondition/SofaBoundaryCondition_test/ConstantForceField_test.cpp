@@ -22,10 +22,10 @@
 #include <string>
 using std::string ;
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector ;
 
-#include <map>
+#include <sofa/helper/map.h>
 using std::map ;
 using std::pair ;
 

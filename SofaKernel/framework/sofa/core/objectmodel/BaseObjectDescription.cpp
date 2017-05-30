@@ -46,7 +46,7 @@ BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
 
 BaseObjectDescription::~BaseObjectDescription()
 {
-//     for (std::map<std::string,std::string*>::iterator it = attributes.begin();
+//     for (sofa::helper::map<std::string,std::string*>::iterator it = attributes.begin();
 //         it != attributes.end(); ++it)
 //     {
 //         delete it->second;

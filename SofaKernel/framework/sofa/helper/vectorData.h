@@ -97,9 +97,9 @@ public:
     }
 
 
-    void parseFieldsSizeData(const std::map<std::string,std::string*>& str, Data<unsigned int>& size)
+    void parseFieldsSizeData(const sofa::helper::map<std::string,std::string*>& str, Data<unsigned int>& size)
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
+        sofa::helper::map<std::string,std::string*>::const_iterator it = str.find(size.getName());
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;

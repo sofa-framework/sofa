@@ -215,7 +215,7 @@ public:
     static void startDumpVisitor(std::ostream *s, SReal time);
     static void stopDumpVisitor();
     static bool isPrintActivated() { return printActivated; }
-    typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
+    typedef std::vector< sofa::helper::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void printComment(const std::string &s);
     static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() );
     static void printCloseNode(const std::string &type);

@@ -260,8 +260,8 @@ void IncrSAP::init()
 
 //
 //void IncrSAP::initIntersectors(){
-//    for(typename std::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
-//        for(std::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
+//    for(typename sofa::helper::set<CollModID>::const_iterator it = collisionModels.begin() ; it != collisionModels.end() ; ++it){
+//        for(sofa::helper::set<CollModID>::const_iterator it2 = it ; it2 != collisionModels.end() ; ++it2){
 
 //        }
 //    }
@@ -476,7 +476,7 @@ void IncrSAP::boxPrune(){
 
     sofa::helper::AdvancedTimer::stepBegin("Box Prune SAP intersection");
 
-    std::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
+    sofa::helper::deque<int> active_boxes;//active boxes are the one that we encoutered only their min (end point), so if there are two boxes b0 and b1,
                                  //if we encounter b1_min as b0_min < b1_min, on the current axis, the two boxes intersect :  b0_min--------------------b0_max
                                  //                                                                                                      b1_min---------------------b1_max
                                  //once we encouter b0_max, b0 will not intersect with nothing (trivial), so we delete it from active_boxes.

@@ -133,7 +133,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     //for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
     //{
-    //	dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
+    //	dataLoaderMap.insert (sofa::helper::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
     //}
 
     if (attributeList != 0)

@@ -23,6 +23,7 @@
 #define SOFA_HELPER_GL_CYLINDER_H
 
 #ifndef SOFA_NO_OPENGL
+#include <sofa/helper/helper.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
@@ -30,9 +31,8 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
-#include <sofa/helper/helper.h>
-
-#include <map>
+#include <sofa/helper/pair.h>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -82,7 +82,7 @@ private:
 
     void initDraw();
 
-    static std::map < std::pair<std::pair<float,float>,float>, Cylinder* > CylinderMap;
+    static std::map < sofa::helper::pair<sofa::helper::pair<float,float>,float>, Cylinder* > CylinderMap;
     static Cylinder* get(const Vector3& len);
 public:
     static void clear() { CylinderMap.clear(); } // need to be called when display list has been created in another opengl context

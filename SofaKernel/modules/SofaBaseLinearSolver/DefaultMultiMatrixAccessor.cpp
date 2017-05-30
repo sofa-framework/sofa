@@ -51,16 +51,16 @@ DefaultMultiMatrixAccessor::~DefaultMultiMatrixAccessor()
 void DefaultMultiMatrixAccessor::clear()
 {
     globalDim = 0;
-    for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
+    for (sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
         it->second = -1;
 
-    for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+    for (sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         if (it->second != NULL) delete it->second;
 
     mappedMatrices.clear();
     diagonalStiffnessBloc.clear();
 
-    for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
+    for (sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
         if (it->second.matrix != NULL && it->second.matrix != globalMatrix) delete it->second.matrix;
 
     interactionStiffnessBloc.clear();
@@ -126,12 +126,12 @@ void DefaultMultiMatrixAccessor::addMappedMechanicalState(const sofa::core::beha
 
 void DefaultMultiMatrixAccessor::setupMatrices()
 {
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end();
+    sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end();
     while (it != itend)
     {
         if (it->second < 0)
         {
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it2 = it;
+            sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it2 = it;
             ++it;
             realStateOffsets.erase(it2);
         }
@@ -171,7 +171,7 @@ int DefaultMultiMatrixAccessor::getGlobalDimension() const
 
 int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it = realStateOffsets.find(mstate);
+    sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it = realStateOffsets.find(mstate);
     if (it != realStateOffsets.end())
         return it->second;
     return -1;
@@ -181,7 +181,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
 {
     MatrixRef r;
 
-    std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator itRealState = realStateOffsets.find(mstate);
+    sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator itRealState = realStateOffsets.find(mstate);
 
     if (itRealState != realStateOffsets.end()) //case where mechanical state is a non mapped state
     {
@@ -194,7 +194,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     else //case where mechanical state is a mapped state
     {
 
-        std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
+        sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
         if (itmapped != mappedMatrices.end()) // this mapped state and its matrix has been already added and created
         {
             r.matrix = itmapped->second;
@@ -251,9 +251,9 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
     }
     else// case where state1 # state2
     {
-        std::pair<const BaseMechanicalState*,const BaseMechanicalState*> pairMS = std::make_pair(mstate1,mstate2);
+        sofa::helper::pair<const BaseMechanicalState*,const BaseMechanicalState*> pairMS = std::make_pair(mstate1,mstate2);
 
-        std::map< std::pair<const BaseMechanicalState*,const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.find(pairMS);
+        sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*,const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.find(pairMS);
         if (it != interactionStiffnessBloc.end())// the interaction is already added
         {
             if(it->second.matrix != NULL)
@@ -279,8 +279,8 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         }
         else// the interaction is not added, we need to creat it and its matrix
         {
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it1 = realStateOffsets.find(mstate1);
-            std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it2 = realStateOffsets.find(mstate2);
+            sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it1 = realStateOffsets.find(mstate1);
+            sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator it2 = realStateOffsets.find(mstate2);
 
             if(it1 != realStateOffsets.end() && it2 != realStateOffsets.end())// case where all of two ms are real DOF (non-mapped)
             {
@@ -351,23 +351,23 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
     {
         //				std::cout << "==========================     VERIFICATION REGISTERED IN LOCAL DATA ========================" <<std::endl << std::endl;
         //
-        //				for (std::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
+        //				for (sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*, int >::iterator it = realStateOffsets.begin(), itend = realStateOffsets.end(); it != itend; ++it)
         //				{
         //					std::cout << "                Mechanical State (Real) : "<< it->first->getName() <<" registered in list" <<std::endl;
         //				}
         //
-        //				for (std::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
+        //				for (sofa::helper::map< const sofa::core::behavior::BaseMechanicalState*,defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         //				{
         //					std::cout << "                Mechanical State (mapped) : "<< it->first->getName() <<" registered in list" <<std::endl;
         //				}
         //
-        //				for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
+        //				for (sofa::helper::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
         //				{
         //					std::cout << "                Mechanical State ( all ) : "<< it->first->getName() <<" registered in list" <<std::endl;
         //				}
         //
-        //				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
-        //				std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+        //				sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
+        //				sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
         //
         //				while(itBegin != itEnd)
         //				{
@@ -475,8 +475,8 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
         }
 
-        std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-        for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
+        std::vector<sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
+        for (sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
         {
             if(it->first.first == outstate || it->first.second == outstate )
             {
@@ -742,7 +742,7 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
     {
         std::cout << "==========================     VERIFICATION BLOC MATRIX FORMATS    ========================" <<std::endl << std::endl;
 
-        for (std::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
+        for (sofa::helper::map< const BaseMechanicalState*, MatrixRef >::iterator it = diagonalStiffnessBloc.begin(), itend = diagonalStiffnessBloc.end(); it != itend; ++it)
         {
             std::cout << " Mechanical State  : "<< it->first->getName()
                     <<" associated to K["<< it->second.matrix->rowSize() <<"x"<< it->second.matrix->colSize()<< "] in the format _"
@@ -751,8 +751,8 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
                     <<std::endl;
         }
 
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
-        std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
+        sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itBegin = interactionStiffnessBloc.begin();
+        sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator itEnd = interactionStiffnessBloc.end();
 
         while(itBegin != itEnd)
         {
@@ -872,8 +872,8 @@ void CRSMultiMatrixAccessor::computeGlobalMatrix()
             }
         }
 
-        std::vector<std::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
-        for (std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
+        std::vector<sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*> > interactionList;
+        for (sofa::helper::map< sofa::helper::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef >::iterator it = interactionStiffnessBloc.begin(), itend = interactionStiffnessBloc.end(); it != itend; ++it)
         {
             if(it->first.first == outstate || it->first.second == outstate )
             {

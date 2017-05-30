@@ -6,7 +6,7 @@
 #include <sofa/helper/io/Image.h>
 
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

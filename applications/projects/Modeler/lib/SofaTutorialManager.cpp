@@ -98,8 +98,8 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name)
     //Set up the list of tutorials
     selector->init();
 
-    const std::list<std::string> &listTuto=selector->getCategories();
-    for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
+    const sofa::helper::list<std::string> &listTuto=selector->getCategories();
+    for (sofa::helper::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
     {
         tutorialList->addItem(QString(it->c_str()));
     }

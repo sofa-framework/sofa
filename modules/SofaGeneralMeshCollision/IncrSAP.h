@@ -31,8 +31,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <SofaMeshCollision/EndPoint.h>
 #include <set>
-#include <map>
-#include <deque>
+#include <sofa/helper/map.h>
+#include <sofa/helper/deque.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
@@ -41,7 +41,7 @@
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/CollisionPM.h>
 #include <sofa/helper/AdvancedTimer.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -253,7 +253,7 @@ private:
     double _alarmDist_d2;
 
 
-    std::set<core::CollisionModel*> collisionModels;
+    sofa::helper::set<core::CollisionModel*> collisionModels;
 protected:
     IncrSAP();
 
@@ -270,8 +270,8 @@ public:
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPair (const sofa::helper::pair<core::CollisionModel*, core::CollisionModel*>& ){}
+    void addCollisionPairs (const helper::vector<sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> >&){}
 
     virtual void beginNarrowPhase();
 

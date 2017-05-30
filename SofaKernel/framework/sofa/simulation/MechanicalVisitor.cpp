@@ -1676,7 +1676,7 @@ Visitor::Result MechanicalPickParticlesWithTagsVisitor::fwdMechanicalMapping(sim
 bool MechanicalPickParticlesWithTagsVisitor::isComponentTagIncluded(const behavior::BaseMechanicalState *mm)
 {
     bool tagOk = mustContainAllTags || tags.empty();
-    for(std::list<sofa::core::objectmodel::Tag>::const_iterator tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
+    for(sofa::helper::list<sofa::core::objectmodel::Tag>::const_iterator tagIt = tags.begin(); tags.end() != tagIt; ++tagIt)
     {
         if (!mm->hasTag(*tagIt)) // picking disabled for this model
         {

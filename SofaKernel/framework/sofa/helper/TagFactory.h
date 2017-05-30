@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_TAGFACTORY_H
 #define SOFA_HELPER_TAGFACTORY_H
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
 
 #include <sofa/helper/helper.h>

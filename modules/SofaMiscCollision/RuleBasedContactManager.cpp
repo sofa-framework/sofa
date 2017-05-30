@@ -50,7 +50,7 @@ RuleBasedContactManager::RuleBasedContactManager()
 
 RuleBasedContactManager::~RuleBasedContactManager()
 {
-    for(std::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
+    for(sofa::helper::map<std::string,Data<std::string>*>::iterator it = variablesData.begin(),
         itend = variablesData.end(); it != itend; ++it)
     {
         //this->removeData(it->second);
@@ -66,7 +66,7 @@ void RuleBasedContactManager::createVariableData ( std::string variable )
     if (sep != std::string::npos)
     {
         // store group names in static set so that pointer to string content is kept valid
-        static std::set<std::string> groupNames;
+        static sofa::helper::set<std::string> groupNames;
         const std::string& group = *groupNames.insert(variable.substr(0,sep)).first;
         d->setGroup(group.c_str());
     }
@@ -105,7 +105,7 @@ std::string RuleBasedContactManager::replaceVariables(std::string response)
             {
                 std::string varname = response.substr(var+1,varEnd-var-1);
                 std::string varvalue;
-                std::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
+                sofa::helper::map<std::string,Data<std::string>*>::const_iterator it = variablesData.find(varname);
                 if (it == variablesData.end())
                 {
                     serr << "Unknown variables " << varname << sendl;

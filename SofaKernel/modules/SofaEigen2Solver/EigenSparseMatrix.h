@@ -72,8 +72,8 @@ public:
     typedef defaulttype::Mat<Nout,Nin, OutReal> Block;  ///< block relating an OutDeriv to an InDeriv. This is used for input only, not for internal storage.
 
 protected:
-    typedef std::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
-    typedef std::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
+    typedef sofa::helper::map<int,Block> BlockRowMap;        ///< Map which represents one block-view row of the matrix. The index represents the block-view column index of an entry.
+    typedef sofa::helper::map<int,BlockRowMap> BlockMatMap;  ///< Map which represents a block-view matrix. The index represents the block-view index of a block-view row.
     BlockMatMap incomingBlocks;                     ///< To store block-view data before it is compressed in optimized format.
     typedef Eigen::Matrix<InReal,Eigen::Dynamic,1>  VectorEigenIn;
 

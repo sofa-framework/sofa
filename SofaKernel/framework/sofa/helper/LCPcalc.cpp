@@ -22,7 +22,7 @@
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <algorithm>
 #include <functional>
 #include <iostream>

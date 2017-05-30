@@ -40,7 +40,7 @@
 #endif
 
 #include <cstdlib>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <iostream>
 #include <fstream>
 
@@ -257,9 +257,9 @@ const std::string& Utils::getSofaPathPrefix()
     return prefix;
 }
 
-std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)
+sofa::helper::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)
 {
-    std::map<std::string, std::string> map;
+    sofa::helper::map<std::string, std::string> map;
     std::ifstream iniFile(path.c_str());
     if (!iniFile.good())
     {

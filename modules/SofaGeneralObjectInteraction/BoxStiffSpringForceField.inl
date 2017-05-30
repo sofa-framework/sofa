@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
-#include <map>
+#include <sofa/helper/map.h>
 
 
 namespace sofa
@@ -93,7 +93,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     Real min_dist=0;
     if (indices1.size() < indices2.size())
     {
-        sofa::helper::vector< std::map<Real, unsigned int> > distance_spring(indices1.size());
+        sofa::helper::vector< sofa::helper::map<Real, unsigned int> > distance_spring(indices1.size());
         for(unsigned int i = 0; i < indices1.size(); ++i)
         {
             for(unsigned int j = 0; j < indices2.size(); ++j)
@@ -107,7 +107,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices1.size(); ++i)
         {
-            typename std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
+            typename sofa::helper::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])
@@ -121,7 +121,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
     }
     else
     {
-        sofa::helper::vector< std::map<Real, unsigned int> > distance_spring(indices2.size());
+        sofa::helper::vector< sofa::helper::map<Real, unsigned int> > distance_spring(indices2.size());
         for(unsigned int i = 0; i < indices2.size(); ++i)
         {
             for(unsigned int j = 0; j < indices1.size(); ++j)
@@ -135,7 +135,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
 
         for(unsigned int i = 0; i<indices2.size(); ++i)
         {
-            typename std::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
+            typename sofa::helper::map<Real, unsigned int>::const_iterator it = distance_spring[i].begin();
             for (; it!=distance_spring[i].end(); it++)
             {
                 if (indice_unused[it->second])

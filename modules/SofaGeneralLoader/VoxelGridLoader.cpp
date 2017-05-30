@@ -27,7 +27,7 @@
 #include <sofa/helper/io/ImageRAW.h>
 #include <iostream>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 #include <algorithm>
 
 namespace sofa
@@ -124,7 +124,7 @@ void VoxelGridLoader::reinit()
 
         //    const unsigned int numPoints = numPointsX * numPointsY * numPointsZ;
 
-        std::set<unsigned int> keepPoint;
+        sofa::helper::set<unsigned int> keepPoint;
 
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]; ++k )
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )
@@ -146,7 +146,7 @@ void VoxelGridLoader::reinit()
 
         unsigned int pointIdx = 0;
         seqPoints.resize ( keepPoint.size() );
-        std::map<unsigned int, unsigned int>  renumberingMap;
+        sofa::helper::map<unsigned int, unsigned int>  renumberingMap;
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]+1; ++k )
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]+1; ++j )
                 for ( unsigned int i=(unsigned)ROI[0]; i<=(unsigned)ROI[3]+1; ++i )

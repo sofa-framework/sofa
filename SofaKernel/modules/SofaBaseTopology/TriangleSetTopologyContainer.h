@@ -365,7 +365,7 @@ protected:
     bool m_triangleTopologyDirty;
 
     /// List of engines related to this specific container
-    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
+    sofa::helper::list<sofa::core::topology::TopologyEngine *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

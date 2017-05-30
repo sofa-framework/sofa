@@ -71,12 +71,12 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
     ComponentLibrary* component = createComponent(componentName, entry, exampleFiles);
 
     //Add the corresponding templates
-    std::map<std::string, Creator::SPtr>::iterator itTemplate;
+    sofa::helper::map<std::string, Creator::SPtr>::iterator itTemplate;
 
     //It exists Mappings only Mechanical or only Visual. So, we must add the component if only a creator is available for the current category
     bool componentCreationPossible=false;
     //read all the template possible, and remove unused (for Mapping processing)
-    std::list<std::string> templates;
+    sofa::helper::list<std::string> templates;
     for (itTemplate=entry->creatorMap.begin(); itTemplate!= entry->creatorMap.end(); ++itTemplate)
     {
         const std::string &templateName = itTemplate->first;
@@ -99,7 +99,7 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
         else
             templates.push_back(templateName);
     }
-    for (std::list<std::string>::const_iterator it = templates.begin(); it != templates.end(); ++it)
+    for (sofa::helper::list<std::string>::const_iterator it = templates.begin(); it != templates.end(); ++it)
         component->addTemplate(*it);
     component->endConstruction();
 

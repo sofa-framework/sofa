@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/gl.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 namespace sofa
 {
 

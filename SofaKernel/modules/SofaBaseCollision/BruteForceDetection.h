@@ -108,7 +108,7 @@ public:
     void reinit();
 
     void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
+    void addCollisionPair (const sofa::helper::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
 
     virtual void beginBroadPhase()
     {

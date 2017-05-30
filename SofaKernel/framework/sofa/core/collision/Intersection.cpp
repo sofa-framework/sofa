@@ -45,11 +45,11 @@ IntersectorMap::~IntersectorMap()
 helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
 {
     helper::TypeInfo t(typeid(*model));
-    const std::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
+    const sofa::helper::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
     if (it == castMap.end())
     {
         helper::TypeInfo t2 = t;
-        for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        for (sofa::helper::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
         {
             if ((*it)->isInstance(model))
             {
@@ -115,7 +115,7 @@ void IntersectorMap::add_impl(const objectmodel::ClassInfo& c1,
     classes.insert(&c2);
     castMap.clear();
     // rebuild castMap
-    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+    for (sofa::helper::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
     {
         castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
     }

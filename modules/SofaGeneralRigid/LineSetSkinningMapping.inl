@@ -106,14 +106,14 @@ void LineSetSkinningMapping<TIn, TOut>::init()
 
     for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
     {
-        std::set<int> result;
-        std::insert_iterator<std::set<int> > res_ins(result, result.begin());
+        sofa::helper::set<int> result;
+        std::insert_iterator<sofa::helper::set<int> > res_ins(result, result.begin());
 
         neighborhood[line1Index] = neighborhoodLinesSet[line1Index];
 
         for(unsigned int i=0; i<nvNeighborhood.getValue()-1; i++)
         {
-            for (std::set<int>::const_iterator it = neighborhood[line1Index].begin(), itbegin = it, itend = neighborhood[line1Index].end(); it != itend; it++)
+            for (sofa::helper::set<int>::const_iterator it = neighborhood[line1Index].begin(), itbegin = it, itend = neighborhood[line1Index].end(); it != itend; it++)
             {
                 set_union(itbegin, itend, neighborhoodLinesSet[(*it)].begin(), neighborhoodLinesSet[(*it)].end(), res_ins);
             }

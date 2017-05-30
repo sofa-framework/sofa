@@ -157,8 +157,8 @@ QString QTabulationModifyObject::getDataModifiedString() const
     }
 
     QString dataModifiedString;
-    std::map< QObject*, QString>::const_iterator it_map;
-    std::map< QObject*, QString>::const_iterator it_last = m_dataValueModified.end();
+    sofa::helper::map< QObject*, QString>::const_iterator it_map;
+    sofa::helper::map< QObject*, QString>::const_iterator it_last = m_dataValueModified.end();
     --it_last;
 
     for (it_map = m_dataValueModified.begin(); it_map != m_dataValueModified.end(); ++it_map)

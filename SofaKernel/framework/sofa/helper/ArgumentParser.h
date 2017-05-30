@@ -29,18 +29,16 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/logging/Messaging.h>
-
+#include <sofa/helper/list.h>
+#include <sofa/helper/map.h>
 #include <iostream>
 #include <cstdlib>
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <algorithm>
-#include <map>
-#include <list>
-#include <vector>
-
+#include <sofa/helper/vector.h>
 namespace sofa
 {
 
@@ -68,7 +66,7 @@ public:
     virtual ~ArgumentBase();
 
     /// Read the command line
-    virtual bool read( std::list<std::string>& str ) = 0;
+    virtual bool read( sofa::helper::list<std::string>& str ) = 0;
 
     /// Print the value of the associated variable
     virtual void printValue() const =0;
@@ -125,7 +123,7 @@ private:
     /** Try to read argument value from an input stream.
         Return false if failed
     */
-    inline bool read( std::list<std::string>& str )
+    inline bool read( sofa::helper::list<std::string>& str )
     {
         if (str.empty()) return false;
         std::string s = str.front();
@@ -147,7 +145,7 @@ Example: run -D ELEM1 -D ELEM2 ...
 */
 /*
 template<class TE> inline
-bool Argument< std::vector<TE> >::read( std::list<std::string>& str)
+bool Argument< std::vector<TE> >::read( sofa::helper::list<std::string>& str)
 {
     if (str.empty()) return false;
     std::string s = str.front();
@@ -164,7 +162,7 @@ bool Argument< std::vector<TE> >::read( std::list<std::string>& str)
 */
 
 template<> inline
-bool Argument< std::vector< std::string > >::read( std::list<std::string>& str)
+bool Argument< std::vector< std::string > >::read( sofa::helper::list<std::string>& str)
 {
     if (str.empty()) return false;
     std::string s = str.front();
@@ -181,7 +179,7 @@ The advantage is that you do not have to set the value, it is automatically TRUE
 The drawback is that reading a boolean necessarily sets it to TRUE. Currently you can not set a boolean to FALSE using this parser.
 */
 template<> inline
-bool Argument<bool>::read( std::list<std::string>& )
+bool Argument<bool>::read( sofa::helper::list<std::string>& )
 {
     *ptr = true;
     isSet = true;
@@ -189,7 +187,7 @@ bool Argument<bool>::read( std::list<std::string>& )
 }
 
 template<> inline
-bool Argument<std::string>::read( std::list<std::string>& str )
+bool Argument<std::string>::read( sofa::helper::list<std::string>& str )
 {
     if (str.empty()) return false;
     std::string s = str.front();
@@ -231,14 +229,14 @@ class SOFA_HELPER_API ArgumentParser
     /// String
     typedef std::string string;
     /// Associate a string with a Argument object
-    typedef std::map< string, ArgumentBase* > Map;
+    typedef sofa::helper::map< string, ArgumentBase* > Map;
     /// short name -> Argument object
-    std::map< char, ArgumentBase* > shortName;
+    sofa::helper::map< char, ArgumentBase* > shortName;
     /// long name -> Argument object
     Map longName;
 
     /// Associate name with boolean value (true iff it is set)
-    typedef std::map<ArgumentBase*,bool> SetMap;
+    typedef sofa::helper::map<ArgumentBase*,bool> SetMap;
 
     /// Set map (bool true iff parameter is set)
     SetMap parameter_set;
@@ -355,7 +353,7 @@ public:
     */
     void operator () ( int argc, char** argv );
 
-    void operator () ( std::list<std::string> str );
+    void operator () ( sofa::helper::list<std::string> str );
 
 };
 

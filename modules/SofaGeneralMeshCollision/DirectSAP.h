@@ -31,8 +31,8 @@
 #include <SofaMeshCollision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
-#include <map>
-#include <deque>
+#include <sofa/helper/map.h>
+#include <sofa/helper/deque.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
@@ -96,7 +96,7 @@ public:
 
     typedef DSAPBox SAPBox;
 
-    //void collidingCubes(std::vector<std::pair<Cube,Cube> > & col_cubes)const;
+    //void collidingCubes(std::vector<sofa::helper::pair<Cube,Cube> > & col_cubes)const;
 private:
     /**
       *Returns the axis number which have the greatest variance for the primitive end points.
@@ -125,7 +125,7 @@ private:
     EndPointList _end_points;//end points of _boxes
     int _cur_axis;//the current greatest variance axis
 
-    std::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
+    sofa::helper::set<core::CollisionModel*> collisionModels;//used to check if a collision model is added
     std::vector<core::CollisionModel*> _new_cm;//eventual new collision models to  add at a step
 
     double _alarmDist;
@@ -148,8 +148,8 @@ public:
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    void addCollisionPair (const sofa::helper::pair<core::CollisionModel*, core::CollisionModel*>& ){}
+    void addCollisionPairs (const helper::vector<sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> >&){}
 
     virtual void endBroadPhase();
     virtual void beginNarrowPhase();

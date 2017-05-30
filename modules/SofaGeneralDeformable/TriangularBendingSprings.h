@@ -38,7 +38,7 @@
 #pragma once
 #endif
 
-#include <map>
+#include <sofa/helper/map.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

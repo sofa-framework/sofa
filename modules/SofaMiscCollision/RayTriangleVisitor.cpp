@@ -93,7 +93,7 @@ core::objectmodel::BaseObject* RayTriangleVisitor::embeddingModel()
     // Version 2: we assume that objects are not nested, there can be intersections
     // We look for the first exit from an object not previously entered in
 //    cerr<<"RayTriangleVisitor::embeddingModel" << endl;
-    std::set<BaseObject*> entered;
+    sofa::helper::set<BaseObject*> entered;
     for( std::size_t i= 0; i<hits.size(); i++ )
     {
         if( !hits[i].internal ) { // entering an object

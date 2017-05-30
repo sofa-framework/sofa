@@ -23,7 +23,7 @@
 #define SOFA_CORE_TOPOLOGY_TOPOLOGICALMAPPING_H
 
 #include <cstdlib>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
 #include <iostream>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -100,7 +100,7 @@ public:
     virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
 
     /// Accessor to index maps :
-    const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
+    const sofa::helper::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
     //const sofa::helper::vector<unsigned int>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
 
     Data <sofa::helper::vector<unsigned int> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
@@ -127,7 +127,7 @@ public:
     */
     virtual void getFromIndex( helper::vector<unsigned int>& /*fromIndices*/, const unsigned int /*toIndex*/) const {}
 
-    const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
+    const sofa::helper::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -232,9 +232,9 @@ protected:
 
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
-    std::map<unsigned int, unsigned int> Glob2LocMap;   //TODO put it in Data => Data allow map
+    sofa::helper::map<unsigned int, unsigned int> Glob2LocMap;   //TODO put it in Data => Data allow map
 
-    std::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
+    sofa::helper::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
 };
 
 } // namespace topology

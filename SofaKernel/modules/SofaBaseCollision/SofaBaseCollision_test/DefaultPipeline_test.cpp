@@ -23,7 +23,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector;
 
 #include <string>
@@ -155,7 +155,7 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMissingIntersection)
 
 TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssue)
 {
-    std::vector<std::pair<int, bool>> testvalues = {
+    std::vector<sofa::helper::pair<int, bool>> testvalues = {
         std::make_pair(-1, false),
         std::make_pair( 0, true),
         std::make_pair( 2, true),

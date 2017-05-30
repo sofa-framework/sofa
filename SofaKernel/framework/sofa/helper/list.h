@@ -25,7 +25,7 @@
 
 #include <sofa/helper/helper.h>
 
-#include <map>
+#include <list>
 #include <iostream>
 #include <string>
 
@@ -35,16 +35,19 @@
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
 
 
-namespace std
+namespace sofa
 {
+namespace helper
+{
+using std::list ;
 
 /// Output stream
 template<class T>
-std::ostream& operator<< ( std::ostream& os, const std::list<T>& l )
+std::ostream& operator<< ( std::ostream& os, const sofa::helper::list<T>& l )
 {
     if( !l.empty() )
     {
-        typename std::list<T>::const_iterator i=l.begin(), iend=l.end();
+        typename sofa::helper::list<T>::const_iterator i=l.begin(), iend=l.end();
         os << *i;
         ++i;
         for( ; i!=iend; ++i )
@@ -55,7 +58,7 @@ std::ostream& operator<< ( std::ostream& os, const std::list<T>& l )
 
 /// Input stream
 template<class T>
-std::istream& operator>> ( std::istream& in, std::list<T>& l )
+std::istream& operator>> ( std::istream& in, sofa::helper::list<T>& l )
 {
     T t;
     l.clear();
@@ -65,7 +68,7 @@ std::istream& operator>> ( std::istream& in, std::list<T>& l )
     return in;
 }
 
-
-} // namespace std
+} // namespace helper
+} // namespace sofa
 
 #endif

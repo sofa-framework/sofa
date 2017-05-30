@@ -26,7 +26,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sstream>
 #include <string.h>

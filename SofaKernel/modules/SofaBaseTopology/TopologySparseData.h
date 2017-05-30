@@ -30,7 +30,7 @@
 #include <SofaBaseTopology/TopologySparseDataHandler.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {

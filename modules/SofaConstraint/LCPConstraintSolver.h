@@ -160,7 +160,7 @@ public:
     Data<int> merge_spatial_step;
     Data<int> merge_local_levels;
 
-    Data < std::set<int> > constraintGroups;
+    Data < sofa::helper::set<int> > constraintGroups;
 
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
@@ -244,11 +244,11 @@ public:
     class ConstraintBlockBuf
     {
     public:
-        std::map<PersistentID,int> persistentToConstraintIdMap;
+        sofa::helper::map<PersistentID,int> persistentToConstraintIdMap;
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
     };
 
-    std::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
+    sofa::helper::map<core::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
     helper::vector< double > _previousForces;
 
     helper::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;

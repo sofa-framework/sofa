@@ -53,7 +53,7 @@ public:
     HexahedronData< sofa::helper::vector<unsigned char> > valuesIndexedInTopology;
 
     Data< sofa::helper::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
-    Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo;
+    Data< sofa::helper::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo;
     Data< defaulttype::Vector3 > voxelSize;
 protected:
     DynamicSparseGridTopologyContainer();

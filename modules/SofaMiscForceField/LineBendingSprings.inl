@@ -69,7 +69,7 @@ void LineBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 }
 
 template<class DataTypes>
-void LineBendingSprings<DataTypes>::registerLine( unsigned a, unsigned b, std::map<Index, unsigned>& ptMap)
+void LineBendingSprings<DataTypes>::registerLine( unsigned a, unsigned b, sofa::helper::map<Index, unsigned>& ptMap)
 {
     //sout<<"=================================LineBendingSprings<DataTypes>::registerLine "<<a<<", "<<b<<sendl;
     {
@@ -94,7 +94,7 @@ void LineBendingSprings<DataTypes>::init()
 
     // Set the bending springs
 
-    std::map< Index, unsigned > ptMap;
+    sofa::helper::map< Index, unsigned > ptMap;
     sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 

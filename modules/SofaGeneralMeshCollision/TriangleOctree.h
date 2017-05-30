@@ -131,10 +131,10 @@ public:
     void traceAll (defaulttype::Vector3 origin, defaulttype::Vector3 direction, helper::vector<traceResult>& results);
 
     /// Find all triangles intersecting the given ray
-    void traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, std::set<int>& results);
+    void traceAllCandidates(defaulttype::Vector3 origin, defaulttype::Vector3 direction, sofa::helper::set<int>& results);
 
     /// Find all triangles intersecting the given ray
-    void bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, std::set<int>& results);
+    void bboxAllCandidates(defaulttype::Vector3 bbmin, defaulttype::Vector3 bbmax, sofa::helper::set<int>& results);
 
     friend class TriangleOctreeRoot;
 
@@ -161,10 +161,10 @@ protected:
             const defaulttype::Vector3 & direction, helper::vector<traceResult>& results);
 
     void allTriangles (const defaulttype::Vector3 & origin,
-            const defaulttype::Vector3 & direction, std::set<int>& results);
+            const defaulttype::Vector3 & direction, sofa::helper::set<int>& results);
 
     void bbAllTriangles (const defaulttype::Vector3 & bbmin,
-            const defaulttype::Vector3 & bbmax, std::set<int>& results);
+            const defaulttype::Vector3 & bbmax, sofa::helper::set<int>& results);
 
     void insert (double _x, double _y, double _z, double _inc, int t);
 

@@ -29,7 +29,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {

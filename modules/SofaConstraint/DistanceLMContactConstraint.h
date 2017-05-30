@@ -153,8 +153,8 @@ protected:
         Deriv contactForce;
     };
 
-    std::map< Edge, Contact > edgeToContact;
-    std::map< ConstraintGroup*, Contact* > constraintGroupToContact;
+    sofa::helper::map< Edge, Contact > edgeToContact;
+    sofa::helper::map< ConstraintGroup*, Contact* > constraintGroupToContact;
     core::collision::Intersection* intersection;
 protected:
     DistanceLMContactConstraintInternalData<DataTypes> data;

@@ -767,7 +767,7 @@ bool OglModel::loadTextures()
             continue;
         }
         helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
-        materialTextureIdMap.insert(std::pair<int, int>(*i,textures.size()));
+        materialTextureIdMap.insert(sofa::helper::pair<int, int>(*i,textures.size()));
         textures.push_back( text );
     }
 
@@ -809,7 +809,7 @@ bool OglModel::loadTextures()
 //               return false;
 //            }
 //            helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
-//            materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
+//            materialTextureIdMap.insert(sofa::helper::pair<int, int>(i,textures.size()));
 //            textures.push_back( text );
 //
 //            msg_info() << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()

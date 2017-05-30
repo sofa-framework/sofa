@@ -311,7 +311,7 @@ void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)
 
     for (unsigned int i = 0, nbContacts = contacts.size(); i < nbContacts; ++i)
     {
-        std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
+        sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
 
         addWakeupPair(wakeupPairs, collisionModels.first->getContext(), collisionModels.first->isMoving(),
                                     collisionModels.second->getContext(), collisionModels.second->isMoving());
@@ -366,7 +366,7 @@ core::objectmodel::BaseContext* SleepController::getParentContextThatCanSleep(co
     if (!node)
         return context;
 
-    std::deque<core::objectmodel::BaseNode*> parents;
+    sofa::helper::deque<core::objectmodel::BaseNode*> parents;
     parents.push_back(node);
 
     // We go up one level at a time

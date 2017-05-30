@@ -95,7 +95,7 @@ public:
 protected:
 
     /// the list of listerners
-    typedef std::set<Listener*> Listeners;
+    typedef sofa::helper::set<Listener*> Listeners;
     static Listeners s_listerners;
     static void notifyLoadingScene() { for( auto* l : s_listerners ) l->rightBeforeLoadingScene(); }
 

@@ -144,7 +144,7 @@ bool LocalMinDistanceFilters::validate(const Point &p, const defaulttype::Vector
         return it->second->validate(p, PQ);
     }
 
-    std::pair< PointInfoMap::iterator, bool > ret = m_pointInfoMap.insert(std::make_pair(p.getIndex(), new PointInfo(this)));
+    sofa::helper::pair< PointInfoMap::iterator, bool > ret = m_pointInfoMap.insert(std::make_pair(p.getIndex(), new PointInfo(this)));
 
     return ret.first->second->validate(p, PQ);
 }
@@ -160,7 +160,7 @@ bool LocalMinDistanceFilters::validate(const Line &l, const defaulttype::Vector3
         return it->second->validate(l, PQ);
     }
 
-    std::pair< LineInfoMap::iterator, bool > ret = m_lineInfoMap.insert(std::make_pair(l.getIndex(), new LineInfo(this)));
+    sofa::helper::pair< LineInfoMap::iterator, bool > ret = m_lineInfoMap.insert(std::make_pair(l.getIndex(), new LineInfo(this)));
 
     return ret.first->second->validate(l, PQ);
 }
@@ -176,7 +176,7 @@ bool LocalMinDistanceFilters::validate(const Triangle &t, const defaulttype::Vec
         return it->second->validate(t, PQ);
     }
 
-    std::pair< TriangleInfoMap::iterator, bool > ret = m_triangleInfoMap.insert(std::make_pair(t.getIndex(), new TriangleInfo(this)));
+    sofa::helper::pair< TriangleInfoMap::iterator, bool > ret = m_triangleInfoMap.insert(std::make_pair(t.getIndex(), new TriangleInfo(this)));
 
     return ret.first->second->validate(t, PQ);
 }

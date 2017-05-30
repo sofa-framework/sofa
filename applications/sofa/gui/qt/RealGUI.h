@@ -203,7 +203,7 @@ protected:
     QDisplayPropertyWidget* propertyWidget;
 
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
-    std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
+    sofa::helper::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
 
     QWidget* currentTab;
@@ -220,7 +220,7 @@ protected:
     std::string pathDumpVisitor;
 
     /// Keep track of log files that have been modified since the GUI started
-    std::set<std::string>   m_modifiedLogFiles;
+    sofa::helper::set<std::string>   m_modifiedLogFiles;
 
     bool m_enableInteraction {false};
 private:

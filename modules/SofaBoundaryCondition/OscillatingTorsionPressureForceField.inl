@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <set>
 
 // #define DEBUG_TRIANGLEFEM

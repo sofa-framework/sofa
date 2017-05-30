@@ -24,7 +24,7 @@
 
 #include <sofa/core/VecId.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -222,7 +222,7 @@ class TMultiVecId
 public:
     typedef TVecId<vtype, vaccess> MyVecId;
 
-    typedef std::map<const BaseState*, MyVecId> IdMap;
+    typedef sofa::helper::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
 
@@ -362,10 +362,10 @@ public:
     }
 
     template<class State>
-    void setId(const std::set<State>& states, const MyVecId& id)
+    void setId(const sofa::helper::set<State>& states, const MyVecId& id)
     {
         IdMap& map = writeIdMap();
-        for (typename std::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
+        for (typename sofa::helper::set<State>::const_iterator it = states.begin(), itend = states.end(); it != itend; ++it)
             map[*it] = id;
     }
 
@@ -490,7 +490,7 @@ class TMultiVecId<V_ALL, vaccess>
 public:
     typedef TVecId<V_ALL, vaccess> MyVecId;
 
-    typedef std::map<const BaseState*, MyVecId> IdMap;
+    typedef sofa::helper::map<const BaseState*, MyVecId> IdMap;
     typedef typename IdMap::iterator IdMap_iterator;
     typedef typename IdMap::const_iterator IdMap_const_iterator;
 

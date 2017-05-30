@@ -82,11 +82,11 @@ public:
 
 
 private:
-    bool getNearestPoint(const typename std::list<Coord>::iterator &itCurrentPoint,
-            std::list<Coord>& listPoints,
-            std::list<int>& listCoeffs,
-            typename std::list<Coord>::iterator &itNearestPoint,
-            std::list<int>::iterator &itNearestCoeff,
+    bool getNearestPoint(const typename sofa::helper::list<Coord>::iterator &itCurrentPoint,
+            sofa::helper::list<Coord>& listPoints,
+            sofa::helper::list<int>& listCoeffs,
+            typename sofa::helper::list<Coord>::iterator &itNearestPoint,
+            sofa::helper::list<int>::iterator &itNearestCoeff,
             const Real& distance);
 
 };

@@ -94,10 +94,10 @@ void ExtrudeSurface<DataTypes>::update()
 
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles, itTrianglesSide;
 
-    std::map<int, int> pointMatching;
-    std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
-    std::set<int> pointsUsed;
-    std::map<int, std::pair<Vec3, unsigned int> > normals;
+    sofa::helper::map<int, int> pointMatching;
+    sofa::helper::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
+    sofa::helper::set<int> pointsUsed;
+    sofa::helper::map<int, sofa::helper::pair<Vec3, unsigned int> > normals;
     //first loop to compute normals per point
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
@@ -118,7 +118,7 @@ void ExtrudeSurface<DataTypes>::update()
         }
     }
     //average normals
-    typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
+    typename sofa::helper::map<int, sofa::helper::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
     {
         //(*itNormals).second.first /= (*itNormals).second.second;
@@ -187,7 +187,7 @@ void ExtrudeSurface<DataTypes>::update()
         extrusionTriangles->push_back(t2);
     }
 
-    std::map<BaseMeshTopology::Edge, bool >::const_iterator itEdges;
+    sofa::helper::map<BaseMeshTopology::Edge, bool >::const_iterator itEdges;
     for (itEdges = edgesOnBorder.begin() ; itEdges != edgesOnBorder.end() ; itEdges++)
     {
         //for each edge, we can get the "mirrored one" and construct 2 other triangles

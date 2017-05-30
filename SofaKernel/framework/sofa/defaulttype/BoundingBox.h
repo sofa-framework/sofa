@@ -36,7 +36,7 @@ class SOFA_DEFAULTTYPE_API BoundingBox
 {
 
 public:
-    typedef std::pair< Vector3, Vector3 > bbox_t;
+    typedef sofa::helper::pair< Vector3, Vector3 > bbox_t;
 
     BoundingBox();
     /// Define using the endpoints of the main diagonal
@@ -125,7 +125,7 @@ class SOFA_DEFAULTTYPE_API BoundingBox2D
 {
 
 public:
-    typedef std::pair< Vector2, Vector2 > bbox_t;
+    typedef sofa::helper::pair< Vector2, Vector2 > bbox_t;
 
     BoundingBox2D();
     /// Define using the endpoints of the main diagonal
@@ -201,7 +201,7 @@ class SOFA_DEFAULTTYPE_API BoundingBox1D
 {
 
 public:
-    typedef std::pair< SReal, SReal > bbox_t;
+    typedef sofa::helper::pair< SReal, SReal > bbox_t;
 
     BoundingBox1D();
     /// Define using the endpoints of the main diagonal

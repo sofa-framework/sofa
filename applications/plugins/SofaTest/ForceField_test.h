@@ -75,7 +75,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      * @brief Minimum/Maximum amplitudes of the random perturbation used to check the stiffness using finite differences
      * @warning Should be more than errorMax/stiffness. This is not checked automatically.
      */
-    std::pair<Real,Real> deltaRange;
+    sofa::helper::pair<Real,Real> deltaRange;
     bool checkStiffness;  ///< If false, stops the test after checking the force, without checking the stiffness. Default value is true.
     bool debug;           ///< Print debug messages. Default is false.
     /// }

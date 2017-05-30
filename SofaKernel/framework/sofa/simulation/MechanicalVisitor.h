@@ -449,7 +449,7 @@ class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor : public BaseMechanicalVi
 public:
     typedef sofa::core::TVecId<vtype,sofa::core::V_WRITE> MyVecId;
     typedef sofa::core::TMultiVecId<vtype,sofa::core::V_WRITE> MyMultiVecId;
-    typedef std::set<sofa::core::BaseState*> StateSet;
+    typedef sofa::helper::set<sofa::core::BaseState*> StateSet;
     MyVecId& v;
     StateSet states;
     MechanicalVAvailVisitor( const core::ExecParams* params, MyVecId& v)
@@ -821,7 +821,7 @@ public:
                 out << " ;   ";
             core::MultiVecId r = it->first;
             out << r.getName();
-            const helper::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
+            const helper::vector< sofa::helper::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
             int nop = (int)operands.size();
             if (nop==0)
             {
@@ -2189,7 +2189,7 @@ public:
     defaulttype::Vec3d rayOrigin, rayDirection;
     double radius0, dRadius;
     sofa::core::objectmodel::Tag tagNoPicking;
-    typedef std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
+    typedef std::multimap< double, sofa::helper::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
     Particles particles;
     MechanicalPickParticlesVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, sofa::core::objectmodel::Tag tag = sofa::core::objectmodel::Tag("NoPicking") )
         : BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tagNoPicking(tag)
@@ -2226,11 +2226,11 @@ class SOFA_SIMULATION_CORE_API MechanicalPickParticlesWithTagsVisitor : public B
 public:
 	defaulttype::Vec3d rayOrigin, rayDirection;
 	double radius0, dRadius;
-	std::list<sofa::core::objectmodel::Tag> tags;
+	sofa::helper::list<sofa::core::objectmodel::Tag> tags;
 	bool mustContainAllTags;
-	typedef std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
+	typedef std::multimap< double, sofa::helper::pair<sofa::core::behavior::BaseMechanicalState*, int> > Particles;
 	Particles particles;
-	MechanicalPickParticlesWithTagsVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, std::list<sofa::core::objectmodel::Tag> _tags = std::list<sofa::core::objectmodel::Tag>(), bool _mustContainAllTags = false)
+	MechanicalPickParticlesWithTagsVisitor(const sofa::core::ExecParams* mparams, const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0, sofa::helper::list<sofa::core::objectmodel::Tag> _tags = sofa::helper::list<sofa::core::objectmodel::Tag>(), bool _mustContainAllTags = false)
 		: BaseMechanicalVisitor(mparams) , rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr), tags(_tags), mustContainAllTags(_mustContainAllTags)
 	{
 	}

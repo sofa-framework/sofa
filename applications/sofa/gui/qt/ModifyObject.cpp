@@ -148,7 +148,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         const sofa::core::objectmodel::Base::VecData& fields = node->getDataFields();
         const sofa::core::objectmodel::Base::VecLink& links = node->getLinks();
 
-        std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
+        sofa::helper::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
         //If we operate on a Node, we have to ...
         /*if(isNode)
@@ -268,7 +268,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         std::cout << "GUI: end Link" << std::endl;
 #endif
 
-        //std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
+        //sofa::helper::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
         //for (it=groupTabulation.begin();it!=groupTabulation.end();++it)
         //{
         //    const std::string &groupName=it->first;

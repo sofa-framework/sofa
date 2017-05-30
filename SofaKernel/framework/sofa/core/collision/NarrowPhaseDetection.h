@@ -24,8 +24,8 @@
 
 #include <sofa/core/collision/Detection.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/map.h>
 #include <algorithm>
 
 namespace sofa
@@ -46,7 +46,7 @@ class NarrowPhaseDetection : virtual public Detection
 public:
     SOFA_ABSTRACT_CLASS(NarrowPhaseDetection, Detection);
 
-    typedef sofa::helper::map_ptr_stable_compare< std::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
+    typedef sofa::helper::map_ptr_stable_compare< sofa::helper::pair< core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
 
 protected:
     /// Destructor
@@ -65,12 +65,12 @@ public:
     }
 
     /// Add a new potentially colliding pairs of models
-    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
+    virtual void addCollisionPair (const sofa::helper::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
     /// Add a new list of potentially colliding pairs of models
-    virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+    virtual void addCollisionPairs(const sofa::helper::vector< sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> >& v)
     {
-        for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+        for (sofa::helper::vector< sofa::helper::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
     }
 
@@ -97,7 +97,7 @@ public:
         }
     }
 
-    //sofa::helper::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
+    //sofa::helper::vector<sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 
     const DetectionOutputMap& getDetectionOutputs()
     {
@@ -106,7 +106,7 @@ public:
 
     DetectionOutputVector*& getDetectionOutputs(CollisionModel *cm1, CollisionModel *cm2)
     {
-        std::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
+        sofa::helper::pair< CollisionModel*, CollisionModel* > cm_pair = std::make_pair(cm1, cm2);
 
         DetectionOutputMap::iterator it = m_outputsMap.find(cm_pair);
 
@@ -134,7 +134,7 @@ protected:
     }
 
 private:
-    std::map<Instance, DetectionOutputMap> m_storedOutputsMap;
+    sofa::helper::map<Instance, DetectionOutputMap> m_storedOutputsMap;
 
     DetectionOutputMap m_outputsMap;
 };

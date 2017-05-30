@@ -51,7 +51,7 @@ public:
     typedef sofa::helper::vector<T> VecValue;
     typedef unsigned int Index;
     typedef sofa::helper::vector<Index> VecIndex;
-    typedef std::map<Index, Index> MapIndex;
+    typedef sofa::helper::map<Index, Index> MapIndex;
 protected:
     MapIndices();
 

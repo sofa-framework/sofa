@@ -27,7 +27,7 @@
 #include <sofa/helper/io/ImageRAW.h>
 #include <iostream>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 #include <algorithm>
 
 namespace sofa

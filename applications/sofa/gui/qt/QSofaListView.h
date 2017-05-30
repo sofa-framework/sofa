@@ -36,7 +36,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -147,9 +147,9 @@ protected:
     void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );
     bool isNodeErasable( core::objectmodel::BaseNode* node);
 
-    std::list<core::objectmodel::BaseNode*> collectNodesToChange(core::objectmodel::BaseNode* node);
-    std::map< void*, QTreeWidgetItem* > map_modifyDialogOpened;
-    std::map< void*, QDialog* > map_modifyObjectWindow;
+    sofa::helper::list<core::objectmodel::BaseNode*> collectNodesToChange(core::objectmodel::BaseNode* node);
+    sofa::helper::map< void*, QTreeWidgetItem* > map_modifyDialogOpened;
+    sofa::helper::map< void*, QDialog* > map_modifyObjectWindow;
     GraphListenerQListView* graphListener_;
     std::vector< std::string > list_object;
     AddObject* AddObjectDialog_;

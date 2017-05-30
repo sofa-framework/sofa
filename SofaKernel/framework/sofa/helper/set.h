@@ -35,17 +35,21 @@
 /// \todo: refactoring of the containers required
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
 
-
-namespace std
+namespace sofa
 {
+namespace helper
+{
+/// Import the std::set into the sofa::helper namespace so that we can
+/// use it as sofa::helper::set
+using std::set ;
 
 /// Output stream
 template<class K>
-std::ostream& operator<< ( std::ostream& o, const std::set<K>& s )
+std::ostream& operator<< ( std::ostream& o, const sofa::helper::set<K>& s )
 {
     if( !s.empty() )
     {
-        typename std::set<K>::const_iterator i=s.begin(), iend=s.end();
+        typename sofa::helper::set<K>::const_iterator i=s.begin(), iend=s.end();
         o << *i;
         ++i;
         for( ; i!=iend; ++i )
@@ -56,7 +60,7 @@ std::ostream& operator<< ( std::ostream& o, const std::set<K>& s )
 
 /// Input stream
 template<class K>
-std::istream& operator>> ( std::istream& i, std::set<K>& s )
+std::istream& operator>> ( std::istream& i, sofa::helper::set<K>& s )
 {
     K t;
     s.clear();
@@ -67,12 +71,10 @@ std::istream& operator>> ( std::istream& i, std::set<K>& s )
 }
 
 
-
-
 /// Input stream
 /// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-inline std::istream& operator>> ( std::istream& in, std::set<int>& _set )
+inline std::istream& operator>> ( std::istream& in, sofa::helper::set<int>& _set )
 {
     int t;
     _set.clear();
@@ -131,7 +133,7 @@ inline std::istream& operator>> ( std::istream& in, std::set<int>& _set )
 /// Input stream
 /// Specialization for reading sets of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-inline std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set )
+inline std::istream& operator>> ( std::istream& in, sofa::helper::set<unsigned int>& _set )
 {
     unsigned int t;
     _set.clear();
@@ -188,7 +190,7 @@ inline std::istream& operator>> ( std::istream& in, std::set<unsigned int>& _set
     return in;
 }
 
-
-} // namespace std
+} // namespace helper
+} // namespace sofa
 
 #endif

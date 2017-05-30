@@ -76,9 +76,9 @@ public:
 protected:
 
     /// None names in output
-    std::map<core::objectmodel::Base*, std::string> names;
+    sofa::helper::map<core::objectmodel::Base*, std::string> names;
     /// Next indice available for duplicated names
-    std::map<std::string, int> nextIndex;
+    sofa::helper::map<std::string, int> nextIndex;
 
     /// Test if a node should be displayed
     bool display(GNode* node, const char** color=NULL);

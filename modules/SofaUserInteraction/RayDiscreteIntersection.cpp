@@ -273,7 +273,7 @@ int  RayDiscreteIntersection::computeIntersection(Ray& rRay, OBB& rObb, OutputVe
         contacts->resize(contacts->size()+1);
         DetectionOutput *detection = &*(contacts->end()-1);
 
-        detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rObb);
+        detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rObb);
         detection->point[1] = v3HitLocation;
         detection->point[0] = v3HitLocation;
         detection->normal = v3Normal;

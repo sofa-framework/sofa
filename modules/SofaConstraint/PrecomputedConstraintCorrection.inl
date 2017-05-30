@@ -47,7 +47,7 @@
 
 //#include <glib.h>
 #include <sstream>
-#include <list>
+#include <sofa/helper/list.h>
 #include <iomanip>
 
 //#define NEW_METHOD_UNBUILT
@@ -95,7 +95,7 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 template<class DataTypes>
 typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* PrecomputedConstraintCorrection<DataTypes>::getInverse(std::string name)
 {
-    std::map< std::string, InverseStorage >& registry = getInverseMap();
+    sofa::helper::map< std::string, InverseStorage >& registry = getInverseMap();
     InverseStorage* m = &(registry[name]);
     ++m->nbref;
     return m;
@@ -105,7 +105,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name, InverseStorage* inv)
 {
     if (inv == NULL) return;
-    std::map< std::string, InverseStorage >& registry = getInverseMap();
+    sofa::helper::map< std::string, InverseStorage >& registry = getInverseMap();
     if (--inv->nbref == 0)
     {
         if (inv->data) delete[] inv->data;
@@ -629,7 +629,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, std::list< int > &activeDofs)
+void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, sofa::helper::list< int > &activeDofs)
 {
     const VecDeriv& force = f_d.getValue();
 
@@ -639,7 +639,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
     dx.clear();
     dx.resize(force.size());
 
-    std::list<int>::iterator IterateurListe;
+    sofa::helper::list<int>::iterator IterateurListe;
     unsigned int i, offset, offset2;
 
     for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); ++IterateurListe)
@@ -677,7 +677,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams
         , sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
-    std::list< int > activeDof;
+    sofa::helper::list< int > activeDof;
 
     this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
 
@@ -713,7 +713,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
-    std::list< int > activeDof;
+    sofa::helper::list< int > activeDof;
 
     this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
 
@@ -740,7 +740,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
-    std::list< int > activeDof;
+    sofa::helper::list< int > activeDof;
 
     this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
 
@@ -789,7 +789,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     force.clear();
     force.resize(x_free.size());
 
-    std::list<int> activeDof;
+    sofa::helper::list<int> activeDof;
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -814,7 +814,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     activeDof.unique();
 
 
-    std::list<int>::iterator IterateurListe;
+    sofa::helper::list<int>::iterator IterateurListe;
     unsigned int i;
     unsigned int offset, offset2;
     for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); ++IterateurListe)
@@ -1073,7 +1073,7 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
 // new API for non building the constraint system during solving process //
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
+void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, sofa::helper::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
     const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
@@ -1157,7 +1157,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
             /*
             ConstraintIterator itConstraint;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
+            sofa::helper::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
 
             for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
             {
@@ -1183,9 +1183,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
     _sparseCompliance.resize(constraint_dofs.size() * nbConstraints);
 
-    std::list< int >::iterator dofsItEnd = constraint_dofs.end();
+    sofa::helper::list< int >::iterator dofsItEnd = constraint_dofs.end();
 
-    for (std::list< int >::iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
+    for (sofa::helper::list< int >::iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
     {
         int NodeIdx = (*dofsIt);
         _indexNodeSparseCompliance[NodeIdx] = it;
@@ -1296,14 +1296,14 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
     }
 
 #else
-    std::list<unsigned int>::iterator itBegin = active_local_force.begin(), itEnd = active_local_force.end();
+    sofa::helper::list<unsigned int>::iterator itBegin = active_local_force.begin(), itEnd = active_local_force.end();
 
     for (int i = begin; i <= end; i++)
     {
         int c = id_to_localIndex[i];
         double dc = d[i];
 
-        for (std::list<unsigned int>::iterator it = itBegin; it != itEnd; ++it)
+        for (sofa::helper::list<unsigned int>::iterator it = itBegin; it != itEnd; ++it)
         {
             int id = localIndex_to_id[*it];
             dc += localW.element(c, *it) * constraint_force[id];
@@ -1357,9 +1357,9 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
                     Fbuf[j] = n[j] * df[i];
                 }
 
-                std::list< int >::const_iterator dofsItEnd = constraint_dofs.end();
+                sofa::helper::list< int >::const_iterator dofsItEnd = constraint_dofs.end();
 
-                for (std::list< int >::const_iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
+                for (sofa::helper::list< int >::const_iterator dofsIt = constraint_dofs.begin(); dofsIt != dofsItEnd; ++dofsIt)
                 {
                     int dof2 = *dofsIt;
                     offset = dof2 * dof_on_node * nbCols + dof * dof_on_node;
@@ -1402,7 +1402,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
     const MatrixDeriv& c = *this->mstate->getC();
     int numLocalConstraints = 0;
 
-    std::list<int> localActiveDof;
+    sofa::helper::list<int> localActiveDof;
     std::vector<int> constraintLocalID;
 
     for (int i = begin; i <= end; i++)
@@ -1435,9 +1435,9 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 
     _sparseCompliance.resize(localActiveDof.size() * numLocalConstraints);
 
-    std::list< int >::const_iterator dofsItEnd = localActiveDof.end();
+    sofa::helper::list< int >::const_iterator dofsItEnd = localActiveDof.end();
 
-    for (std::list< int >::const_iterator dofsIt = localActiveDof.begin(); dofsIt != dofsItEnd; ++dofsIt)
+    for (sofa::helper::list< int >::const_iterator dofsIt = localActiveDof.begin(); dofsIt != dofsItEnd; ++dofsIt)
     {
         int dof1 = (*dofsIt);
         _indexNodeSparseCompliance[dof1] = it_localActiveDof;

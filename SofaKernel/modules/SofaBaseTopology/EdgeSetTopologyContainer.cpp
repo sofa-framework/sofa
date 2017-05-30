@@ -27,7 +27,7 @@
 
 #include <boost/config.hpp>
 #include <iostream>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <utility>
 
 #include <boost/graph/adjacency_list.hpp>
@@ -211,8 +211,8 @@ bool EdgeSetTopologyContainer::checkTopology() const
     if(hasEdgesAroundVertex())
     {
         helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-        std::set<int> edgeSet;
-        std::set<int>::iterator it;
+        sofa::helper::set<int> edgeSet;
+        sofa::helper::set<int>::iterator it;
 
         for (size_t i=0; i<m_edgesAroundVertex.size(); ++i)
         {

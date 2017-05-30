@@ -212,8 +212,8 @@ void GenerateCylinder<DataTypes>::update()
         size_t nbSurfaceNodes,tetraRank;
 
         // parse edges
-        std::map<Edge,size_t> edgeMap;
-        std::map<Edge,size_t>::iterator item;
+        sofa::helper::map<Edge,size_t> edgeMap;
+        sofa::helper::map<Edge,size_t>::iterator item;
         SeqTetrahedra::iterator itt;
         //size_t pointOffset=freqTheta*freqZ;
         Real ctheta=(Real)cos(M_PI/freqTheta);
@@ -240,7 +240,7 @@ void GenerateCylinder<DataTypes>::update()
                     se=e;
                 }
                 if ((item=edgeMap.find(se))==edgeMap.end()){
-                    edgeMap.insert(std::pair<Edge,size_t>(se,edgeArray.size()));
+                    edgeMap.insert(sofa::helper::pair<Edge,size_t>(se,edgeArray.size()));
                     edgeArray.push_back(se);
                     e=se;
 
@@ -330,8 +330,8 @@ void GenerateCylinder<DataTypes>::update()
         }
         // add points inside triangles
         if (f_bezierTetrahedronDegree.getValue()>2) {
-            std::map<Triangle,size_t> triangleMap;
-            std::map<Triangle,size_t>::iterator ittm;
+            sofa::helper::map<Triangle,size_t> triangleMap;
+            sofa::helper::map<Triangle,size_t>::iterator ittm;
             size_t  v[3],triangleRank;
 
             for (triangleRank=0,itt=tetras.begin();itt!=tetras.end();++itt) {
@@ -551,8 +551,8 @@ void GenerateCylinder<DataTypes>::update()
 
 
         // parse edges
-        std::map<Edge,size_t> edgeMap;
-        std::map<Edge,size_t>::iterator item;
+        sofa::helper::map<Edge,size_t> edgeMap;
+        sofa::helper::map<Edge,size_t>::iterator item;
         SeqTriangles::iterator itt;
         size_t pointOffset=freqTheta*freqZ;
         Real ctheta=(Real)cos(M_PI/freqTheta);
@@ -578,7 +578,7 @@ void GenerateCylinder<DataTypes>::update()
                     se=e;
                 }
                 if ((item=edgeMap.find(se))==edgeMap.end()){
-                    edgeMap.insert(std::pair<Edge,size_t>(se,edgeArray.size()));
+                    edgeMap.insert(sofa::helper::pair<Edge,size_t>(se,edgeArray.size()));
                     edgeArray.push_back(e);
                     // add Bezier points along the edge
                     if ( (outTrian[e[0]][2]==outTrian[e[1]][2]) &&(e[0]<pointOffset)&&(e[1]<pointOffset)) {

@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

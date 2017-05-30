@@ -105,7 +105,7 @@ public:
 protected:
     Data<VecReal > _capsule_radii;
     Data<Real> _default_radius;
-    sofa::helper::vector<std::pair<int,int> > _capsule_points;
+    sofa::helper::vector<sofa::helper::pair<int,int> > _capsule_points;
 
     TCapsuleModel();
     TCapsuleModel(core::behavior::MechanicalState<TDataTypes>* mstate );

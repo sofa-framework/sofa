@@ -474,7 +474,7 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
     of totally below the isolevel.
     */
 int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float isolevel, sofa::helper::vector< PointID > &triangles,
-        std::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
+        sofa::helper::map< Vector3, PointID> &map_vertices, sofa::helper::vector< Vector3 > &map_indices ) const
 {
 
     int i,ntriang;
@@ -525,7 +525,7 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
 
     /* Create the triangle */
     ntriang = 0;
-    std::map< Vector3, PointID>::iterator iter;
+    sofa::helper::map< Vector3, PointID>::iterator iter;
     Vector3 current_P;
     PointID current_ID;
     for ( i=0; MarchingCubeTriTable[cubeConf][i]!=-1; i+=3 )
@@ -565,8 +565,8 @@ void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coo
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
-        std::set<Vec3i>& generatedCubes,
-        std::map< Vector3, PointID>& map_vertices,
+        sofa::helper::set<Vec3i>& generatedCubes,
+        sofa::helper::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid,
         bool propagate
                                         ) const
@@ -625,12 +625,12 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3>& vertices,
-        std::map< Vector3, PointID>& map_vertices,
+        sofa::helper::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
 //    Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
-    std::set<Vec3i> generatedCubes;
+    sofa::helper::set<Vec3i> generatedCubes;
 
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
@@ -664,7 +664,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
         bool propagate ) const
 {
-    std::map< Vector3, PointID> map_vertices;
+    sofa::helper::map< Vector3, PointID> map_vertices;
     for ( size_t i = map_vertices.size(); i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
@@ -697,7 +697,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
         data = _data;
     }
 
-    std::map< Vector3, PointID> map_vertices;
+    sofa::helper::map< Vector3, PointID> map_vertices;
     for ( size_t i = 0; i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
@@ -764,7 +764,7 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
 {
     std::cout << "MarchingCubeUtility::findSeeds(). Begining." << std::endl;
     //vector< unsigned char > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
-    std::set<unsigned int> parsedVoxels;
+    sofa::helper::set<unsigned int> parsedVoxels;
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
         return;
@@ -865,7 +865,7 @@ void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< he
 
 
 
-void MarchingCubeUtility::findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data )
+void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data )
 {
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
     Vec3i bboxMax = Vec3i ( bbox.max / cubeStep );

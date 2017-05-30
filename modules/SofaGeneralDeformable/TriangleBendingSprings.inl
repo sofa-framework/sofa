@@ -70,7 +70,7 @@ void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 }
 
 template<class DataTypes>
-void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, std::map<IndexPair, unsigned>& edgeMap)
+void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, sofa::helper::map<IndexPair, unsigned>& edgeMap)
 {
     //sout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<sendl;
     using namespace std;
@@ -128,7 +128,7 @@ void TriangleBendingSprings<DataTypes>::init()
 
     // Set the bending springs
 
-    std::map< IndexPair, unsigned > edgeMap;
+    sofa::helper::map< IndexPair, unsigned > edgeMap;
     sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
     assert( topology );
 

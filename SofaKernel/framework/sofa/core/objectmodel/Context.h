@@ -27,7 +27,7 @@
 #include <sofa/core/objectmodel/Data.h>
 
 #include <iostream>
-#include <map>
+#include <sofa/helper/map.h>
 
 #ifdef SOFA_SMP
 #include <IterativePartition.h>

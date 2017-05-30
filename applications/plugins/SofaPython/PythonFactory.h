@@ -98,7 +98,7 @@ protected:
     /// this limits checking the right cast on a limited number of types
     /// Note this list is built from actual needs, but can be easily extended to any types that Base* can be statically casted from.
     enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,BaseTopologyObject,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,NB_LISTS};
-    typedef std::list< BasePythonBoundType* > PythonBoundTypes;
+    typedef sofa::helper::list< BasePythonBoundType* > PythonBoundTypes;
     /// a list of types for each sub-classes (prefiltering types not to have to check casting with any of them)
     static PythonBoundTypes s_boundComponents[NB_LISTS];
     /// a list of Data types

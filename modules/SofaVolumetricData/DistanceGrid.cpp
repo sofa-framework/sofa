@@ -109,8 +109,8 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz,
 
 DistanceGrid::~DistanceGrid()
 {
-    std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
-    std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.begin();
+    sofa::helper::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
+    sofa::helper::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.begin();
     while (it != shared.end() && it->second != this) ++it;
     if (it != shared.end())
         shared.erase(it); // remove this grid from the list of already loaded grids
@@ -1266,8 +1266,8 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename,
     params.nz = nz;
     params.pmin = pmin;
     params.pmax = pmax;
-    std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
-    std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.find(params);
+    sofa::helper::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
+    sofa::helper::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.find(params);
     if (it != shared.end())
         return it->second->addRef();
     else
@@ -1469,9 +1469,9 @@ bool DistanceGrid::DistanceGridParams::operator>(const DistanceGridParams& v) co
     return false;
 }
 
-std::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShared()
+sofa::helper::map<DistanceGrid::DistanceGridParams, DistanceGrid*>& DistanceGrid::getShared()
 {
-    static std::map<DistanceGridParams, DistanceGrid*> instance;
+    static sofa::helper::map<DistanceGridParams, DistanceGrid*> instance;
     return instance;
 }
 

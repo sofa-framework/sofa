@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -266,7 +266,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
     lastPoint += _planeNormal * .1;
 
-    std::list<int>positiveCubes;
+    sofa::helper::list<int>positiveCubes;
     for(int i=0; i<_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
@@ -284,7 +284,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 		for(Octree::CellPtrList::iterator itcell=_octree->getLeafLists(animal::octree::GEOMETRY).begin();   itcell!=_octree->getLeafLists(animal::octree::GEOMETRY).end();itcell++)
 
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
-        for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
+        for(sofa::helper::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
             const BaseMeshTopology::Hexa& cell = _topology->getHexahedron( *itcell );
 
@@ -302,7 +302,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 }
                 else // pas du bon cote, on oublie le cube
                 {
-                    std::list<int>::iterator it = positiveCubes.erase( itcell );
+                    sofa::helper::list<int>::iterator it = positiveCubes.erase( itcell );
                     itcell = it;
                     continue;
                 }
@@ -389,8 +389,8 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
             // trier les intersections
 
-            helper::vector<std::pair<Real,int> > neg; // angle + indice
-            helper::vector<std::pair<Real,int> > pos;
+            helper::vector<sofa::helper::pair<Real,int> > neg; // angle + indice
+            helper::vector<sofa::helper::pair<Real,int> > pos;
             helper::vector<int> nul;
 
 
@@ -423,9 +423,9 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 Real angle2 = referenceLine2 * actualline ;
 
                 if( angle2<0.0)
-                    neg.push_back( std::pair<Real,int>(angle1, i) );
+                    neg.push_back( sofa::helper::pair<Real,int>(angle1, i) );
                 else
-                    pos.push_back( std::pair<Real,int>(angle1, i) );
+                    pos.push_back( sofa::helper::pair<Real,int>(angle1, i) );
 
                 // 		cerr<<i<<" : "<<angle1<<" "<<angle2<<endl;
             }
@@ -439,9 +439,9 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 // 				Real angle2 = animal::v_dot( referenceLine2, actualline );
             //
 // 				if( angle2<0.0)
-// 					neg.push_back( std::pair<Real,int>(angle1, i) );
+// 					neg.push_back( sofa::helper::pair<Real,int>(angle1, i) );
 // 				else
-// 					pos.push_back( std::pair<Real,int>(angle1, i) );
+// 					pos.push_back( sofa::helper::pair<Real,int>(angle1, i) );
             //
 // 		// 		cerr<<i<<" : "<<angle1<<" "<<angle2<<endl;
 // 			}

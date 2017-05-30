@@ -154,10 +154,10 @@ void GraphHistoryManager::undoOperation(Operation &o)
 std::string GraphHistoryManager::componentState(Base *base) const
 {
     std::ostringstream out;
-    std::map<std::string, std::string*> datas;
+    sofa::helper::map<std::string, std::string*> datas;
     base->writeDatas(datas);
 
-    std::map<std::string, std::string*>::const_iterator it;
+    sofa::helper::map<std::string, std::string*>::const_iterator it;
     for (it=datas.begin(); it!=datas.end(); ++it)
     {
         if (BaseData *d=base->findData(it->first))

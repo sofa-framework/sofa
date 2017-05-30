@@ -98,12 +98,12 @@ public:
 
 
     /// Retrieve all the equations
-    std::pair< EquationConstIterator,EquationConstIterator> data() const
+    sofa::helper::pair< EquationConstIterator,EquationConstIterator> data() const
     {
         return std::make_pair( equations.begin(), equations.end());
     }
 
-    std::pair< EquationIterator,EquationIterator > data()
+    sofa::helper::pair< EquationIterator,EquationIterator > data()
     {
         return std::make_pair( equations.begin(), equations.end());
     }
@@ -163,7 +163,7 @@ public:
 
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}
+    virtual void getConstraints( sofa::helper::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}
     /// Get all the constraints stored of a given nature
     virtual const helper::vector< ConstraintGroup* > &getConstraintsOrder(ConstraintParams::ConstOrder Order) const
     {
@@ -178,7 +178,7 @@ public:
     void getEquationsUsed(const ConstraintGroup* group, DataStorage &used0) const
     {
         typedef ConstraintGroup::EquationConstIterator iterator_t;
-        std::pair< iterator_t, iterator_t > range=group->data();
+        sofa::helper::pair< iterator_t, iterator_t > range=group->data();
         for (iterator_t equation=range.first; equation!=range.second; ++equation) used0.push_back(equation->idx);
     }
 
@@ -233,7 +233,7 @@ protected:
 
     /// Constraints stored depending on their nature
     /// @see ConstraintGroup
-    typedef std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder_t;
+    typedef sofa::helper::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder_t;
     constraintOrder_t constraintOrder;
 
     Data<std::string> pathObject1;

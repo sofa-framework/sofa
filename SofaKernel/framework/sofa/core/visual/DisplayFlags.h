@@ -25,7 +25,7 @@
 #include <sofa/core/core.h>
 #include <sofa/helper/vector.h>
 #include <sstream>
-#include <map>
+#include <sofa/helper/map.h>
 
 
 namespace sofa
@@ -129,9 +129,9 @@ public:
 protected:
     void propagateStateDown(FlagTreeItem* origin);
     void propagateStateUp(FlagTreeItem* origin);
-    static std::map<std::string,bool> create_flagmap(FlagTreeItem* root);
-    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool>& map);
-    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool>& map);
+    static sofa::helper::map<std::string,bool> create_flagmap(FlagTreeItem* root);
+    static void create_parse_map(FlagTreeItem* root, sofa::helper::map<std::string,bool>& map);
+    static void read_recursive(FlagTreeItem* root, const sofa::helper::map<std::string,bool>& map);
     static void write_recursive(const FlagTreeItem* root,  std::string& str);
 };
 

@@ -27,7 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <set>
 
 

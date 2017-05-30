@@ -192,8 +192,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
     if(t != this->_topology)
         return;
 #ifdef TODOTOPO
-    std::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itBegin=this->_topology->beginChange();
+    sofa::helper::list<const TopologyChange *>::const_iterator itEnd=this->_topology->endChange();
 
     // handle point events
     //this->_particleMasses.handleTopologyEvents(itBegin,itEnd);
@@ -201,10 +201,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
     //if( this->_useLumpedMass.getValue() )
     //    this->_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
 
-    for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
+    for(sofa::helper::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)
     {
-        std::list<const TopologyChange *>::const_iterator next_iter = iter;
+        sofa::helper::list<const TopologyChange *>::const_iterator next_iter = iter;
         ++next_iter;
 
         switch((*iter)->getChangeType())
@@ -388,8 +388,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
         ElementMass M;
         Real totalMass = (Real) 0.0;
 
-        const std::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
-        for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
+        const sofa::helper::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
+        for(sofa::helper::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
         {
             const Vec3i& voxelId = *it;
 
@@ -508,17 +508,17 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     M.clear();
     totalMass = (Real) 0.0;
 
-    const std::set<Vec3i>& voxels = _multilevelTopology->getHexaVoxels(elementIndex);
+    const sofa::helper::set<Vec3i>& voxels = _multilevelTopology->getHexaVoxels(elementIndex);
 
     const int level = _multilevelTopology->getLevel();
 
     if(_bRecursive.getValue())
     {
         const unsigned int coarseNodeSize = (1 << level);
-        std::set<unsigned int> fineChildren;
+        sofa::helper::set<unsigned int> fineChildren;
 
         // condensate recursively each 8 children (if they exist)
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(sofa::helper::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
         {
             const Vec3i& voxelId = *it;
 
@@ -542,7 +542,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     const ElementMass &M_fine,
     const Real& mass_fine,
     const unsigned int level,
-    const std::set<Vec3i>& voxels) const
+    const sofa::helper::set<Vec3i>& voxels) const
 {
     if(voxels.size() == (unsigned int) (1 << (3*level))) // full element
     {
@@ -558,7 +558,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     {
         const int coarseNodeSize = (1 << level);
 
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(sofa::helper::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
         {
             const Vec3i& voxelId = *it;
 
@@ -577,27 +577,27 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         for(unsigned int l=1; l<=voxels.size(); l <<= 3)
             ++intervalLevels;
 
-        typedef std::pair< unsigned int, unsigned int > t_int_interval;
-        typedef std::list< t_int_interval > t_interval_list;
+        typedef sofa::helper::pair< unsigned int, unsigned int > t_int_interval;
+        typedef sofa::helper::list< t_int_interval > t_interval_list;
 
         helper::vector< t_interval_list >	intervals(intervalLevels);
 
-        std::set<unsigned int> fineChildren;
+        sofa::helper::set<unsigned int> fineChildren;
         const unsigned int coarseNodeSize = (1 << level);
 
-        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        for(sofa::helper::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
         {
             const Vec3i& voxelId = *it;
 
             fineChildren.insert(ijk2octree(voxelId[0]%coarseNodeSize, voxelId[1]%coarseNodeSize, voxelId[2]%coarseNodeSize));
         }
 
-        const std::set<unsigned int>::const_iterator itBegin = fineChildren.begin();
-        const std::set<unsigned int>::const_iterator itEnd = fineChildren.end();
+        const sofa::helper::set<unsigned int>::const_iterator itBegin = fineChildren.begin();
+        const sofa::helper::set<unsigned int>::const_iterator itEnd = fineChildren.end();
 
-        std::set<unsigned int>::const_iterator it = itBegin;
-        std::set<unsigned int>::const_iterator it_first = itBegin;
-        std::set<unsigned int>::const_iterator it_last = itBegin;
+        sofa::helper::set<unsigned int>::const_iterator it = itBegin;
+        sofa::helper::set<unsigned int>::const_iterator it_first = itBegin;
+        sofa::helper::set<unsigned int>::const_iterator it_last = itBegin;
 
         while(it != itEnd)
         {
@@ -730,11 +730,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     const ElementMass &M_fine,
     const Real& mass_fine,
     const unsigned int level,
-    const std::set<Vec3i>& voxels) const
+    const sofa::helper::set<Vec3i>& voxels) const
 {
     const int coarseNodeSize = (1 << level);
 
-    for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+    for(sofa::helper::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
     {
         const Vec3i& voxelId = *it;
 
@@ -757,7 +757,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     const Real& mass_fine,
     const unsigned int level,
     const unsigned int startIdx,
-    const std::set<unsigned int>& fineChildren) const
+    const sofa::helper::set<unsigned int>& fineChildren) const
 {
     if(level == 0)
     {
@@ -775,8 +775,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             unsigned int minChildIdx = startIdx + child * delta;
             unsigned int maxChildIdx = minChildIdx + delta;
 
-            std::set<unsigned int>::const_iterator itBegin = fineChildren.lower_bound(minChildIdx);
-            std::set<unsigned int>::const_iterator itEnd = fineChildren.lower_bound(maxChildIdx);
+            sofa::helper::set<unsigned int>::const_iterator itBegin = fineChildren.lower_bound(minChildIdx);
+            sofa::helper::set<unsigned int>::const_iterator itEnd = fineChildren.lower_bound(maxChildIdx);
 
             if(itBegin != itEnd) // there are some non empty voxels in the child area
             {

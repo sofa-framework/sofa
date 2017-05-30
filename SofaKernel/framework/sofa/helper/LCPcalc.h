@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa

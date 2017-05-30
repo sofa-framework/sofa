@@ -96,9 +96,9 @@ public:
     static void split_row_index(Index& index, Index& modulo) { bloc_index_func<NL>::split(index, modulo); }
     static void split_col_index(Index& index, Index& modulo) { bloc_index_func<NC>::split(index, modulo); }
 
-    class Range : public std::pair<Index, Index>
+    class Range : public sofa::helper::pair<Index, Index>
     {
-        typedef std::pair<Index, Index> Inherit;
+        typedef sofa::helper::pair<Index, Index> Inherit;
     public:
         Range() : Inherit(0,0) {}
         Range(Index begin, Index end) : Inherit(begin,end) {}
@@ -1138,7 +1138,7 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
+    virtual sofa::helper::pair<ColBlockConstIterator, ColBlockConstIterator> bRowRange(Index ib) const
     {
         ((Matrix*)this)->compress();
         Index rowId = ib * (Index)rowIndex.size() / nBlocRow;
@@ -1175,7 +1175,7 @@ protected:
         Index index2 = rowBegin[rowId+1];
         return createColBlockConstIterator(row, index2);
     }
-    virtual std::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
+    virtual sofa::helper::pair<ColBlockConstIterator, ColBlockConstIterator> itRangeRowBlock(InternalRowBlockIterator* it) const
     {
         Index rowId = it->data[0];
         Index row = rowIndex[rowId];
@@ -1226,7 +1226,7 @@ public:
     }
 
     /// Get the iterators corresponding to the beginning and end of the given row of blocks
-    virtual std::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
+    virtual sofa::helper::pair<RowBlockConstIterator, RowBlockConstIterator> bRowsRange() const
     {
         ((Matrix*)this)->compress();
         return std::make_pair(createRowBlockConstIterator(0, 0),

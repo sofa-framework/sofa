@@ -32,7 +32,7 @@
 
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -172,8 +172,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingBottomUp()
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
 
-        std::list<const TopologyChange *>::const_iterator changeIt=toModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=toModel->endChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator changeIt=toModel->beginChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itEnd=toModel->endChange();
 
         while( changeIt != itEnd )
         {
@@ -393,8 +393,8 @@ void SimpleTesselatedTetraTopologicalMapping::updateTopologicalMappingTopDown()
         //TetrahedronSetTopologyContainer *to_tstc;
         //toModel->getContext()->get(to_tstc);
 
-        std::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator changeIt=fromModel->beginChange();
+        sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
         while( changeIt != itEnd )
         {

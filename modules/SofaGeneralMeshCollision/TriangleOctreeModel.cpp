@@ -26,7 +26,7 @@
 #include <SofaMeshCollision/Triangle.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <cmath>

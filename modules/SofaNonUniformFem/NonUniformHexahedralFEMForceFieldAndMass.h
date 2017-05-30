@@ -137,7 +137,7 @@ private:
         const ElementMass &M_fine,
         const Real& mass_fine,
         const unsigned int level,
-        const std::set<Vec3i>& voxels) const;
+        const sofa::helper::set<Vec3i>& voxels) const;
 
     void computeMechanicalMatricesByCondensation_Recursive(
         ElementStiffness &K,
@@ -148,7 +148,7 @@ private:
         const Real& mass_fine,
         const unsigned int level,
         const unsigned int startIdx,
-        const std::set<unsigned int>& fineChildren) const;
+        const sofa::helper::set<unsigned int>& fineChildren) const;
 
     void computeMechanicalMatricesByCondensation_Direct(
         ElementStiffness &K,
@@ -158,7 +158,7 @@ private:
         const ElementMass &M_fine,
         const Real& mass_fine,
         const unsigned int level,
-        const std::set<Vec3i>& voxels) const;
+        const sofa::helper::set<Vec3i>& voxels) const;
 
 
     int ijk2octree(const int i, const int j, const int k) const;

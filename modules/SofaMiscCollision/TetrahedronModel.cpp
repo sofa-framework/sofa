@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>

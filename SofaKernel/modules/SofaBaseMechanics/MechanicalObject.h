@@ -34,7 +34,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <fstream>
 
 #ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
@@ -287,7 +287,7 @@ public:
     /// @}
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the MatrixDeriv container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
+    virtual sofa::helper::list<ConstraintBlock> constraintBlocks( const sofa::helper::list<unsigned int> &indices) const;
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id);
 
     void setFilename(std::string s) {filename.setValue(s);}
@@ -405,7 +405,7 @@ public:
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
     virtual bool pickParticles(const core::ExecParams* params, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
-            std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
+            std::multimap< double, sofa::helper::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
 
 
    /// if this mechanical object stores independent dofs (in opposition to mapped dofs)

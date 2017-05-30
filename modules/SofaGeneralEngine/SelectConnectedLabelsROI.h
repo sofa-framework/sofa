@@ -102,7 +102,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const sofa::helper::map<std::string,std::string*>& str )
     {
         d_labels.parseFieldsSizeData(str, d_nbLabels);
         Inherit1::parseFields(str);
@@ -124,8 +124,8 @@ protected:
 
         // convert connectLabels to set for efficient look-up
         helper::ReadAccessor<Data< helper::vector<T> > > connectL(this->d_connectLabels);
-        typedef std::pair<T,T>  TPair;
-        std::set<TPair> connectS;
+        typedef sofa::helper::pair<T,T>  TPair;
+        sofa::helper::set<TPair> connectS;
         for(unsigned int i=0;i<connectL.size()/2;i++)
         {
             connectS.insert(TPair(connectL[2*i],connectL[2*i+1]));

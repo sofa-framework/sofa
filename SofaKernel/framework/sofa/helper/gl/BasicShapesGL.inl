@@ -43,7 +43,7 @@ BasicShapesGL_Sphere<VertexType>::BasicShapesGL_Sphere()
 template<class VertexType>
 BasicShapesGL_Sphere<VertexType>::~BasicShapesGL_Sphere()
 {
-    typename std::map<SphereDescription, GLBuffers>::const_iterator it;
+    typename sofa::helper::map<SphereDescription, GLBuffers>::const_iterator it;
     for (it = m_mapBuffers.begin(); it != m_mapBuffers.end(); ++it)
     {
         const GLBuffers& buffer = it->second;

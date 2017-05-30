@@ -37,7 +37,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-#include <deque>
+#include <sofa/helper/deque.h>
 
 #include <SofaConstraint/BilateralConstraintResolution.h>
 

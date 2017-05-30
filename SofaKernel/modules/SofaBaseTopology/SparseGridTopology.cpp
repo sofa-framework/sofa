@@ -831,7 +831,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
     //// find all initial mesh edges to compute intersection with cubes
     //const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-    //std::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
+    //sofa::helper::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
     //for (unsigned int i=0;i<facets.size();i++)
     //{
     //	const helper::vector<int>& facet = facets[i][0];
@@ -1278,7 +1278,7 @@ void SparseGridTopology::buildFromFiner(  )
                 if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
                 {
                     _hierarchicalPointMap[coarseCornerGlobalIndice][fineVertexGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
-                    // 						_hierarchicalPointMap[coarseCornerGlobalIndice].push_back( std::pair<int,float>(fineVertexGlobalIndice, WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice]) );
+                    // 						_hierarchicalPointMap[coarseCornerGlobalIndice].push_back( sofa::helper::pair<int,float>(fineVertexGlobalIndice, WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice]) );
 
                     _finerSparseGrid->_inverseHierarchicalPointMap[fineVertexGlobalIndice][coarseCornerGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
 
@@ -1317,7 +1317,7 @@ void SparseGridTopology::buildFromFiner(  )
     // 		for(unsigned i=0;i<_hierarchicalPointMap.size();++i)
     // 		{
     // 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_hierarchicalPointMap[i].size()<<" : ";
-    // 			for(std::map<int,float>::iterator it = _hierarchicalPointMap[i].begin();it != _hierarchicalPointMap[i].end() ; ++it )
+    // 			for(sofa::helper::map<int,float>::iterator it = _hierarchicalPointMap[i].begin();it != _hierarchicalPointMap[i].end() ; ++it )
     // 			{
     // 				serr<<(*it).first<<", "<<(*it).second<<" # ";
     // 			}
@@ -1330,7 +1330,7 @@ void SparseGridTopology::buildFromFiner(  )
     // 		for(unsigned i=0;i<_finerSparseGrid->_inverseHierarchicalPointMap.size();++i)
     // 		{
     // 			serr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_finerSparseGrid->_inverseHierarchicalPointMap[i].size()<<" : ";
-    // 			for(std::map<int,float>::iterator it = _finerSparseGrid->_inverseHierarchicalPointMap[i].begin();it != _finerSparseGrid->_inverseHierarchicalPointMap[i].end() ; ++it )
+    // 			for(sofa::helper::map<int,float>::iterator it = _finerSparseGrid->_inverseHierarchicalPointMap[i].begin();it != _finerSparseGrid->_inverseHierarchicalPointMap[i].end() ; ++it )
     // 			{
     // 				serr<<(*it).first<<", "<<(*it).second<<" # ";
     // 			}
@@ -1347,7 +1347,7 @@ void SparseGridTopology::buildFromFiner(  )
     // 		for(int o=0;o<_hierarchicalPointMap.size();++o)
     // 		{
     // 			serr<<o<<" : ";
-    // 			for(std::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
+    // 			for(sofa::helper::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
     // 				serr<<*it<<" ";
     // 			serr<<sendl;
     // 		}
@@ -1548,7 +1548,7 @@ float SparseGridTopology::getMassCoef(int elementIdx)
 
 void SparseGridTopology::updateEdges()
 {
-    std::map<pair<int,int>,bool> edgesMap;
+    sofa::helper::map<pair<int,int>,bool> edgesMap;
     for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
     {
         Hexa c = seqHexahedra.getValue()[i];
@@ -1591,7 +1591,7 @@ void SparseGridTopology::updateEdges()
     SeqEdges& edges = *seqEdges.beginEdit();
     edges.clear();
     edges.reserve(edgesMap.size());
-    for( std::map<pair<int,int>,bool>::iterator it=edgesMap.begin(); it!=edgesMap.end(); ++it)
+    for( sofa::helper::map<pair<int,int>,bool>::iterator it=edgesMap.begin(); it!=edgesMap.end(); ++it)
         edges.push_back( Edge( (*it).first.first,  (*it).first.second ));
     seqEdges.endEdit();
 }
@@ -1599,7 +1599,7 @@ void SparseGridTopology::updateEdges()
 
 void SparseGridTopology::updateQuads()
 {
-    std::map<fixed_array<int,4>,bool> quadsMap;
+    sofa::helper::map<fixed_array<int,4>,bool> quadsMap;
     for(unsigned i=0; i<seqHexahedra.getValue().size(); ++i)
     {
         Hexa c = seqHexahedra.getValue()[i];
@@ -1637,7 +1637,7 @@ void SparseGridTopology::updateQuads()
     SeqQuads& quads = *seqQuads.beginEdit();
     quads.clear();
     quads.reserve(quadsMap.size());
-    for( std::map<fixed_array<int,4>,bool>::iterator it=quadsMap.begin(); it!=quadsMap.end(); ++it)
+    for( sofa::helper::map<fixed_array<int,4>,bool>::iterator it=quadsMap.begin(); it!=quadsMap.end(); ++it)
         quads.push_back( Quad( (*it).first[0],  (*it).first[1],(*it).first[2],(*it).first[3] ));
     seqQuads.endEdit();
 }

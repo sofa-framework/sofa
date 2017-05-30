@@ -28,7 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaSphFluid/SpatialGridContainer.h>
 #include <sofa/helper/rmath.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <math.h>
 
 
@@ -467,9 +467,9 @@ protected:
         Real pressure;
         Deriv normal;
         Real curvature;
-        sofa::helper::vector< std::pair<int,Real> > neighbors; ///< indice + r/h
+        sofa::helper::vector< sofa::helper::pair<int,Real> > neighbors; ///< indice + r/h
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
-        sofa::helper::vector< std::pair<int,Real> > neighbors2; ///< indice + r/h
+        sofa::helper::vector< sofa::helper::pair<int,Real> > neighbors2; ///< indice + r/h
 #endif
     };
 

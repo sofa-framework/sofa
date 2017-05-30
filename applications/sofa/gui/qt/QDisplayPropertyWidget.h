@@ -159,7 +159,7 @@ protected:
 private:
 
     // remember the Base Object and its item in the scene graph list view for each component registered in this property view
-    std::map<QTreeWidgetItem*, std::pair<core::objectmodel::Base*, QTreeWidgetItem*> >		objects;
+    sofa::helper::map<QTreeWidgetItem*, sofa::helper::pair<core::objectmodel::Base*, QTreeWidgetItem*> >		objects;
     QIcon																					pinIcon;
 	ModifyObjectFlags																		modifyObjectFlags;
 

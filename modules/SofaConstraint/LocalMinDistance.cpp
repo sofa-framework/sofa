@@ -314,7 +314,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0] = P;
     detection->point[1] = Q;
@@ -515,7 +515,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
@@ -712,7 +712,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0] = Q;
     detection->point[1] = P;
@@ -891,7 +891,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
@@ -1065,7 +1065,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
@@ -1196,7 +1196,7 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
@@ -1320,7 +1320,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
@@ -1444,7 +1444,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Sphere& e2, OutputVector* 
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.r() + e2.getProximity();
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
@@ -1509,7 +1509,7 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection->elem = sofa::helper::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
     detection->id = t1.getIndex();
     detection->point[1]=P;
     detection->point[0]=Q;

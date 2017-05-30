@@ -148,9 +148,9 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const sofa::helper::map<std::string,std::string*>& str )
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(nbInputs.getName());
+        sofa::helper::map<std::string,std::string*>::const_iterator it = str.find(nbInputs.getName());
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;

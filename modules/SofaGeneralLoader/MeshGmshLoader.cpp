@@ -262,7 +262,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         nodes.resize (nnodes);
         const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
         const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3}};
-        std::set<Edge> edgeSet;
+        sofa::helper::set<Edge> edgeSet;
         size_t j;
         for (int n=0; n<nnodes; ++n)
         {

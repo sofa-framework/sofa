@@ -176,7 +176,7 @@ protected:
 
 
     /// all child nodes (unordered)
-    std::set<DAGNode*> _descendancy;
+    sofa::helper::set<DAGNode*> _descendancy;
 
     /// bottom-up traversal removing descendancy
     void setDirtyDescendancy();
@@ -217,10 +217,10 @@ protected:
     };
 
     /// map structure to store a traversal flag for each DAGNode
-    typedef std::map<DAGNode*,StatusStruct> StatusMap;
+    typedef sofa::helper::map<DAGNode*,StatusStruct> StatusMap;
 
     /// list of DAGNode*
-    typedef std::list<DAGNode*> NodeList;
+    typedef sofa::helper::list<DAGNode*> NodeList;
 
     /// the ordered list of Node to traverse from this Node
     NodeList _precomputedTraversalOrder;

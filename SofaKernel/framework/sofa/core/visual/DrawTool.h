@@ -27,7 +27,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/types/RGBAColor.h>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

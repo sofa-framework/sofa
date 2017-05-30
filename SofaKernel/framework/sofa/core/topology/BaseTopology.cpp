@@ -93,14 +93,14 @@ void TopologyContainer::init()
 
 void TopologyContainer::addTopologyChange(const TopologyChange *topologyChange)
 {
-    std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
+    sofa::helper::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
     my_changeList.push_back(topologyChange);
     m_changeList.endEdit();
 }
 
 void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
 {
-    std::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
+    sofa::helper::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
     my_stateChangeList.push_back(topologyChange);
     m_stateChangeList.endEdit();
 }
@@ -113,40 +113,40 @@ void TopologyContainer::addTopologyEngine(TopologyEngine *_topologyEngine)
 }
 
 
-std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
     return (m_changeList.getValue()).end();
 }
 
-std::list<const TopologyChange *>::const_iterator TopologyContainer::beginChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginChange() const
 {
     return (m_changeList.getValue()).begin();
 }
 
-std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endStateChange() const
 {
     return (m_stateChangeList.getValue()).end();
 }
 
-std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
+sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
 }
 
-std::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
+sofa::helper::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
 {
     return m_topologyEngineList.end();
 }
 
-std::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
+sofa::helper::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
 {
     return m_topologyEngineList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
 {
-    std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
-    for (std::list<const TopologyChange *>::iterator it=my_changeList.begin();
+    sofa::helper::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
+    for (sofa::helper::list<const TopologyChange *>::iterator it=my_changeList.begin();
             it!=my_changeList.end(); ++it)
     {
         delete (*it);
@@ -158,8 +158,8 @@ void TopologyContainer::resetTopologyChangeList()
 
 void TopologyContainer::resetStateChangeList()
 {
-    std::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
-    for (std::list<const TopologyChange *>::iterator it=my_stateChangeList.begin();
+    sofa::helper::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
+    for (sofa::helper::list<const TopologyChange *>::iterator it=my_stateChangeList.begin();
             it!=my_stateChangeList.end(); ++it)
     {
         delete (*it);
@@ -171,7 +171,7 @@ void TopologyContainer::resetStateChangeList()
 
 void TopologyContainer::resetTopologyEngineList()
 {
-    for (std::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
+    for (sofa::helper::list<TopologyEngine *>::iterator it=m_topologyEngineList.begin();
             it!=m_topologyEngineList.end(); ++it)
     {
         //delete (*it);

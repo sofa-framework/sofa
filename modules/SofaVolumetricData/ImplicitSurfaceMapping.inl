@@ -25,8 +25,8 @@
 #include <SofaVolumetricData/ImplicitSurfaceMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h>
-#include <map>
-#include <list>
+#include <sofa/helper/map.h>
+#include <sofa/helper/list.h>
 
 
 
@@ -87,7 +87,7 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
     xmin = xmax = in[0][0]*invStep;
     ymin = ymax = in[0][1]*invStep;
     const InReal r = (InReal)(getRadius() / mStep.getValue());
-    std::map<int, std::list< InCoord > > sortParticles;
+    sofa::helper::map<int, sofa::helper::list< InCoord > > sortParticles;
     for (unsigned int ip=0; ip<in.size(); ip++)
     {
         InCoord c0 = in[ip];
@@ -141,8 +141,8 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
         newPlane();
 
         // Compute the data
-        const std::list<InCoord>& particles = sortParticles[z0+z];
-        for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
+        const sofa::helper::list<InCoord>& particles = sortParticles[z0+z];
+        for (typename sofa::helper::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
         {
             InCoord c = *it;
             int cx0 = helper::rceil(c[0]-r);

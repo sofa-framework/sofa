@@ -25,8 +25,8 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/collision/CollisionAlgorithm.h>
 #include <sofa/core/collision/Intersection.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/map.h>
 #include <algorithm>
 
 namespace sofa
@@ -48,7 +48,7 @@ protected:
     /// Current intersection method
     Intersection* intersectionMethod;
     /// All intersection methods
-    std::map<Instance,Intersection*> storedIntersectionMethod;
+    sofa::helper::map<Instance,Intersection*> storedIntersectionMethod;
 
 
     Detection()

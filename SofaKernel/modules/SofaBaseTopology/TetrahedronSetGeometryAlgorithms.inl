@@ -632,7 +632,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
     unsigned int t_test=ind_ta;
     indices.push_back(t_test);
 
-    std::map<unsigned int, unsigned int> IndexMap;
+    sofa::helper::map<unsigned int, unsigned int> IndexMap;
     IndexMap.clear();
     IndexMap[t_test]=0;
 
@@ -664,7 +664,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
                         t_test=tetrahedra_to_remove[0];
                     }
 
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
                     if(iter_1 == IndexMap.end())
                     {
                         IndexMap[t_test]=0;
@@ -728,7 +728,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
     unsigned int t_test=ind_ta;
     indices.push_back(t_test);
 
-    std::map<unsigned int, unsigned int> IndexMap;
+    sofa::helper::map<unsigned int, unsigned int> IndexMap;
     IndexMap.clear();
     IndexMap[t_test]=0;
 
@@ -760,7 +760,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
                         t_test=tetrahedra_to_remove[0];
                     }
 
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
                     if(iter_1 == IndexMap.end())
                     {
                         IndexMap[t_test]=0;

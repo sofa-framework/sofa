@@ -87,7 +87,7 @@ protected:
 
 
     QTreeWidgetItem* itemShowFlag[ALLFLAGS];
-    std::map<  QTreeWidgetItem*, int > mapFlag;
+    sofa::helper::map<  QTreeWidgetItem*, int > mapFlag;
 };
 
 

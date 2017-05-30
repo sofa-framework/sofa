@@ -35,7 +35,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 
 
 namespace sofa

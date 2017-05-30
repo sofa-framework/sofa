@@ -152,7 +152,7 @@ protected :
 
     Deriv X,Y,Z;
     SetIndexArray idxX, idxY, idxZ;
-    std::map< unsigned int, Coord> restPosition;
+    sofa::helper::map< unsigned int, Coord> restPosition;
 
     sofa::core::topology::BaseMeshTopology* topology;
 

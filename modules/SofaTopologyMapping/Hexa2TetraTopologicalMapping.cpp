@@ -35,7 +35,7 @@
 #include <SofaBaseTopology/GridTopology.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa

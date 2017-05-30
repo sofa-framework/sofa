@@ -26,7 +26,7 @@ using std::ostringstream ;
 #include <string>
 using std::string;
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector;
 
 

@@ -60,7 +60,7 @@ public:
 
 	// For unbuilt version :
     sofa::component::linearsolver::SparseMatrix<double> Wdiag;
-    std::list<unsigned int> constraints_sequence;
+    sofa::helper::list<unsigned int> constraints_sequence;
 	bool change_sequence;
 
 	typedef std::vector< core::behavior::BaseConstraintCorrection* > ConstraintCorrections;

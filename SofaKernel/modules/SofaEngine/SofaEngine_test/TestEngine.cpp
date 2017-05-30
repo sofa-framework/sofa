@@ -34,7 +34,7 @@ namespace engine
 {
 
 int TestEngine::instance = 0;
-std::list<int> TestEngine::updateCallList;
+sofa::helper::list<int> TestEngine::updateCallList;
 
 using namespace core::behavior;
 using namespace core::objectmodel;
@@ -99,7 +99,7 @@ int TestEngine::getCounterUpdate()
 void TestEngine::printUpdateCallList()
 {
 
-    for (std::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
+    for (sofa::helper::list<int>::iterator it=updateCallList.begin(); it != updateCallList.end(); ++it)
         std::cout << " Call engine " <<  *it <<std::endl;
    
 }

@@ -41,7 +41,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/rmath.h>
-#include <list>
+#include <sofa/helper/list.h>
 
 
 // I need C++0x !!! 
@@ -201,7 +201,7 @@ public:
     class Cell
     {
     public:
-        std::list<Entry> plist;
+        sofa::helper::list<Entry> plist;
         CellData data;
         void clear()
         {

@@ -28,7 +28,7 @@
 
 #include <iostream>
 #include <algorithm>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <limits>
 
 #include <SofaGeneralEngine/ProximityROI.h>

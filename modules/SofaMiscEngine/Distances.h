@@ -79,7 +79,7 @@ class Distances : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Distances,DataTypes),core::DataEngine);
 
-    typedef std::pair< core::topology::BaseMeshTopology::HexaID, double> Distance;
+    typedef sofa::helper::pair< core::topology::BaseMeshTopology::HexaID, double> Distance;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -105,7 +105,7 @@ public:
     Data<sofa::helper::OptionsGroup> distanceType;
     Data<bool> initTarget;
     Data<int> initTargetStep;
-    Data<std::map<unsigned int, unsigned int> > zonesFramePair;
+    Data<sofa::helper::map<unsigned int, unsigned int> > zonesFramePair;
     Data<double> harmonicMaxValue;
 
     void init();
@@ -225,7 +225,7 @@ private:
     /*************************/
     inline void findCorrespondingHexas ( helper::vector<core::topology::BaseMeshTopology::HexaID>& hexas, const VecCoord& pointSet ); // Find indices from coord.
     inline void find1DCoord ( unsigned int& hexaID, const Coord& point );
-    void getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, std::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const;
+    void getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, sofa::helper::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const;
     void computeGradients ( const unsigned int mapIndex, helper::vector<double>& distances, VecCoord& gradients, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hexaGoal, const VecCoord& goals );
     inline void addContribution ( double& valueWrite, int& nbTest, const helper::vector<double>& valueRead, const unsigned int& gridID, const int coeff );
     inline void addContribution ( double& valueWrite, int& nbTest, double*** valueRead, const int& x, const int& y, const int& z, const int coeff, const bool& useStiffnessMap );

@@ -33,7 +33,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <string>
 
 

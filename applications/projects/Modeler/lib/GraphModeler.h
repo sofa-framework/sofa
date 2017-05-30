@@ -22,7 +22,7 @@
 #ifndef SOFA_GRAPHMODELER_H
 #define SOFA_GRAPHMODELER_H
 
-#include <deque>
+#include <sofa/helper/deque.h>
 
 #include "AddPreset.h"
 #include "GraphHistoryManager.h"
@@ -279,13 +279,13 @@ protected:
 
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;
-    std::map< void*, QTreeWidgetItem* >       map_modifyDialogOpened;
-    std::map< void*, QDialog* >    map_modifyObjectWindow;
+    sofa::helper::map< void*, QTreeWidgetItem* >       map_modifyDialogOpened;
+    sofa::helper::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML; //name associated to the current graph
 
     //Store template + ClassEntry
-    std::pair< std::string, ClassEntry::SPtr > lastSelectedComponent;
+    sofa::helper::pair< std::string, ClassEntry::SPtr > lastSelectedComponent;
 
     GraphHistoryManager *historyManager;
 };

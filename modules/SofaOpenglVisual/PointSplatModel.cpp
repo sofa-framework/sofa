@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -197,7 +197,7 @@ void PointSplatModel::drawTransparent(const core::visual::VisualParams* vparams)
 
         Real dist(vertex * vView);
 
-        mapPnt.insert(std::pair<Real, unsigned int>(dist, i));
+        mapPnt.insert(sofa::helper::pair<Real, unsigned int>(dist, i));
     }
 
     for(std::multimap<Real, unsigned int>::const_iterator it = mapPnt.begin();

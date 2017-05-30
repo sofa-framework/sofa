@@ -23,8 +23,8 @@
 #define SOFA_CORE_COLLISION_COLLISIONALGORITHM_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/map.h>
 #include <algorithm>
 
 namespace sofa

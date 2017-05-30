@@ -22,7 +22,7 @@
 #include <sofa/config.h>
 #include <cmath>
 
-#include <vector>
+#include <sofa/helper/vector.h>
 using std::vector;
 
 #include <string>

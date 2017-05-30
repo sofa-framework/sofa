@@ -13,24 +13,27 @@
 /// More info PR #113: https://github.com/sofa-framework/sofa/pull/113
 
 
-namespace std
+namespace sofa
 {
+namespace helper
+{
+using std::pair ;
 
 /// Output stream
 template<class T1, class T2>
-std::ostream& operator<< ( std::ostream& o, const std::pair<T1,T2>& p )
+std::ostream& operator<< ( std::ostream& o, const sofa::helper::pair<T1,T2>& p )
 {
     return o << p.first << " " << p.second;
 }
 
 /// Input stream
 template<class T1, class T2>
-std::istream& operator>> ( std::istream& in, std::pair<T1,T2>& p )
+std::istream& operator>> ( std::istream& in, sofa::helper::pair<T1,T2>& p )
 {
     return in >> p.first >> p.second;
 }
 
-
-} // namespace std
+} // namespace helper
+} // namespace sofa
 
 #endif

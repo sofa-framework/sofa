@@ -24,8 +24,8 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/DynamicLibrary.h>
-#include <vector>
-#include <map>
+#include <sofa/helper/map.h>
+#include <sofa/helper/vector.h>
 #include <memory>
 
 namespace sofa
@@ -132,7 +132,7 @@ private:
 class SOFA_HELPER_API PluginManager
 {
 public:
-    typedef std::map<std::string, Plugin > PluginMap;
+    typedef sofa::helper::map<std::string, Plugin > PluginMap;
     typedef PluginMap::iterator PluginIterator;
 
     static PluginManager& getInstance();
@@ -142,7 +142,7 @@ public:
     bool unloadPlugin(const std::string& path, std::ostream* errlog=NULL);
 
     void init();
-	void init(const std::string& pluginPath);
+    void init(const std::string& pluginPath);
 
     std::string findPlugin(const std::string& pluginName, bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);

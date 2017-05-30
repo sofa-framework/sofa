@@ -200,7 +200,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
         ScopedAdvancedTimer narrowphase("NarrowPhase");
         intersectionMethod->beginNarrowPhase();
         narrowPhaseDetection->beginNarrowPhase();
-        helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+        helper::vector<sofa::helper::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
 
         msg_info_when(d_doPrintInfoMessage.getValue())
                 << "doCollisionDetection, "<< vectCMPair.size()<<" colliding model pairs" ;
@@ -267,9 +267,9 @@ void DefaultPipeline::doCollisionResponse()
     }
 }
 
-std::set< std::string > DefaultPipeline::getResponseList() const
+sofa::helper::set< std::string > DefaultPipeline::getResponseList() const
 {
-    std::set< std::string > listResponse;
+    sofa::helper::set< std::string > listResponse;
     core::collision::Contact::Factory::iterator it;
     for (it=core::collision::Contact::Factory::getInstance()->begin(); it!=core::collision::Contact::Factory::getInstance()->end(); ++it)
     {

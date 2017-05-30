@@ -285,7 +285,7 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         distanceMap[mapIndex][i] = -1.0;
 
     queue<Distance> hexasBeingParsed;
-    std::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
+    sofa::helper::set<core::topology::BaseMeshTopology::HexaID> hexasParsed;
     Distance hexaCoord;
     defaulttype::Vector3 baryC;
     const Coord& offSet = offset.getValue();
@@ -314,14 +314,14 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
         const Coord hexaIDpos = hexaGeoAlgo->computeHexahedronRestCenter ( hexaID );
 
         // Propagate
-        std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
+        sofa::helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hexaID, neighbors );
 
         unsigned int hexaID1;
         find1DCoord(hexaID1, hexaGeoAlgo->computeHexahedronRestCenter(hexaID));
         double densityValue1 = densityValues[hexaID1];
 
-        for ( std::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
+        for ( sofa::helper::set<core::topology::BaseMeshTopology::HexaID>::iterator it = neighbors.begin(); it != neighbors.end(); it++ )
         {
             Distance newDist;
             double stiffCoeff = 1.0;
@@ -351,11 +351,11 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
 
     const sofa::helper::vector<sofa::core::topology::BaseMeshTopology::HexaID>& iirg = hexaContainer->idxInRegularGrid.getValue();
-    const std::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
+    const sofa::helper::map<unsigned int, unsigned int>& zones = zonesFramePair.getValue();
 
     for ( unsigned int j = 0; j < hexaContainer->getNumberOfHexahedra(); j++ )
     {
-        std::map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
+        sofa::helper::map<unsigned int, unsigned int>::const_iterator it = zones.find( (unsigned int)segmentIDData[iirg[j]]);
         if ( it != zones.end())
         {
             if ( it->second == mapIndex)
@@ -601,7 +601,7 @@ void Distances< DataTypes >::computeGradients ( const unsigned int mapIndex, hel
         }
 
         Coord grad;
-        std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
+        sofa::helper::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hID, neighbors );
 
         unsigned int gridID = hexaGeoAlgo->getRegularGridIndexFromTopoIndex ( hID );
@@ -692,7 +692,7 @@ void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& po
 }
 
 template<class DataTypes>
-void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, std::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const
+void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopology::HexaID& hexaID, sofa::helper::set<core::topology::BaseMeshTopology::HexaID>& neighbors ) const
 {
     const core::topology::BaseMeshTopology::EdgesInHexahedron& edgeSet = hexaContainer->getEdgesInHexahedron ( hexaID );
     for ( unsigned int i = 0; i < edgeSet.size(); i++ )

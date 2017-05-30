@@ -43,7 +43,7 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::set<simulation::Node::SPtr> GroupSet;
+    typedef sofa::helper::set<simulation::Node::SPtr> GroupSet;
     GroupSet groupSet;
 
 protected:
@@ -89,7 +89,7 @@ protected:
     }
 
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    sofa::helper::map<Instance,GroupSet> storedGroupSet;
 
 
 };

@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 #include "config.h"
 
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <string>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
@@ -91,7 +91,7 @@ protected:
 
     std::vector<helper::gl::Texture*> textures;
 
-    std::map<int, int> materialTextureIdMap; //link between a material and a texture
+    sofa::helper::map<int, int> materialTextureIdMap; //link between a material and a texture
 
     GLenum getGLenum(const char* c ) const;
 

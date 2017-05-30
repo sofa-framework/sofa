@@ -29,8 +29,8 @@
 #include <sofa/helper/vector.h>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <list>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/list.h>
 #include <cmath>
 #include <cassert>
 #include <cstdarg>

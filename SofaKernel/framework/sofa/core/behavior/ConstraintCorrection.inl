@@ -216,7 +216,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, sofa::helper::list< int > &activeDofs)
 {
     if (mstate)
     {
@@ -231,7 +231,7 @@ void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(core::Mu
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, sofa::helper::list< int > &activeDofs)
 {
     VecDeriv& force = *f.beginEdit();
 
@@ -249,7 +249,7 @@ void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< Ve
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, sofa::helper::list< int > &activeDofs)
 {
     if (mstate)
     {
@@ -264,7 +264,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(core::Mu
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, sofa::helper::list< int > &activeDofs)
 {
     VecDeriv& force = *f.beginEdit();
 

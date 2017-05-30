@@ -89,7 +89,7 @@ public:
             collisions[i] = &(*o)[i];
     }
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    sofa::helper::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 };
 
 } // namespace collision

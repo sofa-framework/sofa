@@ -40,7 +40,7 @@
 #include <SofaOpenglVisual/ColorMap.h>
 #endif
 
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/helper/map.h>
 
 namespace sofa

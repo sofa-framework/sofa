@@ -30,7 +30,7 @@ namespace sofa
 
 namespace helper
 {
-template class SOFA_SIMULATION_COMMON_API Factory< std::string, simulation::xml::BaseElement, std::pair<std::string, std::string> >;
+template class SOFA_SIMULATION_COMMON_API Factory< std::string, simulation::xml::BaseElement, sofa::helper::pair<std::string, std::string> >;
 }
 
 namespace simulation
@@ -97,12 +97,12 @@ void BaseElement::setSrcLine(const int l)
 }
 
 
-// const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
+// const sofa::helper::map<std::string,std::string*>& BaseElement::getAttributeMap() const
 // {
 // 	return attributes;
 // }
 //
-// std::map<std::string,std::string*>& BaseElement::getAttributeMap()
+// sofa::helper::map<std::string,std::string*>& BaseElement::getAttributeMap()
 // {
 // 	return attributes;
 // }
@@ -174,7 +174,7 @@ bool BaseElement::init()
 
 BaseElement* BaseElement::Create(const std::string& nodeClass, const std::string& name, const std::string& type)
 {
-    return NodeFactory::CreateObject(nodeClass, std::pair<std::string,std::string>(name, type));
+    return NodeFactory::CreateObject(nodeClass, sofa::helper::pair<std::string,std::string>(name, type));
 }
 
 /// Find a node given its name

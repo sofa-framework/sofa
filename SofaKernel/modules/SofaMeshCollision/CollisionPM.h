@@ -106,7 +106,7 @@ namespace collision
         };
 
 
-        typedef std::unordered_map<std::pair<int,int>,CollidingPair> umap_collision;
+        typedef std::unordered_map<sofa::helper::pair<int,int>,CollidingPair> umap_collision;
 
 
         CollidingPM(){
@@ -150,7 +150,7 @@ namespace collision
                     _intersectors[cm->getEnumType()][cm->getEnumType()] = ei;
                 }
 
-                for(std::set<CollModID>::iterator it = _addedCM.begin() ; it != _addedCM.end() ; ++it){
+                for(sofa::helper::set<CollModID>::iterator it = _addedCM.begin() ; it != _addedCM.end() ; ++it){
                     if(it->sample->getEnumType() == cm->getEnumType())
                         continue;
 
@@ -223,7 +223,7 @@ namespace collision
         }            
 
     private:
-        std::set<CollModID> _addedCM;//_addedCM are collision model TYPES
+        sofa::helper::set<CollModID> _addedCM;//_addedCM are collision model TYPES
         int _order[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
         umap_collision _coll_pairs[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];
         core::collision::ElementIntersector * _intersectors[sofa::core::CollisionModel::ENUM_TYPE_SIZE][sofa::core::CollisionModel::ENUM_TYPE_SIZE];

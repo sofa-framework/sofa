@@ -23,7 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/system/gl.h>
 
 namespace sofa

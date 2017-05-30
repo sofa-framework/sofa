@@ -34,7 +34,7 @@
 
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {

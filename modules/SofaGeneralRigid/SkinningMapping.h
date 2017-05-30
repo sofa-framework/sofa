@@ -26,7 +26,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>

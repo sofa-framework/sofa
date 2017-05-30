@@ -25,13 +25,13 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QKeyEvent>
+#include <tinyxml.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <tinyxml.h>
-
-#include <map>
+#include <sofa/helper/map.h>
+#include <sofa/helper/list.h>
 
 namespace sofa
 {
@@ -88,7 +88,7 @@ public:
 
     void keyPressEvent ( QKeyEvent * e );
     void usingScene(const std::string &filename);
-    std::list< std::string > getCategories() const;
+    sofa::helper::list< std::string > getCategories() const;
 public  slots:
     void openCategory(const QString&);
 
@@ -107,8 +107,8 @@ protected:
     void openNode(TiXmlNode* node, QTreeWidgetItem *parent=NULL, bool isRoot=false);
     void openAttribute(TiXmlElement* element,  QTreeWidgetItem *item);
 
-    std::map< QTreeWidgetItem *, Category> itemToCategory;
-    std::map< QTreeWidgetItem *, Tutorial> itemToTutorial;
+    sofa::helper::map< QTreeWidgetItem *, Category> itemToCategory;
+    sofa::helper::map< QTreeWidgetItem *, Tutorial> itemToTutorial;
     std::multimap<Category, Tutorial> listTutoFromFile;
 
     Category currentCategory;

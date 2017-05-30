@@ -69,7 +69,7 @@ public:
     typedef typename InCoord::value_type Real;
     typedef typename In::MatrixDeriv InMatrixDeriv;
     typedef typename In::Real InReal;
-    typedef typename std::pair<unsigned int, Real> couple;
+    typedef typename sofa::helper::pair<unsigned int, Real> couple;
     //typedef typename  InterpolationValueTable;
 
     typedef Data<InVecCoord> InDataVecCoord;

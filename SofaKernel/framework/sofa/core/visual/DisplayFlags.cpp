@@ -84,7 +84,7 @@ std::ostream& FlagTreeItem::write(std::ostream &os) const
 
 std::istream& FlagTreeItem::read(std::istream &in)
 {
-    std::map<std::string, bool> parse_map;
+    sofa::helper::map<std::string, bool> parse_map;
     create_parse_map(this,parse_map);
     std::string token;
     while(in >> token)
@@ -105,7 +105,7 @@ std::istream& FlagTreeItem::read(std::istream &in)
 
 
 /*static*/
-void FlagTreeItem::create_parse_map(FlagTreeItem *root,std::map<std::string,bool>& map)
+void FlagTreeItem::create_parse_map(FlagTreeItem *root,sofa::helper::map<std::string,bool>& map)
 {
     map[root->m_showName] = false;
     map[root->m_hideName] = false;
@@ -116,11 +116,11 @@ void FlagTreeItem::create_parse_map(FlagTreeItem *root,std::map<std::string,bool
     }
 }
 
-void FlagTreeItem::read_recursive(FlagTreeItem *root,const std::map<std::string,bool>& parse_map)
+void FlagTreeItem::read_recursive(FlagTreeItem *root,const sofa::helper::map<std::string,bool>& parse_map)
 {
     ChildIterator iter;
-    std::map<std::string,bool>::const_iterator iter_show;
-    std::map<std::string,bool>::const_iterator iter_hide;
+    sofa::helper::map<std::string,bool>::const_iterator iter_show;
+    sofa::helper::map<std::string,bool>::const_iterator iter_hide;
     for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
     {
         iter_show = parse_map.find((*iter)->m_showName);

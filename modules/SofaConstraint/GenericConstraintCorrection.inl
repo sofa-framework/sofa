@@ -30,7 +30,7 @@
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 
 #include <sstream>
-#include <list>
+#include <sofa/helper/list.h>
 
 namespace sofa {
 

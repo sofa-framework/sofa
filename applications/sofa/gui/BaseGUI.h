@@ -28,7 +28,7 @@
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
-#include <list>
+#include <sofa/helper/list.h>
 
 
 namespace sofa

@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <set>
 #include <iostream>
 

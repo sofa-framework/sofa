@@ -33,7 +33,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <map>
+#include <sofa/helper/map.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -166,8 +166,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
         if (toModel)
         {
 
-            std::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
-            std::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itBegin=fromModel->beginChange();
+            sofa::helper::list<const TopologyChange *>::const_iterator itEnd=fromModel->endChange();
 
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
@@ -207,7 +207,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     {
                         unsigned int k = tab[i];
 
-                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                        sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                         if(iter_1 != Glob2LocMap.end())
                         {
 
@@ -216,7 +216,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int ind_k = Glob2LocMap[k];
 //                            ind_real_last = ind_k;
 
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                            sofa::helper::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())
                             {
 
@@ -275,7 +275,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << tab[i] << sendl;
                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
 
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                            sofa::helper::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
                             if(iter_2 != Glob2LocMap.end())
                             {
 
@@ -309,7 +309,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                         if(tetraId.size()==1)
                         {
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(tab[i]);
+                            sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(tab[i]);
                             if(iter_1 != Glob2LocMap.end() )
                             {
                                 serr << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << tab[i] << "which already exists" << sendl;
@@ -414,7 +414,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         {
                             unsigned int k = triangles_to_remove[i];
 
-                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                            sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                             if(iter_1 != Glob2LocMap.end())
                             {
 
@@ -588,7 +588,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         nb_elems+=1;
 
                                         Loc2GlobVec.push_back(k);
-                                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                                        sofa::helper::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                                         if(iter_1 != Glob2LocMap.end() )
                                         {
                                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << sendl;

@@ -43,7 +43,7 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <SofaBaseTopology/PointSetTopologyModifier.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <iterator>
 #include <iostream>
 #include <ostream>
@@ -342,8 +342,8 @@ public:
     void handleTopologyChange()
     {
         sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->beginChange();
-        std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itBegin=topology->beginChange();
+        sofa::helper::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
         if (itBegin != itEnd)
         {
             if (notMuted())

@@ -95,9 +95,9 @@ void MergeMeshes<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescript
 
 /// Assign the field values stored in the given map of name -> value pairs
 template <class DataTypes>
-void MergeMeshes<DataTypes>::parseFields ( const std::map<std::string,std::string*>& str )
+void MergeMeshes<DataTypes>::parseFields ( const sofa::helper::map<std::string,std::string*>& str )
 {
-    std::map<std::string,std::string*>::const_iterator it = str.find(f_nbMeshes.getName());
+    sofa::helper::map<std::string,std::string*>::const_iterator it = str.find(f_nbMeshes.getName());
     if (it != str.end() && it->second)
     {
         std::string nbStr = *it->second;

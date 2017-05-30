@@ -134,7 +134,7 @@ public:
 
 
     helper::vector< helper::vector<Weight> > _weights;
-    helper::vector< std::pair<int, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
+    helper::vector< sofa::helper::pair<int, Weight> > _finalWeights; // for each fine element -> the coarse element idx and corresponding Weight
 
 protected:
 

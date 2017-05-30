@@ -28,7 +28,7 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 #include <set>
 
 // #define DEBUG_TRIANGLEFEM

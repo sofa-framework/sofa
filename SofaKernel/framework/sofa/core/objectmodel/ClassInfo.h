@@ -26,7 +26,7 @@
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <string>
-#include <map>
+#include <sofa/helper/map.h>
 
 
 namespace sofa
@@ -79,7 +79,7 @@ public:
         return dynamicCast(obj) != NULL;
     }
 protected:
-    static std::map<sofa::helper::TypeInfo, ClassInfo*> classes;
+    static sofa::helper::map<sofa::helper::TypeInfo, ClassInfo*> classes;
 };
 
 template<class T>

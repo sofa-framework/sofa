@@ -146,7 +146,7 @@ bool GridMeshCreator::load()
         }
 
     helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
-    for( std::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
+    for( sofa::helper::set<Edge>::const_iterator it=uniqueEdges.begin(),itEnd=uniqueEdges.end(); it!=itEnd; ++it )
         my_edges.push_back( *it );
     d_edges.endEdit();
 

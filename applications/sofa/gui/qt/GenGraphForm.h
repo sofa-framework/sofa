@@ -28,8 +28,8 @@
 #include "QProcess"
 #include "QStringList"
 
-#include <list>
-#include <map>
+#include <sofa/helper/list.h>
+#include <sofa/helper/map.h>
 #include <set>
 
 namespace sofa
@@ -62,16 +62,16 @@ public slots:
 protected:
     QString exportedFile;
     sofa::simulation::Node* graph;
-    std::list<QStringList> tasks;
+    sofa::helper::list<QStringList> tasks;
     QProcess* currentTask;
 
     void addTask(QStringList argv);
     void runTask();
     void killAllTasks();
 
-    std::map<std::string, std::set<std::string> > presetFilters;
+    sofa::helper::map<std::string, sofa::helper::set<std::string> > presetFilters;
     bool settingFilter;
-    std::set<std::string> getCurrentFilter();
+    sofa::helper::set<std::string> getCurrentFilter();
 };
 
 } // namespace qt
