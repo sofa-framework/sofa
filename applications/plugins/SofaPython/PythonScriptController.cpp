@@ -209,25 +209,7 @@ void PythonScriptController::loadScript()
                 return;
     }
 
-    BIND_OBJECT_METHOD(onLoaded)
-    BIND_OBJECT_METHOD(createGraph)
-    BIND_OBJECT_METHOD(initGraph)
-    BIND_OBJECT_METHOD(bwdInitGraph)
-    BIND_OBJECT_METHOD(onKeyPressed)
-    BIND_OBJECT_METHOD(onKeyReleased)
-    BIND_OBJECT_METHOD(onMouseButtonLeft)
-    BIND_OBJECT_METHOD(onMouseButtonRight)
-    BIND_OBJECT_METHOD(onMouseButtonMiddle)
-    BIND_OBJECT_METHOD(onMouseWheel)
-    BIND_OBJECT_METHOD(onBeginAnimationStep)
-    BIND_OBJECT_METHOD(onEndAnimationStep)
-    BIND_OBJECT_METHOD(storeResetState)
-    BIND_OBJECT_METHOD(reset)
-    BIND_OBJECT_METHOD(cleanup)
-    BIND_OBJECT_METHOD(onGUIEvent)
-    BIND_OBJECT_METHOD(onScriptEvent)
-    BIND_OBJECT_METHOD(draw)
-    BIND_OBJECT_METHOD(onIdle)
+    refreshBinding();
 }
 
 void PythonScriptController::doLoadScript()
