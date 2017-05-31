@@ -120,8 +120,6 @@ public:
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
     sofa::core::objectmodel::Data<bool>         m_doOnEvent;
 
-    core::objectmodel::Data<bool> manual_create_graph;
-    
 protected:
     sofa::helper::system::FileEventListener* m_filelistener ;
 

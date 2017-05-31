@@ -125,8 +125,6 @@ PythonScriptController::PythonScriptController()
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
     , m_doOnEvent( initData(&m_doOnEvent, false, "receive_all_events", "listens to all events through onEvent"))
-    , manual_create_graph( initData(&manual_create_graph, false,
-                                    "manual_create_graph", "call createGraph manually after parse"))
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
@@ -274,10 +272,7 @@ void PythonScriptController::parse(sofa::core::objectmodel::BaseObjectDescriptio
     loadScript();
     // call script notifications...
     script_onLoaded( down_cast<simulation::Node>(getContext()) );
-
-    if(!manual_create_graph.getValue()) {
-        script_createGraph( down_cast<simulation::Node>(getContext()) );
-    }
+    script_createGraph( down_cast<simulation::Node>(getContext()) );
 }
 
 
