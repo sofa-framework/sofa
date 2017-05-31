@@ -58,7 +58,10 @@ public:
     void refreshBinding();
 
     virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg);
-        
+
+    // setup from existing python instance
+    void setInstance(PyObject* instance);
+    
 protected:
     PythonScriptController();
     virtual ~PythonScriptController();
