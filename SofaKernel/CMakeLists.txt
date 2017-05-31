@@ -179,12 +179,3 @@ endif()
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
 install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
-
-#CPack install
-SET(CPACK_PACKAGE_VERSION "17.dev.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "17")
-SET(CPACK_PACKAGE_VERSION_MINOR "dev")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENCE.txt")
-SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/readme.txt")
-
