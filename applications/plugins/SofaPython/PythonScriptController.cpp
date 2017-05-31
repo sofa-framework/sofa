@@ -137,6 +137,25 @@ PythonScriptController::~PythonScriptController()
     }
 }
 
+
+void PythonScriptController::setInstance(PyObject* instance) {
+    // "trust me i'm an engineer"
+    if( m_ScriptControllerInstance ) {
+        Py_DECREF( m_ScriptControllerInstance );
+    }
+    
+    m_ScriptControllerInstance = instance;
+
+    // note: we don't use PyObject_Type as it returns a new reference which is
+    // not handled correctly in loadScript
+    m_ScriptControllerClass = (PyObject*)instance->ob_type;
+    
+    Py_INCREF( instance );
+    
+    refreshBinding();
+}
+
+
 void PythonScriptController::refreshBinding()
 {
     BIND_OBJECT_METHOD(onLoaded)

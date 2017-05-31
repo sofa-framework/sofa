@@ -22,7 +22,7 @@
 #include "PythonMacros.h"
 
 #include "Binding_PythonScriptController.h"
-#include "Binding_Base.h"
+#include "Binding_BaseObject.h"
 
 using namespace sofa::component::controller;
 
@@ -32,12 +32,14 @@ using namespace sofa::core::objectmodel;
 
 #include <sofa/helper/logging/Messaging.h>
 
-// These functions are empty ones;
-// they are meant to be overriden by real python controller scripts
+// These functions are empty ones: they are meant to be overriden by real python
+// controller scripts
 
 
-// TODO FIXME this will not work (see FIXMEs below)
-//#define LOG_UNIMPLEMENTED_METHODS   // prints a message each time a non-implemented (in the script) method is called
+// #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
+// non-implemented (in the script) method is called
+
+// TODO FIXME the above will not work (see FIXMEs below) 
 
 // also, can we PLEASE STOP COPYPASTING EVERYTHING KTHXBY
 
@@ -360,6 +362,47 @@ static PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject * /*
 
 
 
+struct error { };
+
+template<class T>
+static inline T* operator || (T* obj, error e) {
+    if(!obj) throw e;
+    return obj;
+}
+
+
+
+static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* kwargs) {
+
+    try {
+        PyObject* py_node = PyTuple_GetItem(args, 0) || error();
+        BaseContext* ctx = get<BaseContext>(py_node) || error();
+
+        using controller_type = PythonScriptController;
+        controller_type::SPtr controller = New<controller_type>();
+        
+        // note: original bindings **require** the controller to be wrapped as a
+        // Base. virtual inheritance between Base and PythonScriptController
+        // have been cleaned since then, so is should be safe to 1. wrap
+        // directly as a PythonScriptController and 2. static_cast wrapped
+        // pointers
+        PyObject* instance = BuildPySPtr<Base>(controller.get(), cls);
+        controller->setInstance(instance);
+
+        ctx->addObject( controller );
+
+        return instance;
+        
+    } catch (error e) {
+        PyErr_SetString(PyExc_TypeError, 
+                        "PythonScriptController.__new__ needs a Sofa.BaseContext as first argument");
+        return NULL;
+    };
+}
+       
+
+
+
 
 SP_CLASS_METHODS_BEGIN(PythonScriptController)
 SP_CLASS_METHOD(PythonScriptController,onLoaded)
@@ -384,4 +427,14 @@ SP_CLASS_METHOD(PythonScriptController,onIdle)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(PythonScriptController, PythonScriptController, Base);
+static struct patch {
+
+    patch() {
+        // because i can
+        SP_SOFAPYTYPEOBJECT(PythonScriptController).tp_new = PythonScriptController_new;
+    }
+    
+} patcher;
+
+
+SP_CLASS_TYPE_SPTR(PythonScriptController, PythonScriptController, BaseObject);

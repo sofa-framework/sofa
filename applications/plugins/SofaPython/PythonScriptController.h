@@ -56,6 +56,10 @@ public:
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
     void doLoadScript();
     void refreshBinding();
+    
+    // setup from existing python instance
+    void setInstance(PyObject* instance);
+    
 protected:
     PythonScriptController();
     virtual ~PythonScriptController();
