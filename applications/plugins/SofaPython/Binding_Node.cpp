@@ -474,6 +474,20 @@ static PyObject * Node_printGraph(PyObject *self, PyObject * /*args*/) {
     Py_RETURN_NONE;
 }
 
+static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
+    Node* node = get_node(self);
+
+    sofa::core::visual::VisualLoop* loop = node->getVisualLoop();
+    if(!loop) {
+        PyErr_SetString(PyExc_RuntimeError, "no visual loop for this node");
+        return NULL;
+    }
+    
+    loop->initStep(sofa::core::ExecParams::defaultInstance());
+    Py_RETURN_NONE;
+}
+
+
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node, executeVisitor)
@@ -481,6 +495,7 @@ SP_CLASS_METHOD(Node, getRoot)
 SP_CLASS_METHOD(Node, simulationStep)
 SP_CLASS_METHOD(Node, reset)
 SP_CLASS_METHOD(Node, init)
+SP_CLASS_METHOD(Node, initVisual)
 SP_CLASS_METHOD_KW(Node, getChild)
 SP_CLASS_METHOD(Node, getChildren)
 SP_CLASS_METHOD(Node, getParents)
