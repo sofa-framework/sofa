@@ -60,8 +60,12 @@ public:
     Angle computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const;
 
 protected:
-    PointSetGeometryAlgorithms();
-
+    PointSetGeometryAlgorithms()
+        : GeometryAlgorithms()
+        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+        ,showPointIndices (core::objectmodel::Base::initData(&showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
+    {
+    }
 
     virtual ~PointSetGeometryAlgorithms() {}
 public:
@@ -126,10 +130,8 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    Data<float> d_showIndicesScale;
-    Data<bool> d_showPointIndices;
-    /// Tage of the Mechanical State associated with the vertex position
-    Data<std::string> d_tagMechanics;
+    Data<float> showIndicesScale;
+    Data<bool> showPointIndices;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)
