@@ -234,8 +234,6 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     // accumulation
 
-    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
-    glDrawBuffers(2, buffers);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -249,10 +247,10 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     drawTransparents(vp, &accumulationShader);
     accumulationShader.TurnOff();
 
-// compose
-
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousDrawFBO);
-    // TODO: set the previously bound drawBuffers
+
+
+// compose
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -265,6 +263,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     compositionShader.TurnOff();
 
+    glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 
     return true;
@@ -371,6 +370,11 @@ void OrderIndependentTransparencyManager::FrameBufferObject::init(int w, int h)
     glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R16F, width, height, 0, GL_RED, GL_FLOAT, 0);
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_TEXTURE_RECTANGLE, revealageTexture, 0);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+
+// bind draw buffers
+
+    GLenum buffers[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT};
+    glDrawBuffers(2, buffers);
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
