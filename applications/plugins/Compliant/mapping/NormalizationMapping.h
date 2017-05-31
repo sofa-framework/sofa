@@ -138,15 +138,9 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
         helper::ReadAccessor< Data<helper::vector<unsigned> > > indices(d_indices);
         size_t size = indices.empty() ? this->getFromModel()->getSize() : indices.size(); // if indices is empty, mapping every input dofs
 
-        typedef defaulttype::Mat<3,3,Real> HessianBlock[3]; // 3x3x3 tensor
-        typedef defaulttype::Mat<3,3,Real> Block;
-
         typename self::geometric_type::CompressedMatrix& K = this->geometric.compressedMatrix;
         this->geometric.resizeBlocks( in.size(), in.size() );
         K.reserve(in.size()*N*N);
-
-        // temp
-        HessianBlock H;
 
         for(size_t i = 0; i < size; ++i)
         {
@@ -162,47 +156,29 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
 
             const Real prod = 3*v[0]*v[1]*v[2]*denom;
 
-
-
             // dn/dv
-            for( int l=0 ; l<N ; ++l ) // dn
-            {
-                for( int j=0 ; j<N ; ++j ) // dv_i
-                {
-                    for( int k=0 ; k<N ; ++k ) // dv_j
-                    {
-                        if( l==j && l==k ) H[l][j][k] = -3 * v[l] * ( sum2 - v2[l] ) * denom;  // d2n_i/d2v_i = - 3.v_i.(v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
-                        else if( l==j ) H[l][j][k] = - v[k] * ( sum2 - 3*v2[l] ) * denom; // d2n_i/dv_idv_j = d2n_i/dv_jdv_i = - v_j.(-2.v_i^2+v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
-                        else if( l==k ) H[l][j][k] = - v[j] * ( sum2 - 3*v2[l] ) * denom; // d2n_i/dv_idv_j = d2n_i/dv_jdv_i = - v_j.(-2.v_i^2+v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
-                        else if( j==k ) H[l][j][k] = -v[l] * ( sum2 - 3*v2[j] ) * denom; // d2n_i/d2v_j = - v_i.(v_i^2-2.v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
-                        else H[l][j][k] = prod; // d2n_i/dv_jdv_k = 3*a*b*c / (v_i^2+v_j^2+v_k^2)^(5/2)
-                    }
-                }
-            }
-
-
-            Block b;
-            for( int l=0 ; l<N ; ++l ) // dn
-            {
-                for( int j=0 ; j<N ; ++j ) // dv_i
-                {
-                    for( int k=0 ; k<N ; ++k ) // dv_j
-                    {
-                        b[j][k] += H[l][j][k] * childForce[l];
-                    }
-                }
-            }
-
-
             for( int j=0 ; j<N ; ++j ) // dv_i
             {
                 const size_t row = index*N+j;
                 K.startVec( row );
+
                 for( int k=0 ; k<N ; ++k ) // dv_j
                 {
-                    const size_t col = index*N+k;
+                    Real b = 0; // geometric stiffness entry i.e. hessian x childforce
+                    for( int l=0 ; l<N ; ++l ) // dn
+                    {
+                        Real h; // hessian entry
+                        if( l==j && l==k ) h = -3 * v[l] * ( sum2 - v2[l] ) * denom;  // d2n_i/d2v_i = - 3.v_i.(v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
+                        else if( l==j ) h = - v[k] * ( sum2 - 3*v2[l] ) * denom; // d2n_i/dv_idv_j = d2n_i/dv_jdv_i = - v_j.(-2.v_i^2+v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
+                        else if( l==k ) h = - v[j] * ( sum2 - 3*v2[l] ) * denom; // d2n_i/dv_idv_j = d2n_i/dv_jdv_i = - v_j.(-2.v_i^2+v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
+                        else if( j==k ) h = - v[l] * ( sum2 - 3*v2[j] ) * denom; // d2n_i/d2v_j = - v_i.(v_i^2-2.v_j^2+v_k^2) / (v_i^2+v_j^2+v_k^2)^(5/2)
+                        else h = prod; // d2n_i/dv_jdv_k = 3*a*b*c / (v_i^2+v_j^2+v_k^2)^(5/2)
 
-                    K.insertBack(row, col) = b[j][k];
+                        b += h * childForce[l];
+                    }
+
+                    const size_t col = index*N+k;
+                    K.insertBack(row, col) = b;
                 }
             }
 
