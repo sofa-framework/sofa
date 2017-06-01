@@ -251,7 +251,7 @@ Grid_dimension GridTopology::getDimensions() const
 	const Vec3i& _n = d_n.getValue();
 	int dim = 0;
 	for (int i = 0; i<3; i++)
-		if (_n[i] > 2) 
+		if (_n[i] > 1) 
 			dim++;
 
 	return (Grid_dimension)dim;
