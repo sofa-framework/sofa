@@ -201,7 +201,8 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
-    Grid_dimension getDimensions() const { return m_gridDim; }
+	/// Get the actual dimension of this grid using Enum @sa Grid_dimension
+	Grid_dimension getDimensions() const;
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;
@@ -210,9 +211,6 @@ public:
     Data<bool> d_computeHexaList, d_computeQuadList, d_computeEdgeList, d_computePointList;
     /// Data bool to set option to compute texcoords
     Data<bool> d_createTexCoords;
-
-    /// Enum storing the actual dimension of this grid
-    Grid_dimension m_gridDim;
 };
 
 } // namespace topology

@@ -170,7 +170,6 @@ GridTopology::GridTopology()
     , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
     , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
     , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
-    , m_gridDim(Grid_dimension::GRID_NULL)
 {
     setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
@@ -246,8 +245,6 @@ void GridTopology::checkGridResolution()
             dim++;
     }
 
-    m_gridDim = (Grid_dimension)dim;
-
     if (badDim)
     {
         msg_warning() << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
@@ -260,6 +257,17 @@ void GridTopology::checkGridResolution()
     }
 
     setNbGridPoints();
+}
+
+Grid_dimension GridTopology::getDimensions() const
+{
+	const Vec3i& _n = d_n.getValue();
+	int dim = 0;
+	for (int i = 0; i<3; i++)
+		if (_n[i] > 2) 
+			dim++;
+
+	return (Grid_dimension)dim;
 }
 
 void GridTopology::setSize(Vec3i n)
