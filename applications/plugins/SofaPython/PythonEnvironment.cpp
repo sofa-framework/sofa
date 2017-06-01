@@ -94,12 +94,9 @@ void PythonEnvironment::Init()
     // Workaround: try to import numpy and to launch numpy.finfo to cache data;
     // this prevents a deadlock when calling numpy.finfo from a worker thread.
     // ocarre: may crash on some configurations, we have to find a fix
-    PyRun_SimpleString("\
-try:\n\
-    import numpy\n\
-    numpy.finfo(float)\n\
-except:\n\
-    pass");
+    PyRun_SimpleString("try:\n\timport numpy;numpy.finfo(float)\nexcept:\n\tpass");
+    // Workaround: try to import scipy from the main thread this prevents a deadlock when importing scipy from a worker thread when we use the SofaScene asynchronous loading
+    PyRun_SimpleString("try:\n\tfrom scipy import misc, optimize\nexcept:\n\tpass\n");
 
 
     // If the script directory is not available (e.g. if the interpreter is invoked interactively
