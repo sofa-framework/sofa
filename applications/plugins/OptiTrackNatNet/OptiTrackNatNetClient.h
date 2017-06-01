@@ -29,7 +29,6 @@
 #include <iostream>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-//#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 

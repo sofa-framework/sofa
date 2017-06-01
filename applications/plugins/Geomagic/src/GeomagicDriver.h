@@ -34,7 +34,6 @@
 #endif
 
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/core/behavior/BaseController.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaHaptics/ForceFeedback.h>

@@ -32,7 +32,6 @@
 #include <sixense_utils/controller_manager/controller_manager.hpp>
 
 
-#include <sofa/core/behavior/BaseController.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/visual/VisualParams.h>

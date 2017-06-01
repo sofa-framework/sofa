@@ -31,7 +31,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaUserInteraction/Controller.h>
-//#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include "OptiTrackNatNetClient.h"
