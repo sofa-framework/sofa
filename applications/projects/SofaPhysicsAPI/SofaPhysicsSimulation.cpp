@@ -56,13 +56,11 @@ SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
 
 SofaPhysicsAPI::~SofaPhysicsAPI()
 {
-    std::cout << "SofaPhysicsAPI::~SofaPhysicsAPI()" << std::endl;
     if (impl != NULL)
     {
         delete impl;
         impl = NULL;
     }
-    std::cout << "SofaPhysicsAPI::~SofaPhysicsAPI() out" << std::endl;
 }
 
 const char *SofaPhysicsAPI::APIName()
