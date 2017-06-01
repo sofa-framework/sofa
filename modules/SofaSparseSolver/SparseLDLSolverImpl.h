@@ -257,6 +257,13 @@ protected :
         // We give NULL and NULL to use the default option (see doc of metis for details) !
         // If you have the error "SparseLDLSolver failure to factorize, D(k,k) is zero" that probably means that you use the previsou version of metis.
         // In this case you have to download and install the last version from : www.cs.umn.edu/~metis‎
+        std::cout << "CALLING METIS WITH: " << adj.size() << ":" << xadj.size() << std::endl ;
+        for(unsigned int i=0;i<xadj.size();i++)
+            std::cout << "Val: " << i << " -> " << xadj[i] << " vtx: " << n << std::endl ;
+
+        if(adj.size()==0){
+            adj.push_back(0) ;
+        }
         METIS_NodeND(&n, &xadj[0],&adj[0], NULL, NULL, perm,invperm);
     }
 
@@ -318,6 +325,19 @@ protected :
             data->LT_rowind.clear();data->LT_rowind.fastResize(data->L_nnz);
             data->LT_values.clear();data->LT_values.fastResize(data->L_nnz);
         }
+
+        if(data->L_rowind.size()==0)
+            data->L_rowind.push_back(0) ;
+
+        if(data->L_values.size()==0)
+            data->L_values.push_back(0.0);
+
+        if(data->LT_rowind.size()==0)
+            data->LT_rowind.push_back(0) ;
+
+        if(data->LT_values.size()==0)
+            data->LT_values.push_back(0.0);
+
 
         Real * D = &data->invD[0];
         int * rowind = &data->L_rowind[0];

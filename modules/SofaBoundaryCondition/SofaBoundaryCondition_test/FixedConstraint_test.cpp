@@ -143,6 +143,11 @@ struct FixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             return false;
         }
 
+        std::cout << " position [" << readX[0] << ", ->" << readX[1]
+                                                                    << "] and ["
+                                                                    << initCoord1 << ", ->" << initCoord2 << "] " << std::endl;
+
+
         return true;
 
     }
