@@ -249,7 +249,7 @@ void STLExporter::writeSTLBinary()
             vecTri.push_back(triangleIndices[i]);
         }
     }
-    else if(!quadIndices.empty())
+    if(!quadIndices.empty())
     {
         core::topology::BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
@@ -265,7 +265,7 @@ void STLExporter::writeSTLBinary()
             vecTri.push_back(tri);
         }
     }
-    else
+    if(quadIndices.empty() && triangleIndices.empty())
     {
         serr << "STLExporter::writeSTLBinary : error, neither triangles nor quads" << sendl;
         return;
