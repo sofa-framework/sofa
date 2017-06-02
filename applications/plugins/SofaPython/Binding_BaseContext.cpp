@@ -71,6 +71,21 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
+void SofaPythonListToStdStr(PyObject *list, std::stringstream& out)
+{
+         for (int i=0; i<PyList_Size(list); i++)
+         {
+             PyObject* item = PyList_GetItem(list, i) ;
+             /// [0, [1], 3]
+             /// 0
+             /// [1]
+             /// 3
+
+             char* ptr = PyString_AsString(PyObject_Str(item)) ;
+             out << ptr << " " ;
+         }
+}
+
 // object factory
 extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
@@ -106,7 +121,12 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             {
                 if (PyString_Check(value))
                     desc.setAttribute(PyString_AsString(key),PyString_AsString(value));
-                else
+                else if (PyList_Check(value)){
+                    SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<"), automatic conversion from List for attribute "<<PyString_AsString(key)<<")..." )
+                    std::stringstream tmp;
+                    SofaPythonListToStdStr(value, tmp) ;
+                    desc.setAttribute(PyString_AsString(key), tmp.str().c_str());
+                }else
                     desc.setAttribute(PyString_AsString(key),PyString_AsString(PyObject_Str(value)));
             }
         }
