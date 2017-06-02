@@ -339,11 +339,24 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    // to force loading plugin SofaPython if existing
+    std::string configPluginPath = pluginDir + "/plugin_list.conf";
+    std::string defaultConfigPluginPath = pluginDir + "/plugin_list.conf.default";
+
+    if (sofa::helper::system::DataRepository.findFile(configPluginPath))
     {
-        std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
-        sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+        sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
     }
+    else if (sofa::helper::system::DataRepository.findFile(defaultConfigPluginPath))
+    {
+        sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+
+    }
+
+    //// to force loading plugin SofaPython if existing
+    //{
+    //    std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
+    //    sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
+    //}
 
     PluginManager::getInstance().init();
 
