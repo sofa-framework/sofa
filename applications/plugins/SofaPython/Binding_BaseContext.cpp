@@ -76,11 +76,6 @@ void SofaPythonListToStdStr(PyObject *list, std::stringstream& out)
          for (int i=0; i<PyList_Size(list); i++)
          {
              PyObject* item = PyList_GetItem(list, i) ;
-             /// [0, [1], 3]
-             /// 0
-             /// [1]
-             /// 3
-
              char* ptr = PyString_AsString(PyObject_Str(item)) ;
              out << ptr << " " ;
          }
