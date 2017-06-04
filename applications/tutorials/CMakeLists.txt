@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 
 set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
-    # anatomyModelling
+    anatomyModelling
     chainHybrid
     compositeObject
     houseOfCards
