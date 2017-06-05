@@ -155,7 +155,7 @@ typedef sofa::component::mapping::CorotationalStrainMapping< F332(double), E332(
 typedef sofa::component::mapping::GreenStrainMapping< F332(double), E332(double) > GreenStrainMapping_F332_E332;
 
 // sampler
-typedef sofa::component::engine::ImageGaussPointSampler<ImageD,ImageD> ImageGaussPointSampler_ImageD;
+typedef sofa::component::engine::ImageGaussPointSampler<ImageD,ImageUC> ImageGaussPointSampler_ImageD;
 
 // material
 typedef sofa::component::forcefield::HookeForceField< E332(double) > HookeForceField_E332;
