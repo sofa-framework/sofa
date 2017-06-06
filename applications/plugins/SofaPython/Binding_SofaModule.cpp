@@ -63,9 +63,7 @@ static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 {
     char *name;
-    if (!PyArg_ParseTuple(args, "s",&name))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "s",&name)) {
         return NULL;
     }
 
@@ -76,12 +74,9 @@ static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 
 
 // object factory
-static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw)
-{
+static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObject * kw) {
     char *type;
-    if (!PyArg_ParseTuple(args, "s",&type))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "s", &type)) {
         return NULL;
     }
 
@@ -136,12 +131,12 @@ static PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 using namespace sofa::gui;
 
 // send a text message to the GUI
-static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
-{
+static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args) {
     char *msgType;
     char *msgValue;
-    if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue))
-        Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "ss",&msgType,&msgValue)) {
+        return NULL;
+    }
     BaseGUI *gui = GUIManager::getGUI();
     if (!gui)
     {
@@ -155,12 +150,9 @@ static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args)
 }
 
 // ask the GUI to save a screenshot
-static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
-{
+static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args) {
     char *filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "s",&filename)) {
         return NULL;
     }
     BaseGUI *gui = GUIManager::getGUI();
@@ -177,12 +169,9 @@ static PyObject * Sofa_saveScreenshot(PyObject * /*self*/, PyObject * args)
 
 
 // set the viewer resolution
-static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
-{
+static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args) {
     int width, height;
-    if (!PyArg_ParseTuple(args, "ii",&width,&height))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "ii", &width, &height)) {
         return NULL;
     }
     BaseGUI *gui = GUIManager::getGUI();
@@ -203,9 +192,7 @@ static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * 
 {
     float r = 0.0f, g = 0.0f, b = 0.0f;
     sofa::defaulttype::RGBAColor color;
-    if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "fff", &r, &g, &b)) {
         return NULL;
     }
 
@@ -262,8 +249,7 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 }
 
 
-static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
-{
+static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *) {
     sofa::defaulttype::Vector3 pos;
     sofa::defaulttype::Quat orient;
 
@@ -287,10 +273,9 @@ static PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 
 
-// from a mesh, a density and a 3d scale
-// computes a mass, a center of mass, a diagonal inertia matrix and an inertia rotation
-static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
-{
+// from a mesh, a density and a 3d scale, computes a mass, a center of mass, a
+// diagonal inertia matrix and an inertia rotation
+static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     char* meshFilename;
     double density;
     double sx = 1, sy = 1, sz = 1;
@@ -299,7 +284,6 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "sd|dddddd", &meshFilename, &density,
                           &sx, &sy, &sz,
                           &rx, &ry, &rz)) {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -316,19 +300,16 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 
 
 /// save a sofa scene from python
-static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
-{
+static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
     char* filename;
     PyObject* pyNode;
-    if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "Os", &pyNode, &filename)) {
         return NULL;
     }
 
     BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
-    if (!node)
-    {
+    if (!node) {
+        // this should not happen
         PyErr_BadArgument();
         return NULL;
     }
@@ -341,18 +322,15 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args)
 
 
 
-static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
-{
+static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
     PyObject* pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) {
         return NULL;
     }
 
     BaseNode* basenode=((PySPtr<Base>*)pyNode)->object->toBaseNode();
-    if (!basenode)
-    {
+    if (!basenode) {
+        // this should not happen
         PyErr_BadArgument();
         return NULL;
     }
@@ -372,168 +350,76 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args)
 
 static const std::string s_emitter = "PythonScript";
 
-static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args)
-{
-    size_t argSize = PyTuple_Size(args);
+// please use functions instead of copypasting all the time god dammit
+template<class Action>
+static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
+    const size_t argSize = PyTuple_Size(args);
 
     char* message;
 
-    if( argSize==2 )
-    {
+    // the logic would be to have the optional arg in last position :-/
+    if( argSize == 2 ) {
         char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
-        {
-            PyErr_BadArgument();
+        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) ) {
             return NULL;
         }
 
-        msg_info( emitter ) << message;
-    }
-    else // no emitter
-    {
-        if( !PyArg_ParseTuple(args, "s", &message) )
-        {
-            PyErr_BadArgument();
+        action(emitter, message);
+    } else { 
+        // no emitter
+        if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
         }
 
-        msg_info( s_emitter ) << message;
+        action(s_emitter, message);
     }
-
+    
     Py_RETURN_NONE;
 }
 
-static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args)
-{
-    size_t argSize = PyTuple_Size(args);
-
-    char* message;
-
-    if( argSize==2 )
-    {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_deprecated( emitter ) << message;
-    }
-    else // no emitter
-    {
-        if( !PyArg_ParseTuple(args, "s", &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_deprecated( s_emitter ) << message;
-    }
-
-    Py_RETURN_NONE;
+// also, we'd probably would be better off having 'error', 'fatal', 'info' as
+// argument
+static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+            msg_info(emitter) << message;
+        });
 }
 
-static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args)
-{
-    size_t argSize = PyTuple_Size(args);
+static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
 
-    char* message;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+            msg_deprecated(emitter) << message;
+        });
 
-    if( argSize==2 )
-    {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_warning( emitter ) << message;
-    }
-    else // no emitter
-    {
-        if( !PyArg_ParseTuple(args, "s", &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_warning( s_emitter ) << message;
-    }
-
-    Py_RETURN_NONE;
 }
 
-static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args)
-{
-    size_t argSize = PyTuple_Size(args);
+static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
 
-    char* message;
-
-    if( argSize==2 )
-    {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_error( emitter ) << message;
-    }
-    else // no emitter
-    {
-        if( !PyArg_ParseTuple(args, "s", &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_error( s_emitter ) << message;
-    }
-
-    Py_RETURN_NONE;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+            msg_warning(emitter) << message;
+        });
+    
 }
 
-static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args)
-{
-    size_t argSize = PyTuple_Size(args);
-
-    char* message;
-
-    if( argSize==2 )
-    {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_fatal( emitter ) << message;
-    }
-    else // no emitter
-    {
-        if( !PyArg_ParseTuple(args, "s", &message) )
-        {
-            PyErr_BadArgument();
-            return NULL;
-        }
-
-        msg_fatal( s_emitter ) << message;
-    }
-
-    Py_RETURN_NONE;
+static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+            msg_error(emitter) << message;
+        });
+    
 }
+
+static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+            msg_fatal(emitter) << message;
+        });
+}
+
 
 
 static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 {
     char *filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "s",&filename)) {
         return NULL;
     }
 
@@ -550,7 +436,8 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
     }
 
     // unable to load file
-    SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
+    SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("
+                      << sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
 
     Py_RETURN_NONE;
 }
@@ -561,8 +448,9 @@ static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObjec
 {
     size_t argSize = PyTuple_Size(args);
 
-    if( !argSize )
-    {
+    // TODO FIXME this is an error, raise proper exception
+    // e.g. PyError_SetString(PyExc_RuntimeError, "derp"); then return NULL;
+    if( !argSize ) {
         SP_MESSAGE_ERROR( "Sofa_loadPythonSceneWithArguments: should have at least a filename as arguments" );
         Py_RETURN_NONE;
     }
@@ -570,12 +458,15 @@ static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObjec
     // PyString_Check(PyTuple_GetItem(args,0)) // to check the arg type and raise an error
     char *filename = PyString_AsString(PyTuple_GetItem(args,0));
 
-    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() ) // no filename
+    if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() ) {// no filename
+        // TODO FIXME same here
         Py_RETURN_NONE;
+    }
 
-    std::vector<std::string> arguments;;
-    for( size_t i=1 ; i<argSize ; i++ )
+    std::vector<std::string> arguments;
+    for( size_t i=1 ; i<argSize ; i++ ) {
         arguments.push_back( PyString_AsString(PyTuple_GetItem(args,i)) );
+    }
 
     sofa::simulation::SceneLoaderPY loader;
     sofa::simulation::Node::SPtr root;
@@ -588,9 +479,7 @@ static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObjec
 static PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 {
     char *pluginName;
-    if (!PyArg_ParseTuple(args, "s",&pluginName))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "s", &pluginName)) {
         return NULL;
     }
 
