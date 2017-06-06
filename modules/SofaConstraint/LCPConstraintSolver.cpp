@@ -499,8 +499,6 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 
 void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 {
-    //std::cout << "Merge_Spatial" << std::endl;
-
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     const int merge_spatial_shift = 0; // merge_spatial_step/2
     const int merge_local_levels = this->merge_local_levels.getValue();
@@ -609,7 +607,6 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                 if (res.second)
                 {
                     // new group
-                    //std::cout << "New group: " << posCoarse << std::endl;
                     newConstraintPositions.push_back(posCoarse);
                     newConstraintDirections.push_back(dirFineN*area);
                     newConstraintDirections.push_back(dirFineT1*area);

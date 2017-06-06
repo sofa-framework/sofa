@@ -310,7 +310,7 @@ bool SceneCreator_test::createSphereSuccess()
     // check FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
@@ -332,12 +332,12 @@ bool SceneCreator_test::createRigidSphereSuccess()
     // check Grid
     std::vector<SphereGridTopology*> grids;
     node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     // check No FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(FEMs.size(), 0);
+    EXPECT_EQ(FEMs.size(), (size_t)0);
 
     return true;
 }

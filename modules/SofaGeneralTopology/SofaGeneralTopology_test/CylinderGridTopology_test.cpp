@@ -1,4 +1,7 @@
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaGeneralTopology/CylinderGridTopology.h>
 
 namespace sofa
@@ -16,21 +19,34 @@ struct CylinderGridTopology_test : public Sofa_test<>
 
 bool CylinderGridTopology_test::cylinderGridCreation()
 {
-    // Creating a good Grid
-    CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(5, 5, 5);
-    EXPECT_NE(cylGrid, nullptr);
-    EXPECT_EQ(cylGrid->d_radius.getValue(), 1.0);
-    EXPECT_EQ(cylGrid->d_length.getValue(), 1.0);
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_MSG_NOEMIT(Warning) ;
 
-    // Creating a bad Grid
-    CylinderGridTopology::SPtr cylGrid2 = sofa::core::objectmodel::New<CylinderGridTopology>(-1, 0, 1);
-    // EXPECT_EQ(cylGrid2, nullptr);
+        // Creating a good Grid
+        CylinderGridTopology::SPtr cylGrid = sofa::core::objectmodel::New<CylinderGridTopology>(5, 5, 5);
+        EXPECT_NE(cylGrid, nullptr);
+        EXPECT_EQ(cylGrid->d_radius.getValue(), 1.0);
+        EXPECT_EQ(cylGrid->d_length.getValue(), 1.0);
+    }
+
+
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_MSG_EMIT(Warning) ;
+
+        // Creating a bad Grid
+        CylinderGridTopology::SPtr cylGrid2 = sofa::core::objectmodel::New<CylinderGridTopology>(-1, 0, 1);
+    }
 
     return true;
 }
 
 bool CylinderGridTopology_test::cylinderGridSize()
 {
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
     // Creating a good Grid
     int nx = 5;
     int ny = 5;
@@ -48,6 +64,9 @@ bool CylinderGridTopology_test::cylinderGridSize()
 
 bool CylinderGridTopology_test::cylinderGridPosition()
 {
+    EXPECT_MSG_NOEMIT(Warning) ;
+    EXPECT_MSG_NOEMIT(Error) ;
+
     int nx = 8;
     int ny = 8;
     int nz = 5;
@@ -85,7 +104,16 @@ bool CylinderGridTopology_test::cylinderGridPosition()
     return true;
 }
 
-TEST_F(CylinderGridTopology_test, cylinderGridCreation ) { ASSERT_TRUE( cylinderGridCreation()); }
-TEST_F(CylinderGridTopology_test, cylinderGridSize ) { ASSERT_TRUE( cylinderGridSize()); }
-TEST_F(CylinderGridTopology_test, cylinderGridPosition ) { ASSERT_TRUE( cylinderGridPosition()); }
+TEST_F(CylinderGridTopology_test, cylinderGridCreation ) {
+    ASSERT_TRUE( cylinderGridCreation());
+}
+
+TEST_F(CylinderGridTopology_test, cylinderGridSize ) {
+    ASSERT_TRUE( cylinderGridSize());
+}
+
+TEST_F(CylinderGridTopology_test, cylinderGridPosition ) {
+    ASSERT_TRUE( cylinderGridPosition());
+}
+
 }

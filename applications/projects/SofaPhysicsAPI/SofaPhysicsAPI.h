@@ -47,7 +47,7 @@ class SOFA_SOFAPHYSICSAPI_API SofaPhysicsAPI
 {
 public:
     SofaPhysicsAPI(bool useGUI = false, int GUIFramerate = 0);
-    ~SofaPhysicsAPI();
+    virtual ~SofaPhysicsAPI();
 
     /// Load an XML file containing the main scene description
     bool load(const char* filename);

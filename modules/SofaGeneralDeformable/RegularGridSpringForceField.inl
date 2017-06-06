@@ -25,8 +25,6 @@
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

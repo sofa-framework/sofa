@@ -43,6 +43,12 @@
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
 
+#ifdef WIN32
+#define ON_WIN32 true
+#else
+#define ON_WIN32 false
+#endif // WIN32
+
 namespace sofa
 {
 
@@ -160,7 +166,7 @@ void FileRepository::addLastPath(const std::string& p)
         p0 = p1+1;
     }
     vpath.insert(vpath.end(), entries.begin(), entries.end());
-//     std::cout << path << std::endl;
+    //     std::cout << path << std::endl;
 }
 
 void FileRepository::removePath(const std::string& path)
@@ -244,7 +250,7 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
         for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
             tmplog << ':'<<*it;
         if( errlog==&std::cerr || errlog==&std::cout)
-                msg_error("FileRepository") << tmplog.str();
+            msg_error("FileRepository") << tmplog.str();
         else
             (*errlog)<<tmplog.str()<<std::endl;
     }
@@ -262,26 +268,48 @@ void FileRepository::print()
         std::cout << *it << std::endl;
 }
 /*static*/
-std::string FileRepository::relativeToPath(std::string path, std::string refPath)
+std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
 {
-#ifdef WIN32
+    /// This condition replace the #ifdef in the code.
+    /// The advantage is that the code is compiled and is
+    /// removed by the optimization pass.
+    if( ! ON_WIN32 )
+    {
+        /// Case sensitive OS.
+        std::string::size_type loc = path.find( refPath, 0 );
+        if (loc==0)
+            path = path.substr(refPath.size()+1);
 
-    /*
-    WIN32 is a pain here because of mixed case formatting with randomly
-    picked slash and backslash to separate dirs.
-    */
+        return path;
+    }
+
+    /// WIN32 is a pain here because of mixed case formatting with randomly
+    /// picked slash and backslash to separate dirs.
+    ///TODO(dmarchal 2017-05-01): remove the deprecated part in one year.
+    std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
-    std::transform(path.begin(), path.end(), path.begin(), ::tolower );
+
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-#endif
-    std::string::size_type loc = path.find( refPath, 0 );
-    if (loc==0) path = path.substr(refPath.size()+1);
+    if( doLowerCaseOnWin32 )
+    {
+        dmsg_deprecated("FileRepository") << "Using relativePath(doLowerCaseOnWin32=true) is a deprecated behavior since 2017-05-01. "
+                                             "This behavior will be removed in 2018-05-01 and you need to update your code to use new "
+                                             "API";
+        /// The complete path is lowered... and copied into the tmppath;
+        std::transform(path.begin(), path.end(), path.begin(), ::tolower );
+        tmppath = path ;
+    }else{
+        tmppath = path ;
+        std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
+    }
+
+    std::string::size_type loc = tmppath.find( refPath, 0 );
+    if (loc==0)
+        path = path.substr(refPath.size()+1);
 
     return path;
-
-
 }
 
 } // namespace system

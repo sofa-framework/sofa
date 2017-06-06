@@ -76,7 +76,7 @@ PatchTestMovementConstraint<DataTypes>::PatchTestMovementConstraint()
     pointHandler = new FCPointHandler(this, &m_indices);
 
     if(!m_beginConstraintTime.isSet())
-     m_beginConstraintTime = 0; 
+     m_beginConstraintTime = 0;
     if(!m_endConstraintTime.isSet())
         m_endConstraintTime = 20;
 
@@ -147,7 +147,7 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 {
     Coord corner0, corner1, corner2, corner3,corner4,corner5,corner6,corner7, point;
-    // Write accessor 
+    // Write accessor
     helper::WriteAccessor< Data<VecCoord > > cornerPositions = m_cornerPoints;
     helper::WriteAccessor< Data<VecCoord > > constrainedPoints = m_constrainedPoints;
     bool isMeshin3D = false;
@@ -161,7 +161,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
             isMeshin3D = true;
         }
     }
-  
+
     if(constrainedPoints.size() > 0)
     {
         corner0 = constrainedPoints[0];
@@ -181,17 +181,17 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
             }
 
             if(constrainedPoints[i][0] > corner2[0] || constrainedPoints[i][1] > corner2[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner2[2] ) )
-            {   
+            {
                  corner2 = constrainedPoints[i];
             }
 
             if(constrainedPoints[i][1] < corner1[1] || constrainedPoints[i][0] > corner1[0] || ( CoordSize>2 && constrainedPoints[i][2] < corner1[2] ))
-            {   
+            {
                  corner1 = constrainedPoints[i];
             }
 
             if(constrainedPoints[i][0] < corner3[0] || constrainedPoints[i][1] > corner3[1] || ( CoordSize>2 && constrainedPoints[i][2] < corner3[2] ))
-            {   
+            {
                  corner3 = constrainedPoints[i];
             }
 
@@ -201,26 +201,26 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
             }
 
             if(isMeshin3D && (constrainedPoints[i][0] > corner6[0] || constrainedPoints[i][1] > corner6[1] || (CoordSize>2 && constrainedPoints[i][2] > corner2[2] )) )
-            {   
+            {
                 corner6 = constrainedPoints[i];
             }
 
             if(isMeshin3D && (constrainedPoints[i][1] < corner5[1] || constrainedPoints[i][0] > corner5[0] || (CoordSize>2 && constrainedPoints[i][2] > corner5[2] )) )
-            {   
+            {
                 corner5 = constrainedPoints[i];
             }
 
             else if(isMeshin3D && (constrainedPoints[i][0] < corner7[0] || constrainedPoints[i][1] > corner7[1] || (CoordSize>2 && constrainedPoints[i][2] > corner7[2] )) )
-            {   
+            {
                 corner7 = constrainedPoints[i];
             }
          }
-          
+
         cornerPositions.push_back(corner0);
         cornerPositions.push_back(corner1);
         cornerPositions.push_back(corner2);
         cornerPositions.push_back(corner3);
-        
+
         // 3D
         if(isMeshin3D)
         {
@@ -265,12 +265,12 @@ void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::Mechani
     sofa::simulation::Node::SPtr root = down_cast<sofa::simulation::Node>( this->getContext()->getRootContext() );
     helper::WriteAccessor<DataVecCoord> x = xData;
     const SetIndexArray & indices = m_indices.getValue();
-    
+
     // Time
     double beginTime = m_beginConstraintTime.getValue();
     double endTime = m_endConstraintTime.getValue();
     double totalTime = endTime - beginTime;
-   
+
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
         this->initializeInitialPositions(m_meshIndices.getValue(),xData,meshPointsX0);
@@ -278,7 +278,7 @@ void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::Mechani
     //initialize final mesh Dofs positions, if it's not done
     if(meshPointsXf.size()==0)
        this->initializeFinalPositions(m_meshIndices.getValue(),xData, meshPointsX0, meshPointsXf);
-  
+
     //initialize initial constrained Dofs positions, if it's not done
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
@@ -290,19 +290,19 @@ void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::Mechani
     // Update the intermediate Dofs positions computed by linear interpolation
    double time = root->getTime();
    if( time > beginTime && time <= endTime && totalTime > 0)
-    { 
+    {
         for (size_t i = 0; i< indices.size(); ++i)
-        { 
+        {
             x[indices[i]] = ((xf[indices[i]]-x0[indices[i]])*time + (x0[indices[i]]*endTime - xf[indices[i]]*beginTime))/totalTime;
         }
     }
    else if (time > endTime)
    {
         for (size_t i = 0; i< indices.size(); ++i)
-        { 
+        {
              x[indices[i]] = xf[indices[i]];
         }
-   }  
+   }
 }
 
 template <class DataTypes>
@@ -310,12 +310,12 @@ void PatchTestMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::B
 {
     // clears the rows and columns associated with constrained particles
     unsigned blockSize = DataTypes::deriv_total_size;
- 
+
     for(SetIndexArray::const_iterator it= m_indices.getValue().begin(), iend=m_indices.getValue().end(); it!=iend; it++ )
     {
         M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
     }
-   
+
 }
 
 template <class DataTypes>
@@ -323,11 +323,11 @@ void PatchTestMovementConstraint<DataTypes>::getFinalPositions( VecCoord& finalP
 {
     // Indices of mesh points
     const SetIndexArray & meshIndices = m_meshIndices.getValue();
-  
+
     // Initialize final positions
     if(meshPointsXf.size()==0)
     {this->initializeFinalPositions(meshIndices,xData,meshPointsX0,meshPointsXf);}
-   
+
     // Set final positions
     finalPos.resize(meshIndices.size());
     for (size_t i=0; i < meshIndices.size() ; ++i)
@@ -346,17 +346,17 @@ void PatchTestMovementConstraint<DataTypes>::initializeInitialPositions (const S
     {
         x0[indices[i]] = x[indices[i]];
     }
-    
+
 }
 
 template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::initializeFinalPositions (const SetIndexArray & indices, DataVecCoord& xData, VecCoord& x0, VecCoord& xf)
 {
-     Deriv displacement; 
+     Deriv displacement;
      helper::WriteAccessor<DataVecCoord> x = xData;
-   
+
     xf.resize(x.size());
-    
+
     // if the positions were not initialized
     if(x0.size() == 0)
         this->initializeInitialPositions(indices,xData,x0);
@@ -366,7 +366,7 @@ void PatchTestMovementConstraint<DataTypes>::initializeFinalPositions (const Set
         this->computeInterpolatedDisplacement(indices[i],xData,displacement);
         xf[indices[i]] = x0[indices[i]] + displacement ;
     }
-    
+
 }
 
 template <class DataTypes>
@@ -381,7 +381,7 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
     const VecCoord& cornerPoints = m_cornerPoints.getValue();
     if(cornerPoints.size()==0)
         this->findCornerPoints();
-   
+
     if(cornerPoints.size() == 4)
     {
         Coord corner0 = cornerPoints[0];
@@ -391,13 +391,13 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
         // Coord of the point
          helper::ReadAccessor<DataVecCoord> x = xData;
          Coord point = x[pointIndice];
-   
+
          // Compute alpha = barycentric coefficient along the x axis
          alpha = fabs(point[0]-corner0[0])/fabs(corner1[0]-corner0[0]);
-      
+
          // Compute beta = barycentric coefficient along the y axis
          beta = fabs(point[1]-corner0[1])/fabs(corner3[1]-corner0[1]);
- 
+
          // cornerMovements
          const VecDeriv& cornerMovements = m_cornerMovements.getValue();
 
@@ -437,9 +437,9 @@ void PatchTestMovementConstraint<DataTypes>::computeInterpolatedDisplacement(int
     }
     else
     {
-        std::cout << "error don't find the corner points" << std::endl;
+        msg_info() << "error don't find the corner points" ;
     }
-    
+
 }
 
 template <class DataTypes>
@@ -458,7 +458,7 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
             points.push_back(point);
         }
         vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.5,0.5,1));
-    }  
+    }
 }
 
 

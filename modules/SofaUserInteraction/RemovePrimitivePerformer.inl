@@ -151,8 +151,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 template <class DataTypes>
 void RemovePrimitivePerformer<DataTypes>::end()
 {
-    std::cout << "RemovePrimitivePerformer::end()" << std::endl;
-    //	firstClick = true;
+    dmsg_info("RemovePrimitivePerfomer") << " end()" ;
 }
 
 

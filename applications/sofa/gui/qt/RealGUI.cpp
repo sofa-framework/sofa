@@ -1194,7 +1194,7 @@ void RealGUI::setFullScreen (bool enable)
 
 //------------------------------------
 
-void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
+void RealGUI::setBackgroundColor(const defaulttype::RGBAColor& c)
 {
     background[0]->setText(QString::number(c[0]));
     background[1]->setText(QString::number(c[1]));

@@ -410,13 +410,10 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
     }
 
-    //std::cout << "appCompliance = invM->data\n";
     appCompliance = invM->data;
 
     // Optimisation for the computation of W
     _indexNodeSparseCompliance.resize(v0.size());
-    //_sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
-
 
     //  Print 400 first row and column of the matrix
     if (this->notMuted())
@@ -435,14 +432,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         serr << sendl;
     }
 
-    //sout << "quit init "  << sendl;
-
-    //sout << "----------- Test Quaternions --------------" << sendl;
-
     //// rotation de -Pi/2 autour de z en init
     //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
     //q0.normalize();
-
 
     //// rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
     //Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
