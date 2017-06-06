@@ -145,15 +145,12 @@ if(MSVC)
 
 endif()
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/) when installing" ON)
-if(SOFA_INSTALL_RESOURCES_FILES)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
-endif()
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree, whereas in the install
+# directory, it contains to relative paths to the installed resource directory.
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+configure_file(etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 
 ### Extlibs
 option(SOFA_USE_MASK "Use mask optimization" ON)
