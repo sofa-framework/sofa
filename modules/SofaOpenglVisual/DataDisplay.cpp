@@ -231,7 +231,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             // Triangles
             int nbTriangles = topology->getNbTriangles();
-            glBegin(GL_TRIANGLES);
             for (int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
@@ -243,7 +242,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
                     color, color, color);
             }
-            glEnd();
         }
         else if( !pointTriData.empty() )
         {
