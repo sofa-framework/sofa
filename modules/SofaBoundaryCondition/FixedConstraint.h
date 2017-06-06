@@ -43,6 +43,7 @@ namespace component
 
 namespace projectiveconstraintset
 {
+//#define PROJECTVELOCITY
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -50,6 +51,7 @@ class FixedConstraintInternalData
 {
 
 };
+
 
 /** Maintain a constant velocity.
  * If the particle is initially fixed then it is attached to its initial position.

@@ -245,26 +245,32 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-#if 0 /// @todo ADD A FLAG FOR THIS
-    const SetIndexArray & indices = f_indices.getValue();
-    //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+#ifdef PROJECTVELOCITY
+    const SetIndexArray & indices = this->f_indices.getValue();
+    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
+
+    if( this->f_fixAll.getValue()==true )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
     }
     else
     {
+        helper::WriteAccessor<Data <VecDeriv> > Vfree = *this->getMState()->write(core::VecDerivId::freeVelocity());
         unsigned i=0;
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
             res[*it] = Deriv();
+            Vfree[*it] = Deriv();
         }
     }
 #endif
 }
+
+
+
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
