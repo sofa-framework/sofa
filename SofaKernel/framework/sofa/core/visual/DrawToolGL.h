@@ -186,6 +186,18 @@ protected:
     helper::gl::BasicShapesGL_Sphere<Vector3> m_sphereUtil;
     helper::gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
 
+    // utility functions, defining primitives
+    virtual void internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal);
+    virtual void internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal, const Vec4f &c);
+    virtual void internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
+    virtual void internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4);
+
 public:
     // getter & setter
     virtual void setLightingEnabled(bool _isAnabled);

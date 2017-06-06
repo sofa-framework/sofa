@@ -669,10 +669,30 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
     glVertexNv<3>(p3.ptr());
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void DrawToolGL::internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal)
+{
+    glNormalT(normal);
+    glVertexNv<3>(p1.ptr());
+    glVertexNv<3>(p2.ptr());
+    glVertexNv<3>(p3.ptr());
+    glVertexNv<3>(p4.ptr());
+}
 
-void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+void DrawToolGL::internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal, const Vec4f &c)
+{
+    glNormalT(normal);
+    glColor4fv(c.ptr());
+    glVertexNv<3>(p1.ptr());
+    glVertexNv<3>(p2.ptr());
+    glVertexNv<3>(p3.ptr());
+    glVertexNv<3>(p4.ptr());
+}
+
+void DrawToolGL::internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
         const Vector3 &normal,
-        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+        const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4)
 {
     glNormalT(normal);
     glColor4fv(c1.ptr());
@@ -685,10 +705,9 @@ void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
     glVertexNv<3>(p4.ptr());
 }
 
-
-void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+void DrawToolGL::internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
         const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
-        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+        const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4)
 {
     glNormalT(normal1);
     glColor4fv(c1.ptr());
@@ -705,26 +724,41 @@ void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
 }
 
 
+void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+{
+    glBegin(GL_QUADS);
+    internalDrawQuad(p1, p2, p3, p4, normal, c1, c2, c3, c4);
+    glEnd();
+}
+
+
+void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+{
+    glBegin(GL_QUADS);
+    internalDrawQuad(p1, p2, p3, p4, normal1, normal2, normal3, normal4, c1, c2, c3, c4);
+    glEnd();
+}
+
+
 void DrawToolGL::drawQuad( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,const Vector3 &p4,
         const Vector3 &normal, const  Vec<4,float> &c)
 {
-    glNormalT(normal);
-    glColor4fv(c.ptr());
-    glVertexNv<3>(p1.ptr());
-    glVertexNv<3>(p2.ptr());
-    glVertexNv<3>(p3.ptr());
-    glVertexNv<3>(p4.ptr());
+    glBegin(GL_QUADS);
+    internalDrawQuad(p1, p2, p3, p4, normal, c);
+    glEnd();
 }
 
 
 void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
         const Vector3 &normal)
 {
-    glNormalT(normal);
-    glVertexNv<3>(p1.ptr());
-    glVertexNv<3>(p2.ptr());
-    glVertexNv<3>(p3.ptr());
-    glVertexNv<3>(p4.ptr());
+    glBegin(GL_QUADS);
+    internalDrawQuad(p1, p2, p3, p4, normal);
+    glEnd();
 }
 
 void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colour)
@@ -740,7 +774,7 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
             const Vector3& d = points[ 4*i+3 ];
             Vector3 n = cross((b-a),(c-a));
             n.normalize();
-            drawQuad(a,b,c,d,n,colour);
+            internalDrawQuad(a,b,c,d,n,colour);
         }
     } glEnd();
     resetMaterial(colour);
