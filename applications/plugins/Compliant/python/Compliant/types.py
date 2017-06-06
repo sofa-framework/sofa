@@ -161,24 +161,6 @@ class Rigid3(np.ndarray):
         return res
 
 
-    @contextmanager
-    def gl_frame(self):
-        '''draw in the current rigid frame'''
-
-        global GL
-        if GL is None: from OpenGL import GL
-        
-        GL.glPushMatrix()
-        try:
-            GL.glTranslate(*self.center)
-            axis, angle = self.orient.axis_angle()
-            if angle:
-                GL.glRotate(angle * deg, *axis)
-            yield
-        finally:
-            GL.glPopMatrix()
-
-
         
 class Quaternion(np.ndarray):
 
