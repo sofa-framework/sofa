@@ -50,12 +50,11 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , stiffness(initData(&stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , pivotPoints(initData(&pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
-    , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , recompute_indices(initData(&recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
     , springColor(initData(&springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
-    , restMState(NULL)
+    , restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
 //	, pp_0(NULL)
 {
 }
@@ -75,30 +74,20 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         stiffness.setValue(stiffs);
     }
 
-    const std::string path = external_rest_shape.getValue();
-
-    restMState = NULL;
-
-    if (path.size() > 0)
+    if (restMState.get() == NULL)
     {
-        this->getContext()->get(restMState ,path);
+      useRestMState = false;
+
+      msg_error(this)<< "external_rest_shape in node " << this-> getContext()->getName() << " not found";
+      //getContext()->removeObject(this);
+      return;
+    }else
+    {
+      useRestMState = true;
+
+      // sout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << sendl;
     }
 
-    if (!restMState)
-    {
-        useRestMState = false;
-
-        if (path.size() > 0)
-        {
-            serr << external_rest_shape.getValue() << " not found" << sendl;
-        }
-    }
-    else
-    {
-        useRestMState = true;
-
-        // sout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << sendl;
-    }
 
     this->k = stiffness.getValue();
 

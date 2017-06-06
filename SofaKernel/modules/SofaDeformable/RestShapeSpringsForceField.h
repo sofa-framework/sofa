@@ -87,7 +87,7 @@ public:
     Data< bool > drawSpring;
     Data< defaulttype::RGBAColor > springColor;
 
-    sofa::core::behavior::MechanicalState< DataTypes > *restMState;
+    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     //VecDeriv Springs_dir;
