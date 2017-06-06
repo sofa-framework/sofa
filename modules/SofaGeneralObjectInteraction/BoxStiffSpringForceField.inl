@@ -113,7 +113,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
@@ -141,7 +141,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
