@@ -62,24 +62,6 @@ def numpy_property(attr_name, attr_data, index = 0):
     return property(getter, setter)
 
 
-class Script(Sofa.PythonScriptController):
-    
-    __slots__ = ('component', )
-    
-    def __new__(cls, node, *args, **kwargs):
-
-        component = node.createObject('PythonScriptController', 
-                                      classname = cls.__name__, 
-                                      modulename = cls.__module__)
-        
-        self = component.instance()
-
-        # TODO gc cycle?
-        self.component = component
-        
-        return self
-    
-
 
 class MechanicalObject(object):
     '''state vector view for a mechanical object'''
