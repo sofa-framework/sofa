@@ -74,6 +74,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , f_showObject(initData(&f_showObject,true,"showObject","draw or not the fixed constraints"))
     , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_activate_projectVelocity( initData(&f_activate_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity and free velocity to zero") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
@@ -247,7 +248,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-#ifdef PROJECTVELOCITY
+    if(!f_activate_projectVelocity.getValue()) return;
     const SetIndexArray & indices = this->f_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
@@ -266,7 +267,6 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
             Vfree[*it] = Deriv();
         }
     }
-#endif
 }
 
 

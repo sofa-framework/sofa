@@ -43,7 +43,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-//#define PROJECTVELOCITY
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -88,6 +87,7 @@ public:
     Data<bool> f_fixAll;
     Data<bool> f_showObject;
     Data<SReal> f_drawSize;
+    Data<bool> f_activate_projectVelocity;
 
 
 protected:
