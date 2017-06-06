@@ -284,7 +284,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             glDisable( GL_LIGHTING );
             int nbQuads = topology->getNbQuads();
-            glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
@@ -296,7 +295,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
                     color, color, color, color);
             }
-            glEnd();
         }
         else if( !pointQuadData.empty() )
         {
