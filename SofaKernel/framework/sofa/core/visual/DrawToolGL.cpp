@@ -112,6 +112,18 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     glPointSize(1);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void DrawToolGL::internalDrawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour)
+{
+    internalDrawPoint(p1, colour );
+    internalDrawPoint(p2, colour );
+}
+
+void DrawToolGL::drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour)
+{
+    glBegin(GL_LINES);
+    internalDrawLine(p1,p2,colour);
+    glEnd();
+}
 
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const Vec<4,float>& colour)
 {
@@ -122,8 +134,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     {
         for (unsigned int i=0; i<points.size()/2; ++i)
         {
-            internalDrawPoint(points[2*i]  , colour );
-            internalDrawPoint(points[2*i+1], colour );
+            internalDrawLine(points[2*i],points[2*i+1]  , colour );
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);
@@ -140,8 +151,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
         for (unsigned int i=0; i<points.size()/2; ++i)
         {
             setMaterial(colours[i]);
-            internalDrawPoint(points[2*i]  , colours[i] );
-            internalDrawPoint(points[2*i+1], colours[i] );
+            internalDrawLine(points[2*i],points[2*i+1]  , colours[i] );
             resetMaterial(colours[i]);
         }
     } glEnd();
@@ -160,8 +170,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
     {
         for (unsigned int i=0; i<index.size(); ++i)
         {
-            internalDrawPoint(points[ index[i][0] ], colour );
-            internalDrawPoint(points[ index[i][1] ], colour );
+            internalDrawLine(points[ index[i][0] ],points[ index[i][1] ], colour );
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);

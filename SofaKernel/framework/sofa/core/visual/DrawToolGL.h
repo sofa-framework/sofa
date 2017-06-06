@@ -61,6 +61,7 @@ public:
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour);
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour);
 
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour);
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour);
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours);
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& colour);
@@ -188,6 +189,8 @@ protected:
     // utility functions, defining primitives
     virtual void internalDrawPoint(const Vector3 &p, const Vec4f &c);
     virtual void internalDrawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
+
+    virtual void internalDrawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour);
 
     virtual void internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal);
