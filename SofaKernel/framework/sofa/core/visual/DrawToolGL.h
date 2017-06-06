@@ -55,6 +55,9 @@ public:
 
     virtual void init();
 
+    virtual void drawPoint(const Vector3 &p, const Vec4f &c);
+    //normal on a point is useless
+    virtual void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour);
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour);
 
@@ -114,9 +117,6 @@ public:
     virtual void drawCross(const Vector3&p, float length, const Vec4f& colour);
 
     virtual void drawPlus    (const float& radius, const Vec4f& colour, const int& subd=16);
-
-    virtual void drawPoint(const Vector3 &p, const Vec4f &c);
-    virtual void drawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
 
     virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
             const Vector3 &normal);
@@ -186,6 +186,9 @@ protected:
     helper::gl::BasicShapesGL_FakeSphere<Vector3> m_fakeSphereUtil;
 
     // utility functions, defining primitives
+    virtual void internalDrawPoint(const Vector3 &p, const Vec4f &c);
+    virtual void internalDrawPoint(const Vector3 &p, const Vector3 &n, const Vec4f &c);
+
     virtual void internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal);
     virtual void internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,

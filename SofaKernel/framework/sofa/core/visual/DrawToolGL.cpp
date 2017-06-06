@@ -87,7 +87,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
     {
         for (unsigned int i=0; i<points.size(); ++i)
         {
-            drawPoint(points[i], colour);
+            internalDrawPoint(points[i], colour);
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);
@@ -104,7 +104,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
         for (unsigned int i=0; i<points.size(); ++i)
         {
             setMaterial(colour[i]);
-            drawPoint(points[i], colour[i]);
+            internalDrawPoint(points[i], colour[i]);
             if (getLightEnabled()) glEnable(GL_LIGHTING);
             resetMaterial(colour[i]);
         }
@@ -122,8 +122,8 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
     {
         for (unsigned int i=0; i<points.size()/2; ++i)
         {
-            drawPoint(points[2*i]  , colour );
-            drawPoint(points[2*i+1], colour );
+            internalDrawPoint(points[2*i]  , colour );
+            internalDrawPoint(points[2*i+1], colour );
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);
@@ -140,8 +140,8 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
         for (unsigned int i=0; i<points.size()/2; ++i)
         {
             setMaterial(colours[i]);
-            drawPoint(points[2*i]  , colours[i] );
-            drawPoint(points[2*i+1], colours[i] );
+            internalDrawPoint(points[2*i]  , colours[i] );
+            internalDrawPoint(points[2*i+1], colours[i] );
             resetMaterial(colours[i]);
         }
     } glEnd();
@@ -160,8 +160,8 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
     {
         for (unsigned int i=0; i<index.size(); ++i)
         {
-            drawPoint(points[ index[i][0] ], colour );
-            drawPoint(points[ index[i][1] ], colour );
+            internalDrawPoint(points[ index[i][0] ], colour );
+            internalDrawPoint(points[ index[i][1] ], colour );
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);
@@ -180,7 +180,7 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
     {
         for (unsigned int i=0; i<points.size(); ++i)
         {
-            drawPoint(points[i]  , colour );
+            internalDrawPoint(points[i]  , colour );
         }
     } glEnd();
     if (getLightEnabled()) glEnable(GL_LIGHTING);
@@ -266,9 +266,9 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points,
                 Vector3 n = cross((b-a),(c-a));
                 n.normalize();
 
-                drawPoint(a,n,colour[3*i+0]);
-                drawPoint(b,n,colour[3*i+1]);
-                drawPoint(c,n,colour[3*i+2]);
+                internalDrawPoint(a,n,colour[3*i+0]);
+                internalDrawPoint(b,n,colour[3*i+1]);
+                internalDrawPoint(c,n,colour[3*i+2]);
 
             }
         }
@@ -590,7 +590,7 @@ void DrawToolGL::drawPlus ( const float& radius, const Vec<4,float>& colour, con
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawPoint(const Vector3 &p, const Vec<4,float> &c)
+void DrawToolGL::internalDrawPoint(const Vector3 &p, const Vec<4,float> &c)
 {
 #ifdef PS3
     // bit of a hack we force to enter our emulation of draw immediate
@@ -602,9 +602,7 @@ void DrawToolGL::drawPoint(const Vector3 &p, const Vec<4,float> &c)
     glVertexNv<3>(p.ptr());
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void DrawToolGL::drawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float> &c)
+void DrawToolGL::internalDrawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float> &c)
 {
 #ifdef PS3
     // bit of a hack we force to enter our emulation of draw immediate
@@ -615,6 +613,23 @@ void DrawToolGL::drawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float
 #endif
     glNormalT(n);
     glVertexNv<3>(p.ptr());
+}
+
+
+void DrawToolGL::drawPoint(const Vector3 &p, const Vec<4,float> &c)
+{
+    glBegin(GL_POINTS);
+    internalDrawPoint(p,c);
+    glEnd();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float> &c)
+{
+    glBegin(GL_POINTS);
+    internalDrawPoint(p, n, c);
+    glEnd();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
