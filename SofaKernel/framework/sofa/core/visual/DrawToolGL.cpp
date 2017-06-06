@@ -618,8 +618,7 @@ void DrawToolGL::drawPoint(const Vector3 &p, const Vector3 &n, const Vec<4,float
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+void DrawToolGL::internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
         const Vector3 &normal,
         const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3)
 {
@@ -633,7 +632,7 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
 }
 
 
-void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+void DrawToolGL::internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
         const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
         const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3)
 {
@@ -649,7 +648,7 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
 }
 
 
-void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
+void DrawToolGL::internalDrawTriangle( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
         const Vector3 &normal, const  Vec<4,float> &c)
 {
     glNormalT(normal);
@@ -660,7 +659,7 @@ void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vecto
 }
 
 
-void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+void DrawToolGL::internalDrawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
         const Vector3 &normal)
 {
     glNormalT(normal);
@@ -668,6 +667,44 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
     glVertexNv<3>(p2.ptr());
     glVertexNv<3>(p3.ptr());
 }
+
+void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+        const Vector3 &normal,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3)
+{
+    glBegin(GL_TRIANGLES);
+    internalDrawTriangle(p1, p2, p3, normal, c1, c2, c3);
+    glEnd();
+}
+
+
+void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+        const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3)
+{
+    glBegin(GL_TRIANGLES);
+    internalDrawTriangle(p1, p2, p3, normal1, normal2, normal3, c1, c2, c3);
+    glEnd();
+}
+
+
+void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
+        const Vector3 &normal, const  Vec<4,float> &c)
+{
+    glBegin(GL_TRIANGLES);
+    internalDrawTriangle(p1, p2, p3, normal, c);
+    glEnd();
+}
+
+
+void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+        const Vector3 &normal)
+{
+    glBegin(GL_TRIANGLES);
+    internalDrawTriangle(p1, p2, p3, normal);
+    glEnd();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::internalDrawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
         const Vector3 &normal)
