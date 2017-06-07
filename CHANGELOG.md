@@ -25,7 +25,7 @@
 - Implement an implicit version of each of the msg_* API allowing to write  
      msg_info() << "Hello"  in place for msg_info(this) << Hello" 
 - CImgPlugin : creation of a dedicated plugin for image loading based on CImg (#185)
-
+- Remove deprecated miniBoost dependency (#273)
 
 ### Improvements
 
@@ -35,7 +35,7 @@
     - speed up spheres rendering + code cleaning (#170)
     - updates externs/gtest to a fresh checkout (#213)
     - auto-init/cleanup libraries (#168)
-    - Improve msg_api and logging of message (#190)
+    - Improve and clean msg_api and logging of message (#190 # 255 #275), see [documentation](https://www.sofa-framework.org/community/doc/programming-with-sofa/logger/) for more information.
     - Add CMake option to limit cores used to build specific targets (#254)
 - [SofaKernel]
     - Update the RichConsoleStyleMessageFormatter  (#126)
@@ -54,31 +54,20 @@
     - add tests for RequiredPlugin (#258)
 - [SofaHelper]
     - GLSL: load shader source code from a standard string (#158)
+- [SofaBaseTopology]
+    - GridTopology : implement "flat" grids in 1 or 2 dimension by using setting grid resolution to "1" in the corresponding axis, and associated examples (#270)
+    - add tests for RegularGridTopology (#270)
 - [SofaEngine]
     - BREAKING: Add oriented box feature to BoxROI (#108)
 - [SofaConstraint]
     - add instantiation of constraint corrections with Vec2f (#157)
 - [SofaOpenglVisual]
     - add tests for ClipPlane (#258)
-    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaVolumetricData]
     - add tests for DistanceGrid (#258)
     - add tests for Light (#258)
-    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaBoundaryCondition]
     - add tests for ConstantForceField, some of them are OpenIssue demonstrating existing problem, as crashing sofa when using negative or too large values in indices  (#258)
-- [SofaNonUniformFem]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaSparseSolver]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaSphFluid]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaTopology]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaUserInteraction]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaValidation]
-    - Trivial replacement of std::cout by msg_info (#255)
 - [CI]
     - improvement of all test scripts
 
@@ -88,7 +77,6 @@
 - [SceneCreator]
     - Cosmetic changes and remove un-needed include (#169)
 - [SofaPython] 
-    - Trivial replacement of std::cout by msg_info (#255)
     - Macros to bind "sequence" types (#165)
     - ModuleReload (#214)
     - light module reload (#202)
@@ -125,7 +113,9 @@
     - MechanicalObject: cleaning: symbols & include (#249)
 - [SofaPhysicsAPI]
     - fix compilation of the project (#167)
-
+- [SofaUserInteraction]
+    - MouseInteractor: FIX the mouse picking on Mechanical Object (#282)
+    
 **Applications and Plugins**
 - [image]
     - Fixes #135 : Check that SofaPython is found before including python directory (#137)
@@ -145,6 +135,11 @@
 - [SofaKernel]
     - clean DefaultPipeline.cpp/h (API BREAKING) 
     - clean the attributes names in BoxROI (API BREAKING)
+    - TetrahedronFEMForceField clean code (#270)
+    - GridTopology : clean the code & factor the constructor (#270)
+    - RegularGridTopology : clean the constructor's code & remove NDEBUG code (#270)
+    - MechanicalObject : removal of code specific to the grid (#270)
+
 - [SofaVolumetricData]
     - Light: clean and strenghening the interface (#258)
     - DistanceGrid
