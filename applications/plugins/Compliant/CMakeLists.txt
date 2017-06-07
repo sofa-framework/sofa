@@ -23,6 +23,7 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/ConstraintValue.h
     constraint/CoulombConstraint.h
+    constraint/UserCoulombConstraint.h    
     constraint/CoulombConstraint.inl
     constraint/DampingValue.h
     constraint/HolonomicConstraintValue.h
@@ -145,6 +146,7 @@ set(SOURCE_FILES
     constraint/Constraint.cpp
     constraint/ConstraintValue.cpp
     constraint/CoulombConstraint.cpp
+    constraint/UserCoulombConstraint.cpp    
     constraint/DampingValue.cpp
     constraint/HolonomicConstraintValue.cpp
     constraint/OffsettedConstraintValue.cpp
