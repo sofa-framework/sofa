@@ -1,13 +1,12 @@
 import Sofa
 
-from Compliant import StructuralAPI as api
+from SofaPython import script
 
 import math
 
-class Script(api.Script):
+class Script(script.Controller):
 
     def __init__(self, node):
-        api.Script.__init__(self, node)
         self.node = node
 
     

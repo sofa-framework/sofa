@@ -2,6 +2,7 @@ from __future__ import print_function, absolute_import
 
 import Sofa
 
+from SofaPython import script
 from Compliant import StructuralAPI as api
 from Compliant.types import *
 
@@ -9,10 +10,9 @@ import sys
 
 
 
-class Script(api.Script):
+class Script(script.Controller):
 
     def __init__(self, node):
-        api.Script.__init__(self, node)
         self.node = node
         
     def onEndAnimationStep(self, dt):

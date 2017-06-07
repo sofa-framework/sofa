@@ -137,7 +137,6 @@ class SingleMechanicalObject(MechanicalObject):
     def force(self):
         return super(SingleMechanicalObject, self).force[0]        
         
-
     @property
     def external_force(self):
         return super(SingleMechanicalObject, self).external_force[0]            

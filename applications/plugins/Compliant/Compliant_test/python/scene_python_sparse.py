@@ -1,12 +1,12 @@
 from __future__ import print_function
 
-from SofaPython import SofaNumpy 
+from SofaPython import SofaNumpy, script
 from Compliant import easy, tool
 
 import math
 import numpy as np
 
-from Compliant import mapping, easy, StructuralAPI as api
+from Compliant import mapping, easy
 
 
 def particle(node, position):
@@ -37,10 +37,9 @@ class Solver(easy.Solver):
         
 
 
-class Script(api.Script):
+class Script(script.Controller):
 
     def __init__(self, node):
-        api.Script.__init__(self, node)
         self.node = node
         
     def onEndAnimationStep(self, dt):
