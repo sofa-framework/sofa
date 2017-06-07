@@ -59,7 +59,7 @@ public :
 
         if(compFileIn.good())
         {
-            std::cout << "file open : " << filename << " compliance being loaded" << std::endl;
+            msg_info("PrecomputedLInearSolverInternalData") << "file '" << filename << "' with compliance being loaded." ;
             compFileIn.read((char*) Minv[0], systemSize * systemSize * sizeof(Real));
             compFileIn.close();
             return true;

@@ -352,7 +352,7 @@ public:
         cholesky.compute(compressedMatrix);
         if( !cholesky.succeeded() )
         {
-            std::cerr<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
+            msg_info()<<"EigenSparseSquareMatrix::factorize() failed" << std::endl;
             return false;
         }
         return true;

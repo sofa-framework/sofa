@@ -49,7 +49,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
 #ifdef      TEST_CREATION_COMPONENT
         {
             sofa::core::objectmodel::BaseObject::SPtr object;
-            std::cerr << "Creating " << entries[i]->className << std::endl;
+            msg_info("SofaLibrary") << "Creating " << entries[i]->className ;
             if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
             {
                 object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
@@ -58,9 +58,9 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
             {
                 object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
             }
-            std::cerr << "Deleting " << entries[i]->className << std::endl;
+            msg_info("SofaLibrary") << "Deleting " << entries[i]->className ;
             object.reset();
-            std::cerr << "Ok for " << entries[i]->className << std::endl;
+            msg_info("SofaLibrary") << entries[i]->className ;
         }
 #endif
 

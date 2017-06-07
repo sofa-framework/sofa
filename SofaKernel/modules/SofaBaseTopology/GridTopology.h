@@ -34,18 +34,34 @@ namespace component
 namespace topology
 {
 
+
+enum class Grid_dimension
+{
+    GRID_NULL = 0,
+    GRID_1D,
+    GRID_2D,
+    GRID_3D
+};
+
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
 class SOFA_BASE_TOPOLOGY_API GridTopology : public MeshTopology
 {
+
 public:
+
+using MeshTopology::getQuad;
+using MeshTopology::getHexahedron;
+
     SOFA_CLASS(GridTopology,MeshTopology);
     typedef sofa::defaulttype::Vec3i Vec3i;
     typedef sofa::defaulttype::Vector2 Vector2;
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
     friend class GridUpdate;
+
+
 private:
     class GridUpdate : public sofa::core::DataEngine
     {
@@ -59,6 +75,7 @@ private:
     protected:
         void updateEdges();
         void updateQuads();
+        void updateTriangles();
         void updateHexas();
     private:
         GridTopology* topology;
@@ -70,7 +87,7 @@ protected:
     /// Constructor with grid size by int
     GridTopology(int nx, int ny, int nz);
     /// Constructor with grid size by Vec3
-    GridTopology(Vec3i nXnYnZ );
+    GridTopology(const Vec3i& dimXYZ);
 
     /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
     virtual void setNbGridPoints();
@@ -88,6 +105,9 @@ protected:
 
     /// Method that will check current grid resolution, if invalide, will set default value: [2; 2; 2]
     void checkGridResolution();
+
+    /// Internal Method called by \sa checkGridResolution if resolution need to be changed. Should be overwritten by children.
+    virtual void changeGridResolutionPostProcess(){}
 
 public:
     /// BaseObject method should be overwritten by children
@@ -181,6 +201,8 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
+	/// Get the actual dimension of this grid using Enum @sa Grid_dimension
+	Grid_dimension getDimensions() const;
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;

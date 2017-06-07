@@ -195,7 +195,7 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 			}
 		}
 //		for (i=0;i<df.size();++i) {
-//			std::cerr<<"df["<<i<<"]= "<<df[i]<<std::endl;
+//			msg_info()<<"df["<<i<<"]= "<<df[i]<<std::endl;
 //		} 
 		d_df.endEdit();
 	} */

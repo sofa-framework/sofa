@@ -91,17 +91,6 @@ void VTKExporter::init()
     else sout << "VTKExporter: found topology " << topology->getName() << sendl;
 
     nbFiles = 0;
-// 	const std::string& filename = vtkFilename.getFullPath();
-// //	std::cout << filename << std::endl;
-//
-// 	outfile = new std::ofstream(filename.c_str());
-// 	if( !outfile->is_open() )
-// 	{
-// 		serr << "Error creating file "<<filename<<sendl;
-// 		delete outfile;
-// 		outfile = NULL;
-// 		return;
-// 	}
 
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
@@ -154,14 +143,10 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
-    //std::cout << "List o: " << objects << std::endl;
-    //std::cout << "List f: " << fields << std::endl;
-
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
         core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
         core::objectmodel::BaseData* field = NULL;
-        //std::cout << objects[i] << std::endl;
         if (obj)
         {
             field = obj->findData(fields[i]);
@@ -180,16 +165,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
         }
         else
         {
-            //std::cout << "Type: " << field->getValueTypeString() << std::endl;
-
-            //retrieve data file type
-//			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
-//				std::cout << "Vec3f" << std::endl;
-//			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
-//				std::cout << "Vec3d" << std::endl;
-
             //Scalars
-
             std::string line;
             unsigned int sizeSeg=0;
             if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
@@ -249,14 +225,10 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
-    //std::cout << "List o: " << objects << std::endl;
-    //std::cout << "List f: " << fields << std::endl;
-
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
         core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
         core::objectmodel::BaseData* field = NULL;
-        //std::cout << objects[i] << std::endl;
         if (obj)
         {
             field = obj->findData(fields[i]);
@@ -275,14 +247,6 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
         }
         else
         {
-            //std::cout << "Type: " << field->getValueTypeString() << std::endl;
-
-            //retrieve data file type
-//			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
-//				std::cout << "Vec3f" << std::endl;
-//			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
-//				std::cout << "Vec3d" << std::endl;
-
             //Scalars
             std::string type;
             unsigned int sizeSeg=0;
@@ -472,7 +436,6 @@ void VTKExporter::writeVTKSimple()
         for (int i=0 ; i<nbp ; i++)
         {
             *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
-            //		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
         }
     }
 
@@ -615,32 +578,22 @@ void VTKExporter::writeVTKXML()
             +( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
             +( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
 
-    if (this->f_printLog.getValue())
-    {
-        std::cout << "### VTKExporter[" << this->getName() << "] ###" << std::endl;
-        std::cout << "Nb points: " << nbp << std::endl;
-        std::cout << "Nb edges: " << ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 ) << std::endl;
-        std::cout << "Nb triangles: " << ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 ) << std::endl;
-        std::cout << "Nb quads: " << ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 ) << std::endl;
-        std::cout << "Nb tetras: " << ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 ) << std::endl;
-        std::cout << "Nb hexas: " << ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 ) << std::endl;
-        std::cout << "### ###" << std::endl;
-        std::cout << "Total nb cells: " << numberOfCells << std::endl;
-    }
-//	unsigned int totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
-// 				   +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
-// 				   +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
-// 				   +( (writeTetras.getValue()) ? 5 *topology->getNbTetras() : 0 )
-// 				   +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
+    msg_info() << "### VTKExporter[" << this->getName() << "] ###" << msgendl
+               << "Nb points: " << nbp << msgendl
+               << "Nb edges: " << ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 ) << msgendl
+               << "Nb triangles: " << ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 ) << msgendl
+               << "Nb quads: " << ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 ) << msgendl
+               << "Nb tetras: " << ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 ) << msgendl
+               << "Nb hexas: " << ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 ) << msgendl
+               << "### ###" << msgendl
+               << "Total nb cells: " << numberOfCells << msgendl;
 
     //write header
     *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <UnstructuredGrid>" << std::endl;
+
     //write piece
     *outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
-
-
-
 
     //write point data
     if (!pointsData.empty())
@@ -805,7 +758,6 @@ void VTKExporter::writeParallelFile()
     std::string filename = vtkFilename.getFullPath();
     filename.insert(0, "P_");
     filename += ".vtk";
-//	std::cout << filename << std::endl;
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -830,7 +782,6 @@ void VTKExporter::writeParallelFile()
         {
             core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (pointsDataObject[i]);
             core::objectmodel::BaseData* field = NULL;
-            //std::cout << objects[i] << std::endl;
             if (obj)
             {
                 field = obj->findData(pointsDataField[i]);
@@ -849,14 +800,6 @@ void VTKExporter::writeParallelFile()
             }
             else
             {
-                //std::cout << "Type: " << field->getValueTypeString() << std::endl;
-
-                //retrieve data file type
-                //			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
-                //				std::cout << "Vec3f" << std::endl;
-                //			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
-                //				std::cout << "Vec3d" << std::endl;
-
                 //Scalars
                 std::string type;
                 unsigned int sizeSeg=0;
@@ -912,7 +855,6 @@ void VTKExporter::writeParallelFile()
         {
             core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (cellsDataObject[i]);
             core::objectmodel::BaseData* field = NULL;
-            //std::cout << objects[i] << std::endl;
             if (obj)
             {
                 field = obj->findData(cellsDataField[i]);
@@ -931,14 +873,6 @@ void VTKExporter::writeParallelFile()
             }
             else
             {
-                //std::cout << "Type: " << field->getValueTypeString() << std::endl;
-
-                //retrieve data file type
-                //			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
-                //				std::cout << "Vec3f" << std::endl;
-                //			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
-                //				std::cout << "Vec3d" << std::endl;
-
                 //Scalars
                 std::string type;
                 unsigned int sizeSeg=0;
@@ -1014,7 +948,6 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
     {
         sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
 
-        std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 

@@ -48,7 +48,6 @@ namespace topology
 	template< class DataTypes> class EdgeSetGeometryAlgorithms;
 	template< class DataTypes> class TriangleSetGeometryAlgorithms;
 	template< class DataTypes> class TetrahedronSetGeometryAlgorithms;
-	template< class DataTypes> class BezierTetrahedronSetGeometryAlgorithms;
 	template< class DataTypes> class QuadSetGeometryAlgorithms;
 	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
 }
@@ -95,8 +94,7 @@ public:
         TOPOLOGY_TRIANGLESET=2,
         TOPOLOGY_TETRAHEDRONSET=3,
         TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5,
-        TOPOLOGY_BEZIERTETRAHEDRONSET=6,
+        TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 	/// the way the mass should be computed on non-linear elements
 	typedef enum 
@@ -163,7 +161,7 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-    sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<GeometricalTypes>* bezierTetraGeo;
+
 
     virtual void clear();
 
@@ -224,8 +222,7 @@ public:
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }
-	// returns the mass vector for a given index of a Bezier tetrahedron
-	virtual const  MassVector &getBezierTetrahedronMassVector(const size_t i) const;
+
 
 protected:
 

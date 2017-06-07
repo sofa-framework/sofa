@@ -440,7 +440,7 @@ void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 template<class DataTypes>
 bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
-    //std::cerr<<"canCollideWithElement is called"<<std::endl;
+    //msg_info()<<"canCollideWithElement is called"<<std::endl;
 
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
@@ -462,7 +462,7 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     }
     const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
     const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
-    //std::cerr<<"EdgesAroundVertex11 ok"<<std::endl;
+    //msg_info()<<"EdgesAroundVertex11 ok"<<std::endl;
 
 
     if (model2 == this)
@@ -518,7 +518,7 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     }
     else if (model2 == mpoints)
     {
-        //std::cerr<<" point Model"<<std::endl;
+        //msg_info()<<" point Model"<<std::endl;
 
         // if point belong to the segment, return false
         if (index2==p11 || index2==p12)

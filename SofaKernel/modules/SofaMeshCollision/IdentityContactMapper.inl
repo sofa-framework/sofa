@@ -61,7 +61,7 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
     simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
     if (parent==NULL)
     {
-        std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
+        msg_error("IdentityContactMapper") << "IdentityContactMapper only works for scenegraph scenes.";
         return NULL;
     }
     simulation::Node::SPtr child = parent->createChild(name);

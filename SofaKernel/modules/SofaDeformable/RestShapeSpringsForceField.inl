@@ -28,6 +28,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/template.h>
+
+#include <sofa/defaulttype/RGBAColor.h>
+
 #include <assert.h>
 #include <iostream>
 
@@ -51,10 +54,10 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
     , recompute_indices(initData(&recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
-    , springColor(initData(&springColor,sofa::defaulttype::Vec4f(0.0,1.0,0.0,1.0), "springColor","spring color"))
+    , springColor(initData(&springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , restMState(NULL)
 //	, pp_0(NULL)
-{    
+{
 }
 
 
@@ -314,7 +317,9 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
         vertices.push_back(v0);
         vertices.push_back(v1);
     }
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+
+    //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
+    vparams->drawTool()->drawLines(vertices,5,sofa::defaulttype::Vec4f(springColor.getValue()));
 
     vparams->drawTool()->restoreLastState();
 }
@@ -324,7 +329,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();   
+    // 	const VecReal& k = stiffness.getValue();
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
@@ -349,7 +354,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);                
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
     }

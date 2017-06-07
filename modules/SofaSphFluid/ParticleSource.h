@@ -135,7 +135,7 @@ public:
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {
-            std::cout << "PSRemovalFunction\n";
+            dmsg_info("ParticleSource") << "PSRemovalFunction";
             if(ps)
             {
                 /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
@@ -199,18 +199,18 @@ public:
                 int i0 = mstate->getSize();
 
                 if (!f_canHaveEmptyVector.getValue())
-        		{
-        			// ignore the first point if it is the only one
+                {
+                    // ignore the first point if it is the only one
                     if (i0 == 1)
-        				i0 = 0;
-        		}
+                        i0 = 0;
+                }
 
                 int ntotal = i0 + ((int)((f_stop.getValue() - f_start.getValue() - f_delay.getValue()) / f_delay.getValue())) * N;
 
                 if (ntotal > 0)
                 {
                     this->mstate->resize(ntotal);
-        			if (!f_canHaveEmptyVector.getValue())
+                    if (!f_canHaveEmptyVector.getValue())
                         this->mstate->resize((i0==0) ? 1 : i0);
                     else
                         this->mstate->resize(i0);
@@ -346,7 +346,7 @@ public:
         std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
         if (itBegin != itEnd)
         {
-            if (this->f_printLog.getValue())
+            if (notMuted())
             {
                 sout << "ParticleSource: handleTopologyChange()"<< sendl;
                 sout << "lastparticles = ";
@@ -360,7 +360,7 @@ public:
             int s2 = lastparticles.size();
             if (s2 > s1) sout << "ParticleSource: handleTopologyChange(): " << s2-s1 << " points added!" << sendl;
             if (s2 < s1) sout << "ParticleSource: handleTopologyChange(): " << s1-s2 << " points removed!" << sendl;
-            if (this->f_printLog.getValue())
+            if (notMuted())
             {
                 sout << "NEW lastparticles = ";
                 std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(sout," "));

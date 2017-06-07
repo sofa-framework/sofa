@@ -205,8 +205,7 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
             return;
         }
 
-        if(this->f_printLog.getValue())
-            std::cout<<"Diffusion coefficient is loaded per tetra"<<std::endl;
+        msg_info() << "diffusion coefficient is loaded per tetra";
     }
     d_tetraDiffusionCoefficient.endEdit();
 
@@ -216,17 +215,18 @@ void TetrahedronDiffusionFEMForceField<DataTypes>::init()
     if (mechanicalObject==NULL)
     {
         serr<<"ERROR(TetrahedronDiffusionFEMForceField): cannot find the mechanical object."<<sendl;
-        if(this->f_printLog.getValue())
-            std::cout<<"mechanicalObj = "<<mechanicalObject<<std::endl;
+        msg_info() <<"mechanicalObj = "<<mechanicalObject ;
+
         return;
     }
 
-    if(this->f_printLog.getValue())
+    if(d_transverseAnisotropyRatio.getValue()!=1.0)
     {
-        if(d_transverseAnisotropyRatio.getValue()!=1.0)
-            std::cout << "(TetrahedronDiffusionFEMForceField) anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion."<<std::endl;
-        else
-            std::cout << "(TetrahedronDiffusionFEMForceField) isotropic diffusion."<<std::endl;
+        msg_info() << "(TetrahedronDiffusionFEMForceField) anisotropic (r="<<sqrt(d_transverseAnisotropyRatio.getValue())<<") diffusion.";
+    }
+    else
+    {
+        msg_info() << "(TetrahedronDiffusionFEMForceField) isotropic diffusion.";
     }
 
     // prepare to store info in the edge array

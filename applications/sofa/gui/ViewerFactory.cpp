@@ -59,7 +59,7 @@ const char* SofaViewerFactory::getViewerName(Key key)
         }
         ++it;
     }
-    //	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+    //	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
     return NULL;
 }
 
@@ -79,7 +79,7 @@ const char* SofaViewerFactory::getAcceleratedViewerName(Key key)
         }
         ++it;
     }
-    //	std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
+    //	msg_info()<<"Object type "<<key<<" creation failed."<<std::endl;
     return NULL;
 
 }

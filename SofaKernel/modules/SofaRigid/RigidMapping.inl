@@ -490,11 +490,8 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
 
-    if (this->f_printLog.getValue())
-    {
-        sout << "J on mapped DOFs == " << in << sendl;
-        sout << "J on input  DOFs == " << out << sendl;
-    }
+    dmsg_info() << "J on mapped DOFs == " << in << msgendl
+                << "J on input  DOFs == " << out ;
 
     const unsigned int numDofs = this->getFromModel()->getSize();
 
@@ -541,11 +538,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     }
 
 
-
-    if (this->f_printLog.getValue())
-    {
-        sout << "new J on input  DOFs = " << out << sendl;
-    }
+    dmsg_info() << "new J on input  DOFs = " << out ;
 
     dOut.endEdit();
 }
@@ -555,27 +548,27 @@ namespace impl {
 
 template<class U, class Coord>
 static void fill_block(Eigen::Matrix<U, 3, 6>& block, const Coord& v) {
-	U x = v[0];
-	U y = v[1];
-	U z = v[2];
-				
-	// note: this is -hat(v)
-	block.template rightCols<3>() <<
-					
-		0,   z,  -y,
-		-z,  0,   x,
-		y,  -x,   0;
+    U x = v[0];
+    U y = v[1];
+    U z = v[2];
+
+    // note: this is -hat(v)
+    block.template rightCols<3>() <<
+
+        0,   z,  -y,
+        -z,  0,   x,
+        y,  -x,   0;
 }
 
 template<class U, class Coord>
 void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
-	U x = v[0];
-	U y = v[1];
-				
-	// note: this is -hat(v)
-	block.template rightCols<1>() <<
-		-y,
-		x;
+    U x = v[0];
+    U y = v[1];
+
+    // note: this is -hat(v)
+    block.template rightCols<1>() <<
+        -y,
+        x;
 }
 
 
@@ -584,26 +577,26 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
-	const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
-	
+    typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
+
     if( updateJ || J.size() == 0 )
     {
 
         updateJ = false;
 
-		J.resize(out.size() * NOut, in.size() * NIn);
-		J.setZero();
+        J.resize(out.size() * NOut, in.size() * NIn);
+        J.setZero();
 
-		// matrix chunk
-		typedef typename TOut::Real real;
-		typedef Eigen::Matrix<real, NOut, NIn> block_type;
-		block_type block;
-		
-		// translation part
-		block.template leftCols<NOut>().setIdentity();
+        // matrix chunk
+        typedef typename TOut::Real real;
+        typedef Eigen::Matrix<real, NOut, NIn> block_type;
+        block_type block;
+
+        // translation part
+        block.template leftCols<NOut>().setIdentity();
 
 
 
@@ -648,8 +641,8 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
             }
         }
 
-		J.finalize();		
-	}
+        J.finalize();
+    }
 
     return &eigenJacobians;
 }

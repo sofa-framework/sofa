@@ -43,7 +43,7 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 #ifdef SOFA_SMP_NUMA
     if(node->getProcessor()!=-1)
     {
-        std::cerr<<"set preferred cpu "<<node->getProcessor()/2<<std::endl;
+        msg_info()<<"set preferred cpu "<<node->getProcessor()/2<<std::endl;
         numa_set_preferred(node->getProcessor()/2);
     }
 #endif

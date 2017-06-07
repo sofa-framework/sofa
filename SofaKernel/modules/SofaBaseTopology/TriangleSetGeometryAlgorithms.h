@@ -65,8 +65,11 @@ public:
     typedef typename DataTypes::Deriv Deriv;
 
 protected:
+    bool initializedCubatureTables;
+    void defineTetrahedronCubaturePoints();
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
+        ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
         , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(0.2f,1.0f,1.0f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
@@ -275,6 +278,8 @@ public:
     virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
+    /// return a pointer to the container of cubature points
+    NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
@@ -283,7 +288,8 @@ protected:
     Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;
     Data<bool> p_flipNormals;
-
+    /// include cubature points
+    NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 };
 
 

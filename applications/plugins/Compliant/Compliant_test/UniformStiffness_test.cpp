@@ -23,7 +23,6 @@
 #include <SofaTest/ForceField_test.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -59,6 +58,8 @@ struct UniformStiffness_test : public ForceField_test<_UniformStiffness>
     */
     UniformStiffness_test():Inherited::ForceField_test()
     {
+        this->errorFactorPotentialEnergy = 3; // increading tolerance for potential energy test due to non-linearities
+
         //Position
         x.resize(1);
         DataTypes::set( x[0], 7,0,0);
