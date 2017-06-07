@@ -39,8 +39,6 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-// TODO FIXME the above will not work (see FIXMEs below) 
-
 // also, can we PLEASE STOP COPYPASTING EVERYTHING KTHXBY
 
 
@@ -56,11 +54,11 @@ static inline PythonScriptController* get_controller(PyObject* obj) {
     return get<PythonScriptController>(obj);
 }
 
-static PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args) {
-    (void) args;
+
+static PyObject * PythonScriptController_onIdle(PyObject * self, PyObject * args) {
+    (void) args; (void) self;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented out
     PythonScriptController* obj = get_controller(self);
      msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                          << ".onIdle not implemented in " 
@@ -70,12 +68,13 @@ static PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * 
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onLoaded(PyObject * self, PyObject * args) {
+    (void) self;
+    
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     Node* node = get<Node>(pyNode);
     msg_error("PythonScriptController")<< obj->m_classname.getValueString() 
@@ -91,7 +90,6 @@ static PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObje
     if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     Node* node = get<Node>(pyNode);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
@@ -102,12 +100,13 @@ static PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObje
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_initGraph(PyObject * self, PyObject * args) {
+    (void) self;
+
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     Node* node = get<Node>(pyNode);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
@@ -118,12 +117,13 @@ static PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_bwdInitGraph(PyObject * self, PyObject * args) {
+    (void) self;
+
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     Node* node = get<Node>(pyNode);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
@@ -134,13 +134,14 @@ static PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, PyObj
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onBeginAnimationStep(PyObject * self, PyObject * args) {
+    (void) self;
+
     double dt;
     if (!PyArg_ParseTuple(args, "d", &dt)) return NULL;
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onBeginAnimationStep not implemented in " 
@@ -150,13 +151,14 @@ static PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onEndAnimationStep(PyObject * self, PyObject * args) {
+    (void) self;
+
     double dt;
     if (!PyArg_ParseTuple(args, "d", &dt)) return NULL;
 
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onEndAnimationStep not implemented in " 
@@ -166,10 +168,11 @@ static PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/,
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, PyObject * /*args*/) {
+static PyObject * PythonScriptController_storeResetState(PyObject * self, PyObject * /*args*/) {
+    (void) self;
+
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".storeresetState not implemented in " 
@@ -179,10 +182,11 @@ static PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, Py
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /*args*/)  {
+static PyObject * PythonScriptController_reset(PyObject * self, PyObject * /*args*/)  {
+    (void) self;
+
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".reset not implemented in " 
@@ -192,10 +196,11 @@ static PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject * /*args*/) {
+static PyObject * PythonScriptController_cleanup(PyObject * self, PyObject * /*args*/) {
+    (void) self;
+
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".cleanup not implemented in " 
@@ -205,7 +210,9 @@ static PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject *
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onGUIEvent(PyObject * self, PyObject * args) {
+    (void) self;
+
     char* controlID;
     char* valueName;
     char* value;
@@ -213,7 +220,6 @@ static PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObjec
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onGUIEvent not implemented in " 
@@ -223,12 +229,13 @@ static PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObjec
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onKeyPressed(PyObject * self, PyObject * args) {
+    (void) self;
+
     char k;
     if (!PyArg_ParseTuple(args, "c", &k)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onKeyPressed not implemented in " 
@@ -238,12 +245,13 @@ static PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObj
     Py_RETURN_FALSE;
 }
 
-static PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onKeyReleased(PyObject * self, PyObject * args) {
+    (void) self;
+
     char k;
     if (!PyArg_ParseTuple(args, "c", &k)) return NULL;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onKeyReleased not implemented in " 
@@ -253,13 +261,14 @@ static PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyOb
     Py_RETURN_FALSE;
 }
 
-static PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onMouseButtonLeft(PyObject * self, PyObject * args) {
+    (void) self;
+
     int x, y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onMouseButtonLeft not implemented in " 
@@ -269,14 +278,15 @@ static PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, 
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * self, PyObject * args) {
+    (void) self;
+
     int x, y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
 
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onMouseButtonMiddle not implemented in " 
@@ -286,13 +296,14 @@ static PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onMouseButtonRight(PyObject * self, PyObject * args) {
+    (void) self;
+
     int x, y;
     bool pressed;
     if (!PyArg_ParseTuple(args, "iib", &x, &y, &pressed)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onMouseButtonRight not implemented in " 
@@ -302,12 +313,13 @@ static PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/,
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObject * args) {
+static PyObject * PythonScriptController_onMouseWheel(PyObject * self, PyObject * args) {
+    (void) self;
+
     int x, y, delta;
     if (!PyArg_ParseTuple(args, "iii",&x, &y, &delta)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onMouseWheel not implemented in " 
@@ -317,9 +329,11 @@ static PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObj
     Py_RETURN_NONE;
 }
 
-// TOOD here
 
-static PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyObject * args) {
+
+static PyObject * PythonScriptController_onScriptEvent(PyObject * self, PyObject * args) {
+    (void) self;
+
     PyObject *pySenderNode;
     char* eventName;
     PyObject *pyData;
@@ -337,7 +351,6 @@ static PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyOb
     // TODO check pyData
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".onScriptEvent not implemented in " 
@@ -347,10 +360,10 @@ static PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyOb
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject * /*args*/) {
+static PyObject * PythonScriptController_draw(PyObject * self, PyObject * /*args*/) {
+    (void) self;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    // TODO FIXME self is commented
     PythonScriptController* obj = get_controller(self);
     msg_error("PythonScriptController") << obj->m_classname.getValueString() 
                                         << ".draw not implemented in " 
