@@ -43,21 +43,6 @@ struct SOFA_Compliant_API CoulombConstraint : CoulombConstraintBase {
 };
 
 
-struct UserCoulombConstraint : Constraint {
-    SOFA_CLASS(UserCoulombConstraint, Constraint);
-    
-    Data<SReal> mu;
-
-    using normal_type = defaulttype::Vec<3, SReal>;
-    Data<normal_type> normal;
-    
-    UserCoulombConstraint();
-
-    // WARNING index is not used (see Constraint.h)
-    virtual void project( SReal* out, unsigned n, unsigned /*index*/, bool correct) const;
-    
-    virtual std::size_t getConstraintTypeIndex() const;
-};
 
 
 }
