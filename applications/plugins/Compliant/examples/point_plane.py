@@ -1,18 +1,20 @@
-from Compliant import StructuralAPI as api
 
-class Script(api.Script):
+import Sofa
+
+from Compliant import StructuralAPI as api
+from SofaPython import script
+
+class Script(script.Controller):
 
     def onEndAnimationStep(self, dt):
         print(self.dofs.force)
 
 
-
+Sofa.loadPlugin('Compliant')
 
 def createScene(node):
 
-    node.createObject('RequiredPlugin', pluginName = 'Compliant')
-
-    ode = node.createObject('CompliantImplicitSolver') # , constraint_forces = 'propagate')
+    ode = node.createObject('CompliantImplicitSolver')
     ode.debug = True
     
     num = node.createObject('SequentialSolver', iterations = 5, precision = 0)

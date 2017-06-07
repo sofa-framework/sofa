@@ -1,10 +1,11 @@
+from __future__ import print_function
 
 import Sofa
+from SofaPython import script
 
 from Compliant import StructuralAPI as api
 
 import ctypes
-
 
 class Event(ctypes.Structure):
     # the vtable stuff is of course not portable. the best fix would
@@ -19,12 +20,12 @@ class SolveEndEvent(Event):
 
     
 
-class Script(api.Script):
+class Script(script.Controller):
 
     def onEvent(self, name, ptr):
         if name == 'SolveEndEvent':
             event = SolveEndEvent.from_address(ptr)
-            print(event.index)
+            print('extra solve event:', event.index)
             event.handled = True
             
             
