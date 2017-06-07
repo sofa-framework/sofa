@@ -11,6 +11,13 @@ endif()
 
 find_package(SofaFramework) # to get SOFA_HAVE_GLUT
 
+include(cmake/GeneratePluginConfig.cmake)
+set(_configPluginFileName plugin_list.conf)
+set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
+set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/bin/${_defaultConfigPluginFileName}")
+sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
+message("Write Plugin list at ${_defaultConfigPluginFilePath}")
+
 if(APPLE)
 	set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
@@ -25,6 +32,8 @@ if(APPLE)
 	set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
 endif()
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAME=${_defaultConfigPluginFileName}")
 target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
@@ -40,3 +49,6 @@ if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
 else()
 	sofa_install_targets(SofaGui runSofa "")
 endif()
+
+
+install(FILES "${CMAKE_BINARY_DIR}/bin/plugin_list.conf.default" DESTINATION bin/)

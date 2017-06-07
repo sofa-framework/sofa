@@ -308,40 +308,6 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-# Generate default list of plugins (according to the options)
-get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
-get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
-
-list(LENGTH _allTargets nbTargets) 
-math(EXPR len "${nbTargets} - 1")
-
-set(_pluginPrefix "PLUGIN")
-foreach(counter RANGE ${len})
-    list(GET _allTargets ${counter} _target)
-    list(GET _allTargetNames ${counter} _targetName)
-    
-    string(SUBSTRING "${_targetName}" 0 6 _testPlugin)
-    if(${_testPlugin} MATCHES "${_pluginPrefix}.*")
-        if(${${_targetName}})
-            get_target_property(_version ${_target} VERSION )
-            if(${_version} MATCHES ".*NOTFOUND")
-                set(_version "NO_VERSION")
-            endif()
-            string(CONCAT _pluginConfig "${_pluginConfig}\n${_target} ${_version}")
-        endif()
-    endif()
-endforeach()
-message("Write Plugin list")
-set(_defaultConfigPluginFilePath ${CMAKE_CURRENT_BINARY_DIR}/bin/plugin_list.conf.default)
-FILE(WRITE ${_defaultConfigPluginFilePath} ${_pluginConfig})
-
-if (MSVC)
-    add_custom_target(do_always ALL 
-    COMMAND "${CMAKE_COMMAND}" -E copy "${_defaultConfigPluginFilePath}" "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
-)
-endif(MSVC)
-
-
 ############
 
 # Install configuration:
@@ -353,7 +319,6 @@ install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
-install(FILES "${CMAKE_BINARY_DIR}/bin/plugin_list.conf.default" DESTINATION bin/)
 
 ## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
 ## build directory, this one contains relative paths to the installed resource directory.

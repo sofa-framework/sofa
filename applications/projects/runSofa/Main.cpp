@@ -119,6 +119,8 @@ using sofa::helper::logging::ClangMessageHandler ;
 #include <sofa/helper/logging/ExceptionMessageHandler.h>
 using sofa::helper::logging::ExceptionMessageHandler;
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
 
 
 void loadVerificationData(string& directory, string& filename, Node* node)
@@ -180,6 +182,7 @@ int main(int argc, char** argv)
     bool        loadRecent = false;
     bool        temporaryFile = false;
     bool        testMode = false;
+    bool        noAutoloadPlugins = false;
     int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
@@ -214,6 +217,7 @@ int main(int argc, char** argv)
     .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
+    .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
     .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&printFactory,'p',"factory","print factory logs")
@@ -339,24 +343,26 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = pluginDir + "/plugin_list.conf";
-    std::string defaultConfigPluginPath = pluginDir + "/plugin_list.conf.default";
+    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
-    if (sofa::helper::system::DataRepository.findFile(configPluginPath))
+    if (!noAutoloadPlugins)
     {
-        sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
+        if (sofa::helper::system::DataRepository.findFile(configPluginPath))
+        {
+            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
+        }
+        else if (sofa::helper::system::DataRepository.findFile(defaultConfigPluginPath))
+        {
+            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+        }
+        else
+            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
     }
-    else if (sofa::helper::system::DataRepository.findFile(defaultConfigPluginPath))
-    {
-        sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
-
-    }
-
-    //// to force loading plugin SofaPython if existing
-    //{
-    //    std::ostringstream no_error_message; // no to get an error on the console if SofaPython does not exist
-    //    sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython",&no_error_message);
-    //}
+    else
+        msg_info("runSofa") << "Automatic plugin loading disabled.";
 
     PluginManager::getInstance().init();
 
