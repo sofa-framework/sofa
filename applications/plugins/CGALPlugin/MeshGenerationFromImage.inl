@@ -445,31 +445,6 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 
     sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
 
-    //std::cout << "New points size: " << newPoints.size() << std::endl;
-
-    /// test if explicitly defined features are included in the mesh (desactivated by default)
-    /*for (size_t fi = 0; fi < nfts; fi++) {
-        double bd = 1e5;
-        size_t indBD = 0;
-        Coord coorBD;
-        const Coord& ft = fts[fi];
-        for (size_t i = 0; i < newPoints.size(); i++) {
-            Coord& np = newPoints[i];
-
-            double dist = 0.0;
-
-            for (size_t d = 0; d < 3; d++)
-                dist += SQR(np[d] - ft[d]);
-            dist = sqrt(dist);
-            if (dist < bd) {
-                bd = dist;
-                indBD = i;
-                coorBD = np;
-            }
-        }
-        std::cout << "Best node for " << ft << ": " << indBD << " dist: " << bd << " coor: " << coorBD << std::endl;
-    }*/
-
     frozen.setValue(true);
 
 }

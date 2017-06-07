@@ -47,5 +47,5 @@ int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahed
 template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3dTypes, ImageUC>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
- template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
+template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
 #endif //SOFA_DOUBLE
