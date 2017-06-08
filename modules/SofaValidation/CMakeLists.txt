@@ -45,3 +45,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_VAL
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+
+## Add test project
+if(SOFA_BUILD_TESTS)
+  find_package(SofaTest QUIET)
+  add_subdirectory(SofaValidation_test)
+endif()
