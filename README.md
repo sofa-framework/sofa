@@ -1,6 +1,4 @@
-[![SOFA, Simulation Open-Framework Architecture]
-(https://www.sofa-framework.org/wp-content/uploads/2013/01/SOFA_LOGO_ORANGE_2-normal.png)]
-(https://www.sofa-framework.org/)
+![SOFA, Simulation Open-Framework Architecture](https://www.sofa-framework.org/wp-content/uploads/2013/01/SOFA_LOGO_ORANGE_2-normal.png)
 
 
 # Introduction
