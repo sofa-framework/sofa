@@ -25,6 +25,9 @@ namespace mapping
  This is used in compliant constraints to obtain relative
  violation dofs, on which a compliance may be applied
  (ie conversion to a holonomic constraint)
+
+ // mtournier: this is false for rotations when `inverted` is set
+
 */
 template <class TIn, class TOut >
 class DifferenceFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
