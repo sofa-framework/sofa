@@ -204,17 +204,18 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     ## Install resource files
     install(DIRECTORY share/ DESTINATION share/sofa)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 endif()
+
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree, whereas in the install
+# directory, it contains to relative paths to the installed resource directory.
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 
 # Temporary (todo: think about this typedef thing)
 install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
