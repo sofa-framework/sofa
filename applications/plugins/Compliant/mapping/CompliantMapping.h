@@ -35,44 +35,48 @@ class CompliantMapping;
 template<class TOut, class ... T>
 class CompliantMapping< TOut (T...) > : public core::BaseMapping {
 protected:
+
+
+    using signature_type = TOut (T...);
     
     template<class U>
-    using link_type = MultiLink<CompliantMapping, core::State< U >, 
-                                BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>;
+    using link_type = SingleLink<CompliantMapping, core::State< U >, 
+                                 BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK>;
+    
     // links
     std::tuple< link_type<T>...> from_models;
-    link_type<TOut> to_models;
-
-    template<class U>
-	using jacobian_type = linearsolver::EigenSparseMatrix<U, TOut>;
-
-    // jacobians
-    std::tuple< std::vector<jacobian_type<T> >... > jacobians;
-
-    // geometric stiffness
-    using geometric_type = linearsolver::EigenBaseSparseMatrix<SReal>;
-    geometric_type geometric;
+    link_type<TOut> to_model;
 
     // helper types
     template<std::size_t I>
-    using input_type = typename std::tuple_element<I, std::tuple<T...> >::type;
-    
-    // input position view
-    std::tuple< std::vector< coord_view<T> >... > in_pos;
+    using input_types = typename std::tuple_element<I, std::tuple<T...> >::type;
 
+    using output_types = TOut;
+    
+    template<class U>
+	using jacobian_type = linearsolver::EigenSparseMatrix<U, TOut>;
+    
+    // jacobians
+    std::tuple< jacobian_type<T> ... > jacobians;
+    
+    // geometric stiffness
+    using geometric_type = linearsolver::EigenBaseSparseMatrix<SReal>;
+    geometric_type geometric;
+    
     // this is for getJs()
     helper::vector<sofa::defaulttype::BaseMatrix*> js;
-
-    // gory implementation stuff goes here
+    
+    // dirty implementation stuff goes here
     struct impl;
-
-    // used by applyDJT
+    
+    // temporaries used by applyDJT
     template<class U>
     using vec = Eigen::Matrix<U, Eigen::Dynamic, 1>;
     mutable vec<SReal> rhs, res;
     
 public:
 
+    // yes we can
     CompliantMapping();
     
 	SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(CompliantMapping, TOut(T...) ),
@@ -97,15 +101,14 @@ protected:
     // derived classes need to implement this
     virtual void apply(const core::MechanicalParams* mparams,
                        coord_view<TOut> out_pos,
-                       view< coord_view<T> >... in_pos) = 0;
+                       coord_view<const T>... in_pos) = 0;
     
-    virtual void assemble(view< jacobian_type<T> >...jacobians, 
-                          view< coord_view<T> >... in_pos) = 0;
-
+    virtual void assemble(jacobian_type<T>&...jacobians, 
+                          coord_view<const T>... in_pos) = 0;
+    
     virtual void assemble_gs(geometric_type& gs,
-                             deriv_view<TOut> out_force,
-                             view< coord_view<T> >... in_pos);
-    
+                             deriv_view<const TOut> out_force,
+                             coord_view<const T> ... in_pos);
 
 public:
     

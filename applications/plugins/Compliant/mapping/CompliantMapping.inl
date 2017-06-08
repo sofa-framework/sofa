@@ -3,6 +3,8 @@
 
 #include "CompliantMapping.h"
 
+#include <sofa/helper/logging/Messaging.h>
+
 namespace sofa {
 
 namespace component {
@@ -10,72 +12,65 @@ namespace component {
 namespace mapping {
 
 
+// this is the implementation class. you may jump straight to the end of it.
 template<class TOut, class ... T>
 struct CompliantMapping<TOut (T...) >::impl {
 
     using self_type = CompliantMapping<TOut (T...) >;
-    
+
+
+    // construct links 
     template<std::size_t ... I>
     static std::tuple< link_type<T>...> make_from_models(self_type* self, seq<I...>) {
+
+        static constexpr std::size_t N = sizeof...(I);
         
+        // link names
         static std::string names[] = {
-            (std::string("input") + std::to_string(I+1))...
+            (std::string("input") + (N == 1 ? std::string("") : std::to_string(I+1)))...
         };
 
+        // link help messages
         static std::string help[] = {
-            (std::string("help") + std::to_string(I+1))...
+            (std::string("mapping ") + std::to_string(I + 1)) + std::string("th input dofs")...
         };
 
-        // TODO add alias 'input' for 'input1' when sizeof...(T) == 1
         return std::tuple< link_type<T>... > { self->initLink(names[I].c_str(), help[I].c_str())... };
     }
+    
 
-
-
+    // construct input basestate vector
     template<std::size_t ...I>
     static helper::vector<core::BaseState*> getFrom(self_type* self, seq<I...> ) {
         
         helper::vector<core::BaseState*> res;
 
         const int expand[] = {
-            (std::copy( std::get<I>(self->from_models).begin(),
-                        std::get<I>(self->from_models).end(),
-                        std::back_inserter(res) ), 0)...
+            (res.push_back( std::get<I>(self->from_models)), 0) ... 
         };
-
+        
         (void) expand;
 
         return res;
     }
 
-
-    struct to_mechanical_state {
-
-        template<class U>
-        core::behavior::BaseMechanicalState* operator()(const U& x) const {
-            return x->toBaseMechanicalState();
-        }
-        
-    };
     
+    // construct input basemechanicalstate vector
     template<std::size_t ...I>
     static helper::vector<core::behavior::BaseMechanicalState*> getMechFrom(self_type* self, seq<I...> ) {
         
         helper::vector<core::behavior::BaseMechanicalState*> res;
 
         const int expand[] = {
-            (std::transform( std::get<I>(self->from_models).begin(),
-                             std::get<I>(self->from_models).end(),
-                             std::back_inserter(res), to_mechanical_state() ), 0)...
+            (res.push_back( std::get<I>(self->from_models)->toBaseMechanicalState()), 0) ... 
         };
+        
         (void) expand;
 
-        // TODO filter out null values using std::remove_if
-        
         return res;
     }
 
-
+    
     struct not_implemented : std::runtime_error {
         not_implemented(const char* what)
             : std::runtime_error(std::string("not implemented: ") + what) {
@@ -83,32 +78,30 @@ struct CompliantMapping<TOut (T...) >::impl {
     };
 
 
+    // init checks for ith input model
     template<std::size_t  I>
-    static void init_from_model(self_type* self) {
+    static void init_checks_from_model(self_type* self) {
         auto& from = std::get<I>(self->from_models);
         
-        if( from.size() == 0 ) {
-            self->serr << "error: empty input " << I + 1 << self->sendl;
+        if( !from ) {
+            msg_error(self) << "error: unset input " << I + 1;
+            return;
         }
 
-        for(unsigned i = 0, n = from.size(); i < n; ++i) {
-            if(!from[i]) {
-                self->serr << "error: input " << i
-                           << " for type " << I + 1
-                           << " is invalid (wrong type?)" << self->sendl;
-            }
+        if( !from->getSize() ) {
+            msg_error(self) << "error: empty dofs for input " << I + 1;
+            return;
         }
-        
-        
+
     };
     
-    
 
+    // init checks for input models
     template<std::size_t ... I>
-    static void init(self_type* self, seq<I...>) {
+    static void init_checks(self_type* self, seq<I...>) {
 
         const int expand[] = {
-            (init_from_model<I>(self), 0)...
+            (init_checks_from_model<I>(self), 0)...
         }; (void) expand;
         
     }
@@ -119,105 +112,72 @@ struct CompliantMapping<TOut (T...) >::impl {
     static view<U> vector_view(std::vector<U>& v) {
         return {v.data(), v.size()};
     }
-
-
-    template<std::size_t I>
-    static void update_ith_in_pos(self_type* self, const core::ConstMultiVecCoordId& id) {
-        auto& ith_in_pos = std::get<I>(self->in_pos);
-        const auto& ith_from_models = std::get<I>(self->from_models);
-
-        const unsigned n = ith_from_models.size();
-        assert(n && "some input type has no model");
-        
-        ith_in_pos.clear();
-        ith_in_pos.reserve(n);
-        
-        for(unsigned i = 0; i < n; ++i) {
-            ith_in_pos.push_back( data_view( id[ith_from_models[i]].read() ) );
-        }
-        
-    }
-                       
     
-
     
-
-    template<std::size_t ... I>
-    static void update_in_pos(self_type* self, const core::ConstMultiVecCoordId& id, seq<I...> ) {
-
-        // resize
-        const int expand[] = {
-            ( update_ith_in_pos<I>(self, id), 0)...
-        };
-        (void) expand;
+    // a view on a Data
+    template<class U>
+    static view< const typename U::value_type > data_view(const Data<U>* data) {
+        const std::size_t size = data->getValue().size();
         
+        return {data->getValue().data(), size};
     }
-
-
     
 
     template<class U>
-    static view< typename U::value_type > data_view(const Data<U>* data) {
-        std::size_t size = data->getValue().size();
+    static view< typename U::value_type > data_view(Data<U>* data) {
+        const std::size_t size = data->getValue().size();
 
-        // mouhahahahahahaha !
+        // TODO do this cleanly without triggering data edition hell
         typename U::value_type* ptr = const_cast<typename U::value_type*>(data->getValue().data());
-        
         return {ptr, size};
     }
-
     
 
+    template<std::size_t I>
+    static coord_view< const input_types<I> > in_coord_view(self_type* self, core::ConstMultiVecCoordId id) {
+        return data_view( id[ std::get<I>(self->from_models).get() ].read() );
+    }
+
+    static coord_view< output_types > out_coord_view(self_type* self, core::MultiVecCoordId id) {
+        return data_view( id[ self->to_model.get() ].write() );
+    }
+
+    static deriv_view< const output_types > out_deriv_view(self_type* self, core::ConstMultiVecDerivId id) {
+        return data_view( id[ self->to_model.get() ].read() );
+    }
+    
+    
+    
+    
     template<std::size_t ... I>
-    static void apply (self_type* self, const core::MechanicalParams* mparams,
-                core::MultiVecCoordId out_pos_id,
-                core::ConstMultiVecCoordId in_pos_id,
-                seq<I...> ) {
-
-        update_in_pos(self, in_pos_id, make_sequence<T...>());
-
-        coord_view<TOut> out_view = data_view( out_pos_id[ self->to_models[0] ].read() );
+    static void apply_assemble (self_type* self, const core::MechanicalParams* mparams,
+                                core::MultiVecCoordId out_pos_id,
+                                core::ConstMultiVecCoordId in_pos_id,
+                                seq<I...> ) {
         
-        std::tuple< view< coord_view<T> >... > in_view{
-            vector_view(std::get<I>(self->in_pos)) ...
-        };
-
-        
-        self->apply(mparams, out_view, std::get<I>(in_view)...);
+        // apply
+        self->apply(mparams,
+                    out_coord_view(self, out_pos_id),
+                    in_coord_view<I>(self, in_pos_id)...);
 
 
-        // resize jacobians
-        const int expand[] = {
-            (std::get<I>(self->jacobians).resize( std::get<I>(self->from_models).size() ), 0)...
-        }; (void) expand;
-        
-        // build jacobian view
-        std::tuple< view< jacobian_type<T> >... > jacobian_view{
-            vector_view(std::get<I>(self->jacobians)) ...
-                };
-        
         // wtf is this nonsense
 #ifdef SOFA_USE_MASK
         self->m_forceMaskNewStep = true;
 #endif
-        
-        self->assemble(std::get<I>(jacobian_view)..., std::get<I>(in_view)...);
+
+        // assemble jacobians
+        self->assemble(std::get<I>(self->jacobians)..., in_coord_view<I>(self, in_pos_id)...);
     }
     
 
-
     template<std::size_t ... I>
     static void update_gs(self_type* self, core::ConstMultiVecDerivId out_force_id, seq<I...>) {
-
-        // TODO assert in_pos is set correctly
-        auto* out_force_data = out_force_id[self->to_models[0]].read();
-        auto out_force_view = data_view(out_force_data);
         
-        std::tuple< view< coord_view<T> >... > in_view(
-            vector_view(std::get<I>(self->in_pos)) ...
-            );
-
-        self->assemble_gs(self->geometric, out_force_view, std::get<I>(in_view)...);
+        const core::ConstMultiVecCoordId in_pos_id = core::VecId::position();
+        self->assemble_gs(self->geometric,
+                          out_deriv_view(self, out_force_id),
+                          in_coord_view<I>(self, in_pos_id)...);
     }
 
 
@@ -226,14 +186,8 @@ struct CompliantMapping<TOut (T...) >::impl {
     static void add_mult_ith_jacobian(self_type* self,
                                       Data< helper::vector< typename TOut::Deriv > >* out_vel_data,
                                       core::ConstMultiVecDerivId in_vel_id) {
-        
-        assert(std::get<I>(self->from_models).size() == std::get<I>(self->jacobians).size());
-        
-        for(unsigned i = 0, n = std::get<I>(self->jacobians).size(); i < n; ++i){
-            auto in_vel_data = in_vel_id[std::get<I>(self->from_models)[i]].read();
-            std::get<I>(self->jacobians)[i].addMult(*out_vel_data, *in_vel_data);
-        }
-
+        const auto in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].read();
+        std::get<I>(self->jacobians).addMult(*out_vel_data, *in_vel_data);
     }
     
 
@@ -242,22 +196,16 @@ struct CompliantMapping<TOut (T...) >::impl {
                         core::ConstMultiVecDerivId in_vel_id,
                         seq<I...>) {
 
-        auto* out_state = self->to_models[0];
+        auto* out_vel_data = out_vel_id[ self->to_model.get()].write();
 
-        // TODO make sure this does not trigger funky stuff
-        auto* out_vel_data = out_vel_id[out_state].write();
-        
         // set output to zero
         auto out_vel_view = data_view(out_vel_data);
-        assert(out_vel_view.size() == out_state->getSize());
-        
         std::fill(out_vel_view.begin(), out_vel_view.end(), typename TOut::Deriv() );
-
+        
         // multiplication
         const int expand[] = {
             (add_mult_ith_jacobian<I>(self, out_vel_data, in_vel_id), 0)...
         }; (void) expand;
-        
     }
     
 
@@ -265,16 +213,10 @@ struct CompliantMapping<TOut (T...) >::impl {
     static void add_mult_ith_jacobian_transpose(self_type* self,
                                                 core::MultiVecDerivId in_force_id,
                                                 core::ConstMultiVecDerivId out_force_id) {
-        assert(std::get<I>(self->from_models).size() == std::get<I>(self->jacobians).size());
+        const auto* out_force_data = out_force_id[self->to_model.get()].read();
+        auto* in_force_data = in_force_id[std::get<I>(self->from_models).get()].write();
         
-        auto* out_force_data = out_force_id[self->to_models[0]].read();
-        
-        for(unsigned i = 0, n = std::get<I>(self->jacobians).size(); i < n; ++i){
-            // TODO make sure 'write' does not trigger hell
-            auto* in_force_data = in_force_id[std::get<I>(self->from_models)[i]].write();
-            std::get<I>(self->jacobians)[i].addMultTranspose(*in_force_data, *out_force_data);
-        }
-        
+        std::get<I>(self->jacobians).addMultTranspose(*in_force_data, *out_force_data);
     }
 
     
@@ -283,7 +225,7 @@ struct CompliantMapping<TOut (T...) >::impl {
     static void apply_jacobian_transpose(self_type* self, core::MultiVecDerivId in_force_id,
                                   core::ConstMultiVecDerivId out_force_id,
                                   seq<I...>) {
-        // multiplication
+        // transpose multiplication
         const int expand[] = {
             (add_mult_ith_jacobian_transpose<I>(self, in_force_id, out_force_id), 0)...
         }; (void) expand;
@@ -293,52 +235,50 @@ struct CompliantMapping<TOut (T...) >::impl {
 
 
 
-
+    // fill rhs segment with data from given vec id
     template<std::size_t I>
     static void fetch_rhs(self_type* self,
                           vec<SReal>& rhs, unsigned& off, core::ConstMultiVecDerivId in_vel_id, SReal kfactor) {
 
-        for(unsigned i = 0, n = std::get<I>(self->from_models).size(); i < n; ++i) {
-            auto* in_vel_data = in_vel_id[std::get<I>(self->from_models)[i]].read();
-            auto in_vel_view = data_view(in_vel_data);
-
-            using real_type = typename input_type<I>::Real;
-            
-            const real_type* ptr = reinterpret_cast<const real_type*>(in_vel_view.data());
-            const std::size_t size = in_vel_view.size() * input_type<I>::deriv_total_size;
-
-            // view mstate vector as eigen type            
-            Eigen::Map<const vec<real_type>> map(ptr, size);
-            
-            rhs.segment(off, map.size()) = (kfactor * map).template cast<SReal>();
-            off += map.size();
-        }
+        const auto* in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].read();
+        auto in_vel_view = data_view(in_vel_data);
         
+        using real_type = typename input_types<I>::Real;
+        
+        const real_type* ptr = reinterpret_cast<const real_type*>(in_vel_view.data());
+        const std::size_t size = in_vel_view.size() * input_types<I>::deriv_total_size;
+        
+        // view mstate vector as eigen type            
+        Eigen::Map<const vec<real_type>> map(ptr, size);
+        
+        rhs.segment(off, map.size()) = (kfactor * map).template cast<SReal>();
+        off += map.size();
     }
 
+    
+    // fill back vec id from rhs segment
     template<std::size_t I>
     static void dispatch_res(self_type* self,
                              core::MultiVecDerivId in_vel_id, unsigned& off, const vec<SReal>& res) {
-
-        for(unsigned i = 0, n = std::get<I>(self->from_models).size(); i < n; ++i) {
-            auto* in_vel_data = in_vel_id[std::get<I>(self->from_models)[i]].write();
-            auto in_vel_view = data_view(in_vel_data);
-
-            using real_type = typename input_type<I>::Real;
+        
+        auto* in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].write();
+        auto in_vel_view = data_view(in_vel_data);
             
-            real_type* ptr = reinterpret_cast<real_type*>(in_vel_view.data());
-            const std::size_t size = in_vel_view.size() * input_type<I>::deriv_total_size;
-
-            // view mstate vector as eigen type
-            Eigen::Map<vec<real_type>> map(ptr, size);
+        using real_type = typename input_types<I>::Real;
             
-            map = res.segment(off, map.size()).template cast<real_type>();
-            off += map.size();
-        }
+        real_type* ptr = reinterpret_cast<real_type*>(in_vel_view.data());
+        const std::size_t size = in_vel_view.size() * input_types<I>::deriv_total_size;
+
+        // view mstate vector as eigen type
+        Eigen::Map<vec<real_type>> map(ptr, size);
+            
+        map = res.segment(off, map.size()).template cast<real_type>();
+        off += map.size();
         
     }
 
 
+    // apply geometric stiffness
     template<std::size_t ... I>
     static void apply_DJT(self_type* self, core::MultiVecDerivId in_vel_id, SReal kfactor, seq<I...> ) {
 
@@ -347,9 +287,11 @@ struct CompliantMapping<TOut (T...) >::impl {
         
         if( !cm.nonZeros() ) return;
 
+        // resize temporary vectors
         self->rhs.resize( cm.rows() );
         self->res.resize( cm.rows() );
-
+        
+        // fill rhs with data from input vecids
         {
             unsigned off = 0;
             const int expand[] = {
@@ -359,8 +301,11 @@ struct CompliantMapping<TOut (T...) >::impl {
             assert(off == (unsigned)cm.rows());
         }
 
+        // actual multiplication
         self->res.noalias() = cm * self->rhs;
-        
+
+
+        // dispatch result back to vecids
         {
             unsigned off = 0;
             const int expand[] = {
@@ -373,48 +318,46 @@ struct CompliantMapping<TOut (T...) >::impl {
     }
 
 
-
-    struct js_helper {
-        
-        template<class U>
-        sofa::defaulttype::BaseMatrix* operator()(U&& value) const {
-            return &value;
-        }
-    };
-
     template<std::size_t I>
-    static void debug_jacobians(self_type* self, std::ostream& out = std::clog) {
-        for(unsigned i = 0, n = std::get<I>(self->jacobians).size(); i < n; ++i){        
-            out << "debug jacobian type: " << I << " index: " << i << std::endl;
-            out << std::get<I>(self->jacobians)[i].compressedMatrix << std::endl;
-        }
+    static void debug_jacobian(self_type* self, std::ostream& out = std::clog) {
+        out << "debug jacobian: " << I << std::endl;
+        out << std::get<I>(self->jacobians).compressedMatrix << std::endl;
     }
-    
+
     template<std::size_t ... I>
     static void update_js(self_type* self, seq<I...> ) {
         
         self->js.clear();
         
         const int expand [] = {
-            (std::transform(std::get<I>(self->jacobians).begin(), std::get<I>(self->jacobians).end(),
-                            std::back_inserter(self->js), js_helper()),
-             // debug_jacobians<I>(),
-             0)...
+            (self->js.push_back( &std::get<I>(self->jacobians) ), 0)...
         }; (void) expand;
         
     }
 
-
+    template<std::size_t ... I>
+    static void update_force_mask(self_type* self, seq<I...>) {
+        const int expand[] = {
+            ( std::get<I>(self->from_models)->toBaseMechanicalState()->forceMask
+              .assign(std::get<I>(self->from_models)->getSize(), true),
+              0)...
+        };
+        (void) expand;
+    }
+    
     
 };
 
 
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 
 template<class TOut, class ... T>
 CompliantMapping<TOut (T...) >::CompliantMapping()
     : from_models( impl::make_from_models(this, make_sequence<T...>()) ),
-      to_models(initLink("output", "output object")) {
+      to_model(initLink("output", "output object")) {
     
 }
 
@@ -428,24 +371,18 @@ helper::vector<core::behavior::BaseMechanicalState*> CompliantMapping<TOut (T...
     return impl::getMechFrom(this, make_sequence<T...>());
 }
 
+
 template<class TOut, class ... T>
 helper::vector<core::BaseState* > CompliantMapping<TOut (T...) >::getTo() {
-    // TODO reserve
-    helper::vector<core::BaseState*> res;
-    std::copy(to_models.begin(), to_models.end(), std::back_inserter(res));
+    helper::vector<core::BaseState*> res(1);
+    res[0] = to_model;
     return res;
 }
 
 template<class TOut, class ... T>
 helper::vector<core::behavior::BaseMechanicalState* > CompliantMapping<TOut (T...) >::getMechTo() {
-    // TODO reserve
-    helper::vector<core::behavior::BaseMechanicalState*> res;
-        
-    std::transform(to_models.begin(), to_models.end(), std::back_inserter(res),
-                   typename impl::to_mechanical_state());
-    
-    std::remove(res.begin(), res.end(), nullptr);
-        
+    helper::vector<core::behavior::BaseMechanicalState*> res(1);
+    res[0] = to_model->toBaseMechanicalState();    
     return res;
 }
 
@@ -453,11 +390,7 @@ helper::vector<core::behavior::BaseMechanicalState* > CompliantMapping<TOut (T..
 #ifdef SOFA_USE_MASK
 template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::updateForceMask() {
-    // i have no idea what i'm doing lol
-    helper::vector<core::behavior::BaseMechanicalState*> from = getMechFrom();
-    for (unsigned i = 0; i < from.size(); ++i) {
-        from[i]->forceMask.assign(from[i]->getSize(), true);
-    }
+    impl::update_force_mask(this, make_sequence<T...>());
 }
 #endif
 
@@ -474,8 +407,16 @@ void CompliantMapping<TOut (T...) >::init() {
     
     core::BaseMapping::init();
 
-    // TODO check that from_models all have size > 0
-    impl::init(this, make_sequence<T...>() );
+    impl::init_checks(this, make_sequence<T...>() );
+
+    if(!to_model) {
+        msg_error() << "output model not set, aborting";
+        return;
+    }
+
+    if(!to_model->getSize()) {
+        msg_warning() << "empty output model";
+    }
 
 }
 
@@ -500,7 +441,7 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::apply(const core::MechanicalParams* mparams,
                                            core::MultiVecCoordId out_pos_id,
                                            core::ConstMultiVecCoordId in_pos_id)  {
-    impl::apply(this, mparams, out_pos_id, in_pos_id, make_sequence<T...>());
+    impl::apply_assemble(this, mparams, out_pos_id, in_pos_id, make_sequence<T...>());
 }
 
 template<class TOut, class ... T>
@@ -558,8 +499,8 @@ const defaulttype::BaseMatrix* CompliantMapping<TOut (T...) >::getK() {
 
 template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::assemble_gs(geometric_type& /*gs*/,
-                                                 deriv_view<TOut> /*out_force*/,
-                                                 view< coord_view<T> >... /*in_pos*/) {
+                                                 deriv_view<const TOut> /*out_force*/,
+                                                 coord_view<const T>... /*in_pos*/) {
     // default is no gs
 }
 

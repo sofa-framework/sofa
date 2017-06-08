@@ -36,10 +36,27 @@ public:
 };
     
 
+namespace detail {
 
 template<class U>
-using coord_view = view< typename U::Coord >;
+struct forward_const {
+    using coord_type = typename U::Coord;
+    using deriv_type = typename U::Deriv;    
+};
 
 template<class U>
-using deriv_view = view< typename U::Deriv >;
+struct forward_const<const U> {
+    using coord_type = const typename U::Coord;
+    using deriv_type = const typename U::Deriv;    
+};
+
+
+};
+
+
+template<class U>
+using coord_view = view< typename detail::forward_const<U>::coord_type >;
+
+template<class U>
+using deriv_view = view< typename detail::forward_const<U>::deriv_type >;
 
