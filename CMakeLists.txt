@@ -67,6 +67,13 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree,
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+
+
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -198,27 +205,6 @@ if(MSVC)
     install(FILES ${LIBS} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
 endif()
-
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
-if(SOFA_INSTALL_RESOURCES_FILES)
-    ## Install resource files
-    install(DIRECTORY share/ DESTINATION share/sofa)
-    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
-endif()
-
-# Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
-
 
 ### Mask
 option(SOFA_USE_MASK "Use mask optimization" ON)
@@ -356,6 +342,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
 endif()
 
 
+# Install configuration:
 ## when installing, keep an eye on options/params/sources used for compilation
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -364,6 +351,25 @@ install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
+
+## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
+## build directory, this one contains relative paths to the installed resource directory.
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+
+
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+## Install resource files
+if(SOFA_INSTALL_RESOURCES_FILES)
+    install(DIRECTORY share/ DESTINATION share/sofa)
+    install(DIRECTORY examples/ DESTINATION share/sofa/examples)	
+endif()
+
+## Temporary (todo: think about this typedef thing)
+install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
+
 
 #CPack install
 SET(CPACK_PACKAGE_VERSION "17.dev.0")
