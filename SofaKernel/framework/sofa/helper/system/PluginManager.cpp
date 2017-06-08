@@ -63,6 +63,7 @@ const char* Plugin::GetModuleDescription::symbol      = "getModuleDescription";
 const char* Plugin::GetModuleLicense::symbol          = "getModuleLicense";
 const char* Plugin::GetModuleName::symbol             = "getModuleName";
 const char* Plugin::GetModuleVersion::symbol          = "getModuleVersion";
+const char* Plugin::IsAutoloadablePlugin::symbol     = "isAutoloadablePlugin";
 
 std::string PluginManager::s_gui_postfix = "gui";
 
@@ -290,6 +291,40 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
 bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
 {
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
+}
+
+
+bool PluginManager::autoloadPlugins()
+{
+    for (auto&& currentDir : m_searchPaths)
+    {
+        //list all files in the dir
+        std::vector<std::string> files;
+        sofa::helper::system::FileSystem::listDirectory(currentDir, files);
+
+        for(auto&& currentFile : files)
+        {
+            const std::string path = currentDir + "/" + currentFile;
+
+            // check if not already loaded (by a symlink or manually before executing this function)
+            if (!pluginIsLoaded(path))
+            {
+                DynamicLibrary::Handle d = DynamicLibrary::load(path);
+                Plugin p;
+
+                //if it is a plugin
+                if (d.isValid() && getPluginEntry(p.initExternalModule, d))
+                {
+                    getPluginEntry(p.isAutoloadablePlugin, d);
+                    //if the plugin has implemented the function for autoloading & if it returns true
+                    if (p.isAutoloadablePlugin())
+                    {
+                        loadPluginByPath(path);
+                    }
+                }
+            }
+        }
+    }
 }
 
 }

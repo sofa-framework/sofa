@@ -359,6 +359,20 @@ std::string FileSystem::stripDirectory(const std::string& path)
 }
 
 
+bool FileSystem::isSymbolicLink(const std::string& path)
+{
+#if defined(WIN32)
+    return false;
+#endif // WIN32
+
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+    struct stat buf;
+    lstat (path.c_str(), &buf);
+    return (S_ISLNK(buf.st_mode));
+#endif // (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+}
+
+
 } // namespace system
 } // namespace helper
 } // namespace sofa

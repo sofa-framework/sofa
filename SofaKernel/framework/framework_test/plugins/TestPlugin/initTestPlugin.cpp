@@ -61,6 +61,11 @@ SOFA_TESTPLUGIN_API const char* getModuleComponentList()
     return "ComponentA, ComponentB";
 }
 
+SOFA_TESTPLUGIN_API bool isAutoloadablePlugin()
+{
+    return true;
+}
+
 } // extern "C"
 
 
