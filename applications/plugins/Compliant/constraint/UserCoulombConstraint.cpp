@@ -10,7 +10,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(UserCoulombConstraint);
 
-static int UserCoulombConstraintClass = 
+static int handle = 
     core::RegisterObject("user-friendly coulomb constraint")
     .add< UserCoulombConstraint >();
 
@@ -56,7 +56,9 @@ std::size_t UserCoulombConstraint::getConstraintTypeIndex() const {
     return constraint_index(this);
 }
 
-
+SReal UserCoulombConstraint::frictionCoefficient() const {
+    return mu.getValue();
+}
 
 }
 }

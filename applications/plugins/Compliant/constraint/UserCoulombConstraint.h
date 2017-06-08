@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_USERCOULOMBCONSTRAINT_H
 #define COMPLIANT_USERCOULOMBCONSTRAINT_H
 
-#include <Compliant/constraint/Constraint.h>
+#include <Compliant/constraint/CoulombConstraint.h>
 
 #include <sofa/helper/template_name.h>
 
@@ -11,8 +11,10 @@ namespace linearsolver {
 
 // a more general friction constraint: user-defined normal direction, mu in a
 // data, projection method, etc.
-struct UserCoulombConstraint : Constraint {
+struct UserCoulombConstraint : CoulombConstraintBase {
     SOFA_CLASS(UserCoulombConstraint, Constraint);
+
+    SReal frictionCoefficient() const;
     
     Data<SReal> mu;
 
