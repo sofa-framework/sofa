@@ -37,6 +37,7 @@
 
 # Files created by QtCreator
 CMakeLists.txt.user*
+CMakeFiles/
 
 # custom cmake file
 custom.cmake
