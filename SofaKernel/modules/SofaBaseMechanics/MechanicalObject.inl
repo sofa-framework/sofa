@@ -2622,6 +2622,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
     off += this->getSize() * N;
 }
 
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {
@@ -2647,6 +2648,7 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
     }
 
 }
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
