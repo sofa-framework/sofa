@@ -80,7 +80,7 @@ TEST_F(DistanceGrid_test, chekcValidConstructorsCube) {
     ASSERT_NO_THROW(this->chekcValidConstructorsCube()) ;
 }
 
-TEST_F(DistanceGrid_test, chekcInvalidConstructorsCube_OpenIssue) {
+TEST_F(DistanceGrid_test, chekcInvalidConstructorsCube) {
     std::vector< std::vector< float >> values = {
         {-10, 10, 10,  -1,-1,-1,  1, 1,1},
         { 10,-10, 10,  -1,-1,-1,  1, 1,1},

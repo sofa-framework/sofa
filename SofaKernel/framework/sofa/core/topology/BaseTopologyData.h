@@ -34,7 +34,15 @@ namespace topology
 {
 
 
-
+//TODO(dmarchal 2017-05-13):
+// When someone want to deprecate something....please help other contributors by providing
+// details on:
+//   - why is deprecated
+//   - when it have been deprecated
+//   - when can we remove the classe
+//   - how are we suppose to update classes that make use of BaseTopologyData
+//   - who is supposed to do the update...and if it is not the person that deprecate the
+//     code how your co-worker will be notified they have something to do.
 /** A class that define topological Data general methods
 
       DEPRECATED

@@ -99,8 +99,9 @@ if(NOT WIN32)
 endif(NOT WIN32)
 
 
-## Try to find an installed boost. If boost is not found, use miniBoost.
-find_package(Boost REQUIRED)
+## Try to find an installed Boost (1.54.0 or higher).
+set(BOOST_MIN_VERSION "1.54.0")
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)

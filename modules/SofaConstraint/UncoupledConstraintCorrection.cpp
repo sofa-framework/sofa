@@ -130,10 +130,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             unsigned int dof = colIt.index();
             Deriv n = colIt.val();
 
-#ifdef DEBUG
-            std::cout << "    [ " << dof << "]=" << n << std::endl;
-#endif
-
             getVCenter(weightedNormal) = getVCenter(n);
             getVOrientation(weightedNormal) = getVOrientation(n);
 
@@ -182,10 +178,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
         ++rowIt;
     }
-
-#ifdef DEBUG
-    // std::cout << "Wnew = " << Wnew << std::endl;
-#endif
 }
 
 #else
@@ -255,10 +247,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             }
         }
     }
-
-#ifdef DEBUG
-    // std::cout << "Wnew = " << Wnew << std::endl;
-#endif
 }
 
 #endif

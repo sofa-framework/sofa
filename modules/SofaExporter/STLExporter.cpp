@@ -75,7 +75,7 @@ STLExporter::~STLExporter()
 void STLExporter::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    
+
     context->get(topology, sofa::core::objectmodel::BaseContext::Local);
     context->get(mstate, sofa::core::objectmodel::BaseContext::Local);
     context->get(vmodel, sofa::core::objectmodel::BaseContext::Local);
@@ -103,7 +103,7 @@ void STLExporter::init()
             serr << "STLExporter : error, STLExporter needs VisualModel or Topology" << sendl;
             return;
         }
-        
+
         m_position.setParent(pos);
         m_triangle.setParent(tri);
         m_quad.setParent(qua);
@@ -112,7 +112,7 @@ void STLExporter::init()
     // Activate the listening to the event in order to be able to export file at the nth-step
     if(exportEveryNbSteps.getValue() != 0)
         this->f_listening.setValue(true);
-    
+
     nbFiles = 0;
 
 }
@@ -139,13 +139,13 @@ void STLExporter::writeSTL()
         outfile = NULL;
         return;
     }
-    
+
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
-    
+
     helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
-        
+
     if(positionIndices.empty())
     {
         serr << "STLExporter::writeSTL : error, no positions in topology" << sendl;
@@ -179,17 +179,17 @@ void STLExporter::writeSTL()
         serr << "STLExporter::writeSTLBinary : error, neither triangles nor quads" << sendl;
         return;
     }
-    
+
     /* Get number of facets */
     const int nbt = vecTri.size();
-    
+
     // Sets the floatfield format flag for the str stream to fixed
     std::cout.precision(6);
-    
+
     /* solid */
     *outfile << "solid Exported from Sofa" << std::endl;
-    
-    
+
+
     for(int i=0;i<nbt;i++)
     {
         /* normal */
@@ -203,12 +203,12 @@ void STLExporter::writeSTL()
         *outfile << "endloop" << std::endl;
         *outfile << "endfacet" << std::endl;
     }
-    
+
     /* endsolid */
     *outfile << "endsolid Exported from Sofa" << std::endl;
-    
+
     outfile->close();
-    std::cout << filename << " written" << std::endl;
+    msg_info("STLExporter") << filename << " written" ;
     nbFiles++;
 }
 
@@ -224,7 +224,7 @@ void STLExporter::writeSTLBinary()
         filename += oss.str();
     }
     filename += ".stl";
-    
+
     outfile = new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary);
     if( !outfile->is_open() )
     {
@@ -233,13 +233,13 @@ void STLExporter::writeSTLBinary()
         outfile = NULL;
         return;
     }
-    
+
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
     helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
     helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
-    
+
     helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
-    
+
     if(positionIndices.empty())
     {
         serr << "STLExporter::writeSTLBinary : error, no positions in topology" << sendl;
@@ -273,10 +273,10 @@ void STLExporter::writeSTLBinary()
         serr << "STLExporter::writeSTLBinary : error, neither triangles nor quads" << sendl;
         return;
     }
-    
+
     // Sets the floatfield format flag for the str stream to fixed
     std::cout.precision(6);
-    
+
     /* Creating header file */
     char* buffer = new char [80];
     // Cleaning buffer
@@ -286,11 +286,11 @@ void STLExporter::writeSTLBinary()
     }
     strcpy(buffer, "Exported from Sofa");
     outfile->write(buffer,80);
-        
+
     /* Number of facets */
     const unsigned int nbt = vecTri.size();
     outfile->write((char*)&nbt,4);
-    
+
     // Parsing facets
     for(unsigned long i=0;i<nbt;i++)
     {
@@ -309,15 +309,15 @@ void STLExporter::writeSTLBinary()
             outfile->write( (char*)&iTwo, 4);
             outfile->write( (char*)&iThree, 4);
         }
-        
+
         /* Attribute byte count */
         // attribute count is currently not used, it's garbage
         unsigned int zero = 0;
         outfile->write((char*)&zero, 2);
     }
-    
+
     outfile->close();
-    std::cout << filename << " written" << std::endl;
+    msg_info() << filename << " written." ;
     nbFiles++;
 }
 
@@ -326,8 +326,6 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
     if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
     {
         sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
-
-        std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 

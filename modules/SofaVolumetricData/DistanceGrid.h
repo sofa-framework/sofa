@@ -66,8 +66,8 @@ public:
     typedef ExtVector<SReal> VecSReal;
     typedef ExtVector<Coord> VecCoord;
 
-    DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
-    DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax,
+    DistanceGrid(int m_nx, int m_ny, int m_nz, Coord m_pmin, Coord m_pmax);
+    DistanceGrid(int m_nx, int m_ny, int m_nz, Coord m_pmin, Coord m_pmax,
                  ExtVectorAllocator<SReal>* alloc);
 
     ~DistanceGrid();
@@ -76,8 +76,8 @@ public:
     /// Load a distance grid
     static DistanceGrid* load(const std::string& filename,
                               double scale=1.0, double sampling=0.0,
-                              int nx=64, int ny=64, int nz=64,
-                              Coord pmin = Coord(), Coord pmax = Coord());
+                              int m_nx=64, int m_ny=64, int m_nz=64,
+                              Coord m_pmin = Coord(), Coord m_pmax = Coord());
 
     static DistanceGrid* loadVTKFile(const std::string& filename,
                                      double scale=1.0, double sampling=0.0);
@@ -85,8 +85,8 @@ public:
     /// Load or reuse a distance grid
     static DistanceGrid* loadShared(const std::string& filename,
                                     double scale=1.0, double sampling=0.0,
-                                    int nx=64, int ny=64, int nz=64,
-                                    Coord pmin = Coord(), Coord pmax = Coord());
+                                    int m_nx=64, int m_ny=64, int m_nz=64,
+                                    Coord m_pmin = Coord(), Coord m_pmax = Coord());
 
     /// Add one reference to this grid. Note that loadShared already does this.
     DistanceGrid* addRef();
@@ -111,66 +111,66 @@ public:
     /// Update bbox
     void computeBBox();
 
-    inline int getNx() const { return nx; }
-    inline int getNy() const { return ny; }
-    inline int getNz() const { return nz; }
-    inline const Coord& getCellWidth() const { return cellWidth; }
+    inline int getNx() const { return m_nx; }
+    inline int getNy() const { return m_ny; }
+    inline int getNz() const { return m_nz; }
+    inline const Coord& getCellWidth() const { return m_cellWidth; }
 
-    inline int size() const { return nxnynz; }
+    inline int size() const { return m_nxnynz; }
 
-    inline const Coord& getBBMin() const { return bbmin; }
-    inline const Coord& getBBMax() const { return bbmax; }
-    inline void setBBMin(const Coord& val) { bbmin = val; }
-    inline void setBBMax(const Coord& val) { bbmax = val; }
+    inline const Coord& getBBMin() const { return m_bbmin; }
+    inline const Coord& getBBMax() const { return m_bbmax; }
+    inline void setBBMin(const Coord& val) { m_bbmin = val; }
+    inline void setBBMax(const Coord& val) { m_bbmax = val; }
     inline Coord getBBCorner(int i) const {
-        return Coord((i&1)?bbmax[0]:bbmin[0],(i&2)?bbmax[1]:bbmin[1],(i&4)?bbmax[2]:bbmin[2]);
+        return Coord((i&1)?m_bbmax[0]:m_bbmin[0],(i&2)?m_bbmax[1]:m_bbmin[1],(i&4)?m_bbmax[2]:m_bbmin[2]);
     }
 
     inline bool inBBox(const Coord& p, SReal margin=0.0f) const
     {
         for (int c=0; c<3; ++c)
-            if (p[c] < bbmin[c]-margin || p[c] > bbmax[c]+margin) return false;
+            if (p[c] < m_bbmin[c]-margin || p[c] > m_bbmax[c]+margin) return false;
         return true;
     }
 
-    inline const Coord& getPMin() const { return pmin; }
-    inline const Coord& getPMax() const { return pmax; }
+    inline const Coord& getPMin() const { return m_pmin; }
+    inline const Coord& getPMax() const { return m_pmax; }
     inline Coord getCorner(int i) const {
-        return Coord((i&1)?pmax[0]:pmin[0],(i&2)?pmax[1]:pmin[1],(i&4)?pmax[2]:pmin[2]);
+        return Coord((i&1)?m_pmax[0]:m_pmin[0],(i&2)?m_pmax[1]:m_pmin[1],(i&4)?m_pmax[2]:m_pmin[2]);
     }
 
-    inline bool isCube() const { return cubeDim != 0; }
-    inline SReal getCubeDim() const { return cubeDim; }
+    inline bool isCube() const { return m_cubeDim != 0; }
+    inline SReal getCubeDim() const { return m_cubeDim; }
 
     bool inGrid(const Coord& p) const
     {
-        Coord epsilon = cellWidth*0.1;
+        Coord epsilon = m_cellWidth*0.1;
         for (int c=0; c<3; ++c)
-            if (p[c] < pmin[c]+epsilon[c] || p[c] > pmax[c]-epsilon[c]) return false;
+            if (p[c] < m_pmin[c]+epsilon[c] || p[c] > m_pmax[c]-epsilon[c]) return false;
         return true;
     }
 
     Coord clamp(Coord p) const
     {
         for (int c=0; c<3; ++c)
-            if (p[c] < pmin[c]) p[c] = pmin[c];
-            else if (p[c] > pmax[c]) p[c] = pmax[c];
+            if (p[c] < m_pmin[c]) p[c] = m_pmin[c];
+            else if (p[c] > m_pmax[c]) p[c] = m_pmax[c];
         return p;
     }
 
     int ix(const Coord& p) const
     {
-        return helper::rfloor((p[0]-pmin[0])*invCellWidth[0]);
+        return helper::rfloor((p[0]-m_pmin[0])*m_invCellWidth[0]);
     }
 
     int iy(const Coord& p) const
     {
-        return helper::rfloor((p[1]-pmin[1])*invCellWidth[1]);
+        return helper::rfloor((p[1]-m_pmin[1])*m_invCellWidth[1]);
     }
 
     int iz(const Coord& p) const
     {
-        return helper::rfloor((p[2]-pmin[2])*invCellWidth[2]);
+        return helper::rfloor((p[2]-m_pmin[2])*m_invCellWidth[2]);
     }
 
     int index(const Coord& p, Coord& coefs) const ;
@@ -183,16 +183,16 @@ public:
 
     int index(int x, int y, int z)
     {
-        return x+nx*(y+ny*(z));
+        return x+m_nx*(y+m_ny*(z));
     }
 
     Coord coord(int x, int y, int z)
     {
-        return pmin+Coord(x*cellWidth[0], y*cellWidth[1], z*cellWidth[2]);
+        return m_pmin+Coord(x*m_cellWidth[0], y*m_cellWidth[1], z*m_cellWidth[2]);
     }
 
-    SReal operator[](int index) const { return dists[index]; }
-    SReal& operator[](int index) { return dists[index]; }
+    SReal operator[](int index) const { return m_dists[index]; }
+    SReal& operator[](int index) { return m_dists[index]; }
 
     static SReal interp(SReal coef, SReal a, SReal b)
     {
@@ -230,20 +230,21 @@ public:
     VecCoord meshPts;
 
 protected:
-    int nbRef;
-    VecSReal dists;
-    const int nx,ny,nz, nxny, nxnynz;
-    const Coord pmin, pmax;
-    const Coord cellWidth, invCellWidth;
-    Coord bbmin, bbmax; ///< bounding box of the object, smaller than the grid
+    int m_nbRef;
+    const int m_nx,m_ny,m_nz;
+    const int m_nxny, m_nxnynz;
+    VecSReal m_dists;
+    const Coord m_pmin, m_pmax;
+    const Coord m_cellWidth, m_invCellWidth;
+    Coord m_bbmin, m_bbmax; ///< bounding box of the object, smaller than the grid
 
-    SReal cubeDim; ///< Cube dimension (!=0 if this is actually a cube
+    SReal m_cubeDim; ///< Cube dimension (!=0 if this is actually a cube
 
     /// Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };
-    helper::vector<int> fmm_status;
-    helper::vector<int> fmm_heap;
-    int fmm_heap_size;
+    helper::vector<int> m_fmm_status;
+    helper::vector<int> m_fmm_heap;
+    int m_fmm_heap_size;
 
     int fmm_pop();
     void fmm_push(int index);

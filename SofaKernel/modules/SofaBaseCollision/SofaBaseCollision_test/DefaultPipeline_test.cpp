@@ -118,25 +118,26 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
     clearSceneGraph();
 }
 
-int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int value)
+int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
 {
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>                                                          \n"
              "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
-             "  <DefaultPipeline name='pipeline' depth='"<< value <<"'/>                     \n"
+             "  <DefaultPipeline name='pipeline' depth='"<< dvalue <<"'/>                     \n"
              "  <DiscreteIntersection name='interaction'/>                                    \n"
              "</Node>                                                                        \n" ;
 
     Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
-    //ASSERT_NE(root.get(), nullptr) ;
+    //EXPECT_NE( (root.get()), NULL) ;
     root->init(ExecParams::defaultInstance()) ;
 
     DefaultPipeline* clp = dynamic_cast<DefaultPipeline*>(root->getObject("pipeline")) ;
-    //ASSERT_NE( clp, nullptr) ;
+    //ASSERT_NE( (clp), nullptr) ;
 
     int rv = clp->d_depth.getValue() ;
+
     clearSceneGraph();
     return rv;
 }
@@ -159,7 +160,7 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
         std::make_pair( 0, true),
         std::make_pair( 2, true),
         std::make_pair(10, true),
-        std::make_pair(1000, false)
+        std::make_pair(1000, true)
     };
 
     for(auto is : testvalues){
@@ -173,7 +174,7 @@ TEST_F(TestDefaultPipeLine, checkDefaultPipelineWithMonkeyValueForDepth_OpenIssu
                 ADD_FAILURE() << "User provided depth parameter value '" << is.first << "' has been un-expectedly overriden." ;
             }
         }else{
-            EXPECT_MSG_NOEMIT(Warning) ;
+            EXPECT_MSG_EMIT(Warning) ;
 
             // Check the default value.
             if(this->checkDefaultPipelineWithMonkeyValueForDepth(is.first)!=6){

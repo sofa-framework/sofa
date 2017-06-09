@@ -88,8 +88,9 @@ endif(UNIX)
 include(CompilerOptions)
 
 
-## Boost is now mandatory.
-find_package(Boost QUIET)
+## Boost (1.54.0 or higher) is now mandatory.
+set(BOOST_MIN_VERSION "1.54.0")
+find_package(Boost ${BOOST_MIN_VERSION} QUIET)
 if(NOT Boost_FOUND)
     message("Did not find a boost directory from Boost_LIBRARY_DIR and Boost_INCLUDE_DIR, will try to search one in possible directories")
     ## Try to find an installed boost.
@@ -155,7 +156,7 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)

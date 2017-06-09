@@ -132,7 +132,6 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
             for (unsigned int i = 0; i < nbPoints; i++)
             {
-                //	std::cout << "addedCompliance --> " << comp0 << std::endl;
                 addedCompliance.push_back(comp0);
             }
 
@@ -175,7 +174,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 
     MatrixDeriv constraintCopy;
 
-    std::cout << "******\n Constraint before Merge  \n *******" << std::endl;
+    msg_info() << "******\n Constraint before Merge  \n *******" ;
 
     MatrixDerivRowIterator rowIt = constraints.begin();
     MatrixDerivRowIterator rowItEnd = constraints.end();
@@ -198,11 +197,11 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
     numGroup += 1;
 
-    std::cout << "******\n Constraint after Merge  \n *******" << std::endl;
+   msg_info() << "******\n Constraint after Merge  \n *******" ;
 
     for (unsigned int group = 0; group < numGroup; group++)
     {
-        std::cout << "constraint[" << group << "] : " << std::endl;
+        msg_info() << "constraint[" << group << "] : " ;
 
         MatrixDerivRowIterator rowCopyIt = constraintCopy.begin();
         MatrixDerivRowIterator rowCopyItEnd = constraintCopy.end();
@@ -224,7 +223,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 
     constraints.clear();
-    std::cout << "******\n Constraint back to initial values  \n *******" << std::endl;
+    msg_info() << "******\n Constraint back to initial values  \n *******" ;
 
     rowIt = constraintCopy.begin();
     rowItEnd = constraintCopy.end();
@@ -262,9 +261,6 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
             int indexCurColConst;
 
-#ifdef DEBUG
-            std::cout << " [ " << dof << "]=" << n << std::endl;
-#endif
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
                 indexCurColConst = rowIt2.index();
@@ -282,31 +278,10 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                     }
                 }
             }
-
-            /*
-            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            {
-            	indexCurColConst = mstate->getConstraintId()[curColConst];
-            	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            }
-            */
         }
         if (f_verbose.getValue())
             sout << sendl;
     }
-
-    /*debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
-    printf("\n index : ");
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-    	int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-    	printf(" %d ",indexCurRowConst);
-    	if(abs(W[indexCurRowConst][indexCurRowConst]) < 0.000000001)
-    		printf("\n WARNING : there is a 0 on the diagonal of matrix W");
-
-    	if(abs(W[curRowConst][curRowConst]) <0.000000001)
-    		printf("\n stop");
-    }*/
 }
 
 #else
@@ -469,7 +444,6 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-//	const double invDt = 1.0 / this->getContext()->getDt();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {

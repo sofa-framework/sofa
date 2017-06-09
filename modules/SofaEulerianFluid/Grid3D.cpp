@@ -24,6 +24,10 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <cstring>
 
+// set to true/false to activate extra verbose FMM.
+#define EMIT_EXTRA_FMM_MESSAGE false
+
+//TODO(dmarchal 2017-05-18): There is code duplication here with VolumetricData (fastmaching implementation).
 namespace sofa
 {
 
@@ -51,7 +55,7 @@ const unsigned long* Grid3D::obstacles = NULL;
     for (int y=0;y<ny;y++)                      \
       for (int x=0;x<nx;x++,ind+=index(1,0,0))  \
       {                                         \
-	cmd;                                    \
+    cmd;                                    \
       }                                         \
 }
 
@@ -62,7 +66,7 @@ const unsigned long* Grid3D::obstacles = NULL;
     for (int y=1;y<ny-1;y++,ind+=index(2,0,0))  \
       for (int x=1;x<nx-1;x++,ind+=index(1,0,0))\
       {                                         \
-	cmd;                                    \
+    cmd;                                    \
       }                                         \
 }
 
@@ -73,7 +77,7 @@ const unsigned long* Grid3D::obstacles = NULL;
     for (int y=1;y<ny-1;y++,ind+=index(2,0,0))  \
       for (int x=1;x<nx-1;x++,ind+=index(1,0,0))\
       {                                         \
-	cmd;                                    \
+    cmd;                                    \
       }                                         \
 }
 
@@ -87,7 +91,7 @@ const unsigned long* Grid3D::obstacles = NULL;
     for (int y=1;y<ny-1;y++,ind+=index(2,0,0))  \
       for (int x=1;x<nx-1;x++,ind+=index(1,0,0))\
       {                                         \
-	cmd;                                    \
+    cmd;                                    \
       }                                         \
 }
 
@@ -180,7 +184,7 @@ void Grid3D::seed(vec3 p0, vec3 p1, vec3 velocity)
     if (p0[0]>=p1[0]) return;
     if (p0[1]>=p1[1]) return;
     if (p0[2]>=p1[2]) return;
-    std::cout << "p0="<<p0<<" p1="<<p1<<std::endl;
+    msg_info("Grid3D") << "p0="<<p0<<" p1="<<p1;
     vec3 center = (p0+p1)*0.5f;
     vec3 dim = (p1-p0)*0.5f;
     FOR_ALL_CELLS(fdata,
@@ -211,10 +215,6 @@ void Grid3D::step(Grid3D* prev, Grid3D* temp, real dt, real diff)
 {
     t = prev->t+dt;
     tend = prev->tend;
-    //std::cout << "STEP\n";
-
-    //clear(prev->nx, prev->ny, prev->nz);
-    //temp->clear(prev->nx, prev->ny, prev->nz);
 
     step_init(prev, temp, dt, diff);      // init fluid obstacles
     //step_particles(prev, temp, dt, diff); // init particles
@@ -227,8 +227,6 @@ void Grid3D::step(Grid3D* prev, Grid3D* temp, real dt, real diff)
     step_levelset(prev, temp, dt, diff); // advance levelset
 
     // And that should be it!
-
-    //std::cout << "STEP: Done!\n";
 }
 
 //////////////////////////////////////////////////////////////////
@@ -236,20 +234,12 @@ void Grid3D::step(Grid3D* prev, Grid3D* temp, real dt, real diff)
 
 void Grid3D::step_init(const Grid3D* prev, Grid3D* /*temp*/, real /*dt*/, real /*diff*/)
 {
-    //std::cout << "STEP: Obstacles\n";
     // Currently: only borders are obstacle
-
     int bsize = 1;
-    //  int x0 = nx/2-2;
-    //  int x1 = x0+4;
-    //  int y0 = ny/2-2;
-    //  int y1 = y0+4;
 
     const unsigned char* obs = (const unsigned char*)obstacles;
     int lnsize = (nx+7)/8;
     int plsize = lnsize*ny;
-
-    //memset(fdata,0,ncell*sizeof(Cell));
 
     FOR_ALL_CELLS(fdata,
     {
@@ -279,8 +269,6 @@ void Grid3D::step_init(const Grid3D* prev, Grid3D* /*temp*/, real /*dt*/, real /
 
 void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
 {
-//    std::cout << "STEP: levelset\n";
-
     // advect levelset into temp
 
     // Modified Eulerian / Midpoint method
@@ -501,9 +489,7 @@ inline void Grid3D::fmm_swap(int entry1, int entry2)
 int Grid3D::fmm_pop()
 {
     int res = fmm_heap[0];
-#ifdef FMM_VERBOSE
-    std::cout << "fmm_pop -> <"<<(res%nx)<<','<<((res/nx)%ny)<<','<<(res/nxny)<<">="<<levelset[res]<<std::endl;
-#endif
+
     --fmm_heap_size;
     if (fmm_heap_size>0)
     {
@@ -544,12 +530,7 @@ int Grid3D::fmm_pop()
             else break;
         }
     }
-#ifdef FMM_VERBOSE
-    std::cout << "fmm_heap = [";
-    for (int i=0; i<fmm_heap_size; i++)
-        std::cout << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<levelset[fmm_heap[i]];
-    std::cout << std::endl;
-#endif
+
     fmm_status[res] = FMM_KNOWN;
     return res;
 }
@@ -561,9 +542,7 @@ void Grid3D::fmm_push(int index)
     if (fmm_status[index] >= FMM_FRONT0)
     {
         i = fmm_status[index] - FMM_FRONT0;
-#ifdef FMM_VERBOSE
-        std::cout << "fmm update <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<levelset[index]<<" from entry "<<i<<std::endl;
-#endif
+
         while (i>0 && phi < (levelset[fmm_heap[(i-1)/2]]))
         {
             fmm_swap(i,(i-1)/2);
@@ -605,9 +584,6 @@ void Grid3D::fmm_push(int index)
     }
     else
     {
-#ifdef FMM_VERBOSE
-        std::cout << "fmm push <"<<(index%nx)<<','<<((index/nx)%ny)<<','<<(index/nxny)<<">="<<levelset[index]<<std::endl;
-#endif
         i = fmm_heap_size;
         ++fmm_heap_size;
         fmm_heap[i] = index;
@@ -618,12 +594,6 @@ void Grid3D::fmm_push(int index)
             i = (i-1)/2;
         }
     }
-#ifdef FMM_VERBOSE
-    std::cout << "fmm_heap = [";
-    for (int i=0; i<fmm_heap_size; i++)
-        std::cout << " <"<<(fmm_heap[i]%nx)<<','<<((fmm_heap[i]/nx)%ny)<<','<<(fmm_heap[i]/nxny)<<">="<<levelset[fmm_heap[i]];
-    std::cout << std::endl;
-#endif
 }
 
 //////////////////////////////////////////////////////////////////
@@ -633,7 +603,6 @@ void Grid3D::fmm_push(int index)
 
 void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*diff*/, real /*scale*/)
 {
-    //  std::cout << "STEP: Boundary and Forces\n";
     // Solid immovable obstacles set all velocity inside and touching them to 0
     // (free-slip condition)
     // Carlson Thesis page 23
@@ -688,8 +657,6 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
         fdata[ind].u = u;
     });
 
-    //std::cout << "t="<<t<<" tend="<<tend<<std::endl;
-
     if (t > 0 && t < tend)
     {
         union
@@ -707,14 +674,6 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
         if (t < 1) r *= t;
         else if (t>tend-1) r*= tend-t;
         int ir = rceil(r)+5;
-        //real r2=r*r;
-
-        //real cr = (t+0)/3; cr = rabs(cr-rnear(cr))*2;
-        //real cg = (t+1)/3; cg = rabs(cg-rnear(cg))*2;
-        //real cb = (t+2)/3; cb = rabs(cb-rnear(cb))*2;
-        //real cr = (t+2.5)/3; cr = rmax(0.0f,rabs(cr-rnear(cr))*3-0.5f);
-        //real cg = (t    )/3; cg = rmin(1.0f,rabs(cg-rnear(cg))*3);
-        //real cb = 1;
 
         for (int z=cz-ir; z<=cz+ir; z++)
             if ((unsigned)z<(unsigned)nz)
@@ -741,10 +700,8 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
 
 void Grid3D::step_surface(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/, real /*diff*/)
 {
-    //  std::cout << "STEP: Surfaces\n";
     // Boundary conditions are not trivial...
     // Carlson Thesis page 24-28
-
     enum
     {
         FACE_X0=1<<0,
@@ -874,8 +831,6 @@ void Grid3D::step_surface(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/,
 
 void Grid3D::step_advect(const Grid3D* /*prev*/, Grid3D* temp, real dt, real /*diff*/)
 {
-    //  std::cout << "STEP: Fluid Advection\n";
-
     // Calculate advection using a semi-lagrangian technique
     // Stam
 
@@ -907,10 +862,8 @@ void Grid3D::step_advect(const Grid3D* /*prev*/, Grid3D* temp, real dt, real /*d
 
 void Grid3D::step_diffuse(const Grid3D* /*prev*/, Grid3D* temp, real /*dt*/, real diff)
 {
-    //  std::cout << "STEP: Fluid Diffusion\n";
     // Calculate diffusion back to here
     // TODO: Check boundary conditions
-
     if (diff==0.0f)
     {
         for (int ind=0; ind<ncell; ind++)
@@ -934,8 +887,6 @@ void Grid3D::step_diffuse(const Grid3D* /*prev*/, Grid3D* temp, real /*dt*/, rea
 
 void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
 {
-    //  std::cout << "STEP: Fluid Projection\n";
-
     // Finally calculate projection to divergence free velocity
 
     // u_new = u~ - dt/P Dp where P = fluid density and p = pressure, Dp = (dp/dx,dp/dy,dp/dz)
@@ -943,7 +894,6 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     //   where  -dxDp = 6p(i,j,k)-p(i-1,j,k)-p(i,j-1,k)-p(i,j,k-1)-p(i+1,j,k)-p(i,j+1,k)-p(i,j,k+1)
     //     and  -P/dt dxD.u~ = -P/dt dx ( u~(i+1,j,k) - u~(i,j,k) + v~(i,j+1,k) - v~(i,j,k) + w~(i,j,k+1) - w~(i,j,k) )
     // Ap = b where A is a diagonal matrix plus neighbour coefficients at -1
-
     memset(temp->fdata,0,temp->ncell*sizeof(Cell));
     memset(temp->pressure,0,temp->ncell*sizeof(real));
 
@@ -985,20 +935,12 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         }
     });
 
-    //  std::cout << "Proc"<<Grank<<" local b2="<<b_norm2<<std::endl;
-    //reduceAll(1,&b_norm2);
-    //  std::cout << "Proc"<<Grank<<" global b2="<<b_norm2<<std::endl;
-
     FOR_ALL_CELLS(pressure,
     {
         if (fdata[ind].type>0)
             pressure[ind] = prev->pressure[ind]; // use previous pressure as initial estimate
         else pressure[ind] = 0;
     });
-
-    //  std::cout << "STEP: Pressure diag";
-    //  for (int i=0;i<7;i++) std::cout << ' ' << nbdiag[i];
-    //  std::cout << '\n';
 
     double err = 0.0;
 
@@ -1063,8 +1005,6 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         });
     }
 
-    // std::cout << "STEP: CG iteration "<<step<<" error(d) "<<sqrt(err/b_norm2)<<"\n";
-
     // Now apply pressure back to velocity
     a = dt;
 
@@ -1098,8 +1038,6 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
             }
         }
     });
-
-    //  std::cout << "STEP: max pressure "<<max_pressure<<'\n';
 }
 
 } // namespace eulerianfluid
