@@ -63,7 +63,7 @@ def numpy_property(attr_name, attr_data, index = 0):
 
 
 
-class MechanicalObject(object):
+class DOFs(object):
     '''state vector view for a mechanical object'''
     
     __slots__ = ('dofs', )
@@ -78,6 +78,7 @@ class MechanicalObject(object):
     @position.setter
     def position(self, value):
         self.position[:] = value
+
 
     @property
     def velocity(self):
@@ -95,6 +96,7 @@ class MechanicalObject(object):
     @force.setter
     def force(self, value):
         self.force[:] = value
+
 
     @property
     def external_force(self):
@@ -119,48 +121,91 @@ class MechanicalObject(object):
         self.dofs.showObject = value
 
 
+    @classmethod
+    def new(cls, node, **kwargs):
+        '''create and manage a mechanical object view'''
+        kwargs.setdefault('size', 1)
+        return cls( node.createObject('MechanicalObject', **kwargs) )
+    
 
-class SingleMechanicalObject(MechanicalObject):
-    '''state vector view for single dofs objects'''
 
+
+class DOF(DOFs):
+    '''state vector view for single dof objects'''
+    
     __slots__ = ()
     
     @property
     def position(self):
-        return super(SingleMechanicalObject, self).position[0]
+        return super(DOF, self).position[0]
+
 
     @property
     def velocity(self):
-        return super(SingleMechanicalObject, self).velocity[0]        
+        return super(DOF, self).velocity[0]        
+
 
     @property
     def force(self):
-        return super(SingleMechanicalObject, self).force[0]        
+        return super(DOF, self).force[0]        
+
         
     @property
     def external_force(self):
-        return super(SingleMechanicalObject, self).external_force[0]            
+        return super(DOF, self).external_force[0]            
         
 
 
-class RigidBody(SingleMechanicalObject):
+class RigidBody(DOF):
     ## Generic Rigid Body
     
     @property
     def position(self):
         return super(RigidBody, self).position.view(Rigid3)
 
+
     @property
     def velocity(self):
         return super(RigidBody, self).velocity.view(Rigid3.Deriv)
+
 
     @property
     def force(self):
         return super(RigidBody, self).force.view(Rigid3.Deriv)
 
+
     @property
     def external_force(self):
         return super(RigidBody, self).external_force.view(Rigid3.Deriv)
+
+
+    @property
+    def total_mass(self):
+        return self.mass.mass[0]
+
+    @total_mass.setter
+    def total_mass(self, value):
+        self.mass.mass = value
+
+
+    @property
+    def inertia(self):
+        return self.mass.inertia[0]
+
+    @inertia.setter
+    def inertia(self, value):
+        self.mass.inertia = value
+
+    @property
+    def inertia_forces(self):
+        return self.mass.inertia.inertia_forces
+
+    @inertia_forces.setter
+    def inertia_forces(self, value):
+        self.mass.inertia_forces = value
+
+    
+    
 
     # TODO provide accessors to the above for user frame (offseted by
     # com/inertia/offset)
