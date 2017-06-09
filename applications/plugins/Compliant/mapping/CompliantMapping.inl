@@ -4,6 +4,7 @@
 #include "CompliantMapping.h"
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/template_name.h>
 
 namespace sofa {
 
@@ -14,17 +15,19 @@ namespace mapping {
 
 // this is the implementation class. you may jump straight to the end of it.
 template<class TOut, class ... T>
-struct CompliantMapping<TOut (T...) >::impl {
+template<std::size_t ... I>
+struct CompliantMapping<TOut (T...) >::impl_type {
 
+    static_assert( sizeof...(I) == sizeof...(T), "size mismatch");
+    
     using self_type = CompliantMapping<TOut (T...) >;
 
 
     // construct links 
-    template<std::size_t ... I>
-    static std::tuple< link_type<T>...> make_from_models(self_type* self, seq<I...>) {
+    static std::tuple< link_type<T>...> make_from_models(self_type* self) {
 
         static constexpr std::size_t N = sizeof...(I);
-        
+
         // link names
         static std::string names[] = {
             (std::string("input") + (N == 1 ? std::string("") : std::to_string(I+1)))...
@@ -40,8 +43,7 @@ struct CompliantMapping<TOut (T...) >::impl {
     
 
     // construct input basestate vector
-    template<std::size_t ...I>
-    static helper::vector<core::BaseState*> getFrom(self_type* self, seq<I...> ) {
+    static helper::vector<core::BaseState*> getFrom(self_type* self) {
         
         helper::vector<core::BaseState*> res;
 
@@ -56,8 +58,7 @@ struct CompliantMapping<TOut (T...) >::impl {
 
     
     // construct input basemechanicalstate vector
-    template<std::size_t ...I>
-    static helper::vector<core::behavior::BaseMechanicalState*> getMechFrom(self_type* self, seq<I...> ) {
+    static helper::vector<core::behavior::BaseMechanicalState*> getMechFrom(self_type* self) {
         
         helper::vector<core::behavior::BaseMechanicalState*> res;
 
@@ -79,17 +80,17 @@ struct CompliantMapping<TOut (T...) >::impl {
 
 
     // init checks for ith input model
-    template<std::size_t  I>
+    template<std::size_t J>
     static void init_checks_from_model(self_type* self) {
-        auto& from = std::get<I>(self->from_models);
+        auto& from = std::get<J>(self->from_models);
         
         if( !from ) {
-            msg_error(self) << "error: unset input " << I + 1;
+            msg_error(self) << "error: unset input " << J + 1 << " (wrong type?)";
             return;
         }
 
         if( !from->getSize() ) {
-            msg_error(self) << "error: empty dofs for input " << I + 1;
+            msg_error(self) << "error: empty dofs for input " << J + 1;
             return;
         }
 
@@ -97,8 +98,7 @@ struct CompliantMapping<TOut (T...) >::impl {
     
 
     // init checks for input models
-    template<std::size_t ... I>
-    static void init_checks(self_type* self, seq<I...>) {
+    static void init_checks(self_type* self) {
 
         const int expand[] = {
             (init_checks_from_model<I>(self), 0)...
@@ -133,9 +133,9 @@ struct CompliantMapping<TOut (T...) >::impl {
     }
     
 
-    template<std::size_t I>
-    static coord_view< const input_types<I> > in_coord_view(self_type* self, core::ConstMultiVecCoordId id) {
-        return data_view( id[ std::get<I>(self->from_models).get() ].read() );
+    template<std::size_t J>
+    static coord_view< const input_types<J> > in_coord_view(self_type* self, core::ConstMultiVecCoordId id) {
+        return data_view( id[ std::get<J>(self->from_models).get() ].read() );
     }
 
     static coord_view< output_types > out_coord_view(self_type* self, core::MultiVecCoordId id) {
@@ -149,11 +149,9 @@ struct CompliantMapping<TOut (T...) >::impl {
     
     
     
-    template<std::size_t ... I>
     static void apply_assemble (self_type* self, const core::MechanicalParams* mparams,
                                 core::MultiVecCoordId out_pos_id,
-                                core::ConstMultiVecCoordId in_pos_id,
-                                seq<I...> ) {
+                                core::ConstMultiVecCoordId in_pos_id) {
         
         // apply
         self->apply(mparams,
@@ -171,8 +169,7 @@ struct CompliantMapping<TOut (T...) >::impl {
     }
     
 
-    template<std::size_t ... I>
-    static void update_gs(self_type* self, core::ConstMultiVecDerivId out_force_id, seq<I...>) {
+    static void update_gs(self_type* self, core::ConstMultiVecDerivId out_force_id) {
         
         const core::ConstMultiVecCoordId in_pos_id = core::VecId::position();
         self->assemble_gs(self->geometric,
@@ -181,20 +178,17 @@ struct CompliantMapping<TOut (T...) >::impl {
     }
 
 
-
-    template<std::size_t I>
+    template<std::size_t J>
     static void add_mult_ith_jacobian(self_type* self,
                                       Data< helper::vector< typename TOut::Deriv > >* out_vel_data,
                                       core::ConstMultiVecDerivId in_vel_id) {
-        const auto in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].read();
-        std::get<I>(self->jacobians).addMult(*out_vel_data, *in_vel_data);
+        const auto in_vel_data = in_vel_id[std::get<J>(self->from_models).get()].read();
+        std::get<J>(self->jacobians).addMult(*out_vel_data, *in_vel_data);
     }
     
 
-    template<std::size_t ... I>
     static void apply_jacobian(self_type* self, core::MultiVecDerivId out_vel_id,
-                        core::ConstMultiVecDerivId in_vel_id,
-                        seq<I...>) {
+                               core::ConstMultiVecDerivId in_vel_id) {
 
         auto* out_vel_data = out_vel_id[ self->to_model.get()].write();
 
@@ -209,22 +203,20 @@ struct CompliantMapping<TOut (T...) >::impl {
     }
     
 
-    template<std::size_t I>
+    template<std::size_t J>    
     static void add_mult_ith_jacobian_transpose(self_type* self,
                                                 core::MultiVecDerivId in_force_id,
                                                 core::ConstMultiVecDerivId out_force_id) {
         const auto* out_force_data = out_force_id[self->to_model.get()].read();
-        auto* in_force_data = in_force_id[std::get<I>(self->from_models).get()].write();
+        auto* in_force_data = in_force_id[std::get<J>(self->from_models).get()].write();
         
-        std::get<I>(self->jacobians).addMultTranspose(*in_force_data, *out_force_data);
+        std::get<J>(self->jacobians).addMultTranspose(*in_force_data, *out_force_data);
     }
 
     
 
-    template<std::size_t ... I>
     static void apply_jacobian_transpose(self_type* self, core::MultiVecDerivId in_force_id,
-                                  core::ConstMultiVecDerivId out_force_id,
-                                  seq<I...>) {
+                                         core::ConstMultiVecDerivId out_force_id) {
         // transpose multiplication
         const int expand[] = {
             (add_mult_ith_jacobian_transpose<I>(self, in_force_id, out_force_id), 0)...
@@ -236,17 +228,17 @@ struct CompliantMapping<TOut (T...) >::impl {
 
 
     // fill rhs segment with data from given vec id
-    template<std::size_t I>
+    template<std::size_t J>
     static void fetch_rhs(self_type* self,
                           vec<SReal>& rhs, unsigned& off, core::ConstMultiVecDerivId in_vel_id, SReal kfactor) {
 
-        const auto* in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].read();
+        const auto* in_vel_data = in_vel_id[std::get<J>(self->from_models).get()].read();
         auto in_vel_view = data_view(in_vel_data);
         
-        using real_type = typename input_types<I>::Real;
+        using real_type = typename input_types<J>::Real;
         
         const real_type* ptr = reinterpret_cast<const real_type*>(in_vel_view.data());
-        const std::size_t size = in_vel_view.size() * input_types<I>::deriv_total_size;
+        const std::size_t size = in_vel_view.size() * input_types<J>::deriv_total_size;
         
         // view mstate vector as eigen type            
         Eigen::Map<const vec<real_type>> map(ptr, size);
@@ -257,17 +249,17 @@ struct CompliantMapping<TOut (T...) >::impl {
 
     
     // fill back vec id from rhs segment
-    template<std::size_t I>
+    template<std::size_t J>            
     static void dispatch_res(self_type* self,
                              core::MultiVecDerivId in_vel_id, unsigned& off, const vec<SReal>& res) {
         
-        auto* in_vel_data = in_vel_id[std::get<I>(self->from_models).get()].write();
+        auto* in_vel_data = in_vel_id[std::get<J>(self->from_models).get()].write();
         auto in_vel_view = data_view(in_vel_data);
             
-        using real_type = typename input_types<I>::Real;
+        using real_type = typename input_types<J>::Real;
             
         real_type* ptr = reinterpret_cast<real_type*>(in_vel_view.data());
-        const std::size_t size = in_vel_view.size() * input_types<I>::deriv_total_size;
+        const std::size_t size = in_vel_view.size() * input_types<J>::deriv_total_size;
 
         // view mstate vector as eigen type
         Eigen::Map<vec<real_type>> map(ptr, size);
@@ -279,8 +271,7 @@ struct CompliantMapping<TOut (T...) >::impl {
 
 
     // apply geometric stiffness
-    template<std::size_t ... I>
-    static void apply_DJT(self_type* self, core::MultiVecDerivId in_vel_id, SReal kfactor, seq<I...> ) {
+    static void apply_DJT(self_type* self, core::MultiVecDerivId in_vel_id, SReal kfactor) {
 
         const auto& cm = self->geometric.compressedMatrix;
         assert(cm.rows() == cm.cols());
@@ -317,15 +308,13 @@ struct CompliantMapping<TOut (T...) >::impl {
         
     }
 
-
-    template<std::size_t I>
+    template<std::size_t J>
     static void debug_jacobian(self_type* self, std::ostream& out = std::clog) {
-        out << "debug jacobian: " << I << std::endl;
-        out << std::get<I>(self->jacobians).compressedMatrix << std::endl;
+        out << "debug jacobian: " << J << std::endl;
+        out << std::get<J>(self->jacobians).compressedMatrix << std::endl;
     }
 
-    template<std::size_t ... I>
-    static void update_js(self_type* self, seq<I...> ) {
+    static void update_js(self_type* self) {
         
         self->js.clear();
         
@@ -335,8 +324,7 @@ struct CompliantMapping<TOut (T...) >::impl {
         
     }
 
-    template<std::size_t ... I>
-    static void update_force_mask(self_type* self, seq<I...>) {
+    static void update_force_mask(self_type* self) {
         const int expand[] = {
             ( std::get<I>(self->from_models)->toBaseMechanicalState()->forceMask
               .assign(std::get<I>(self->from_models)->getSize(), true),
@@ -356,19 +344,35 @@ struct CompliantMapping<TOut (T...) >::impl {
 
 template<class TOut, class ... T>
 CompliantMapping<TOut (T...) >::CompliantMapping()
-    : from_models( impl::make_from_models(this, make_sequence<T...>()) ),
+    : from_models( impl::make_from_models(this) ),
       to_model(initLink("output", "output object")) {
     
 }
 
+namespace detail {
+template<class ...> struct placeholder;
+}
+
+template<class TOut, class ... T>
+std::string CompliantMapping<TOut (T...) >::templateName(const CompliantMapping* ) {
+    const detail::placeholder<T..., TOut>* dummy = nullptr;
+    return helper::template_name( dummy );
+}
+
+template<class TOut, class ... T>
+std::string CompliantMapping<TOut (T...) >::getTemplateName() const {
+    return templateName(this);
+}
+
+
 template<class TOut, class ... T>
 helper::vector<core::BaseState*> CompliantMapping<TOut (T...) >::getFrom() {
-    return impl::getFrom(this, make_sequence<T...>());
+    return impl::getFrom(this);
 }
 
 template<class TOut, class ... T>
 helper::vector<core::behavior::BaseMechanicalState*> CompliantMapping<TOut (T...) >::getMechFrom() {
-    return impl::getMechFrom(this, make_sequence<T...>());
+    return impl::getMechFrom(this);
 }
 
 
@@ -390,7 +394,7 @@ helper::vector<core::behavior::BaseMechanicalState* > CompliantMapping<TOut (T..
 #ifdef SOFA_USE_MASK
 template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::updateForceMask() {
-    impl::update_force_mask(this, make_sequence<T...>());
+    impl::update_force_mask(this);
 }
 #endif
 
@@ -407,10 +411,10 @@ void CompliantMapping<TOut (T...) >::init() {
     
     core::BaseMapping::init();
 
-    impl::init_checks(this, make_sequence<T...>() );
+    impl::init_checks(this);
 
     if(!to_model) {
-        msg_error() << "output model not set, aborting";
+        msg_error() << "output model not set, aborting (wrong type?)";
         return;
     }
 
@@ -441,13 +445,13 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::apply(const core::MechanicalParams* mparams,
                                            core::MultiVecCoordId out_pos_id,
                                            core::ConstMultiVecCoordId in_pos_id)  {
-    impl::apply_assemble(this, mparams, out_pos_id, in_pos_id, make_sequence<T...>());
+    impl::apply_assemble(this, mparams, out_pos_id, in_pos_id);
 }
 
 template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::updateK(const core::MechanicalParams* /*mparams*/,
                                              core::ConstMultiVecDerivId out_force_id ) {
-    impl::update_gs(this, out_force_id, make_sequence<T...>());
+    impl::update_gs(this, out_force_id);
 }
 
 
@@ -455,7 +459,7 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::applyJ(const core::MechanicalParams* /*mparams*/,
                                             core::MultiVecDerivId out_vel_id,
                                             core::ConstMultiVecDerivId in_vel_id ) {
-    impl::apply_jacobian(this, out_vel_id, in_vel_id, make_sequence<T...>() );
+    impl::apply_jacobian(this, out_vel_id, in_vel_id );
 }
 
 
@@ -463,7 +467,7 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::applyJT (const core::MechanicalParams* /*mparams*/,
                                               core::MultiVecDerivId in_force_id,
                                               core::ConstMultiVecDerivId out_force_id) {
-    impl::apply_jacobian_transpose(this, in_force_id, out_force_id, make_sequence<T...>() );
+    impl::apply_jacobian_transpose(this, in_force_id, out_force_id );
     
 #ifdef SOFA_USE_MASK
     if( this->m_forceMaskNewStep ){
@@ -479,14 +483,14 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::applyDJT(const core::MechanicalParams* mparams,
                                               core::MultiVecDerivId in_vel_id,
                                               core::ConstMultiVecDerivId /*out_force_id*/) {
-    impl::apply_DJT(this, in_vel_id, mparams->kFactor(), make_sequence<T...>() );
+    impl::apply_DJT(this, in_vel_id, mparams->kFactor());
 }
 
 
 
 template<class TOut, class ... T>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* CompliantMapping<TOut (T...) >::getJs() {
-    impl::update_js(this, make_sequence<T...>());
+    impl::update_js(this);
     return &js;
 }
 

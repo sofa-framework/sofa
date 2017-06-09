@@ -8,9 +8,8 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <Compliant/config.h>
-
-#include <Compliant/utils/seq.h>
 #include <Compliant/utils/view.h>
+#include <Compliant/utils/seq.h>
 
 namespace sofa {
 
@@ -66,14 +65,18 @@ protected:
     // this is for getJs()
     helper::vector<sofa::defaulttype::BaseMatrix*> js;
     
-    // dirty implementation stuff goes here
-    struct impl;
+    // dirty implementation stuff goes in there
+    template<std::size_t ... I>
+    struct impl_type;
+
+    using sequence_type = typename make_sequence_type<0, sizeof...(T) - 1>::type;
+    using impl = typename instantiate_sequence_type<impl_type, sequence_type>::type;
     
     // temporaries used by applyDJT
     template<class U>
     using vec = Eigen::Matrix<U, Eigen::Dynamic, 1>;
     mutable vec<SReal> rhs, res;
-    
+
 public:
 
     // yes we can
@@ -96,6 +99,10 @@ public:
     virtual void updateForceMask();
 #endif
 
+    // template representation
+    static std::string templateName(const CompliantMapping* self);
+    std::string getTemplateName() const;
+    
 protected:
 
     // derived classes need to implement this

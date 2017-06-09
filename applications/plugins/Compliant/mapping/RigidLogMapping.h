@@ -13,13 +13,13 @@ namespace mapping {
 
 namespace detail {
 template<class U> using rigid_types = defaulttype::StdRigidTypes<3, U>;
-template<class U> using vector_types = defaulttype::StdVectorTypes< defaulttype::Vec<6, U>, 
-                                                                    defaulttype::Vec<6, U>, U>;
+template<class U> using vec6_types = defaulttype::StdVectorTypes< defaulttype::Vec<6, U>, 
+                                                                  defaulttype::Vec<6, U>, U>;
 }
 
 template<class U>
 class RigidLogMapping 
-    : public CompliantMapping< detail::vector_types<U> (detail::rigid_types<U> ) > {
+    : public CompliantMapping< detail::vec6_types<U> (detail::rigid_types<U> ) > {
 
     using base = typename RigidLogMapping::CompliantMapping;
     using output_types = typename base::output_types;
@@ -45,7 +45,7 @@ public:
         Data<kind_type> kind;
 
         data_type(RigidLogMapping* owner)
-            : use_dlog( owner->initData(&use_dlog, false, "use_dlog", "use exact logarithm derivative" ) ),
+            : use_dlog( owner->initData(&use_dlog, true, "use_dlog", "use exact logarithm derivative" ) ),
               kind( owner->initData(&kind, 0, "kind", "0: use SO(3)xR3 logarithm, 1: use SE(3) logarithm" ) ) {
 
         }
@@ -76,6 +76,7 @@ protected:
             return;
         }
     }
+
     
     virtual void assemble(jacobian_type& jacobian, 
                           coord_view< const input_types > in_pos) {
