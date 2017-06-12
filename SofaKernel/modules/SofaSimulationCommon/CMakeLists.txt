@@ -14,6 +14,7 @@ set(HEADER_FILES
     xml/NodeElement.h
     xml/ObjectElement.h
     xml/XML.h
+    init.h
 )
 
 set(SOURCE_FILES
