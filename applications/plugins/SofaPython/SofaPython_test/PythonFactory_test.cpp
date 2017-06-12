@@ -141,6 +141,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"True", "True"},
      {"'aString'", "aString"},
      {"'aString'.join('[ ]')", "[aString aString]"},
+     {"' '.join(['AA', 'BB', 'CC'])", "AA BB CC"},
      {"[1, 2, 3, 4]", "1 2 3 4"},
      {"[1.0, 2.0, 3.0, 4.0]", "1.0 2.0 3.0 4.0"},
      {"['ab', 'cd', 'ef', 'gh']", "ab cd ef gh"},
