@@ -74,7 +74,7 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
 
 /// This function converts an PyObject into a sofa string.
 /// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ostream& out, const bool handleIter=false)
+static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ostream& out, const bool handleIter=false)
 {
     /// String are just returned as string.
     if (PyString_Check(value))
@@ -111,23 +111,18 @@ std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ost
         }
     }
 
-    /// link path conversion for baseobjects
-    if( PyObject_IsInstance(value, (PyObject*) &SP_SOFAPYTYPEOBJECT(BaseObject)) ) {
-        const std::string path_name =  (((PySPtr<Base>*) value)->object->toBaseObject()->getPathName());
-        return out << "@" << path_name;
-    }
-
-    /// link data path conversion for baseobjects
-    if( PyObject_IsInstance(value, (PyObject*) &SP_SOFAPYTYPEOBJECT(Data)) )
-    {
-        BaseData* d =  ((PySPtr<BaseData>*)value)->object.get() ;
-        return out << "@" << d->getOwner()->toBaseObject()->getPathName() << "." << d->getName() ;
+    /// Check if the object has an explicit conversion to a Sofa path. If this is the case
+    /// we use it.
+    if( PyObject_HasAttrString(value, "getSofaPath") ){
+       PyObject* retvalue = PyObject_CallMethod(value, "getSofaPath", nullptr) ;
+       return out <<  PyString_AsString(PyObject_Str(retvalue)) ;
     }
 
     /// Default conversion for standard type:
-    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value)) )
-    {
-        msg_warning("SofaPython") << "automatic conversion from a non primary type that are: Integer, Long, Float and Bool and BaseObject" ;
+    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) )){
+        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator. "
+                                     "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences"
+                                     "Other objects should implement the method getSofaPath() to return the adequate string.";
     }
 
     return out << PyString_AsString(PyObject_Str(value)) ;

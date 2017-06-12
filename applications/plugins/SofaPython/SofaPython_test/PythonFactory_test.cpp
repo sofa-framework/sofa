@@ -111,6 +111,9 @@ protected:
                  "import Sofa                          \n"
                  "from SofaTest.Macro import *         \n"
                  "                                     \n"
+                 "class TestGetSofaPath(object):       \n"
+                 "   def getSofaPath(self):            \n"
+                 "        return '@/theFirst.name'     \n"
                  "def createScene(rootNode):           \n"
                  "    first = rootNode.createObject( 'ExternalComponent', name='theFirst') \n"
                  "    externalComponent = rootNode.createObject( 'ExternalComponent', name='second', value="<<value<<") \n"
@@ -147,10 +150,9 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"['ab', 'cd', 'ef', 'gh']", "ab cd ef gh"},
      {"range(1,5)", "1 2 3 4"},
      {"xrange(1,5)", "1 2 3 4"},
-     {"first.findData('name')", "theFirst"},
-     //{"first.name", "@/first @/first"},    ///Fetch the actual data...not the BaseData
-     //{"[first, first]", "@/first @/first"},
-     //{"[1, [2, 3], 4]", "1 2 3 4"},
+     {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
+     {"first.findData('name').getLinkPath()", "theFirst"},
+     {"TestGetSofaPath()", "theFirst"}
     } ;
 
 TEST_P(PythonFactory_test, testCreateObjectDataConversion)
