@@ -8,7 +8,7 @@
 # WARNING: sed errors are printed in log.txt, search for "sed:"
 
 usage() {
-    echo "Usage: generateDataComments.sh [-f|--force] <src-dir>"
+    echo "Usage: doxygenDataComments.sh [-f|--force] <src-dir>"
     echo "  src-dir: all files in this folder will be affected"
     echo "  [-f|--force]: existing comments will be overwritten"    
 }
@@ -19,16 +19,14 @@ SRC_DIR=""
 FORCE=false
 ADDED_COMMENTS=0
 
-while [[ "$#" > 0 ]]
-do
-    arg="$1"
-    case $arg in
+while [[ "$#" > 0 ]]; do
+    case $1 in
         -h|--help)
             usage; exit 0;;
         -f|--force)
             FORCE=true;;
         *)
-            SRC_DIR="$arg";;
+            SRC_DIR="$(cd "$1" && pwd)";;
     esac
     shift
 done
@@ -38,6 +36,11 @@ if [[ "$SRC_DIR" == "" ]]; then
 fi
 
 
+
+
+files-to-update() {
+    /usr/bin/find "$SRC_DIR" -regex ".*\.\(h\|cpp\|inl\|c\|cu\|h\.in\)$"
+}
 
 
 escape-for-sed() {
@@ -59,7 +62,7 @@ fix-inline-comment() {
     local member="$2"
         
     # FIX inline comments: "// DataComment" and "/// DataComment" to "///< DataComment"
-    sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/? \(.*\)$/\1\/\/\/< \2/g' "$file_header"
+    sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/? ?\(.*\)$/\1\/\/\/< \2/g' "$file_header"
     rm -f "$file_header"e 2> /dev/null # Created by Windows only
 }
 
@@ -109,6 +112,7 @@ add-comment() {
 
 
 # Count initData calls
+echo "Counting initData calls..."
 count="$(grep -Er "^[^/]*initData[	 ]*\(.*\)[	 ]*\).*$" "$SRC_DIR" | sort | uniq | wc -l)"
 echo "$count calls counted."
 
