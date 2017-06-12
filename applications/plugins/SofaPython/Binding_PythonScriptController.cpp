@@ -398,7 +398,7 @@ static inline T* operator || (T* obj, error e) {
 
 
 
-static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* kwargs) {
+static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* /*kwargs*/) {
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
