@@ -169,14 +169,14 @@ protected :
     template<class VecInt,class VecReal>
     void solve_cpu(Real * x,const Real * b,SparseLDLImplInvertData<VecInt,VecReal> * data) {
         int n = data->n;
-        const Real * invD = &data->invD[0];
-        const int * perm = &data->perm[0];
-        const int * L_colptr = &data->L_colptr[0];
-        const int * L_rowind = &data->L_rowind[0];
-        const Real * L_values = &data->L_values[0];
-        const int * LT_colptr = &data->LT_colptr[0];
-        const int * LT_rowind = &data->LT_rowind[0];
-        const Real * LT_values = &data->LT_values[0];
+        const Real * invD = data->invD.data();
+        const int * perm = data->perm.data();
+        const int * L_colptr = data->L_colptr.data();
+        const int * L_rowind = data->L_rowind.data();
+        const Real * L_values = data->L_values.data();
+        const int * LT_colptr = data->LT_colptr.data();
+        const int * LT_rowind = data->LT_rowind.data();
+        const Real * LT_values = data->LT_values.data();
 
         Tmp.clear();
         Tmp.fastResize(n);
@@ -280,7 +280,8 @@ protected :
 
     template<class VecInt,class VecReal>
     void factorize(int n,int * M_colptr, int * M_rowind, Real * M_values, SparseLDLImplInvertData<VecInt,VecReal> * data) {
-        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n, (int *) &data->P_colptr[0],(int *) &data->P_rowind[0]);
+        data->new_factorization_needed = data->P_colptr.size() == 0 || data->P_rowind.size() == 0 || CSPARSE_need_symbolic_factorization(n, M_colptr, M_rowind, data->n,
+                                                                                                                                         (int *) data->P_colptr.data(),(int *) data->P_rowind.data());
 
         data->n = n;
         data->P_nnz = M_colptr[data->n];
