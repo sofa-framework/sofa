@@ -48,6 +48,13 @@ if(SOFA_HAVE_GLUT)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
 endif()
 
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(runSofa_test)
+    endif()
+endif()
+
 if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
 	# set(CPACK_COMPONENTS_ALL BundlePack)
 	set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
