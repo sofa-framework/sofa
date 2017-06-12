@@ -16,7 +16,10 @@ def deprecated(cls):
     
     Sofa.msg_deprecated('SofaPython',
                         'note: `onLoaded` will no longer be called automatically. You need to call manually from __init__ instead.')
-    
+
+    # uncomment to get the location where the deprecated class is created
+    # import traceback; traceback.print_stack()
+
     return cls
 
 @deprecated
