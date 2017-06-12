@@ -229,7 +229,9 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 ### Extlibs
 add_subdirectory(extlibs)
 
+
 ### Main Sofa subdirectories
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
 if(SOFA_BUILD_TESTS)
@@ -308,7 +310,6 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-############
 
 # Install configuration:
 ## when installing, keep an eye on options/params/sources used for compilation

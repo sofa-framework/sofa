@@ -12,9 +12,15 @@ endif()
 find_package(SofaFramework) # to get SOFA_HAVE_GLUT
 
 include(cmake/GeneratePluginConfig.cmake)
+# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
+if(MSVC)
+	set(_pluginLocation "bin")
+else()
+	set(_pluginLocation "lib")
+endif()
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
-set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/bin/${_defaultConfigPluginFileName}")
+set(_defaultConfigPluginFilePath "${CMAKE_BINARY_DIR}/${_pluginLocation}/${_defaultConfigPluginFileName}")
 sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
 message("Write Plugin list at ${_defaultConfigPluginFilePath}")
 
@@ -50,5 +56,7 @@ else()
 	sofa_install_targets(SofaGui runSofa "")
 endif()
 
+# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
 
-install(FILES "${CMAKE_BINARY_DIR}/bin/plugin_list.conf.default" DESTINATION bin/)
+install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/)
+
