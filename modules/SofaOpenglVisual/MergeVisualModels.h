@@ -52,7 +52,7 @@ public:
     SOFA_CLASS(MergeVisualModels,OglModel);
 
 
-    Data<unsigned int> d_nbInput;
+    Data<unsigned int> d_nbInput; ///< number of input visual models to merge
 
     typedef core::objectmodel::SingleLink< MergeVisualModels, VisualModelImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkVisualModel;
     helper::VectorLinks< LinkVisualModel, MergeVisualModels > vl_input;

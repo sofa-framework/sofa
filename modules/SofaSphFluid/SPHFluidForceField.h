@@ -455,10 +455,10 @@ public:
     Data< Real > viscosity;
     Data< Real > surfaceTension;
     //Data< int  > pressureExponent;
-    Data< int > kernelType;
-    Data< int > pressureType;
-    Data< int > viscosityType;
-    Data< int > surfaceTensionType;
+    Data< int > kernelType; ///< 0 = default kernels, 1 = cubic spline
+    Data< int > pressureType; ///< 0 = none, 1 = default pressure
+    Data< int > viscosityType; ///< 0 = none, 1 = default viscosity using kernel Laplacian, 2 = artificial viscosity
+    Data< int > surfaceTensionType; ///< 0 = none, 1 = default surface tension using kernel Laplacian, 2 = cohesion forces surface tension from Becker et al. 2007
 
 protected:
     struct Particle

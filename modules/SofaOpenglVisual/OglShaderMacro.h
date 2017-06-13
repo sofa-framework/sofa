@@ -68,7 +68,7 @@ class SOFA_OPENGL_VISUAL_API OglShaderDefineMacro : public OglShaderMacro
 public:
     SOFA_CLASS(OglShaderDefineMacro, OglShaderMacro);
 protected:
-    Data<std::string> value;
+    Data<std::string> value; ///< Set a value for define macro
 public:
     OglShaderDefineMacro();
     virtual ~OglShaderDefineMacro();

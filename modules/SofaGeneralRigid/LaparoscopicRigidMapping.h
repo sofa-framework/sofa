@@ -58,8 +58,8 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
-    Data< defaulttype::Vector3 > pivot;
-    Data< defaulttype::Quat > rotation;
+    Data< defaulttype::Vector3 > pivot; ///< Pivot point position
+    Data< defaulttype::Quat > rotation; ///< TODO-rotation
 protected:
     LaparoscopicRigidMapping()
         : Inherit()

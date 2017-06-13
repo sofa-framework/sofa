@@ -52,17 +52,17 @@ public:
     typedef helper::vector<Real> VecCellData;
 
 public:
-    Data<bool> f_maximalRange;
-    Data<VecPointData> f_pointData;
-    Data<VecCellData> f_triangleData;
-    Data<VecCellData> f_quadData;
-    Data<VecPointData> f_pointTriangleData;
-    Data<VecPointData> f_pointQuadData;
+    Data<bool> f_maximalRange; ///< Keep the maximal range through all timesteps
+    Data<VecPointData> f_pointData; ///< Data associated with nodes
+    Data<VecCellData> f_triangleData; ///< Data associated with triangles
+    Data<VecCellData> f_quadData; ///< Data associated with quads
+    Data<VecPointData> f_pointTriangleData; ///< Data associated with nodes per triangle
+    Data<VecPointData> f_pointQuadData; ///< Data associated with nodes per quad
     Data<defaulttype::RGBAColor> f_colorNaN; ///< Color for NaNs
-    Data<defaulttype::Vec2f> d_userRange;
-    Data<float> d_currentMin;
-    Data<float> d_currentMax;
-    Data<float> d_shininess;
+    Data<defaulttype::Vec2f> d_userRange; ///< Clamp to this values (if max>min)
+    Data<float> d_currentMin; ///< Current min range
+    Data<float> d_currentMax; ///< Current max range
+    Data<float> d_shininess; ///< Shininess for rendering point-based data [0,128].  <0 means no specularity
 
     visualmodel::OglColorMap *colorMap;
     core::State<DataTypes> *state;

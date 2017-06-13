@@ -89,9 +89,9 @@ protected:
 
     unsigned int cid;
 
-    Data<int> index;
-    Data<double> min;
-    Data<double> max;
+    Data<int> index; ///< index of the stop constraint
+    Data<double> min; ///< minimum value accepted
+    Data<double> max; ///< maximum value accepted
 
 
 

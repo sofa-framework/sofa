@@ -71,8 +71,8 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<DataType> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<DataType> d_output; ///< output sum
 
 };
 

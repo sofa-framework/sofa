@@ -42,10 +42,10 @@ protected:
     SphereLoader();
 public:
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
-    Data< helper::vector<SReal> > radius;
-    Data< defaulttype::Vector3 > d_scale;
-    Data< defaulttype::Vector3 > d_translation;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Sphere centers
+    Data< helper::vector<SReal> > radius; ///< Radius of each sphere
+    Data< defaulttype::Vector3 > d_scale; ///< Scale applied to sphere positions     Data< defaulttype::Vector3 > d_scale; radius
+    Data< defaulttype::Vector3 > d_translation; ///< Translation applied to sphere positions
     virtual bool load();
 };
 

@@ -66,13 +66,13 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef PlaneForceField<DataTypes> PlaneForceFieldT;
 protected:
-    core::objectmodel::Data<Coord> _center;
-    core::objectmodel::Data<Deriv> _size;
-    core::objectmodel::Data<Real> _speed;
-    core::objectmodel::Data<Deriv> _axis;
+    core::objectmodel::Data<Coord> _center; ///< box center
+    core::objectmodel::Data<Deriv> _size; ///< box size
+    core::objectmodel::Data<Real> _speed; ///< rotation speed
+    core::objectmodel::Data<Deriv> _axis; ///< rotation axis
 
-    core::objectmodel::Data<Real> _stiffness;
-    core::objectmodel::Data<Real> _damping;
+    core::objectmodel::Data<Real> _stiffness; ///< penality force stiffness
+    core::objectmodel::Data<Real> _damping; ///< penality force damping
 
     defaulttype::Vec<6, typename PlaneForceFieldT::SPtr> _planes;
 

@@ -58,8 +58,8 @@ public:
         return obj;
     }
 
-    Data<int> collisionSteps;
-    Data<int> integrationSteps;
+    Data<int> collisionSteps; ///< number of collision steps between each frame rendering
+    Data<int> integrationSteps; ///< number of integration steps between each collision detection
 };
 
 } // namespace animationloop

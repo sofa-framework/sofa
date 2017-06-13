@@ -81,7 +81,7 @@ public:
     virtual unsigned int getFromIndex(unsigned int ind);
 
 protected:
-    Data<bool> flipNormals;
+    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
 
 };
 

@@ -56,8 +56,8 @@ public:
 
     /// inputs
     Data< SeqTriangles > d_triangles;
-    Data< SeqQuads > d_quads;
-    Data< SetIndex > d_inputROI;
+    Data< SeqQuads > d_quads; ///< input quads
+    Data< SetIndex > d_inputROI; ///< optional subset of the input mesh
 
     /// outputs
     Data< SetIndex > d_indices;

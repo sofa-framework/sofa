@@ -59,16 +59,16 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<Deriv> pressure;
+    Data<Deriv> pressure; ///< Pressure force per unit area
 
-    Data<sofa::helper::vector<unsigned int> > quadList;
+    Data<sofa::helper::vector<unsigned int> > quadList; ///< Indices of quads separated with commas where a pressure is applied
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
     Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces;
+    Data<bool> p_showForces; ///< draw quads which have a given pressure
 
 protected:
 
@@ -96,7 +96,7 @@ protected:
         }
     };
 
-    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap;
+    sofa::component::topology::QuadSparseData<sofa::helper::vector<QuadPressureInformation> > quadPressureMap; ///< map between edge indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* _topology;
 

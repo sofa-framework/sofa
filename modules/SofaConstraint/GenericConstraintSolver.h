@@ -108,25 +108,25 @@ public:
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     void computeResidual(const core::ExecParams* /*params*/);
 
-	Data<bool> displayTime;
-	Data<int> maxIt;
-	Data<double> tolerance;
-	Data<double> sor;
-	Data<bool> scaleTolerance;
-	Data<bool> allVerified;
-	Data<bool> schemeCorrection;
-	Data<bool> unbuilt;
-	Data<bool> computeGraphs;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphForces;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations;
+	Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
+	Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm
+	Data<double> tolerance; ///< residual error threshold for termination of the Gauss-Seidel algorithm
+	Data<double> sor; ///< Successive Over Relaxation parameter (0-2)
+	Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
+	Data<bool> allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+	Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+	Data<bool> unbuilt; ///< Compliance is not fully built
+	Data<bool> computeGraphs; ///< Compute graphs of errors and forces during resolution
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors; ///< Sum of the constraints' errors at each iteration
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphForces; ///< Graph of each constraint's force at each step of the resolution
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations; ///< Graph of each constraint's violation at each step of the resolution
 
-	Data<int> currentNumConstraints;
-	Data<int> currentNumConstraintGroups;
-	Data<int> currentIterations;
-	Data<double> currentError;
-    Data<bool> reverseAccumulateOrder;
+	Data<int> currentNumConstraints; ///< OUTPUT: current number of constraints
+	Data<int> currentNumConstraintGroups; ///< OUTPUT: current number of constraints
+	Data<int> currentIterations; ///< OUTPUT: current number of constraint groups
+	Data<double> currentError; ///< OUTPUT: current error
+    Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
 
 	ConstraintProblem* getConstraintProblem();
 	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);

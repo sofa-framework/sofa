@@ -93,26 +93,26 @@ public:
     /// Editable Data
     Data < helper::vector<unsigned int> > indices;
 
-    Data < bool > saveXToGnuplot;
-    Data < bool > saveVToGnuplot;
-    Data < bool > saveFToGnuplot;
+    Data < bool > saveXToGnuplot; ///< export Monitored positions as gnuplot file
+    Data < bool > saveVToGnuplot; ///< export Monitored velocities as gnuplot file
+    Data < bool > saveFToGnuplot; ///< export Monitored forces as gnuplot file
 
-    Data < bool > showPositions;
-    Data <RGBAColor > positionsColor;
+    Data < bool > showPositions; ///< see the Monitored positions
+    Data <RGBAColor > positionsColor; ///< define the color of positions
 
-    Data < bool > showVelocities;
-    Data< RGBAColor > velocitiesColor;
+    Data < bool > showVelocities; ///< see the Monitored velocities
+    Data< RGBAColor > velocitiesColor; ///< define the color of velocities
 
-    Data < bool > showForces;
-    Data< RGBAColor > forcesColor;
+    Data < bool > showForces; ///< see the Monitored forces
+    Data< RGBAColor > forcesColor; ///< define the color of forces
 
-    Data < double > showMinThreshold;
+    Data < double > showMinThreshold; ///< under this value, vectors are not represented
 
-    Data < bool > showTrajectories;
-    Data < double > trajectoriesPrecision;
-    Data< RGBAColor > trajectoriesColor;
+    Data < bool > showTrajectories; ///< print the trajectory of Monitored particles
+    Data < double > trajectoriesPrecision; ///< set the dt between to save of positions
+    Data< RGBAColor > trajectoriesColor; ///< define the color of the trajectories
 
-    Data< double > showSizeFactor;
+    Data< double > showSizeFactor; ///< factor to multiply to arrows
 
 
 protected:

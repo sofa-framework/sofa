@@ -93,9 +93,9 @@ public:
         return DataTypes::Name();
     }
 
-    Data<VecCoord> f_X;
-    Data<SetIndex> f_indices;
-    Data<VecCoord> f_indices_position;
+    Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
+    Data<SetIndex> f_indices; ///< Indices of the points
+    Data<VecCoord> f_indices_position; ///< Coordinates of the points contained in indices
 
 private:
     bool contains(VecCoord& v, Coord c);

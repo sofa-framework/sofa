@@ -118,11 +118,11 @@ public:
 
     /// @}
 
-    Data< VecReal > compliance;
+    Data< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
-    Data< Real > defaultCompliance;
+    Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
 
 private:
     // new :  for non building the constraint system during solving process //

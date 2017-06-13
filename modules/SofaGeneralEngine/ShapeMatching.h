@@ -79,11 +79,11 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    Data<unsigned int> iterations;
-    Data< Real > affineRatio;
-    Data< Real > fixedweight;
-    Data< VecCoord > fixedPosition0;
-    Data< VecCoord > fixedPosition;
+    Data<unsigned int> iterations; ///< Number of iterations.
+    Data< Real > affineRatio; ///< Blending between affine and rigid.
+    Data< Real > fixedweight; ///< weight of fixed particles.
+    Data< VecCoord > fixedPosition0; ///< rest positions of non mechanical particles.
+    Data< VecCoord > fixedPosition; ///< current (fixed) positions of non mechanical particles.
     Data< VecCoord > position; ///< input (current mstate position)
     Data< VVI > cluster; ///< input2 (clusters)
     Data< VecCoord > targetPosition;       ///< result

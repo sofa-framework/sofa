@@ -62,13 +62,13 @@ protected:
 
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
-    Data<double> f_rayleighStiffness;
-    Data<double> f_rayleighMass;
-    Data<double> f_velocityDamping;
-    Data<bool> f_verbose;
+    Data<double> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
+    Data<double> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
+    Data<double> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 
-    Data<double> f_gamma;
-    Data<double> f_beta;
+    Data<double> f_gamma; ///< Newmark scheme gamma coefficient
+    Data<double> f_beta; ///< Newmark scheme beta coefficient
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 

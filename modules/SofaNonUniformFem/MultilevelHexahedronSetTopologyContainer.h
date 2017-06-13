@@ -131,9 +131,9 @@ public:
 
     const std::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
 
-    Data<int> _level;
+    Data<int> _level; ///< Number of resolution levels between the fine and coarse mesh
     Data<Vec3i>	fineResolution;		///< width, height, depth (number of hexa in each direction)
-    Data<helper::vector<unsigned int> > hexaIndexInRegularGrid;
+    Data<helper::vector<unsigned int> > hexaIndexInRegularGrid; ///< indices of the hexa in the grid.
 
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }

@@ -89,8 +89,8 @@ public:
     virtual void applyController(void);
 
 protected:
-    Data< bool > useExternalTime;
-    Data< double > externalTime;
+    Data< bool > useExternalTime; ///< use the external time line
+    Data< double > externalTime; ///<  value of the External Time
     ArtCenterVec m_artCenterVec; ///< List of ArticulationCenters controlled by the controller.
     ArticulatedHierarchyContainer* ahc;
     int frame;

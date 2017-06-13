@@ -63,9 +63,9 @@ public:
     typedef helper::vector<MassType> VecMass;
 
 
-    Data< VecMass > f_mass;
+    Data< VecMass > f_mass; ///< values of the particles masses
     Data< bool >    _lumped;
-    Data< Real >    _defaultValue;
+    Data< Real >    _defaultValue; ///< real default value
 
     VecMass _lumpedMasses; ///< lumped mass matrices
 

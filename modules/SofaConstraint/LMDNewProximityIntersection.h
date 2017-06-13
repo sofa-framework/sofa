@@ -50,7 +50,7 @@ class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public BaseProximityInte
 public:
     SOFA_CLASS(LMDNewProximityIntersection,BaseProximityIntersection);
 
-    Data<bool> useLineLine;
+    Data<bool> useLineLine; ///< Line-line collision detection enabled
 protected:
     LMDNewProximityIntersection();
 public:

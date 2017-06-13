@@ -54,7 +54,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
 
-    Data < Real > maxDist;
+    Data < Real > maxDist; ///< alarm distance for proximity detection
 protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };

@@ -174,9 +174,9 @@ public:
   virtual double getDistance(defaulttype::Vec3d& pos, double value, double grad_norm, int &domain);
 
 
-    Data<bool> inside;
-    Data<double> radiusSphere;
-    Data<defaulttype::Vec3d> centerSphere;
+    Data<bool> inside; ///< if true the constraint object is inside the sphere
+    Data<double> radiusSphere; ///< Radius of the Sphere Surface
+    Data<defaulttype::Vec3d> centerSphere; ///< Position of the Sphere Surface
 
 
 private:

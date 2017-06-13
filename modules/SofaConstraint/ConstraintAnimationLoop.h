@@ -242,22 +242,22 @@ public:
 
     virtual void init();
 
-    Data<bool> displayTime;
-    Data<double> _tol;
-    Data<int> _maxIt;
-    Data<bool> doCollisionsFirst;
-    Data<bool> doubleBuffer;
-    Data<bool> scaleTolerance;
-    Data<bool> _allVerified;
-    Data<double> _sor;
-    Data<bool> schemeCorrection;
-    Data<bool> _realTimeCompensation;
+    Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
+    Data<double> _tol; ///< Tolerance of the Gauss-Seidel
+    Data<int> _maxIt; ///< Maximum number of iterations of the Gauss-Seidel
+    Data<bool> doCollisionsFirst; ///< Compute the collisions first (to support penality-based contacts)
+    Data<bool> doubleBuffer; ///< Buffer the constraint problem in a double buffer to be accessible with an other thread
+    Data<bool> scaleTolerance; ///< Scale the error tolerance with the number of constraints
+    Data<bool> _allVerified; ///< All contraints must be verified (each constraint's error < tolerance)
+    Data<double> _sor; ///< Successive Over Relaxation parameter (0-2)
+    Data<bool> schemeCorrection; ///< Apply new scheme where compliance is progressively corrected
+    Data<bool> _realTimeCompensation; ///< If the total computational time T < dt, sleep(dt-T)
 
     Data<bool> activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors;
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphConstraints;
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphForces;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors; ///< Sum of the constraints' errors at each iteration
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphConstraints; ///< Graph of each constraint's error at the end of the resolution
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphForces; ///< Graph of each constraint's force at each step of the resolution
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 

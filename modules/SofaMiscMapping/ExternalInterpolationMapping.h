@@ -80,8 +80,8 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
+    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices; ///< Table that provides interpolation Indices
+    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues; ///< Table that provides interpolation Values
 
     void clear(int /*reserve*/) {}
 

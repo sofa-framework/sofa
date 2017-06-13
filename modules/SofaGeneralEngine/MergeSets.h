@@ -60,10 +60,10 @@ public:
 
     void update();
 
-    Data<VecIndex> f_in1;
-    Data<VecIndex> f_in2;
-    Data<VecIndex> f_out;
-    Data<std::string> f_op;
+    Data<VecIndex> f_in1; ///< first set of indices
+    Data<VecIndex> f_in2; ///< second set of indices
+    Data<VecIndex> f_out; ///< merged set of indices
+    Data<std::string> f_op; ///< name of operation to compute (union, intersection, difference, symmetric_difference)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)

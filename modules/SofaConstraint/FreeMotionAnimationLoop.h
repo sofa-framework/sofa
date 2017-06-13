@@ -65,7 +65,7 @@ public:
 
     Data<bool> displayTime;
 
-    Data<bool> m_solveVelocityConstraintFirst;
+    Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
 
 protected :
 

@@ -70,18 +70,18 @@ protected:
       */
     /// input
     Data< Real > m_density; ///< kg * m^-3
-    Data< helper::vector< Vector3 > > m_positions;
-    Data< helper::vector< MTriangle > > m_triangles;
-    Data< helper::vector< MQuad > > m_quads;
+    Data< helper::vector< Vector3 > > m_positions; ///< input: positions of the vertices
+    Data< helper::vector< MTriangle > > m_triangles; ///< input: triangles of the mesh
+    Data< helper::vector< MQuad > > m_quads; ///< input: quads of the mesh
     Data< helper::vector< MPolygon > > m_polygons; ///< must be convex
 
     /// output
     Data< MassType > rigidMass;
-    Data< Real > mass;
-    Data< Real > volume;
-    Data < Mat3x3 > inertiaMatrix;
-    Data< Vec3 > massCenter;
-    Data< Vector3 > centerToOrigin;
+    Data< Real > mass; ///< output: mass of the mesh
+    Data< Real > volume; ///< output: volume of the mesh
+    Data < Mat3x3 > inertiaMatrix; ///< output: the inertia matrix of the mesh
+    Data< Vec3 > massCenter; ///< output: the gravity center of the mesh
+    Data< Vector3 > centerToOrigin; ///< output: vector going from the mass center to the space origin
 
     /**
       * Protected methods

@@ -54,11 +54,11 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> nbROIs;
+    Data<unsigned int> nbROIs; ///< size of indices/value vector
     helper::vectorData<helper::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > f_outputIndices;
+    Data<helper::vector<helper::SVector<Index> > > f_outputIndices; ///< Vector of ROIs
 
     virtual std::string getTemplateName() const    {        return templateName(this);    }
     static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }

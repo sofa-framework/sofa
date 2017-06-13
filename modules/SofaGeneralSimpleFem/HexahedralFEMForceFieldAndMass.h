@@ -127,8 +127,8 @@ protected:
 protected:
     //HFFHexahedronHandler* hexahedronHandler;
 
-    Data<Real> _density;
-    Data<bool> _useLumpedMass;
+    Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
+    Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 
     topology::HexahedronData<sofa::helper::vector<ElementMass> > _elementMasses; ///< mass matrices per element
     topology::HexahedronData<sofa::helper::vector<Real> > _elementTotalMass; ///< total mass per element

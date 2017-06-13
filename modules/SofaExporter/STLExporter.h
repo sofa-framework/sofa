@@ -65,14 +65,14 @@ public:
     void writeSTLBinary();
 
     sofa::core::objectmodel::DataFileName stlFilename;
-    Data<bool> d_binaryFormat;      //< 0 for Ascii Formats, 1 for Binary File Format
-    Data<defaulttype::Vec3Types::VecCoord> m_position;
-    Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
-    Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad;
+    Data<bool> d_binaryFormat;      ///< 0 for Ascii Formats, 1 for Binary File Format
+    Data<defaulttype::Vec3Types::VecCoord> m_position; ///< points coordinates
+    Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle; ///< triangles indices
+    Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad; ///< quads indices
     
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
 protected:
     STLExporter();

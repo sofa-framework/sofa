@@ -60,7 +60,7 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename TMatrix::Bloc SubMatrix;
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 protected:
     BlockJacobiPreconditioner();
 public:

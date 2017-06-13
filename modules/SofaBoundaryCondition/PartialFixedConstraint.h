@@ -81,8 +81,8 @@ protected:
 
 public:
     SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<SReal> _drawSize;
+    Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.

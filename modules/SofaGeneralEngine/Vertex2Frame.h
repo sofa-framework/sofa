@@ -75,16 +75,16 @@ public:
 
 protected:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;
-    Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
+    Data< helper::vector<sofa::defaulttype::Vector3> > vertices; ///< Vertices of the mesh loaded
     Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; ///< for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    Data< helper::vector<sofa::defaulttype::Vector3> > normals;
+    Data< helper::vector<sofa::defaulttype::Vector3> > normals; ///< Normals of the mesh loaded
 
-    Data<VecCoord> frames;
-	Data<bool> useNormals;
-	Data<bool> invertNormals;
+    Data<VecCoord> frames; ///< Frames at output
+	Data<bool> useNormals; ///< Use normals to compute the orientations; if disabled the direction of the x axisof a vertice is the one from this vertice to the next one
+	Data<bool> invertNormals; ///< Swap normals
 
-    Data<int> rotation;
-    Data<double> rotationAngle;
+    Data<int> rotation; ///< Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.
+    Data<double> rotationAngle; ///< Angle rotation
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)

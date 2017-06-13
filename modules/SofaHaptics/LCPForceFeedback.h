@@ -70,13 +70,13 @@ public:
         dmsg_info() << "haptic_freq = " << std::fixed << haptic_freq << " Hz   " << '\xd';
     }
 
-    Data< double > forceCoef;
+    Data< double > forceCoef; ///< multiply haptic force by this coef.
     //Data< double > momentCoef;
 
-    Data< double > solverTimeout;
+    Data< double > solverTimeout; ///< max time to spend solving constraints.
 
     // deriv (or not) the rotations when updating the violations
-    Data <bool> d_derivRotations;
+    Data <bool> d_derivRotations; ///< if true, deriv the rotations when updating the violations
 
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );

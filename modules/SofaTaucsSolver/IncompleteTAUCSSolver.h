@@ -67,22 +67,22 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
 #ifdef VAIDYA
-    Data<int>    f_incompleteType;
+    Data<int>    f_incompleteType; ///< 0 = Incomplete Cholesky (ic), 1 = vaidya (va) , 2 = recursive vaidya (vr) 
 #endif
-    Data<int>    f_ordering;
-    Data<double> f_dropTol;
-    Data<bool>   f_modified_flag;
+    Data<int>    f_ordering; ///< ose ordering 0=identity/1=tree/2=metis/3=natural/4=genmmd/5=md/6=mmd/7=amd
+    Data<double> f_dropTol; ///< Drop tolerance use for incomplete factorization
+    Data<bool>   f_modified_flag; ///< Modified ICC : maintains rowsums
 #ifdef VAIDYA
-    Data<double> f_subgraphs;
-    Data<bool>   f_stretch_flag;
-    Data<bool>   f_multifrontal;
-    Data<int>    f_seed;
-    Data<double> f_C;
-    Data<double> f_epsilon;
-    Data<int>    f_nsmall;
-    Data<int>    f_maxlevels;
-    Data<int>    f_innerits;
-    Data<double> f_innerconv;
+    Data<double> f_subgraphs; ///< Desired number of subgraphs for Vaidya
+    Data<bool>   f_stretch_flag; ///< Starting with a low stretch tree
+    Data<bool>   f_multifrontal; ///< Use multifrontal algo in vaidya
+    Data<int>    f_seed; ///< Affects decomposition to subtrees
+    Data<double> f_C; ///< splits tree into about k=f_C*n^(1/(1+f_epsilon)) subgraphs
+    Data<double> f_epsilon; ///< splits tree into about k=f_C*n^(1/(1+f_epsilon)) subgraphs
+    Data<int>    f_nsmall; ///< matrices smaller than nsmall are factored directly
+    Data<int>    f_maxlevels; ///< preconditioner has at most l levels
+    Data<int>    f_innerits; ///< using at most m iterations
+    Data<double> f_innerconv; ///< inner solves reduce their residual by a factor of r
 #endif
 
     IncompleteTAUCSSolver();

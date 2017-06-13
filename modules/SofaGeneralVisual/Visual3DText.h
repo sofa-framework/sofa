@@ -65,11 +65,11 @@ public:
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
 public:
-    Data<std::string> d_text;
-    Data<defaulttype::Vec3f> d_position;
-    Data<float> d_scale;
-    Data<defaulttype::RGBAColor> d_color;
-    Data<bool> d_depthTest;
+    Data<std::string> d_text; ///< Test to display
+    Data<defaulttype::Vec3f> d_position; ///< 3d position
+    Data<float> d_scale; ///< text scale
+    Data<defaulttype::RGBAColor> d_color; ///< text color. (default=[1.0,1.0,1.0,1.0])
+    Data<bool> d_depthTest; ///< perform depth test
 
 
 };

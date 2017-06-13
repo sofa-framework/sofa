@@ -64,10 +64,10 @@ public:
 public:
 
     SetIndex f_points;
-    Data<int> id;
-    Data<int> prevID;
-    Data<int> nextID;
-    Data<bool> cutInProgress;
+    Data<int> id; ///< ID of this cutting point
+    Data<int> prevID; ///< ID of the previous cutting point (if this point is in the middle or at the end of a cut line)
+    Data<int> nextID; ///< ID of the next cutting point (if this point is in the middle or at the start of a cut line)
+    Data<bool> cutInProgress; ///< True if this point is currently being cut
     core::behavior::MechanicalState<DataTypes>* mstate;
     sofa::core::topology::BaseMeshTopology* topology;
 protected:

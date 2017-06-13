@@ -94,7 +94,7 @@ protected:
 
     unsigned int _usage;
 
-    Data<sofa::defaulttype::ResizableExtVector<DataTypes> > value;
+    Data<sofa::defaulttype::ResizableExtVector<DataTypes> > value; ///< internal Data
     Data<bool> handleDynamicTopology;
 
     sofa::core::topology::BaseMeshTopology* _topology;

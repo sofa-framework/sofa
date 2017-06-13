@@ -99,7 +99,7 @@ protected:
     sofa::helper::vector<SReal> length;
     sofa::helper::vector<defaulttype::Vector3> direction;
 
-    Data<SReal> defaultLength;
+    Data<SReal> defaultLength; ///< TODO
 
     std::set<BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;

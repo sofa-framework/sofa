@@ -57,18 +57,18 @@ protected:
 
 public:
     sofa::core::objectmodel::DataFileName meshFilename;
-    Data<sofa::helper::OptionsGroup> fileFormat;
-    Data<defaulttype::Vec3Types::VecCoord> position;
-    Data<bool> writeEdges;
-    Data<bool> writeTriangles;
-    Data<bool> writeQuads;
-    Data<bool> writeTetras;
-    Data<bool> writeHexas;
+    Data<sofa::helper::OptionsGroup> fileFormat; ///< File format to use
+    Data<defaulttype::Vec3Types::VecCoord> position; ///< points position (will use points from topology or mechanical state if this is empty)
+    Data<bool> writeEdges; ///< write edge topology
+    Data<bool> writeTriangles; ///< write triangle topology
+    Data<bool> writeQuads; ///< write quad topology
+    Data<bool> writeTetras; ///< write tetra topology
+    Data<bool> writeHexas; ///< write hexa topology
     //Data<helper::vector<std::string> > dPointsDataFields;
     //Data<helper::vector<std::string> > dCellsDataFields;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
     helper::vector<std::string> pointsDataObject;
     helper::vector<std::string> pointsDataField;

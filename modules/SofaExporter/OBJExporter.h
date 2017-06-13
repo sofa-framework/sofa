@@ -59,9 +59,9 @@ private:
 
 public:
     sofa::core::objectmodel::DataFileName objFilename;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
     bool  activateExport;
 protected:
     OBJExporter();

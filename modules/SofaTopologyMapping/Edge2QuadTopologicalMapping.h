@@ -114,8 +114,8 @@ protected:
     Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
     Data<double> m_radius;	///< radius of the circles around each point of the input topology (1 by default)
 
-    Data<VecIndex> edgeList;
-    Data<bool> flipNormals;
+    Data<VecIndex> edgeList; ///< list of input edges for the topological mapping: by default, all considered
+    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
 
     
     container::RadiusContainer* m_radiusContainer;

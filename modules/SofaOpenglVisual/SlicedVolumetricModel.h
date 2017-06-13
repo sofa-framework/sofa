@@ -72,10 +72,10 @@ protected:
 
     void findAndDrawTriangles();
 
-    Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
+    Data<defaulttype::RGBAColor>	color; ///< Billboard color.(default=1.0,1.0,1.0,1.0)
 
-    Data<int> _nbPlanes;
+    Data<int> _nbPlanes; ///< Number of billboards.
     int _nbPlanesOld;
 
     core::topology::BaseMeshTopology*	_topology;

@@ -72,9 +72,9 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecData> d_substractor;
-    Data<VecData> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<VecData> d_substractor; ///< vector to substract to input
+    Data<VecData> d_output; ///< output vector = input-substractor
 
 };
 

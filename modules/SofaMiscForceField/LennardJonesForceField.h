@@ -55,14 +55,14 @@ public:
 
 protected:
     Real a,b;
-    Data<Real> aInit;
-    Data<Real> alpha;
-    Data<Real> beta;
-    Data<Real> dmax;
-    Data<Real> fmax;
-    Data<Real> d0;
-    Data<Real> p0;
-    Data<Real> damping;
+    Data<Real> aInit; ///< a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0.
+    Data<Real> alpha; ///< Alpha
+    Data<Real> beta; ///< Beta
+    Data<Real> dmax; ///< DMax
+    Data<Real> fmax; ///< FMax
+    Data<Real> d0; ///< d0
+    Data<Real> p0; ///< p0
+    Data<Real> damping; ///< Damping
 
     struct DForce
     {

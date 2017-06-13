@@ -80,9 +80,9 @@ public:
     }
 
     //
-    Data<helper::vector<Vec3 > > f_positions;
-    Data<helper::vector<Quat> > f_orientations;
-    Data<helper::vector<RigidVec3> > f_rigids;
+    Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
+    Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
+    Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(RIGIDTOQUATENGINE_CPP)

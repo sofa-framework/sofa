@@ -66,11 +66,11 @@ public:
     typedef typename Matrix::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data< helper::vector<std::string> > f_options;
-    Data<bool> f_symmetric;
-    Data<bool> f_verbose;
+    Data< helper::vector<std::string> > f_options; ///< TAUCS unified solver list of space-separated options
+    Data<bool> f_symmetric; ///< Consider the system matrix as symmetric
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 #ifdef SOFA_HAVE_CILK
-    Data<unsigned> f_nproc;
+    Data<unsigned> f_nproc; ///< NB proc used in taucs library
 #endif
 
     SparseTAUCSSolver();

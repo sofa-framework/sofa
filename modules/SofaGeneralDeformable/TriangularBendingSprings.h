@@ -123,7 +123,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
     class TriangularBSEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge, helper::vector<EdgeInformation> >
     {
@@ -167,8 +167,8 @@ protected:
 
     bool updateMatrix;
 
-    Data<double> f_ks;
-    Data<double> f_kd;
+    Data<double> f_ks; ///< uniform stiffness for the all springs
+    Data<double> f_kd; ///< uniform damping for the all springs
 
 
 

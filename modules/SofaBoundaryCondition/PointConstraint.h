@@ -69,7 +69,7 @@ public:
 
 
     SetIndex f_indices;
-    Data<SReal> _drawSize;
+    Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 protected:
     PointConstraint();
 

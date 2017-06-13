@@ -63,14 +63,14 @@ public:
     void update();
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    Data<VecCoord> input_position;
-    Data<helper::vector <unsigned int> > input_indices;
-    Data<VecCoord> output_position;
+    Data<VecCoord> input_position; ///< Input position
+    Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
+    Data<VecCoord> output_position; ///< Output position
 
-    Data<unsigned int> nb_iterations;
+    Data<unsigned int> nb_iterations; ///< Number of iterations of laplacian smoothing
 
-    Data<bool> showInput;
-    Data<bool> showOutput;
+    Data<bool> showInput; ///< showInput
+    Data<bool> showOutput; ///< showOutput
 
     virtual std::string getTemplateName() const
     {

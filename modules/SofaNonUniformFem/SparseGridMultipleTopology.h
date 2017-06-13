@@ -89,11 +89,11 @@ public:
 protected :
 
 
-    Data< helper::vector< std::string > > _fileTopologies;
-    Data< helper::vector< float > > _dataStiffnessCoefs;
-    Data< helper::vector< float > > _dataMassCoefs;
-    Data<bool> _computeRamifications;
-    Data<bool> _erasePreviousCoef;
+    Data< helper::vector< std::string > > _fileTopologies; ///< All topology filenames
+    Data< helper::vector< float > > _dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
+    Data< helper::vector< float > > _dataMassCoefs; ///< A mass coefficient for each topology filename
+    Data<bool> _computeRamifications; ///< Are ramifications wanted?
+    Data<bool> _erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
 
 
 

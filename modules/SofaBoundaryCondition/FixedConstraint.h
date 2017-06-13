@@ -83,9 +83,9 @@ protected:
 
 public:
     SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<bool> f_showObject;
-    Data<SReal> f_drawSize;
+    Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<bool> f_showObject; ///< draw or not the fixed constraints
+    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 
 protected:

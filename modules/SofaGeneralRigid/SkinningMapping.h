@@ -115,15 +115,15 @@ protected:
 
     Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
     Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<InReal> > > weight;
+    Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
     void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
 
 public:
-    Data<unsigned int> showFromIndex;
-    Data<bool> showWeights;
+    Data<unsigned int> showFromIndex; ///< Displayed From Index.
+    Data<bool> showWeights; ///< Show influence.
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();

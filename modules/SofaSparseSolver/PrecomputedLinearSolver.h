@@ -86,9 +86,9 @@ public:
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
-    Data<bool> jmjt_twostep;
-    Data<bool> f_verbose;
-    Data<bool> use_file;
+    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> use_file; ///< Dump system matrix in a file
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
     Data<double> init_Threshold;

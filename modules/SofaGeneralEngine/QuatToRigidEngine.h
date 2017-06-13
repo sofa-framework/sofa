@@ -80,10 +80,10 @@ public:
     }
 
     //
-    Data<helper::vector<Vec3 > > f_positions;
-    Data<helper::vector<Quat> > f_orientations;
-    Data<helper::vector<Vec3 > > f_colinearPositions;
-    Data<helper::vector<RigidVec3> > f_rigids;
+    Data<helper::vector<Vec3 > > f_positions; ///< Positions (Vector of 3)
+    Data<helper::vector<Quat> > f_orientations; ///< Orientations (Quaternion)
+    Data<helper::vector<Vec3 > > f_colinearPositions; ///< Optional positions to restrict output to be colinear in the quaternion Z direction
+    Data<helper::vector<RigidVec3> > f_rigids; ///< Rigid (Position + Orientation)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(QUATTORIGIDENGINE_CPP)

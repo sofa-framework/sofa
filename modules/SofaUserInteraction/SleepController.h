@@ -84,8 +84,8 @@ public:
 	virtual void handleEvent(core::objectmodel::Event*);
 
 	Data<double> d_minTimeSinceWakeUp; ///< Do not do anything before objects have been moving for this duration
-	Data<SReal> d_speedThreshold;
-	Data<SReal> d_rotationThreshold;
+	Data<SReal> d_speedThreshold; ///< Speed value under which we consider a particule to be immobile
+	Data<SReal> d_rotationThreshold; ///< If non null, this is the rotation speed value under which we consider a particule to be immobile
 
 protected:
     SleepController();

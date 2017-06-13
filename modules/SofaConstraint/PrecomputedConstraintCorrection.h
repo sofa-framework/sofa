@@ -68,10 +68,10 @@ public:
     Data<bool> m_rotations;
     Data<bool> m_restRotations;
 
-    Data<bool> recompute;
-	Data<double> debugViewFrameScale;
+    Data<bool> recompute; ///< if true, always recompute the compliance
+	Data<double> debugViewFrameScale; ///< Scale on computed node's frame
 	sofa::core::objectmodel::DataFileName f_fileCompliance;
-	Data<std::string> fileDir;
+	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);

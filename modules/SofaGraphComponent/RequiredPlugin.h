@@ -41,7 +41,7 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<helper::vector<std::string>> d_pluginName;
+    sofa::core::objectmodel::Data<helper::vector<std::string>> d_pluginName; ///< Name of the plugin to loaded. If this is empty, the name of this component is used as plugin name.
 protected:
     RequiredPlugin();
     virtual ~RequiredPlugin() {}

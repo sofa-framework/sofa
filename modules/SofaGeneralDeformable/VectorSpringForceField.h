@@ -131,7 +131,7 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
 
-    Data<bool> m_useTopology;
+    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;

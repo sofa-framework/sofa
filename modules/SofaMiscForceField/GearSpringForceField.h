@@ -314,8 +314,8 @@ public:
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < Real > f_period;
-    Data<bool> f_reinit;
+    Data < Real > f_period; ///< period between outputs
+    Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;
 
     /// bool to allow the display of the extra torsion

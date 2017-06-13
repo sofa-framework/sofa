@@ -128,8 +128,8 @@ public:
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
-    Data<float> d_showObjectScale;
-    Data<defaulttype::RGBAColor> d_color;
+    Data<float> d_showObjectScale; ///< Scale for object display
+    Data<defaulttype::RGBAColor> d_color; ///< Color for object display. (default=[1.0,1.0,0.0,1.0])
 
 protected:
     DistanceFromTargetMapping();

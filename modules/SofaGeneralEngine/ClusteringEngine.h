@@ -85,12 +85,12 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    Data<bool> d_useTopo;
+    Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
     //Data<unsigned int> maxIter;
 
-    Data<Real> d_radius;
-    Data<Real> d_fixedRadius;
-    Data<int> d_nbClusters;
+    Data<Real> d_radius; ///< Neighborhood range.
+    Data<Real> d_fixedRadius; ///< Neighborhood range (for non mechanical particles).
+    Data<int> d_nbClusters; ///< Number of clusters (-1 means that all input points are selected).
     Data< VecCoord > d_fixedPosition;  ///< input (non mechanical particle reference position)
     Data< VecCoord > d_position; ///< input (reference mstate position)
     Data< VVI > d_cluster;       ///< result

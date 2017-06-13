@@ -63,11 +63,11 @@ public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < bool > f_writeContainers;
-    Data < bool > f_writeShellContainers;
-    Data < double > f_interval;
-    Data < helper::vector<double> > f_time;
-    Data < double > f_period;
+    Data < bool > f_writeContainers; ///< flag enabling output of common topology containers.
+    Data < bool > f_writeShellContainers; ///< flag enabling output of specific shell topology containers.
+    Data < double > f_interval; ///< time duration between outputs
+    Data < helper::vector<double> > f_time; ///< set time to write outputs
+    Data < double > f_period; ///< period between outputs
     //    Data < helper::vector<unsigned int> > f_DOFsX;
     //    Data < helper::vector<unsigned int> > f_DOFsV;
     //    Data < double > f_stopAt;

@@ -76,7 +76,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
 
-    Data<unsigned int> number;
+    Data<unsigned int> number; ///< Sample number
     Data< VecCoord > position; ///< input positions
     Data< SeqEdges > f_edges;  ///< input edges for geodesic sampling
     Data< VecCoord > fixedPosition;  ///< User defined sample positions.

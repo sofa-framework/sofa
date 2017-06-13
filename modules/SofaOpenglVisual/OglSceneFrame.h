@@ -45,9 +45,9 @@ public:
 
     typedef core::visual::VisualParams::Viewport Viewport;
 
-    Data<bool> drawFrame;
-    Data<sofa::helper::OptionsGroup> style;
-    Data<sofa::helper::OptionsGroup> alignment;
+    Data<bool> drawFrame; ///< Display the frame or not
+    Data<sofa::helper::OptionsGroup> style; ///< Style of the frame
+    Data<sofa::helper::OptionsGroup> alignment; ///< Alignment of the frame in the view
 
     OglSceneFrame():
         drawFrame(initData(&drawFrame, true,  "draw", "Display the frame or not")),

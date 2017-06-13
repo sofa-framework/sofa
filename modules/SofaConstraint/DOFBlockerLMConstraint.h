@@ -132,10 +132,10 @@ public:
         else return false;
     }
 
-    Data<helper::vector<Deriv> > BlockedAxis;
-    Data<helper::vector<SReal> > factorAxis;
+    Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
+    Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
     SetIndex f_indices;
-    Data<SReal> showSizeAxis;
+    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {

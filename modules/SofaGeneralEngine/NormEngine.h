@@ -71,9 +71,9 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecReal> d_output;
-    Data<int> d_normType;
+    Data<VecData> d_input; ///< input array of 3d points
+    Data<VecReal> d_output; ///< output array of scalar norms
+    Data<int> d_normType; ///< The type of norm. Use a negative value for the infinite norm.
 
 };
 

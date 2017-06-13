@@ -115,12 +115,12 @@ public:
     }
 
 protected:
-    Data <double > mStep;
-    Data <double > mRadius;
-    Data <double > mIsoValue;
+    Data <double > mStep; ///< Step
+    Data <double > mRadius; ///< Radius
+    Data <double > mIsoValue; ///< Iso Value
 
-    Data< InCoord > mGridMin;
-    Data< InCoord > mGridMax;
+    Data< InCoord > mGridMin; ///< Grid Min
+    Data< InCoord > mGridMax; ///< Grid Max
 
     // Marching cube data
 

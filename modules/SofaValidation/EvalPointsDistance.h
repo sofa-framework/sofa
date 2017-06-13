@@ -70,15 +70,15 @@ public:
     /// Computed distances
     Data < helper::vector<Real> > dist;
 
-    Data < double > distMean;
-    Data < double > distMin;
-    Data < double > distMax;
-    Data < double > distDev;
+    Data < double > distMean; ///< mean distance (OUTPUT)
+    Data < double > distMin; ///< min distance (OUTPUT)
+    Data < double > distMax; ///< max distance (OUTPUT)
+    Data < double > distDev; ///< distance standard deviation (OUTPUT)
 
-    Data < double > rdistMean;
-    Data < double > rdistMin;
-    Data < double > rdistMax;
-    Data < double > rdistDev;
+    Data < double > rdistMean; ///< mean relative distance (OUTPUT)
+    Data < double > rdistMin; ///< min relative distance (OUTPUT)
+    Data < double > rdistMax; ///< max relative distance (OUTPUT)
+    Data < double > rdistDev; ///< relative distance standard deviation (OUTPUT)
 
     typedef SingleLink<EvalPointsDistance<DataTypes>,core::behavior::MechanicalState<DataTypes>,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkMState;
     /// First model mechanical state

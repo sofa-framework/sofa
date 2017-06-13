@@ -78,9 +78,9 @@ public:
         return Data<Value>::templateName();
     }
 
-    Data<unsigned int> f_nbInputs;
+    Data<unsigned int> f_nbInputs; ///< Number of input vectors
     helper::vectorData<VecValue> vf_inputs;
-    Data<VecValue> f_output;
+    Data<VecValue> f_output; ///< Output vector
 
 };
 

@@ -50,13 +50,13 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<unsigned> f_maxIter;
-    Data<double> f_tolerance;
-    Data<bool> f_use_precond;
-    Data<unsigned> f_update_step;
-    Data<bool> f_build_precond;
-    Data< std::string > f_preconditioners;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
+    Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<bool> f_use_precond; ///< Use preconditioner
+    Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
+    Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
+    Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
 
 protected:

@@ -79,7 +79,7 @@ public:
 
     virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda);
 
-    Data< helper::vector< std::string > >  solverName;
+    Data< helper::vector< std::string > >  solverName; ///< name of the constraint solver
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>

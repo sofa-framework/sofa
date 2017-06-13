@@ -111,13 +111,13 @@ public:
 
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
 
-    Data<bool> jmjt_twostep;
-    Data<bool> f_verbose;
-    Data<bool> use_file;
-    Data<bool> share_matrix;
-    Data <std::string> solverName;
-    Data<bool> use_rotations;
-    Data<double> draw_rotations_scale;
+    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> use_file; ///< Dump system matrix in a file
+    Data<bool> share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
+    Data <std::string> solverName; ///< Name of the solver to use to precompute the first matrix
+    Data<bool> use_rotations; ///< Use Rotations around the preconditioner
+    Data<double> draw_rotations_scale; ///< Scale rotations in draw function
 
     MState * mstate;
 protected:

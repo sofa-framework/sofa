@@ -75,10 +75,10 @@ public:
 #endif
 
     //TODO(dmarchal): sofa guidelines.
-    Data<bool>                  d_shadowsEnabled;
-    Data<bool>                  d_softShadowsEnabled;
-    Data<sofa::helper::types::RGBAColor>  d_ambient;
-    Data<bool>                  d_drawIsEnabled;
+    Data<bool>                  d_shadowsEnabled; ///< Enable Shadow in the scene. (default=0)
+    Data<bool>                  d_softShadowsEnabled; ///< If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)
+    Data<sofa::helper::types::RGBAColor>  d_ambient; ///< Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])
+    Data<bool>                  d_drawIsEnabled; ///< enable/disable drawing of lights shadow textures. (default=false)
 
 protected:
     LightManager();
