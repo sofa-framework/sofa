@@ -112,7 +112,7 @@ protected:
                  "from SofaTest.Macro import *         \n"
                  "                                     \n"
                  "class TestGetSofaPath(object):       \n"
-                 "   def getSofaPath(self):            \n"
+                 "   def getAsACreateObjectParameter(self):            \n"
                  "        return '@/theFirst.name'     \n"
                  "def createScene(rootNode):           \n"
                  "    first = rootNode.createObject( 'ExternalComponent', name='theFirst') \n"
@@ -152,6 +152,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"xrange(1,5)", "1 2 3 4"},
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
+     {"first.findData('name')", "theFirst"},
      {"TestGetSofaPath()", "theFirst"}
     } ;
 
