@@ -111,9 +111,14 @@ protected:
                  "import Sofa                          \n"
                  "from SofaTest.Macro import *         \n"
                  "                                     \n"
-                 "class TestGetSofaPath(object):       \n"
+                 "class NonCustomizedObject(object):   \n"
+                 "   def __init__(self):               \n"
+                 "        return None                  \n"
+                 "   def __str__(self):                \n"
+                 "        return 'default'             \n"
+                 "class CustomObject(object):           \n"
                  "   def getAsACreateObjectParameter(self):            \n"
-                 "        return '@/theFirst.name'     \n"
+                 "        return 'custom value'        \n"
                  "def createScene(rootNode):           \n"
                  "    first = rootNode.createObject( 'ExternalComponent', name='theFirst') \n"
                  "    externalComponent = rootNode.createObject( 'ExternalComponent', name='second', value="<<value<<") \n"
@@ -138,6 +143,12 @@ TEST_F(PythonFactory_test, result)
 }
 
 
+TEST_F(PythonFactory_test, testCreateObjectDataConversionWarning)
+{
+    EXPECT_MSG_EMIT(Warning) ;
+    this->testAttributeConversion({"NonCustomizedObject()", "default"});
+}
+
 std::vector<std::vector<std::string>> dataconversionvalues =
     {{"1", "1"},
      {"1.1", "1.1"},
@@ -155,7 +166,8 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},
-     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"}
+     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"},
+     {"CustomObject()", "custom value"}
     } ;
 
 TEST_P(PythonFactory_test, testCreateObjectDataConversion)
@@ -166,6 +178,6 @@ TEST_P(PythonFactory_test, testCreateObjectDataConversion)
 INSTANTIATE_TEST_CASE_P(testCreateObjectDataConversion,
                         PythonFactory_test,
                         ::testing::ValuesIn(dataconversionvalues));
-
-
 }
+
+

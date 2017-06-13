@@ -74,7 +74,7 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
 
 /// This function converts an PyObject into a sofa string.
 /// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ostream& out)
+static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 {
     /// String are just returned as string.
     if (PyString_Check(value))
@@ -95,7 +95,7 @@ static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, s
                 if(first) first = false;
                 else out << ' ';
 
-                pythonToSofaDataString(type, next, out);
+                pythonToSofaDataString(next, out);
                 Py_DECREF(next);
             }
             Py_DECREF(iterator);
@@ -113,18 +113,18 @@ static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, s
     /// we use it.
     if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
        PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
-       PyObject* tmpstr=PyObject_Str(retvalue);
-       out <<  PyString_AsString(tmpstr) ;
-       Py_DECREF(tmpstr) ;
-       return out ;
+       return pythonToSofaDataString(retvalue, out);
     }
 
     /// Default conversion for standard type:
-    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) )){
-        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator. " << msgendl
-                                     "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
-                                     "Other objects should implement the method getAsACreateObjectParameter() returning a string usable as a parameter in createObject()." << msgendl
-                                     "To remove this message you must add a method getAsCreateObjectParameter(self)" ;
+    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
+    {
+        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
+                                  << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
+                                  << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
+                                  << "This function should return a string usable as a parameter in createObject()." << msgendl
+                                  << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
+                                     "to the object you are passing the createObject function." << msgendl ;
     }
 
     PyObject* tmpstr=PyObject_Str(value);
@@ -168,7 +168,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             else
             {
                 std::stringstream s;
-                pythonToSofaDataString(type, value, s) ;
+                pythonToSofaDataString(value, s) ;
                 desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
         }
