@@ -113,7 +113,10 @@ static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, s
     /// we use it.
     if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
        PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
-       return out <<  PyString_AsString(PyObject_Str(retvalue)) ;
+       PyObject* tmpstr=PyObject_Str(retvalue);
+       out <<  PyString_AsString(tmpstr) ;
+       Py_DECREF(tmpstr) ;
+       return out ;
     }
 
     /// Default conversion for standard type:
@@ -124,7 +127,10 @@ static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, s
                                      "To remove this message you must add a method getAsCreateObjectParameter(self)" ;
     }
 
-    return out << PyString_AsString(PyObject_Str(value)) ;
+    PyObject* tmpstr=PyObject_Str(value);
+    out << PyString_AsString(tmpstr) ;
+    Py_DECREF(tmpstr) ;
+    return out ;
 }
 
 

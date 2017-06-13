@@ -155,7 +155,7 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},
-     {"TestGetSofaPath()", "theFirst"}
+     {"'XX_'+rootNode.getAsACreateObjectParameter()", "XX_@"}
     } ;
 
 TEST_P(PythonFactory_test, testCreateObjectDataConversion)
