@@ -148,6 +148,8 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"[1, 2, 3, 4]", "1 2 3 4"},
      {"[1.0, 2.0, 3.0, 4.0]", "1.0 2.0 3.0 4.0"},
      {"['ab', 'cd', 'ef', 'gh']", "ab cd ef gh"},
+     {"[[1,2], [3,4], [5,6]]", "1 2 3 4 5 6"},
+     {"[['aa','bb'], ['cc','dd'], ['ee','ff']]", "aa bb cc dd ee ff"},
      {"range(1,5)", "1 2 3 4"},
      {"xrange(1,5)", "1 2 3 4"},
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},

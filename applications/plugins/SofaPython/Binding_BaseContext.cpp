@@ -74,7 +74,7 @@ extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*ar
 
 /// This function converts an PyObject into a sofa string.
 /// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ostream& out, const bool handleIter=false)
+static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, std::ostream& out)
 {
     /// String are just returned as string.
     if (PyString_Check(value))
@@ -82,39 +82,37 @@ static std::ostream& pythonToSofaDataString(const char* type, PyObject* value, s
         return out << PyString_AsString(value) ;
     }
 
-    /// Check if we have to handle iterable sequence.
-    if( handleIter )
+
+    if( PySequence_Check(value) )
     {
-        if( PySequence_Check(value) )
+        /// It is a sequence...so we can iterate over it.
+        PyObject *iterator = PyObject_GetIter(value);
+        if(iterator)
         {
-            /// It is a sequence...so we can iterate over it.
-            PyObject *iterator = PyObject_GetIter(value);
-            if(iterator)
+            bool first = true;
+            while(PyObject* next = PyIter_Next(iterator))
             {
-                bool first = true;
-                while(PyObject* next = PyIter_Next(iterator))
-                {
-                    if(first) first = false;
-                    else out << ' ';
+                if(first) first = false;
+                else out << ' ';
 
-                    pythonToSofaDataString(type, next, out);
-                    Py_DECREF(next);
-                }
-                Py_DECREF(iterator);
-
-                if (PyErr_Occurred())
-                {
-                    msg_error("SofaPython") << "error while iterating";
-                }
-                return out;
+                pythonToSofaDataString(type, next, out);
+                Py_DECREF(next);
             }
+            Py_DECREF(iterator);
+
+            if (PyErr_Occurred())
+            {
+                msg_error("SofaPython") << "error while iterating";
+            }
+            return out;
         }
     }
+
 
     /// Check if the object has an explicit conversion to a Sofa path. If this is the case
     /// we use it.
     if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
-       PyObject* retvalue = PyObject_CallMethod(value, "getAsACreateObjectParameter", nullptr) ;
+       PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
        return out <<  PyString_AsString(PyObject_Str(retvalue)) ;
     }
 
@@ -164,7 +162,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             else
             {
                 std::stringstream s;
-                pythonToSofaDataString(type, value, s, true) ;
+                pythonToSofaDataString(type, value, s) ;
                 desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
         }
