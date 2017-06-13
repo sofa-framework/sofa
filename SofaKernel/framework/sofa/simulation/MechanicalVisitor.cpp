@@ -494,7 +494,7 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     MechanicalProjectPositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity()
             ).execute( node );
 
-    MechanicalPropagatePositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             VecDerivId::dx(),
 #endif
@@ -843,7 +843,7 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
 }
 
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     //mm->setX(x);
     //mm->setF(f);
@@ -852,7 +852,7 @@ Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalSt
 }
 
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -870,12 +870,16 @@ Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMechanicalMa
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndResetForceVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     mm->resetForce(this->params, f.getId(mm));
     return RESULT_CONTINUE;
 }
 
+void MechanicalPropagateOnlyPositionAndResetForceVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
 
 Visitor::Result MechanicalAddMDxVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
@@ -912,7 +916,7 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, c
 
 
 
-MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(
+MechanicalPropagateOnlyPositionAndVelocityVisitor::MechanicalPropagateOnlyPositionAndVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
     SReal time, MultiVecCoordId x, MultiVecDerivId v
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -928,7 +932,7 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyPositionAndVelocityVisitor"<<endl;
 }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -1032,23 +1036,23 @@ Visitor::Result MechanicalProjectPositionAndVelocityVisitor::fwdProjectiveConstr
 
 
 
-MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, MultiVecCoordId x, bool m )
+MechanicalPropagateOnlyPositionVisitor::MechanicalPropagateOnlyPositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, MultiVecCoordId x, bool m )
     : MechanicalVisitor(mparams) , t(t), x(x), ignoreMask(m)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagatePositionVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyPositionVisitor"<<endl;
 }
 
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 {
     //mm->setX(x);
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1066,11 +1070,16 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdMechanicalMapping(simulat
     return RESULT_CONTINUE;
 }
 
+void MechanicalPropagateOnlyPositionVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
+
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 #else
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 #endif
 {
     //mm->setX(x);
@@ -1082,7 +1091,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyPositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1106,8 +1115,13 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapp
     return RESULT_CONTINUE;
 }
 
+void MechanicalPropagateOnlyPositionAndVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
+}
 
-MechanicalPropagateVelocityVisitor::MechanicalPropagateVelocityVisitor(
+
+MechanicalPropagateOnlyVelocityVisitor::MechanicalPropagateOnlyVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
     SReal time, MultiVecDerivId v
 #ifdef SOFA_SUPPORT_MAPPED_MASS
@@ -1124,13 +1138,13 @@ MechanicalPropagateVelocityVisitor::MechanicalPropagateVelocityVisitor(
 
     setReadWriteVectors();
 #endif
-    //cerr<<"::MechanicalPropagateVelocityVisitor"<<endl;
+    //cerr<<"::MechanicalPropagateOnlyVelocityVisitor"<<endl;
 }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 #else
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
 #endif
 {
     //mm->setV(v);
@@ -1141,7 +1155,7 @@ Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalState(simulatio
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+Visitor::Result MechanicalPropagateOnlyVelocityVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
 {
     if (!ignoreMask)
     {
@@ -1161,6 +1175,11 @@ Visitor::Result MechanicalPropagateVelocityVisitor::fwdMechanicalMapping(simulat
         ForceMaskDeactivate( map->getMechTo() );
     }
     return RESULT_CONTINUE;
+}
+
+void MechanicalPropagateOnlyVelocityVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
+{
+    mm->forceMask.activate(false);
 }
 
 #ifdef SOFA_SUPPORT_MAPPED_MASS

@@ -193,7 +193,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
             sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
         ).execute( node );
-        MechanicalPropagatePositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
                 VecDerivId::dx(),
 #endif

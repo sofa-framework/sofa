@@ -1083,16 +1083,22 @@ public:
 #endif
 };
 
-/** Same as MechanicalPropagatePositionVisitor followed by MechanicalResetForceVisitor
+/** Same as MechanicalPropagateOnlyPositionVisitor followed by MechanicalResetForceVisitor
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagatePositionAndResetForceVisitor.
+Use MechanicalProjectPositionVisitor before this visitor if projection
+is needed.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagatePositionAndResetForceVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionAndResetForceVisitor : public MechanicalVisitor
 {
 public:
     sofa::core::MultiVecCoordId x;
     sofa::core::MultiVecDerivId f;
     bool ignoreMask;
 
-    MechanicalPropagatePositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
+    MechanicalPropagateOnlyPositionAndResetForceVisitor(const sofa::core::MechanicalParams* mparams,
                                                     sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, bool m)
         : MechanicalVisitor(mparams) , x(x), f(f), ignoreMask(m)
     {
@@ -1100,10 +1106,11 @@ public:
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndResetForceVisitor"; }
+    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionAndResetForceVisitor"; }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1365,19 +1372,26 @@ public:
 
 /** Propagate positions  to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagatePositionVisitor.
+Use MechanicalProjectPositionVisitor before this visitor if projection
+is needed.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagatePositionVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionVisitor : public MechanicalVisitor
 {
 public:
     SReal t;
     sofa::core::MultiVecCoordId x;
     bool ignoreMask;
 
-    MechanicalPropagatePositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
+    MechanicalPropagateOnlyPositionVisitor( const sofa::core::MechanicalParams* mparams, SReal time=0,
                                         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), bool m=true);
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -1387,7 +1401,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagatePositionVisitor";}
+    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionVisitor";}
     virtual std::string getInfos() const
     {
         std::string name="x["+x.getName()+"]";
@@ -1412,8 +1426,14 @@ public:
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
 This action is typically applied after time integration of the independent degrees of freedom.
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagatePositionAndVelocityVisitor.
+Use MechanicalProjectPositionAndVelocityVisitor before this visitor if
+projection is needed.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagatePositionAndVelocityVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyPositionAndVelocityVisitor : public MechanicalVisitor
 {
 public:
     SReal currentTime;
@@ -1424,12 +1444,12 @@ public:
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
     MultiVecDerivId a;
-    MechanicalPropagatePositionAndVelocityVisitor(
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(
         const sofa::core::MechanicalParams* mparams, SReal time=0,
         sofa::core::MultiVecCoordId x = sofa::core::VecCoordId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
         sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true); //
 #else
-    MechanicalPropagatePositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
+    MechanicalPropagateOnlyPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                                   sofa::core::MultiVecCoordId x = sofa::core::VecId::position(), sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true );
 #endif
@@ -1437,6 +1457,7 @@ public:
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
 
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
@@ -1446,7 +1467,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor";}
+    virtual const char* getClassName() const { return "MechanicalPropagateOnlyPositionAndVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
@@ -1466,8 +1487,14 @@ public:
 /** Propagate velocities to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
+
+Note that this visitor only propagate through the mappings, and does
+not apply projective constraints as was previously done by
+MechanicalPropagateVelocityVisitor.
+Use MechanicalProjectVelocityVisitor before this visitor if projection
+is needed.
 */
-class SOFA_SIMULATION_CORE_API MechanicalPropagateVelocityVisitor : public MechanicalVisitor
+class SOFA_SIMULATION_CORE_API MechanicalPropagateOnlyVelocityVisitor : public MechanicalVisitor
 {
 public:
     SReal currentTime;
@@ -1477,19 +1504,19 @@ public:
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     // compute the acceleration created by the input velocity and the derivative of the mapping
     sofa::core::MultiVecDerivId a;
-    MechanicalPropagateVelocityVisitor(
+    MechanicalPropagateOnlyVelocityVisitor(
         const sofa::core::MechanicalParams* mparams, SReal time=0,
         sofa::core::MultiVecDerivId v = sofa::core::VecDerivId::velocity(),
         sofa::core::MultiVecDerivId a = sofa::core::VecDerivId::dx() , bool m=true);
 #else
-    MechanicalPropagateVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
+    MechanicalPropagateOnlyVelocityVisitor(const sofa::core::MechanicalParams* mparams, SReal time=0,
                                        sofa::core::MultiVecDerivId v = sofa::core::VecId::velocity(),
             bool m=true);
 #endif
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
-
+    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
@@ -1498,7 +1525,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateVelocityVisitor";}
+    virtual const char* getClassName() const { return "MechanicalPropagateOnlyVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.
@@ -1541,7 +1568,7 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor";}
+    virtual const char* getClassName() const { return "MechanicalSetPositionAndVelocityVisitor";}
     virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
 
     /// Specify whether this action can be parallelized.

@@ -129,7 +129,7 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    MechanicalPropagatePositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
@@ -137,7 +137,7 @@ void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    MechanicalPropagateVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
@@ -146,7 +146,7 @@ void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVe
 {
     setX(x);
     setV(v);
-    MechanicalPropagatePositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
+    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
@@ -155,7 +155,7 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 {
     setX(x);
     setF(f);
-    MechanicalPropagatePositionAndResetForceVisitor visitor(&mparams, x, f, false);
+    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f, false);
     executeVisitor( visitor );
 }
 
@@ -325,7 +325,8 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setDx(a);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
@@ -341,7 +342,8 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
     setF(f);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
@@ -358,7 +360,8 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     setDx(a);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
