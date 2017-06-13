@@ -97,7 +97,7 @@ public:
 protected:
 
 
-    Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
+    Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
     helper:: vector<helper::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
@@ -110,11 +110,11 @@ protected:
     helper::vector<helper::vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
     helper::vector<helper::vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
     helper::vector<helper::vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
-    Data<bool> useDQ;  // use dual quat blending instead of linear blending
+    Data<bool> useDQ;  ///< use dual quat blending instead of linear blending
 #endif
 
-    Data< helper::vector<unsigned int> > nbRef; // Number of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
+    Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
     Data< helper::vector<sofa::helper::SVector<InReal> > > weight;
     void updateWeights();
 

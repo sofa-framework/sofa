@@ -130,7 +130,7 @@ public:
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra; // NOT YET
+    Data<helper::vector<Tetra> > f_tetrahedra; ///< NOT YET
     Data<bool> f_computeEdges;
     Data<bool> f_computeTriangles;
     Data<bool> f_computeTetrahedra;

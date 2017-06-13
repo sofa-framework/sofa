@@ -73,7 +73,7 @@ protected:
 
     sofa::core::objectmodel::DataFileName distanceMapHeader;
     Data< int > maxDomains;
-    Data< double > dx, dy, dz;    // translation of original image
+    Data< double > dx, dy, dz;    ///< translation of original image
 
     int usedDomains;              // number of domains already given out
     unsigned int imgSize[3];      // number of voxels

@@ -145,9 +145,9 @@ protected:
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
     Data<Real> f_dampingRatio;
-    Data<bool> f_useAngularSprings; // whether angular springs should be included
+    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
-    Data<bool> f_compressible; // whether the material is compressible or not
+    Data<bool> f_compressible; ///< whether the material is compressible or not
     /**** coefficient that controls how the material can cope with very compressible cases
     must be between 0 and 1 : if 0 then the deformation may diverge for large compression
     if 1 then the material can undergo large compression even inverse elements ***/

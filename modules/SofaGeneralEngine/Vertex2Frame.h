@@ -76,7 +76,7 @@ public:
 protected:
     sofa::core::behavior::MechanicalState<DataTypes>* mstate;
     Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
-    Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; ///< for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;
 
     Data<VecCoord> frames;

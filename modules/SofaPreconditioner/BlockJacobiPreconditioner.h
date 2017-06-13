@@ -67,7 +67,7 @@ public:
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
 
-    BlockJacobiPreconditionerInternalData<TVector> internalData; //not use in CPU
+    BlockJacobiPreconditionerInternalData<TVector> internalData; ///< not use in CPU
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

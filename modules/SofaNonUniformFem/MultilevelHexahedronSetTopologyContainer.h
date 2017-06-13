@@ -132,7 +132,7 @@ public:
     const std::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
 
     Data<int> _level;
-    Data<Vec3i>	fineResolution;		// width, height, depth (number of hexa in each direction)
+    Data<Vec3i>	fineResolution;		///< width, height, depth (number of hexa in each direction)
     Data<helper::vector<unsigned int> > hexaIndexInRegularGrid;
 
 private:
@@ -193,8 +193,8 @@ private:
 
     std::list<const core::topology::TopologyChange *>	m_changeListFine;
 
-    HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	// map between hexahedra and components - coarse
-    HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	// map between hexahedra and components - fine
+    HexahedronData<sofa::helper::vector<Component*> >		_coarseComponents;	///< map between hexahedra and components - coarse
+    HexahedronData<sofa::helper::vector<Component*> >		_fineComponents;	///< map between hexahedra and components - fine
 
     // the fine mesh must be a regular grid - store its parameters here
 

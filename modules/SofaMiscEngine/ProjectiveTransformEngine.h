@@ -81,10 +81,10 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX;   // input position
-    Data<VecCoord> f_outputX;  // output position: Z=focal_distance
-    Data<ProjMat> proj_mat;        // 3x4 projection matrix
-    Data<Real> focal_distance; // focal distance i.e. distance between the optical center and the image plane
+    Data<VecCoord> f_inputX;   ///< input position
+    Data<VecCoord> f_outputX;  ///< output position: Z=focal_distance
+    Data<ProjMat> proj_mat;        ///< 3x4 projection matrix
+    Data<Real> focal_distance; ///< focal distance i.e. distance between the optical center and the image plane
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)

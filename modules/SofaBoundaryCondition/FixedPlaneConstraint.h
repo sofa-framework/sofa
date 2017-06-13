@@ -68,8 +68,8 @@ public:
     /// direction on which the constraint applies
     Data<Coord> direction;
 
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
 protected:
     FixedPlaneConstraintInternalData<DataTypes> data;
     friend class FixedPlaneConstraintInternalData<DataTypes>;

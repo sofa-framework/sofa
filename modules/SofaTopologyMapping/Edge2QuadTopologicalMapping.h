@@ -111,8 +111,8 @@ public:
     virtual unsigned int getFromIndex(unsigned int ind);
 
 protected:
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
-    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
+    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> m_radius;	///< radius of the circles around each point of the input topology (1 by default)
 
     Data<VecIndex> edgeList;
     Data<bool> flipNormals;

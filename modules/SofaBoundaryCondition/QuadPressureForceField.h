@@ -66,8 +66,8 @@ public:
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces;
 
 protected:

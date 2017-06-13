@@ -69,7 +69,7 @@ protected:
 
 public:
     sofa::core::objectmodel::DataFileName vtkFilename;
-    Data<bool> fileFormat;	//0 for Simple Legacy Formats, 1 for XML File Format
+    Data<bool> fileFormat;	///< 0 for Simple Legacy Formats, 1 for XML File Format
     Data<defaulttype::Vec3Types::VecCoord> position;
     Data<bool> writeEdges;
     Data<bool> writeTriangles;

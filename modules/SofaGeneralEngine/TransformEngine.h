@@ -79,12 +79,12 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX; // input position
-    Data<VecCoord> f_outputX; // ouput position
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<defaulttype::Quaternion> quaternion; // quaternion rotation
-    Data<defaulttype::Vector3> scale; // scale
+    Data<VecCoord> f_inputX; ///< input position
+    Data<VecCoord> f_outputX; ///< ouput position
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<defaulttype::Quaternion> quaternion; ///< quaternion rotation
+    Data<defaulttype::Vector3> scale; ///< scale
     Data<bool> inverse;
 };
 

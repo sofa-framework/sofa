@@ -79,14 +79,14 @@ protected:
     Data< Coord >   m_minBox;                       ///< Lower bound of the liquid box.
     Data< Coord >   m_maxBox;                       ///< Upper bound of the liquid box.
 
-    Data <Real>     m_heightPlane;              //orthogonal to the gravity
+    Data <Real>     m_heightPlane;              ///< orthogonal to the gravity
 
     Data <Real>     m_fluidDensity;
     Data <Real>     m_fluidViscosity;
     Data <Real>     m_atmosphericPressure;
 
     Data<bool>      m_enableViscosity;
-    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
+    Data<bool>      m_turbulentFlow;    ///< 1 for turbulent, 0 for laminar
 
     sofa::helper::vector<ID> m_triangles;
 

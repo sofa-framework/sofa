@@ -56,16 +56,16 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<Deriv> pressure; // pressure is a vector with specified direction
-  	Data<MatSym3> cauchyStress; // the Cauchy stress applied on triangles
+    Data<Deriv> pressure; ///< pressure is a vector with specified direction
+  	Data<MatSym3> cauchyStress; ///< the Cauchy stress applied on triangles
 
     Data<sofa::helper::vector<unsigned int> > triangleList;
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
 
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
     Data<bool> p_showForces;
     Data<bool> p_useConstantForce;
 

@@ -92,9 +92,9 @@ public:
 
     virtual void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn );
 
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
-    Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)
-    Data<int> m_peak; // if 1 or 2 creates a peak at the end
+    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points along the circles around each point of the input object (10 by default)
+    Data<double> m_radius; ///< radius of the circles around each point of the input object (1 by default)
+    Data<int> m_peak; ///< if 1 or 2 creates a peak at the end
 
     container::RadiusContainer* radiusContainer;
 protected:

@@ -83,8 +83,8 @@ public:
 	virtual void reset();
 	virtual void handleEvent(core::objectmodel::Event*);
 
-	Data<double> d_minTimeSinceWakeUp; // Do not do anything before objects have been moving for this duration
-	Data<SReal> d_speedThreshold, d_rotationThreshold; // Put to sleep objects in which all particules move slower than this value (and rotate slower for rigid particles)
+	Data<double> d_minTimeSinceWakeUp; ///< Do not do anything before objects have been moving for this duration
+	Data<SReal> d_speedThreshold, d_rotationThreshold; ///< Put to sleep objects in which all particules move slower than this value (and rotate slower for rigid particles)
 
 protected:
     SleepController();

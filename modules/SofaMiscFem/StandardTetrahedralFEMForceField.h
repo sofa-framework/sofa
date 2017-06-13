@@ -155,7 +155,7 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<std::string> f_materialName; /// the name of the material
+   Data<std::string> f_materialName; ///< the name of the material
    Data<SetParameterArray> f_parameterSet;
    Data<SetAnisotropyDirectionArray> f_anisotropySet;
    Data<std::string> f_parameterFileName;

@@ -69,11 +69,11 @@ protected:
       * Data Fields
       */
     /// input
-    Data< Real > m_density; // kg * m^-3
+    Data< Real > m_density; ///< kg * m^-3
     Data< helper::vector< Vector3 > > m_positions;
     Data< helper::vector< MTriangle > > m_triangles;
     Data< helper::vector< MQuad > > m_quads;
-    Data< helper::vector< MPolygon > > m_polygons; // must be convex
+    Data< helper::vector< MPolygon > > m_polygons; ///< must be convex
 
     /// output
     Data< MassType > rigidMass;

@@ -88,12 +88,12 @@ protected:
     Data<Deriv> pressure;
     Data<helper::vector<unsigned int> > edgeIndices;
     Data<helper::vector<sofa::core::topology::Edge> > edges;
-    Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
-    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< helper::vector<Real> > p_intensity; // pressure intensity on edge normal
-    Data<Coord> p_binormal; // binormal of the 2D plane
+    Data<Deriv> normal; ///< the normal used to define the edge subjected to the pressure force
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
+    Data< SReal > arrowSizeCoef; ///< for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< helper::vector<Real> > p_intensity; ///< pressure intensity on edge normal
+    Data<Coord> p_binormal; ///< binormal of the 2D plane
     Data<bool> p_showForces;
 
 

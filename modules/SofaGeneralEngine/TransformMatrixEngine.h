@@ -59,8 +59,8 @@ public:
     virtual void reinit();
 
 protected:
-    Data<defaulttype::Matrix4> d_inT; // input transformation
-    Data<defaulttype::Matrix4> d_outT; // input transformation
+    Data<defaulttype::Matrix4> d_inT; ///< input transformation
+    Data<defaulttype::Matrix4> d_outT; ///< input transformation
 };
 
 /**
@@ -142,7 +142,7 @@ public:
     virtual void init();
 
 protected:
-    Data<defaulttype::Vector3> d_scale; // scale
+    Data<defaulttype::Vector3> d_scale; ///< scale
 };
 
 } // namespace engine
