@@ -38,8 +38,8 @@ fi
 
 force-one-lined-data-declarations() {
     rm -f "$TMP_FILE"
-    local grep_pattern='^[	 ]*Data[	 ]*<.*>[	 ]*[A-Za-z_-]*[	 ]*,[	 ]*.*;.*$'
-    grep -Er "$grep_pattern" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
+    local grep_pattern='^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*[A-Za-z_-]+[	 ]*,[	 ]*.*;.*$'
+    grep -Er --include \*.h "$grep_pattern" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
     count="$(wc -l < "$TMP_FILE")"
 
     i=1
@@ -54,8 +54,8 @@ force-one-lined-data-declarations() {
         fi
 
         # CONVERT one-lined Data declarations to separated Data declarations.
-        while grep -q "$grep_pattern" "$file"; do
-            sed -ie 's/^\([	 ]*\)\(Data[	 ]*<.*>[	 ]*\)\([A-Za-z_-]*\)[	 ]*,[	 ]*\(.*\);\(.*\)$/\1\2\3;\5\n\1\2\4;\5/g' "$file"
+        while grep -Eq "$grep_pattern" "$file"; do
+            sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*\)\([A-Za-z_-]*\)[	 ]*,[	 ]*\(.*\);\(.*\)$/\1\2;\4\n\1\3;\4/g' "$file"
             rm -f "$file"e 2> /dev/null # Created by Windows only
         done
     done < "$TMP_FILE"
@@ -73,7 +73,7 @@ fix-inline-comment() {
     local member="$2"
 
     # FIX inline comments: "// DataComment" and "/// DataComment" to "///< DataComment"
-    if grep -q '^.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*///? ?$' "$file_h"; then
+    if grep -q '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*///? ?$' "$file_h"; then
         sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/? ?\(.*\)$/\1\/\/\/< \2/g' "$file_h"
         rm -f "$file_h"e 2> /dev/null # Created by Windows only
     fi
@@ -88,9 +88,9 @@ add-comment() {
     # Warning: if two similar member declarations are detected, we only care about the first one
     # TODO: handle the others
     if [[ "$FORCE" == "true" ]]; then # PERMISSIVE PATTERN
-        line_number="$(grep -n '^.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     else # STRICT PATTERN
-        line_number="$(grep -n '^.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
+        line_number="$(grep -n '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*$' "$file_h" | grep -Eo '^[^:]+' | cut -f1 -d: | head -1)"
     fi
     previous_line_number=$((line_number-1)) # get previous line
     if [[ $previous_line_number < 1 ]]; then
@@ -123,7 +123,7 @@ generate-doxygen-data-comments() {
     rm -f "$TMP_FILE"
     # Count initData calls
     echo "Counting initData calls..."
-    grep -Er "^[^/]*initData[	 ]*\(.*\)[	 ]*\).*$" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
+    grep -Er --include \*.h --include \*.inl --include \*.cpp "^[^/]*initData[	 ]*\(.*\)[	 ]*\).*$" "$SRC_DIR" | sort | uniq > "$TMP_FILE"
     count="$(wc -l < "$TMP_FILE")"
     echo "$count calls counted."
 
