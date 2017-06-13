@@ -150,15 +150,23 @@ public:
     sofa::core::objectmodel::Data<bool> d_frozen;
 
     //Parameters
-    sofa::core::objectmodel::Data<double> d_edgeSize, d_facetAngle, d_facetSize, d_facetApproximation;
+    sofa::core::objectmodel::Data<double> d_edgeSize;
+    sofa::core::objectmodel::Data<double> d_facetAngle;
+    sofa::core::objectmodel::Data<double> d_facetSize;
+    sofa::core::objectmodel::Data<double> d_facetApproximation;
     sofa::core::objectmodel::Data<double> d_cellRatio;
     sofa::core::objectmodel::Data<double> d_cellSize;
     sofa::core::objectmodel::Data< sofa::helper::vector<int> > d_label;
     sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellSize;
     sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellData;
-    sofa::core::objectmodel::Data<bool> d_odt, d_lloyd, d_perturb, d_exude;
-    sofa::core::objectmodel::Data<int> d_odtMaxIt, d_lloydMaxIt;
-    sofa::core::objectmodel::Data<double> d_perturbMaxTime, d_exudeMaxTime;
+    sofa::core::objectmodel::Data<bool> d_odt;
+    sofa::core::objectmodel::Data<bool> d_lloyd;
+    sofa::core::objectmodel::Data<bool> d_perturb;
+    sofa::core::objectmodel::Data<bool> d_exude;
+    sofa::core::objectmodel::Data<int> d_odtMaxIt;
+    sofa::core::objectmodel::Data<int> d_lloydMaxIt;
+    sofa::core::objectmodel::Data<double> d_perturbMaxTime;
+    sofa::core::objectmodel::Data<double> d_exudeMaxTime;
     sofa::core::objectmodel::Data<int> d_ordering;
 
     // Display

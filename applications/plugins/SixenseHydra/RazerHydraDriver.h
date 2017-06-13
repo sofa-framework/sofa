@@ -68,10 +68,14 @@ public:
 	Data<double> scale;
 	Data<Vec3d> positionBase;
     Data<Quat> orientationBase;
-    Data<Vec3d> positionFirstTool, positionSecondTool;
-    Data<Quat> orientationFirstTool, orientationSecondTool;
-	Data< bool > triggerJustPressedFirstTool, triggerJustPressedSecondTool;
-	Data< float > triggerValueFirstTool, triggerValueSecondTool;
+    Data<Vec3d> positionFirstTool;
+    Data<Vec3d> positionSecondTool;
+    Data<Quat> orientationFirstTool;
+    Data<Quat> orientationSecondTool;
+	Data< bool > triggerJustPressedFirstTool;
+	Data< bool > triggerJustPressedSecondTool;
+	Data< float > triggerValueFirstTool;
+	Data< float > triggerValueSecondTool;
 	Data< bool > useBothTools;
 	Data< bool > displayTools;
 

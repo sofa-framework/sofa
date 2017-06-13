@@ -73,7 +73,8 @@ public:
     Data<VecCoord> f_X0;
     Data<VecCoord> f_X;
     VecCoord local_X0;
-    Data<double> from_scale, to_scale;
+    Data<double> from_scale;
+    Data<double> to_scale;
 
     Data<double> d_scale;
     Data<Vec3d> d_axis;

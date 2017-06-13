@@ -75,7 +75,9 @@ public:
     sofa::core::objectmodel::Data<VecCoord> f_points;
 
     //Parameters
-    sofa::core::objectmodel::Data<double> p_yErrorCoeff, p_sideErrorCoeff, p_realSideErrorCoeff;
+    sofa::core::objectmodel::Data<double> p_yErrorCoeff;
+    sofa::core::objectmodel::Data<double> p_sideErrorCoeff;
+    sofa::core::objectmodel::Data<double> p_realSideErrorCoeff;
 
     void update();
 

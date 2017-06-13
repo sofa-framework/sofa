@@ -88,7 +88,10 @@ public:
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     gpu::cuda::CudaVector<int> velems;
 
-    Data<defaulttype::Vec4f> matAmbient, matDiffuse, matSpecular, matEmissive;
+    Data<defaulttype::Vec4f> matAmbient;
+    Data<defaulttype::Vec4f> matDiffuse;
+    Data<defaulttype::Vec4f> matSpecular;
+    Data<defaulttype::Vec4f> matEmissive;
     Data<float> matShininess;
     Data<bool> useVBO;
     Data<bool> computeNormals;

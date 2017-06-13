@@ -68,7 +68,9 @@ public:
 private:
     sofa::core::objectmodel::Data<VecCoord> f_points;
 
-    sofa::core::objectmodel::Data<Real> p_dx, p_dy, p_dz;
+    sofa::core::objectmodel::Data<Real> p_dx;
+    sofa::core::objectmodel::Data<Real> p_dy;
+    sofa::core::objectmodel::Data<Real> p_dz;
     sofa::core::objectmodel::Data<Real> p_scale;
     sofa::core::objectmodel::Data<bool> p_nullPoint;
 

@@ -43,7 +43,8 @@ public:
     typedef typename TIn::Real Real;
 	
 	Data< pairs_type > pairs;
-	Data< bool > rotation, translation;
+	Data< bool > rotation;
+	Data< bool > translation;
 //	Data< bool > out_joint_angle;
 	
 	Data< bool > exact_dlog;

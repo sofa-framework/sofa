@@ -84,9 +84,11 @@ public:
     void applyController(void);
 
 private:
-    Data< double > virtualTime; ///<
-    Data< double > step1, step2, step3; ///<
-    Data< double > maxMotion; ///<
+    Data< double > virtualTime;
+    Data< double > step1;
+    Data< double > step2;
+    Data< double > step3;
+    Data< double > maxMotion;
     int mousePosX, mousePosY; ///< Last recorded mouse position
     int mouseWheel;
     double ARTrackMotion;

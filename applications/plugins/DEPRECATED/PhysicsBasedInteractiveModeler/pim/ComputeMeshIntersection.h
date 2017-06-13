@@ -68,8 +68,12 @@ public:
 
     void update();
 
-    Data<VecCoord> d_muscleLayerVertex, d_fatLayerVertex, d_intersectionVertex;
-    Data<VecTriangles> d_muscleLayerTriangles, d_fatLayerTriangles, d_intersectionTriangles;
+    Data<VecCoord> d_muscleLayerVertex;
+    Data<VecCoord> d_fatLayerVertex;
+    Data<VecCoord> d_intersectionVertex;
+    Data<VecTriangles> d_muscleLayerTriangles;
+    Data<VecTriangles> d_fatLayerTriangles;
+    Data<VecTriangles> d_intersectionTriangles;
     Data< vector<Quad> > d_intersectionQuads;
     Data< vector<unsigned int> > d_index;
 

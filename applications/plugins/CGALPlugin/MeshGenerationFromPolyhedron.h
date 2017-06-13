@@ -101,15 +101,23 @@ public:
     sofa::core::objectmodel::Data<bool> frozen;
 
     //Parameters
-    sofa::core::objectmodel::Data<double> facetAngle, facetSize, facetApproximation;
-    sofa::core::objectmodel::Data<double> cellRatio, cellSize;
+    sofa::core::objectmodel::Data<double> facetAngle;
+    sofa::core::objectmodel::Data<double> facetSize;
+    sofa::core::objectmodel::Data<double> facetApproximation;
+    sofa::core::objectmodel::Data<double> cellRatio;
+    sofa::core::objectmodel::Data<double> cellSize;
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
     sofa::core::objectmodel::Data<double> sharpEdgeAngle;
     sofa::core::objectmodel::Data<double> sharpEdgeSize;
 #endif
-    sofa::core::objectmodel::Data<bool> odt, lloyd, perturb, exude;
-    sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
-    sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
+    sofa::core::objectmodel::Data<bool> odt;
+    sofa::core::objectmodel::Data<bool> lloyd;
+    sofa::core::objectmodel::Data<bool> perturb;
+    sofa::core::objectmodel::Data<bool> exude;
+    sofa::core::objectmodel::Data<int> odt_max_it;
+    sofa::core::objectmodel::Data<int> lloyd_max_it;
+    sofa::core::objectmodel::Data<double> perturb_max_time;
+    sofa::core::objectmodel::Data<double> exude_max_time;
     sofa::core::objectmodel::Data<int> ordering;
     sofa::core::objectmodel::Data<bool> constantMeshProcess;
     sofa::core::objectmodel::Data<unsigned int> meshingSeed;

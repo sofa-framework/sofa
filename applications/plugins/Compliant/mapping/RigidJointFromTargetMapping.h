@@ -48,7 +48,8 @@ public:
     typedef helper::vector< coord_type > targets_type;
     Data< targets_type > targets;
 
-    Data< bool > rotation, translation;
+    Data< bool > rotation;
+    Data< bool > translation;
 	Data< bool > exact_dlog;
 
     RigidJointFromTargetMapping()
@@ -218,7 +219,8 @@ public:
 
     static const coord_type s_worldFrame;
 
-    Data< bool > rotation, translation;
+    Data< bool > rotation;
+    Data< bool > translation;
 //    Data< bool > exact_dlog;
 
     RigidJointFromWorldFrameMapping()
