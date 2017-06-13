@@ -64,22 +64,22 @@ public:
     Data< TransformType > transform;
 
     typedef defaulttype::RigidCoord<3,Real> RigidCoord;
-    Data< RigidCoord > d_position;
+    Data< RigidCoord > d_position; ///< position
 
     /** @name  Outputs */
     //@{
-    Data< Real > d_mass;
-    Data< Coord > d_inertia;
+    Data< Real > d_mass; ///< mass
+    Data< Coord > d_inertia; ///< axis-aligned inertia tensor
 
     typedef defaulttype::RigidMass<3,Real> RigidMass;
     typedef typename RigidMass::Mat3x3 Mat3x3;
-    Data< RigidMass > d_rigidMass;
+    Data< RigidMass > d_rigidMass; ///< rigidMass
     //@}
 
     /** @name  Inputs */
     //@{
-    Data< Real > d_density;
-    Data< bool > d_mult;
+    Data< Real > d_density; ///< density (in kg/m^3)
+    Data< bool > d_mult; ///< multiply density by image intensity?
     //@}
 
 

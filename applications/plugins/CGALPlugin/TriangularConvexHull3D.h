@@ -80,11 +80,11 @@ public:
     }
 
     //Inputs
-    sofa::core::objectmodel::Data<VecCoord> f_X0;
+    sofa::core::objectmodel::Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> f_newX0;
-    sofa::core::objectmodel::Data<SeqTriangles> f_triangles;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0; ///< New Rest position coordinates
+    sofa::core::objectmodel::Data<SeqTriangles> f_triangles; ///< List of triangles
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)

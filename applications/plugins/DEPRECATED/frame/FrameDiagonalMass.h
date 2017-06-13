@@ -75,7 +75,7 @@ public:
     /// to display the center of gravity of the system
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;
-    Data< float > damping;
+    Data< float > damping; ///< add a force which is "- damping * speed"
 
     FrameDiagonalMass();
     ~FrameDiagonalMass();

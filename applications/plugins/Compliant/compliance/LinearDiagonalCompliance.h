@@ -32,8 +32,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef helper::WriteOnlyAccessor< Data< typename Inherit::VecDeriv > > WriteOnlyVecDeriv;
 
-    Data< Real > d_complianceMin;
-    Data< Real > d_errorMin;
+    Data< Real > d_complianceMin; ///< Minimum compliance
+    Data< Real > d_errorMin; ///< complianceMin is reached for this error value
 
     virtual void init();
 

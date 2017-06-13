@@ -58,10 +58,10 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > isoValue;
-    Data< defaulttype::Vec<3,unsigned int> > subdiv;
-    Data< bool > invertNormals;
-    Data< bool > showMesh;
+    Data< Real > isoValue; ///< pixel value to extract isosurface
+    Data< defaulttype::Vec<3,unsigned int> > subdiv; ///< number of subdividions in x,y,z directions (use image dimension if =0)
+    Data< bool > invertNormals; ///< invert triangle vertex order
+    Data< bool > showMesh; ///< show reconstructed mesh
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -77,13 +77,13 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
+    Data< SeqTriangles > triangles; ///< output triangles
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MarchingCubesEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }

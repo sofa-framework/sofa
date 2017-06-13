@@ -70,8 +70,8 @@ public:
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<helper::OptionsGroup> method;
-    Data< ParamTypes > param;
+    Data<helper::OptionsGroup> method; ///< method
+    Data< ParamTypes > param; ///< param
 
     virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
     {

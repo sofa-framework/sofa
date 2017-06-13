@@ -368,7 +368,7 @@ public:
 
 
 
-    Data<bool> assemble;
+    Data<bool> assemble; ///< Assemble the matrices (Jacobian and Geometric Stiffness) or use optimized matrix/vector multiplications
     Data< bool > d_parallel;		///< use openmp ?
 
 protected:

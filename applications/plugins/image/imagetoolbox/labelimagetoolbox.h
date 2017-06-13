@@ -79,7 +79,7 @@ public:
     
     
     
-    Data< bool > d_islinkedToToolBox;
+    Data< bool > d_islinkedToToolBox; ///< true if a toobbox use this Label
     Data< sofa::defaulttype::Vec4d > d_color;
 
 //    virtual std::string getTemplateName() const    { return templateName(this);    }

@@ -69,7 +69,7 @@ public:
     typedef CudaPoint Element;
     friend class CudaPoint;
 
-    Data<int> groupSize;
+    Data<int> groupSize; ///< number of point per collision element
 
     CudaPointModel();
 

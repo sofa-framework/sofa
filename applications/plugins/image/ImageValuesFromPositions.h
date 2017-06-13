@@ -143,14 +143,14 @@ public:
 
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< input positions
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
     typedef helper::vector<Real> valuesType;
     typedef helper::WriteOnlyAccessor<Data< valuesType > > waValues;
     Data< valuesType > values;  ///< output interpolated values
-    Data< Real > outValue;
+    Data< Real > outValue; ///< default value outside image
 
 
     virtual std::string getTemplateName() const    { return templateName(this);    }

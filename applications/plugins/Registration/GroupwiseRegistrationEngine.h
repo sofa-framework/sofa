@@ -60,7 +60,7 @@ public:
 
     typedef defaulttype::Mat<sizeT,sizeT,Real> affine;
 
-    Data<unsigned int> f_nbInputs;
+    Data<unsigned int> f_nbInputs; ///< Number of input vectors
     helper::vectorData<VecCoord> vf_inputs;
     helper::vectorData<VecCoord> vf_outputs;
 

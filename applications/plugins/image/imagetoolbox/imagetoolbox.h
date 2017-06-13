@@ -68,7 +68,7 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< input image
     
     // @name ToolBoxData
     /**@{*/

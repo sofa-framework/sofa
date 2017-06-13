@@ -224,7 +224,7 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< image
 
     // transform data
     typedef SReal Real;
@@ -236,9 +236,9 @@ public:
     // output file
     sofa::core::objectmodel::DataFileName m_filename;
 
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
 
 
     virtual std::string getTemplateName() const    { return templateName(this);    }

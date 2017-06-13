@@ -119,10 +119,10 @@ public:
     // Data fields will automatically appear in qt-based GUI and in read/write XML scene files
     // in this simple example, there is only one young modulus for all elements and one similar mass to every particle
     // Note that Data must be initialized in the constructor, giving the default value, the field name and a description
-    Data<Real> _youngModulus;
-    Data<Real> _poissonRatio;
-    Data<Real> _totalMass;
-    Data<unsigned> _subdivisions;
+    Data<Real> _youngModulus; ///< Uniform Young modulus
+    Data<Real> _poissonRatio; ///< Uniform Poisson ratio
+    Data<Real> _totalMass; ///< Total Mass (lumped and uniformly distributed on particles
+    Data<unsigned> _subdivisions; ///< nb grid subdivisions
 
 
 

@@ -67,9 +67,9 @@ public:
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
 
     Data<Indices> f_index;   ///< Indices of the constrained frames
-    Data<unsigned> d_method;
+    Data<unsigned> d_method; ///< 0: polar, 1: svd, 2: approximation
 
-    Data<double> _drawSize;
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     VecCoord oldPos;
 

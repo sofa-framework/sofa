@@ -69,12 +69,12 @@ protected:
     virtual void update();
 
 public:
-    sofa::core::objectmodel::Data<std::string> serverName;
-    sofa::core::objectmodel::Data<std::string> clientName;
-    sofa::core::objectmodel::Data<double> scale;
+    sofa::core::objectmodel::Data<std::string> serverName; ///< NatNet server address (default to localhost)
+    sofa::core::objectmodel::Data<std::string> clientName; ///< IP to bind this client to (default to localhost)
+    sofa::core::objectmodel::Data<double> scale; ///< Scale factor to apply to coordinates (using the global frame as fixed point)
 
-    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > trackedMarkers;
-    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > otherMarkers;
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > trackedMarkers; ///< Position of received known markers
+    sofa::core::objectmodel::Data<sofa::helper::vector<sofa::defaulttype::Vec3f> > otherMarkers; ///< Position of received unknown markers
 
     sofa::core::objectmodel::MultiLink<OptiTrackNatNetClient, OptiTrackNatNetDataReceiver, 0> natNetReceivers;
 
@@ -86,10 +86,10 @@ public:
 
     virtual void draw(const sofa::core::visual::VisualParams* vparams);
 
-    sofa::core::objectmodel::Data<float> drawTrackedMarkersSize;
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor;
-    sofa::core::objectmodel::Data<float> drawOtherMarkersSize;
-    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawOtherMarkersColor;
+    sofa::core::objectmodel::Data<float> drawTrackedMarkersSize; ///< Size of displayed markers
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawTrackedMarkersColor; ///< Color of displayed markers
+    sofa::core::objectmodel::Data<float> drawOtherMarkersSize; ///< Size of displayed unknown markers
+    sofa::core::objectmodel::Data<sofa::defaulttype::Vec4f> drawOtherMarkersColor; ///< Color of displayed unknown markers
 
 public:
 

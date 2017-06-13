@@ -92,9 +92,9 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< input image
     
-    Data<bool> showSlicedModels;
+    Data<bool> showSlicedModels; ///< display visual models on cutPlanes
 
     // @name Histogram
     /**@{*/
@@ -135,7 +135,7 @@ public:
     Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
     
-    Data <int> scroll;
+    Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;

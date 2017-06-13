@@ -102,8 +102,8 @@ public:
     typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
 
-    Data<helper::OptionsGroup> filter;
-    Data< ParamTypes > param;
+    Data<helper::OptionsGroup> filter; ///< Filter
+    Data< ParamTypes > param; ///< Parameters
 
     Data< InImageTypes > inputImage;
     Data< TransformType > inputTransform;

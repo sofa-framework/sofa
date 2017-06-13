@@ -52,9 +52,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _poissonRatio;
-    Data<bool > f_PSDStabilization;
+    Data<helper::vector<Real> > _youngModulus; ///< stiffness
+    Data<helper::vector<Real> > _poissonRatio; ///< incompressibility ]-1,0.5[
+    Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
     virtual void reinit()

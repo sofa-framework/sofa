@@ -58,14 +58,14 @@ public:
 
     typedef SReal Real;
 
-    Data< bool > showMesh;
+    Data< bool > showMesh; ///< show reconstructed mesh
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
-    Data< ImageTypes > background;
+    Data< ImageTypes > image; ///< Voronoi image
+    Data< ImageTypes > background; ///< Optional Voronoi image of the background to surface details
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
@@ -75,20 +75,20 @@ public:
     typedef helper::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef typename core::topology::BaseMeshTopology::Edge Edge;
     typedef typename core::topology::BaseMeshTopology::SeqEdges SeqEdges;
     typedef helper::ReadAccessor<Data< SeqEdges > > raEdges;
     typedef helper::WriteOnlyAccessor<Data< SeqEdges > > waEdges;
-    Data< SeqEdges > edges;
+    Data< SeqEdges > edges; ///< output edges
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
+    Data< SeqTriangles > triangles; ///< output triangles
 
-    Data< Real > minLength;
+    Data< Real > minLength; ///< minimun edge length in pixels
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const VoronoiToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }

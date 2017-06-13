@@ -152,8 +152,8 @@ private:
     sofa::helper::set<Coord> parsedHexasCoords;
     sofa::helper::set<Coord> removedHexasCoords;
     sofa::helper::set<Coord> collisionTrianglesCoords;
-    Data<bool> showElements;
-    Data<bool> showVolumes;
+    Data<bool> showElements; ///< Display parsed elements. Blue: triangles parsed. Green: parsed hexas out of intersection volumes. Red: parsed hexas inside intersection volumes to remove.
+    Data<bool> showVolumes; ///< Display intersection volumes
 };
 
 }

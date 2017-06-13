@@ -137,40 +137,40 @@ public:
     }
 
     //Inputs    
-    sofa::core::objectmodel::DataFileName d_filename;
-    sofa::core::objectmodel::Data< ImageTypes > d_image;
-    sofa::core::objectmodel::Data< TransformType > d_transform;
-    sofa::core::objectmodel::Data<VecCoord> d_features;
+    sofa::core::objectmodel::DataFileName d_filename; ///< Image file
+    sofa::core::objectmodel::Data< ImageTypes > d_image; ///< image input
+    sofa::core::objectmodel::Data< TransformType > d_transform; ///< 12-param vector for trans, rot, scale, ...
+    sofa::core::objectmodel::Data<VecCoord> d_features; ///< features (1D) that will be preserved in the mesh
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> d_newX0;
-    sofa::core::objectmodel::Data<SeqTetrahedra> d_tetrahedra;
-    sofa::core::objectmodel::Data<sofa::helper::vector<int> > d_tetraDomain;
-    sofa::core::objectmodel::Data<sofa::helper::vector<double> > d_outputCellData;
-    sofa::core::objectmodel::Data<bool> d_frozen;
+    sofa::core::objectmodel::Data<VecCoord> d_newX0; ///< New Rest position coordinates from the tetrahedral generation
+    sofa::core::objectmodel::Data<SeqTetrahedra> d_tetrahedra; ///< List of tetrahedra
+    sofa::core::objectmodel::Data<sofa::helper::vector<int> > d_tetraDomain; ///< domain of each tetrahedron
+    sofa::core::objectmodel::Data<sofa::helper::vector<double> > d_outputCellData; ///< Output cell data
+    sofa::core::objectmodel::Data<bool> d_frozen; ///< true to prohibit recomputations of the mesh
 
     //Parameters
-    sofa::core::objectmodel::Data<double> d_edgeSize;
-    sofa::core::objectmodel::Data<double> d_facetAngle;
-    sofa::core::objectmodel::Data<double> d_facetSize;
-    sofa::core::objectmodel::Data<double> d_facetApproximation;
-    sofa::core::objectmodel::Data<double> d_cellRatio;
-    sofa::core::objectmodel::Data<double> d_cellSize;
-    sofa::core::objectmodel::Data< sofa::helper::vector<int> > d_label;
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellSize;
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellData;
-    sofa::core::objectmodel::Data<bool> d_odt;
-    sofa::core::objectmodel::Data<bool> d_lloyd;
-    sofa::core::objectmodel::Data<bool> d_perturb;
-    sofa::core::objectmodel::Data<bool> d_exude;
-    sofa::core::objectmodel::Data<int> d_odtMaxIt;
-    sofa::core::objectmodel::Data<int> d_lloydMaxIt;
-    sofa::core::objectmodel::Data<double> d_perturbMaxTime;
-    sofa::core::objectmodel::Data<double> d_exudeMaxTime;
-    sofa::core::objectmodel::Data<int> d_ordering;
+    sofa::core::objectmodel::Data<double> d_edgeSize; ///< Edge size criterium (needed for polyline features
+    sofa::core::objectmodel::Data<double> d_facetAngle; ///< Lower bound for the angle in degrees of the surface mesh facets
+    sofa::core::objectmodel::Data<double> d_facetSize; ///< Uniform upper bound for the radius of the surface Delaunay balls
+    sofa::core::objectmodel::Data<double> d_facetApproximation; ///< Upper bound for the center-center distances of the surface mesh facets
+    sofa::core::objectmodel::Data<double> d_cellRatio; ///< Upper bound for the radius-edge ratio of the tetrahedra
+    sofa::core::objectmodel::Data<double> d_cellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh
+    sofa::core::objectmodel::Data< sofa::helper::vector<int> > d_label; ///< label to be resized to a specific cellSize
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh by label
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellData; ///< 1D cell data by label
+    sofa::core::objectmodel::Data<bool> d_odt; ///< activate odt optimization
+    sofa::core::objectmodel::Data<bool> d_lloyd; ///< activate lloyd optimization
+    sofa::core::objectmodel::Data<bool> d_perturb; ///< activate perturb optimization
+    sofa::core::objectmodel::Data<bool> d_exude; ///< activate exude optimization
+    sofa::core::objectmodel::Data<int> d_odtMaxIt; ///< odt max iteration number
+    sofa::core::objectmodel::Data<int> d_lloydMaxIt; ///< lloyd max iteration number
+    sofa::core::objectmodel::Data<double> d_perturbMaxTime; ///< perturb maxtime
+    sofa::core::objectmodel::Data<double> d_exudeMaxTime; ///< exude max time
+    sofa::core::objectmodel::Data<int> d_ordering; ///< Output points and elements ordering (0 = none, 1 = longest bbox axis)
 
     // Display
-    sofa::core::objectmodel::Data<bool> d_drawTetras;
+    sofa::core::objectmodel::Data<bool> d_drawTetras; ///< display generated tetra mesh
 
     sofa::helper::vector<int> m_tetraDomainLabels;
 

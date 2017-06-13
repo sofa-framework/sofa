@@ -70,13 +70,13 @@ public:
 
     void draw();
 
-    Data<VecCoord> f_X0;
-    Data<VecCoord> f_X;
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<VecCoord> f_X; ///< scaled position coordiates
     VecCoord local_X0;
     Data<double> from_scale;
     Data<double> to_scale;
 
-    Data<double> d_scale;
+    Data<double> d_scale; ///< initial scale applied to the degrees of freedom
     Data<Vec3d> d_axis;
     Data<Vec3d> d_center;
     Data<double> d_angle;

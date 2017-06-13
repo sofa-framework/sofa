@@ -93,8 +93,8 @@ public:
     int nbElementPerVertex;                 // max number of elements connected to a vertex
 
     // Material properties
-    Data<Real> poissonRatio;
-    Data<Real> youngModulus;
+    Data<Real> poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> youngModulus; ///< Young modulus in Hooke's law
     float Lambda, Mu;                       // Lame coefficients
 
     // TLED configuration

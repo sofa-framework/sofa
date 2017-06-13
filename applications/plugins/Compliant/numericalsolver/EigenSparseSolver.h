@@ -47,7 +47,7 @@ class EigenSparseSolver : public KKTSolver {
 
 
     Data<bool> d_schur;
-    Data<SReal> d_regularization;
+    Data<SReal> d_regularization; ///< Optional diagonal Tikhonov regularization on constraints
     /// if the sparsity pattern remains similar from one step to another,
     /// the factorization can be faster
     Data<bool> d_trackSparsityPattern;
@@ -105,8 +105,8 @@ public:
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseIterativeSolver,LinearSolver,symmetric),SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric));
 
-    Data<unsigned> d_iterations;
-    Data<SReal> d_tolerance;
+    Data<unsigned> d_iterations; ///< max iterations
+    Data<SReal> d_tolerance; ///< tolerance
 
     EigenSparseIterativeSolver();
 

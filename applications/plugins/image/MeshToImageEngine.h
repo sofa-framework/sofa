@@ -69,10 +69,10 @@ public:
 
     Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
     typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels;
-    Data< bool > rotateImage;
-    Data< unsigned int > padSize;
-    Data< unsigned int > subdiv;
+    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
+    Data< unsigned int > padSize; ///< size of border in number of voxels
+    Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -118,13 +118,13 @@ public:
     helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
-    Data< ValueType > backgroundValue;
+    Data< ValueType > backgroundValue; ///< pixel value at background
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to voxelize (Note that the last one write on the previous ones)
 
-    Data<bool> gridSnap;
+    Data<bool> gridSnap; ///< align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)
 
-    Data<bool> worldGridAligned;
+    Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
 
     virtual std::string getTemplateName() const    { return templateName(this);    }

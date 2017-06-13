@@ -68,19 +68,19 @@ public:
 
     void update();
 
-    Data<VecCoord> d_muscleLayerVertex;
-    Data<VecCoord> d_fatLayerVertex;
-    Data<VecCoord> d_intersectionVertex;
-    Data<VecTriangles> d_muscleLayerTriangles;
-    Data<VecTriangles> d_fatLayerTriangles;
-    Data<VecTriangles> d_intersectionTriangles;
-    Data< vector<Quad> > d_intersectionQuads;
+    Data<VecCoord> d_muscleLayerVertex; ///< Muscle Layer vertex position
+    Data<VecCoord> d_fatLayerVertex; ///< Fat Layer vertex position
+    Data<VecCoord> d_intersectionVertex; ///< Intersection vertex position
+    Data<VecTriangles> d_muscleLayerTriangles; ///< Muscle Layer triangles
+    Data<VecTriangles> d_fatLayerTriangles; ///< Fat Layer triangles
+    Data<VecTriangles> d_intersectionTriangles; ///< Intersection triangles
+    Data< vector<Quad> > d_intersectionQuads; ///< Intersection Quads
     Data< vector<unsigned int> > d_index;
 
     MeshTopology topology;
     std::map<unsigned int, unsigned int> intersectionIndices;
-    Data<bool> d_print_log;
-    Data<double> d_epsilon;
+    Data<bool> d_print_log; ///< Print log
+    Data<double> d_epsilon; ///< min dsitance betbeen the fat and the muscle
 
     void computeIntersectionLayerVertex();
     void computeIntersectionLayerTriangles();

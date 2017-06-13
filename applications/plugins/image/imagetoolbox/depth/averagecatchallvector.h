@@ -79,9 +79,9 @@ public:
 
     }
 
-    Data< helper::vector<Type> > _data;
-    Data< helper::vector<Type> > _data1;
-    Data< helper::vector<Type> > _data2;
+    Data< helper::vector<Type> > _data; ///< data_out
+    Data< helper::vector<Type> > _data1; ///< data_in1
+    Data< helper::vector<Type> > _data2; ///< data_in2
 
 protected:
 

@@ -36,8 +36,8 @@ public:
 
     typedef typename TIn::Real Real;
 
-    Data< bool > rotation;
-    Data< bool > translation;
+    Data< bool > rotation; ///< compute relative rotation
+    Data< bool > translation; ///< compute relative translation
 	
 	Data< bool > exact_dlog;
 
