@@ -50,6 +50,7 @@ namespace visualmodel
 
 using namespace helper::gl;
 using namespace simulation;
+using namespace core::objectmodel;
 using namespace core::visual;
 
 SOFA_DECL_CLASS(OrderIndependentTransparencyManager)
@@ -58,19 +59,35 @@ int OrderIndependentTransparencyManagerClass = core::RegisterObject("OrderIndepe
         .add< OrderIndependentTransparencyManager >()
         ;
 
-class VisualOITDrawVisitor : public VisualDrawVisitor
+class VisualOITDrawVisitor : public Visitor
 {
 public:
-    VisualOITDrawVisitor(core::visual::VisualParams* params, GLSLShader* oitShader)
-        : VisualDrawVisitor(params)
-        , shader(oitShader)
+    VisualOITDrawVisitor(VisualParams* params, GLSLShader* oitShader)
+        : Visitor(params)
+        , visualParams(params)
+        , defaultOITShader(oitShader)
+        , nodeOITShaders()
     {
     }
 
-    void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
+    Result processNodeTopDown(Node* node);
+    void processNodeBottomUp(Node* node);
 
-public:
-    GLSLShader* shader;
+    void fwdVisualModel(Node* node, VisualModel* vm);
+    void bwdVisualModel(Node* node, VisualModel* vm);
+    void processVisualModel(Node* node, VisualModel* vm);
+
+    virtual const char* getCategoryName() const { return "visual"; }
+    virtual const char* getClassName() const { return "VisualOITDrawVisitor"; }
+
+protected:
+    Shader* getShader(Node* node) const;
+    Shader* getShader(Node* node, const TagSet& t) const;
+
+private:
+    VisualParams* visualParams;
+    GLSLShader* defaultOITShader;
+    std::stack<GLSLShader*> nodeOITShaders;
 
 };
 
@@ -84,16 +101,6 @@ OrderIndependentTransparencyManager::OrderIndependentTransparencyManager()
 }
 
 OrderIndependentTransparencyManager::~OrderIndependentTransparencyManager()
-{
-
-}
-
-void OrderIndependentTransparencyManager::init()
-{
-
-}
-
-void OrderIndependentTransparencyManager::bwdInit()
 {
 
 }
@@ -126,43 +133,6 @@ void OrderIndependentTransparencyManager::initVisual()
     compositionShader.SetInt(compositionShader.GetVariable("RevealageSampler"), 1);
     compositionShader.TurnOff();
 }
-
-void OrderIndependentTransparencyManager::fwdDraw(core::visual::VisualParams* /*vp*/)
-{
-
-}
-
-void OrderIndependentTransparencyManager::bwdDraw(core::visual::VisualParams* )
-{
-
-}
-
-void OrderIndependentTransparencyManager::draw(const core::visual::VisualParams* )
-{
-    // debug draw
-}
-
-void OrderIndependentTransparencyManager::reinit()
-{
-
-}
-
-void OrderIndependentTransparencyManager::preDrawScene(VisualParams* /*vp*/)
-{
-
-}
-
-//static void DrawQuad(float offset, float scale = 1.0f)
-//{
-//    glBegin(GL_QUADS);
-//    {
-//        glVertex3f(-scale, -scale, offset);
-//        glVertex3f( scale, -scale, offset);
-//        glVertex3f( scale,  scale, offset);
-//        glVertex3f(-scale,  scale, offset);
-//    }
-//    glEnd();
-//}
 
 static void DrawFullScreenQuad()
 {
@@ -201,7 +171,7 @@ static void DrawFullScreenQuad()
     glEnable(GL_CULL_FACE);
 }
 
-bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
+bool OrderIndependentTransparencyManager::drawScene(VisualParams* visualParams)
 {
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -213,7 +183,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     glClear(GL_DEPTH_BUFFER_BIT);
     glDepthMask(GL_TRUE);
 
-    drawOpaques(vp);
+    drawOpaques(visualParams);
 
 // draw transparents in a fbo
 
@@ -244,7 +214,7 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
 
     accumulationShader.TurnOn();
     accumulationShader.SetFloat(accumulationShader.GetVariable("DepthScale"), depthScale.getValue());
-    drawTransparents(vp, &accumulationShader);
+    drawTransparents(visualParams, &accumulationShader);
     accumulationShader.TurnOff();
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousDrawFBO);
@@ -269,45 +239,28 @@ bool OrderIndependentTransparencyManager::drawScene(VisualParams* vp)
     return true;
 }
 
-void OrderIndependentTransparencyManager::drawOpaques(VisualParams* vp)
+void OrderIndependentTransparencyManager::drawOpaques(VisualParams* visualParams)
 {
     Node* node = dynamic_cast<Node*>(getContext());
     if(!node)
         return;
 
-    vp->pass() = sofa::core::visual::VisualParams::Std;
-    VisualDrawVisitor drawStandardVisitor(vp);
+    visualParams->pass() = VisualParams::Std;
+    VisualDrawVisitor drawStandardVisitor(visualParams);
     drawStandardVisitor.setTags(this->getTags());
     node->execute(&drawStandardVisitor);
-
-//    glColor4f(0.75f, 0.75f, 0.75f, 1.0f);
-//    DrawQuad(-2.0f, 10.0f);
 }
 
-void OrderIndependentTransparencyManager::drawTransparents(VisualParams* vp, GLSLShader* oitShader)
+void OrderIndependentTransparencyManager::drawTransparents(VisualParams* visualParams, GLSLShader* oitShader)
 {
     Node* node = dynamic_cast<Node*>(getContext());
     if(!node)
         return;
 
-    vp->pass() = sofa::core::visual::VisualParams::Transparent;
-    VisualOITDrawVisitor drawTransparentVisitor(vp, oitShader);
+    visualParams->pass() = VisualParams::Transparent;
+    VisualOITDrawVisitor drawTransparentVisitor(visualParams, oitShader);
     drawTransparentVisitor.setTags(this->getTags());
     node->execute(&drawTransparentVisitor);
-
-//    glColor4f(0.0f, 0.0f, 1.0f, 0.6f);
-//    DrawQuad(1.0f);
-
-//    glColor4f(1.0f, 1.0f, 0.0f, 0.6f);
-//    DrawQuad(0.0f);
-
-//    glColor4f(1.0f, 0.0f, 0.0f, 0.6f);
-//    DrawQuad(-1.0f);
-}
-
-void OrderIndependentTransparencyManager::postDrawScene(VisualParams* /*vp*/)
-{
-    // TODO: restore default parameter if any
 }
 
 OrderIndependentTransparencyManager::FrameBufferObject::FrameBufferObject()
@@ -418,34 +371,109 @@ void OrderIndependentTransparencyManager::FrameBufferObject::releaseTextures()
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
 
-void VisualOITDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
+Shader* VisualOITDrawVisitor::getShader(Node* node) const
 {
-    bool hasTexture = vm->hasTexture();
+    return !node->shaders.empty() ? *node->shaders.begin() : nullptr;
+}
 
-    OglModel* oglModel = dynamic_cast<OglModel*>(vm);
-    if(oglModel)
+Shader* VisualOITDrawVisitor::getShader(Node* node, const TagSet& t) const
+{
+    if(t.empty())
     {
-        oglModel->blendTransparency.setValue(false);
+        return getShader(node);
     }
-
-    GLSLShader* oitShader = 0;
-
-    sofa::core::visual::Shader* nodeShader = NULL;
-    if(hasShader) // has custom oit shader
+    else
     {
-        nodeShader = node->getShader(subsetsToManage);
+        for(Node::Sequence<Shader>::iterator it = node->shaders.begin(), iend = node->shaders.end(); it != iend; ++it)
+        {
+            if((*it)->getTags().includes(t))
+                return (*it);
+        }
+        return node->get<Shader>(t, BaseContext::Local);
+    }
+}
 
+VisualOITDrawVisitor::Result VisualOITDrawVisitor::processNodeTopDown(Node* node)
+{
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    glPushMatrix();
+    double glMatrix[16];
+    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
+    glMultMatrixd( glMatrix );
+#endif
+
+    GLSLShader* nodeOITShader = nullptr;
+
+    Shader* nodeShader = getShader(node, subsetsToManage);
+    if(nodeShader)
+    {
         OglOITShader* oglOITShader = dynamic_cast<OglOITShader*>(nodeShader);
         if(oglOITShader)
-            oitShader = oglOITShader->accumulationShader();
+            nodeOITShader = oglOITShader->accumulationShader();
     }
 
-    if(!oitShader)
-        oitShader = shader;
+    if(!nodeOITShader)
+        nodeOITShader = !nodeOITShaders.empty() ? nodeOITShaders.top() : defaultOITShader;
+
+    nodeOITShaders.push(nodeOITShader);
+
+    for_each(this, node, node->visualModel, &VisualOITDrawVisitor::fwdVisualModel);
+    for_each(this, node, node->visualModel, &VisualOITDrawVisitor::processVisualModel);
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    glPopMatrix();
+#endif
+
+    return RESULT_CONTINUE;
+}
+
+void VisualOITDrawVisitor::processNodeBottomUp(Node* node)
+{
+    for_each(this, node, node->visualModel, &VisualOITDrawVisitor::bwdVisualModel);
+
+    nodeOITShaders.pop();
+}
+
+void VisualOITDrawVisitor::fwdVisualModel(simulation::Node*, core::visual::VisualModel* vm)
+{
+#ifdef DEBUG_DRAW
+    std::cerr << ">" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
+#endif
+    vm->fwdDraw(visualParams);
+#ifdef DEBUG_DRAW
+    std::cerr << "<" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
+#endif
+}
+
+void VisualOITDrawVisitor::bwdVisualModel(simulation::Node*,core::visual::VisualModel* vm)
+{
+#ifdef DEBUG_DRAW
+    std::cerr << ">" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
+#endif
+    vm->bwdDraw(visualParams);
+#ifdef DEBUG_DRAW
+    std::cerr << "<" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
+#endif
+}
+
+void VisualOITDrawVisitor::processVisualModel(Node*, VisualModel* vm)
+{
+    OglModel* oglModel = dynamic_cast<OglModel*>(vm);
+    if(oglModel)
+        oglModel->blendTransparency.setValue(false);
+
+    GLSLShader* oitShader = nodeOITShaders.top();
 
     oitShader->TurnOn();
-    oitShader->SetInt(oitShader->GetVariable("HasTexture"), hasTexture ? 1 : 0);
-    vm->drawTransparent(vparams);
+    oitShader->SetInt(oitShader->GetVariable("HasTexture"), vm->hasTexture() ? 1 : 0);
+
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
+    vm->drawTransparent(visualParams);
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
 }
 
 } // namespace visualmodel
