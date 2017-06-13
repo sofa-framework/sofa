@@ -162,7 +162,7 @@ public:
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
     PointInfoHandler* pointInfoHandler;
     core::topology::BaseMeshTopology *bmt;
 };

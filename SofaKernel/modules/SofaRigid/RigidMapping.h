@@ -95,15 +95,15 @@ public:
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
-    Data<unsigned int> index;
+    Data<unsigned int> index; ///< input DOF index
     sofa::core::objectmodel::DataFileName fileRigidMapping;
-    Data<bool> useX0;
-    Data<bool> indexFromEnd;
+    Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
+    Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
 
-    Data< helper::vector<unsigned int> > rigidIndexPerPoint;
-    Data<bool> globalToLocalCoords;
+    Data< helper::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
+    Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness;
+    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
 
 protected:
     RigidMapping();

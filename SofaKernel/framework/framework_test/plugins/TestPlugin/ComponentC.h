@@ -55,8 +55,8 @@ public:
     virtual void updatePosition(double dt);
 
 protected:
-    Data<unsigned> customUnsignedData;
-    Data<unsigned> regularUnsignedData;
+    Data<unsigned> customUnsignedData; ///< Example of unsigned data with custom widget
+    Data<unsigned> regularUnsignedData; ///< Example of unsigned data with standard widget
 };
 
 

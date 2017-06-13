@@ -55,8 +55,8 @@ public:
     typedef typename TVector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<bool> f_verbose;
-    Data<Real> f_minSingularValue;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<Real> f_minSingularValue; ///< Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.
 protected:
     SVDLinearSolver();
 public:

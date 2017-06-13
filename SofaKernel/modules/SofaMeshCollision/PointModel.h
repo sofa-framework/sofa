@@ -163,16 +163,16 @@ protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
-    Data<std::string> PointActiverPath;
+    Data<std::string> PointActiverPath; ///< path of a component PointActiver that activate or deactivate collision point during execution
 
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition;
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     void updateNormals();
 

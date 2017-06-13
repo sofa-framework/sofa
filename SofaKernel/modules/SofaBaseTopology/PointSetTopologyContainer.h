@@ -173,9 +173,9 @@ protected:
 
 public:
 
-    Data<unsigned int> nbPoints;
+    Data<unsigned int> nbPoints; ///< Number of points
 
-    Data<InitTypes::VecCoord> d_initPoints;
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
 protected:
     /// Boolean used to know if the topology Data of this container is dirty
     bool m_pointTopologyDirty;

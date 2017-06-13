@@ -55,25 +55,25 @@ public:
 
 
 
-    Data<bool> is_activated;
+    Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    Data<SReal> dt_;
-    Data<SReal> time_;
-    Data<bool> animate_;
+    Data<SReal> dt_; ///< Time step
+    Data<SReal> time_; ///< Current time
+    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
 	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
 	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{
     Data<int> currentLevel_;
-    Data<int> coarsestLevel_;
-    Data<int> finestLevel_;
+    Data<int> coarsestLevel_; ///< Coarsest level of details
+    Data<int> finestLevel_; ///< Finest level of details
     /// @}
 #endif
 
 #ifdef SOFA_SMP
-    Data<int> processor;
-    Data<bool> gpuPrioritary;
+    Data<int> processor; ///< assigned processor
+    Data<bool> gpuPrioritary; ///< node should be executed on GPU
     Data<bool> is_partition_;
     Iterative::IterativePartition *partition_;
 #endif

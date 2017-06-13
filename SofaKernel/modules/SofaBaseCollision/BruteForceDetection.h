@@ -90,7 +90,7 @@ private:
     bool _is_initialized;
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeModel::SPtr boxModel;
 

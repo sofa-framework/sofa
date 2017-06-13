@@ -111,9 +111,9 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    Data<bool> showQuadIndices;
-    Data<bool> _drawQuads;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
+    Data<bool> showQuadIndices; ///< Debug : view Quad indices
+    Data<bool> _drawQuads; ///< if true, draw the quads in the topology
+    Data<sofa::defaulttype::Vec3f> _drawColor; ///< RGB code color used to draw quads.
 
 };
 

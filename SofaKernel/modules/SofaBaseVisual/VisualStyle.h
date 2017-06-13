@@ -72,7 +72,7 @@ public:
     void fwdDraw(VisualParams* );
     void bwdDraw(VisualParams* );
 
-    Data<DisplayFlags> displayFlags;
+    Data<DisplayFlags> displayFlags; ///< Display Flags
 
 protected:
     DisplayFlags backupFlags;

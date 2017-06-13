@@ -187,7 +187,7 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
-    Data< float > d_showAxisSize;
+    Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
     core::objectmodel::DataFileName d_fileMass;
 
 protected:

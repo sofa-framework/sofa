@@ -208,8 +208,8 @@ protected:
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
-    Data< std::string  > LineActiverPath;
-    Data<bool> m_displayFreePosition;
+    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     LineActiver *myActiver;
 

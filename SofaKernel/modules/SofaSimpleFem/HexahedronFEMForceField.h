@@ -133,7 +133,7 @@ protected:
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
     typedef helper::vector<ElementStiffness> VecElementStiffness;
-    Data<VecElementStiffness> _elementStiffnesses;
+    Data<VecElementStiffness> _elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
     typedef defaulttype::Mat<3, 3, Real> Mat33;
 
@@ -171,8 +171,8 @@ public:
     Data<bool> f_assembling;
     Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
     Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
-    Data<bool> f_drawing;
-    Data<Real> f_drawPercentageOffset;
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
 protected:

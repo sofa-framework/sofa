@@ -46,7 +46,7 @@ class SOFA_BASE_COLLISION_API NewProximityIntersection : public BaseProximityInt
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
-    Data<bool> useLineLine;
+    Data<bool> useLineLine; ///< Line-line collision detection enabled
 protected:
     NewProximityIntersection();
 public:

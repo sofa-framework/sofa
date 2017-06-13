@@ -170,7 +170,7 @@ protected:
     int getTriangleFlags(int i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
     int meshRevision;
 
     sofa::core::topology::BaseMeshTopology* _topology;

@@ -236,8 +236,8 @@ protected:
     typedef std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder_t;
     constraintOrder_t constraintOrder;
 
-    Data<std::string> pathObject1;
-    Data<std::string> pathObject2;
+    Data<std::string> pathObject1; ///< First Object to constrain
+    Data<std::string> pathObject2; ///< Second Object to constrain
 };
 
 } // namespace behavior

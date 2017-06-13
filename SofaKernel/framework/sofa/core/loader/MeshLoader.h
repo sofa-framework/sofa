@@ -104,24 +104,24 @@ public:
     /// @}
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Vertices of the mesh loaded
 
     // Tab of 2D elements composition
-    Data< helper::vector< Edge > > d_edges;
-    Data< helper::vector< Triangle > > d_triangles;
-    Data< helper::vector< Quad > > d_quads;
-    Data< helper::vector< helper::vector <unsigned int> > > d_polygons;
-    Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions;
-    Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions;
-    Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions;
+    Data< helper::vector< Edge > > d_edges; ///< Edges of the mesh loaded
+    Data< helper::vector< Triangle > > d_triangles; ///< Triangles of the mesh loaded
+    Data< helper::vector< Quad > > d_quads; ///< Quads of the mesh loaded
+    Data< helper::vector< helper::vector <unsigned int> > > d_polygons; ///< Polygons of the mesh loaded
+    Data< helper::vector< HighOrderEdgePosition > > d_highOrderEdgePositions; ///< High order edge points of the mesh loaded
+    Data< helper::vector< HighOrderTrianglePosition > > d_highOrderTrianglePositions; ///< High order triangle points of the mesh loaded
+    Data< helper::vector< HighOrderQuadPosition > > d_highOrderQuadPositions; ///< High order quad points of the mesh loaded
 
     // Tab of 3D elements composition
-    Data< helper::vector< Tetrahedron > > d_tetrahedra;
-    Data< helper::vector< Hexahedron > > d_hexahedra;
-    Data< helper::vector< Pentahedron > > d_pentahedra;
-    Data< helper::vector< Pyramid > > d_pyramids;
-    Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions;
-    Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions;
+    Data< helper::vector< Tetrahedron > > d_tetrahedra; ///< Tetrahedra of the mesh loaded
+    Data< helper::vector< Hexahedron > > d_hexahedra; ///< Hexahedra of the mesh loaded
+    Data< helper::vector< Pentahedron > > d_pentahedra; ///< Pentahedra of the mesh loaded
+    Data< helper::vector< Pyramid > > d_pyramids; ///< Pyramids of the mesh loaded
+    Data< helper::vector< HighOrderTetrahedronPosition > > d_highOrderTetrahedronPositions; ///< High order tetrahedron points of the mesh loaded
+    Data< helper::vector< HighOrderHexahedronPosition > > d_highOrderHexahedronPositions; ///< High order hexahedron points of the mesh loaded
 
     // polygons in 3D ?
 
@@ -129,24 +129,24 @@ public:
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; ///< Normals per vertex
 
     // Groups
-    Data< helper::vector< PrimitiveGroup > > d_edgesGroups;
-    Data< helper::vector< PrimitiveGroup > > d_trianglesGroups;
-    Data< helper::vector< PrimitiveGroup > > d_quadsGroups;
-    Data< helper::vector< PrimitiveGroup > > d_polygonsGroups;
-    Data< helper::vector< PrimitiveGroup > > d_tetrahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > d_hexahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > d_pentahedraGroups;
-    Data< helper::vector< PrimitiveGroup > > d_pyramidsGroups;
+    Data< helper::vector< PrimitiveGroup > > d_edgesGroups; ///< Groups of Edges
+    Data< helper::vector< PrimitiveGroup > > d_trianglesGroups; ///< Groups of Triangles
+    Data< helper::vector< PrimitiveGroup > > d_quadsGroups; ///< Groups of Quads
+    Data< helper::vector< PrimitiveGroup > > d_polygonsGroups; ///< Groups of Polygons
+    Data< helper::vector< PrimitiveGroup > > d_tetrahedraGroups; ///< Groups of Tetrahedra
+    Data< helper::vector< PrimitiveGroup > > d_hexahedraGroups; ///< Groups of Hexahedra
+    Data< helper::vector< PrimitiveGroup > > d_pentahedraGroups; ///< Groups of Pentahedra
+    Data< helper::vector< PrimitiveGroup > > d_pyramidsGroups; ///< Groups of Pyramids
 
-    Data< bool > d_flipNormals;
-    Data< bool > d_triangulate;
-    Data< bool > d_createSubelements;
-    Data< bool > d_onlyAttachedPoints;
+    Data< bool > d_flipNormals; ///< Flip Normals
+    Data< bool > d_triangulate; ///< Divide all polygons into triangles
+    Data< bool > d_createSubelements; ///< Divide all n-D elements into their (n-1)-D boundary elements (e.g. tetrahedra to triangles)
+    Data< bool > d_onlyAttachedPoints; ///< Only keep points attached to elements of the mesh
 
-    Data< Vector3 > d_translation;
-    Data< Vector3 > d_rotation;
-    Data< Vector3 > d_scale;
-    Data< defaulttype::Matrix4 > d_transformation;
+    Data< Vector3 > d_translation; ///< Translation of the DOFs
+    Data< Vector3 > d_rotation; ///< Rotation of the DOFs
+    Data< Vector3 > d_scale; ///< Scale of the DOFs in 3 dimensions
+    Data< defaulttype::Matrix4 > d_transformation; ///< 4x4 Homogeneous matrix to transform the DOFs (when present replace any)
 
 
    virtual void updateMesh();

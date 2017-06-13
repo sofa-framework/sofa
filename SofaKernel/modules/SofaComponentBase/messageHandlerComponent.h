@@ -87,7 +87,7 @@ public:
     /// potentially other parameters.
     virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
 
-    Data<std::string>        d_filename        ;
+    Data<std::string>        d_filename        ; ///< Name of the file into which the message will be saved in.
     helper::logging::MessageHandler*     m_handler         ;
 
 

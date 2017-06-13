@@ -379,14 +379,14 @@ public:
     Data<sofa::helper::vector<Spring> > springs;
     sofa::core::objectmodel::DataFileName f_outfilename;
     sofa::core::objectmodel::DataFileName f_infilename;
-    Data < Real > f_period;
-    Data<bool> f_reinit;
+    Data < Real > f_period; ///< period between outputs
+    Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;
 
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
-    Data<Real> showFactorSize;
+    Data<bool> showExtraTorsion; ///< display the illicit part of the joint rotation
+    Data<Real> showFactorSize; ///< modify the size of the debug information of a given factor
 
     virtual void updateForceMask();
 };

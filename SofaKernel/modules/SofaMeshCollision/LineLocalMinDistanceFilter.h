@@ -190,8 +190,8 @@ public:
     };
 
 private:
-    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo;
-    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo;
+    topology::PointData< sofa::helper::vector<PointInfo> > m_pointInfo; ///< point filter data
+    topology::EdgeData< sofa::helper::vector<LineInfo> > m_lineInfo; ///< line filter data
 
     PointInfoHandler* pointInfoHandler;
     LineInfoHandler* lineInfoHandler;

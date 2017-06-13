@@ -103,8 +103,8 @@ public:
     typedef TCapsule<DataTypes> Element;
     friend class TCapsule<DataTypes>;
 protected:
-    Data<VecReal > _capsule_radii;
-    Data<Real> _default_radius;
+    Data<VecReal > _capsule_radii; ///< Radius of each capsule
+    Data<Real> _default_radius; ///< The default radius
     sofa::helper::vector<std::pair<int,int> > _capsule_points;
 
     TCapsuleModel();

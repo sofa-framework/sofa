@@ -186,9 +186,9 @@ public:
     }
 
     //TODO(dmarchal) guideline de sofa.
-    Data< VecReal > radius;
-    Data< SReal > defaultRadius;
-    Data< bool > d_showImpostors;
+    Data< VecReal > radius; ///< Radius of each sphere
+    Data< SReal > defaultRadius; ///< Default Radius
+    Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
