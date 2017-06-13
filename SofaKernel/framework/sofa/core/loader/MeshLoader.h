@@ -126,7 +126,7 @@ public:
     // polygons in 3D ?
 
     //Misc
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; /// Normals per vertex
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_normals; ///< Normals per vertex
 
     // Groups
     Data< helper::vector< PrimitiveGroup > > d_edgesGroups;

@@ -169,8 +169,8 @@ public:
     Data<Real> f_youngModulus;
     Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
     Data<bool> f_drawing;
     Data<Real> f_drawPercentageOffset;
     bool needUpdateTopology;

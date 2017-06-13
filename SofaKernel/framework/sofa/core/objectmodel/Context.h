@@ -60,8 +60,8 @@ public:
     Data<SReal> dt_;
     Data<SReal> time_;
     Data<bool> animate_;
-	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
-	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
+	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
+	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{

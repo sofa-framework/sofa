@@ -265,8 +265,8 @@ public:
     /// @}
 
 
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
     Data< bool > drawHeterogeneousTetra;
     Data< bool > drawAsEdges;
 

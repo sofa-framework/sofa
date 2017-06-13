@@ -133,7 +133,7 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> bothSide; // to activate collision on both side of the triangle model
+    Data<bool> bothSide; ///< to activate collision on both side of the triangle model
 protected:
 #if 0
     struct TriangleInfo
