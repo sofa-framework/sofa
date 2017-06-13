@@ -79,7 +79,7 @@ namespace mapping
         typedef helper::vector< index_pair > pairs_type;
 
         Data< pairs_type > d_pairs;
-        Data< Real > d_ratio; // a different ratio for each pair
+        Data< Real > d_ratio; ///< a different ratio for each pair
 
     protected:
 

@@ -73,7 +73,7 @@ public:
 
     /** @name orientation data */
     //@{
-    Data< SeqPositions > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
+    Data< SeqPositions > f_orientation; ///< = rest deformation gradient orientation in each cell (Euler angles)
     Data< bool > f_useLocalOrientation;
     //@}
 

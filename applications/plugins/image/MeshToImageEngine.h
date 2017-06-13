@@ -67,7 +67,7 @@ public:
 
     typedef SReal Real;
 
-    Data< helper::vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
     typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
     Data< defaulttype::Vec<3,unsigned> > nbVoxels;
     Data< bool > rotateImage;

@@ -429,7 +429,7 @@ protected:
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
-    Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
+    Data<GCoord> showPlane;    ///< indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
     float maxValues[12];
     Data<float> show3DValuesHeight;

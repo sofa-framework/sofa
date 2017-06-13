@@ -151,7 +151,7 @@ protected :
     void initTarget();  // built k-d tree and identify border vertices
 
     Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<bool> drawColorMap;
     Data<bool> theCloserTheStiffer;
 

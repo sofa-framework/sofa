@@ -60,9 +60,9 @@ public:
     Data< TransformType > inputTransform;
     Data< TransformType > outputTransform;
 
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<Real> scale; // scale
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<Real> scale; ///< scale
     Data<bool> inverse;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }

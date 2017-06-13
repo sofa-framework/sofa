@@ -181,7 +181,7 @@ protected :
     Data<Real> kd;
 
     Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
 };
 
 //#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)
