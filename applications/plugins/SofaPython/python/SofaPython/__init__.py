@@ -2,7 +2,10 @@ import __builtin__
 import sys
 import inspect
 
-## @author Matthieu Nesme
+## @contributors
+##   - Matthieu Nesme
+##   - damien.marchal@univ-lille1.fr
+##
 ## @date 2017
 
 
@@ -30,13 +33,24 @@ def unloadModules():
 
 
 def formatStackForSofa(o):
+    """ format the stack trace provided as a parameter into a string like that:
+        in filename.py:10:functioname()
+          -> the line of code.
+        in filename2.py:101:functioname1()
+            -> the line of code.
+        in filename3.py:103:functioname2()
+              -> the line of code.
+    """
     ss='Python Stack: \n'
     for entry in o:
-        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '() \n'
-        ss+= '  -> '+ entry[4][0] + ' \n'
+        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '()  \n'
+        ss+= '  -> '+ entry[4][0] + '  \n'
         return ss
 
-def getStackForSofa(self):
+def getStackForSofa():
+    """returns the currunt stack with a "unformal" formatting.
+    """
+    # we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1:]
     return formatStackForSofa(ss)
 

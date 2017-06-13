@@ -102,7 +102,8 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 
             if (PyErr_Occurred())
             {
-                msg_error("SofaPython") << "error while iterating";
+                msg_error("SofaPython") << "error while iterating." << msgendl
+                                        << PythonEnvironment::getStackAsString() ;
             }
             return out;
         }
@@ -124,8 +125,10 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
                                   << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
                                   << "This function should return a string usable as a parameter in createObject()." << msgendl
                                   << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
-                                     "to the object you are passing the createObject function." << msgendl ;
+                                     "to the object you are passing the createObject function." << msgendl
+                                  << PythonEnvironment::getStackAsString() ;
     }
+
 
     PyObject* tmpstr=PyObject_Str(value);
     out << PyString_AsString(tmpstr) ;

@@ -280,7 +280,7 @@ std::string PythonEnvironment::getStackAsString()
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
     {
-        PyObject* res = PyObject_CallFunction(pFunc, "b", '0');
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
         std::string tmp=PyString_AsString(PyObject_Str(res));
         Py_DECREF(res) ;
         return tmp;
