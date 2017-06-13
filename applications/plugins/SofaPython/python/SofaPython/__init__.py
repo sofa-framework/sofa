@@ -1,5 +1,6 @@
 import __builtin__
 import sys
+import inspect
 
 ## @author Matthieu Nesme
 ## @date 2017
@@ -27,4 +28,15 @@ def unloadModules():
     for name in toremove:
         del(sys.modules[name]) # unload it
 
-        
+
+def formatStackForSofa(o):
+    ss='Python Stack: \n'
+    for entry in o:
+        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '() \n'
+        ss+= '  -> '+ entry[4][0] + ' \n'
+        return ss
+
+def getStackForSofa(self):
+    ss=inspect.stack()[1:]
+    return formatStackForSofa(ss)
+
