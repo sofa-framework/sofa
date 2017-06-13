@@ -105,7 +105,8 @@ protected:
     Data<bool> internalPoints;
     Data<bool> splitNormals;
 
-    Data< Vector3 > min, max;
+    Data< Vector3 > min;
+    Data< Vector3 > max;
     /// Position of point 0
     Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other

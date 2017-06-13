@@ -53,7 +53,8 @@ public:
 private:
     static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
     static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
-    Data<double> zNear, zFar;
+    Data<double> zNear;
+    Data<double> zFar;
     helper::gl::FrameBufferObject fbo;
     OglShader* dofShader;
     bool postProcessEnabled;

@@ -56,8 +56,12 @@ public:
 protected:
     Real a,b;
     Data<Real> aInit;
-    Data<Real> alpha,beta,dmax,fmax;
-    Data<Real> d0,p0;
+    Data<Real> alpha;
+    Data<Real> beta;
+    Data<Real> dmax;
+    Data<Real> fmax;
+    Data<Real> d0;
+    Data<Real> p0;
     Data<Real> damping;
 
     struct DForce

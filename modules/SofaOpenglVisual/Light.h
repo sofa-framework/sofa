@@ -85,7 +85,8 @@ public:
     Data<defaulttype::RGBAColor> d_color;
     Data<GLuint> d_shadowTextureSize;
     Data<bool> d_drawSource;
-    Data<double> d_zNear, d_zFar;
+    Data<double> d_zNear;
+    Data<double> d_zFar;
     Data<bool> d_shadowsEnabled;
     Data<bool> d_softShadows;
     Data<float> d_shadowFactor;

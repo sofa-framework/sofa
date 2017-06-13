@@ -151,7 +151,8 @@ public:
     Data< int > ny;
     Data< int > nz;
 
-    Data<Real> stiffnessIn, stiffnessOut;
+    Data<Real> stiffnessIn;
+    Data<Real> stiffnessOut;
     Data<Real> damping;
     Data<Real> maxDist;
     Data<Real> minArea;

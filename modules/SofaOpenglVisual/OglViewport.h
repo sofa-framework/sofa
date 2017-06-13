@@ -53,7 +53,8 @@ public:
     Data<defaulttype::Vec3f> p_cameraPosition;
     Data<defaulttype::Quat> p_cameraOrientation;
     Data<RigidCoord > p_cameraRigid;
-    Data<double> p_zNear, p_zFar;
+    Data<double> p_zNear;
+    Data<double> p_zFar;
     Data<double> p_fovy;
     Data<bool> p_enabled;
     Data<bool> p_advancedRendering;

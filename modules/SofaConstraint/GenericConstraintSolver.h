@@ -110,11 +110,17 @@ public:
 
 	Data<bool> displayTime;
 	Data<int> maxIt;
-	Data<double> tolerance, sor;
-	Data<bool> scaleTolerance, allVerified, schemeCorrection;
+	Data<double> tolerance;
+	Data<double> sor;
+	Data<bool> scaleTolerance;
+	Data<bool> allVerified;
+	Data<bool> schemeCorrection;
 	Data<bool> unbuilt;
 	Data<bool> computeGraphs;
-	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors, graphConstraints, graphForces, graphViolations;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphErrors;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphConstraints;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphForces;
+	Data<std::map < std::string, sofa::helper::vector<double> > > graphViolations;
 
 	Data<int> currentNumConstraints;
 	Data<int> currentNumConstraintGroups;

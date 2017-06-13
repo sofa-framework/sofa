@@ -106,7 +106,9 @@ public :
     core::objectmodel::Data<unsigned> maxDepIndice;
     core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0,Y0,Z0;
+    Data<Real> X0;
+    Data<Real> Y0;
+    Data<Real> Z0;
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;

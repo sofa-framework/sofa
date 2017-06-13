@@ -63,12 +63,18 @@ public:
     Data<bool> handleQuads;
     Data<bool> handleTetrahedra;
     Data<bool> handleHexahedra;
-    Data<SetIndex> pointS2D, pointD2S;
-    Data<SetIndex> edgeS2D, edgeD2S;
-    Data<SetIndex> triangleS2D, triangleD2S;
-    Data<SetIndex> quadS2D, quadD2S;
-    Data<SetIndex> tetrahedronS2D, tetrahedronD2S;
-    Data<SetIndex> hexahedronS2D, hexahedronD2S;
+    Data<SetIndex> pointS2D;
+    Data<SetIndex> pointD2S;
+    Data<SetIndex> edgeS2D;
+    Data<SetIndex> edgeD2S;
+    Data<SetIndex> triangleS2D;
+    Data<SetIndex> triangleD2S;
+    Data<SetIndex> quadS2D;
+    Data<SetIndex> quadD2S;
+    Data<SetIndex> tetrahedronS2D;
+    Data<SetIndex> tetrahedronD2S;
+    Data<SetIndex> hexahedronS2D;
+    Data<SetIndex> hexahedronD2S;
 
     virtual void init();
 

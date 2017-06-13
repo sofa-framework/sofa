@@ -65,7 +65,8 @@ public:
     Data<bool> f_showLegend;
     Data<defaulttype::Vec2f> f_legendOffset;
     Data<std::string> f_legendTitle;
-    Data<float> d_min, d_max;
+    Data<float> d_min;
+    Data<float> d_max;
     Data<float> d_legendRangeScale; ///< to convert unit
 
     sofa::helper::ColorMap m_colorMap;

@@ -255,7 +255,9 @@ public:
 
     Data<bool> activateSubGraph;
 
-    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints, _graphForces;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphConstraints;
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphForces;
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 

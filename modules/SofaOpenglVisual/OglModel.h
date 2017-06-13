@@ -59,7 +59,11 @@ public:
 
     Data<bool> blendTransparency;
 protected:
-    Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
+    Data<bool> premultipliedAlpha;
+    Data<bool> useVBO;
+    Data<bool> writeZTransparent;
+    Data<bool> alphaBlend;
+    Data<bool> depthTest;
     Data<int> cullFace;
     Data<GLfloat> lineWidth;
     Data<GLfloat> pointSize;

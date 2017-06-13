@@ -54,11 +54,14 @@ public:
 public:
     Data<bool> f_maximalRange;
     Data<VecPointData> f_pointData;
-    Data<VecCellData> f_triangleData, f_quadData;
-    Data<VecPointData> f_pointTriangleData, f_pointQuadData;
+    Data<VecCellData> f_triangleData;
+    Data<VecCellData> f_quadData;
+    Data<VecPointData> f_pointTriangleData;
+    Data<VecPointData> f_pointQuadData;
     Data<defaulttype::RGBAColor> f_colorNaN; ///< Color for NaNs
     Data<defaulttype::Vec2f> d_userRange;
-    Data<float> d_currentMin, d_currentMax;
+    Data<float> d_currentMin;
+    Data<float> d_currentMax;
     Data<float> d_shininess;
 
     visualmodel::OglColorMap *colorMap;

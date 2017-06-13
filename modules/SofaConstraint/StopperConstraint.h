@@ -90,7 +90,8 @@ protected:
     unsigned int cid;
 
     Data<int> index;
-    Data<double> min, max;
+    Data<double> min;
+    Data<double> max;
 
 
 
