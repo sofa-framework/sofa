@@ -6,7 +6,6 @@ set(SOURCE_FILES
     runSofa_test.cpp
 )
 
-message("dsds ${PROJECT_NAME}")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} )
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 

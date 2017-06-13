@@ -32,9 +32,6 @@
 namespace sofa
 {
 
-
-
-
 class runSofa_test : public Sofa_test<>
 {
 protected:
@@ -74,16 +71,14 @@ TEST_F(runSofa_test, runSofa_autoload)
 {
     sofa::helper::system::PluginManager& pm = sofa::helper::system::PluginManager::getInstance();
 
-    ASSERT_EQ(pm.getPluginMap().size(), 0);
+    ASSERT_EQ(pm.getPluginMap().size(), 0U);
     pm.readFromIniFile(m_testConfigPluginPath);
     helper::system::PluginManager::getInstance().init();
-    ASSERT_GT(pm.getPluginMap().size(), 0);
+    ASSERT_GT(pm.getPluginMap().size(), 0U);
     const std::string pluginPath = pm.findPlugin(m_testPluginName);
-    ASSERT_GT(pluginPath.size(), 0);
+    ASSERT_GT(pluginPath.size(), 0U);
     sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
     ASSERT_EQ(0, std::string(p.getModuleName()).compare(m_testPluginName));
-   
-
 }
 
 } // namespace sofa
