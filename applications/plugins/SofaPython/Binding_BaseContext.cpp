@@ -161,7 +161,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!PyArg_ParseTuple(args, "s",&path))
     {
         SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     bool warning = true;
@@ -194,7 +194,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
     if (!sptr)
     {
         if(warning) SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     return sofa::PythonFactory::toPython(sptr.get());
@@ -211,7 +211,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
     if (!PyArg_ParseTuple(args, "s",&path))
     {
         SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
-        Py_RETURN_NONE;
+        return NULL;
     }
     if (!context || !path)
     {
@@ -237,7 +237,7 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     char* name= NULL;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
         SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     if (!context)
