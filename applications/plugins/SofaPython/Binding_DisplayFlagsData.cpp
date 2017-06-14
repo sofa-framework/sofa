@@ -50,14 +50,14 @@ SP_CLASS_METHODS_END
 
 
 #define DISPLAYFLAG_ATTRIBUTE_IMPL(flagName) \
-    extern "C" PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
+    static PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
     { \
         Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         const DisplayFlags& flags = data->getValue(); \
         bool b = (tristate::false_value != flags.getShow##flagName()); \
         return PyBool_FromLong(b); \
     } \
-    extern "C" int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
+    static int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
     { \
         Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
         bool b = (Py_True==args); \

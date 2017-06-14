@@ -26,7 +26,7 @@
 using namespace sofa::component::interactionforcefield;
 typedef LinearSpring<SReal> LinearSpringR;
 
-extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
+static PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -37,7 +37,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
     return PyInt_FromLong(obj->m1);
 }
 
-extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
+static int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -50,7 +50,7 @@ extern "C" int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void
     return 0;
 }
 
-extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
+static PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -61,7 +61,7 @@ extern "C" PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
     return PyInt_FromLong(obj->m2);
 }
 
-extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
+static int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -74,7 +74,7 @@ extern "C" int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void
     return 0;
 }
 
-extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
+static PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -85,7 +85,7 @@ extern "C" PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
     return PyFloat_FromDouble(obj->ks);
 }
 
-extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
+static int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -99,7 +99,7 @@ extern "C" int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 }
 
 
-extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
+static PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -110,7 +110,7 @@ extern "C" PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
     return PyFloat_FromDouble(obj->kd);
 }
 
-extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
+static int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -124,7 +124,7 @@ extern "C" int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 }
 
 
-extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
+static PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)
@@ -135,7 +135,7 @@ extern "C" PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
     return PyFloat_FromDouble(obj->initpos);
 }
 
-extern "C" int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
+static int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
 {
     LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
     if (!obj)

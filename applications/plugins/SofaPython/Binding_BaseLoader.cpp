@@ -29,21 +29,21 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
 {
     BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     bool result = obj->load();
     return PyBool_FromLong(result);
 }
 
-extern "C" PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
 {
     BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     bool result = obj->canLoad();
     return PyBool_FromLong(result);
 }
 
-extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
+static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
 {
     BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     char *filename;
@@ -56,7 +56,7 @@ extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
 {
     BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
     std::string filename = obj->getFilename();

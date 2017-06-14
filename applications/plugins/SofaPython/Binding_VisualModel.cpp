@@ -29,7 +29,7 @@ using namespace sofa::component::visualmodel;
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::visual;
 
-extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
+static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
 {
     VisualModelImpl* obj=down_cast<VisualModelImpl>(((PySPtr<Base>*)self)->object->toVisualModel());
     double r,g,b,a;
@@ -50,7 +50,7 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
+static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
 {
     VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
 
@@ -76,14 +76,14 @@ extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
 }
 
 
-extern "C" PyObject * VisualModel_updateVisual(PyObject *self, PyObject * /*args*/)
+static PyObject * VisualModel_updateVisual(PyObject *self, PyObject * /*args*/)
 {
     VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
     obj->updateVisual();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * VisualModel_initVisual(PyObject *self, PyObject * /*args*/)
+static PyObject * VisualModel_initVisual(PyObject *self, PyObject * /*args*/)
 {
     VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
     obj->initVisual();

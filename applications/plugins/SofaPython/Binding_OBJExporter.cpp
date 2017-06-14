@@ -27,7 +27,7 @@
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
+static PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
 {
     OBJExporter* obj = down_cast<OBJExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
 	obj->writeOBJ();

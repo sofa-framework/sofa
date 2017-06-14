@@ -27,7 +27,7 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
 
-extern "C" PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
+static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
     DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
@@ -36,7 +36,7 @@ extern "C" PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
+static PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 {
     DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 
@@ -45,7 +45,7 @@ extern "C" PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * DataEngine_isDirty(PyObject *self, PyObject * /*args*/)
+static PyObject * DataEngine_isDirty(PyObject *self, PyObject * /*args*/)
 {
     DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
 

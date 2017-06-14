@@ -28,19 +28,19 @@ using namespace sofa::core::topology;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
+static PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     return PyBool_FromLong(obj->hasPos());
 }
 
-extern "C" PyObject * Topology_getNbPoints(PyObject *self, PyObject * /*args*/)
+static PyObject * Topology_getNbPoints(PyObject *self, PyObject * /*args*/)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     return PyInt_FromLong(obj->getNbPoints());
 }
 
-extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
+static PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int nb;
@@ -53,7 +53,7 @@ extern "C" PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
+static PyObject * Topology_getPX(PyObject *self, PyObject * args)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;
@@ -65,7 +65,7 @@ extern "C" PyObject * Topology_getPX(PyObject *self, PyObject * args)
     return PyFloat_FromDouble(obj->getPX(i));
 }
 
-extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
+static PyObject * Topology_getPY(PyObject *self, PyObject * args)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;
@@ -77,7 +77,7 @@ extern "C" PyObject * Topology_getPY(PyObject *self, PyObject * args)
     return PyFloat_FromDouble(obj->getPY(i));
 }
 
-extern "C" PyObject * Topology_getPZ(PyObject *self, PyObject * args)
+static PyObject * Topology_getPZ(PyObject *self, PyObject * args)
 {
     Topology* obj=((PySPtr<Base>*)self)->object->toTopology();
     int i;

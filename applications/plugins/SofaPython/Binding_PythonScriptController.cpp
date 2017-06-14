@@ -38,7 +38,7 @@ using namespace sofa::core::objectmodel;
 
 //#define LOG_UNIMPLEMENTED_METHODS   // prints a message each time a non-implemented (in the script) method is called
 
-extern "C" PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args)
 {
     SOFA_UNUSED(args) ;
 
@@ -50,7 +50,7 @@ extern "C" PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObjec
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObject * args)
 {
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
@@ -68,7 +68,7 @@ extern "C" PyObject * PythonScriptController_onLoaded(PyObject * /*self*/, PyObj
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args)
 {
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
@@ -86,7 +86,7 @@ extern "C" PyObject * PythonScriptController_createGraph(PyObject * /*self*/, Py
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyObject * args)
 {
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
@@ -104,7 +104,7 @@ extern "C" PyObject * PythonScriptController_initGraph(PyObject * /*self*/, PyOb
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, PyObject * args)
 {
     PyObject *pyNode;
     if (!PyArg_ParseTuple(args, "O",&pyNode))
@@ -122,7 +122,7 @@ extern "C" PyObject * PythonScriptController_bwdInitGraph(PyObject * /*self*/, P
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*self*/, PyObject * args)
 {
     double dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
@@ -143,7 +143,7 @@ extern "C" PyObject * PythonScriptController_onBeginAnimationStep(PyObject * /*s
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*self*/, PyObject * args)
 {
     double dt;
     if (!PyArg_ParseTuple(args, "d",&dt))
@@ -160,7 +160,7 @@ extern "C" PyObject * PythonScriptController_onEndAnimationStep(PyObject * /*sel
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * PythonScriptController_storeResetState(PyObject * /*self*/, PyObject * /*args*/)
 {
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -171,7 +171,7 @@ extern "C" PyObject * PythonScriptController_storeResetState(PyObject * /*self*/
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject * /*args*/)
 {
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -182,7 +182,7 @@ extern "C" PyObject * PythonScriptController_reset(PyObject * /*self*/, PyObject
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObject * /*args*/)
 {
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -193,7 +193,7 @@ extern "C" PyObject * PythonScriptController_cleanup(PyObject * /*self*/, PyObje
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyObject * args)
 {
     char* controlID;
     char* valueName;
@@ -212,7 +212,7 @@ extern "C" PyObject * PythonScriptController_onGUIEvent(PyObject * /*self*/, PyO
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, PyObject * args)
 {
     char k;
     if (!PyArg_ParseTuple(args, "c",&k))
@@ -229,7 +229,7 @@ extern "C" PyObject * PythonScriptController_onKeyPressed(PyObject * /*self*/, P
     Py_RETURN_FALSE;
 }
 
-extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, PyObject * args)
 {
     char k;
     if (!PyArg_ParseTuple(args, "c",&k))
@@ -246,7 +246,7 @@ extern "C" PyObject * PythonScriptController_onKeyReleased(PyObject * /*self*/, 
     Py_RETURN_FALSE;
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self*/, PyObject * args)
 {
     int x,y;
     bool pressed;
@@ -264,7 +264,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonLeft(PyObject * /*self
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*self*/, PyObject * args)
 {
     int x,y;
     bool pressed;
@@ -282,7 +282,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonMiddle(PyObject * /*se
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*self*/, PyObject * args)
 {
     int x,y;
     bool pressed;
@@ -300,7 +300,7 @@ extern "C" PyObject * PythonScriptController_onMouseButtonRight(PyObject * /*sel
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, PyObject * args)
 {
     int x,y,delta;
     if (!PyArg_ParseTuple(args, "iii",&x,&y,&delta))
@@ -317,7 +317,7 @@ extern "C" PyObject * PythonScriptController_onMouseWheel(PyObject * /*self*/, P
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyObject * args)
+static PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, PyObject * args)
 {
     PyObject *pySenderNode;
     char* eventName;
@@ -344,7 +344,7 @@ extern "C" PyObject * PythonScriptController_onScriptEvent(PyObject * /*self*/, 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject * /*args*/)
 {
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
@@ -356,13 +356,13 @@ extern "C" PyObject * PythonScriptController_draw(PyObject * /*self*/, PyObject 
 }
 
 
-extern "C" PyObject * PythonScriptController_onEvent(PyObject * /*self*/, PyObject * /*args*/) {
+static PyObject * PythonScriptController_onEvent(PyObject * /*self*/, PyObject * /*args*/) {
     Py_RETURN_NONE;
 }
 
 
 
-extern "C" PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
+static PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
 {
     PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
     return obj->scriptControllerInstance();

@@ -250,13 +250,13 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
 
 
 
-extern "C" Py_ssize_t VectorLinearSpringData_length(PyObject *self)
+static Py_ssize_t VectorLinearSpringData_length(PyObject *self)
 {
     DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
     return data->getValue().size();
 }
 
-extern "C" PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
+static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
 {
     DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
 
@@ -291,7 +291,7 @@ extern "C" PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i
     }
 }
 
-extern "C" int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject* v)
+static int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject* v)
 {
     DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
 

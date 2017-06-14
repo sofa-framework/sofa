@@ -28,12 +28,12 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)
+static PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     return PyString_FromString(data->getValue().getSelectedItem().c_str());
 }
-extern "C" int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item)
+static int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     OptionsGroup* optionGroups = data->beginEdit();
@@ -41,14 +41,14 @@ extern "C" int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* 
     data->endEdit();
     return 0;
 }
-extern "C" int OptionsGroupData_setAttr_selectedItem(PyObject *self, PyObject * args, void*)
+static int OptionsGroupData_setAttr_selectedItem(PyObject *self, PyObject * args, void*)
 {
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
     OptionsGroupData_setAttr_selectedItem_impl(self,str);
     return 0;
 }
 
-extern "C" PyObject * OptionsGroupData_getAttr_selectedId(PyObject *self, void*)
+static PyObject * OptionsGroupData_getAttr_selectedId(PyObject *self, void*)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     return PyInt_FromLong((long)data->getValue().getSelectedId());
@@ -60,18 +60,18 @@ void OptionsGroupData_setAttr_selectedId_impl(PyObject *self, unsigned id)
     optionGroups->setSelectedItem( (unsigned)id );
     data->endEdit();
 }
-extern "C" int OptionsGroupData_setAttr_selectedId(PyObject *self, PyObject * args, void*)
+static int OptionsGroupData_setAttr_selectedId(PyObject *self, PyObject * args, void*)
 {
     OptionsGroupData_setAttr_selectedId_impl( self, (unsigned)PyInt_AsLong(args) );
     return 0;
 }
 
 
-extern "C" PyObject * OptionsGroupData_getSelectedId(PyObject *self, PyObject *)
+static PyObject * OptionsGroupData_getSelectedId(PyObject *self, PyObject *)
 {
     return OptionsGroupData_getAttr_selectedId(self,NULL);
 }
-extern "C" PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args)
+static PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args)
 {
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
@@ -82,11 +82,11 @@ extern "C" PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * 
     OptionsGroupData_setAttr_selectedId_impl(self,index);
     Py_RETURN_NONE;
 }
-extern "C" PyObject * OptionsGroupData_getSelectedItem(PyObject *self, PyObject *)
+static PyObject * OptionsGroupData_getSelectedItem(PyObject *self, PyObject *)
 {
     return OptionsGroupData_getAttr_selectedItem(self,NULL);
 }
-extern "C" PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * args)
+static PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * args)
 {
     char *item;
     if (!PyArg_ParseTuple(args, "s",&item))
@@ -99,7 +99,7 @@ extern "C" PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject 
 }
 
 
-extern "C" PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
+static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     int index;
@@ -111,7 +111,7 @@ extern "C" PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
     return PyString_FromString(data->getValue()[index].c_str());
 }
 
-extern "C" PyObject * OptionsGroupData_getSize(PyObject *self, PyObject *)
+static PyObject * OptionsGroupData_getSize(PyObject *self, PyObject *)
 {
     Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
     return PyInt_FromLong((long)data->getValue().size());

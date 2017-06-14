@@ -30,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
     BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
     double dx,dy,dz;
@@ -50,7 +50,7 @@ extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObj
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
 {
     BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
     double dx,dy,dz;
@@ -70,7 +70,7 @@ extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
+static PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
 {
     BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
     double dx,dy,dz;

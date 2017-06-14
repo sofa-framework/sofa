@@ -27,7 +27,7 @@ using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
+static PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
 {
     MeshLoader* obj=down_cast<MeshLoader>(((PySPtr<Base>*)self)->object->toBaseLoader());
     obj->reinit();

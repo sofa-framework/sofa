@@ -84,7 +84,7 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 }
 
 //// access ONE element of the vector
-//extern "C" PyObject * Link_getValue(PyObject *self, PyObject * args)
+//static PyObject * Link_getValue(PyObject *self, PyObject * args)
 //{
 //    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
 
@@ -115,7 +115,7 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 //    Py_RETURN_NONE;
 //}
 
-//extern "C" PyObject * Link_setValue(PyObject *self, PyObject * args)
+//static PyObject * Link_setValue(PyObject *self, PyObject * args)
 //{
 //    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
 //    const AbstractTypeInfo *typeinfo = link->getValueTypeInfo(); // info about the link value
@@ -156,19 +156,19 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 //}
 
 
-extern "C" PyObject * Link_getValueTypeString(PyObject *self, PyObject * /*args*/)
+static PyObject * Link_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
     return PyString_FromString(link->getValueTypeString().c_str());
 }
 
-extern "C" PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
+static PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
     return PyString_FromString(link->getValueString().c_str());
 }
 
-extern "C" PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
+static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link=((PyPtr<BaseLink>*)self)->object;
     return PyInt_FromLong( link->getSize() );

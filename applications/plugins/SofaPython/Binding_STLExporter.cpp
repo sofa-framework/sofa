@@ -27,7 +27,7 @@
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
+static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
     STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
     obj->writeSTL();
@@ -35,7 +35,7 @@ extern "C" PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
+static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
 {
     STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
     obj->writeSTLBinary();

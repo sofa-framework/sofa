@@ -34,7 +34,7 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+static PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
 {
     DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
 
@@ -45,7 +45,7 @@ extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
+static PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 {
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))

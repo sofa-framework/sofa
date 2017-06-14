@@ -26,62 +26,62 @@
 
 using namespace sofa::core::objectmodel;
 
-extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->init();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->bwdInit();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->reinit();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->storeResetState();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->reset();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     obj->cleanup();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     return sofa::PythonFactory::toPython(obj->getContext());
 }
 
-extern "C" PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     return sofa::PythonFactory::toPython(obj->getMaster());
 }
 
 
-extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
+static PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     char *valueString;
@@ -94,7 +94,7 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
 
@@ -102,7 +102,7 @@ extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*
 }
 
 // the same as 'getPathName' with a extra prefix '@'
-extern "C" PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
 
@@ -110,7 +110,7 @@ extern "C" PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*
 }
 
 
-extern "C" PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
 {
     BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
 
@@ -124,7 +124,7 @@ extern "C" PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
-extern "C" PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
 {
     // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
     BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());

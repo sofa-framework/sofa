@@ -108,7 +108,7 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
 {
 
     TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
@@ -139,7 +139,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, P
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
 {
     TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
     
@@ -182,7 +182,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
 {
 
     TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());

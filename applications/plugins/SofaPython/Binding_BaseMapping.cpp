@@ -30,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 
 
-extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -44,7 +44,7 @@ extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
-extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -60,7 +60,7 @@ extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 
 
 
-extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
+static PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -84,7 +84,7 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
+static PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -104,7 +104,7 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -113,7 +113,7 @@ extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -123,7 +123,7 @@ extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -133,7 +133,7 @@ extern "C" PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
@@ -148,7 +148,7 @@ extern "C" PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 
 // TODO inefficient
 // have a look to how to directly bind Eigen sparse matrices
-extern "C" PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
 
