@@ -226,6 +226,37 @@ endif()
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
+### Sofa using type double or float or both
+set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+"Type used for floating point values in SOFA. It actually determines:
+ - what template instanciations will be compiled (via the definition of the
+   SOFA_FLOAT and SOFA_DOUBLE macros)
+ - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
+   is selected, SReal defaults to double.)")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+endif()
+
+# If you really don't understand the negated logics of SOFA_DOUBLE and
+# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
+# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
+# float code and SOFA_WITH_DOUBLE indicates that you
+# nedd to generate the double related code.
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_WITH_FLOAT 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
+    set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+
 ### Extlibs
 add_subdirectory(extlibs)
 

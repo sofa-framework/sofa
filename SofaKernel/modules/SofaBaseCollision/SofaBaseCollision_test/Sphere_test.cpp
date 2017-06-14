@@ -68,7 +68,7 @@ namespace sofa {
 
 using namespace PrimitiveCreationTest;
 
-struct TestSphere : public Sofa_test<double>{
+struct TestSphere : public Sofa_test<>{
 //    /**
 //      *\brief Rotates around x axis vectors x,y and z which here is a frame.
 //      */
