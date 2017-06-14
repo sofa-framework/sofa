@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="1" showBoundingTree="0" gravity="0 0 0">
-	<GenerateGrid template="Vec3d" name="Slab" width="0.5" height="1.5" length="1" resHeight="5" resWidth="3" resLength="4" />
+    <GenerateGrid template="Vec3d" name="Slab" max="0.5 1.5 1" resolution="5 3 4" />
 		<Node name="Tetra">
         <TetrahedronSetTopologyContainer name="Container1" tetrahedra="@Slab.tetrahedra" position="@Slab.output_position" createTriangleArray="1"/>
         <TetrahedronSetGeometryAlgorithms  drawTriangles="1"/>
