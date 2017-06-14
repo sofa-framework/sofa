@@ -148,7 +148,7 @@ protected:
 
     //Data< unsigned int > index; ///< Controlled DOF index.
     //Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
-    Data< bool > buttonDeviceState;
+    Data< bool > buttonDeviceState; ///< state of ths device button
     Data< int > deviceId; ///< id of active device for this controller
     Data< Real > angle; ///< max angle
     Data< Real > speed; ///< closing/opening speed

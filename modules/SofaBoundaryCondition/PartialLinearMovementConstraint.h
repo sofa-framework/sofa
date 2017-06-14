@@ -106,7 +106,7 @@ public :
     core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
     core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0;
+    Data<Real> X0; ///< Size of specimen in X-direction
     Data<Real> Y0; ///< Size of specimen in Y-direction
     Data<Real> Z0; ///< Size of specimen in Z-direction
 

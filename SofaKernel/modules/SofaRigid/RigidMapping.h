@@ -96,7 +96,7 @@ public:
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
     Data<unsigned int> index; ///< input DOF index
-    sofa::core::objectmodel::DataFileName fileRigidMapping;
+    sofa::core::objectmodel::DataFileName fileRigidMapping; ///< Filename
     Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
     Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
 

@@ -377,8 +377,8 @@ public:
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
-    sofa::core::objectmodel::DataFileName f_outfilename;
-    sofa::core::objectmodel::DataFileName f_infilename;
+    sofa::core::objectmodel::DataFileName f_outfilename; ///< output file name
+    sofa::core::objectmodel::DataFileName f_infilename; ///< input file containing constant joint force
     Data < Real > f_period; ///< period between outputs
     Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;

@@ -125,7 +125,7 @@ public:
         else return false;
     }
 
-    SetIndex f_indices;
+    SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 

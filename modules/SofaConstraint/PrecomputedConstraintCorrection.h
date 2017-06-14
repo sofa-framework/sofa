@@ -70,7 +70,7 @@ public:
 
     Data<bool> recompute; ///< if true, always recompute the compliance
 	Data<double> debugViewFrameScale; ///< Scale on computed node's frame
-	sofa::core::objectmodel::DataFileName f_fileCompliance;
+	sofa::core::objectmodel::DataFileName f_fileCompliance; ///< Precomputed compliance matrix data file
 	Data<std::string> fileDir; ///< If not empty, the compliance will be saved in this repertory
     
 protected:

@@ -68,7 +68,7 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 
 
-    SetIndex f_indices;
+    SetIndex f_indices; ///< Indices of the fixed points
     Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 protected:
     PointConstraint();

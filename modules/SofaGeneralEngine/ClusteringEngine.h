@@ -95,8 +95,8 @@ public:
     Data< VecCoord > d_position; ///< input (reference mstate position)
     Data< VVI > d_cluster;       ///< result
 
-    sofa::core::objectmodel::DataFileName input_filename;
-    sofa::core::objectmodel::DataFileName output_filename;
+    sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
+    sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const ClusteringEngine<DataTypes>* = NULL) {   return DataTypes::Name(); }

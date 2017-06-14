@@ -135,6 +135,9 @@ public:
     //Input
     Data<vector<Vec6> >  d_alignedBoxes; ///< each box is defined using xmin, ymin, zmin, xmax, ymax, zmax
     Data<vector<Vec10> > d_orientedBoxes; ///< each box is defined using three point coordinates and a depth value
+    /// Rest position coordinates of the degrees of freedom.
+    /// If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context.
+    /// If none are found the parent's context is searched for MechanicalObject.
     Data<VecCoord> d_X0;
     Data<vector<Edge> > d_edges; ///< Edge Topology
     Data<vector<Triangle> > d_triangles; ///< Triangle Topology

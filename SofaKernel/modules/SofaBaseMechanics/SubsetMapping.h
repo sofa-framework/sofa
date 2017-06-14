@@ -93,7 +93,7 @@ public:
     /// Correspondance array
     typedef typename InVecCoord::template rebind<unsigned int>::other IndexArray;
     typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
-    SetIndex f_indices;
+    SetIndex f_indices; ///< list of input indices
 
     Data < int > f_first; ///< first index (use if indices are sequential)
     Data < int > f_last; ///< last index (use if indices are sequential)

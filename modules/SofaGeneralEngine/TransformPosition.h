@@ -140,7 +140,7 @@ protected:
     Data<long> f_seed; ///< the seed for the random generator
     Data<Real> f_maxRandomDisplacement; ///< the maximum displacement for the random generator
     Data<SetIndex> f_fixedIndices; ///< the indices of the elements that are not transformed
-    core::objectmodel::DataFileName f_filename; //filename of an affine matrix
+    core::objectmodel::DataFileName f_filename; ///< filename of an affine matrix. Supported extensions are: .trm, .tfm, .xfm and .txt(read as .xfm)
     Data<bool> f_drawInput; ///< Draw input points
     Data<bool> f_drawOutput; ///< Draw output points
     Data<Real> f_pointSize; ///< Point size

@@ -62,8 +62,8 @@ public:
     Data<bool>                            d_showCenterOfGravity; ///< to display the center of gravity of the system
     Data<float>                           d_showAxisSize;        ///< to display the center of gravity of the system
 
-    Data<bool>  d_computeMappingInertia;
-    Data<bool>  d_showInitialCenterOfGravity;
+    Data<bool>  d_computeMappingInertia; ///< to be used if the mass is placed under a mapping
+    Data<bool>  d_showInitialCenterOfGravity; ///< display the initial center of gravity of the system
 
     Data<bool>  d_showX0; ///< to display the rest positions
 
@@ -71,10 +71,10 @@ public:
     /// indices outside of this range are discarded (useful for parallelization
     /// using mesh partitionning)
     Data< defaulttype::Vec<2,int> > d_localRange;
-    Data< helper::vector<int> >     d_indices;
+    Data< helper::vector<int> >     d_indices; ///< optional local DOF indices. Any computation involving only indices outside of this list are discarded
 
-    Data<bool> d_handleTopoChange;
-    Data<bool> d_preserveTotalMass;
+    Data<bool> d_handleTopoChange; ///< The mass and totalMass are recomputed on particles add/remove.
+    Data<bool> d_preserveTotalMass; ///< Prevent totalMass from decreasing when removing particles.
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

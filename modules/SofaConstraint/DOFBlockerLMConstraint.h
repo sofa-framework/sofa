@@ -134,7 +134,7 @@ public:
 
     Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
     Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
-    SetIndex f_indices;
+    SetIndex f_indices; ///< List of the index of particles to be fixed
     Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >

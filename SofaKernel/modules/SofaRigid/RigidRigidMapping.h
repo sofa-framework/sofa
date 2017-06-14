@@ -72,11 +72,16 @@ protected:
     Mat rotation;
     class Loader;
     void load(const char* filename);
+    /// number of child frames per parent frame.
+    /// If empty, all the children are attached to the parent with index
+    /// given in the "index" attribute. If one value, each parent frame drives
+    /// the given number of children frames. Otherwise, the values are the number
+    /// of child frames driven by each parent frame.
     Data< sofa::helper::vector<unsigned int> >  repartition;
 
 public:
     Data<unsigned> index; ///< input frame index
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping;
+    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
     //axis length for display
     Data<double> axisLength; ///< axis length for display
     Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector

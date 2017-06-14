@@ -67,10 +67,10 @@ protected:
     friend class FixedTranslationConstraintInternalData<DataTypes>;
 
 public:
-    SetIndex f_indices;
+    SetIndex f_indices; ///< Indices of the fixed points
     Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
     Data<SReal> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
-    SetIndex f_coordinates;
+    SetIndex f_coordinates; ///< Coordinates of the fixed points
 protected:
     FixedTranslationConstraint();
 

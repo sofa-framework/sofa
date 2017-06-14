@@ -144,7 +144,7 @@ protected:
 public:
 
     // Input data parameters
-    sofa::core::objectmodel::DataFileName fileDistanceGrid;
+    sofa::core::objectmodel::DataFileName fileDistanceGrid; ///< load distance grid from specified file
     Data< double > scale; ///< scaling factor for input file
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
     Data< int > nx; ///< number of values on X axis

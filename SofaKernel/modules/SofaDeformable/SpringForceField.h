@@ -117,7 +117,7 @@ public:
     Data<float> showArrowSize; ///< size of the axis
     Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::helper::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
-    core::objectmodel::DataFileName fileSprings;
+    core::objectmodel::DataFileName fileSprings; ///< File describing the springs
 
 protected:
     bool maskInUse;

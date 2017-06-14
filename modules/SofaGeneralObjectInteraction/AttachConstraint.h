@@ -78,8 +78,8 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 
 public:
-    SetIndex f_indices1;
-    SetIndex f_indices2;
+    SetIndex f_indices1; ///< Indices of the source points on the first model
+    SetIndex f_indices2; ///< Indices of the fixed points on the second model
     Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
     Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
     Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)

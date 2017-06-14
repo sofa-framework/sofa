@@ -448,12 +448,12 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
-    Data< Real > particleRadius;
-    Data< Real > particleMass;
+    Data< Real > particleRadius; ///< Radius of a Particle
+    Data< Real > particleMass; ///< Mass of a Particle
     Data< Real > pressureStiffness; ///< 100 - 1000 m2/s2
     Data< Real > density0; ///< 1000 kg/m3 for water
-    Data< Real > viscosity;
-    Data< Real > surfaceTension;
+    Data< Real > viscosity; ///< Viscosity
+    Data< Real > surfaceTension; ///< Surface Tension
     //Data< int  > pressureExponent;
     Data< int > kernelType; ///< 0 = default kernels, 1 = cubic spline
     Data< int > pressureType; ///< 0 = none, 1 = default pressure

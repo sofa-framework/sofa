@@ -82,7 +82,7 @@ protected:
     virtual ~FixedConstraint();
 
 public:
-    SetIndex f_indices;
+    SetIndex f_indices; ///< Indices of the fixed points
     Data<bool> f_fixAll; ///< filter all the DOF to implement a fixed object
     Data<bool> f_showObject; ///< draw or not the fixed constraints
     Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres

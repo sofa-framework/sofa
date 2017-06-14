@@ -77,7 +77,7 @@ protected:
     template <class DataDeriv>
     void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
-    SetIndex indices; // the set of vertex indices
+    SetIndex indices; ///< the set of vertex indices
 
     /// whether vertices should be selected from 2 parallel planes
     bool selectVerticesFromPlanes;

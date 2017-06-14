@@ -97,7 +97,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass d_mass;
+    VecMass d_mass; ///< values of the particles masses
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -188,7 +188,7 @@ public:
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
     Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
-    core::objectmodel::DataFileName d_fileMass;
+    core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
