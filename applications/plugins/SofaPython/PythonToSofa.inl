@@ -151,10 +151,3 @@ inline sofa::defaulttype::Vector3* get_vector3(PyObject* obj) {
     return get<sofa::defaulttype::Vector3>(obj);
 }
 
-
-
-//PointSetTopologyModifier* obj = dynamic_cast<PointSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
-//TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
-
-
-
