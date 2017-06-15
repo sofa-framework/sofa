@@ -38,7 +38,7 @@ namespace types
         emissive = defaulttype::RGBAColor(r,g,b,a);
     }
 
-    std::ostream& SOFA_HELPER_API operator << (std::ostream& out, const Material& m )
+    SOFA_HELPER_API std::ostream&  operator << (std::ostream& out, const Material& m )
     {
         out   << m.name         << " ";
         out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
@@ -49,7 +49,7 @@ namespace types
         return out;
     }
 
-   std::istream& SOFA_HELPER_API operator >> (std::istream& in, Material &m )
+    SOFA_HELPER_API std::istream&  operator >> (std::istream& in, Material &m )
     {
         std::string element;
         in  >>  m.name ;
