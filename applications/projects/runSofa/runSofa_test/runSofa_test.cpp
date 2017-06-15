@@ -25,12 +25,15 @@
 #include <SofaTest/Sofa_test.h>
 
 #include <sofa/helper/Utils.h>
-#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
+
+using sofa::helper::system::DataRepository;
+using sofa::helper::system::PluginRepository;
+using sofa::helper::system::PluginManager;
 
 class runSofa_test : public Sofa_test<>
 {
@@ -45,11 +48,8 @@ protected:
 
     void SetUp()
     {
-#ifdef WIN32
-        const std::string pluginDir = helper::Utils::getExecutableDirectory();
-#else
-        const std::string pluginDir = helper::Utils::getSofaPathPrefix() + "/lib";
-#endif
+        const std::string& pluginDir = helper::Utils::getPluginDirectory();
+
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;
         m_testPluginName = "TestPlugin";
@@ -69,15 +69,15 @@ protected:
 
 TEST_F(runSofa_test, runSofa_autoload)
 {
-    sofa::helper::system::PluginManager& pm = sofa::helper::system::PluginManager::getInstance();
+    PluginManager& pm = PluginManager::getInstance();
 
     ASSERT_EQ(pm.getPluginMap().size(), 0U);
     pm.readFromIniFile(m_testConfigPluginPath);
-    helper::system::PluginManager::getInstance().init();
+    PluginManager::getInstance().init();
     ASSERT_GT(pm.getPluginMap().size(), 0U);
     const std::string pluginPath = pm.findPlugin(m_testPluginName);
     ASSERT_GT(pluginPath.size(), 0U);
-    sofa::helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
+    helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
     ASSERT_EQ(0, std::string(p.getModuleName()).compare(m_testPluginName));
 }
 

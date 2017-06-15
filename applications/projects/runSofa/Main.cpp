@@ -326,11 +326,7 @@ int main(int argc, char** argv)
 
 
     // Add the plugin directory to PluginRepository
-#ifdef WIN32
-    const string pluginDir = Utils::getExecutableDirectory();
-#else
-    const string pluginDir = Utils::getSofaPathPrefix() + "/lib";
-#endif
+    const std::string& pluginDir = Utils::getPluginDirectory();
     PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
@@ -348,15 +344,15 @@ int main(int argc, char** argv)
 
     if (!noAutoloadPlugins)
     {
-        if (sofa::helper::system::DataRepository.findFile(configPluginPath))
+        if (DataRepository.findFile(configPluginPath))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
-            sofa::helper::system::PluginManager::getInstance().readFromIniFile(configPluginPath);
+            PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
-        else if (sofa::helper::system::DataRepository.findFile(defaultConfigPluginPath))
+        else if (DataRepository.findFile(defaultConfigPluginPath))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
-            sofa::helper::system::PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
+            PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
             msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
