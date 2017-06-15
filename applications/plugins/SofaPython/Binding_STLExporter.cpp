@@ -23,13 +23,21 @@
 
 #include "Binding_STLExporter.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
+/// getting a STLExporter* from a PyObject*
+static inline STLExporter* get_STLExporter(PyObject* obj) {
+    return down_cast<STLExporter>( get_baseobject(obj) );
+}
+
+
+
 static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
-    STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
+    STLExporter* obj = get_STLExporter( self );
     obj->writeSTL();
     Py_RETURN_NONE;
 }
@@ -37,7 +45,7 @@ static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 
 static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
 {
-    STLExporter* obj = down_cast<STLExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
+    STLExporter* obj = get_STLExporter( self );
     obj->writeSTLBinary();
     Py_RETURN_NONE;
 }

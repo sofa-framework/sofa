@@ -22,24 +22,21 @@
 
 #include "Binding_MeshLoader.h"
 #include "Binding_BaseLoader.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
-static PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
-{
-    MeshLoader* obj=down_cast<MeshLoader>(((PySPtr<Base>*)self)->object->toBaseLoader());
-    obj->reinit();
-    Py_RETURN_NONE;
-}
 
-
+///// getting a MeshLoader* from a PyObject*
+//static inline MeshLoader* get_MeshLoader(PyObject* obj) {
+//    return down_cast<MeshLoader>( get_baseloader(obj) );
+//}
 
 
 SP_CLASS_METHODS_BEGIN(MeshLoader)
-SP_CLASS_METHOD(MeshLoader,reinit)
-/*
+/*SP_CLASS_METHOD(MeshLoader,reinit)
 SP_CLASS_METHOD(MeshLoader,applyTranslation)
 SP_CLASS_METHOD(MeshLoader,applyRotation)
 SP_CLASS_METHOD(MeshLoader,applyScale)

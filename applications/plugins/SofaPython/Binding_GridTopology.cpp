@@ -22,13 +22,22 @@
 
 #include "Binding_GridTopology.h"
 #include "Binding_MeshTopology.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::topology;
 using namespace sofa::core::objectmodel;
 
+
+
+/// getting a GridTopology* from a PyObject*
+static inline GridTopology* get_GridTopology(PyObject* obj) {
+    return down_cast<GridTopology>( get_topology(obj) );
+}
+
+
 static PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nx,ny,nz;
     if (!PyArg_ParseTuple(args, "iii",&nx,&ny,&nz))
     {
@@ -42,13 +51,13 @@ static PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
 
 static PyObject * GridTopology_getNx(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNx());
 }
 
 static PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
@@ -61,13 +70,13 @@ static PyObject * GridTopology_setNx(PyObject *self, PyObject * args)
 
 static PyObject * GridTopology_getNy(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNy());
 }
 
 static PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
@@ -80,13 +89,13 @@ static PyObject * GridTopology_setNy(PyObject *self, PyObject * args)
 
 static PyObject * GridTopology_getNz(PyObject *self, PyObject * /*args*/)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     return PyInt_FromLong(obj->getNz());
 }
 
 static PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 {
-    GridTopology* obj=down_cast<GridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    GridTopology* obj = get_GridTopology( self );
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {

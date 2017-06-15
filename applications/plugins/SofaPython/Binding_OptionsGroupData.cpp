@@ -21,21 +21,26 @@
 ******************************************************************************/
 #include "Binding_OptionsGroupData.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::helper;
 using namespace sofa::core::objectmodel;
 
 
+/// getting a Data<OptionsGroup>* from a PyObject*
+static inline Data<OptionsGroup>* get_DataOptionsGroup(PyObject* obj) {
+    return down_cast<Data<OptionsGroup>>( get_basedata( obj ) );
+}
 
 
 static PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     return PyString_FromString(data->getValue().getSelectedItem().c_str());
 }
 static int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     OptionsGroup* optionGroups = data->beginEdit();
     optionGroups->setSelectedItem( item );
     data->endEdit();
@@ -50,12 +55,12 @@ static int OptionsGroupData_setAttr_selectedItem(PyObject *self, PyObject * args
 
 static PyObject * OptionsGroupData_getAttr_selectedId(PyObject *self, void*)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     return PyInt_FromLong((long)data->getValue().getSelectedId());
 }
 void OptionsGroupData_setAttr_selectedId_impl(PyObject *self, unsigned id)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     OptionsGroup* optionGroups = data->beginEdit();
     optionGroups->setSelectedItem( (unsigned)id );
     data->endEdit();
@@ -101,7 +106,7 @@ static PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * ar
 
 static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
@@ -113,7 +118,7 @@ static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
 
 static PyObject * OptionsGroupData_getSize(PyObject *self, PyObject *)
 {
-    Data<OptionsGroup>* data = down_cast<Data<OptionsGroup> >( ((PyPtr<BaseData>*)self)->object );
+    Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     return PyInt_FromLong((long)data->getValue().size());
 }
 

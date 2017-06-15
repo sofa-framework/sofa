@@ -7,6 +7,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaPython/PythonToSofa.inl>
 
 
 
@@ -55,7 +56,7 @@ SP_DECLARE_CLASS_TYPE(ExternalComponent)
 
 extern "C" PyObject * ExternalComponent_helloWorld(PyObject *self, PyObject * /*args*/)
 {
-    sofa::ExternalComponent* obj= down_cast<sofa::ExternalComponent>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object->toBaseObject());
+    sofa::ExternalComponent* obj = down_cast<sofa::ExternalComponent>( get_baseobject(self) );
     obj->helloWorld();
     Py_RETURN_NONE;
 }

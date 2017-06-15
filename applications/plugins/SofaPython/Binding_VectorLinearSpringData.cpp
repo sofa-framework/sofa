@@ -25,6 +25,7 @@
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include "Binding_LinearSpring.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -36,9 +37,17 @@ typedef Data<VectorLinearSpring> DataBinding_VectorLinearSpring;
 
 
 
+/// getting a Data<VectorLinearSpring>* from a PyObject*
+static inline Data<VectorLinearSpring>* get_DataVectorLinearSpring(PyObject* obj) {
+    return get<Data<VectorLinearSpring>>(obj);
+}
+
+
+
+
 SP_CLASS_ATTR_GET(VectorLinearSpringData,value)(PyObject *self, void*)
 {
-    DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
+    DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -75,7 +84,7 @@ SP_CLASS_ATTR_GET(VectorLinearSpringData,value)(PyObject *self, void*)
 
 SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args, void*)
 {
-    DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
+    DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
 
     // string
     if (PyString_Check(args))
@@ -120,7 +129,7 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
             SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
         }
 
-        LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)args)->object);
+        LinearSpring<SReal>* obj = dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)args)->object);
         VectorLinearSpring* vectorLinearSpring = data->beginEdit();
 
         (*vectorLinearSpring)[0].m1 = obj->m1;
@@ -252,13 +261,13 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
 
 static Py_ssize_t VectorLinearSpringData_length(PyObject *self)
 {
-    DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
+    DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
     return data->getValue().size();
 }
 
 static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
 {
-    DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
+    DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -293,7 +302,7 @@ static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
 
 static int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject* v)
 {
-    DataBinding_VectorLinearSpring* data=((PyPtr<DataBinding_VectorLinearSpring>*)self)->object; // TODO: check dynamic cast
+    DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();

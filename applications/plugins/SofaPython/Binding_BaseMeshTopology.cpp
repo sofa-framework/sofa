@@ -22,37 +22,38 @@
 
 #include "Binding_BaseMeshTopology.h"
 #include "Binding_Topology.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::topology;
 using namespace sofa::core::objectmodel;
 
 static PyObject * BaseMeshTopology_getNbEdges(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
+    BaseMeshTopology* obj = get_basemeshtopology( self );
     return PyInt_FromLong(obj->getNbEdges());
 }
 
 static PyObject * BaseMeshTopology_getNbTriangles(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
+    BaseMeshTopology* obj = get_basemeshtopology( self );
     return PyInt_FromLong(obj->getNbTriangles());
 }
 
 static PyObject * BaseMeshTopology_getNbQuads(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
+    BaseMeshTopology* obj = get_basemeshtopology( self );
     return PyInt_FromLong(obj->getNbQuads());
 }
 
 static PyObject * BaseMeshTopology_getNbTetrahedra(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
+    BaseMeshTopology* obj = get_basemeshtopology( self );
     return PyInt_FromLong(obj->getNbTetrahedra());
 }
 
 static PyObject * BaseMeshTopology_getNbHexahedra(PyObject *self, PyObject * /*args*/)
 {
-    BaseMeshTopology* obj=((PySPtr<Base>*)self)->object->toBaseMeshTopology();
+    BaseMeshTopology* obj = get_basemeshtopology( self );
     return PyInt_FromLong(obj->getNbHexahedra());
 }
 

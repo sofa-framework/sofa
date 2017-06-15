@@ -23,6 +23,7 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/Link.h>
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core::objectmodel;
@@ -36,12 +37,12 @@ using namespace sofa::defaulttype;
 
 SP_CLASS_ATTR_GET(Link,name)(PyObject *self, void*)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
+    BaseLink* link = get_baselink( self );
     return PyString_FromString(link->getName().c_str());
 }
 SP_CLASS_ATTR_SET(Link,name)(PyObject *self, PyObject * args, void*)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
+    BaseLink* link = get_baselink( self );
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
     link->setName(str);
     return 0;
@@ -73,20 +74,20 @@ int SetLinkValuePython(BaseLink* link, PyObject* args)
 
 SP_CLASS_ATTR_GET(Link,value)(PyObject *self, void*)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
+    BaseLink* link = get_baselink( self );
     return GetLinkValuePython(link);
 }
 
 SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object; // TODO: check dynamic cast
+    BaseLink* link = get_baselink( self );
     return SetLinkValuePython(link,args);
 }
 
 //// access ONE element of the vector
 //static PyObject * Link_getValue(PyObject *self, PyObject * args)
 //{
-//    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
+//    BaseLink* link = get_baselink( self );
 
 //    int index;
 //    if (!PyArg_ParseTuple(args, "i",&index))
@@ -117,7 +118,7 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 
 //static PyObject * Link_setValue(PyObject *self, PyObject * args)
 //{
-//    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
+//    BaseLink* link = get_baselink( self );
 //    const AbstractTypeInfo *typeinfo = link->getValueTypeInfo(); // info about the link value
 //    int index;
 //    PyObject *value;
@@ -158,19 +159,19 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 
 static PyObject * Link_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
+    BaseLink* link = get_baselink( self );
     return PyString_FromString(link->getValueTypeString().c_str());
 }
 
 static PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
+    BaseLink* link = get_baselink( self );
     return PyString_FromString(link->getValueString().c_str());
 }
 
 static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
-    BaseLink* link=((PyPtr<BaseLink>*)self)->object;
+    BaseLink* link = get_baselink( self );
     return PyInt_FromLong( link->getSize() );
 }
 

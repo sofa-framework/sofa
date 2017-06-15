@@ -23,15 +23,21 @@
 
 #include "Binding_DataFileName.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core::objectmodel;
+
+/// getting a DataFileName* from a PyObject*
+static inline DataFileName* get_DataFileName(PyObject* obj) {
+    return get<DataFileName>(obj);
+}
 
 
 
 SP_CLASS_ATTR_GET(DataFileName, fullPath)(PyObject *self, void*)
 {
-    DataFileName* dataFilename = down_cast<DataFileName>( ((PyPtr<BaseData>*)self)->object );
+    DataFileName* dataFilename = get_DataFileName( self );;
     return PyString_FromString(dataFilename->getFullPath().c_str());
 }
 
@@ -46,7 +52,7 @@ SP_CLASS_ATTR_SET(DataFileName, fullPath)(PyObject */*self*/, PyObject * /*args*
 
 SP_CLASS_ATTR_GET(DataFileName, relativePath)(PyObject *self, void*)
 {
-    DataFileName* dataFilename = down_cast<DataFileName>( ((PyPtr<BaseData>*)self)->object );
+    DataFileName* dataFilename = get_DataFileName( self );;
     return PyString_FromString(dataFilename->getRelativePath().c_str());
 }
 

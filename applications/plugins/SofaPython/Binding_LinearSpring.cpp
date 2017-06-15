@@ -21,14 +21,23 @@
 ******************************************************************************/
 
 #include "Binding_LinearSpring.h"
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::component::interactionforcefield;
 typedef LinearSpring<SReal> LinearSpringR;
 
+
+
+/// getting a LinearSpringR* from a PyObject*
+static inline LinearSpringR* get_LinearSpringR(PyObject* obj) {
+    return get<LinearSpringR>(obj);
+}
+
+
 static PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -39,7 +48,7 @@ static PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 
 static int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -52,7 +61,7 @@ static int LinearSpring_setAttr_Index1(PyObject *self, PyObject * args, void*)
 
 static PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -63,7 +72,7 @@ static PyObject * LinearSpring_getAttr_Index2(PyObject *self, void*)
 
 static int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -76,7 +85,7 @@ static int LinearSpring_setAttr_Index2(PyObject *self, PyObject * args, void*)
 
 static PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -87,7 +96,7 @@ static PyObject * LinearSpring_getAttr_Ks(PyObject *self, void*)
 
 static int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -101,7 +110,7 @@ static int LinearSpring_setAttr_Ks(PyObject *self, PyObject * args, void*)
 
 static PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -112,7 +121,7 @@ static PyObject * LinearSpring_getAttr_Kd(PyObject *self, void*)
 
 static int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -126,7 +135,7 @@ static int LinearSpring_setAttr_Kd(PyObject *self, PyObject * args, void*)
 
 static PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -137,7 +146,7 @@ static PyObject * LinearSpring_getAttr_L(PyObject *self, void*)
 
 static int LinearSpring_setAttr_L(PyObject *self, PyObject * args, void*)
 {
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    LinearSpringR* obj = get_LinearSpringR( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -159,13 +168,13 @@ PyObject * LinearSpring_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObject 
     double Ks,Kd,L;
     if (!PyArg_ParseTuple(args, "iiddd",&Index1,&Index2,&Ks,&Kd,&L))
         return 0;
-    LinearSpring<SReal> *obj = new LinearSpring<SReal>(Index1,Index2,Ks,Kd,L);
-    return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself (below)
+    LinearSpringR *obj = new LinearSpringR(Index1,Index2,Ks,Kd,L);
+    return SP_BUILD_PYPTR(LinearSpring,LinearSpringR,obj,true); // "true", because I manage the deletion myself (below)
 }
 void LinearSpring_PyFree(void * self)
 {
-    if (!((PyPtr<LinearSpring<SReal> >*)self)->deletable) return;
-    LinearSpring<SReal>* obj=down_cast<LinearSpringR>(((PyPtr<LinearSpring<SReal> >*)self)->object);
+    if (!((PyPtr<LinearSpringR >*)self)->deletable) return;
+    LinearSpringR* obj = get_LinearSpringR( (PyObject*)self );
     delete obj; // done!
 }
 
@@ -182,4 +191,4 @@ SP_CLASS_ATTR(LinearSpring,Kd)
 SP_CLASS_ATTR(LinearSpring,L)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(LinearSpring,LinearSpring<SReal>)
+SP_CLASS_TYPE_BASE_PTR_ATTR_NEW_FREE(LinearSpring,LinearSpringR)

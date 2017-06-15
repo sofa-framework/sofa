@@ -22,6 +22,7 @@
 
 #include "Binding_DataEngine.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
@@ -29,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
+    DataEngine* engine = get_dataengine( self );;
 
     engine->updateIfDirty();
 
@@ -38,7 +39,7 @@ static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 
 static PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
+    DataEngine* engine = get_dataengine( self );;
 
     engine->update();
 
@@ -47,7 +48,7 @@ static PyObject * DataEngine_update(PyObject *self, PyObject * /*args*/)
 
 static PyObject * DataEngine_isDirty(PyObject *self, PyObject * /*args*/)
 {
-    DataEngine* engine=((PySPtr<Base>*)self)->object->toDataEngine();
+    DataEngine* engine = get_dataengine( self );;
 
     return PyBool_FromLong( engine->isDirty() );
 }

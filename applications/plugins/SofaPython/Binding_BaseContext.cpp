@@ -25,6 +25,7 @@
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 #include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::defaulttype;
@@ -39,7 +40,7 @@ using namespace sofa::defaulttype;
 
 extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     PyPtr<Vector3>* pyVec;
     if (!PyArg_ParseTuple(args, "O",&pyVec))
         Py_RETURN_NONE;
@@ -49,32 +50,32 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 
 extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return SP_BUILD_PYPTR(Vector3,Vector3,new Vector3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
 extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getTime());
 }
 
 extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getDt());
 }
 
 extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
 // object factory
 extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
 
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
@@ -156,7 +157,7 @@ extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObje
 /// returns None with a warning if the object is not found
 extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
@@ -206,7 +207,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
 extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
@@ -231,7 +232,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
 // @TODO: pass keyword arguments rather than optional arguments?
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char* search_direction= NULL;
     char* type_name= NULL;
     char* name= NULL;
@@ -314,12 +315,12 @@ SP_CLASS_METHODS_END
 
 extern "C" PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->getAnimate());
 }
 extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
@@ -331,12 +332,12 @@ extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void
 
 extern "C" PyObject * BaseContext_getAttr_active(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->isActive());
 }
 extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
