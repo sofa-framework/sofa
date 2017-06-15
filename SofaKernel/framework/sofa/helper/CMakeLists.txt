@@ -106,6 +106,7 @@ set(HEADER_FILES
     vector_algebra.h
     vector_device.h
     types/RGBAColor.h
+    types/Material.h
     logging/Messaging.h
     logging/Message.h
     logging/ComponentInfo.h
@@ -187,6 +188,7 @@ set(SOURCE_FILES
     vector.cpp
     types/fixed_array.cpp
     types/RGBAColor.cpp
+    types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ComponentInfo.cpp
