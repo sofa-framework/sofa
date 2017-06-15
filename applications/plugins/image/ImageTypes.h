@@ -484,9 +484,10 @@ public:
 
 
 
-//  implementation of linear (scale+rotation+translation) and perspective transforms
-//  for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
-
+/**  implementation of linear (scale+rotation+translation) and perspective transforms
+ * for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
+ * the reference for the transformation is the center of the [0,0,0] voxel (or [0,0] pixel for 2D image)
+ */
 template<typename _Real>
 struct ImageLPTransform : public TImageTransform<12,_Real>
 {
