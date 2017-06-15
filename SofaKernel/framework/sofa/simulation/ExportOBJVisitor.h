@@ -41,9 +41,11 @@ public:
     std::ostream* out;
     std::ostream* mtl;
 
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out);
-    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out, std::ostream* mtl);
+    ExportOBJVisitor(const core::ExecParams* params, std::ostream* out=nullptr, std::ostream* mtl=nullptr);
     ~ExportOBJVisitor();
+
+    void setObjStream( std::ostream* o ) { out = o; }
+    void setMtlStream( std::ostream* o ) { mtl = o; }
 
     virtual void processVisualModel(Node* node, core::visual::VisualModel* vm);
 
