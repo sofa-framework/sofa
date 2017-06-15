@@ -30,11 +30,9 @@ using namespace sofa::core::objectmodel;
 #include <sofa/helper/logging/Messaging.h>
 
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
-// stop copypasting for the lord's sake
-static Base* get_base(PyObject* obj) {
-    return ((PySPtr<Base>*)obj)->object.get();
-}
+
 
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
