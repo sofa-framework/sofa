@@ -2,7 +2,7 @@
 #define IMAGETOOLBOXCENTRALWIDGET_H
 
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
