@@ -27,6 +27,7 @@
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -443,6 +444,25 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 }
 
 
+static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) {
+        return NULL;
+    }
+
+    Node* node = get_node(pyNode);
+    if (!node) {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    sofa::simulation::getSimulation()->unload( node );
+
+    Py_RETURN_NONE;
+}
+
+
 
 static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
 {
@@ -541,6 +561,7 @@ SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
+SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa, path)
