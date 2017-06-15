@@ -22,6 +22,7 @@
 
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_BaseState.h"
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core::behavior;
@@ -32,7 +33,7 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -52,7 +53,7 @@ extern "C" PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObj
 
 extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -72,7 +73,7 @@ extern "C" PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * 
 
 extern "C" PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * args)
 {
-    BaseMechanicalState* obj=((PySPtr<Base>*)self)->object->toBaseMechanicalState();
+    BaseMechanicalState* obj  = get_basemechanicalstate( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {

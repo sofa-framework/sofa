@@ -27,16 +27,21 @@
 
 #include "Binding_DataFileNameVector.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::helper;
 using namespace sofa::core::objectmodel;
 
 
+/// getting a DataFileNameVector* from a PyObject*
+static inline DataFileNameVector* get_DataFileNameVector(PyObject* obj) {
+    return get<DataFileNameVector>(obj);
+}
 
 
 extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
 {
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     sofa::helper::vector<std::string>& val = *data->beginEdit();
     val.clear();
@@ -51,7 +56,7 @@ extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s",&path))
         Py_RETURN_NONE;
 
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     data->addPath(path);
 

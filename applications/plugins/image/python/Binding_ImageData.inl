@@ -2,7 +2,6 @@
 // with preprocessor macros
 // no to have to duplicate code
 
-
 // preprocessor functions to concatenate 2 variables
 #define PASTER(x,y) x ## y
 #define EVALUATOR(x,y)  PASTER(x,y)
@@ -17,9 +16,12 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
 
+
+
+
 extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /*args*/)
 {
-    Data<IMAGETYPE>* data=((PyPtr< Data<IMAGETYPE> >*)self)->object;
+    Data<IMAGETYPE>* data = get< Data<IMAGETYPE> >( self );
     IMAGETYPE& image = *data->beginEdit();  // where should be the endedit?
 
     IMAGETYPE::imCoord dim = image.getDimensions();
@@ -57,7 +59,7 @@ extern "C" PyObject * EVALUATOR(BOUNDNAME,getPtrs)(PyObject * self, PyObject * /
 
 extern "C" PyObject * EVALUATOR(BOUNDNAME,getDimensions)(PyObject * self, PyObject * /*args*/)
 {
-    Data<IMAGETYPE>* data=((PyPtr< Data<IMAGETYPE> >*)self)->object;
+    Data<IMAGETYPE>* data = get< Data<IMAGETYPE> >( self );
     const IMAGETYPE& image = data->getValue();
 
     IMAGETYPE::imCoord dim = image.getDimensions();

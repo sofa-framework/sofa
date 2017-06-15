@@ -23,6 +23,7 @@
 
 #include "Binding_PythonScriptController.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::controller;
 
@@ -39,12 +40,9 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-#include "PythonToSofa.inl"
-
-
 
 static inline PythonScriptController* get_controller(PyObject* obj) {
-    return get<PythonScriptController>(obj);
+    return down_cast<PythonScriptController>( get_baseobject( obj ) );
 }
 
 
@@ -334,7 +332,7 @@ static PyObject * PythonScriptController_onScriptEvent(PyObject * self, PyObject
         return NULL;
     }
     
-    BaseNode* senderBaseNode = ((PySPtr<Base>*)pySenderNode)->object->toBaseNode();
+    BaseNode* senderBaseNode = get_basenode( pySenderNode );
     if (!senderBaseNode) {
         // TODO this should not happen
         PyErr_SetString(PyExc_RuntimeError, "null node wtf");
@@ -395,7 +393,7 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
-        BaseContext* ctx = get<BaseContext>(py_node) || error();
+        BaseContext* ctx = dynamic_cast<BaseContext*>( get_base(py_node) ) || error();
 
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();

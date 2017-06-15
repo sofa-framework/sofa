@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core::objectmodel;
@@ -34,12 +35,12 @@ using namespace sofa::defaulttype;
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getName().c_str());
 }
 SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
     data->setName(str);
     return 0;
@@ -433,7 +434,7 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 
 
     // BaseData
-    if( BaseData* targetData = dynamic_cast<BaseData*>(((PySPtr<BaseData>*)args)->object.get()) )
+    if( BaseData* targetData = get_basedata(args) )
     {
         // TODO improve data to data copy
         SP_MESSAGE_WARNING( "Data to Data copy is using string serialization for now" );
@@ -452,20 +453,20 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 
 SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     return GetDataValuePython(data);
 }
 
 SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     return SetDataValuePython(data,args);
 }
 
 // access ONE element of the vector
 static PyObject * Data_getValue(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
@@ -495,7 +496,7 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
 
 static PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     int index;
     PyObject *value;
@@ -537,13 +538,13 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
 
 static PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueTypeString().c_str());
 }
 
 static PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueString().c_str());
 }
 
@@ -551,7 +552,7 @@ static PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
 // TODO a description of what this function is supposed to do?
 static PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     int rowWidth = typeinfo->size();
@@ -564,7 +565,7 @@ static PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 
 static PyObject * Data_setSize(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     int size;
     if (!PyArg_ParseTuple(args, "i",&size))
     {
@@ -579,7 +580,7 @@ static PyObject * Data_setSize(PyObject *self, PyObject * args)
 
 static PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     data->unset();
 
@@ -588,7 +589,7 @@ static PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
 
 static PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     data->updateIfDirty();
 
@@ -598,7 +599,7 @@ static PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 
 static PyObject * Data_read(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
@@ -623,7 +624,7 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
 
 static PyObject * Data_setParent(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
@@ -658,7 +659,7 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
 // returns the complete link path name (i.e. following the shape "@/path/to/my/object.dataname")
 static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     Base* owner = data->getOwner();
 
     if( owner )
@@ -680,7 +681,7 @@ static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 // returns a pointer to the Data
 static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); // data->beginEditVoidPtr();  // warning a endedit should be necessary somewhere (when releasing the python variable?)
@@ -727,21 +728,21 @@ static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
 // returns the number of times the Data was modified
 static PyObject * Data_getCounter(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyInt_FromLong( data->getCounter() );
 }
 
 static PyObject * Data_isDirty(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyBool_FromLong( data->isDirty() );
 }
 
 
 // implementation of __str__ to cast a Data to a string
-PyObject * Data_str(PyObject *self)
+static PyObject * Data_str(PyObject *self)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueString().c_str());
 }
 
@@ -773,53 +774,10 @@ SP_CLASS_ATTR(Data,value)
 SP_CLASS_ATTRS_END
 
 
-// similar to SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData) but also declaring the str() cast function
-PyTypeObject SP_SOFAPYTYPEOBJECT(Data) = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-    "Sofa.Data",                        //tp_name
-    sizeof(PyPtr<BaseData>),                //tp_basicsize
-    0,                                  //tp_itemsize
-    0,                                  //tp_dealloc
-    0,                                  //tp_print
-    0,                                  //tp_getattr
-    0,                                  //tp_setattr
-    0,                                  //tp_compare
-    0,                                  //tp_repr
-    0,                                  //tp_as_number
-    0,                                  //tp_as_sequence
-    0,                                  //tp_as_mapping
-    0,                                  //tp_hash
-    0,                                  //tp_call
-    &Data_str,                          //tp_str
-    0,                                  //tp_getattro
-    0,                                  //tp_setattro
-    0,                                  //tp_as_buffer
-    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,   //tp_flags
-    0,                                  //tp_doc
-    0,                                  //tp_traverse
-    0,                                  //tp_clear
-    0,                                  //tp_richcompare
-    0,                                  //tp_weaklistoffset
-    0,                                  //tp_iter
-    0,                                  //tp_iternext
-    SP_SOFAPYMETHODS(Data),              //tp_methods
-    0,                                  //tp_members
-    SP_SOFAPYATTRIBUTES(Data),         //tp_getset
-    &PyBaseObject_Type,                //tp_base
-    0,                                  //tp_dict
-    0,                                  //tp_descr_get
-    0,                                  //tp_descr_set
-    0,                                  //tp_dictoffset
-    0,                                  //tp_init
-    0,                                  //tp_alloc
-    0,                     //tp_new
-    0,                     //tp_free
-    0,    // tp_is_gc /* For PyObject_IS_GC */
-    0,   //tp_bases
-    0,   //tp_mro /* method resolution order */
-    0,   //tp_cache
-    0,   //tp_subclasses
-    0,   //tp_weaklist
-    0, // tp_del
-    0 // tp_verstion_tag
-};
+static struct patch {
+    patch() {
+        SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; // adding __str__ function
+    }
+} patcher;
+
+SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData);

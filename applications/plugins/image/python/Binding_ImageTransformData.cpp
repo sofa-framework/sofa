@@ -4,6 +4,7 @@
 
 #include "Binding_ImageTransformData.h"
 #include <SofaPython/Binding_Data.h>
+#include <SofaPython/PythonToSofa.inl>
 
 
 
@@ -17,6 +18,12 @@ typedef ImageLPTransform<Real> MyImageTransform;
 typedef MyImageTransform::Coord MyCoord;
 
 
+/// getting a Data<MyImageTransform>* from a PyObject*
+static inline Data<MyImageTransform>* get_MyImageTransform(PyObject* obj) {
+    return get<Data<MyImageTransform>>(obj);
+}
+
+
 extern "C" PyObject * ImageTransformData_fromImage(PyObject * self, PyObject * args)
 {
     double x,y,z;
@@ -28,7 +35,7 @@ extern "C" PyObject * ImageTransformData_fromImage(PyObject * self, PyObject * a
 
 //    msg_info("ImageTransformData_fromImage")<<x<<" "<<y<<" "<<z;
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
     MyCoord p = transform.fromImage( MyCoord(x,y,z) );
 
@@ -53,7 +60,7 @@ extern "C" PyObject * ImageTransformData_toImage(PyObject * self, PyObject * arg
         Py_RETURN_NONE;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
     MyCoord p = transform.toImage( MyCoord(x,y,z) );
 
@@ -75,7 +82,7 @@ extern "C" PyObject * ImageTransformData_toImage(PyObject * self, PyObject * arg
 
 extern "C" PyObject * ImageTransformData_getAttr_params(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     const MyImageTransform::Params& p = transform.getParams();
@@ -106,7 +113,7 @@ extern "C" int ImageTransformData_setAttr_params(PyObject *self, PyObject * args
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getParams().set(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11);
@@ -118,7 +125,7 @@ extern "C" int ImageTransformData_setAttr_params(PyObject *self, PyObject * args
 
 extern "C" PyObject * ImageTransformData_getAttr_translation(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     const MyCoord& t = transform.getTranslation();
@@ -140,7 +147,7 @@ extern "C" int ImageTransformData_setAttr_translation(PyObject *self, PyObject *
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getTranslation().set(x,y,z);
@@ -151,7 +158,7 @@ extern "C" int ImageTransformData_setAttr_translation(PyObject *self, PyObject *
 
 extern "C" PyObject * ImageTransformData_getAttr_rotation(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     const MyCoord& t = transform.getRotation();
@@ -172,7 +179,7 @@ extern "C" int ImageTransformData_setAttr_rotation(PyObject *self, PyObject * ar
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getRotation().set(x,y,z);
@@ -184,7 +191,7 @@ extern "C" int ImageTransformData_setAttr_rotation(PyObject *self, PyObject * ar
 
 extern "C" PyObject * ImageTransformData_getAttr_scale(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     const MyCoord& t = transform.getScale();
@@ -205,7 +212,7 @@ extern "C" int ImageTransformData_setAttr_scale(PyObject *self, PyObject * args,
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getScale().set(x,y,z);
@@ -217,7 +224,7 @@ extern "C" int ImageTransformData_setAttr_scale(PyObject *self, PyObject * args,
 
 extern "C" PyObject * ImageTransformData_getAttr_offsetT(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     return PyFloat_FromDouble( transform.getOffsetT() );
@@ -232,7 +239,7 @@ extern "C" int ImageTransformData_setAttr_offsetT(PyObject *self, PyObject * arg
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getOffsetT() = a;
@@ -244,7 +251,7 @@ extern "C" int ImageTransformData_setAttr_offsetT(PyObject *self, PyObject * arg
 
 extern "C" PyObject * ImageTransformData_getAttr_scaleT(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     return PyFloat_FromDouble( transform.getScaleT() );
@@ -259,7 +266,7 @@ extern "C" int ImageTransformData_setAttr_scaleT(PyObject *self, PyObject * args
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getScaleT() = a;
@@ -271,7 +278,7 @@ extern "C" int ImageTransformData_setAttr_scaleT(PyObject *self, PyObject * args
 
 extern "C" PyObject * ImageTransformData_getAttr_perspective(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     return PyFloat_FromDouble( transform.isPerspective() );
@@ -286,7 +293,7 @@ extern "C" int ImageTransformData_setAttr_perspective(PyObject *self, PyObject *
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.isPerspective() = a;
@@ -297,7 +304,7 @@ extern "C" int ImageTransformData_setAttr_perspective(PyObject *self, PyObject *
 
 extern "C" PyObject * ImageTransformData_getAttr_camPos(PyObject *self, void*)
 {
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     const MyImageTransform& transform = data->getValue();
 
     const Vec<2,Real>& t = transform.getCamPos();
@@ -317,7 +324,7 @@ extern "C" int ImageTransformData_setAttr_camPos(PyObject *self, PyObject * args
         return 0;
     }
 
-    Data<MyImageTransform>* data=((PyPtr< Data<MyImageTransform> >*)self)->object;
+    Data<MyImageTransform>* data = get_MyImageTransform( self );
     MyImageTransform& transform = *data->beginEdit();
 
     transform.getCamPos().set(x,y);
