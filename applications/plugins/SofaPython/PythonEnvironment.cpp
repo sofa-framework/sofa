@@ -30,7 +30,7 @@
 
 #include <sofa/helper/Utils.h>
 
-#if __linux__
+#if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
 
@@ -39,7 +39,6 @@ using namespace sofa::component::controller;
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
-
 
 namespace sofa
 {
@@ -65,10 +64,10 @@ void PythonEnvironment::Init()
     SP_MESSAGE_INFO("Python version: " + pythonVersion)
 #endif
 
+#if defined(__linux__)
     // WARNING: workaround to be able to import python libraries on linux (like
     // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
     // not fixing the real problem, but at least it is working for now.
-#if __linux__
     std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + ".so";
     dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
 #endif
@@ -77,8 +76,10 @@ void PythonEnvironment::Init()
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
         SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
 
-    // Initialize the Python Interpreter.
-    Py_Initialize();
+    if ( !Py_IsInitialized() )
+    {
+        Py_Initialize();
+    }
 
     // Append sofa modules to the embedded python environment.
     bindSofaPythonModule();
@@ -136,7 +137,14 @@ except:\n\
         }
     }
 
+    // python livecoding related
     PyRun_SimpleString("from SofaPython.livecoding import onReimpAFile");
+
+    // general sofa-python stuff
+    PyRun_SimpleString("import SofaPython");
+
+    // python modules are automatically reloaded at each scene loading
+    setAutomaticModuleReload( true );
 }
 
 void PythonEnvironment::Release()
@@ -299,8 +307,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     //  Py_BEGIN_ALLOW_THREADS
 
-    PyRun_SimpleString("import sys");
-
     // Load the scene script
     char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
@@ -377,6 +383,29 @@ bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNod
     }
 }
 */
+
+void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
+{
+    // unload python modules to force importing their eventual modifications
+    PyRun_SimpleString("SofaPython.unloadModules()");
+}
+
+
+void PythonEnvironment::setAutomaticModuleReload( bool b )
+{
+    if( b )
+        SceneLoader::addListener( SceneLoaderListerner::getInstance() );
+    else
+        SceneLoader::removeListener( SceneLoaderListerner::getInstance() );
+}
+
+
+void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
+{
+    PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
+}
+
+
 
 } // namespace simulation
 

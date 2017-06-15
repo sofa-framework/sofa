@@ -641,7 +641,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     std::string scene = "PML/default.scn";
     if ( !sofa::helper::system::DataRepository.findFile ( scene ) )
     {
-        std::cerr << "File " << scene << " not found " << std::endl;
+        msg_info("RealGUI") << "File '" << scene << "' not found " ;
         return;
     }
     this->unloadScene();
@@ -671,7 +671,7 @@ void RealGUI::lmlOpen ( const char* filename )
         simulation::getSimulation()->init ( root );
     }
     else
-        std::cerr<<"You must load the pml file before the lml file"<<endl;
+        msg_info()<<"You must load the pml file before the lml file"<<endl;
 }
 #endif
 
@@ -763,7 +763,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
     {
-        std::cerr<<"Failed to load "<<filename.c_str()<<std::endl;
+        msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
         return;
     }
     setScene ( mSimulation, filename.c_str(), temporaryFile );
@@ -1007,7 +1007,7 @@ void RealGUI::fileReload()
 
     if ( filename.empty() )
     {
-        std::cerr << "Reload failed: no file loaded.\n";
+        msg_error("RealGUI") << "Reload failed: no file loaded.";
         return;
     }
 
@@ -1194,7 +1194,7 @@ void RealGUI::setFullScreen (bool enable)
 
 //------------------------------------
 
-void RealGUI::setBackgroundColor(const defaulttype::Vector3& c)
+void RealGUI::setBackgroundColor(const defaulttype::RGBAColor& c)
 {
     background[0]->setText(QString::number(c[0]));
     background[1]->setText(QString::number(c[1]));
@@ -1312,7 +1312,7 @@ void RealGUI::registerViewer(BaseViewer* _viewer)
     if(mViewer != NULL)
         delete old;
     else
-        std::cerr<<"ERROR when registerViewer, the viewer is NULL"<<std::endl;
+        msg_error("RealGUI")<<"when registerViewer, the viewer is NULL";
 }
 
 //------------------------------------
@@ -1630,7 +1630,7 @@ void RealGUI::initViewer(BaseViewer* _viewer)
 {
     if(_viewer == NULL)
     {
-        std::cerr<<"ERROR when initViewer, the viewer is NULL"<<std::endl;
+        msg_error("RealGUI")<<"when initViewer, the viewer is NULL";
         return;
     }
     init(); //init data member from RealGUI for the viewer initialisation in the GUI

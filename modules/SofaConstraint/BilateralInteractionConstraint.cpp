@@ -46,19 +46,24 @@ class RigidImpl {};
 template<>
 class BilateralInteractionConstraintSpecialization<RigidImpl>
 {
-public:    
+public:
 
     template<class T>
     static void bwdInit(BilateralInteractionConstraint<T>& self) {
         if (!self.keepOrientDiff.getValue())
             return;
 
+        helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::VecDeriv > > wrest = self.restVector;
+
+        if (wrest.size() > 0) {
+            msg_warning("BilateralInteractionConstraintSpecialization") << "keepOrientationDifference is activated, rest_vector will be ignored! " ;
+            wrest.resize(0);
+        }
+
         const helper::vector<int> &m1Indices = self.m1.getValue();
         const helper::vector<int> &m2Indices = self.m2.getValue();
 
         unsigned minp = std::min(m1Indices.size(),m2Indices.size());
-
-        helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::VecDeriv > > wrest = self.restVector;
 
         const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x1 = *self.mstate1->read(core::ConstVecCoordId::position());
         const typename BilateralInteractionConstraint<T>::DataVecCoord &d_x2 = *self.mstate2->read(core::ConstVecCoordId::position());
@@ -86,10 +91,6 @@ public:
             df.getOrientation() = dQP;
             self.initialDifference.push_back(df);
 
-            typename BilateralInteractionConstraint<T>::Deriv diff;
-            getVCenter(diff) = Q.getCenter() - P.getCenter();
-            getVOrientation(diff) =  P.rotate(self.q.angularDisplacement(Q.getOrientation() , P.getOrientation())) ; // angularDisplacement compute the rotation vector btw the two quaternions
-            wrest.push_back(diff);
         }
     }
 
@@ -232,8 +233,8 @@ public:
             getVCenter(self.dfree[pid]) = dof2.getCenter() - dof1.getCenter();
             getVOrientation(self.dfree[pid]) =  dof1.rotate(self.q.angularDisplacement(dof2.getOrientation() ,
                                                                                   dof1.getOrientation())); // angularDisplacement compute the rotation vector btw the two quaternions
-            //if (pid < restVector.size())
-            //    self.dfree[pid] -= restVector[pid];
+            if (pid < restVector.size())
+                self.dfree[pid] -= restVector[pid];
 
             for (unsigned int i=0 ; i<self.dfree[pid].size() ; i++)
                 v->set(self.cid[pid]+i, self.dfree[pid][i]);

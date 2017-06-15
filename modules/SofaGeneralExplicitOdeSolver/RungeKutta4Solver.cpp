@@ -75,11 +75,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     MultiVecCoord newX(&vop);
     //MultiVecDeriv newV(&vop);
 
-    //std::cout << "\nEntering RungeKutta4Solver::solve()\n";
-    //std::cout << pos << std::endl;
-
-    const bool log = this->f_printLog.getValue();
-
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
     double stepBy6 = double(dt / 6.0);
@@ -89,12 +84,14 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //First step
-    if (log) sout << "RK4 Step 1"<<sendl;
+    dmsg_info() << "RK4 Step 1";
+
     //k1v = vel;
     mop.computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
-    if (log) sout << "RK4 Step 2"<<sendl;
+    dmsg_info() << "RK4 Step 2" ;
+
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k2v = vel;
@@ -118,7 +115,7 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     mop.computeAcc ( startTime+stepBy2, k2a, newX, k2v );
 
     // step 3
-    if (log) sout << "RK4 Step 3"<<sendl;
+    dmsg_info() << "RK4 Step 3" ;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k3v = vel;
@@ -142,7 +139,7 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     mop.computeAcc ( startTime+stepBy2, k3a, newX, k3v );
 
     // step 4
-    if (log) sout << "RK4 Step 4"<<sendl;
+    dmsg_info() << "RK4 Step 4" ;
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     newX = pos;
     k4v = vel;
@@ -165,8 +162,7 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
 
     mop.computeAcc( startTime+dt, k4a, newX, k4v);
 
-    if (log)
-        sout << "RK4 Final"<<sendl;
+   dmsg_info() << "RK4 Final";
 
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos2.eq(pos,k1v,stepBy6);
@@ -202,12 +198,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
         mop.solveConstraint(vel, core::ConstraintParams::VEL);
     }
 #endif
-
-    //std::cout << "\nExiting RungeKutta4Solver::solve()\n";
-    //std::cout << pos << std::endl;
-
-    //std::cout << "\nExiting RungeKutta4Solver::solve() : New Free pos\n";
-    //std::cout << newPos << std::endl;
 
 //	simulation::MechanicalSetPositionAndVelocityVisitor spav(0, core::VecCoordId::position(), core::VecId::velocity());
 //	spav.execute(this->getContext());

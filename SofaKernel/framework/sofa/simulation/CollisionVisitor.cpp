@@ -58,7 +58,7 @@ void CollisionVisitor::processCollisionPipeline(simulation::Node*
 #endif
         , core::collision::Pipeline* obj)
 {
-    //std::cerr<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
+    //msg_info()<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
 #ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionReset");
     ctime_t t0=begin(node, obj);

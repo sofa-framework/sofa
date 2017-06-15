@@ -105,8 +105,11 @@ set(HEADER_FILES
     vectorLinks.h
     vector_algebra.h
     vector_device.h
+    types/RGBAColor.h
     logging/Messaging.h
     logging/Message.h
+    logging/ComponentInfo.h
+    logging/FileInfo.h
     logging/MessageDispatcher.h
     logging/MessageHandler.h
     logging/ConsoleMessageHandler.h
@@ -121,8 +124,6 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
-    logging/RichConsoleStyleMessageFormatter.h
-
 )
 
 set(SOURCE_FILES
@@ -184,8 +185,11 @@ set(SOURCE_FILES
     system/thread/debug.cpp
     system/FileRepository.cpp
     vector.cpp
+    types/fixed_array.cpp
+    types/RGBAColor.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
     logging/DefaultStyleMessageFormatter.cpp
@@ -196,7 +200,6 @@ set(SOURCE_FILES
     logging/LoggingMessageHandler.cpp
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
-    logging/RichConsoleStyleMessageFormatter.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

@@ -67,13 +67,12 @@ bool SphereLoader::load()
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
     }
 
     helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *positions.beginEdit();
     helper::vector<SReal>& my_radius = *radius.beginEdit();
-// 	std::cout << "Loading model'" << filename << "'" << std::endl;
 
     int totalNumSpheres=0;
 
@@ -93,7 +92,7 @@ bool SphereLoader::load()
         {
             int total;
             if (fscanf(file, "%d", &total) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.reserve(total);
         }
         else if (!strcmp(cmd,"sphe"))
@@ -102,7 +101,7 @@ bool SphereLoader::load()
             double cx=0,cy=0,cz=0,r=1;
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.push_back(Vector3((SReal)cx,(SReal)cy,(SReal)cz));
             my_radius.push_back((SReal)r);
             ++totalNumSpheres;
@@ -113,12 +112,10 @@ bool SphereLoader::load()
         }
         else			// it's an unknown keyword
         {
-            printf("%s: Unknown Sphere keyword: %s\n", filename, cmd);
+            msg_warning("SphereLoader") << "Unknown Sphere keyword: "<< cmd << " in file '"<<filename<< "'" ;
             skipToEOL(file);
         }
     }
-// 	printf("Model contains %d spheres\n", totalNumSpheres);
-
 
     (void) fclose(file);
 

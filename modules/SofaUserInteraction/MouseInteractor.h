@@ -44,7 +44,7 @@ namespace collision
  */
 struct BodyPicked
 {
-    BodyPicked():body(NULL), mstate(NULL) {}
+    BodyPicked():body(NULL), mstate(NULL), dist(0) {}
     sofa::core::CollisionModel *body;
     sofa::core::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;

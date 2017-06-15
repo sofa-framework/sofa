@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -123,11 +126,11 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("centers")->read("0. 0. 0.");
         m_thisObject->findData("radii")->read("1.");
         m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
-        m_thisObject->findData("edges")->read("0 1 1 2 ");
+        m_thisObject->findData("edges")->read("0 1 1 2");
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_thisObject->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -141,7 +144,7 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_thisObject->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -155,7 +158,7 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->update();
 
         EXPECT_EQ(m_thisObject->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_thisObject->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
     }
 };
 
@@ -165,26 +168,33 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(SphereROI_test, DataTypes);
 
 TYPED_TEST(SphereROI_test, attributesTests) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
+
 TYPED_TEST(SphereROI_test, initTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isPointInSphereTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isPointInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isEdgeInSphereTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isEdgeInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTriangleInSphereTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTriangleInSphereTest()) ;
 }
 
 TYPED_TEST(SphereROI_test, isTetrahedraInSphereTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTetrahedraInSphereTest()) ;
 }
 

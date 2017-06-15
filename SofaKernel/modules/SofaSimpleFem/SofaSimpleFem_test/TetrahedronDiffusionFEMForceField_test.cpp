@@ -27,6 +27,9 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
@@ -130,7 +133,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         if(!tetraNode || !temperatureNode)
         {
-          std::cerr << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" << std::endl;
+          msg_error("TetrahedronDiffusionFEMForceField_test") << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" ;
           return;
         }
 
@@ -205,6 +208,7 @@ TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->debug = false;
 
 

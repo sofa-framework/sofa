@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<Node name="root" gravity="0 -9.81 0" dt="0.01">
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <DefaultPipeline name="default21" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="default22" response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <DefaultCollisionGroupManager name="default23" />
+
+    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+
+    <Node name="Cube" gravity="0 -9.81 0">
+        <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-30 -10 -10" computeHexaList="0"/>
+        <MechanicalObject template="Vec3d" name="Hexa" />
+        <UniformMass template="Vec3d" name="default25" mass="10" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="500" assembling="0" />
+        <BoxROI template="Vec3d" name="box_roi" box="-31 9 -11 -9 11 11" indices="0" drawSize="0" />
+        <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
+
+        <Node name="Q">
+            <QuadSetTopologyContainer  name="Container" />
+            <QuadSetTopologyModifier   name="Modifier" />
+            <QuadSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+            <QuadSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
+            <Hexa2QuadTopologicalMapping input="@../grid" output="@Container" />
+            <TriangleSet />
+            <Node name="Visu">
+                <OglModel name="Visual" color="blue" quads="@../Container.quads" />
+                <IdentityMapping input="@../../Hexa" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+
+
+    <Node name="Square" gravity="0 -9.81 0">
+        <RegularGridTopology name="grid" n="6 1 6" min="-10 -10 -10" max="10 10 10" p0="-6 10 -10" computeHexaList="0"/>
+        <MechanicalObject template="Vec3d" name="Tri" />
+        <UniformMass template="Vec3d" name="default25" mass="10" />
+        <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
+<!--        <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" /> -->
+        <BoxROI template="Vec3d" name="box_roi" box="-7 9 -11 17 11 -9" indices="0" drawBoxes="0" />
+        <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
+
+        <TriangleSet />
+        <Node name="Visu">
+            <OglModel name="Visual" color="blue" triangles="@../grid.triangles" />
+            <IdentityMapping input="@../Tri" output="@Visual" />
+        </Node>
+    </Node>
+
+
+    <Node name="Line" gravity="0 -9.81 0">
+        <RegularGridTopology name="grid" n="1 1 6" min="-10 -10 -10" max="10 10 10" p0="18 10 -10" computeHexaList="0"/>
+        <MechanicalObject template="Vec3d" name="Edge" />
+        <UniformMass template="Vec3d" name="default25" mass="10" />
+
+        <RegularGridSpringForceField name="Springs" stiffness="300" damping="2" />
+        <BoxROI template="Vec3d" name="box_roi" box="17 9 -11 20 11 -9" indices="0" drawBoxes="0" />
+        <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
+
+        <EdgeSet />
+        <Node name="Visu">
+            <OglModel name="Visual" color="white" edges="@../grid.edges" />
+            <IdentityMapping input="@../Edge" output="@Visual" />
+        </Node>
+    </Node>
+
+
+</Node>

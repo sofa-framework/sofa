@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -44,41 +45,41 @@ LCP::LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.
 /*
 LCP& LCP::operator=(LCP& lcp)
 {
-	if(this == &lcp) return *this; //self assignment
+    if(this == &lcp) return *this; //self assignment
 
-	if(maxConst != lcp.maxConst)
-	{
-		maxConst = lcp.maxConst;
+    if(maxConst != lcp.maxConst)
+    {
+        maxConst = lcp.maxConst;
 
-		delete [] dfree;
-		for (unsigned int i = 0; i < maxConst; i++)
-		{
-			delete [] W[i];
-		}
-		delete [] W;
+        delete [] dfree;
+        for (unsigned int i = 0; i < maxConst; i++)
+        {
+            delete [] W[i];
+        }
+        delete [] W;
 
-		W = new double*[maxConst];
-		for (unsigned int i = 0; i < maxConst; i++)
-		{
-			W[i] = new double[maxConst];
-		}
-		dfree = new double[maxConst];
-		f = new double[2 * maxConst + 1];
-	}
+        W = new double*[maxConst];
+        for (unsigned int i = 0; i < maxConst; i++)
+        {
+            W[i] = new double[maxConst];
+        }
+        dfree = new double[maxConst];
+        f = new double[2 * maxConst + 1];
+    }
 
-	dim = lcp.dim;
-	mu = lcp.mu;
-	tol = lcp.tol;
-	numItMax = lcp.numItMax;
-	useInitialF = lcp.useInitialF;
+    dim = lcp.dim;
+    mu = lcp.mu;
+    tol = lcp.tol;
+    numItMax = lcp.numItMax;
+    useInitialF = lcp.useInitialF;
         dim = lcp.dim;
 
-	for (unsigned int i = 0; i < maxConst; i++)
-		memcpy(W[i], lcp.W[i], maxConst * sizeof(double));
-	memcpy(dfree, lcp.dfree, maxConst * sizeof(double));
-	memcpy(f, lcp.f, maxConst * sizeof(double));
+    for (unsigned int i = 0; i < maxConst; i++)
+        memcpy(W[i], lcp.W[i], maxConst * sizeof(double));
+    memcpy(dfree, lcp.dfree, maxConst * sizeof(double));
+    memcpy(f, lcp.f, maxConst * sizeof(double));
 
-	return *this;
+    return *this;
 }
 */
 
@@ -314,10 +315,10 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
 
     /*printf("mat = [");
     for(compteur=0;compteur<dim;compteur++) {
-    	for(compteur2=0;compteur2<2*dim+1;compteur2++) {
-    		printf("\t%.2f",mat[compteur][compteur2]);
-    	}
-    	printf("\n");
+        for(compteur2=0;compteur2<2*dim+1;compteur2++) {
+            printf("\t%.2f",mat[compteur][compteur2]);
+        }
+        printf("\n");
     }
     printf("      ]\n\n");*/
 
@@ -595,7 +596,7 @@ void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, do
 void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
 {
     double d[3];
-    
+
     for (int iteration=0; iteration<10000; iteration++)
     {
         // we set the previous value of the force
@@ -855,7 +856,8 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 
     if (3*nbContactsCoarse > (int) coarseLevel.getMaxConst())
     {
-        std::cerr<<"ERROR : allocation pb for the coarseLevel. size needed : "<<3*nbContactsCoarse<<" - size allocated : "<<coarseLevel.getMaxConst()<<std::endl;
+        msg_error("LCPcalc")<<"allocation pb for the coarseLevel. size needed : "<<3*nbContactsCoarse
+                           <<" - size allocated : "<<coarseLevel.getMaxConst();
         return;
     }
 
@@ -934,7 +936,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
             }
             else
             {
-                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                msg_error("LCPcalc")<<"in nlcp_multiGrid: no projection found for group" << g ;
                 return;
             }
 
@@ -1008,7 +1010,7 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 
     if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
     {
-        std::cerr<<"WARNING in prolongation: problem with the size of tables "<<std::endl;
+        msg_info("LCPcalc")<<"WARNING in prolongation: problem with the size of tables ";
     }
 
     // STEP 4: PROLONGATION DU RESULTAT AU NIVEAU FIN
@@ -1114,17 +1116,17 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     std::size_t num_hierarchies = Tab_num_group.size();
     if (num_hierarchies != contact_group_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy"<<std::endl;
+        msg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy";
         return 0;
     }
     if (num_hierarchies != constraint_group_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_hierarchy"<<std::endl;
+        msg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_hierarchy";
         return 0;
     }
     if (num_hierarchies != constraint_group_fact_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_fact_hierarchy"<<std::endl;
+        msg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_fact_hierarchy";
         return 0;
     }
 
@@ -1221,7 +1223,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 {
 
 
-    std::cerr<<"entering nlcp_multiGrid fct"<<std::endl;
+    msg_info("LCPcalc")<<"entering nlcp_multiGrid fct";
 
     double test = dim/3;
     double zero = 0.0;
@@ -1245,7 +1247,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     if (!useInitialF)
         memset(f, 0, dim*sizeof(double));
 
-    std::cerr<<"step 1 allocation ok"<<std::endl;
+    msg_info("LCPcalc")<<"step 1 allocation ok";
 
     // previous value of the force and the displacment
     double f_1[3];
@@ -1268,7 +1270,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     F_coarse_1 = (double*) malloc (3*num_group * sizeof(double));
     F_coarse= (double*) malloc (3*num_group * sizeof(double));
     d_coarse= (double*) malloc (3*num_group * sizeof(double));
-    std::cerr<<"step 2 allocation ok"<<std::endl;
+    msg_info("LCPcalc")<<"step 2 allocation ok";
 
     for (unsigned int g=0;  g<3*num_group ; g++)
     {
@@ -1412,7 +1414,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             }
             else
             {
-                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                msg_error("LCPcalc")<<"in nlcp_multiGrid: no projection found for group" << g;
                 free(d_free_coarse);
                 free(F_coarse_1);
                 free(F_coarse);
@@ -1421,7 +1423,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                 for (int i = 0; i < numContacts; i++)
                     delete W33[i];
                 free(W33);
-                
+
                 return 0;
             }
 
@@ -1647,9 +1649,9 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     sortedList.clear();
     for (c1=0; c1<numContacts; c1++)
     {
-    	buf.value = dfree[3*c1];
-    	buf.index = c1;
-    	sortedList.push_back(buf);
+        buf.value = dfree[3*c1];
+        buf.index = c1;
+        sortedList.push_back(buf);
     }
     */
 
@@ -1781,7 +1783,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
     if (verbose)
     {
-        std::cerr<<"\n No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<std::endl;
+        msg_warning("LCPcalc")<<"No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations";
         afficheLCP(dfree,W,f,dim);
     }
 
@@ -1829,9 +1831,9 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     sortedList.clear();
     for (c1=0; c1<numContacts; c1++)
     {
-    	buf.value = dfree[3*c1];
-    	buf.index = c1;
-    	sortedList.push_back(buf);
+        buf.value = dfree[3*c1];
+        buf.index = c1;
+        sortedList.push_back(buf);
     }
     */
 

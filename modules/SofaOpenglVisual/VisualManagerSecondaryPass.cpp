@@ -85,7 +85,10 @@ void VisualManagerSecondaryPass::initVisual()
 
         if(fragFilename.getValue().empty())
         {
-            std::cerr << "fragFilename attribute shall not be null. Using compositing.frag instead" << std::endl;
+            msg_warning() << "The attribute 'fragFilename' is not set. " << msgendl
+                          << "Using the default one named 'compositing.frag'" << msgendl
+                          << "To remove this warning you need to set the attribute 'fragFilename' in your scene." ;
+
             m_shaderPostproc->fragFilename.addPath("shaders/compositing.frag");
         }
         else
@@ -96,7 +99,7 @@ void VisualManagerSecondaryPass::initVisual()
     }
 
     initShaderInputTexId();
-        
+
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     passWidth = (GLint)(viewport[2]*factor.getValue());
@@ -122,7 +125,6 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
             if((!currentSecondaryPass->getOutputTags().empty()) && (input_tags.getValue().includes(currentSecondaryPass->getOutputTags())) )
             {
                 m_shaderPostproc->setInt(0, (currentSecondaryPass->getOutputName()).c_str(), nbFbo);
-                //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentSecondaryPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                 nbFbo++;
             }
         }
@@ -133,10 +135,8 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
                 if(input_tags.getValue().includes(currentPass->getTags()))
                 {
                     m_shaderPostproc->setInt(0, (currentPass->getOutputName()).c_str(), nbFbo);
-                    //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
                     m_shaderPostproc->setInt(0, (currentPass->getOutputName()+"_Z").c_str(), nbFbo);
-                    //std::cout << "---"<<this->getName()<<"--- add sampler2D \""<< currentPass->getName()<<"_Z\" at id="<<nbFbo<<std::endl;
                     nbFbo++;
                 }
             }
@@ -179,7 +179,7 @@ void VisualManagerSecondaryPass::preDrawScene(core::visual::VisualParams* vp)
 
     fbo->stop();
     m_shaderPostproc->stop();
-    
+
     //todo: unbind input textures
     unbindInput();
 
@@ -232,10 +232,9 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
             {
                 if (!currentSecondaryPass->hasFilledFbo())
                 {
-                    std::cerr << "Error: SecondaryPass \"" << this->getName() << "\" cannot access input pass \""<< currentSecondaryPass->getName() <<"\". Please make sure you declared this input pass first in the scn file." << std::endl;
+                    msg_error() << "SecondaryPass \"" << this->getName() << "\" cannot access input pass \""<< currentSecondaryPass->getName() <<"\". Please make sure you declared this input pass first in the scn file." ;
                     return;
                 }
-                //std::cout<<"***"<< this->getName() <<"*** GL_TEXTURE"<<nbFbo<<" color from "<<currentSecondaryPass->getName()<<std::endl;
                 glActiveTexture(GL_TEXTURE0+nbFbo);
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, currentSecondaryPass->getFBO()->getColorTexture());
@@ -253,18 +252,16 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
                 {
                     if (!currentPass->hasFilledFbo())
                     {
-                        std::cerr << "Error: SecondaryPass \"" << this->getName() << "\" cannot access input pass \""<< currentPass->getName() <<"\". Please make sure you declared this input pass first in the scn file." << std::endl;
+                        msg_error() << "SecondaryPass \"" << this->getName() << "\" cannot access input pass \""<< currentPass->getName() <<"\". Please make sure you declared this input pass first in the scn file." ;
                         return;
                     }
 
-                    //std::cout<<"***"<< this->getName() <<"*** GL_TEXTURE"<<nbFbo<<" color from "<<currentPass->getName()<<std::endl;
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getColorTexture());
                     glGenerateMipmap(GL_TEXTURE_2D);
                     ++nbFbo;
 
-                    //std::cout<<"***"<< this->getName() <<"*** GL_TEXTURE"<<nbFbo<<" depth from "<<currentPass->getName()<<std::endl;
                     glActiveTexture(GL_TEXTURE0+nbFbo);
                     glEnable(GL_TEXTURE_2D);
                     glBindTexture(GL_TEXTURE_2D, currentPass->getFBO()->getDepthTexture());

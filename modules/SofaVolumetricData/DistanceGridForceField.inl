@@ -52,15 +52,21 @@ void DistanceGridForceField<DataTypes>::init()
     if (fileDistanceGrid.getValue().empty())
     {
         if (grid==NULL)
-            serr << "ERROR: DistanceGridForceField requires an input filename." << sendl;
-        // else the grid has already been set
+            msg_error() << "DistanceGridForceField requires an input filename." ;
+        /// the grid has already been set
         return;
     }
-    std::cout << "DistanceGridForceField: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileDistanceGrid.getValue();
-    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
-    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
-    std::cout << std::endl;
-    grid = DistanceGrid::loadShared(fileDistanceGrid.getFullPath(), scale.getValue(), 0.0, nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    msg_info() << " creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<< msgendl
+               << " DistanceGrid from file '"<< fileDistanceGrid.getValue() <<"'.";
+
+    msg_info_when(scale.getValue()!=1.0) << " scale="<<scale.getValue();
+
+    msg_info_when(box.getValue()[0][0]<box.getValue()[1][0])
+            <<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+
+    grid = DistanceGrid::loadShared(fileDistanceGrid.getFullPath(), scale.getValue(), 0.0,
+                                    nx.getValue(),ny.getValue(),nz.getValue(),
+                                    box.getValue()[0],box.getValue()[1]);
 
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {
@@ -75,7 +81,6 @@ void DistanceGridForceField<DataTypes>::init()
             for (unsigned int ti = 0; ti < triangles.size(); ++ti)
             {
                 helper::fixed_array<unsigned int,3> t = triangles[ti];
-                //if (t[0] < ibegin && t[0] >= iend && t[1] < ibegin && t[1] >= iend && t[2] < ibegin && t[2] >= iend) continue;
                 Coord B = p1[t[1]]-p1[t[0]];
                 Coord C = p1[t[2]]-p1[t[0]];
                 Coord tN = cross(B, C);
@@ -87,7 +92,7 @@ void DistanceGridForceField<DataTypes>::init()
                 pOnBorder[t[1]] = true;
                 pOnBorder[t[2]] = true;
             }
-            sout << "Surface area : " << sumArea << " ( mean " << sumArea / triangles.size() << " per triangle )"<<sendl;
+            msg_info() << "Surface area : " << sumArea << " ( mean " << sumArea / triangles.size() << " per triangle )" ;
             flipNormals = (sumSArea < 0);
         }
         else
@@ -113,7 +118,7 @@ void DistanceGridForceField<DataTypes>::init()
                 Real volume = (A*cross(B, C))/6.0f;
                 sumVolume += volume;
             }
-            sout << "Volume : " << sumVolume << " ( mean " << sumVolume / tetrahedra.size() << " per tetra )"<<sendl;
+            msg_info() << "Volume : " << sumVolume << " ( mean " << sumVolume / tetrahedra.size() << " per tetra )" ;
         }
         else
         {
@@ -187,7 +192,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
         }
     }
 
-    if (this->f_printLog.getValue()) std::cout << "Nb points in: " << nbIn << std::endl;
+    dmsg_info() << " number of points " << nbIn ;
 
     this->contacts.endEdit();
 
@@ -205,7 +210,6 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
             for (unsigned int ti = 0; ti < triangles.size(); ++ti)
             {
                 helper::fixed_array<unsigned int,3> t = triangles[ti];
-                //if (t[0] < ibegin && t[0] >= iend && t[1] < ibegin && t[1] >= iend && t[2] < ibegin && t[2] >= iend) continue;
                 Coord B = p1[t[1]]-p1[t[0]];
                 Coord C = p1[t[2]]-p1[t[0]];
                 Coord tN = cross(B, C);
@@ -261,7 +265,6 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
             for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
             {
                 helper::fixed_array<unsigned int,4> t = tetrahedra[ti];
-                //if (t[0] < ibegin && t[0] >= iend && t[1] < ibegin && t[1] >= iend && t[2] < ibegin && t[2] >= iend) continue;
                 Coord A = p1[t[1]]-p1[t[0]];
                 Coord B = p1[t[2]]-p1[t[0]];
                 Coord C = p1[t[3]]-p1[t[0]];
@@ -309,7 +312,6 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
     const VecCoord& dx1=   datadX.getValue()  ;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    //(VecDeriv& df1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
     if (!grid)
         return;
 
@@ -340,6 +342,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
         const helper::fixed_array<unsigned int,3>& t = c.index;
         Coord dB = dx1[t[1]]-dx1[t[0]];
         Coord dC = dx1[t[2]]-dx1[t[0]];
+
         // d(area) = dot(0.5*cross(C,sN), dB) + dot(0.5*cross(sN,B), dC)
         Real darea = 0.5f*(cross(c.C,c.normal)*dB + cross(c.normal,c.B)*dC);
 
@@ -441,7 +444,6 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
 
     const Real stiffIn = stiffnessIn.getValue();
     const Real stiffOut = stiffnessOut.getValue();
-    //const Real damp = damping.getValue();
     const Real maxdist = maxDist.getValue();
 
     defaulttype::Vector3 point1,point2;
@@ -478,6 +480,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(const core::visual::Vis
         vparams->drawTool()->drawLines(pointsLineIn, 1, defaulttype::Vec<4,float>(1,0,0,1));
     if (!pointsLineOut.empty())
         vparams->drawTool()->drawLines(pointsLineOut, 1, defaulttype::Vec<4,float>(1,0,1,1));
+
     const sofa::helper::vector<TContact>& tcontacts = this->tcontacts.getValue();
     if (!tcontacts.empty())
     {

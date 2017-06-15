@@ -289,10 +289,9 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
     int x2,y2,z2;
     if (r > GRIDDIM)
     {
-        std::cerr << "Distance too large in SpatialGrid::computeField ("<<r<<" > "<<GRIDDIM<<")\n";
+        dmsg_info("SpatalGrid") << "Distance too large in computeField ("<<r<<" > "<<GRIDDIM<<")" ;
         return;
     }
-    //std::cout << "accumulate particles with radius "<<dist<<std::endl;
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
     {
         Grid* g = itg->second;
@@ -321,7 +320,6 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
                             typename std::list<Entry>::const_iterator begin = c->plist.begin();
                             typename std::list<Entry>::const_iterator end = c->plist.end();
                             typename std::list<Entry>::const_iterator it;
-                            //std::cout << "accumulate "<<c->plist.size()<<" particles from <"<<pos<<">+<"<<x<<" "<<y<<" "<<z<<"> to area <"<<x0<<" "<<y0<<" "<<z0<<">-<"<<x1<<" "<<y1<<" "<<z1<<">"<<std::endl;
                             c2 = g->cell+(x0*DX+y0*DY+z0*DZ);
                             const int dy = DY-(x1-x0+1)*DX;
                             const int dz = DZ-(y1-y0+1)*DY;
@@ -375,7 +373,6 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
                         if (gz<0)      { g2_z0 = GRIDDIM-r; } // g_z1 = 0;  g_dz1 = 1; }
                         else if (gz>0) { g2_z1 = r-1; } // g_z0 = GRIDDIM-r;  g_dz0 = 1; }
 
-                        //std::cout << "accumulate neighbors particles from <"<<g2_x0<<" "<<g2_y0<<" "<<g2_z0<<">-<"<<g2_x1<<" "<<g2_y1<<" "<<g2_z1<<">"<<std::endl;
                         //int z0 = g_z0;
                         //int z1 = g_z1;
                         const Cell* cz = g2->cell+(g2_x0*DX+g2_y0*DY+g2_z0*DZ);
@@ -402,7 +399,6 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
                                         int y1 = y + gy*GRIDDIM + r; if (y1>GRIDDIM-1) y1 = GRIDDIM-1;
                                         int z0 = z + gz*GRIDDIM - r+1; if (z0<0) z0 = 0;
                                         int z1 = z + gz*GRIDDIM + r; if (z1>GRIDDIM-1) z1 = GRIDDIM-1;
-                                        //std::cout << "accumulate neighbors "<<c->plist.size()<<" particles from <"<<pos<<">+<"<<x+gx*GRIDDIM<<" "<<y+gy*GRIDDIM<<" "<<z+gz*GRIDDIM<<"> to area <"<<x0<<" "<<y0<<" "<<z0<<">-<"<<x1<<" "<<y1<<" "<<z1<<">"<<std::endl;
                                         Cell* c2 = g->cell+(x0*DX+y0*DY+z0*DZ);
                                         const int dy = DY-(x1-x0+1)*DX;
                                         const int dz = DZ-(y1-y0+1)*DY;
@@ -718,8 +714,9 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 {
     if (mstate)
         updateGrid(mstate->read(core::ConstVecCoordId::position())->getValue());
-    if (this->f_printLog.getValue())
-        std::cout << "SpatialGridContainer::sortPoints(): sorting..."<<std::endl;
+
+    msg_info() << "sortPoints(): sorting...";
+
     helper::vector<unsigned int> old2new, new2old;
     grid->reorderIndices(&old2new, &new2old);
     // check if the mapping actually changed something
@@ -732,20 +729,23 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
         }
     if (identity)
     {
-        if(this->f_printLog.getValue())
-            std::cout << "SpatialGridContainer::sortPoints(): no changes."<<std::endl;
+        msg_info() << "sortPoints(): no changes." ;
         return false;
     }
-    if(this->f_printLog.getValue())
+
+    if(notMuted())
     {
-        std::cout << "map:";
+        std::stringstream tmp;
+        tmp << "map:";
         for (unsigned int i=0; i<new2old.size(); ++i)
-            std::cout << " "<<new2old[i]<<"->"<<i;
-        std::cout << std::endl;
-        std::cout << "invmap:";
+            tmp << " "<<new2old[i]<<"->"<<i;
+        tmp << msgendl;
+        tmp << "invmap:";
         for (unsigned int i=0; i<old2new.size(); ++i)
-            std::cout << " "<<i<<"->"<<old2new[i];
-        std::cout << std::endl;
+            tmp << " "<<i<<"->"<<old2new[i];
+        tmp << msgendl;
+
+        msg_info() << tmp.str() ;
     }
 
     sofa::component::topology::PointSetTopologyModifier* pointMod;
@@ -753,8 +753,7 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
 
     if (pointMod)
     {
-        if(this->f_printLog.getValue())
-            std::cout << "SpatialGridContainer::sortPoints(): renumber using PointSetTopologyModifier."<<std::endl;
+        msg_info() << "sortPoints(): renumber using PointSetTopologyModifier." ;
 
         pointMod->renumberPoints(new2old,old2new);
     }
@@ -763,13 +762,12 @@ bool SpatialGridContainer<DataTypes>::sortPoints()
         MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate);
         if (object != NULL)
         {
-            if(this->f_printLog.getValue())
-                std::cout << "SpatialGridContainer::sortPoints(): renumber using MechanicalObject."<<std::endl;
+            msg_info() << "sortPoints(): renumber using MechanicalObject." ;
             object->renumberValues(new2old);
         }
         else
         {
-            std::cout << "SpatialGridContainer::sortPoints(): no external object supporting renumbering!"<<std::endl;
+            msg_info() << "sortPoints(): no external object supporting renumbering!";
         }
     }
     return true;

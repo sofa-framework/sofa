@@ -28,6 +28,8 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/defaulttype/RGBAColor.h>
+
 namespace sofa
 {
 
@@ -96,7 +98,7 @@ public:
     Data<Real> sphereRadius;
     Data<Real> stiffness;
     Data<Real> damping;
-    Data<defaulttype::Vec3f> color;
+    Data<defaulttype::RGBAColor> color;
     Data<bool> bDraw;
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
@@ -110,9 +112,7 @@ protected:
         , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        //TODO FIXME because of: https://github.com/sofa-framework/sofa/issues/64
-        //This field should support the color="red" api.
-        , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
+        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.0f,1.0f, 1.0f), "color", "sphere color. (default=[0,0,1,1])"))
         , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
         , bilateral( initData(&bilateral, false, "bilateral", "if true the sphere force field is applied on both sides"))

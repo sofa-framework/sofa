@@ -218,9 +218,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
 
     }
-
-    //    std::cout<<" dIn ="<<(*dIn[0])<<std::endl;
-    //    std::cout<<" dOut ="<<(*dOut[0])<<"  "<<(*dOut[1])<<std::endl;
 }
 
 
@@ -229,14 +226,11 @@ void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparam
 {
     const OutDataVecDeriv* cderData = dataVecInForce[0];
     const OutVecDeriv& cder = cderData->getValue();
-    //const InVecDeriv& cder = *childDeriv[0];
 
     for(unsigned i=0; i<cder.size(); i++)
     {
-        //(*parentDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]] += cder[i];
         InDataVecDeriv* inDerivPtr = dataVecOutForce[indexPairs.getValue()[i*2]];
         InVecDeriv& inDeriv = *(*inDerivPtr).beginEdit(mparams);
-//        inDeriv[indexPairs.getValue()[i*2+1]] += cder[i];
         helper::peq( inDeriv[indexPairs.getValue()[i*2+1]], cder[i] );
         (*inDerivPtr).endEdit(mparams);
     }

@@ -30,6 +30,7 @@
 #include <SofaMiscForceField/GearSpringForceField.h>
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -624,10 +625,10 @@ public:
 };
 
 template<> STRUCT_DATA_VAR(sofa::core::loader::Material, 0, "Name", "Name", std::string, name);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::defaulttype::Vec4f, ambient, useAmbient);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::defaulttype::Vec4f, diffuse, useDiffuse);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::defaulttype::Vec4f, specular, useSpecular);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::defaulttype::Vec4f, emissive, useEmissive);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
 template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
 
 template<>

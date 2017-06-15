@@ -107,15 +107,15 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
 
     int nbContact = 0;
 
-	// First iterate on the collision detection outputs and look for existing or new contacts
-	for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
-		outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
-	{
-		std::pair<ContactMap::iterator,bool> contactInsert =
-			contactMap.insert(ContactMap::value_type(outputsIt->first,Contact::SPtr()));
-		ContactMap::iterator contactIt = contactInsert.first;
-		if (contactInsert.second)
-		{
+    // First iterate on the collision detection outputs and look for existing or new contacts
+    for (DetectionOutputMap::const_iterator outputsIt = outputsMap.begin(),
+        outputsItEnd = outputsMap.end(); outputsIt != outputsItEnd ; ++outputsIt)
+    {
+        std::pair<ContactMap::iterator,bool> contactInsert =
+            contactMap.insert(ContactMap::value_type(outputsIt->first,Contact::SPtr()));
+        ContactMap::iterator contactIt = contactInsert.first;
+        if (contactInsert.second)
+        {
             // new contact
             //sout << "Creation new "<<contacttype<<" contact"<<sendl;
             CollisionModel* model1 = outputsIt->first.first;
@@ -125,102 +125,102 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
             // We can create rules in order to not respond to specific collisions
             if (!responseUsed.compare("null"))
             {
-				contactMap.erase(contactIt);
+                contactMap.erase(contactIt);
             }
-			else
-			{
-				Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod,
-					this->f_printLog.getValue());
+            else
+            {
+                Contact::SPtr contact = Contact::Create(responseUsed, model1, model2, intersectionMethod,
+                    notMuted());
 
-				if (contact == NULL)
-				{
-					std::string model1class = model1->getClassName();
-					std::string model2class = model2->getClassName();
-					int count = ++errorMsgCount[std::make_pair(responseUsed,
-						std::make_pair(model1class, model2class))];
-					if (count <= 10)
-					{
-						serr << "Contact " << responseUsed << " between " << model1->getClassName()
-							<< " and " << model2->getClassName() << " creation failed" << sendl;
-						if (count == 1)
-						{
-							serr << "Supported models for contact " << responseUsed << ":" << sendl;
-							for (Contact::Factory::const_iterator it =
-								Contact::Factory::getInstance()->begin(),
-								itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
-							{
-								if (it->first != responseUsed) continue;
-								serr << "   " << helper::gettypename(it->second->type()) << sendl;
-							}
-							serr << sendl;
-						}
-						if (count == 10) serr << "further messages suppressed" << sendl;
-					}
-					contactMap.erase(contactIt);
-				}
-				else
-				{
-					contactIt->second = contact;
-					contact->setName(model1->getName() + std::string("-") + model2->getName());
-					setContactTags(model1, model2, contact);
-					contact->f_printLog.setValue(this->f_printLog.getValue());
-					contact->init();
-					contact->setDetectionOutputs(outputsIt->second);
-					++nbContact;
-				}
-			}
-		}
-		else
-		{
+                if (contact == NULL)
+                {
+                    std::string model1class = model1->getClassName();
+                    std::string model2class = model2->getClassName();
+                    int count = ++errorMsgCount[std::make_pair(responseUsed,
+                        std::make_pair(model1class, model2class))];
+                    if (count <= 10)
+                    {
+                        serr << "Contact " << responseUsed << " between " << model1->getClassName()
+                            << " and " << model2->getClassName() << " creation failed" << sendl;
+                        if (count == 1)
+                        {
+                            serr << "Supported models for contact " << responseUsed << ":" << sendl;
+                            for (Contact::Factory::const_iterator it =
+                                Contact::Factory::getInstance()->begin(),
+                                itend = Contact::Factory::getInstance()->end(); it != itend; ++it)
+                            {
+                                if (it->first != responseUsed) continue;
+                                serr << "   " << helper::gettypename(it->second->type()) << sendl;
+                            }
+                            serr << sendl;
+                        }
+                        if (count == 10) serr << "further messages suppressed" << sendl;
+                    }
+                    contactMap.erase(contactIt);
+                }
+                else
+                {
+                    contactIt->second = contact;
+                    contact->setName(model1->getName() + std::string("-") + model2->getName());
+                    setContactTags(model1, model2, contact);
+                    contact->f_printLog.setValue(notMuted());
+                    contact->init();
+                    contact->setDetectionOutputs(outputsIt->second);
+                    ++nbContact;
+                }
+            }
+        }
+        else
+        {
             // pre-existing and still active contact
             contactIt->second->setDetectionOutputs(outputsIt->second);
             ++nbContact;
-		}
-	}
+        }
+    }
 
-	// Then look at previous contacts
-	// and remove inactive contacts
-	for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
-		contactIt != contactItEnd;)
-	{
-		bool remove = false;
-		DetectionOutputMap::const_iterator outputsIt = outputsMap.find(contactIt->first);
-		if (outputsIt == outputsMap.end())
-		{
+    // Then look at previous contacts
+    // and remove inactive contacts
+    for (ContactMap::iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
+        contactIt != contactItEnd;)
+    {
+        bool remove = false;
+        DetectionOutputMap::const_iterator outputsIt = outputsMap.find(contactIt->first);
+        if (outputsIt == outputsMap.end())
+        {
             // inactive contact
             if (contactIt->second->keepAlive())
             {
-				contactIt->second->setDetectionOutputs(NULL);
+                contactIt->second->setDetectionOutputs(NULL);
                 ++nbContact;
             }
             else
             {
-				remove = true;
-			}
-		}
-		if (remove)
-		{
-			if (contactIt->second)
-			{
+                remove = true;
+            }
+        }
+        if (remove)
+        {
+            if (contactIt->second)
+            {
                 contactIt->second->removeResponse();
                 contactIt->second->cleanup();
                 contactIt->second.reset();
-			}
-			ContactMap::iterator eraseIt = contactIt;
-			++contactIt;
-			contactMap.erase(eraseIt);
-		}
-		else
-		{
-			++contactIt;
-		}
-	}
+            }
+            ContactMap::iterator eraseIt = contactIt;
+            ++contactIt;
+            contactMap.erase(eraseIt);
+        }
+        else
+        {
+            ++contactIt;
+        }
+    }
 
     // now update contactVec
     contacts.clear();
     contacts.reserve(nbContact);
     for (ContactMap::const_iterator contactIt = contactMap.begin(), contactItEnd = contactMap.end();
-		contactIt != contactItEnd; ++contactIt)
+        contactIt != contactItEnd; ++contactIt)
     {
         contacts.push_back(contactIt->second);
     }
@@ -235,7 +235,7 @@ void DefaultContactManager::createContacts(const DetectionOutputMap& outputsMap)
             nbContactsMap[cms.second]++;
     }
 
-	// TODO: this is VERY inefficient, should be replaced with a visitor
+    // TODO: this is VERY inefficient, should be replaced with a visitor
     helper::vector< CollisionModel* > collisionModels;
     simulation::Node* context = dynamic_cast< simulation::Node* >(getContext());
     context->getTreeObjects< CollisionModel >(&collisionModels);
