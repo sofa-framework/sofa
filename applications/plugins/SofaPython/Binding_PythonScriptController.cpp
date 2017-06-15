@@ -39,15 +39,8 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-// also, can we PLEASE STOP COPYPASTING EVERYTHING KTHXBY
+#include "PythonToSofa.inl"
 
-
-
-template<class T>
-static inline T* get(PyObject* obj) {
-    // functions plz
-    return dynamic_cast<T*>(((PySPtr<Base>*)obj)->object.get());
-}
 
 
 static inline PythonScriptController* get_controller(PyObject* obj) {

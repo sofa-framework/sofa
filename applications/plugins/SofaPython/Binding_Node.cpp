@@ -35,15 +35,8 @@ using namespace sofa::core::objectmodel;
 #include "PythonVisitor.h"
 #include "PythonScriptEvent.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
-
-inline Node* get_node(PyObject* self) {
-    return down_cast<Node>(((PySPtr<Base>*)self)->object->toBaseNode());
-}
-
-inline BaseObject* get_object(PyObject* self) {
-    return ((PySPtr<Base>*) self)->object->toBaseObject();
-}
 
 
 static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
@@ -245,7 +238,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     }
 
     // use functions ffs
-    BaseObject* object = get_object(pyChild);
+    BaseObject* object = get_baseobject(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
@@ -276,7 +269,7 @@ static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
         return NULL;
     }
     
-    BaseObject* object = get_object(pyChild);
+    BaseObject* object = get_baseobject(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;

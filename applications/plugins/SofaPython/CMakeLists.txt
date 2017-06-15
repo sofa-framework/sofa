@@ -61,6 +61,7 @@ set(HEADER_FILES
     PythonScriptControllerHelper.h
     PythonScriptEvent.h
     PythonScriptFunction.h
+    PythonToSofa.inl
     PythonVisitor.h
     SceneLoaderPY.h
     ScriptController.h
