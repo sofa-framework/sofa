@@ -26,6 +26,8 @@
 #include <sofa/helper/types/RGBAColor.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sstream>
+#include <locale>         // std::locale, std::isalnum
+
 namespace sofa
 {
 namespace helper
@@ -33,7 +35,12 @@ namespace helper
 namespace types
 {
 
-int hexval(char c)
+static bool ishexsymbol(char c)
+{
+    return (c>='0' && c<='9') || (c>='a' && c<='f') || (c>='A' && c<='F') ;
+}
+
+static int hexval(char c)
 {
     if (c>='0' && c<='9') return c-'0';
     else if (c>='a' && c<='f') return (c-'a')+10;
@@ -41,7 +48,7 @@ int hexval(char c)
     else return 0;
 }
 
-bool isValidEncoding(const std::string& s)
+static bool isValidEncoding(const std::string& s)
 {
     auto c = s.begin();
     if( *c != '#' )
@@ -78,68 +85,12 @@ RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float
     a(pa);
 }
 
-
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
-    if (str.empty())
-        return true;
-
-    float r,g,b,a=1.0;
-    if (str[0]>='0' && str[0]<='9')
-    {
-        std::istringstream iss(str);
-        iss >> r >> g >> b ;
-        if(iss.fail()){
-            return false;
-        }
-        if(!iss.eof()){
-            iss >> a;
-            if(iss.fail() || !iss.eof()){
-                return false;
-            }
-        }
-    }
-    else if (str[0]=='#' && str.length()>=7)
-    {
-        if(!isValidEncoding(str))
-            return false;
-
-        r = (hexval(str[1])*16+hexval(str[2]))/255.0f;
-        g = (hexval(str[3])*16+hexval(str[4]))/255.0f;
-        b = (hexval(str[5])*16+hexval(str[6]))/255.0f;
-        if (str.length()>=9)
-            a = (hexval(str[7])*16+hexval(str[8]))/255.0f;
-        if (str.length()>9)
-            return false;
-    }
-    else if (str[0]=='#' && str.length()>=4)
-    {
-        if(!isValidEncoding(str))
-            return false;
-
-        r = (hexval(str[1])*17)/255.0f;
-        g = (hexval(str[2])*17)/255.0f;
-        b = (hexval(str[3])*17)/255.0f;
-        if (str.length()>=5)
-            a = (hexval(str[4])*17)/255.0f;
-        if (str.length()>5)
-            return false;
-    }
-    /// If you add more colors... please also add them in the test file.
-    else if (str == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-    else if (str == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-    else if (str == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-    else if (str == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-    else if (str == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-    else if (str == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-    else if (str == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-    else if (str == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-    else if (str == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else {
-        return false ;
-    }
-
-    color.set(r,g,b,a) ;
+    std::stringstream s(str);
+    s >> color ;
+    if(s.fail() || !s.eof())
+        return false;
     return true ;
 }
 
@@ -210,15 +161,120 @@ RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
     return rgba;
 }
 
-SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t)
+
+static void extractValidatedHexaString(std::istream& in, std::string& s)
 {
-    std::string s;
-    std::getline(i, s);
-    if(!RGBAColor::read(s, t)){
-        i.setstate(std::ios::failbit) ;
+    s.reserve(9);
+    char c = in.get();
+
+    if(c!='#')
+    {
+        in.setstate(std::ios_base::failbit) ;
+        return;
     }
 
-    return i;
+    s.push_back(c);
+    while(in.get(c)){
+        if( !ishexsymbol(c) )
+            return;
+
+        s.push_back(c) ;
+        if(s.size()>9){
+            in.setstate(std::ios_base::failbit) ;
+            return ;
+        }
+    }
+    /// we need to reset the failbit because it is set by the get function
+    /// on the last character.
+    in.clear(in.rdstate() & ~std::ios_base::failbit) ;
+}
+
+/// This function remove the leading space in the stream.
+std::istream& trimInitialSpaces(std::istream& in)
+{
+    char first=in.peek();
+    while(!in.eof() && !in.fail() && std::isspace(first, std::locale()))
+    {
+        in.get();
+        first=in.peek();
+    }
+    return in;
+}
+
+SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
+{
+    float r=0.0,g=0.0, b=0.0, a=1.0;
+
+    trimInitialSpaces(in) ;
+
+    /// Let's remove the initial spaces.
+    if( in.eof() || in.fail() )
+        return in;
+
+    char first = in.peek() ;
+    if (std::isdigit(first, std::locale()))
+    {
+        in >> r >> g >> b ;
+        if(!in.eof()){
+            in >> a;
+        }
+    }
+    else if (first=='#')
+    {
+        std::string str;
+        extractValidatedHexaString(in, str) ;
+
+        if(in.fail()){
+            return in;
+        }
+
+        if(str.length()>=7){
+            r = (hexval(str[1])*16+hexval(str[2]))/255.0f;
+            g = (hexval(str[3])*16+hexval(str[4]))/255.0f;
+            b = (hexval(str[5])*16+hexval(str[6]))/255.0f;
+
+            if (str.length()>7)
+                a = (hexval(str[7])*16+hexval(str[8]))/255.0f;
+        }else if (str.length()>=4){
+            r = (hexval(str[1])*17)/255.0f;
+            g = (hexval(str[2])*17)/255.0f;
+            b = (hexval(str[3])*17)/255.0f;
+
+            if (str.length()>4)
+                a = (hexval(str[4])*17)/255.0f;
+        }else{
+            /// If we cannot parse the field we returns that with the fail bit.
+            in.setstate(std::ios_base::failbit) ;
+            return in;
+        }
+    } else {
+        std::string str;
+        /// Search for the first word, it is not needed to read more char than size("magenta"
+        std::getline(in, str, ' ');
+
+        /// if end of line is returned before encountering ' ' or 7... is it fine
+        /// so we can clear the failure bitset.
+
+        /// Compare the resulting string with supported colors.
+        /// If you add more colors... please also add them in the test file.
+        if (str == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
+        else if (str == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
+        else if (str == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
+        else if (str == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
+        else if (str == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
+        else if (str == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
+        else if (str == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
+        else if (str == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
+        else if (str == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
+        else {
+            /// If we cannot parse the field we returns that with the fail bit.
+            in.setstate(std::ios_base::failbit) ;
+            return in;
+        }
+    }
+
+    t.set(r,g,b,a) ;
+    return in;
 }
 
 /// Write to an output stream
