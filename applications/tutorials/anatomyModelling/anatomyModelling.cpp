@@ -1,5 +1,5 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+*       SOFA, Simulation Open-Framework Architecture, development version                  *
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -48,22 +48,22 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaGeneralTopology/CubeTopology.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaLoader/MeshObjLoader.h>
 
 // Include of sofaImage classes
-#ifdef SOFA_HAVE_IMAGE
+//#ifdef SOFA_HAVE_IMAGE
 #include <ImageTypes.h>
 #include <MeshToImageEngine.h>
 #include <ImageContainer.h>
 #include <ImageSampler.h>
-#endif
+//#endif
 
 // Include of sofaFlexible classes
-#ifdef SOFA_HAVE_PLUGIN_Flexible
+//#ifdef SOFA_HAVE_PLUGIN_Flexible
 #include <shapeFunction/VoronoiShapeFunction.h>
 #include <shapeFunction/ShepardShapeFunction.h>
 #include <quadrature/ImageGaussPointSampler.h>
@@ -71,7 +71,12 @@
 #include <deformationMapping/LinearMapping.h>
 #include <strainMapping/CorotationalStrainMapping.h>
 #include <strainMapping/GreenStrainMapping.h>
-#endif
+//#endif
+
+
+#include <SofaSimulationGraph/init.h>
+#include <sofa/helper/system/glut.h>
+
 
 #ifdef SOFA_HAVE_SOHUSIM
 #include <forcefield\StiffSpringLink.h>
@@ -100,14 +105,14 @@ typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 // TypeDef pour les type du plugin image
-#ifdef SOFA_HAVE_IMAGE
+//#ifdef SOFA_HAVE_IMAGE
 typedef sofa::component::engine::MeshToImageEngine<ImageUC> MeshToImageEngine_ImageUC;
 typedef sofa::component::container::ImageContainer<ImageUC> ImageContainer_ImageUC;
 typedef sofa::component::engine::ImageSampler<ImageUC> ImageSampler_ImageUC;
-#endif
+//#endif
 
 // TypeDef pour les type du plugin Flexible
-#ifdef SOFA_HAVE_PLUGIN_Flexible
+//#ifdef SOFA_HAVE_PLUGIN_Flexible
 //////////////////////////////////////////////////////////////////////////////////
 ////  macros
 //////////////////////////////////////////////////////////////////////////////////
@@ -150,18 +155,19 @@ typedef sofa::component::mapping::CorotationalStrainMapping< F332(double), E332(
 typedef sofa::component::mapping::GreenStrainMapping< F332(double), E332(double) > GreenStrainMapping_F332_E332;
 
 // sampler
-typedef sofa::component::engine::ImageGaussPointSampler<ImageD> ImageGaussPointSampler_ImageD;
+typedef sofa::component::engine::ImageGaussPointSampler<ImageD,ImageUC> ImageGaussPointSampler_ImageD;
 
 // material
 typedef sofa::component::forcefield::HookeForceField< E332(double) > HookeForceField_E332;
 
 // shape function
-typedef sofa::component::shapefunction::VoronoiShapeFunction< ShapeFunctionTypes<3,double>, ImageUC > VoronoiShapeFunction;
-typedef sofa::component::shapefunction::ShepardShapeFunction< ShapeFunctionTypes<3,double> > ShepardShapeFunction;
+typedef core::behavior::ShapeFunctionTypes<3, SReal> ShapeFunctionType;
+typedef sofa::component::shapefunction::VoronoiShapeFunction<ShapeFunctionType,ImageUC> VoronoiShapeFunction;
+typedef sofa::component::shapefunction::ShepardShapeFunction<ShapeFunctionType> ShepardShapeFunction;
 
 // Uniform Mass
 typedef sofa::component::mass::UniformMass< Affine3(double), double > UniformMass_Affine;
-#endif
+//#endif
 
 bool startAnim = true;
 bool verbose = false;
@@ -400,7 +406,7 @@ simulation::Node::SPtr createScene()
 	//Add mesh obj loader
 	sofa::component::loader::MeshObjLoader::SPtr originLoader = addNew< sofa::component::loader::MeshObjLoader >(originNode,"loader");
 	originLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
-	originLoader->triangulate.setValue(true);
+	originLoader->d_triangulate.setValue(true);
     originLoader->load();
 
 	//Bones gravity center - rigid node which contains bones, articuated system and ...
@@ -451,7 +457,7 @@ simulation::Node::SPtr createScene()
 	//Add mesh obj loader
 	sofa::component::loader::MeshObjLoader::SPtr insertionLoader = addNew< sofa::component::loader::MeshObjLoader >(insertionNode,"loader");
 	insertionLoader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/bones/r_scapula.obj"));
-	insertionLoader->triangulate.setValue(true);
+	insertionLoader->d_triangulate.setValue(true);
     insertionLoader->load();
 
 	//Bones gravity center - rigid node which contains bones, articuated system and ...
@@ -520,7 +526,7 @@ simulation::Node::SPtr createScene()
 	// Add mesh obj loader
 	sofa::component::loader::MeshObjLoader::SPtr loader = addNew< sofa::component::loader::MeshObjLoader >(rbicepmedNode,"loader");
 	loader->setFilename(sofa::helper::system::DataRepository.getFile("../applications/tutorials/anatomyModelling/mesh/muscles/r_bicep_med.obj"));
-	loader->triangulate.setValue(true);
+	loader->d_triangulate.setValue(true);
     loader->load();
 	
 	// add rasterizer
@@ -641,7 +647,7 @@ simulation::Node::SPtr createScene()
 	particles_dof->x.setParent("@../"+passiveBehaviorNode->getName()+"/"+gaussPtsSampler->getName()+".position");
 	
 	UniformMass3::SPtr particles_mass = addNew<UniformMass3>(massNode,"mass");
-    particles_mass->totalMass.setValue(0.25);
+    particles_mass->d_totalMass.setValue(0.25);
 
 	LinearMapping_Affine_Vec3d::SPtr mass_mapping = addNew<LinearMapping_Affine_Vec3d>(massNode, "mapping");
 	mass_mapping->setModels(frameDof.get(), particles_dof.get());
