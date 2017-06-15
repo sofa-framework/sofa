@@ -32,6 +32,7 @@
 //#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
+#include <SofaUserInteraction/Controller.h>
 
 namespace SofaOptiTrackNatNet
 {
@@ -45,10 +46,10 @@ struct ModelDef;
 /// decoded frame of tracked data
 struct FrameData;
 
-class OptiTrackNatNetDataReceiver : public virtual sofa::core::objectmodel::BaseObject
+class OptiTrackNatNetDataReceiver : public sofa::component::controller::Controller
 {
 public:
-    SOFA_ABSTRACT_CLASS(OptiTrackNatNetDataReceiver, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(OptiTrackNatNetDataReceiver, sofa::component::controller::Controller);
 protected:
     virtual ~OptiTrackNatNetDataReceiver() {}
 public:
