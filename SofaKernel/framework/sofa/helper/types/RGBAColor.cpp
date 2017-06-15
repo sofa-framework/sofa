@@ -48,33 +48,43 @@ static int hexval(char c)
     else return 0;
 }
 
-static bool isValidEncoding(const std::string& s)
-{
-    auto c = s.begin();
-    if( *c != '#' )
-        return false;
 
-    for( c++ ; c != s.end() ; ++c ){
-        if (*c>='0' && *c<='9') {}
-        else if (*c>='a' && *c<='f') {}
-        else if (*c>='A' && *c<='F') {}
-        else return false;
+static void extractValidatedHexaString(std::istream& in, std::string& s)
+{
+    s.reserve(9);
+    char c = in.get();
+
+    if(c!='#')
+    {
+        in.setstate(std::ios_base::failbit) ;
+        return;
     }
-    return true;
+
+    s.push_back(c);
+    while(in.get(c)){
+        if( !ishexsymbol(c) )
+            return;
+
+        s.push_back(c) ;
+        if(s.size()>9){
+            in.setstate(std::ios_base::failbit) ;
+            return ;
+        }
+    }
+    /// we need to reset the failbit because it is set by the get function
+    /// on the last character.
+    in.clear(in.rdstate() & ~std::ios_base::failbit) ;
 }
 
 
 RGBAColor::RGBAColor() : fixed_array<float, 4>(1,1,1,1)
 {
-
 }
 
 
 RGBAColor::RGBAColor(const fixed_array<float, 4>& c) : fixed_array<float, 4>(c)
 {
-
 }
-
 
 
 RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float pa)
@@ -84,6 +94,7 @@ RGBAColor::RGBAColor(const float pr, const float pg, const float pb, const float
     b(pb);
     a(pa);
 }
+
 
 bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
@@ -131,6 +142,7 @@ RGBAColor RGBAColor::fromVec4(const fixed_array<double, 4>& color)
     return RGBAColor(color[0], color[1], color[2], color[3]) ;
 }
 
+
 RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
 {
     // H [0, 360] S, V and A [0.0, 1.0].
@@ -162,35 +174,8 @@ RGBAColor RGBAColor::fromHSVA(float h, float s, float v, float a )
 }
 
 
-static void extractValidatedHexaString(std::istream& in, std::string& s)
-{
-    s.reserve(9);
-    char c = in.get();
-
-    if(c!='#')
-    {
-        in.setstate(std::ios_base::failbit) ;
-        return;
-    }
-
-    s.push_back(c);
-    while(in.get(c)){
-        if( !ishexsymbol(c) )
-            return;
-
-        s.push_back(c) ;
-        if(s.size()>9){
-            in.setstate(std::ios_base::failbit) ;
-            return ;
-        }
-    }
-    /// we need to reset the failbit because it is set by the get function
-    /// on the last character.
-    in.clear(in.rdstate() & ~std::ios_base::failbit) ;
-}
-
 /// This function remove the leading space in the stream.
-std::istream& trimInitialSpaces(std::istream& in)
+static std::istream& trimInitialSpaces(std::istream& in)
 {
     char first=in.peek();
     while(!in.eof() && !in.fail() && std::isspace(first, std::locale()))
@@ -200,6 +185,7 @@ std::istream& trimInitialSpaces(std::istream& in)
     }
     return in;
 }
+
 
 SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
 {
@@ -276,6 +262,7 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
     t.set(r,g,b,a) ;
     return in;
 }
+
 
 /// Write to an output stream
 SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
