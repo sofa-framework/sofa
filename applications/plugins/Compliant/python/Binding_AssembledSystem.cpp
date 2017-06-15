@@ -33,7 +33,7 @@ PyObject* getMatrice( const AssembledSystem::rmat& A )
 
 
 
-extern "C" PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
+static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = get<AssembledSystem>( self );
     if (!sys)
@@ -45,7 +45,7 @@ extern "C" PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
     return getMatrice( sys->H );
 }
 
-extern "C" PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
+static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = get<AssembledSystem>( self );
     if (!sys)
@@ -57,7 +57,7 @@ extern "C" PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
     return getMatrice( sys->P );
 }
 
-extern "C" PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
+static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = get<AssembledSystem>( self );
     if (!sys)
@@ -69,7 +69,7 @@ extern "C" PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
     return getMatrice( sys->J );
 }
 
-extern "C" PyObject* AssembledSystem_getC(PyObject * self, PyObject * /*args*/)
+static PyObject* AssembledSystem_getC(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = get<AssembledSystem>( self );
     if (!sys)

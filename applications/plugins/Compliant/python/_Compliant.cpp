@@ -28,7 +28,7 @@ using namespace sofa::core::behavior;
 
 
 /// args are node + factors m,b,k to return the linear combinaison mM+bB+kK
-extern "C" PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyObject * args)
+static PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
 
@@ -86,7 +86,7 @@ extern "C" PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/,
 
 
 
-extern "C" PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/, PyObject * args)
+static PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
     if (!PyArg_ParseTuple(args, "O", &pyNode))
@@ -126,7 +126,7 @@ extern "C" PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/,
 // returns the lambdas contained in the BaseMechanicalState
 // (the corresponding multivecid is in the CompliantImplicitSolver)
 // @warning you have to look at the CompliantImplicitSolver's formulation (vel,dv,acc) to deduce constraint forces from lambdas
-extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
+static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pySolver, *pyState;
     if (!PyArg_ParseTuple(args, "OO", &pySolver, &pyState))
@@ -174,7 +174,7 @@ extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
 }
 
 /// takes a Context and a CompliantImplicitSolver
-extern "C" PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * args)
+static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode, *pySolver;
     if (!PyArg_ParseTuple(args, "OO", &pyNode, &pySolver))
