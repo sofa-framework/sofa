@@ -139,7 +139,7 @@ if(NOT Boost_FOUND)
             )
 
         #remove the test variable from the cache
-        SET(BOOST_TEST_PATH ${BOOST_TEST_PATH} CACHE INTERNAL "string")
+        set(BOOST_TEST_PATH ${BOOST_TEST_PATH} CACHE INTERNAL "string")
 
         if(NOT BOOST_TEST_PATH)
             message(FATAL_ERROR "Boost includes was not found automatically, please set Boost_INCLUDE_DIR (i.e consistent with this: <BOOST_INCLUDE_DIR>/boost/thread/thread.hpp.")
@@ -152,7 +152,7 @@ if(NOT Boost_FOUND)
             # recursive = overkill ?
             file(GLOB_RECURSE BOOST_TEST_PATH2  "${Boost_INCLUDE_DIR}/*/boost_thread-vc???-mt-?_??.lib")
 
-            SET(BOOST_TEST_PATH2 ${BOOST_TEST_PATH2} CACHE INTERNAL "string")
+            set(BOOST_TEST_PATH2 ${BOOST_TEST_PATH2} CACHE INTERNAL "string")
             if(NOT BOOST_TEST_PATH2)
                 message("Boost libraries were not found automatically, please set Boost_LIBRARY_DIR.")
             else()
@@ -357,13 +357,14 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "17.dev.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "17")
-SET(CPACK_PACKAGE_VERSION_MINOR "dev")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
-SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
-SET(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
+set(CPACK_PACKAGE_VERSION "17.dev.0")
+set(CPACK_PACKAGE_VERSION_MAJOR "17")
+set(CPACK_PACKAGE_VERSION_MINOR "dev")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
 
 set(CPACK_COMPONENTS_ALL applications headers libraries resources)
 
@@ -377,21 +378,26 @@ set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
 set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 
-IF(WIN32 AND NOT UNIX)
-  # There is a bug in NSI that does not handle full unix paths properly. Make
-  # sure there is at least one set of four (4) backlasshes.
-  SET(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA\\\\v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
-  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
-  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
-  SET(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
-  SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
-  SET(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
-  SET(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
-ELSE(WIN32 AND NOT UNIX)
-    SET(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
-  SET(CPACK_STRIP_FILES "bin/runSofa")
-  SET(CPACK_SOURCE_STRIP_FILES "")
-ENDIF(WIN32 AND NOT UNIX)
+if(WIN32 AND NOT UNIX)
+    # There is a bug in NSI that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backlasshes.
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA\\\\v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
+    set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
+    set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
+else()
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
+
+    find_package(ICU COMPONENTS data i18n uc)
+    if(ICU_FOUND)
+        foreach(ICU_LIB ${ICU_LIBRARIES})
+            sofa_install_files_from_library(${ICU_LIB})
+        endforeach()
+    endif()
+endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
