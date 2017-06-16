@@ -183,9 +183,9 @@ endif()
 
 foreach(target ${QT_TARGETS})
     if(WIN32)
-        sofa_copy_extlib(${target})
+        sofa_copy_files_from_target(${target})
     endif()
-    sofa_install_extlib(${target})
+    sofa_install_files_from_target(${target})
 endforeach()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})

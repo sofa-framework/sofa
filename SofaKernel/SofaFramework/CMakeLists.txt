@@ -74,9 +74,9 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
 
         if(WIN32)
-            sofa_copy_extlib(GLEW::GLEW) # Windows dependency pack
+            sofa_copy_files_from_target(GLEW::GLEW) # Windows dependency pack
         endif()
-        sofa_install_extlib(GLEW::GLEW)
+        sofa_install_files_from_target(GLEW::GLEW)
     else()
         message("OpenGL advanced functions (e.g shaders, FBO) are disabled.")
     endif()
@@ -115,9 +115,9 @@ if(ZLIB_FOUND)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
 
     if(WIN32)
-        sofa_copy_extlib(ZLIB::ZLIB) # Windows dependency pack
+        sofa_copy_files_from_target(ZLIB::ZLIB) # Windows dependency pack
     endif()
-    sofa_install_extlib(ZLIB::ZLIB)
+    sofa_install_files_from_target(ZLIB::ZLIB)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
@@ -128,9 +128,9 @@ if(PNG_FOUND)
         list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
 
     if(WIN32)
-        sofa_copy_extlib(PNG::PNG) # Windows dependency pack
+        sofa_copy_files_from_target(PNG::PNG) # Windows dependency pack
     endif()
-    sofa_install_extlib(PNG::PNG)
+    sofa_install_files_from_target(PNG::PNG)
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
@@ -145,7 +145,7 @@ list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
 foreach(target Boost::system Boost::thread Boost::date_time Boost::filesystem Boost::locale)
-    sofa_install_extlib(${target})
+    sofa_install_files_from_target(${target})
 endforeach()
 
 

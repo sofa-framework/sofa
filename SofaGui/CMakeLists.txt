@@ -29,9 +29,9 @@ if(NOT SOFA_NO_OPENGL)
 
     foreach(target ${QT_TARGETS})
         if(WIN32)
-            sofa_copy_extlib(${target})
+            sofa_copy_files_from_target(${target})
         endif()
-        sofa_install_extlib(${target})
+        sofa_install_files_from_target(${target})
     endforeach()
 
     if(WIN32) # Installing Qt dlls the hard way (dirty)

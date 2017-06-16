@@ -251,36 +251,31 @@ endmacro()
 
 
 # Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_get_libraries library)
-    file(GLOB STATIC_LIBS "${library}*${CMAKE_STATIC_LIBRARY_SUFFIX}")
-    file(GLOB SHARED_LIBS "${library}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    message("SHARED: ${library}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
-    install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
-endmacro()
+macro(sofa_install_files_from_library library)
+    get_filename_component(LIB_NAME ${library} NAME_WE)
+    get_filename_component(LIB_PATH ${library} PATH)
 
-
-
-macro(sofa_install_extlib target)
-    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-
-    get_filename_component(LIB_NAME ${target_location} NAME_WE)
-    get_filename_component(LIB_PATH ${target_location} PATH)
-
-    file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    file(GLOB STATIC_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    file(GLOB SHARED_LIBS "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
+    file(GLOB STATIC_LIBS "${LIB_PATH}/${LIB_NAME}*${CMAKE_STATIC_LIBRARY_SUFFIX}*")
 
     if(WIN32)
-        install(FILES ${SHARED_LIB} DESTINATION bin COMPONENT applications)
+        install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
     else()
-        install(FILES ${SHARED_LIB} DESTINATION lib COMPONENT applications)
+        install(FILES ${SHARED_LIBS} DESTINATION lib COMPONENT applications)
     endif()
-    install(FILES ${STATIC_LIB} DESTINATION lib COMPONENT libraries)
+    install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
 endmacro()
 
 
 
-macro(sofa_copy_extlib target)
+macro(sofa_install_files_from_target target)
+    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+    sofa_install_files_from_library(${target_location})
+endmacro()
+
+
+
+macro(sofa_copy_files_from_target target)
     get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
 
     get_filename_component(LIB_NAME ${target_location} NAME_WE)
