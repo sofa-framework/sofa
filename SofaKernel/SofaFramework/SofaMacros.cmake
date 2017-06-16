@@ -270,10 +270,11 @@ macro(sofa_install_extlib target)
     file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
     file(GLOB STATIC_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
-#        message("SHARED_LIB = ${SHARED_LIB}")
-#        message("STATIC_LIB = ${STATIC_LIB}")
-
-    install(FILES ${SHARED_LIB} DESTINATION bin COMPONENT applications)
+    if(WIN32)
+        install(FILES ${SHARED_LIB} DESTINATION bin COMPONENT applications)
+    else()
+        install(FILES ${SHARED_LIB} DESTINATION lib COMPONENT applications)
+    endif()
     install(FILES ${STATIC_LIB} DESTINATION lib COMPONENT libraries)
 endmacro()
 
