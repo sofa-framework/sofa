@@ -92,7 +92,11 @@ void OBJExporter::writeOBJ()
         filename += ".obj";
 
     if( f_printLog.getValue() )
-        sout << "Exporting OBJ as: " << filename.c_str() << " (with MTL file)" << sendl;
+    {
+        sout << "Exporting OBJ as: " << filename.c_str();
+        if( d_exportMTL.getValue() ) sout<<" (with MTL file)";
+        sout<<sendl;
+    }
 
 
     sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance());
