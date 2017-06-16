@@ -63,7 +63,7 @@ int initMessage(){
 
 int messageInited = initMessage();
 
-class TestDefaultPipeLine : public Sofa_test<double> {
+class TestDefaultPipeLine : public Sofa_test<> {
 public:
     void checkDefaultPipelineWithNoAttributes();
     void checkDefaultPipelineWithMissingIntersection();

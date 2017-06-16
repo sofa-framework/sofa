@@ -41,7 +41,12 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_compile_definitions(${PROJECT_NAME} PRIVATE "use_namespace")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "use_namespace")
+if(NOT DEFINED SOFA_WITH_DOUBLE)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "USING_FLOAT")
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "USING_DOUBLE")
+endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 # The code must be relocatable if we want to link a shared library against it

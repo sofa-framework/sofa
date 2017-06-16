@@ -463,7 +463,7 @@ SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
 }
 
 // access ONE element of the vector
-extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
+static PyObject * Data_getValue(PyObject *self, PyObject * args)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
@@ -493,24 +493,25 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     return NULL;
 }
 
-extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
+static PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     int index;
     PyObject *value;
-    if (!PyArg_ParseTuple(args, "iO",&index,&value))
-    {
-        PyErr_BadArgument();
+    
+    if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
         return NULL;
     }
-    if ((unsigned int)index>=typeinfo->size())
+    
+    if ((unsigned int)index >= typeinfo->size())
     {
         // out of bounds!
         SP_MESSAGE_ERROR( "Data.setValue index overflow" )
         PyErr_BadArgument();
         return NULL;
     }
+    
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
         typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
@@ -534,13 +535,13 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
 }
 
 
-extern "C" PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     return PyString_FromString(data->getValueTypeString().c_str());
 }
 
-extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     return PyString_FromString(data->getValueString().c_str());
@@ -548,7 +549,7 @@ extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
 
 
 // TODO a description of what this function is supposed to do?
-extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 
@@ -561,7 +562,7 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
     return PyInt_FromLong(0); //temp ==> WTF ?????
 }
 
-extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
+static PyObject * Data_setSize(PyObject *self, PyObject * args)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     int size;
@@ -576,7 +577,7 @@ extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
 }
 
 
-extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 
@@ -585,7 +586,7 @@ extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 
@@ -595,7 +596,7 @@ extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
+static PyObject * Data_read(PyObject *self, PyObject * args)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 
@@ -620,7 +621,7 @@ extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
+static PyObject * Data_setParent(PyObject *self, PyObject * args)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 
@@ -655,7 +656,7 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
 
 
 // returns the complete link path name (i.e. following the shape "@/path/to/my/object.dataname")
-extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
+static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
     Base* owner = data->getOwner();
@@ -677,7 +678,7 @@ extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 
 
 // returns a pointer to the Data
-extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
+static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
 {
     BaseData* data=((PyPtr<BaseData>*)self)->object;
 

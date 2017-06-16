@@ -31,7 +31,7 @@ using namespace sofa::defaulttype;
 using sofa::core::objectmodel::New;
 
 namespace sofa{
-struct TestOBB : public Sofa_test<double>{
+struct TestOBB : public Sofa_test<>{
     bool faceVertex();
     bool vertexVertex();
     bool faceFace();

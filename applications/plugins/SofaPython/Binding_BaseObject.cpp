@@ -86,9 +86,7 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     char *valueString;
     PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
         return NULL;
     }
     BaseObject* loader=((PySPtr<Base>*)self)->object->toBaseObject();
