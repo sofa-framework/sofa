@@ -3,7 +3,6 @@ project(CImgPlugin)
 
 ## RPATH
 if(UNIX)
-    set(CMAKE_INSTALL_RPATH "../lib")
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(CMAKE_MACOSX_RPATH ON)
     endif()
