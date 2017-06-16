@@ -92,9 +92,8 @@ struct PySPtr
 };
 
 template <class T>
-PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
-{
-    PySPtr<T> * pyObj = (PySPtr<T> *)PyType_GenericAlloc(pto, 0);
+static inline PyObject* BuildPySPtr(T* obj, PyTypeObject *pto) {
+    PySPtr<T> * pyObj = (PySPtr<T> *) PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     return (PyObject*)pyObj;
 }
@@ -114,8 +113,7 @@ struct PyPtr
 };
 
 template <class T>
-PyObject* BuildPyPtr(T* obj,PyTypeObject *pto,bool del)
-{
+static inline PyObject* BuildPyPtr(T* obj, PyTypeObject *pto, bool del) {
     PyPtr<T> * pyObj = (PyPtr<T> *)PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     pyObj->deletable = del;
