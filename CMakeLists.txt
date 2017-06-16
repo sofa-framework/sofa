@@ -83,13 +83,13 @@ if(UNIX)
     # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
     # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
     # the need to play with LD_LIBRARY_PATH to get applications to run.
-    set(CMAKE_INSTALL_RPATH "../lib")
+
+    # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(CMAKE_MACOSX_RPATH ON)
-
     endif()
-
 endif(UNIX)
 
 include(CompilerOptions)
