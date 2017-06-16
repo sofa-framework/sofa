@@ -150,7 +150,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::dx().index, &dx);
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::holonomicC().index, &c);
+    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -2564,7 +2564,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::holonomicC());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2575,7 +2575,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -2597,6 +2597,34 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 
     off += this->getSize() * N;
 }
+
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+{
+    const size_t N = Deriv::size();
+    Data<MatrixDeriv>* cMatrix= this->write(mID);
+
+    unsigned int columnIndex = 0;
+    MatrixDeriv& jacobian = *cMatrix->beginEdit();
+
+
+    for (unsigned int i=0; i<list_n.size(); i++)
+    { //loop on the nodes on which we assign the identity blocks
+        unsigned int node= list_n[i];
+
+        for(unsigned int j=0; j<N; j++)
+        {   //identity block
+            typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(N*node + j);
+            Deriv d;
+            d[j]=1.0;
+            rowIterator.setCol(node,  d);
+            columnIndex++;
+        }
+    }
+
+}
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)

@@ -385,7 +385,9 @@ public:
     virtual void resetConstraint(const core::ExecParams* params);
 
     virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off);
-
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID);
+#endif
     /// @}
 
     /// @name Debug

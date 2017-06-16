@@ -40,6 +40,11 @@ else()
     set(SOFA_WITH_THREADING_ "0")
 endif()
 
+if(SOFA_WITH_EXPERIMENTAL_FEATURES)
+    set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "1")
+else()
+    set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "0")
+endif()
 
 ### Dependencies
 
