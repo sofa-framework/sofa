@@ -33,10 +33,10 @@ void Python_test::run( const Python_test_data& data ) {
         // Check the file exists
         std::ifstream file(data.filepath.c_str());
         bool scriptFound = file.good();
-        ASSERT_TRUE(scriptFound);
+        ASSERT_TRUE(scriptFound) << " ("<<data.filepath<<")";
     }
 
-    ASSERT_TRUE( loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) );
+    ASSERT_TRUE( loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) ) << " ("<<data.filepath<<")";
 
 }
 
@@ -200,7 +200,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
         // Check the file exists
         std::ifstream file(data.filepath.c_str());
         bool scriptFound = file.good();
-        ASSERT_TRUE(scriptFound);
+        ASSERT_TRUE(scriptFound) << " ("<<data.filepath<<")";
     }
 
     if( !simulation::getSimulation() ) {
@@ -211,7 +211,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
     try {
         install_sys_excepthook(&flags);
     } catch( std::runtime_error& e) {
-        ASSERT_TRUE(false) << "error setting up python excepthook, aborting test";
+        ASSERT_TRUE(false) << "error setting up python excepthook, aborting test" << " ("<<data.filepath<<")";
     }
 
     simulation::Node::SPtr root;
@@ -221,7 +221,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
         loader.loadSceneWithArguments(data.filepath.c_str(),
                                       data.arguments,
                                       &root);
-        ASSERT_TRUE(bool(root)) << "scene creation failed!";
+        ASSERT_TRUE(bool(root)) << "scene creation failed!" << " ("<<data.filepath<<")";
 
         root->addObject( new Listener );
         simulation::getSimulation()->init(root.get());
@@ -233,7 +233,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
             simulation::getSimulation()->animate(root.get(), root->getDt());
         }
 
-        ASSERT_TRUE(i != max_steps) << "maximum allowed steps reached: " << max_steps;
+        ASSERT_TRUE(i != max_steps) << "maximum allowed steps reached: " << max_steps << " ("<<data.filepath<<")";
 
         if( flags & flag::test_failure ) {
             FAIL() << "test failure";
@@ -246,7 +246,7 @@ void Python_scene_test::run( const Python_test_data& data ) {
 	} catch( simulation::PythonEnvironment::system_exit& e) {
         SUCCEED() << "test terminated normally";
     } catch( const result& test_result ) {
-        ASSERT_TRUE(test_result.value);
+        ASSERT_TRUE(test_result.value) << " ("<<data.filepath<<")";
 
         // TODO raii for unloading
         simulation::getSimulation()->unload( root.get() );
