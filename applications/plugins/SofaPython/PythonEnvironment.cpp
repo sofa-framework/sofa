@@ -274,6 +274,20 @@ bool PythonEnvironment::runString(const std::string& script)
     return true;
 }
 
+std::string PythonEnvironment::getStackAsString()
+{
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
+    if (PyCallable_Check(pFunc))
+    {
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
+        std::string tmp=PyString_AsString(PyObject_Str(res));
+        Py_DECREF(res) ;
+        return tmp;
+    }
+    return "Python Stack is empty.";
+}
+
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
 {
 //    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )

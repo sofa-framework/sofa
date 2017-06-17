@@ -1,9 +1,14 @@
 import __builtin__
 import sys
+import inspect
+import Sofa
 
-## @author Matthieu Nesme, Maxime Tournier
+## @contributors
+##   - Matthieu Nesme
+##   - Maxime Tournier
+##   - damien.marchal@univ-lille1.fr
+##
 ## @date 2017
-
 
 # Keep a list of the modules always imported in the Sofa-PythonEnvironment
 try:
@@ -28,9 +33,27 @@ def unloadModules():
         del(sys.modules[name]) # unload it
 
 
+def formatStackForSofa(o):
+    """ format the stack trace provided as a parameter into a string like that:
+        in filename.py:10:functioname()
+          -> the line of code.
+        in filename2.py:101:functioname1()
+            -> the line of code.
+        in filename3.py:103:functioname2()
+              -> the line of code.
+    """
+    ss='Python Stack: \n'
+    for entry in o:
+        ss+= ' in ' + str(entry[1]) + ':' + str(entry[2]) + ':'+ entry[3] + '()  \n'
+        ss+= '  -> '+ entry[4][0] + '  \n'
+        return ss
 
+def getStackForSofa():
+    """returns the currunt stack with a "unformal" formatting. """
+    # we exclude the first level in the stack because it is the getStackForSofa() function itself.
+    ss=inspect.stack()[1:]
+    return formatStackForSofa(ss)
 
-import Sofa
 class Controller(Sofa.PythonScriptController):
 
     def __init__(self, node, *args, **kwargs):
@@ -43,12 +66,8 @@ class Controller(Sofa.PythonScriptController):
         # call createGraph for compatibility purposes
         self.createGraph(node)
 
-
         # check whether derived class has 'onLoaded'
         cls = type(self)
         if not cls.onLoaded is Sofa.PythonScriptController.onLoaded:
             Sofa.msg_warning('SofaPython', 
                              '`onLoaded` is defined in subclass but will not be called in the future' )
-
-
-        
