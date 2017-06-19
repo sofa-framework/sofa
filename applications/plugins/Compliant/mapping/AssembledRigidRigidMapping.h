@@ -72,9 +72,12 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 	AssembledRigidRigidMapping() 
 		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )),
         geometricStiffness(initData(&geometricStiffness,
-                               0,
-                               "geometricStiffness",
-                               "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)")) {
+                                    0,
+                                    "geometricStiffness",
+                                    "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)")),
+        direct_product(initData(&direct_product, false, "direct_product",
+                                "use direct product group instead of semi-direct product group laws"))
+            {
                 
     }
 
@@ -100,6 +103,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
     Data<int> geometricStiffness;
 
+    Data<bool> direct_product;
+        
     typedef typename TIn::Real Real;
 
 
@@ -127,11 +132,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     virtual void assemble_geometric(const typename self::in_pos_type& in_pos,
                                     const typename self::out_force_type& out_force) {
 
+        if(direct_product.getValue()) return;
+        
         unsigned geomStiff = geometricStiffness.getValue();
 
         // we're done
         if( !geomStiff ) return;
-
+        
 
         const source_vectype& src = source.getValue();
 
@@ -254,7 +261,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
 			
-            typename se3::mat66 block = se3::dR(s.coord, in_pos[ s.index ] );
+            typename se3::mat66 block;
+
+            if(direct_product.getValue()) {
+                block.setIdentity();
+            } else {
+                block = se3::dR(s.coord, in_pos[ s.index ] );
+            }
 			
 			for(unsigned j = 0; j < 6; ++j) {
 				unsigned row = 6 * i + j;
@@ -285,7 +298,12 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 		
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
-            out[ i ] = se3::prod( in[ s.index ], s.coord );
+
+            if(direct_product.getValue()) {
+                out[ i ] = se3::direct_prod(in[s.index], s.coord);
+            } else {
+                out[ i ] = se3::prod( in[ s.index ], s.coord );
+            }
 		}
 		
 	}

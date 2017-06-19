@@ -254,6 +254,15 @@ struct SE3 {
 	}
 
 
+    // SO(3) x R3 product
+	static coord_type direct_prod(const coord_type& a, const coord_type& b) {
+        coord_type res;
+        res.getOrientation() = coord( rotation(a) * rotation(b) );
+        res.getCenter() = a.getCenter() + b.getCenter();
+        return res;
+	}
+    
+
 	static const real epsilon() {
 		return std::numeric_limits<real>::epsilon();
 	}
