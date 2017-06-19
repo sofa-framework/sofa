@@ -777,11 +777,12 @@ SP_CLASS_ATTR(Data,name)
 SP_CLASS_ATTR(Data,value)
 SP_CLASS_ATTRS_END
 
-
+namespace {
 static struct patch {
     patch() {
         SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; // adding __str__ function
     }
 } patcher;
+}
 
 SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData);
