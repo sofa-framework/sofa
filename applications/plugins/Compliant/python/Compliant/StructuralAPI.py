@@ -27,6 +27,7 @@ from SofaPython import SofaNumpy as sofa_numpy
 from SofaPython.SofaNumpy import numpy_data
 from types import Rigid3
 
+import numpy as np
 
 # to specify the floating point encoding:
 # "d" to force double
@@ -121,63 +122,125 @@ class DOFs(object):
         self.dofs.showObject = value
 
 
-    @classmethod
-    def new(cls, node, **kwargs):
-        '''create and manage a mechanical object view'''
-        kwargs.setdefault('size', 1)
-        return cls( node.createObject('MechanicalObject', **kwargs) )
-    
-
-
-
-class DOF(DOFs):
-    '''state vector view for single dof objects'''
-    
-    __slots__ = ()
-    
     @property
-    def position(self):
-        return super(DOF, self).position[0]
+    def context(self):
+        return self.dofs.getContext()
 
+
+def single_dof(cls):
+    '''decorator for single dof views'''
+
+    class Result(cls):
+        __slots__ = ()
+
+        @property
+        def position(self):
+            return super(Result, self).position[0]
+
+
+        @property
+        def velocity(self):
+            return super(Result, self).velocity[0]        
+
+
+        @property
+        def force(self):
+            return super(Result, self).force[0]        
+
+
+        @property
+        def external_force(self):
+            return super(Result, self).external_force[0]            
+        
+    return Result
+    
+def dofs_type(coord_type, deriv_type = None):
+    '''gives properly typed access to decorated class'''
+    
+    deriv_type = deriv_type or coord_type.Deriv
+    
+    def decorator(cls):
+
+        # TODO maybe just add these to the class instead
+        class Result(cls):
+            __slots__ = ()
+
+            @property
+            def position(self):
+                return super(Result, self).position.view(coord_type)
+
+
+            @property
+            def velocity(self):
+                return super(Result, self).velocity.view(deriv_type)  
+
+
+            @property
+            def force(self):
+                return super(Result, self).force.view(deriv_type)       
+
+
+            @property
+            def external_force(self):
+                return super(Result, self).external_force.view(deriv_type)
+        
+        return Result
+
+    return decorator
+
+
+
+@dofs_type(Rigid3)
+@single_dof
+class MappedRigid(DOFs):
+    '''rigid dof mapped from another rigid'''
+    
+    __slots__ = 'mapping', 'parent'
+    
+    def __init__(self, dofs, mapping):
+        DOFs.__init__(self, dofs)
+        self.mapping = mapping
+        assert mapping.getClassName() == 'AssembledRigidRigidMapping'
 
     @property
-    def velocity(self):
-        return super(DOF, self).velocity[0]        
+    def offset(self):
+        import ctypes
+        ptr, shape, typename = self.mapping.findData('source').getValueVoidPtr()
+        array = (ctypes.c_double * 7).from_address(ptr)
 
+        return np.ctypeslib.as_array( array ).view(Rigid3)
 
-    @property
-    def force(self):
-        return super(DOF, self).force[0]        
-
+    @offset.setter
+    def offset(self, value):
+        self.offset[:] = value
         
     @property
-    def external_force(self):
-        return super(DOF, self).external_force[0]            
-        
-
-
-class RigidBody(DOF):
-    ## Generic Rigid Body
+    def parent_context(self):
+        return self.context.getParents()[0]
     
-    @property
-    def position(self):
-        return super(RigidBody, self).position.view(Rigid3)
 
+@dofs_type(Rigid3)
+@single_dof
+class RigidDOF(DOFs):
+    '''rigid single dof view'''
+    
+    def map_rigid(self, name):
+        node = self.context.createChild(name)
 
-    @property
-    def velocity(self):
-        return super(RigidBody, self).velocity.view(Rigid3.Deriv)
+        dofs = node.createObject('MechanicalObject', template = 'Rigid3', size = 1)
+        mapping = node.createObject('AssembledRigidRigidMapping', template = 'Rigid3,Rigid3',
+                                    input = self.dofs.getLinkPath(),
+                                    output = dofs.getLinkPath(),
+                                    source = '0 0 0 0 0 0 0 1')
+        
+        return MappedRigid(dofs, mapping)
 
+    # TODO map_points
+    
 
-    @property
-    def force(self):
-        return super(RigidBody, self).force.view(Rigid3.Deriv)
-
-
-    @property
-    def external_force(self):
-        return super(RigidBody, self).external_force.view(Rigid3.Deriv)
-
+    
+class RigidBody(RigidDOF):
+    '''a rigid body with single dof'''
 
     @property
     def total_mass(self):
@@ -204,7 +267,7 @@ class RigidBody(DOF):
     def inertia_forces(self, value):
         self.mass.inertia_forces = value
 
-    
+
     
 
     # TODO provide accessors to the above for user frame (offseted by
