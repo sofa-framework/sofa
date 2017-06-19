@@ -445,6 +445,7 @@ SP_CLASS_METHOD(PythonScriptController, onIdle)
 SP_CLASS_METHOD(PythonScriptController, instance)
 SP_CLASS_METHODS_END;
 
+namespace {
 static struct patch {
 
     patch() {
@@ -453,6 +454,6 @@ static struct patch {
     }
     
 } patcher;
-
+}
 
 SP_CLASS_TYPE_SPTR(PythonScriptController, PythonScriptController, BaseObject);
