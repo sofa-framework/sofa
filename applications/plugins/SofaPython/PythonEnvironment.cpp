@@ -34,9 +34,6 @@
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
 
-
-using namespace sofa::component::controller;
-
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
@@ -195,31 +192,6 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
     }
 }
 
-/*
-// helper functions
-sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( const char *filename )
-{
-    PyObject *script = importScript(filename);
-    if (!script)
-        return 0;
-
-    // the root node
-    GNode::SPtr groot = sofa::core::objectmodel::New<GNode>(); // TODO: passer par une factory
-    groot->setName( "root" );
-   // groot->setGravity( Coord3(0,-10,0) );
-
-    if (!initGraph(script,groot))
-        groot = 0;
-
-   else
-        printf("Root node name after pyhton: %s\n",groot->getName().c_str());
-
-    Py_DECREF(script);
-
-    return groot;
-}
-*/
-
 // some basic RAII stuff to handle init/termination cleanly
   namespace {
 
@@ -228,7 +200,6 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
           // initialization is done when loading the plugin
           // otherwise it can be executed too soon
           // when an application is directly linking with the SofaPython library
-//        PythonEnvironment::Init();
       }
 
       ~raii() {
@@ -287,12 +258,8 @@ std::string PythonEnvironment::getStackAsString()
 
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
 {
-//    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-//    SP_MESSAGE_INFO( "script directory \""<<dir<<"\"" )
-
-    //    SP_MESSAGE_INFO( commandString.c_str() )
 
     if(!arguments.empty())
     {
@@ -306,7 +273,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
         }
 
         Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
-
         PySys_SetArgv(arguments.size()+1, argv);
 
         for( size_t i=0 ; i<arguments.size()+1 ; ++i )
@@ -315,8 +281,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
         }
         delete [] argv;
     }
-
-    //  Py_BEGIN_ALLOW_THREADS
 
     // Load the scene script
     char* pythonFilename = strdup(filename);
@@ -345,8 +309,6 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     backupFileObject = PyString_FromString(backupFileName.c_str());
     PyDict_SetItemString(pDict, "__file__", backupFileObject);
 
-    //  Py_END_ALLOW_THREADS
-
     if(0 != error)
     {
         SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
@@ -357,50 +319,11 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     return true;
 }
 
-/*
-bool PythonEnvironment::initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot)  // calls the method "initGraph(root)" of the script
-{
-    // pDict is a borrowed reference
-    PyObject *pDict = PyModule_GetDict(script);
-
-    // pFunc is also a borrowed reference
-    PyObject *pFunc = PyDict_GetItemString(pDict, "initGraph");
-
-    if (PyCallable_Check(pFunc))
-    {
-      //  PyObject *args = PyTuple_New(1);
-      //  PyTuple_SetItem(args,0,object(graphRoot.get()).ptr());
-
-        try
-        {
-            //PyObject_CallObject(pFunc, NULL);//args);
-            boost::python::call<int>(pFunc,boost::ref(*graphRoot.get()));
-        }
-        catch (const error_already_set e)
-        {
-            SP_MESSAGE_EXCEPTION("")
-            PyErr_Print();
-
-        }
-
-      //  Py_DECREF(args);
-
-        return true;
-    }
-    else
-    {
-        PyErr_Print();
-        return false;
-    }
-}
-*/
-
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
     // unload python modules to force importing their eventual modifications
     PyRun_SimpleString("SofaPython.unloadModules()");
 }
-
 
 void PythonEnvironment::setAutomaticModuleReload( bool b )
 {
@@ -410,12 +333,10 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
         SceneLoader::removeListener( SceneLoaderListerner::getInstance() );
 }
 
-
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
     PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
-
 
 
 } // namespace simulation
