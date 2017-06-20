@@ -30,14 +30,10 @@ using namespace sofa::component::visualmodel;
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::visual;
 
-
-
 /// getting a VisualModelImpl* from a PyObject*
 static inline VisualModelImpl* get_VisualModelImpl(PyObject* obj) {
     return down_cast<VisualModelImpl>( get_visualmodel( obj ) );
 }
-
-
 
 static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
 {

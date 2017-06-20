@@ -2,18 +2,17 @@
 #include "Binding_PointSetTopologyModifier.h"
 #include "PythonToSofa.inl"
 
-using namespace sofa;
-using namespace sofa::core::topology;
-using namespace sofa::component::topology;
+#include <sofa/helper/vector.h>
+using sofa::helper::vector;
 
+using sofa::component::topology::TriangleSetTopologyModifier ;
+using sofa::core::topology::Topology ;
 
 
 /// getting a TriangleSetTopologyModifier* from a PyObject*
 static inline TriangleSetTopologyModifier* get_TriangleSetTopologyModifier(PyObject* obj) {
     return dynamic_cast<TriangleSetTopologyModifier*>( get_baseobject(obj) );
 }
-
-
 
 Topology::Triangle parseTriangleTuple( PyObject* tuple )
 {
@@ -26,9 +25,9 @@ Topology::Triangle parseTriangleTuple( PyObject* tuple )
     return T;
 }
 
-sofa::helper::vector< Topology::Triangle  > parseTriangleList( PyObject* args )
+vector< Topology::Triangle  > parseTriangleList( PyObject* args )
 {
-    sofa::helper::vector< Topology::Triangle > triangles;
+    vector< Topology::Triangle > triangles;
 
     bool isList = PyList_Check(args);
     if( !isList ) return triangles;
@@ -80,10 +79,10 @@ unsigned int pyConvert<unsigned int>( PyObject* obj )
 }
 
 template < class T >
-sofa::helper::vector< T > parseVector( PyObject* args )
+vector< T > parseVector( PyObject* args )
 {
     std::size_t nbRows = PyList_Size(args);
-    sofa::helper::vector<T> values;
+    vector<T> values;
     values.reserve(nbRows);
 
     for(std::size_t i=0;i<nbRows;++i)
@@ -96,16 +95,16 @@ sofa::helper::vector< T > parseVector( PyObject* args )
 }
 
 template < class T >
-sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject* args )
+vector< vector< T > > parseVectorOfVector( PyObject* args )
 {
-    sofa::helper::vector< sofa::helper::vector< T > > vectorOfvector;
+    vector< vector< T > > vectorOfvector;
 
     std::size_t nbRows = PyList_Size(args);
     for (std::size_t i=0; i<nbRows; ++i)
     {
         PyObject *row = PyList_GetItem(args,i);
 
-        sofa::helper::vector<T> values = parseVector<T>( row );
+        vector<T> values = parseVector<T>( row );
 
         vectorOfvector.push_back(values);
     }
@@ -116,7 +115,6 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 
 static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
 {
-
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
     PyObject* triangleArgs  = NULL;
@@ -125,14 +123,14 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
 
     if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs))
     {
-        sofa::helper::vector< Topology::Triangle > triangles = parseTriangleList( triangleArgs );
+        vector< Topology::Triangle > triangles = parseTriangleList( triangleArgs );
 
         if( !triangles.empty() )
         {
             if(ancestorsArgs && coefsArgs )
             {
-                sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArgs );
-                sofa::helper::vector< sofa::helper::vector< double       > > coefs     = parseVectorOfVector<double>(coefsArgs);
+                vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArgs );
+                vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArgs);
                 obj->addTriangles(triangles, ancestors, coefs );
             }
             else
@@ -155,7 +153,7 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
 
     if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
-        sofa::helper::vector< unsigned int > triangleIndices;
+        vector< unsigned int > triangleIndices;
         bool removeIsolatedEdges=true;
         bool removeIsolatedPoints=true;
 
@@ -190,7 +188,6 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
 
 static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
 {
-
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
     PyObject* trianglesArg            = NULL;
@@ -205,11 +202,11 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
                                                          &coefsArg,
                                                          &triangles2RemoveArg) )
     {
-        sofa::helper::vector< Topology::Triangle > triangles = parseTriangleList( trianglesArg );
-        sofa::helper::vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
-        sofa::helper::vector< sofa::helper::vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
-        sofa::helper::vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
+        vector< Topology::Triangle > triangles = parseTriangleList( trianglesArg );
+        vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
+        vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
+        vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
+        vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
 
         obj->addRemoveTriangles(triangles.size(),triangles,triangleIndices,ancestors,coefs, triangles2remove );
 
@@ -224,4 +221,4 @@ SP_CLASS_METHOD(TriangleSetTopologyModifier,removeTriangles)
 SP_CLASS_METHOD(TriangleSetTopologyModifier,addRemoveTriangles)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(TriangleSetTopologyModifier,TriangleSetTopologyModifier,PointSetTopologyModifier)
+SP_CLASS_TYPE_SPTR(TriangleSetTopologyModifier, TriangleSetTopologyModifier, PointSetTopologyModifier)
