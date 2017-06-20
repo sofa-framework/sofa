@@ -46,7 +46,7 @@ static PyObject * BaseState_getSize(PyObject *self, PyObject * args)
 {
     BaseState* obj = get_basestate( self );
 
-    if (!PyArg_ParseTuple(args, "", &newSize)) {
+    if (!PyArg_ParseTuple(args, "")) {
         return NULL;
     }
     
