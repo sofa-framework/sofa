@@ -78,6 +78,11 @@ dll.eigen_sizeof.restype = c_size_t
 dll.eigen_sizeof.argtypes = ()
 
 def as_buffer(ptr, *size):
+    '''cast a ctypes pointer as a correctly typed (multidimensional) array of given size
+
+    this is needed to avoid a nasty memleak with numpy.ctypeslib.as_array
+    '''
+    
     addr = addressof(ptr.contents)
     
     buffer_type = type(ptr.contents)
