@@ -22,7 +22,7 @@
 #ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
 #define SOFA_SIMULATION_SCENECHECKERVISTOR_H
 
-#include <sofa/helper/map.h>
+#include <map>
 #include <sofa/simulation/Visitor.h>
 
 namespace sofa
