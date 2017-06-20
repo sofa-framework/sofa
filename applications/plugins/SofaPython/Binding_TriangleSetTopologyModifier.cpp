@@ -14,6 +14,7 @@ static inline TriangleSetTopologyModifier* get_TriangleSetTopologyModifier(PyObj
     return dynamic_cast<TriangleSetTopologyModifier*>( get_baseobject(obj) );
 }
 
+
 Topology::Triangle parseTriangleTuple( PyObject* tuple )
 {
     Topology::Triangle T;
@@ -24,6 +25,7 @@ Topology::Triangle parseTriangleTuple( PyObject* tuple )
     }
     return T;
 }
+
 
 vector< Topology::Triangle  > parseTriangleList( PyObject* args )
 {
@@ -54,11 +56,13 @@ vector< Topology::Triangle  > parseTriangleList( PyObject* args )
     return triangles;
 }
 
+
 template < class T >
 T pyConvert( PyObject* /*obj */ )
 {
     return T();
 }
+
 
 template < >
 double pyConvert<double>( PyObject* obj )
@@ -66,17 +70,20 @@ double pyConvert<double>( PyObject* obj )
     return PyFloat_AsDouble(obj);
 }
 
+
 template < >
 float pyConvert<float>( PyObject* obj )
 {
     return static_cast<float>( PyFloat_AsDouble(obj) );
 }
 
+
 template < >
 unsigned int pyConvert<unsigned int>( PyObject* obj )
 {
     return static_cast<unsigned int>(PyInt_AsLong(obj) );
 }
+
 
 template < class T >
 vector< T > parseVector( PyObject* args )
@@ -93,6 +100,7 @@ vector< T > parseVector( PyObject* args )
 
     return values;
 }
+
 
 template < class T >
 vector< vector< T > > parseVectorOfVector( PyObject* args )

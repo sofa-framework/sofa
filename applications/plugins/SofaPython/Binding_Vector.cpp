@@ -38,6 +38,7 @@ SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
     return PyFloat_FromDouble(obj->x());
 }
 
+
 SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj = get_vector3( self );
@@ -50,6 +51,7 @@ SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
+
 SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 {
     Vector3* obj = get_vector3( self );
@@ -60,6 +62,8 @@ SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->y());
 }
+
+
 SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj = get_vector3( self );
@@ -72,6 +76,7 @@ SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
     return 0;
 }
 
+
 SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 {
     Vector3* obj = get_vector3( self );
@@ -82,6 +87,7 @@ SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
     }
     return PyFloat_FromDouble(obj->z());
 }
+
 
 SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
 {

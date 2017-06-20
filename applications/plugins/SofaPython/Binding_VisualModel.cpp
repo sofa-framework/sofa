@@ -19,16 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 #include "Binding_VisualModel.h"
 #include "Binding_BaseState.h"
 #include <fstream>
 #include "PythonToSofa.inl"
 
-using namespace sofa::component::visualmodel;
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::visual;
+using sofa::core::visual::VisualModel ;
+using sofa::component::visualmodel::VisualModelImpl ;
 
 /// getting a VisualModelImpl* from a PyObject*
 static inline VisualModelImpl* get_VisualModelImpl(PyObject* obj) {
@@ -75,7 +72,6 @@ static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
     int count = 0;
 
     obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);
-
     outfile.close();
 
     Py_RETURN_NONE;

@@ -78,6 +78,7 @@ SP_CLASS_ATTR_GET(VectorLinearSpringData,value)(PyObject *self, void*)
     }
 }
 
+
 SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args, void*)
 {
     DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
@@ -233,13 +234,12 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
 }
 
 
-
-
 static Py_ssize_t VectorLinearSpringData_length(PyObject *self)
 {
     DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );
     return data->getValue().size();
 }
+
 
 static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
 {
@@ -273,6 +273,7 @@ static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
         return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself
     }
 }
+
 
 static int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject* v)
 {
