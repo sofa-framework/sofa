@@ -68,15 +68,13 @@ static PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
     PyObject* pyFrom;
     if (!PyArg_ParseTuple(args, "O",&pyFrom))
     {
-        SP_MESSAGE_ERROR( "BaseMapping_setFrom: a BaseState* is required" );
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     BaseState* from = get_basestate( pyFrom );
     if (!from)
     {
-        SP_MESSAGE_ERROR( "BaseMapping_setFrom: is not a BaseState*" );
-        PyErr_BadArgument();
+        PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
         return NULL;
     }
 
@@ -91,12 +89,12 @@ static PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 
     PyObject* pyTo;
     if (!PyArg_ParseTuple(args, "O",&pyTo))
-        Py_RETURN_NONE;
+        return NULL;
 
     BaseState* to = get_basestate( pyTo );
     if (!to)
     {
-        PyErr_BadArgument();
+        PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
         return NULL;
     }
 
@@ -129,7 +127,7 @@ static PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
     BaseMapping* mapping  = get_basemapping( self );
 
     mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
-    
+
     Py_RETURN_NONE;
 }
 
@@ -140,12 +138,9 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 
     // note: the position delta must be set in dx beforehand
     mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
-    
+
     Py_RETURN_NONE;
 }
-
-
-
 
 // TODO inefficient
 // have a look to how to directly bind Eigen sparse matrices
