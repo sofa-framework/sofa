@@ -62,70 +62,69 @@ protected:
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
     /// @{
 
-    virtual void loadScript();
+    virtual void loadScript() override;
 
-    virtual void script_onLoaded(sofa::simulation::Node* node);   // called once, immediately after the script is loaded
-    virtual void script_createGraph(sofa::simulation::Node* node);       // called when the script must create its graph
-    virtual void script_initGraph(sofa::simulation::Node* node);         // called when the script must init its graph, once all the graph has been create
-    virtual void script_bwdInitGraph(sofa::simulation::Node* node);         // called when the script must init its graph, once all the graph has been create
+    virtual void script_onLoaded(sofa::simulation::Node* node) override ;     /// called once, immediately after the script is loaded
+    virtual void script_createGraph(sofa::simulation::Node* node) override ;  /// called when the script must create its graph
+    virtual void script_initGraph(sofa::simulation::Node* node) override ;    /// called when the script must init its graph, once all the graph has been create
+    virtual void script_bwdInitGraph(sofa::simulation::Node* node) override ; /// called when the script must init its graph, once all the graph has been create
 
-    virtual void script_storeResetState();
-    virtual void script_reset();
+    virtual void script_storeResetState() override;
+    virtual void script_reset() override;
 
-    virtual void script_cleanup();
+    virtual void script_cleanup() override ;
 
     /// keyboard & mouse events
-    virtual bool script_onKeyPressed(const char c);
-    virtual bool script_onKeyReleased(const char c);
+    virtual bool script_onKeyPressed(const char c) override;
+    virtual bool script_onKeyReleased(const char c) override ;
 
-    virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed);
-    virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed);
-    virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed);
+    virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
+    virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
+    virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseWheel(const int posX,const int posY,const int delta);
 
     /// called each frame
-    virtual void script_onBeginAnimationStep(const double dt);
-    virtual void script_onEndAnimationStep(const double dt);
+    virtual void script_onBeginAnimationStep(const double dt) override ;
+    virtual void script_onEndAnimationStep(const double dt) override;
 
-    virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value);
+    virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) override ;
 
     /// Script events; user data is implementation-dependant
-    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
+    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event) override ;
 
     /// drawing
-    virtual void script_draw(const core::visual::VisualParams*);
+    virtual void script_draw(const core::visual::VisualParams*) override ;
 
-    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) ;
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) override ;
 
     /// @}
 
 
 public:
-    const char* m_filename;
+    const char* m_filename {nullptr} ;
 
-    // optionnal script entry points:
-    PyObject *m_Func_onKeyPressed;
-    PyObject *m_Func_onKeyReleased;
-    PyObject *m_Func_onMouseButtonLeft;
-    PyObject *m_Func_onMouseButtonRight;
-    PyObject *m_Func_onMouseButtonMiddle;
-    PyObject *m_Func_onMouseWheel;
-    PyObject *m_Func_onGUIEvent;
-    PyObject *m_Func_onScriptEvent;
-    PyObject *m_Func_onBeginAnimationStep;
-    PyObject *m_Func_onEndAnimationStep;
-    PyObject *m_Func_onLoaded;
-    PyObject *m_Func_createGraph;
-    PyObject *m_Func_initGraph;
-    PyObject *m_Func_bwdInitGraph;
-    PyObject *m_Func_storeResetState;
-    PyObject *m_Func_reset;
-    PyObject *m_Func_cleanup;
-    PyObject *m_Func_draw;
-    PyObject *m_Func_onIdle;
+    /// optionnal script entry points:
+    PyObject *m_Func_onKeyPressed         {nullptr} ;
+    PyObject *m_Func_onKeyReleased        {nullptr} ;
+    PyObject *m_Func_onMouseButtonLeft    {nullptr} ;
+    PyObject *m_Func_onMouseButtonRight   {nullptr} ;
+    PyObject *m_Func_onMouseButtonMiddle  {nullptr} ;
+    PyObject *m_Func_onMouseWheel         {nullptr} ;
+    PyObject *m_Func_onGUIEvent           {nullptr} ;
+    PyObject *m_Func_onScriptEvent        {nullptr} ;
+    PyObject *m_Func_onBeginAnimationStep {nullptr} ;
+    PyObject *m_Func_onEndAnimationStep   {nullptr} ;
+    PyObject *m_Func_onLoaded             {nullptr} ;
+    PyObject *m_Func_createGraph          {nullptr} ;
+    PyObject *m_Func_initGraph            {nullptr} ;
+    PyObject *m_Func_bwdInitGraph         {nullptr} ;
+    PyObject *m_Func_storeResetState      {nullptr} ;
+    PyObject *m_Func_reset                {nullptr} ;
+    PyObject *m_Func_cleanup              {nullptr} ;
+    PyObject *m_Func_draw                 {nullptr} ;
+    PyObject *m_Func_onIdle               {nullptr} ;
 private:
     PythonMainScriptController();
-
 };
 
 
