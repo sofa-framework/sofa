@@ -30,6 +30,8 @@ using namespace sofa::component::controller;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
+#include "PythonToSofa.inl"
+
 #include <sofa/helper/logging/Messaging.h>
 
 // These functions are empty ones: they are meant to be overriden by real python
@@ -39,28 +41,12 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-static PyObject * PythonScriptController_onIdle(PyObject * /*self*/, PyObject * args)
-{
-    SOFA_UNUSED(args) ;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
-    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
-     msg_error("PythonScriptController") << obj->m_classname.getValueString() << ".onIdle not implemented in " << obj->name.getValueString() << std::endl;
-#endif
-
-    Py_RETURN_NONE;
-}
-
-template<class T>
-static inline T* get(PyObject* obj) {
-    // functions plz
-    return dynamic_cast<T*>(((PySPtr<Base>*)obj)->object.get());
-}
-
-
 static inline PythonScriptController* get_controller(PyObject* obj) {
-    return get<PythonScriptController>(obj);
+    return down_cast<PythonScriptController>( get_baseobject( obj ) );
 }
+#endif
 
 
 static PyObject * PythonScriptController_onIdle(PyObject * self, PyObject * args) {
@@ -407,7 +393,7 @@ static inline T* operator || (T* obj, error e) {
 
 
 
-static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* kwargs) {
+static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* /*kwargs*/) {
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
