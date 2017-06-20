@@ -50,7 +50,6 @@ static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     obj->setFilename(filename);
@@ -71,8 +70,6 @@ SP_CLASS_METHOD(BaseLoader,load)
 SP_CLASS_METHOD(BaseLoader,canLoad)
 SP_CLASS_METHOD(BaseLoader,setFilename)
 SP_CLASS_METHOD(BaseLoader,getFilename)
-//SP_CLASS_METHOD(BaseLoader,skipToEOL)
-//SP_CLASS_METHOD(BaseLoader,readLine)
 SP_CLASS_METHODS_END
 
 

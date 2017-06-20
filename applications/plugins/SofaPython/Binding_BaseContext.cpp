@@ -29,10 +29,13 @@
 
 #include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::defaulttype;
+
 #include <sofa/core/ObjectFactory.h>
 using namespace sofa::core;
+
 #include <sofa/core/objectmodel/BaseContext.h>
 using namespace sofa::core::objectmodel;
+
 #include <sofa/simulation/Node.h>
 using namespace sofa::simulation;
 using namespace sofa::defaulttype;
@@ -45,7 +48,7 @@ static PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O",&pyVec)) {
         return NULL;
     }
-    
+
     obj->setGravity(*pyVec->object);
     Py_RETURN_NONE;
 }
@@ -151,8 +154,8 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         return NULL;
     }
 
-    // temporarily, the name is set to the type name.
-    // if a "name" parameter is provided, it will overwrite it.
+    /// temporarily, the name is set to the type name.
+    /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);
 
     bool warning = printWarnings;
@@ -209,10 +212,12 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
 
     return sofa::PythonFactory::toPython(obj.get());
 }
+
 static PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     return BaseContext_createObject_Impl( self, args, kw, true );
 }
+
 static PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
@@ -292,9 +297,7 @@ static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * ar
     return sofa::PythonFactory::toPython(sptr.get());
 }
 
-
-
-
+//TODO(PR:304) do it or remove  :)
 // @TODO: pass keyword arguments rather than optional arguments?
 static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
@@ -417,7 +420,6 @@ static int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
 SP_CLASS_ATTRS_BEGIN(BaseContext)
 SP_CLASS_ATTR(BaseContext,active)
 SP_CLASS_ATTR(BaseContext,animate)
-//SP_CLASS_ATTR(BaseContext,gravity) // attribut objets = problème... le setter ne fonctionne pas
 SP_CLASS_ATTRS_END
 
 SP_CLASS_TYPE_SPTR_ATTR(BaseContext,BaseContext,Base)
