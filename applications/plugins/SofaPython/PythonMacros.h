@@ -22,6 +22,8 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
+// TODO DEPRECATE AND REMOVE THIS MESS
+
 #include <sofa/config.h>
 
 #include "PythonCommon.h"
@@ -175,8 +177,8 @@ becomes...
 
 SP_CLASS_ATTR_GET(Datamname)(PyObject *self, void*)
  */
-#define SP_CLASS_ATTR_GET(C,A) extern "C" PyObject * C##_getAttr_##A
-#define SP_CLASS_ATTR_SET(C,A) extern "C" int C##_setAttr_##A
+#define SP_CLASS_ATTR_GET(C,A) static PyObject * C##_getAttr_##A
+#define SP_CLASS_ATTR_SET(C,A) static int C##_setAttr_##A
 
 
 
@@ -327,18 +329,18 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // (+ the entry in the SP_CLASS_ATTR array)
 // =============================================================================
 
-#define SP_CLASS_DATA_ATTRIBUTE(C,D) \
-    extern "C" PyObject * C##_getAttr_##D(PyObject *self, void*) \
-    { \
-        C::SPtr obj=((PySPtr<C>*)self)->object;  \
+#define SP_CLASS_DATA_ATTRIBUTE(C,D)                                    \
+    static PyObject * C##_getAttr_##D(PyObject *self, void*)            \
+    {                                                                   \
+        C::SPtr obj=((PySPtr<C>*)self)->object;                         \
         return PyString_FromString(obj->findData(#D)->getValueString().c_str()); \
-    } \
-    extern "C" int C##_setAttr_##D(PyObject *self, PyObject * args, void*) \
-    { \
-        C::SPtr obj=((PySPtr<C>*)self)->object; \
-        char *str = PyString_AsString(args); \
-        obj->findData(#D)->read(str); \
-        return 0; \
+    }                                                                   \
+    static int C##_setAttr_##D(PyObject *self, PyObject * args, void*)  \
+    {                                                                   \
+        C::SPtr obj=((PySPtr<C>*)self)->object;                         \
+        char *str = PyString_AsString(args);                            \
+        obj->findData(#D)->read(str);                                   \
+        return 0;                                                       \
     }
 
 
