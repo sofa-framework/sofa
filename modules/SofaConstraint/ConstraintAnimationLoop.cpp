@@ -396,12 +396,12 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
 
     // calling applyConstraint on each constraint
 
-    MechanicalSetConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::holonomicC()).execute(context);
+    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::constraintJacobian()).execute(context);
 
     getCP()->clear(numConstraints,this->_tol.getValue());
 }

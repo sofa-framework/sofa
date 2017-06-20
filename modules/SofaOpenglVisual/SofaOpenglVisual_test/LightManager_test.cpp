@@ -51,7 +51,7 @@ using sofa::helper::logging::Message ;
 
 namespace sofa {
 
-struct TestLightManager : public Sofa_test<double> {
+struct TestLightManager : public Sofa_test<> {
 };
 
 void checkAttributes()

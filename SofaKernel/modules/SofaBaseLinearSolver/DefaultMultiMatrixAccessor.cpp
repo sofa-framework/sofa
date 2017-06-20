@@ -56,7 +56,6 @@ void DefaultMultiMatrixAccessor::clear()
 
     for (std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* >::iterator it = mappedMatrices.begin(), itend = mappedMatrices.end(); it != itend; ++it)
         if (it->second != NULL) delete it->second;
-
     mappedMatrices.clear();
     diagonalStiffnessBloc.clear();
 
@@ -67,6 +66,7 @@ void DefaultMultiMatrixAccessor::clear()
     mappingList.clear();
 
 }
+
 
 void DefaultMultiMatrixAccessor::setGlobalMatrix(defaulttype::BaseMatrix* matrix)
 {
@@ -180,7 +180,6 @@ int DefaultMultiMatrixAccessor::getGlobalOffset(const sofa::core::behavior::Base
 DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const
 {
     MatrixRef r;
-
     std::map< const sofa::core::behavior::BaseMechanicalState*, int >::const_iterator itRealState = realStateOffsets.find(mstate);
 
     if (itRealState != realStateOffsets.end()) //case where mechanical state is a non mapped state
@@ -193,7 +192,6 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     }
     else //case where mechanical state is a mapped state
     {
-
         std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix*>::iterator itmapped = mappedMatrices.find(mstate);
         if (itmapped != mappedMatrices.end()) // this mapped state and its matrix has been already added and created
         {
@@ -202,6 +200,7 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         }
         else // this mapped state and its matrix hasnt been created we creat it and its matrix by "createMatrix"
         {
+
             defaulttype::BaseMatrix* m = createMatrix(mstate,mstate);
             r.matrix = m;
             r.offset = 0;
@@ -223,7 +222,6 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
         else
             std::cout << "		WARNING: NULL matrix found for state " << mstate->getName() << std::endl;
     }
-
     return r;
 }
 
@@ -636,10 +634,13 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
 
 defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2)
 {
+    //   static std::map<const sofa::core::behavior::BaseMechanicalState*, component::linearsolver::FullMatrix<SReal>*> cochon;
+
     // The auxiliar interaction matrix is added if and only if at least one of two state is not real state
     //assert(! (realStateOffsets.find(mstate1) != realStateOffsets.end() && realStateOffsets.find(mstate2) != realStateOffsets.end()) );
-    component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
 
+    //component::linearsolver::FullMatrix<SReal>* m = new component::linearsolver::FullMatrix<SReal>;
+    component::linearsolver::CompressedRowSparseMatrix<SReal>* m = new component::linearsolver::CompressedRowSparseMatrix<SReal>;
     if(mstate1 == mstate2)
     {
         m->resize( mstate1->getMatrixSize(),mstate1->getMatrixSize());
@@ -656,10 +657,12 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
             std::cout << "			++ Creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
-                    << "] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
-                    << "] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
+                      << "] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
+                      << "] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" <<std::endl;
         }
     }
+    //  }
+
     return m;
 }
 

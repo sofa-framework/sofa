@@ -132,7 +132,7 @@ PyObject *GetDataValuePython(BaseData* data)
 static int SetDataValuePythonList(BaseData* data, PyObject* args,
                             const int rowWidth, int nbRows) {
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-        
+
     // check list emptyness
     if (PyList_Size(args)==0)
     {
@@ -618,7 +618,7 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     Py_RETURN_NONE;
 }
 
@@ -651,7 +651,7 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     Py_RETURN_NONE;
 }
 
@@ -747,7 +747,10 @@ static PyObject * Data_str(PyObject *self)
 }
 
 
-
+extern "C" PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
+{
+    return Data_getLinkPath(self, args);
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -764,6 +767,7 @@ SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHOD(Data,getCounter)
 SP_CLASS_METHOD(Data,isDirty)
+SP_CLASS_METHOD(Data,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 

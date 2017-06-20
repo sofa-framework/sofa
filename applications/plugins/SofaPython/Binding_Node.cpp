@@ -480,6 +480,11 @@ static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
     Py_RETURN_NONE;
 }
 
+extern "C" PyObject * Node_getAsACreateObjectParameter(PyObject * self, PyObject *args)
+{
+    return Node_getLinkPath(self, args);
+}
+
 
 
 SP_CLASS_METHODS_BEGIN(Node)
@@ -513,6 +518,7 @@ SP_CLASS_METHOD(Node, getForceField)
 SP_CLASS_METHOD(Node, propagatePositionAndVelocity)
 SP_CLASS_METHOD(Node, isInitialized)
 SP_CLASS_METHOD(Node, printGraph)
+SP_CLASS_METHOD(Node,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node, Node, Context)
