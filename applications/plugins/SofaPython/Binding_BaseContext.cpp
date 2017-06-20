@@ -38,7 +38,7 @@ using namespace sofa::simulation;
 using namespace sofa::defaulttype;
 
 
-extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
+static PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
     BaseContext* obj = get_basecontext( self );
     PyPtr<Vector3>* pyVec;
@@ -48,25 +48,25 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj = get_basecontext( self );
     return SP_BUILD_PYPTR(Vector3,Vector3,new Vector3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
-extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getTime());
 }
 
-extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getDt());
 }
 
-extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
     BaseContext* obj = get_basecontext( self );
     return sofa::PythonFactory::toPython(obj->getRootContext());
@@ -139,7 +139,7 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 
 
 // object factory
-extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
+static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
     BaseContext* context = get_basecontext( self );
 
@@ -208,11 +208,11 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
 
     return sofa::PythonFactory::toPython(obj.get());
 }
-extern "C" PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     return BaseContext_createObject_Impl( self, args, kw, true );
 }
-extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
             return BaseContext_createObject_Impl( self, args, kw, false );
@@ -220,7 +220,7 @@ extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObje
 
 /// the complete relative path to the object must be given
 /// returns None with a warning if the object is not found
-extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
+static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
 {
     BaseContext* context = get_basecontext( self );
     char *path;
@@ -269,7 +269,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
 
 /// the complete relative path to the object must be given
 /// returns None if the object is not found
-extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
+static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
     BaseContext* context = get_basecontext( self );
@@ -295,7 +295,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
 
 
 // @TODO: pass keyword arguments rather than optional arguments?
-extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
+static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
     BaseContext* context = get_basecontext( self );
     char* search_direction= NULL;
@@ -378,12 +378,12 @@ SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END
 
 
-extern "C" PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
+static PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
 {
     BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->getAnimate());
 }
-extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
+static int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
 {
     BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
@@ -395,12 +395,13 @@ extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void
     return 0;
 }
 
-extern "C" PyObject * BaseContext_getAttr_active(PyObject *self, void*)
+static PyObject * BaseContext_getAttr_active(PyObject *self, void*)
 {
     BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->isActive());
 }
-extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
+
+static int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
 {
     BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
