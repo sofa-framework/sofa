@@ -48,7 +48,6 @@ static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
         int ir,ig,ib,ia; // helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iiii",&ir,&ig,&ib,&ia))
         {
-            PyErr_BadArgument();
             return NULL;
         }
         r = (double)ir;
@@ -67,7 +66,6 @@ static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
     char* filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        PyErr_BadArgument();
         return NULL;
     }
 
