@@ -42,8 +42,10 @@ static PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
     BaseContext* obj = get_basecontext( self );
     PyPtr<Vector3>* pyVec;
-    if (!PyArg_ParseTuple(args, "O",&pyVec))
-        Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "O",&pyVec)) {
+        return NULL;
+    }
+    
     obj->setGravity(*pyVec->object);
     Py_RETURN_NONE;
 }
@@ -146,7 +148,6 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
     {
-        PyErr_BadArgument();
         return NULL;
     }
 
