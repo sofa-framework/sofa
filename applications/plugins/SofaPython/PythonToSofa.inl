@@ -8,6 +8,7 @@
 
 template<class T, class = void>
 struct unwrap_traits {
+    using wrapped_type = T;
     static const bool use_sptr = false;
 };
 
@@ -16,6 +17,7 @@ using requires_derived = typename std::enable_if< std::is_base_of<Base, T>::valu
 
 template<class T>
 struct unwrap_traits<T, requires_derived<T, sofa::core::objectmodel::Base> > {
+    using wrapped_type = sofa::core::objectmodel::Base;
     static const bool use_sptr = true;
 };
 
@@ -48,10 +50,10 @@ static inline T* get_self(PyObject* obj) {
 
 
 /// get a function argument from a wrapped base object
-template<class T, class Base = T>
+template<class T, class Wrapped = typename unwrap_traits<T>::wrapped_type>
 static inline T* get_arg(PyObject* obj) {
-    Base* base = unwrap<Base>(obj);
-    return dynamic_cast<T*>(base);
+    Wrapped* wrapped = unwrap<Wrapped>(obj);
+    return dynamic_cast<T*>(wrapped);
 }
 
 
