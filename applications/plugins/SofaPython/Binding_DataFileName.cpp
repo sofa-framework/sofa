@@ -30,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 /// getting a DataFileName* from a PyObject*
 static inline DataFileName* get_DataFileName(PyObject* obj) {
-    return get<DataFileName>(obj);
+    return get_datafilename(obj);
 }
 
 

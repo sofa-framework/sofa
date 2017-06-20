@@ -14,7 +14,6 @@ SP_DECLARE_CLASS_TYPE(AssembledSystem)
 using namespace sofa::component::linearsolver;
 
 
-
 PyObject* getMatrice( const AssembledSystem::rmat& A )
 {
     PyObject* pyA = PyList_New(A.rows());
@@ -35,7 +34,7 @@ PyObject* getMatrice( const AssembledSystem::rmat& A )
 
 static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
 {
-    AssembledSystem* sys = get<AssembledSystem>( self );
+    AssembledSystem* sys = unwrap<AssembledSystem>( self );
     if (!sys)
     {
         PyErr_BadArgument();
@@ -47,7 +46,7 @@ static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
 
 static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
 {
-    AssembledSystem* sys = get<AssembledSystem>( self );
+    AssembledSystem* sys = unwrap<AssembledSystem>( self );
     if (!sys)
     {
         PyErr_BadArgument();
@@ -59,7 +58,7 @@ static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
 
 static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
 {
-    AssembledSystem* sys = get<AssembledSystem>( self );
+    AssembledSystem* sys = unwrap<AssembledSystem>( self );
     if (!sys)
     {
         PyErr_BadArgument();
@@ -71,7 +70,7 @@ static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
 
 static PyObject* AssembledSystem_getC(PyObject * self, PyObject * /*args*/)
 {
-    AssembledSystem* sys = get<AssembledSystem>( self );
+    AssembledSystem* sys = unwrap<AssembledSystem>( self );
     if (!sys)
     {
         PyErr_BadArgument();
@@ -95,7 +94,7 @@ SP_CLASS_METHODS_END
 
 SP_CLASS_ATTR_GET(AssembledSystem,m)(PyObject *self, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -105,7 +104,7 @@ SP_CLASS_ATTR_GET(AssembledSystem,m)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(AssembledSystem,m)(PyObject *self, PyObject * args, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -117,7 +116,7 @@ SP_CLASS_ATTR_SET(AssembledSystem,m)(PyObject *self, PyObject * args, void*)
 
 SP_CLASS_ATTR_GET(AssembledSystem,n)(PyObject *self, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -127,7 +126,7 @@ SP_CLASS_ATTR_GET(AssembledSystem,n)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(AssembledSystem,n)(PyObject *self, PyObject * args, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -139,7 +138,7 @@ SP_CLASS_ATTR_SET(AssembledSystem,n)(PyObject *self, PyObject * args, void*)
 
 SP_CLASS_ATTR_GET(AssembledSystem,dt)(PyObject *self, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -149,7 +148,7 @@ SP_CLASS_ATTR_GET(AssembledSystem,dt)(PyObject *self, void*)
 }
 SP_CLASS_ATTR_SET(AssembledSystem,dt)(PyObject *self, PyObject * args, void*)
 {
-    AssembledSystem* obj = get<AssembledSystem>( self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -185,7 +184,7 @@ PyObject * AssembledSystem_PyNew(PyTypeObject * /*type*/, PyObject *args, PyObje
 void AssembledSystem_PyFree(void * self)
 {
     if (!((PyPtr<AssembledSystem>*)self)->deletable) return;
-    AssembledSystem* obj = get<AssembledSystem>( (PyObject*)self );
+    AssembledSystem* obj = unwrap<AssembledSystem>( (PyObject*)self );
     delete obj; // done!
 }
 

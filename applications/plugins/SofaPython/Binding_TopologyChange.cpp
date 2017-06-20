@@ -8,7 +8,7 @@ using namespace sofa::core::topology;
 
 /// getting a PointAncestorElem* from a PyObject*
 static inline PointAncestorElem* get_PointAncestorElem(PyObject* obj) {
-    return get<PointAncestorElem>( obj );
+    return unwrap<PointAncestorElem>( obj );
 }
 
 

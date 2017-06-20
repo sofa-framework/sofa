@@ -392,7 +392,8 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
-        BaseContext* ctx = get<BaseContext>(py_node) || error();
+        
+        BaseContext* ctx = dynamic_cast<BaseContext*>(get_base(py_node)) || error();
 
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();
