@@ -71,7 +71,7 @@ static PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    BaseState* from = get_basestate( pyFrom );
+    BaseState* from = get_arg<BaseState>( pyFrom );
     if (!from)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
@@ -91,7 +91,7 @@ static PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O",&pyTo))
         return NULL;
 
-    BaseState* to = get_basestate( pyTo );
+    BaseState* to = get_arg<BaseState>( pyTo );
     if (!to)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;

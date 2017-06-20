@@ -43,7 +43,7 @@ static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
 
     PyObject* pyVisitor;
-    if (!PyArg_ParseTuple(args, "O", &pyVisitor)) {
+    if (!PyArg_ParseTuple(args, "O", &pyVisitor) ) {
         return NULL;
     }
 
@@ -238,7 +238,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     }
 
     // use functions ffs
-    BaseObject* object = get_baseobject(pyChild);
+    BaseObject* object = get_arg<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
@@ -269,7 +269,7 @@ static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
         return NULL;
     }
 
-    BaseObject* object = get_baseobject(pyChild);
+    BaseObject* object = get_arg<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
@@ -288,7 +288,7 @@ static PyObject * Node_addChild(PyObject *self, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* child = get_node(pyChild);
+    BaseNode* child = get_arg<BaseNode>(pyChild);
     assert(child);
 
     if (!child) {
@@ -308,7 +308,7 @@ static PyObject * Node_removeChild(PyObject *self, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* child = get_node(pyChild);
+    BaseNode* child = get_arg<BaseNode>(pyChild);
     if (!child) {
         PyErr_BadArgument();
         return NULL;
@@ -326,9 +326,8 @@ static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* child = get_node(pyChild);
+    BaseNode* child = get_arg<BaseNode>(pyChild);
     if (!child) {
-        PyErr_BadArgument();
         return NULL;
     }
 
