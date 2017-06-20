@@ -100,9 +100,6 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 {
     sofa::helper::vector< sofa::helper::vector< T > > vectorOfvector;
 
-//    bool isList = PyList_Check(args);
-//    bool isTwoDimensionsList = PyList_Check(PyList_GetItem(args,0));
-
     std::size_t nbRows = PyList_Size(args);
     for (std::size_t i=0; i<nbRows; ++i)
     {
@@ -121,12 +118,12 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
 {
 
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
-    
+
     PyObject* triangleArgs  = NULL;
     PyObject* ancestorsArgs = NULL;
     PyObject* coefsArgs     = NULL;
 
-    if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs)) 
+    if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs))
     {
         sofa::helper::vector< Topology::Triangle > triangles = parseTriangleList( triangleArgs );
 
@@ -141,7 +138,7 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
             else
             {
                 obj->addTriangles( triangles );
-            }  
+            }
         }
     }
     Py_RETURN_NONE;
@@ -151,17 +148,17 @@ static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObj
 static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
 {
     TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
-    
+
     PyObject* triangleIndicesArg      = NULL;
     PyObject* removeIsolatedEdgesArg  = NULL;
     PyObject* removeIsolatedPointsArg = NULL;
 
-    if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg)) 
+    if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
         sofa::helper::vector< unsigned int > triangleIndices;
         bool removeIsolatedEdges=true;
         bool removeIsolatedPoints=true;
-        
+
         if( ! PyList_Check(triangleIndicesArg) )
         {
             PyErr_BadArgument();
@@ -183,7 +180,7 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
         {
             removeIsolatedPoints=false;
         }
-        
+
         obj->removeTriangles(triangleIndices,removeIsolatedEdges,removeIsolatedPoints);
     }
 
@@ -202,8 +199,8 @@ static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self,
     PyObject* coefsArg                = NULL;
     PyObject* triangles2RemoveArg      = NULL;
 
-    if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg, 
-                                                         &triangleIndicesArg, 
+    if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg,
+                                                         &triangleIndicesArg,
                                                          &ancestorsArg,
                                                          &coefsArg,
                                                          &triangles2RemoveArg) )

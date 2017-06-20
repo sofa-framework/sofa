@@ -58,6 +58,7 @@
 #define SP_SOFAPYFREE(X) X##_PyFree     // deallocator
 
 
+
 // =============================================================================
 // Module declarations & methods
 // =============================================================================
@@ -354,6 +355,8 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_MESSAGE_WARNING( msg ) msg_warning("SofaPython") << msg;
 #define SP_MESSAGE_ERROR( msg ) msg_error("SofaPython") << msg;
 #define SP_MESSAGE_EXCEPTION( msg ) msg_fatal("SofaPython") << msg;
+
+#define SP_PYERR_SETSTRING_INVALIDTYPE( o ) PyErr_SetString(PyExc_TypeError, "Invalid argument, a " o " object is expected.");
 
 
 // get python exceptions and print their error message

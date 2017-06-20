@@ -43,8 +43,6 @@ static inline Data<VectorLinearSpring>* get_DataVectorLinearSpring(PyObject* obj
 }
 
 
-
-
 SP_CLASS_ATTR_GET(VectorLinearSpringData,value)(PyObject *self, void*)
 {
     DataBinding_VectorLinearSpring* data  = get_DataVectorLinearSpring( self );

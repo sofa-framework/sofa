@@ -33,15 +33,12 @@ static inline STLExporter* get_STLExporter(PyObject* obj) {
     return down_cast<STLExporter>( get_baseobject(obj) );
 }
 
-
-
 static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
     STLExporter* obj = get_STLExporter( self );
     obj->writeSTL();
     Py_RETURN_NONE;
 }
-
 
 static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
 {
