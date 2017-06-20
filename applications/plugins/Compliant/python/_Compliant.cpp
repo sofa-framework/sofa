@@ -41,7 +41,6 @@ static PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyO
     BaseNode* node = get_arg<BaseNode>( pyNode );
     if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -94,7 +93,6 @@ static PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/, PyO
     sofa::core::objectmodel::BaseNode* node = get_arg<sofa::core::objectmodel::BaseNode>(pyNode);
     if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -133,7 +131,6 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     if (!solver)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
-        PyErr_BadArgument();
         return NULL;        
     }
 
@@ -141,7 +138,6 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     if (!mstate)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -172,7 +168,6 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     if (!PyArg_ParseTuple(args, "OO", &pyNode, &pySolver))
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -180,7 +175,6 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     if (!context)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -188,7 +182,6 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     if (!solver)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
-        PyErr_BadArgument();
         return NULL;
     }
 

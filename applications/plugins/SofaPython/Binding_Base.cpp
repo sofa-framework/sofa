@@ -51,7 +51,6 @@ static PyObject * Base_findData(PyObject *self, PyObject *args ) {
             msg_error("Base_findData")<<s.str();
         }
 
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -83,7 +82,6 @@ static PyObject * Base_findLink(PyObject *self, PyObject *args) {
             msg_error("Base_findLink")<<s.str();
         }
 
-        PyErr_BadArgument();
         return NULL;
     }
 

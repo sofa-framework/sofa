@@ -240,7 +240,6 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     // use functions ffs
     BaseObject* object = get_arg<BaseObject>(pyChild);
     if (!object) {
-        PyErr_BadArgument();
         return NULL;
     }
     node->addObject(object);
@@ -271,7 +270,6 @@ static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
 
     BaseObject* object = get_arg<BaseObject>(pyChild);
     if (!object) {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -292,7 +290,6 @@ static PyObject * Node_addChild(PyObject *self, PyObject * args) {
     assert(child);
 
     if (!child) {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -310,7 +307,6 @@ static PyObject * Node_removeChild(PyObject *self, PyObject * args) {
 
     BaseNode* child = get_arg<BaseNode>(pyChild);
     if (!child) {
-        PyErr_BadArgument();
         return NULL;
     }
 

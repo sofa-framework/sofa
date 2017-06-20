@@ -190,7 +190,6 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
         SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             SP_MESSAGE_ERROR(*it);
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -258,7 +257,6 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
 
     if (!context || !path)
     {
-        PyErr_BadArgument();
         return NULL;
     }
     BaseObject::SPtr sptr;
@@ -287,7 +285,6 @@ static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * ar
     }
     if (!context || !path)
     {
-        PyErr_BadArgument();
         return NULL;
     }
     BaseObject::SPtr sptr;
@@ -307,12 +304,6 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     char* name= NULL;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
         SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
-        return NULL;
-    }
-
-    if (!context)
-    {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -392,7 +383,6 @@ static int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
     BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
-        PyErr_BadArgument();
         return -1;
     }
     obj->setAnimate(args==Py_True);
@@ -410,7 +400,6 @@ static int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
     BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
-        PyErr_BadArgument();
         return -1;
     }
     obj->setActive(args==Py_True);
