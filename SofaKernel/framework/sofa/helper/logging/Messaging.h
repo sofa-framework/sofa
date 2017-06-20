@@ -159,7 +159,7 @@
 #define MSGWARNING_CHOOSER(...) MSGWARNING_CHOOSE_FROM_ARG_COUNT(MSGWARNING_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define msg_warning(...) MSGWARNING_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define msg_warning_when(cond, ...) if(cond) msg_warning(__VA_ARGS__)
+#define msg_warning_when(cond, ...) if((cond)) msg_warning(__VA_ARGS__)
 
 
 /// THE ERROR BEAST
@@ -171,7 +171,7 @@
 #define MSGERROR_CHOOSER(...) MSGERROR_CHOOSE_FROM_ARG_COUNT(MSGERROR_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define msg_error(...) MSGERROR_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define msg_error_when(cond, ...) if(cond) msg_error(__VA_ARGS__)
+#define msg_error_when(cond, ...) if((cond)) msg_error(__VA_ARGS__)
 
 
 /// THE FATAL BEAST
@@ -183,7 +183,7 @@
 #define MSGFATAL_CHOOSER(...) MSGFATAL_CHOOSE_FROM_ARG_COUNT(MSGFATAL_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define msg_fatal(...) MSGFATAL_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define msg_fatal_when(cond, ...) if(cond) msg_fatal(__VA_ARGS__)
+#define msg_fatal_when(cond, ...) if((cond)) msg_fatal(__VA_ARGS__)
 
 
 /// THE DEPRECATED BEAST
@@ -195,7 +195,7 @@
 #define MSGDEPRECATED_CHOOSER(...) MSGDEPRECATED_CHOOSE_FROM_ARG_COUNT(MSGDEPRECATED_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define msg_deprecated(...) MSGDEPRECATED_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define msg_deprecated_when(cond, ...) if(cond) msg_deprecated(__VA_ARGS__)
+#define msg_deprecated_when(cond, ...) if((cond)) msg_deprecated(__VA_ARGS__)
 
 
 /// THE ADVICE BEAST
@@ -207,7 +207,7 @@
 #define MSGADVICE_CHOOSER(...) MSGADVICE_CHOOSE_FROM_ARG_COUNT(MSGADVICE_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define msg_advice(...) MSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define msg_advice_when(cond, ...) if(cond) msg_advice(__VA_ARGS__)
+#define msg_advice_when(cond, ...) if((cond)) msg_advice(__VA_ARGS__)
 
 
 ////////////////////////////////// DMSG
@@ -233,7 +233,7 @@
 #define DMSGWARNING_CHOOSER(...) DMSGWARNING_CHOOSE_FROM_ARG_COUNT(DMSGWARNING_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define dmsg_warning(...) DMSGWARNING_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define dmsg_warning_when(cond, ...) if(cond) dmsg_warning(__VA_ARGS__)
+#define dmsg_warning_when(cond, ...) if((cond)) dmsg_warning(__VA_ARGS__)
 
 
 /// THE ERROR BEAST
@@ -245,7 +245,7 @@
 #define DMSGERROR_CHOOSER(...) DMSGERROR_CHOOSE_FROM_ARG_COUNT(DMSGERROR_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define dmsg_error(...) DMSGERROR_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define dmsg_error_when(cond, ...) if(cond) dmsg_error(__VA_ARGS__)
+#define dmsg_error_when(cond, ...) if((cond)) dmsg_error(__VA_ARGS__)
 
 
 /// THE FATAL BEAST
@@ -257,7 +257,7 @@
 #define DMSGFATAL_CHOOSER(...) DMSGFATAL_CHOOSE_FROM_ARG_COUNT(DMSGFATAL_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define dmsg_fatal(...) DMSGFATAL_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define dmsg_fatal_when(cond, ...) if(cond) dmsg_fatal(__VA_ARGS__)
+#define dmsg_fatal_when(cond, ...) if((cond)) dmsg_fatal(__VA_ARGS__)
 
 
 /// THE DEPRECATED BEAST
@@ -269,7 +269,7 @@
 #define DMSGDEPRECATED_CHOOSER(...) DMSGDEPRECATED_CHOOSE_FROM_ARG_COUNT(DMSGDEPRECATED_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define dmsg_deprecated(...) DMSGDEPRECATED_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define dmsg_deprecated_when(cond, ...) if(cond) dmsg_deprecated(__VA_ARGS__)
+#define dmsg_deprecated_when(cond, ...) if((cond)) dmsg_deprecated(__VA_ARGS__)
 
 
 /// THE ADVICE BEAST
@@ -281,7 +281,7 @@
 #define DMSGADVICE_CHOOSER(...) DMSGADVICE_CHOOSE_FROM_ARG_COUNT(DMSGADVICE_NO_ARG_EXPANDER __VA_ARGS__ ())
 
 #define dmsg_advice(...) DMSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define dmsg_advice_when(cond, ...) if(cond) dmsg_advice(__VA_ARGS__)
+#define dmsg_advice_when(cond, ...) if((cond)) dmsg_advice(__VA_ARGS__)
 
 
 #endif // MESSAGING_H
