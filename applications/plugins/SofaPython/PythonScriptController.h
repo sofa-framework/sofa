@@ -64,7 +64,7 @@ protected:
     PythonScriptController();
     virtual ~PythonScriptController();
 
-    void handleEvent(core::objectmodel::Event *event);
+    virtual void handleEvent(core::objectmodel::Event *event) override ;
 
     /// @name Script interface
     ///   Function that need to be implemented for each script language
@@ -100,10 +100,7 @@ protected:
     virtual void script_onGUIEvent(const char* controlID, const char* valueName, const char* value) override;
 
     /// Script events; user data is implementation-dependant
-    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event) override;
-
-    //TODO(PR304): remove that or explain :)
-    virtual void script_onEvent(core::objectmodel::Event* event) ;
+    virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event) override ;
 
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*) override;
@@ -119,7 +116,6 @@ public:
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; /// array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
-    sofa::core::objectmodel::Data<bool>         m_doOnEvent;
 
 protected:
     sofa::helper::system::FileEventListener* m_filelistener {nullptr} ;
@@ -137,7 +133,6 @@ protected:
     PyObject *m_Func_onMouseWheel          {nullptr} ;
     PyObject *m_Func_onGUIEvent            {nullptr} ;
     PyObject *m_Func_onScriptEvent         {nullptr} ;
-    PyObject* m_Func_onEvent               {nullptr} ;
     PyObject *m_Func_onBeginAnimationStep  {nullptr} ;
     PyObject *m_Func_onEndAnimationStep    {nullptr} ;
     PyObject *m_Func_onLoaded              {nullptr} ;

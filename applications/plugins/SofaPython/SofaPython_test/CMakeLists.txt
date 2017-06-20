@@ -9,6 +9,7 @@ set(SOURCE_FILES
     memory.cpp
     PythonFactory_test.cpp
     PythonScriptControllerHelper_test.cpp
+    PythonScriptController_test.cpp
 )
 
 set(PYTHON_FILES
