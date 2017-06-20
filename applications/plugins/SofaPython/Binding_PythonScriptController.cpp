@@ -368,11 +368,6 @@ static PyObject * PythonScriptController_draw(PyObject * self, PyObject * /*args
 }
 
 
-static PyObject * PythonScriptController_onEvent(PyObject * /*self*/, PyObject * /*args*/) {
-    Py_RETURN_NONE;
-}
-
-
 
 static PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
 {
@@ -444,7 +439,6 @@ SP_CLASS_METHOD(PythonScriptController,cleanup)
 SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
-SP_CLASS_METHOD(PythonScriptController, onEvent)
 SP_CLASS_METHOD(PythonScriptController,onIdle)
 SP_CLASS_METHOD(PythonScriptController,instance)
 SP_CLASS_METHODS_END
