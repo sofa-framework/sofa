@@ -33,19 +33,16 @@ static PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyO
     PyObject* pyNode;
 
     float M,B,K;
-    if (!PyArg_ParseTuple(args, "Offf", &pyNode, &M, &B, &K))
-    {
+    if (!PyArg_ParseTuple(args, "Offf", &pyNode, &M, &B, &K)) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: wrong arguments" );
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     BaseNode* node = get_basenode( pyNode );
-    if (!node)
-    {
+    if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
 
@@ -89,19 +86,16 @@ static PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/, PyO
 static PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/, PyObject * args)
 {
     PyObject* pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode))
-    {
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: wrong arguments" );
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     sofa::core::objectmodel::BaseNode* node = get_basenode(pyNode);
-    if (!node)
-    {
+    if (!node) {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     SReal dt = down_cast<Node>(node)->getDt();
@@ -132,8 +126,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     if (!PyArg_ParseTuple(args, "OO", &pySolver, &pyState))
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(get_odesolver( pySolver) );
@@ -141,7 +134,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;        
     }
 
     BaseMechanicalState* mstate = get_basemechanicalstate( pyState );
@@ -149,7 +142,7 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     objectmodel::BaseData* data;
@@ -166,10 +159,9 @@ static PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
         mstate->vAlloc(ExecParams::defaultInstance(),id);
 
         data = mstate->baseWrite(id);
-    }
-    else
+    } else {
         data = mstate->baseWrite(vecid);
-
+    }
     return SP_BUILD_PYPTR(Data,BaseData,data,false);
 }
 
@@ -181,7 +173,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     BaseContext* context = get_basecontext( pyNode );
@@ -189,7 +181,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>( get_odesolver( pySolver ) );
@@ -197,7 +189,7 @@ static PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject * ar
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
         PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     propagate_lambdas_visitor vis( MechanicalParams::defaultInstance(), solver->lagrange );
