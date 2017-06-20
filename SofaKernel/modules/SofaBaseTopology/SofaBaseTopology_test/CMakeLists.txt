@@ -3,8 +3,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
-    BezierTetrahedronTopology_test.cpp
-	PointSetTopology_test.cpp
+    PointSetTopology_test.cpp
     RegularGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp)
