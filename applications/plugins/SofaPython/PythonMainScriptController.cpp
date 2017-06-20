@@ -114,7 +114,7 @@ void PythonMainScriptController::loadScript()
 
     #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
 
-    msg_info("PythonMainScriptController") << msg.str();
+    msg_info() << msg.str();
 
 }
 
