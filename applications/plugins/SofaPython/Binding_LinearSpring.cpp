@@ -23,10 +23,8 @@
 #include "Binding_LinearSpring.h"
 #include "PythonToSofa.inl"
 
-
-using namespace sofa::component::interactionforcefield;
+using sofa::component::interactionforcefield::LinearSpring ;
 typedef LinearSpring<SReal> LinearSpringR;
-
 
 
 /// getting a LinearSpringR* from a PyObject*

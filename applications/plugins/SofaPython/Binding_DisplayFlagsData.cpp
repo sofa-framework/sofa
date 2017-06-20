@@ -24,8 +24,9 @@
 #include "PythonToSofa.inl"
 
 #include <sofa/core/visual/DisplayFlags.h>
-using namespace sofa::core::visual;
-using namespace sofa::core::objectmodel;
+using sofa::core::visual::DisplayFlags;
+using sofa::core::visual::tristate ;
+using sofa::core::objectmodel::Data ;
 
 
 /// getting a Data<DisplayFlags>* from a PyObject*

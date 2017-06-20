@@ -24,10 +24,8 @@
 #include "Binding_MeshTopology.h"
 #include "PythonToSofa.inl"
 
-using namespace sofa::component::topology;
-using namespace sofa::core::objectmodel;
-
-
+#include <SofaBaseTopology/GridTopology.h>
+using sofa::component::topology::GridTopology ;
 
 /// getting a GridTopology* from a PyObject*
 static inline GridTopology* get_GridTopology(PyObject* obj) {

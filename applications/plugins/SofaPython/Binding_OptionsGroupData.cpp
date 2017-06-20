@@ -32,12 +32,12 @@ static inline Data<OptionsGroup>* get_DataOptionsGroup(PyObject* obj) {
     return down_cast<Data<OptionsGroup>>( get_basedata( obj ) );
 }
 
-
 static PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)
 {
     Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     return PyString_FromString(data->getValue().getSelectedItem().c_str());
 }
+
 static int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item)
 {
     Data<OptionsGroup>* data = get_DataOptionsGroup( self );
@@ -46,6 +46,7 @@ static int OptionsGroupData_setAttr_selectedItem_impl(PyObject *self, char* item
     data->endEdit();
     return 0;
 }
+
 static int OptionsGroupData_setAttr_selectedItem(PyObject *self, PyObject * args, void*)
 {
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
@@ -58,6 +59,7 @@ static PyObject * OptionsGroupData_getAttr_selectedId(PyObject *self, void*)
     Data<OptionsGroup>* data = get_DataOptionsGroup( self );
     return PyInt_FromLong((long)data->getValue().getSelectedId());
 }
+
 void OptionsGroupData_setAttr_selectedId_impl(PyObject *self, unsigned id)
 {
     Data<OptionsGroup>* data = get_DataOptionsGroup( self );
@@ -65,6 +67,7 @@ void OptionsGroupData_setAttr_selectedId_impl(PyObject *self, unsigned id)
     optionGroups->setSelectedItem( (unsigned)id );
     data->endEdit();
 }
+
 static int OptionsGroupData_setAttr_selectedId(PyObject *self, PyObject * args, void*)
 {
     OptionsGroupData_setAttr_selectedId_impl( self, (unsigned)PyInt_AsLong(args) );
@@ -76,33 +79,33 @@ static PyObject * OptionsGroupData_getSelectedId(PyObject *self, PyObject *)
 {
     return OptionsGroupData_getAttr_selectedId(self,NULL);
 }
+
 static PyObject * OptionsGroupData_setSelectedId(PyObject *self, PyObject * args)
 {
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     OptionsGroupData_setAttr_selectedId_impl(self,index);
     Py_RETURN_NONE;
 }
+
 static PyObject * OptionsGroupData_getSelectedItem(PyObject *self, PyObject *)
 {
     return OptionsGroupData_getAttr_selectedItem(self,NULL);
 }
+
 static PyObject * OptionsGroupData_setSelectedItem(PyObject *self, PyObject * args)
 {
     char *item;
     if (!PyArg_ParseTuple(args, "s",&item))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     OptionsGroupData_setAttr_selectedItem_impl(self,item);
     Py_RETURN_NONE;
 }
-
 
 static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
 {

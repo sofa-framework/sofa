@@ -24,6 +24,4 @@
 
 #include "PythonMacros.h"
 
-//SP_DECLARE_CLASS_TYPE(MultiMapping3_to_3)
-
 #endif // BINDING_MULTIMAPPING_H

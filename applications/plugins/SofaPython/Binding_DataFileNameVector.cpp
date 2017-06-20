@@ -29,9 +29,7 @@
 #include "Binding_Data.h"
 #include "PythonToSofa.inl"
 
-using namespace sofa::helper;
-using namespace sofa::core::objectmodel;
-
+using sofa::core::objectmodel::DataFileNameVector ;
 
 /// getting a DataFileNameVector* from a PyObject*
 static inline DataFileNameVector* get_DataFileNameVector(PyObject* obj) {
