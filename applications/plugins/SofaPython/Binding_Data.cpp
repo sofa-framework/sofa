@@ -471,7 +471,6 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     if ((unsigned int)index>=typeinfo->size())
@@ -569,7 +568,6 @@ static PyObject * Data_setSize(PyObject *self, PyObject * args)
     int size;
     if (!PyArg_ParseTuple(args, "i",&size))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
@@ -604,7 +602,6 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -629,7 +626,6 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -747,7 +743,7 @@ static PyObject * Data_str(PyObject *self)
 }
 
 
-extern "C" PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
+static PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
 {
     return Data_getLinkPath(self, args);
 }
