@@ -34,7 +34,6 @@ static PyObject * BaseState_resize(PyObject *self, PyObject * args)
     BaseState* obj = get_basestate( self );
     int newSize;
     if (!PyArg_ParseTuple(args, "i", &newSize)) {
-        PyErr_BadArgument();
         return NULL;
     }
     
@@ -46,9 +45,8 @@ static PyObject * BaseState_resize(PyObject *self, PyObject * args)
 static PyObject * BaseState_getSize(PyObject *self, PyObject * args)
 {
     BaseState* obj = get_basestate( self );
-    
-    if (PyTuple_Size(args)) {
-        PyErr_BadArgument();
+
+    if (!PyArg_ParseTuple(args, "", &newSize)) {
         return NULL;
     }
     
