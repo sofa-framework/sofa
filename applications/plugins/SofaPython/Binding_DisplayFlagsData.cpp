@@ -31,7 +31,7 @@ using sofa::core::objectmodel::Data ;
 
 /// getting a Data<DisplayFlags>* from a PyObject*
 static inline Data<DisplayFlags>* get_DataDisplayFlags(PyObject* obj) {
-    return get<Data<DisplayFlags>>(obj);
+    return unwrap<Data<DisplayFlags>>(obj);
 }
 
 

@@ -39,7 +39,7 @@ typedef Data<VectorLinearSpring> DataBinding_VectorLinearSpring;
 
 /// getting a Data<VectorLinearSpring>* from a PyObject*
 static inline Data<VectorLinearSpring>* get_DataVectorLinearSpring(PyObject* obj) {
-    return get<Data<VectorLinearSpring>>(obj);
+    return unwrap<Data<VectorLinearSpring>>(obj);
 }
 
 

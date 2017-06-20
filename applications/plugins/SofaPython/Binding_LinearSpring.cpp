@@ -29,7 +29,7 @@ typedef LinearSpring<SReal> LinearSpringR;
 
 /// getting a LinearSpringR* from a PyObject*
 static inline LinearSpringR* get_LinearSpringR(PyObject* obj) {
-    return get<LinearSpringR>(obj);
+    return unwrap<LinearSpringR>(obj);
 }
 
 

@@ -31,7 +31,7 @@ static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * 
         for(std::size_t i=0;i<nbAncestorElems;++i)
         {
             PyObject * pyPointAncestor = PyList_GetItem(ancestorElemsArg,i);
-            PointAncestorElem* pointAncestor = get<PointAncestorElem>( pyPointAncestor );
+            PointAncestorElem* pointAncestor = unwrap<PointAncestorElem>( pyPointAncestor );
             ancestorElems.push_back( *pointAncestor );
         }
 
