@@ -47,7 +47,6 @@ static PyObject * Topology_setNbPoints(PyObject *self, PyObject * args)
     int nb;
     if (!PyArg_ParseTuple(args, "i",&nb))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     obj->setNbPoints(nb);
@@ -60,7 +59,6 @@ static PyObject * Topology_getPX(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     return PyFloat_FromDouble(obj->getPX(i));
@@ -72,7 +70,6 @@ static PyObject * Topology_getPY(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     return PyFloat_FromDouble(obj->getPY(i));
@@ -84,7 +81,6 @@ static PyObject * Topology_getPZ(PyObject *self, PyObject * args)
     int i;
     if (!PyArg_ParseTuple(args, "i",&i))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     return PyFloat_FromDouble(obj->getPZ(i));
