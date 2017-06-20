@@ -264,7 +264,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
             typename se3::mat66 block;
 
             if(direct_product.getValue()) {
-                block.setIdentity();
+                block = se3::mat66::Identity();
             } else {
                 block = se3::dR(s.coord, in_pos[ s.index ] );
             }

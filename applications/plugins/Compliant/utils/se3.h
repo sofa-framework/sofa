@@ -33,7 +33,7 @@ struct SE3 {
     typedef Eigen::Matrix<real, 3, 6> mat36;
     typedef Eigen::Matrix<real, 6, 3> mat63;    
 
-	typedef Eigen::Quaternion<real> quat;
+	typedef Eigen::Quaternion<real, Eigen::DontAlign> quat;
 
 	// sofa order: (translation, rotation)
 	typedef vec6 twist;
@@ -71,10 +71,10 @@ struct SE3 {
 	}
 
 	static ::sofa::helper::Quater<real> coord(const quat& at) {
-		return ::sofa::helper::Quater<real>(at.coeffs()(1),
-		                                    at.coeffs()(2),
-		                                    at.coeffs()(3),
-		                                    at.coeffs()(0));
+		return ::sofa::helper::Quater<real>(at.x(),
+                                            at.y(),
+                                            at.z(),
+                                            at.w());
 	}
 	
 	// rotation quaternion
