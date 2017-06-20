@@ -73,14 +73,8 @@ private:
 
 };
 
-///////////
-
-
-
 /// Export the scene graph in Python format
 void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=NULL );
-
-
 
 /// Visitor that exports all nodes/components in python
 class SOFA_SOFAPYTHON_API PythonExporterVisitor : public Visitor
@@ -94,16 +88,14 @@ protected:
     unsigned m_variableIndex; ///< unique index per node to garanty a unique variablename
 
 public:
-
     PythonExporterVisitor(std::ostream& out) : Visitor(sofa::core::ExecParams::defaultInstance()), m_out(out), m_variableIndex(0) {}
 
     template<class T> void processObject( T obj, const std::string& nodeVariable );
 
-    virtual Result processNodeTopDown(Node* node);
-    virtual void processNodeBottomUp(Node* node);
+    virtual Result processNodeTopDown(Node* node) override ;
+    virtual void processNodeBottomUp(Node* node) override ;
 
-    virtual const char* getClassName() const { return "PythonExporterVisitor"; }
-
+    virtual const char* getClassName() const override { return "PythonExporterVisitor"; }
 };
 
 
