@@ -24,12 +24,7 @@
 #include "Binding_BaseState.h"
 #include "PythonToSofa.inl"
 
-
-using namespace sofa::core::behavior;
-using namespace sofa::core;
-using namespace sofa::core::objectmodel;
-
-
+using sofa::core::behavior::BaseMechanicalState ;
 
 static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
@@ -88,14 +83,11 @@ static PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * a
     Py_RETURN_NONE;
 }
 
-
-
 SP_CLASS_METHODS_BEGIN(BaseMechanicalState)
 SP_CLASS_METHOD(BaseMechanicalState,applyTranslation)
 SP_CLASS_METHOD(BaseMechanicalState,applyScale)
 SP_CLASS_METHOD(BaseMechanicalState,applyRotation)
 SP_CLASS_METHODS_END
-
 
 SP_CLASS_TYPE_SPTR(BaseMechanicalState,BaseMechanicalState,BaseState)
 

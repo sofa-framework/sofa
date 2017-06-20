@@ -23,14 +23,19 @@
 #include "Binding_LinearSpring.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::Base ;
+
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+using sofa::defaulttype::AbstractTypeInfo ;
+
 #include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
+
 #include "PythonToSofa.inl"
-
-
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
 
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
@@ -499,11 +504,11 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     int index;
     PyObject *value;
-    
+
     if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
         return NULL;
     }
-    
+
     if ((unsigned int)index >= typeinfo->size())
     {
         // out of bounds!
@@ -511,7 +516,7 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
         typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));

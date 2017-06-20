@@ -26,7 +26,7 @@
 #include "Binding_BaseTopologyObject.h"
 #include "Binding_BaseObject.h"
 
-using namespace sofa::core::topology;
+using sofa::core::topology::BaseTopologyObject;
 
 SP_CLASS_METHODS_BEGIN(BaseTopologyObject)
 SP_CLASS_METHODS_END

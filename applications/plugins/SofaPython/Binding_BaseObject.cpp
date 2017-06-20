@@ -25,7 +25,7 @@
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
-using namespace sofa::core::objectmodel;
+using sofa::core::objectmodel::BaseObject;
 
 static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
