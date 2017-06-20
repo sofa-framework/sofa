@@ -28,7 +28,7 @@ using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
-
+//TODO(PR:304) remove this todo or do it.
 ///// getting a MeshLoader* from a PyObject*
 //static inline MeshLoader* get_MeshLoader(PyObject* obj) {
 //    return down_cast<MeshLoader>( get_baseloader(obj) );

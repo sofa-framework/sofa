@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+//TODO(PR:304) remove this todo or do it.
 /*
 #include "Binding_MultiMapping.h"
 #include "Binding_BaseMapping.h"

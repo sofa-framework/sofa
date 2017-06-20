@@ -27,9 +27,11 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 using namespace sofa::simulation;
+
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+
 #include "Binding_Node.h"
 #include "Binding_Context.h"
 #include "PythonVisitor.h"
@@ -37,16 +39,14 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
-
-
 static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
-    
+
     PyObject* pyVisitor;
     if (!PyArg_ParseTuple(args, "O", &pyVisitor)) {
         return NULL;
     }
-    
+
     PythonVisitor visitor(ExecParams::defaultInstance(), pyVisitor);
     node->executeVisitor(&visitor);
 
@@ -55,7 +55,7 @@ static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
 
 static PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/) {
     Node* node = get_node(self);
-    
+
     // BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
     return sofa::PythonFactory::toPython(node->getRoot());
 }
@@ -69,7 +69,7 @@ static PyObject * Node_simulationStep(PyObject * self, PyObject * args) {
     }
 
     getSimulation()->animate ( node, (SReal)dt );
-    
+
     Py_RETURN_NONE;
 }
 
@@ -136,7 +136,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
         if( warning ) SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
         Py_RETURN_NONE;
     }
-    
+
     return sofa::PythonFactory::toPython(childNode);
 }
 
@@ -144,7 +144,7 @@ static PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/) {
     // BaseNode is not bound in SofaPython, so getChildNode is bound in Node
     // instead of BaseNode
     Node* node = get_node(self);
-    
+
     const objectmodel::BaseNode::Children& children = node->getChildren();
 
     // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
@@ -154,7 +154,7 @@ static PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/) {
     for (unsigned i = 0; i < children.size(); ++i) {
         PyList_SetItem(list,i,sofa::PythonFactory::toPython(children[i]));
     }
-    
+
     return list;
 }
 
@@ -172,7 +172,7 @@ static PyObject * Node_getParents(PyObject * self, PyObject * /*args*/) {
     for (unsigned i = 0; i < parents.size(); ++i) {
         PyList_SetItem(list,i,sofa::PythonFactory::toPython(parents[i]));
     }
-    
+
     return list;
 }
 
@@ -188,7 +188,7 @@ static PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/) {
     // BaseNode is not bound in SofaPython, so getRootPath is bound in Node
     // instead
     Node* node = get_node(self);
-    
+
     return PyString_FromString(node->getRootPath().c_str());
 }
 
@@ -211,7 +211,7 @@ static PyObject * Node_createChild(PyObject *self, PyObject * args) {
 static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject * kw,
                                       bool printWarnings) {
     Node* node = get_node(self);
-    
+
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
         return NULL;
@@ -258,7 +258,7 @@ static PyObject * Node_addObject(PyObject * self, PyObject * args, PyObject * kw
 
 static PyObject * Node_addObject_noWarning(PyObject * self, PyObject * args) {
     SP_MESSAGE_DEPRECATED("Node_addObject_noWarning is deprecated, use the keyword warning=False in Node_addObject instead.");
-    
+
     return Node_addObject_Impl( self, args, NULL, false );
 }
 
@@ -268,25 +268,21 @@ static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
         return NULL;
     }
-    
+
     BaseObject* object = get_baseobject(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     node->removeObject(object);
-
-    // no init, if you need to init, you can call it yourself!
-//    node->init(sofa::core::ExecParams::defaultInstance());
-
     Py_RETURN_NONE;
 }
 
 static PyObject * Node_addChild(PyObject *self, PyObject * args) {
     Node* obj = get_node(self);
     assert(obj);
-    
+
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
         return NULL;
@@ -294,48 +290,48 @@ static PyObject * Node_addChild(PyObject *self, PyObject * args) {
 
     BaseNode* child = get_node(pyChild);
     assert(child);
-    
+
     if (!child) {
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     obj->addChild(child);
     Py_RETURN_NONE;
 }
 
 static PyObject * Node_removeChild(PyObject *self, PyObject * args) {
     Node* obj = get_node(self);
-    
+
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
         return NULL;
     }
-    
+
     BaseNode* child = get_node(pyChild);
     if (!child) {
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     obj->removeChild(child);
     Py_RETURN_NONE;
 }
 
 static PyObject * Node_moveChild(PyObject *self, PyObject * args) {
     Node* obj = get_node(self);
-    
+
     PyObject* pyChild;
     if (!PyArg_ParseTuple(args, "O", &pyChild)) {
         return NULL;
     }
-    
+
     BaseNode* child = get_node(pyChild);
     if (!child) {
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     obj->moveChild(child);
     Py_RETURN_NONE;
 }
@@ -349,14 +345,14 @@ static PyObject * Node_detachFromGraph(PyObject *self, PyObject * /*args*/) {
 
 static PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
-    
+
     PyObject* pyUserData;
     char* eventName;
-    
+
     if (!PyArg_ParseTuple(args, "sO", &eventName, &pyUserData)) {
         return NULL;
     }
-    
+
     PythonScriptEvent event(node, eventName, pyUserData);
     node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
@@ -365,11 +361,11 @@ static PyObject * Node_sendScriptEvent(PyObject *self, PyObject * args) {
 static PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
     char* eventName;
-    
+
     if (!PyArg_ParseTuple(args, "s", &eventName)) {
         return NULL;
     }
-    
+
     sofa::core::objectmodel::KeypressedEvent event(eventName ? eventName[0] : '\0');
     node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
@@ -378,11 +374,11 @@ static PyObject * Node_sendKeypressedEvent(PyObject *self, PyObject * args) {
 static PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
     char* eventName;
-    
+
     if (!PyArg_ParseTuple(args, "s", &eventName)) {
         return NULL;
     }
-    
+
     sofa::core::objectmodel::KeyreleasedEvent event(eventName ? eventName[0] : '\0');
     node->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
     Py_RETURN_NONE;
@@ -390,11 +386,11 @@ static PyObject * Node_sendKeyreleasedEvent(PyObject *self, PyObject * args) {
 
 static PyObject * Node_getMechanicalState(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
-    
+
     behavior::BaseMechanicalState* state = node->mechanicalState.get();
 
     if( state ) return sofa::PythonFactory::toPython(state);
-    
+
     Py_RETURN_NONE;
 }
 
@@ -415,13 +411,13 @@ static PyObject * Node_getForceField(PyObject * self, PyObject * args) {
     if(!PyArg_ParseTuple(args, "i", &index)) {
         return NULL;
     }
-    
+
     Node* node = get_node(self);
 
     behavior::BaseForceField* ff = node->forceField.get(index);
-    
+
     if( ff ) return sofa::PythonFactory::toPython(ff);
-    
+
     Py_RETURN_NONE;
 }
 
@@ -429,7 +425,7 @@ static PyObject * Node_getForceField(PyObject * self, PyObject * args) {
 
 static PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
-    
+
     sofa::core::BaseMapping* mapping = node->mechanicalMapping.get();
 
     if( mapping ) return sofa::PythonFactory::toPython(mapping);
@@ -450,6 +446,7 @@ static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * 
     node->execute<UpdateMappingVisitor>(instance);
 
     // update visuals too (positions, normals, tangents, textures...)
+    //TODO(PR:304) remove this todo or do it.
     // todo: make it optional?
     node->execute<VisualUpdateVisitor>(instance);
 
@@ -475,7 +472,7 @@ static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
         PyErr_SetString(PyExc_RuntimeError, "no visual loop for this node");
         return NULL;
     }
-    
+
     loop->initStep(sofa::core::ExecParams::defaultInstance());
     Py_RETURN_NONE;
 }
@@ -484,8 +481,6 @@ extern "C" PyObject * Node_getAsACreateObjectParameter(PyObject * self, PyObject
 {
     return Node_getLinkPath(self, args);
 }
-
-
 
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node, executeVisitor)

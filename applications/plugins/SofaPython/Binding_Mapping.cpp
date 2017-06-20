@@ -23,6 +23,8 @@
 
 #include "Binding_Mapping.h"
 #include "Binding_BaseMapping.h"
+
+//TODO(PR:304) Shouldn't we remove that ?
 /*
 #include <sofa/core/topology/Topology.h>
 using namespace sofa::core::topology;

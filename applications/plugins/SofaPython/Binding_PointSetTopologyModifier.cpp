@@ -5,32 +5,24 @@
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
 
-    //void addPoints( const unsigned int nPoints,
-    //                const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
-    //                const bool addDOF = true);
-
-
-
 /// getting a PointSetTopologyModifier* from a PyObject*
 static inline PointSetTopologyModifier* get_PointSetTopologyModifier(PyObject* obj) {
     return dynamic_cast<PointSetTopologyModifier*>( get_baseobject(obj) );
 }
 
-
-
 static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * args)
 {
     PointSetTopologyModifier* obj = get_PointSetTopologyModifier( self );
 
-    PyObject* ancestorElemsArg = NULL;
+    PyObject* ancestorElemsArg = nullptr ;
 
-    if (PyArg_UnpackTuple(args, "addPoints", 1, 1, &ancestorElemsArg) ) 
+    if (PyArg_UnpackTuple(args, "addPoints", 1, 1, &ancestorElemsArg) )
     {
         bool isList = PyList_Check(ancestorElemsArg);
         if(!isList)
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return nullptr ;
         }
 
         std::size_t nbAncestorElems  = PyList_Size(ancestorElemsArg);
