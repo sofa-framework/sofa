@@ -37,10 +37,9 @@ static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject 
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
             return NULL;
         }
         dx = (double)ix;
@@ -57,10 +56,9 @@ static PyObject * BaseMechanicalState_applyScale(PyObject *self, PyObject * args
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
             return NULL;
         }
         dx = (double)ix;
@@ -77,10 +75,9 @@ static PyObject * BaseMechanicalState_applyRotation(PyObject *self, PyObject * a
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
-        int ix,iy,iz; // helper: you can set integer values
+        int ix,iy,iz; /// helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
-            PyErr_BadArgument();
             return NULL;
         }
         dx = (double)ix;
