@@ -50,6 +50,8 @@ static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
         {
             return NULL;
         }
+
+        PyErr_Clear();
         r = (double)ir;
         g = (double)ig;
         b = (double)ib;
