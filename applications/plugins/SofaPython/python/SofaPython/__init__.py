@@ -50,9 +50,15 @@ def formatStackForSofa(o):
         return ss
 
 def getStackForSofa():
-    """returns the currunt stack with a "unformal" formatting. """
-    # we exclude the first level in the stack because it is the getStackForSofa() function itself.
+    """returns the current stack with a "informal" formatting. """
+    ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
     ss=inspect.stack()[1:]
+    return formatStackForSofa(ss)
+
+def getPythonCallingPointAsString():
+    """returns the last entry with an "informal" formatting. """
+    ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
+    ss=inspect.stack()[-1:]
     return formatStackForSofa(ss)
 
 def sofaExceptHandler(type, value, tb):

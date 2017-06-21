@@ -256,6 +256,21 @@ std::string PythonEnvironment::getStackAsString()
     return "Python Stack is empty.";
 }
 
+std::string PythonEnvironment::getPythonCallingPointString()
+{
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPointAsString");
+    if (PyCallable_Check(pFunc))
+    {
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
+        std::string tmp=PyString_AsString(PyObject_Str(res));
+        Py_DECREF(res) ;
+        return tmp;
+    }
+    return "Python Stack is empty.";
+}
+
+
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
 {
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);

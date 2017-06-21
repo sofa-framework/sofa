@@ -64,6 +64,9 @@ public:
     /// returns the file information associated with the current frame.
     static std::string getStackAsString() ;
 
+    /// returns the last entry in the stack so that we can provide information to user.
+    static std::string getPythonCallingPointString() ;
+
     /// should the future scene loadings reload python modules?
     static void setAutomaticModuleReload( bool );
 
