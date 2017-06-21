@@ -130,3 +130,18 @@ TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding2)
 {
     checkErrorMessage("self.name = 5");
 }
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding3)
+{
+    checkErrorMessage("Sofa.BaseContext.getObject(1234, 'WillNotWork')");
+}
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding4)
+{
+    checkErrorMessage("Sofa.Topology.setNbPoints(1234)");
+}
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding5)
+{
+    checkErrorMessage("Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')");
+}
