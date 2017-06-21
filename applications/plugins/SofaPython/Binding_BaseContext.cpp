@@ -221,8 +221,11 @@ static PyObject * BaseContext_createObject(PyObject * self, PyObject * args, PyO
 
 static PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObject * args, PyObject * kw)
 {
-    SP_MESSAGE_DEPRECATED("BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead.")
-            return BaseContext_createObject_Impl( self, args, kw, false );
+    BaseContext* context = get_basecontext( self );
+    msg_deprecated(context)
+            << "BaseContext_createObject_noWarning is deprecated, use the keyword warning=False in BaseContext_createObject instead." ;
+
+    return BaseContext_createObject_Impl( self, args, kw, false );
 }
 
 /// the complete relative path to the object must be given
@@ -267,7 +270,7 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        msg_warning_when(context, emitWarningMessage)
+        msg_warning_when(emitWarningMessage, context)
                 << "BaseContext_getObject: component "<< path <<" not found (the complete relative path is needed)" ;
 
         return NULL;
@@ -281,9 +284,10 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
 /// returns None if the object is not found
 static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
-    SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
-
     BaseContext* context = get_basecontext( self );
+    msg_deprecated(context)
+            << "BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead." ;
+
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
