@@ -40,25 +40,29 @@ SP_CLASS_ATTR_GET(Link,name)(PyObject *self, void*)
     BaseLink* link = get_baselink( self );
     return PyString_FromString(link->getName().c_str());
 }
+
+
 SP_CLASS_ATTR_SET(Link,name)(PyObject *self, PyObject * args, void*)
 {
     BaseLink* link = get_baselink( self );
-    char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
+    char *str = PyString_AsString(args); /// for setters, only one object and not a tuple....
     link->setName(str);
     return 0;
 }
 
+
 PyObject *GetLinkValuePython(BaseLink* link)
 {
-    // only by string for now
+    /// only by string for now
     return PyString_FromString(link->getValueString().c_str());
 }
+
 
 int SetLinkValuePython(BaseLink* link, PyObject* args)
 {
     if( PyString_Check(args) )
     {
-        char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
+        char *str = PyString_AsString(args); /// for setters, only one object and not a tuple....
         link->read(str);
         return 0;
     }
@@ -66,11 +70,13 @@ int SetLinkValuePython(BaseLink* link, PyObject* args)
     return -1;
 }
 
+
 SP_CLASS_ATTR_GET(Link,value)(PyObject *self, void*)
 {
     BaseLink* link = get_baselink( self );
     return GetLinkValuePython(link);
 }
+
 
 SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
 {
@@ -78,11 +84,13 @@ SP_CLASS_ATTR_SET(Link,value)(PyObject *self, PyObject * args, void*)
     return SetLinkValuePython(link,args);
 }
 
+
 static PyObject * Link_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link = get_baselink( self );
     return PyString_FromString(link->getValueTypeString().c_str());
 }
+
 
 static PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
 {
@@ -90,11 +98,13 @@ static PyObject * Link_getValueString(PyObject *self, PyObject * /*args*/)
     return PyString_FromString(link->getValueString().c_str());
 }
 
+
 static PyObject * Link_getSize(PyObject *self, PyObject * /*args*/)
 {
     BaseLink* link = get_baselink( self );
     return PyInt_FromLong( link->getSize() );
 }
+
 
 SP_CLASS_METHODS_BEGIN(Link)
 SP_CLASS_METHOD(Link,getValueTypeString)

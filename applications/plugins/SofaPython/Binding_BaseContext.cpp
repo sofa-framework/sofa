@@ -119,8 +119,8 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
     /// Check if the object has an explicit conversion to a Sofa path. If this is the case
     /// we use it.
     if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
-       PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
-       return pythonToSofaDataString(retvalue, out);
+        PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
+        return pythonToSofaDataString(retvalue, out);
     }
 
     /// Default conversion for standard type:
@@ -187,10 +187,11 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
     if (obj==0)
     {
-        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
+        std::stringstream msg;
+        msg << "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" ;
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            SP_MESSAGE_ERROR(*it);
-        PyErr_BadArgument();
+            msg << " " << *it << msgendl ;
+        PyErr_SetString(PyExc_RuntimeError, msg.str().c_str()) ;
         return NULL;
     }
 
@@ -207,7 +208,7 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
 
         Node *node = static_cast<Node*>(context);
         if (node && node->isInitialized())
-            SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
+            msg_warning(node) << "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized";
     }
 
     return sofa::PythonFactory::toPython(obj.get());
@@ -232,11 +233,12 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject: wrong argument, should be a string (the complete relative path)" )
+        msg_warning(context)
+                << "BaseContext_getObject: wrong argument, should be a string with the complete relative path" ;
         return NULL;
     }
 
-    bool warning = true;
+    bool emitWarningMessage = true;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -248,7 +250,7 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
             if( !strcmp(PyString_AsString(key),"warning") )
             {
                 if PyBool_Check(value)
-                        warning = (value==Py_True);
+                        emitWarningMessage = (value==Py_True);
                 break;
             }
         }
@@ -265,7 +267,9 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        if(warning) SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
+        msg_warning_when(context, emitWarningMessage)
+                << "BaseContext_getObject: component "<< path <<" not found (the complete relative path is needed)" ;
+
         return NULL;
     }
 
@@ -278,11 +282,11 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
 static PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
+
     BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        SP_MESSAGE_WARNING( "BaseContext_getObject_noWarning: wrong argument, should be a string (the complete relative path)" )
         return NULL;
     }
     if (!context || !path)
@@ -306,7 +310,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     char* type_name= NULL;
     char* name= NULL;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
-        SP_MESSAGE_WARNING( "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" )
+        PyErr_SetString(PyExc_TypeError, "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" );
         return NULL;
     }
 
@@ -342,7 +346,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
         else
         {
-            SP_MESSAGE_WARNING( "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." )
+            msg_warning(context) << "BaseContext_getObjects: Invalid search direction, using 'Local'. Expected: 'SearchUp', 'Local', 'SearchDown', 'SearchRoot', or 'SearchParents'." ;
         }
     }
 

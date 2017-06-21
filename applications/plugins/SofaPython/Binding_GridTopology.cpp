@@ -101,8 +101,6 @@ static PyObject * GridTopology_setNz(PyObject *self, PyObject * args)
 }
 
 
-
-
 SP_CLASS_METHODS_BEGIN(GridTopology)
 SP_CLASS_METHOD(GridTopology,setSize)
 SP_CLASS_METHOD(GridTopology,getNx)

@@ -52,7 +52,7 @@ static PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 {
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
+        return nullptr;
 
     DataFileNameVector* data = get_DataFileNameVector( self );
 
@@ -65,14 +65,10 @@ static PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
 SP_CLASS_ATTRS_END
 
-
-
 SP_CLASS_METHODS_BEGIN(DataFileNameVector)
 SP_CLASS_METHOD(DataFileNameVector,addPath)
 SP_CLASS_METHOD(DataFileNameVector,clear)
 SP_CLASS_METHODS_END
-
-
 
 SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
 
