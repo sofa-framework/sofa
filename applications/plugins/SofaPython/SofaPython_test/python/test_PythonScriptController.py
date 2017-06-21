@@ -7,10 +7,14 @@ class TestController(Sofa.PythonScriptController):
     def __init__(self):
             return None
 
-    def onLoaded(self, node):
-        print("LOADED !")
-        name = findData("name")
+    def onBeginAnimationStep(self, v):
+        name = self.findData("name")
         name.setValue( 123 )
+
+    def onEndAnimationStep(self, v):
+        name = self.findData("name")
+        name.setValue( 123 )
+
 
     def f2(self):
         f3()
