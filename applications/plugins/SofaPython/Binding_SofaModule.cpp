@@ -308,7 +308,7 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* node = get_arg<BaseNode>( pyNode );
+    BaseNode* node = get_basenode( pyNode );
     if (!node) {
         // this should not happen
         PyErr_BadArgument();
@@ -329,7 +329,7 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* basenode = get_arg<BaseNode>( pyNode );
+    BaseNode* basenode = get_basenode( pyNode );
     if (!basenode) {
         // this should not happen
         PyErr_BadArgument();
@@ -451,7 +451,7 @@ static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
         return NULL;
     }
 
-    Node* node = get_arg<Node>(pyNode);
+    Node* node = get_node(pyNode);
     if (!node) {
         PyErr_BadArgument();
         return NULL;

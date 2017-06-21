@@ -66,7 +66,7 @@ static PyObject * PythonScriptController_onLoaded(PyObject * self, PyObject * ar
     (void) self;
     
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode) || !get_arg<BaseNode>(pyNode) ) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -81,7 +81,7 @@ static PyObject * PythonScriptController_onLoaded(PyObject * self, PyObject * ar
 
 static PyObject * PythonScriptController_createGraph(PyObject * /*self*/, PyObject * args) {
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode) || !get_arg<BaseNode>(pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
     
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -98,7 +98,7 @@ static PyObject * PythonScriptController_initGraph(PyObject * self, PyObject * a
     (void) self;
 
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode) || !get_arg<BaseNode>(pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -115,7 +115,7 @@ static PyObject * PythonScriptController_bwdInitGraph(PyObject * self, PyObject 
     (void) self;
 
     PyObject *pyNode;
-    if (!PyArg_ParseTuple(args, "O", &pyNode) || !get_arg<BaseNode>(pyNode)) return NULL;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) return NULL;
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptController* obj = get_controller(self);
@@ -393,7 +393,7 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
         
-        BaseContext* ctx = get_arg<BaseContext>(py_node) || error();
+        BaseContext* ctx = dynamic_cast<BaseContext*>(get_base(py_node)) || error();
 
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();

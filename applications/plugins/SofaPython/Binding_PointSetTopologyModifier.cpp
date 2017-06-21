@@ -21,6 +21,7 @@ static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * 
         bool isList = PyList_Check(ancestorElemsArg);
         if(!isList)
         {
+            PyErr_BadArgument();
             return nullptr ;
         }
 

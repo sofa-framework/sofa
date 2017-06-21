@@ -90,8 +90,7 @@ static PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
         return NULL;
     }
-    BaseObject* loader = get_arg<BaseObject>( pyLoader );
-    if( !loader ) return NULL;
+    BaseObject* loader = get_baseobject( self );
     obj->setSrc(valueString,loader);
     Py_RETURN_NONE;
 }
