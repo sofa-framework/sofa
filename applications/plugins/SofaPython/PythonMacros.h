@@ -357,6 +357,7 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_MESSAGE_EXCEPTION( msg ) msg_fatal("SofaPython") << msg;
 
 #define SP_PYERR_SETSTRING_INVALIDTYPE( o ) PyErr_SetString(PyExc_TypeError, "Invalid argument, a " o " object is expected.");
+#define SP_PYERR_SETSTRING_OUTOFBOUND( o ) PyErr_SetString(PyExc_RuntimeError, "Out of bound exception.");
 
 
 // get python exceptions and print their error message
