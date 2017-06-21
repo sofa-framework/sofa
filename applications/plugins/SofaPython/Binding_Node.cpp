@@ -56,11 +56,11 @@ static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
 static PyObject * Node_getRoot(PyObject *self, PyObject * /*args*/) {
     Node* node = get_node(self);
 
-    // BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
+    /// BaseNode is not bound in SofaPython, so getRoot is bound in Node instead of BaseNode
     return sofa::PythonFactory::toPython(node->getRoot());
 }
 
-// step the simulation
+/// step the simulation
 static PyObject * Node_simulationStep(PyObject * self, PyObject * args) {
     Node* node = get_node(self);
     double dt;
@@ -73,7 +73,7 @@ static PyObject * Node_simulationStep(PyObject * self, PyObject * args) {
     Py_RETURN_NONE;
 }
 
-// reset a node
+/// reset a node
 static PyObject * Node_reset(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
 
@@ -82,7 +82,7 @@ static PyObject * Node_reset(PyObject * self, PyObject * /*args*/) {
     Py_RETURN_NONE;
 }
 
-// init a node
+/// init a node
 static PyObject * Node_init(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
 
@@ -92,9 +92,8 @@ static PyObject * Node_init(PyObject * self, PyObject * /*args*/) {
 }
 
 static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw) {
-    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node
-    // instead of BaseNode
-
+    /// BaseNode is not bound in SofaPython, so getChildNode is bound in Node
+    /// instead of BaseNode
     Node* node = get_node(self);
     char *path;
 
@@ -102,7 +101,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
         return NULL;
     }
 
-    // looking for optional keywork "warning"
+    /// looking for optional keywork "warning"
     bool warning = true;
     if (kw && PyDict_Size(kw) > 0) {
         PyObject* keys = PyDict_Keys(kw);
@@ -115,7 +114,7 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
                 if PyBool_Check( value ) {
                     warning = (value==Py_True);
                 }
-                break; // only looking for "warning", once it is found -> forget about keywords
+                break; /// only looking for "warning", once it is found -> forget about keywords
             }
         }
         Py_DecRef(keys);
@@ -124,8 +123,8 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
     Node *childNode = 0;
-    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
-    // graphes étant toujours des Nodes, on caste directement en Node.
+    /// BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
+    /// graphes étant toujours des Nodes, on caste directement en Node.
     for (unsigned int i=0; i<children.size(); ++i) {
         if (children[i]->getName() == path) {
             childNode = down_cast<Node>(children[i]);
@@ -133,7 +132,8 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
         }
     }
     if (!childNode) {
-        if( warning ) SP_MESSAGE_ERROR( "Node.getChild(\""<<path<<"\") not found.")
+        if( warning )
+            msg_error(node) << "Node.getChild(\"" << path << "\") not found." ;
         Py_RETURN_NONE;
     }
 
@@ -141,14 +141,14 @@ static PyObject * Node_getChild(PyObject * self, PyObject * args, PyObject * kw)
 }
 
 static PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/) {
-    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node
-    // instead of BaseNode
+    /// BaseNode is not bound in SofaPython, so getChildNode is bound in Node
+    /// instead of BaseNode
     Node* node = get_node(self);
 
     const objectmodel::BaseNode::Children& children = node->getChildren();
 
-    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
-    // graphes étant toujours des Nodes, on caste directement en Node.
+    /// BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
+    /// graphes étant toujours des Nodes, on caste directement en Node.
     PyObject *list = PyList_New(children.size());
 
     for (unsigned i = 0; i < children.size(); ++i) {
@@ -159,14 +159,14 @@ static PyObject * Node_getChildren(PyObject * self, PyObject * /*args*/) {
 }
 
 static PyObject * Node_getParents(PyObject * self, PyObject * /*args*/) {
-    // BaseNode is not bound in SofaPython, so getChildNode is bound in Node
-    // instead of BaseNode
+    /// BaseNode is not bound in SofaPython, so getChildNode is bound in Node
+    /// instead of BaseNode
     Node* node = get_node(self);
 
     const objectmodel::BaseNode::Children& parents = node->getParents();
 
-    // BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
-    // graphes étant toujours des Nodes, on caste directement en Node.
+    /// BaseNode ne pouvant pas être bindé en Python, et les BaseNodes des
+    /// graphes étant toujours des Nodes, on caste directement en Node.
     PyObject *list = PyList_New(parents.size());
 
     for (unsigned i = 0; i < parents.size(); ++i) {
@@ -177,22 +177,22 @@ static PyObject * Node_getParents(PyObject * self, PyObject * /*args*/) {
 }
 
 static PyObject * Node_getPathName(PyObject * self, PyObject * /*args*/) {
-    // BaseNode is not bound in SofaPython, so getPathName is bound in Node
-    // instead
+    /// BaseNode is not bound in SofaPython, so getPathName is bound in Node
+    /// instead
     Node* node = get_node(self);
 
     return PyString_FromString(node->getPathName().c_str());
 }
 
 static PyObject * Node_getRootPath(PyObject * self, PyObject * /*args*/) {
-    // BaseNode is not bound in SofaPython, so getRootPath is bound in Node
-    // instead
+    /// BaseNode is not bound in SofaPython, so getRootPath is bound in Node
+    /// instead
     Node* node = get_node(self);
 
     return PyString_FromString(node->getRootPath().c_str());
 }
 
-// the same as 'getPathName' with a extra prefix '@'
+/// the same as 'getPathName' with a extra prefix '@'
 static PyObject * Node_getLinkPath(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
     return PyString_FromString(("@"+node->getPathName()).c_str());
@@ -217,7 +217,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
         return NULL;
     }
 
-    // looking for optional keywork "warning"
+    /// looking for optional keywork "warning"
     bool warning = printWarnings;
     if (kw && PyDict_Size(kw)>0) {
         PyObject* keys = PyDict_Keys(kw);
@@ -230,14 +230,14 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
             {
                 if PyBool_Check(value)
                     warning = (value==Py_True);
-                break; // only looking for "warning", once it is found -> forget about keywords
+                break; /// only looking for "warning", once it is found -> forget about keywords
             }
         }
         Py_DecRef(keys);
         Py_DecRef(values);
     }
 
-    // use functions ffs
+    /// use functions ffs
     BaseObject* object = get_baseobject(pyChild);
     if (!object) {
         PyErr_BadArgument();
@@ -246,7 +246,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     node->addObject(object);
 
     if (warning && node->isInitialized()) {
-        SP_MESSAGE_WARNING( "Sofa.Node.addObject called on a node("<<node->getName()<<") that is already initialized ("<<object->getName()<<")" );
+        msg_warning(node) << "Sofa.Node.addObject called on a node that is already initialized ("<<object->getName() ;
     }
 
     Py_RETURN_NONE;
@@ -439,15 +439,15 @@ static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * 
     using sofa::core::MechanicalParams;
     const MechanicalParams* instance = MechanicalParams::defaultInstance();
 
-    // only mechanical mappings
+    /// only mechanical mappings
     node->execute<MechanicalPropagatePositionAndVelocityVisitor>( instance );
 
-    // propagating position and velocity through non mechanical mappings
+    /// propagating position and velocity through non mechanical mappings
     node->execute<UpdateMappingVisitor>(instance);
 
-    // update visuals too (positions, normals, tangents, textures...)
+    /// update visuals too (positions, normals, tangents, textures...)
     //TODO(PR:304) remove this todo or do it.
-    // todo: make it optional?
+    /// todo: make it optional?
     node->execute<VisualUpdateVisitor>(instance);
 
     Py_RETURN_NONE;
@@ -497,7 +497,7 @@ SP_CLASS_METHOD(Node, getRootPath)
 SP_CLASS_METHOD(Node, getLinkPath)
 SP_CLASS_METHOD(Node, createChild)
 SP_CLASS_METHOD_KW(Node, addObject)
-SP_CLASS_METHOD(Node, addObject_noWarning) // deprecated
+SP_CLASS_METHOD(Node, addObject_noWarning) /// deprecated
 SP_CLASS_METHOD(Node, removeObject)
 SP_CLASS_METHOD(Node, addChild)
 SP_CLASS_METHOD(Node, removeChild)

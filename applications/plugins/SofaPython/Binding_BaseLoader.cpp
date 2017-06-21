@@ -37,12 +37,14 @@ static PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
     return PyBool_FromLong(result);
 }
 
+
 static PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
 {
     BaseLoader* obj = get_baseloader( self );
     bool result = obj->canLoad();
     return PyBool_FromLong(result);
 }
+
 
 static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
 {
@@ -56,13 +58,13 @@ static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
+
 static PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
 {
     BaseLoader* obj = get_baseloader( self );
     std::string filename = obj->getFilename();
     return PyString_FromString(filename.c_str());
 }
-
 
 
 SP_CLASS_METHODS_BEGIN(BaseLoader)

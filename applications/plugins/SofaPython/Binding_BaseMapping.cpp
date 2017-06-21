@@ -147,7 +147,6 @@ static PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
 static PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
     BaseMapping* mapping  = get_basemapping( self );
-
     const helper::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
 
     PyObject* Jspython = PyList_New(Js->size());
@@ -163,14 +162,10 @@ static PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
             for( sofa::defaulttype::BaseMatrix::Index col=0 ; col<J->cols() ; ++col )
                 PyList_SetItem( Jrowpython, col, PyFloat_FromDouble( J->element(row,col) ) );
 
-
             PyList_SetItem( Jpython, row, Jrowpython );
-
         }
-
         PyList_SetItem( Jspython, i, Jpython );
     }
-
     return Jspython;
 }
 

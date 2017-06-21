@@ -242,7 +242,7 @@ void PythonScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
 
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle) ;
 
-    // Flush the console to avoid the sys.stdout.flush() in each script function.
+    /// Flush the console to avoid the sys.stdout.flush() in each script function.
     std::cout.flush() ;
     std::cerr.flush() ;
 }

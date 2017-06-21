@@ -34,7 +34,6 @@ static inline DataFileName* get_DataFileName(PyObject* obj) {
 }
 
 
-
 SP_CLASS_ATTR_GET(DataFileName, fullPath)(PyObject *self, void*)
 {
     DataFileName* dataFilename = get_DataFileName( self );;
@@ -65,19 +64,13 @@ SP_CLASS_ATTR_SET(DataFileName, relativePath)(PyObject */*self*/, PyObject * /*a
 }
 
 
-
-
 SP_CLASS_ATTRS_BEGIN(DataFileName)
 SP_CLASS_ATTR(DataFileName,fullPath)
 SP_CLASS_ATTR(DataFileName,relativePath)
 SP_CLASS_ATTRS_END
 
 
-
 SP_CLASS_METHODS_BEGIN(DataFileName)
 SP_CLASS_METHODS_END
 
-
-
 SP_CLASS_TYPE_PTR_ATTR(DataFileName,DataFileName,Data)
-

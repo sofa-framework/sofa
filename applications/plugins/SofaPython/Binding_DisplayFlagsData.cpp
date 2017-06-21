@@ -35,30 +35,8 @@ static inline Data<DisplayFlags>* get_DataDisplayFlags(PyObject* obj) {
 }
 
 
-
-
 SP_CLASS_METHODS_BEGIN(DisplayFlagsData)
 SP_CLASS_METHODS_END
-
-/*
-\item showAll
-\item showVisual
-\item showVisualModels
-\item showBehavior
-\item showBehaviorModels
-\item showForceFields
-\item showInteractionForceFields
-\item showCollision
-\item showCollisionModels
-\item showBoundingCollisionModels
-\item showMapping
-\item showMappings
-\item showMechanicalMappings
-\item showOptions
-\item showWireFrame
-\item showNormals
-*/
-
 
 #define DISPLAYFLAG_ATTRIBUTE_IMPL(flagName) \
     static PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
@@ -74,7 +52,6 @@ SP_CLASS_METHODS_END
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
         flags->setShow##flagName(b); \
-        /*printf("%s %d\n",#flagName,b);*/ \
         data->endEdit(); \
         return 0; \
     }
