@@ -43,15 +43,15 @@ static PyObject * Base_findData(PyObject *self, PyObject *args ) {
 
     BaseData * data = obj->findData(dataName);
     if (!data) {
+        std::stringstream tmp ;
         if( obj->hasField(dataName) ) {
-            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"; } else {
-            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
-            std::stringstream s;
-            obj->writeDatas(s,";");
-            msg_error("Base_findData")<<s.str();
+            tmp <<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
+        } else {
+            tmp << "object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
+            obj->writeDatas(tmp,";");
         }
 
-        PyErr_BadArgument();
+        PyErr_SetString(PyExc_RuntimeError, tmp.str().c_str());
         return NULL;
     }
 
@@ -74,16 +74,15 @@ static PyObject * Base_findLink(PyObject *self, PyObject *args) {
 
     BaseLink * link = obj->findLink(linkName);
     if (!link) {
+        std::stringstream tmp ;
         if( obj->hasField(linkName) ) {
-            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
+            tmp << "object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
         } else {
-            msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'";
-            std::stringstream s;
-            obj->writeDatas(s,";");
-            msg_error("Base_findLink")<<s.str();
+            tmp <<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'" << msgendl;
+            obj->writeDatas(tmp,";");
         }
 
-        PyErr_BadArgument();
+        PyErr_SetString(PyExc_RuntimeError, tmp.str().c_str());
         return NULL;
     }
 
