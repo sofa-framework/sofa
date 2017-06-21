@@ -145,3 +145,8 @@ TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding5)
 {
     checkErrorMessage("Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')");
 }
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding6)
+{
+    checkErrorMessage("Sofa.BaseContext.getObject(None, 'WillNotWork')");
+}
