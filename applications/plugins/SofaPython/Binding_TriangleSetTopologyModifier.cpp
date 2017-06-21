@@ -164,7 +164,8 @@ static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, Py
         
         if( ! PyList_Check(triangleIndicesArg) )
         {
-            return NULL;
+            PyErr_BadArgument();
+            Py_RETURN_NONE;
         }
 
         std::size_t nbTriangles = PyList_Size(triangleIndicesArg);

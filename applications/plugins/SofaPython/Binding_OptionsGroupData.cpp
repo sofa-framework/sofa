@@ -113,6 +113,7 @@ static PyObject * OptionsGroupData_getItem(PyObject *self, PyObject * args)
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
+        PyErr_BadArgument();
         return NULL;
     }
     return PyString_FromString(data->getValue()[index].c_str());

@@ -103,6 +103,7 @@ static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObje
     if (obj==0)
     {
         SP_MESSAGE_ERROR( "createObject "<<desc.getName().c_str()<<" of type "<<desc.getAttribute("type","") )
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -115,6 +116,7 @@ static PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
+    PyErr_BadArgument();
     return NULL;
 
 }
@@ -123,6 +125,7 @@ static PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
+    PyErr_BadArgument();
     return NULL;
 }
 
@@ -197,6 +200,7 @@ static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * 
     color[0] = r; color[1] = g; color[2] = b;
     for (int i = 0; i < 3; ++i){
         if (color[i] < 00.f || color[i] > 1.0) {
+            PyErr_BadArgument();
             return NULL;
         }
     }
@@ -223,6 +227,7 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 
     if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw))
     {
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -305,6 +310,8 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
 
     BaseNode* node = get_arg<BaseNode>( pyNode );
     if (!node) {
+        // this should not happen
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -324,6 +331,8 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
 
     BaseNode* basenode = get_arg<BaseNode>( pyNode );
     if (!basenode) {
+        // this should not happen
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -444,6 +453,7 @@ static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
 
     Node* node = get_arg<Node>(pyNode);
     if (!node) {
+        PyErr_BadArgument();
         return NULL;
     }
 

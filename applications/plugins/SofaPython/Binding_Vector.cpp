@@ -30,11 +30,21 @@ using namespace sofa::defaulttype;
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
     return PyFloat_FromDouble(obj->x());
 }
 SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
     obj->x()=PyFloat_AsDouble(args);
     return 0;
 }
@@ -42,11 +52,21 @@ SP_CLASS_ATTR_SET(Vector3,x)(PyObject *self, PyObject * args, void*)
 SP_CLASS_ATTR_GET(Vector3,y)(PyObject *self, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
     return PyFloat_FromDouble(obj->y());
 }
 SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
     obj->y()=PyFloat_AsDouble(args);
     return 0;
 }
@@ -54,11 +74,21 @@ SP_CLASS_ATTR_SET(Vector3,y)(PyObject *self, PyObject * args, void*)
 SP_CLASS_ATTR_GET(Vector3,z)(PyObject *self, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
     return PyFloat_FromDouble(obj->z());
 }
 SP_CLASS_ATTR_SET(Vector3,z)(PyObject *self, PyObject * args, void*)
 {
     Vector3* obj = get_vector3( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
     obj->z()=PyFloat_AsDouble(args);
     return 0;
 }

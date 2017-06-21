@@ -218,6 +218,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     else
                     {
                         // type mismatch
+                        PyErr_BadArgument();
                         return -1;
                     }
                 }
@@ -227,6 +228,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     if (!typeinfo->Scalar())
                     {
                         // type mismatch
+                        PyErr_BadArgument();
                         return -1;
                     }
                     SReal value = PyFloat_AsDouble(listElt);
@@ -238,6 +240,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     if (!typeinfo->Text())
                     {
                         // type mismatch
+                        PyErr_BadArgument();
                         return -1;
                     }
                     char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
@@ -246,6 +249,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                 else
                 {
                     msg_warning("SetDataValuePython") << "Lists not yet supported...";
+                    PyErr_BadArgument();
                     return -1;
                 }
             }
@@ -312,6 +316,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                 else
                 {
                     // type mismatch
+                    PyErr_BadArgument();
                     return -1;
                 }
             }
@@ -321,6 +326,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                 if (!typeinfo->Scalar())
                 {
                     // type mismatch
+                    PyErr_BadArgument();
                     return -1;
                 }
                 SReal value = PyFloat_AsDouble(listElt);
@@ -332,6 +338,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                 if (!typeinfo->Text())
                 {
                     // type mismatch
+                    PyErr_BadArgument();
                     return -1;
                 }
                 char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
@@ -340,6 +347,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
             else
             {
                 msg_warning("SetDataValuePython") << "Lists not yet supported...";
+                PyErr_BadArgument();
                 return -1;
 
             }
@@ -349,6 +357,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
     }
 
     // no idea whether this is reachable
+    PyErr_BadArgument();
     return -1;
 }
 
@@ -390,6 +399,7 @@ int SetDataValuePython(BaseData* data, PyObject* args)
         if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
         {
             // type mismatch or too long list
+            PyErr_BadArgument();
             return -1;
         }
         long value = PyInt_AsLong(args);
@@ -409,6 +419,7 @@ int SetDataValuePython(BaseData* data, PyObject* args)
         if (rowWidth*nbRows<1 || !typeinfo->Scalar())
         {
             // type mismatch or too long list
+            PyErr_BadArgument();
             return -1;
         }
         SReal value = PyFloat_AsDouble(args);
@@ -440,6 +451,7 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 
     // bad luck
     SP_MESSAGE_ERROR( "argument type not supported" )
+    PyErr_BadArgument();
     return -1;
 }
 
@@ -470,6 +482,7 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
     {
         // out of bounds!
         SP_MESSAGE_ERROR( "Data.getValue index overflow" )
+        PyErr_BadArgument();
         return NULL;
     }
     if (typeinfo->Scalar())
@@ -481,6 +494,7 @@ static PyObject * Data_getValue(PyObject *self, PyObject * args)
 
     // should never happen....
     SP_MESSAGE_ERROR( "Data.getValue unknown data type" )
+    PyErr_BadArgument();
     return NULL;
 }
 
@@ -499,6 +513,7 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
     {
         // out of bounds!
         SP_MESSAGE_ERROR( "Data.setValue index overflow" )
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -520,6 +535,7 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
 
     // should never happen....
     SP_MESSAGE_ERROR( "Data.setValue type mismatch" )
+    PyErr_BadArgument();
     return NULL;
 }
 
@@ -601,6 +617,7 @@ static PyObject * Data_read(PyObject *self, PyObject * args)
     else
     {
         SP_MESSAGE_ERROR( "Data.read type mismatch" )
+        PyErr_BadArgument();
         return NULL;
     }
 
@@ -630,6 +647,7 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
     else
     {
         SP_MESSAGE_ERROR( "Data.setParent type mismatch" )
+        PyErr_BadArgument();
         return NULL;
     }
 

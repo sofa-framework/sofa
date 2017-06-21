@@ -35,6 +35,11 @@ PyObject* getMatrice( const AssembledSystem::rmat& A )
 static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = unwrap<AssembledSystem>( self );
+    if (!sys)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     return getMatrice( sys->H );
 }
@@ -42,6 +47,11 @@ static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)
 static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = unwrap<AssembledSystem>( self );
+    if (!sys)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     return getMatrice( sys->P );
 }
@@ -49,6 +59,11 @@ static PyObject* AssembledSystem_getP(PyObject * self, PyObject * /*args*/)
 static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = unwrap<AssembledSystem>( self );
+    if (!sys)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     return getMatrice( sys->J );
 }
@@ -56,6 +71,11 @@ static PyObject* AssembledSystem_getJ(PyObject * self, PyObject * /*args*/)
 static PyObject* AssembledSystem_getC(PyObject * self, PyObject * /*args*/)
 {
     AssembledSystem* sys = unwrap<AssembledSystem>( self );
+    if (!sys)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     return getMatrice( sys->C );
 }
@@ -75,13 +95,21 @@ SP_CLASS_METHODS_END
 SP_CLASS_ATTR_GET(AssembledSystem,m)(PyObject *self, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
     return PyLong_FromLong(obj->m);
 }
 SP_CLASS_ATTR_SET(AssembledSystem,m)(PyObject *self, PyObject * args, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
     obj->m=PyLong_AsLong(args);
     return 0;
 }
@@ -89,13 +117,21 @@ SP_CLASS_ATTR_SET(AssembledSystem,m)(PyObject *self, PyObject * args, void*)
 SP_CLASS_ATTR_GET(AssembledSystem,n)(PyObject *self, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
     return PyLong_FromLong(obj->n);
 }
 SP_CLASS_ATTR_SET(AssembledSystem,n)(PyObject *self, PyObject * args, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
     obj->n=PyLong_AsLong(args);
     return 0;
 }
@@ -103,13 +139,21 @@ SP_CLASS_ATTR_SET(AssembledSystem,n)(PyObject *self, PyObject * args, void*)
 SP_CLASS_ATTR_GET(AssembledSystem,dt)(PyObject *self, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
     return PyFloat_FromDouble(obj->dt);
 }
 SP_CLASS_ATTR_SET(AssembledSystem,dt)(PyObject *self, PyObject * args, void*)
 {
     AssembledSystem* obj = unwrap<AssembledSystem>( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return 0;
+    }
     obj->dt=PyFloat_AsDouble(args);
     return 0;
 }

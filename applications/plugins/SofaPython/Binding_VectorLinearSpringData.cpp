@@ -117,6 +117,7 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
         if (rowWidth*nbRows<1 || !PyObject_IsInstance(args,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
         {
             // type mismatch or too long list
+            PyErr_BadArgument();
             return -1;
         }
 
@@ -187,6 +188,7 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
                     {
                         // type mismatch
                         data->endEdit();
+                        PyErr_BadArgument();
                         return -1;
                     }
                     LinearSpring<SReal>* spring=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)listElt)->object);
@@ -232,6 +234,7 @@ SP_CLASS_ATTR_SET(VectorLinearSpringData,value)(PyObject *self, PyObject * args,
                 {
                     // type mismatch
                     data->endEdit();
+                    PyErr_BadArgument();
                     return -1;
                 }
 
@@ -287,6 +290,7 @@ static PyObject * VectorLinearSpringData_getitem(PyObject *self, PyObject *i)
         if( index>=nbRows )
         {
             SP_MESSAGE_ERROR( "the VectorLinearSpringData contains only "<<nbRows<<" element" )
+                    PyErr_BadArgument();
             return NULL;
         }
 
@@ -308,6 +312,7 @@ static int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject*
     if( index>=nbRows )
     {
         SP_MESSAGE_ERROR( "the VectorLinearSpringData contains only "<<nbRows<<" element" )
+                PyErr_BadArgument();
         return -1;
     }
 

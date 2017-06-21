@@ -35,13 +35,23 @@ void PointAncestorElem_PyFree(void * self)
 SP_CLASS_ATTR_GET(PointAncestorElem,type)(PyObject *self, void*)
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
     return PyLong_FromLong( obj->index );
 }
 
 SP_CLASS_ATTR_SET(PointAncestorElem, type)(PyObject *self, PyObject * args, void*)
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
-
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
     obj->type = static_cast<sofa::core::topology::TopologyObjectType>( PyLong_AsLong( args ) );
 
     return 0;
@@ -50,6 +60,11 @@ SP_CLASS_ATTR_SET(PointAncestorElem, type)(PyObject *self, PyObject * args, void
 SP_CLASS_ATTR_GET(PointAncestorElem,index)(PyObject *self, void*)
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     return PyLong_FromLong( obj->index );
 }
@@ -57,6 +72,11 @@ SP_CLASS_ATTR_GET(PointAncestorElem,index)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(PointAncestorElem, index)(PyObject *self, PyObject * args, void*)
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
     obj->index = static_cast<unsigned int>( PyLong_AsLong( args ) );
     return 0;
 }
@@ -64,6 +84,11 @@ SP_CLASS_ATTR_SET(PointAncestorElem, index)(PyObject *self, PyObject * args, voi
 SP_CLASS_ATTR_GET(PointAncestorElem, localCoords)( PyObject *self, void* )
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return NULL;
+    }
 
     PyObject* pyLocalCoords = PyTuple_New( PointAncestorElem::LocalCoords::size() );
 
@@ -78,6 +103,11 @@ SP_CLASS_ATTR_GET(PointAncestorElem, localCoords)( PyObject *self, void* )
 SP_CLASS_ATTR_SET(PointAncestorElem, localCoords)( PyObject* self,  PyObject * args, void*)
 {
     PointAncestorElem* obj = get_PointAncestorElem( self );
+    if (!obj)
+    {
+        PyErr_BadArgument();
+        return -1;
+    }
 
     PointAncestorElem::LocalCoords& localCoords = obj->localCoords;
     PyArg_ParseTuple(args, "ddd",&localCoords[0],&localCoords[1],&localCoords[2]);

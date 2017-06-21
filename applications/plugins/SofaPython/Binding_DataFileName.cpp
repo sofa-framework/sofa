@@ -45,6 +45,7 @@ SP_CLASS_ATTR_GET(DataFileName, fullPath)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(DataFileName, fullPath)(PyObject */*self*/, PyObject * /*args*/, void*)
 {
     SP_MESSAGE_ERROR("fullPath attribute is read only")
+        PyErr_BadArgument();
     return -1;
 }
 
@@ -59,6 +60,7 @@ SP_CLASS_ATTR_GET(DataFileName, relativePath)(PyObject *self, void*)
 SP_CLASS_ATTR_SET(DataFileName, relativePath)(PyObject */*self*/, PyObject * /*args*/, void*)
 {
     SP_MESSAGE_ERROR("relativePath attribute is read only")
+        PyErr_BadArgument();
     return -1;
 }
 
