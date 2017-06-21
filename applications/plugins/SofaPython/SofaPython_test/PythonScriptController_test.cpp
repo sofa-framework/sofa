@@ -1,3 +1,5 @@
+#include <regex>
+
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;
 
@@ -55,10 +57,35 @@ protected:
         root->init(ExecParams::defaultInstance()) ;
     }
 
-    void checkErrorMessage(bool inPython=true)
+    void checkErrorMessage(const std::string& teststring)
     {
+        std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PythonScriptController_AutoGen.py");
+
+        std::ofstream f(pythonControllerPath);
+        std::string pytmp = R"(
+import Sofa
+def f3():
+    raise ValueError('The value is not valid')
+
+class TestController(Sofa.PythonScriptController):
+    def __init__(self):
+        return None
+
+    def anInvalidFunction(self):
+        name = self.findData("name")
+        name.setValue(1)
+
+    def f2(self):
+        f3()
+
+    def draw(self):
+        $line
+)";
+        pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
+        f << pytmp ;
+        f.close();
+
         std::stringstream scene ;
-        std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PythonScriptController.py");
         scene << "<?xml version='1.0'?>"
               <<   "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                           \n"
               <<   "      <RequiredPlugin name='SofaPython' />                                             \n"
@@ -79,10 +106,7 @@ protected:
         /// The exception should propage up to the Sofa Layer.
         {
            EXPECT_MSG_EMIT(Error) ;
-           if(inPython)
-               pyctrl->draw(nullptr) ;
-           else
-               pyctrl->onBeginAnimationStep(0.0) ;
+           pyctrl->draw(nullptr) ;
         }
     }
 };
@@ -94,10 +118,15 @@ TEST_F(PythonScriptController_test, checkInvalidCreation)
 
 TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromPythonException)
 {
-    checkErrorMessage(true);
+    checkErrorMessage("self.f2()");
 }
 
 TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding)
 {
-    checkErrorMessage(false);
+    checkErrorMessage("self.anInvalidFunction()");
+}
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding2)
+{
+    checkErrorMessage("self.name = 5");
 }
