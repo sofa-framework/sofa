@@ -21,6 +21,9 @@ using sofa::simulation::SceneLoaderXML ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::ExecParams ;
 
+#include <SofaPython/PythonScriptController.h>
+using sofa::component::controller::PythonScriptController ;
+
 ///////////////////////////////////// TESTS ////////////////////////////////////////////////////////
 struct PythonScriptController_test : public Sofa_test<>
 {
@@ -52,6 +55,28 @@ protected:
         root->init(ExecParams::defaultInstance()) ;
     }
 
+    void checkErrorMessage()
+    {
+        std::stringstream scene ;
+        std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PythonScriptController.py");
+        scene << "<?xml version='1.0'?>"
+              <<   "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                           \n"
+              <<   "      <RequiredPlugin name='SofaPython' />                                             \n"
+              <<   "      <PythonScriptController classname='TestController' filename='"<<pythonControllerPath<< "'/>    \n"
+              <<   "</Node>                                                                                \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        PythonScriptController* pyctrl = root->getTreeObject<PythonScriptController>();
+        ASSERT_NE(pyctrl, nullptr) ;
+        pyctrl->draw(nullptr);
+    }
+
 };
 
 TEST_F(PythonScriptController_test, checkInvalidCreation)
@@ -59,3 +84,7 @@ TEST_F(PythonScriptController_test, checkInvalidCreation)
     checkInvalidCreation();
 }
 
+TEST_F(PythonScriptController_test, checkErrorMessage)
+{
+    checkErrorMessage();
+}

@@ -27,6 +27,7 @@ set(PYTHON_FILES
     python/test_MeshLoader.py
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py
+    python/test_PythonScriptController.py
 )
 
 
