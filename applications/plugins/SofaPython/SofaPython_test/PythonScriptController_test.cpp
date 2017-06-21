@@ -55,7 +55,7 @@ protected:
         root->init(ExecParams::defaultInstance()) ;
     }
 
-    void checkErrorMessage()
+    void checkErrorMessage(bool inPython=true)
     {
         std::stringstream scene ;
         std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_PythonScriptController.py");
@@ -74,9 +74,17 @@ protected:
 
         PythonScriptController* pyctrl = root->getTreeObject<PythonScriptController>();
         ASSERT_NE(pyctrl, nullptr) ;
-        pyctrl->draw(nullptr);
-    }
 
+        /// This function rise an exception
+        /// The exception should propage up to the Sofa Layer.
+        {
+           EXPECT_MSG_EMIT(Error) ;
+           if(inPython)
+               pyctrl->draw(nullptr) ;
+           else
+               pyctrl->onBeginAnimationStep(0.0) ;
+        }
+    }
 };
 
 TEST_F(PythonScriptController_test, checkInvalidCreation)
@@ -84,7 +92,12 @@ TEST_F(PythonScriptController_test, checkInvalidCreation)
     checkInvalidCreation();
 }
 
-TEST_F(PythonScriptController_test, checkErrorMessage)
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromPythonException)
 {
-    checkErrorMessage();
+    checkErrorMessage(true);
+}
+
+TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding)
+{
+    checkErrorMessage(false);
 }
