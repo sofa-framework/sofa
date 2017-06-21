@@ -236,8 +236,6 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
-        msg_warning(context)
-                << "BaseContext_getObject: wrong argument, should be a string with the complete relative path" ;
         return NULL;
     }
 
@@ -270,9 +268,6 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        msg_warning_when(emitWarningMessage, context)
-                << "BaseContext_getObject: component "<< path <<" not found (the complete relative path is needed)" ;
-
         return NULL;
     }
 
@@ -314,7 +309,6 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     char* type_name= NULL;
     char* name= NULL;
     if ( !PyArg_ParseTuple ( args, "|sss", &search_direction, &type_name, &name ) ) {
-        PyErr_SetString(PyExc_TypeError, "BaseContext_getObjects: wrong arguments! Expected format: getObjects ( OPTIONAL STRING searchDirection, OPTIONAL STRING typeName, OPTIONAL STRING name )" );
         return NULL;
     }
 
