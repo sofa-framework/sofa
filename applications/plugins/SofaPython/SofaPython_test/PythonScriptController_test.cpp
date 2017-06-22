@@ -1,4 +1,5 @@
 #include <regex>
+#include <vector>
 
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;
@@ -40,7 +41,8 @@ void ReplaceSubstring(std::basic_string<charType>& subject,
 }
 
 ///////////////////////////////////// TESTS ////////////////////////////////////////////////////////
-struct PythonScriptController_test : public Sofa_test<>
+struct PythonScriptController_test : public Sofa_test<>,
+        public ::testing::WithParamInterface<std::string>
 {
 protected:
     virtual void SetUp() override
@@ -133,37 +135,29 @@ TEST_F(PythonScriptController_test, checkInvalidCreation)
     checkInvalidCreation();
 }
 
+
 TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromPythonException)
 {
     checkErrorMessage("self.f2()");
 }
 
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding)
+
+TEST_P(PythonScriptController_test, checkErrorMessageFromCPPBinding)
 {
-    checkErrorMessage("self.anInvalidFunction()");
+    checkErrorMessage(GetParam());
 }
 
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding2)
-{
-    checkErrorMessage("self.name = 5");
-}
+std::vector<std::string> testvalues = {
+    "self.anInvalidFunction()",
+    "self.name = 5",
+    "Sofa.BaseContext.getObject(1234, 'WillNotWork')",
+    "Sofa.Topology.setNbPoints(1234)",
+    "Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')",
+    "Sofa.BaseContext.getObject(None, 'WillNotWork')"
+};
 
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding3)
-{
-    checkErrorMessage("Sofa.BaseContext.getObject(1234, 'WillNotWork')");
-}
+INSTANTIATE_TEST_CASE_P(checkErrorMesageFromCPPBinding,
+                        PythonScriptController_test,
+                        ::testing::ValuesIn(testvalues));
 
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding4)
-{
-    checkErrorMessage("Sofa.Topology.setNbPoints(1234)");
-}
 
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding5)
-{
-    checkErrorMessage("Sofa.BaseContext.getObject(self.findData('name'), 'WillNotWork')");
-}
-
-TEST_F(PythonScriptController_test, checkExceptionToErrorMessageFromCPPBinding6)
-{
-    checkErrorMessage("Sofa.BaseContext.getObject(None, 'WillNotWork')");
-}
