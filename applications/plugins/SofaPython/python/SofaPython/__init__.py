@@ -77,17 +77,11 @@ def sofaExceptHandler(type, value, tb):
           File file1.py line 23 ...
             faulty line
     """
-    print("PYTHON EXCEPTION HANDLER")
-
     s="\nPython Stack: \n"
     for line in traceback.format_tb(tb):
         s += line
 
-    if type == Sofa.SofaException:
-        s += "  File "+str(value[1])+" line "+str(value[2]) +"..."
-        Sofa.msg_error(str(value[0])+" "+s)
-    else:
-        Sofa.msg_error(str(value)+" "+s)
+    Sofa.msg_error(str(value)+" "+s, "line", 7)
 
 sys.excepthook=sofaExceptHandler
 

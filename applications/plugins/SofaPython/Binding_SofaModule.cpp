@@ -354,7 +354,6 @@ static const std::string s_emitter = "PythonScript";
 template<class Action>
 static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
     const size_t argSize = PyTuple_Size(args);
-
     char* message;
 
     /// the logic would be to have the optional arg in last position :-/
@@ -364,50 +363,58 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
             return NULL;
         }
 
-        action(emitter, message);
-    } else {
-        /// no emitter
+        action(emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
+    }
+    else if ( argSize == 1 )
+    {
         if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
         }
 
-        action(s_emitter, message);
+        action(s_emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
     }
+    else if (argSize == 3)
+    {
+        char* filename;
+        int   lineno;
+        if( !PyArg_ParseTuple(args, "sssi", &s_emitter, &message, &filename, &lineno) ) {
+            return NULL;
+        }
 
+        action(s_emitter, message, SOFA_FILE_INFO2(filename, lineno));
+    }
     Py_RETURN_NONE;
 }
 
 /// also, we'd probably would be better off having 'error', 'fatal', 'info' as
 /// argument
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_info(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_info(emitter) << message << fileinfo ;
         });
 }
 
 static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_deprecated(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_deprecated(emitter) << message << fileinfo ;
         });
-
 }
 
 static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_warning(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_warning(emitter) << message << fileinfo ;
         });
-
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_error(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_error(emitter) << message << fileinfo ;
         });
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_fatal(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
+    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_fatal(emitter) << message << fileinfo ;
         });
 }
 
@@ -519,6 +526,31 @@ static PyObject * Sofa_path(PyObject * /*self*/, PyObject * /*args*/) {
     return PyString_FromString(Utils::getSofaPathPrefix().c_str());
 }
 
+
+static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * args)
+{
+    if(PyTuple_Size(args))
+    {
+        PyErr_SetString(PyExc_RuntimeError, "This function expects no arguments.");
+        return NULL;
+    }
+
+    std::vector<ObjectFactory::ClassEntry::SPtr> entries ;
+    ObjectFactory::getInstance()->getAllEntries(entries) ;
+
+    PyObject *pyList = PyList_New(entries.size());
+    for (size_t i=0; i<entries.size(); i++){
+        PyObject *tuple = PyList_New(2);
+        PyList_SetItem(tuple, 0, Py_BuildValue("s", entries[i]->className.c_str()));
+        PyList_SetItem(tuple, 1, Py_BuildValue("s", entries[i]->description.c_str()));
+        PyList_SetItem(pyList, (Py_ssize_t)i, tuple);
+    }
+
+    return pyList;
+}
+
+
+
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion)
@@ -544,5 +576,6 @@ SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
-SP_MODULE_METHOD(Sofa, path)
+SP_MODULE_METHOD(Sofa,path)
+SP_MODULE_METHOD(Sofa,getAvailableComponents)
 SP_MODULE_METHODS_END
