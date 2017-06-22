@@ -26,6 +26,19 @@ using sofa::core::ExecParams ;
 #include <SofaPython/PythonScriptController.h>
 using sofa::component::controller::PythonScriptController ;
 
+template <typename charType>
+void ReplaceSubstring(std::basic_string<charType>& subject,
+    const std::basic_string<charType>& search,
+    const std::basic_string<charType>& replace)
+{
+    if (search.empty()) { return; }
+    typename std::basic_string<charType>::size_type pos = 0;
+    while((pos = subject.find(search, pos)) != std::basic_string<charType>::npos) {
+         subject.replace(pos, search.length(), replace);
+         pos += replace.length();
+    }
+}
+
 ///////////////////////////////////// TESTS ////////////////////////////////////////////////////////
 struct PythonScriptController_test : public Sofa_test<>
 {
@@ -81,7 +94,11 @@ class TestController(Sofa.PythonScriptController):
     def draw(self):
         $line
 )";
-        pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
+        //TODO(dmarchal): I do not use regex_replace because clang 3.4 we use in our CI is buggy.
+        //After 2018 please restore back the regex_replace version
+        //pytmp = std::regex_replace(pytmp, std::regex("\\$line"), teststring);
+        ReplaceSubstring(pytmp, std::string("$line"), teststring) ;
+
         f << pytmp ;
         f.close();
 
