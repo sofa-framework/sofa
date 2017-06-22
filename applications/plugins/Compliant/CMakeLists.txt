@@ -43,6 +43,7 @@ set(HEADER_FILES
     forcefield/UniformLinearPotentialEnergy.h
     forcefield/CompliantPenaltyForceField.h
     forcefield/UniformStiffness.h
+    forcefield/UniformDamping.h    
     forcefield/UniformStiffness.inl
     forcefield/DiagonalStiffness.h
     forcefield/DiagonalStiffness.inl
@@ -165,6 +166,7 @@ set(SOURCE_FILES
     forcefield/UniformLinearPotentialEnergy.cpp
     forcefield/CompliantPenaltyForceField.cpp
     forcefield/UniformStiffness.cpp
+    forcefield/UniformDamping.cpp
     forcefield/DiagonalStiffness.cpp
     initCompliant.cpp
     mapping/AdditionMapping.cpp

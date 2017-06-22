@@ -20,7 +20,7 @@ template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
-    , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+     , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
     , resizable( initData(&resizable, false, "resizable", "can the associated dofs can be resized? (in which case the matrices must be updated)"))
 	  
 {
