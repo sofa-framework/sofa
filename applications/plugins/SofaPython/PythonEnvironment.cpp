@@ -71,7 +71,7 @@ void PythonEnvironment::Init()
 
     // Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
-        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
+        SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED");
 
     if ( !Py_IsInitialized() )
     {
@@ -270,6 +270,20 @@ std::string PythonEnvironment::getPythonCallingPointString()
     return "Python Stack is empty.";
 }
 
+helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileInfo()
+{
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
+    PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
+    if (PyCallable_Check(pFunc))
+    {
+        PyObject* res = PyObject_CallFunction(pFunc, nullptr);
+        std::string tmp=PyString_AsString(PyObject_Str(res));
+        Py_DECREF(res) ;
+        std::cout << "COUCOUCOCUOUC " << tmp << std::endl ;
+        return SOFA_FILE_INFO2(tmp, -1);
+    }
+    return SOFA_FILE_INFO2("undefined", -1);
+}
 
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
 {

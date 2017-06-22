@@ -381,34 +381,33 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
 /// argument
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_info(emitter) << message;
+            msg_info(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
         });
 }
 
 static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_deprecated(emitter) << message;
+            msg_deprecated(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
         });
 
 }
 
 static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_warning(emitter) << message;
+            msg_warning(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
         });
 
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_error(emitter) << message;
+            msg_error(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
         });
-
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
-            msg_fatal(emitter) << message;
+            msg_fatal(emitter) << message << PythonEnvironment::getPythonCallingPointAsFileInfo() ;
         });
 }
 

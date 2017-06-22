@@ -61,6 +61,12 @@ def getPythonCallingPointAsString():
     ss=inspect.stack()[-1:]
     return formatStackForSofa(ss)
 
+def getPythonCallingPoint():
+    """returns the tupe with closest filename & line. """
+    ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
+    ss=inspect.stack()[2]
+    return (ss[1], ss[2])
+
 def sofaExceptHandler(type, value, tb):
     """This exception handler, convert python exceptions & traceback into more classical sofa error messages of the form:
        Message Description
@@ -71,10 +77,17 @@ def sofaExceptHandler(type, value, tb):
           File file1.py line 23 ...
             faulty line
     """
+    print("PYTHON EXCEPTION HANDLER")
+
     s="\nPython Stack: \n"
     for line in traceback.format_tb(tb):
         s += line
-    Sofa.msg_error(str(value)+" "+s)
+
+    if type == Sofa.SofaException:
+        s += "  File "+str(value[1])+" line "+str(value[2]) +"..."
+        Sofa.msg_error(str(value[0])+" "+s)
+    else:
+        Sofa.msg_error(str(value)+" "+s)
 
 sys.excepthook=sofaExceptHandler
 
