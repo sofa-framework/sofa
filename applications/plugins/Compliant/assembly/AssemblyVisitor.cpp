@@ -657,6 +657,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
     // dofs warning, inverse order is important, to treat mapped dofs before
     // master dofs so mapped dofs can transfer their geometric stiffness to
     // master dofs that will add it to the assembled matrix
+    {
+        scoped::timer step("assembly: gs processing");
     for( int i = (int)prefix.size()-1 ; i >=0 ; --i ) {
 
         const chunk& c = *graph[ prefix[i] ].data;
@@ -705,12 +707,15 @@ void AssemblyVisitor::assemble(system_type& res) const {
         }
 
     }
+    }
 
-
+    {
+        scoped::timer step("assembly: interaction ff");
     // Then add interaction forcefields
     for( InteractionForceFieldList::iterator it=interactionForceFieldList.begin(),
              itend=interactionForceFieldList.end();it!=itend;++it) {
         add_ltdl(res.H, it->J, it->H);
+    }
     }
     
 
@@ -726,6 +731,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
         ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
     
 	// assemble system
+    {
+        scoped::timer step("assembly: actual assembly");
     for( unsigned i = 0, n = prefix.size() ; i < n ; ++i ) {
 
 		// current chunk
@@ -752,7 +759,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );
-
+                scoped::timer step("assembly: add_H");
                 // actual response matrix mapping
                 if( !zero(c.H) ) add_H(ltdl(Jc, c.H), 0);
             }
@@ -802,6 +809,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 			}
 		}
 	}
+    }
 
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
