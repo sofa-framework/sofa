@@ -375,16 +375,69 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 }
 
 SP_CLASS_METHODS_BEGIN(BaseContext)
-SP_CLASS_METHOD(BaseContext,getRootContext)
-SP_CLASS_METHOD(BaseContext,getTime)
-SP_CLASS_METHOD(BaseContext,getDt)
-SP_CLASS_METHOD(BaseContext,getGravity)
-SP_CLASS_METHOD(BaseContext,setGravity)
-SP_CLASS_METHOD_KW(BaseContext,createObject)
-SP_CLASS_METHOD_KW(BaseContext,createObject_noWarning) // deprecated
-SP_CLASS_METHOD_KW(BaseContext,getObject)
-SP_CLASS_METHOD(BaseContext,getObject_noWarning) // deprecated
-SP_CLASS_METHOD(BaseContext,getObjects)
+SP_CLASS_METHOD_DOC(BaseContext,getRootContext,
+                "Returns the root context of the Sofa Scene.\n"
+                "example:\n"
+                "   root = node.getRootContext()\n"
+                "   root.animate=false")
+SP_CLASS_METHOD_DOC(BaseContext,getTime,
+                "Returns the accumulated time since the beginnning of the simulation.\n"
+                "example:\n"
+                "   time = node.getTime()\n"
+                "   ")
+SP_CLASS_METHOD_DOC(BaseContext,getDt,
+                "Returns the current timestep used in the simulation.\n"
+                "example:\n"
+                "   time = node.getDt()\n"
+                "   ")
+SP_CLASS_METHOD_DOC(BaseContext,getGravity,
+                "Returns the gravity that is applied to node's children (a Sofa.Vector3 object).\n"
+                "example:\n"
+                "   g = node.getGravity()\n"
+                "   print(str(g.x)"
+                )
+SP_CLASS_METHOD_DOC(BaseContext,setGravity,
+                "Sets the gravity applied to the node (a Sofa.Vector3 object).\n"
+                "example:\n"
+                "   g = Sofa.Vector3(0.0,-9.81,0.0)\n"
+                "   node.setGravity(g)"
+                )
+SP_CLASS_METHOD_KW_DOC(BaseContext,createObject,
+               "Creates a Sofa object and then adds it to the node. "
+               "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
+               "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
+               "object with a getAsCreateObjectParameter(self)."
+               "example:\n"
+               "   object = node.createObject('MechanicalObject',name='mObject', dx=1, dy=2, dz=3)"
+               )
+SP_CLASS_METHOD_KW_DOC(BaseContext,createObject_noWarning,   // deprecated
+               "(Deprecated) Creates a Sofa object and then adds it to the node. "
+               "First argument is the type name, parameters are passed as subsequent keyword arguments. \n"
+               "IMPORTANT: In this version, no warning is output in the console if the object cannot be initialized.\n"
+               "example:\n"
+               "   object = node.createObject_noWarning('MechanicalObject',name='mObject',dx='x',dy='y',dz='z')"
+               )
+SP_CLASS_METHOD_DOC(BaseContext,getObject,
+                "Returns the object by its path. Can be in this node or another, in function of the path... \n"
+                "examples:\n"
+                "   mecanicalState = node.getObject('DOFs')\n"
+                "   mesh = node.getObject('visuNode/OglModel')"
+                )
+SP_CLASS_METHOD_DOC(BaseContext,getObject_noWarning,
+                "(Deprecated) Returns the object by its path. Can be in this node or another, in function of the path... \n"
+                "IMPORTANT: In this version, no warning is output in the console if the object cannot be initialized.\n"
+                "examples:\n"
+                "   mecanicalState = node.getObject_noWarning('DOFs')\n"
+                "   mesh = node.getObject('visuNode/OglModel')"
+
+                ) // deprecated
+SP_CLASS_METHOD_DOC(BaseContext,getObjects,
+                "Returns a list of the objects of this node. \n"
+                "example:\n"
+                "   objects = node.getObjects()\n"
+                "   for obj in objets:\n"
+                "       print (obj.name)"
+                )
 SP_CLASS_METHODS_END
 
 
