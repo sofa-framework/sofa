@@ -91,7 +91,7 @@ wrap(T* obj, PyTypeObject *pto, bool deletable) {
 }
 
 
-// unwrap a python pointer
+// unwrap a python pointer for an argument
 template<class T>
 static inline T* unwrap(PyObject* obj) {
     using wrapped_type = typename wrap_traits<T>::wrapped_type;
@@ -99,20 +99,30 @@ static inline T* unwrap(PyObject* obj) {
     return dynamic_cast<T*>(detail::unwrap(wrapped));
 }
 
-// wrap a python object in a python object of type pto. you may need to pass
-// extra boolean 'deletable' to specify python ownership (true = python may
-// delete)
-template<class T, class ... Args>
-static inline PyObject* wrap(T* obj, PyTypeObject *pto, Args&& ... args) {
-    using wrapped_type = typename wrap_traits<T>::wrapped_type;
-    wrapped_type* py_obj = reinterpret_cast<wrapped_type*>( PyType_GenericAlloc(pto, 0) );
-    detail::wrap(py_obj, obj, std::forward<Args>(args)...);
 
-    return reinterpret_cast<PyObject*>(py_obj);
+template<class T>
+static inline T* unwrap_self(PyObject* obj) {
+    using wrapped_type = typename wrap_traits<T>::wrapped_type;
+    wrapped_type* wrapped = reinterpret_cast<wrapped_type*>(obj);
+    return static_cast<T*>(detail::unwrap(wrapped));
 }
 
 
-;
+// wrap a python object into a python object of type pto. you may need to pass
+// extra boolean 'deletable' to specify python ownership (true = python may
+// delete) depending on the wrapping type
+template<class T, class ... Args>
+static inline PyObject* wrap(T* obj, PyTypeObject *pto, Args&& ... args) {
+    using wrapped_type = typename wrap_traits<T>::wrapped_type;
+
+    // alloc object
+    wrapped_type* py_obj = reinterpret_cast<wrapped_type*>( PyType_GenericAlloc(pto, 0) );
+
+    // setup wrapper
+    detail::wrap(py_obj, obj, std::forward<Args>(args)...);
+    
+    return reinterpret_cast<PyObject*>(py_obj);
+};
 
 
 
