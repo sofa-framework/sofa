@@ -153,7 +153,15 @@ def single_dof(cls):
             return super(Result, self).external_force[0]            
         
     return Result
-    
+
+
+@single_dof
+class DOF(DOFs):
+    '''single dof view'''
+    pass
+
+
+
 def dofs_type(coord_type, deriv_type = None):
     '''gives properly typed access to decorated class'''
     
@@ -187,6 +195,8 @@ def dofs_type(coord_type, deriv_type = None):
         return Result
 
     return decorator
+
+
 
 
 
