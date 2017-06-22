@@ -27,9 +27,14 @@
 using sofa::core::visual::VisualModel ;
 using sofa::component::visualmodel::VisualModelImpl ;
 
+static inline VisualModel* get_visualmodel(PyObject* obj) {
+    return sofa::py::unwrap<VisualModel>(obj);
+}
+
+
 /// getting a VisualModelImpl* from a PyObject*
 static inline VisualModelImpl* get_VisualModelImpl(PyObject* obj) {
-    return down_cast<VisualModelImpl>( get_visualmodel( obj ) );
+    return sofa::py::unwrap<VisualModelImpl>(obj);
 }
 
 static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
@@ -53,6 +58,8 @@ static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
     obj->setColor((float)r,(float)g,(float)b,(float)a);
     Py_RETURN_NONE;
 }
+
+
 
 static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
 {

@@ -29,6 +29,8 @@ struct unwrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::Bas
 
 
 
+
+
 namespace detail {
 
 /// unwrap a T* wrapped in a pyobject (via PySPtr, based on traits)

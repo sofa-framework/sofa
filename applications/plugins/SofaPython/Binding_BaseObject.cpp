@@ -27,6 +27,11 @@
 
 using sofa::core::objectmodel::BaseObject;
 
+static BaseObject* get_baseobject(PyObject* self) {
+    return sofa::py::unwrap<BaseObject>(self);
+}
+
+
 static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
     BaseObject* obj = get_baseobject( self );

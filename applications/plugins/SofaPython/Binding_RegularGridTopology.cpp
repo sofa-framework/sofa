@@ -30,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 /// getting a RegularGridTopology* from a PyObject*
 static inline RegularGridTopology* get_RegularGridTopology(PyObject* obj) {
-    return down_cast<RegularGridTopology>( get_topology(obj) );
+    return sofa::py::unwrap<RegularGridTopology>(obj);
 }
 
 

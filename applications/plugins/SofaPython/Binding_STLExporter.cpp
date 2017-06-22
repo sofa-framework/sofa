@@ -30,7 +30,7 @@ using namespace sofa::core::objectmodel;
 
 /// getting a STLExporter* from a PyObject*
 static inline STLExporter* get_STLExporter(PyObject* obj) {
-    return down_cast<STLExporter>( get_baseobject(obj) );
+    return sofa::py::unwrap<STLExporter>(obj);
 }
 
 static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)

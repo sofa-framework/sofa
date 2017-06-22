@@ -26,6 +26,10 @@
 
 using sofa::defaulttype::Vector3 ;
 
+static inline Vector3* get_vector3(PyObject* obj) {
+    return sofa::py::unwrap<Vector3>(obj);
+}
+
 
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {

@@ -7,7 +7,7 @@ using namespace sofa::core::topology;
 
 /// getting a PointSetTopologyModifier* from a PyObject*
 static inline PointSetTopologyModifier* get_PointSetTopologyModifier(PyObject* obj) {
-    return dynamic_cast<PointSetTopologyModifier*>( get_baseobject(obj) );
+    return sofa::py::unwrap<PointSetTopologyModifier>(obj);
 }
 
 static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * args)
@@ -31,7 +31,7 @@ static PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * 
         for(std::size_t i=0;i<nbAncestorElems;++i)
         {
             PyObject * pyPointAncestor = PyList_GetItem(ancestorElemsArg,i);
-            PointAncestorElem* pointAncestor = unwrap<PointAncestorElem>( pyPointAncestor );
+            PointAncestorElem* pointAncestor = sofa::py::unwrap<PointAncestorElem>( pyPointAncestor );
             ancestorElems.push_back( *pointAncestor );
         }
 

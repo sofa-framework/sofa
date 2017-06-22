@@ -26,6 +26,11 @@
 
 using sofa::core::behavior::BaseMechanicalState ;
 
+static BaseMechanicalState* get_basemechanicalstate(PyObject* self) {
+    return sofa::py::unwrap<BaseMechanicalState>(self);
+}
+
+
 static PyObject * BaseMechanicalState_applyTranslation(PyObject *self, PyObject * args)
 {
     BaseMechanicalState* obj  = get_basemechanicalstate( self );

@@ -30,6 +30,7 @@ PyObject* getMatrice( const AssembledSystem::rmat& A )
     return pyA;
 }
 
+using sofa::py::unwrap;
 
 
 static PyObject* AssembledSystem_getH(PyObject * self, PyObject * /*args*/)

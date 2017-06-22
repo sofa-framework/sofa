@@ -23,13 +23,24 @@
 #include "Binding_Data.h"
 #include "PythonToSofa.inl"
 
+
 using namespace sofa::helper;
 using namespace sofa::core::objectmodel;
+
+namespace sofa {
+namespace py {
+
+template<class T>
+struct unwrap_traits< Data<T> > : unwrap_traits<BaseData> { };
+
+}
+}
+
 
 
 /// getting a Data<OptionsGroup>* from a PyObject*
 static inline Data<OptionsGroup>* get_DataOptionsGroup(PyObject* obj) {
-    return down_cast<Data<OptionsGroup>>( get_basedata( obj ) );
+    return sofa::py::unwrap<Data<OptionsGroup> >(obj);
 }
 
 static PyObject * OptionsGroupData_getAttr_selectedItem(PyObject *self, void*)

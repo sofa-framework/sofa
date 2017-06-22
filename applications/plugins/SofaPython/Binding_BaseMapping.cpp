@@ -29,6 +29,9 @@ using namespace sofa;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
+static BaseMapping* get_basemapping(PyObject* self) {
+    return sofa::py::unwrap<BaseMapping>(self);
+}
 
 
 static PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
@@ -71,7 +74,7 @@ static PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    BaseState* from = get_basestate( pyFrom );
+    BaseState* from = sofa::py::unwrap<BaseState>( pyFrom );
     if (!from)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;
@@ -88,10 +91,11 @@ static PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
     BaseMapping* mapping  = get_basemapping( self );
 
     PyObject* pyTo;
-    if (!PyArg_ParseTuple(args, "O",&pyTo))
+    if (!PyArg_ParseTuple(args, "O",&pyTo)) {
         return NULL;
+    }
 
-    BaseState* to = get_basestate( pyTo );
+    BaseState* to = sofa::py::unwrap<BaseState>( pyTo );
     if (!to)
     {
         PyErr_SetString(PyExc_TypeError, "Invalid argument, a BaseState* object is expected. " ) ;

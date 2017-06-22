@@ -29,7 +29,7 @@ using sofa::component::topology::GridTopology ;
 
 /// getting a GridTopology* from a PyObject*
 static inline GridTopology* get_GridTopology(PyObject* obj) {
-    return down_cast<GridTopology>( get_topology(obj) );
+    return sofa::py::unwrap<GridTopology>(obj);
 }
 
 

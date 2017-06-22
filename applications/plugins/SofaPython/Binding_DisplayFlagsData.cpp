@@ -28,10 +28,11 @@ using sofa::core::visual::DisplayFlags;
 using sofa::core::visual::tristate ;
 using sofa::core::objectmodel::Data ;
 
+// TODO why is this one wrapped directly? cf OptionGroupData
 
 /// getting a Data<DisplayFlags>* from a PyObject*
 static inline Data<DisplayFlags>* get_DataDisplayFlags(PyObject* obj) {
-    return unwrap<Data<DisplayFlags>>(obj);
+  return sofa::py::unwrap<Data<DisplayFlags> >(obj);
 }
 
 

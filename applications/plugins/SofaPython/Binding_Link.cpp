@@ -34,10 +34,16 @@ using namespace sofa::defaulttype;
 // se servir du LinkTypeInfo pour utiliser directement les bons type :-)
 // Il y a un seul type "Link" exposé en python, le transtypage est géré automatiquement
 
+static inline BaseLink* get_baselink(PyObject* obj) {
+    return sofa::py::unwrap<BaseLink>(obj);
+}
+
+
+
 
 SP_CLASS_ATTR_GET(Link,name)(PyObject *self, void*)
 {
-    BaseLink* link = get_baselink( self );
+    BaseLink* link = get_baselink(self);
     return PyString_FromString(link->getName().c_str());
 }
 

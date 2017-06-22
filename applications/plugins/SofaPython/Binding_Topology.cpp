@@ -29,6 +29,11 @@ using namespace sofa::core::topology;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
+static inline Topology* get_topology(PyObject* obj) {
+    return sofa::py::unwrap<Topology>(obj);
+}
+
+
 static PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
 {
     Topology* obj = get_topology( self );

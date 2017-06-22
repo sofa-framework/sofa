@@ -26,6 +26,11 @@
 
 using sofa::core::BaseState;
 
+static BaseState* get_basestate(PyObject* self) {
+    return sofa::py::unwrap<BaseState>(self);
+}
+
+
 static PyObject * BaseState_resize(PyObject *self, PyObject * args)
 {
     BaseState* obj = get_basestate( self );

@@ -33,6 +33,11 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
+static Base* get_base(PyObject* self) {
+    return sofa::py::unwrap<Base>(self);
+}
+
+
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
     char *dataName;

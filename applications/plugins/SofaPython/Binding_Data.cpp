@@ -37,6 +37,10 @@ using sofa::core::objectmodel::BaseNode ;
 
 #include "PythonToSofa.inl"
 
+static BaseData* get_basedata(PyObject* self) {
+    return sofa::py::unwrap<BaseData>(self);
+}
+
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {

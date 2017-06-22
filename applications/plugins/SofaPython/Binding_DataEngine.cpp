@@ -28,6 +28,11 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
 
+static DataEngine* get_dataengine(PyObject* self) {
+    return sofa::py::unwrap<DataEngine>(self);
+}
+
+
 static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
     DataEngine* engine = get_dataengine( self );;

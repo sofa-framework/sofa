@@ -11,7 +11,7 @@ using sofa::core::topology::Topology ;
 
 /// getting a TriangleSetTopologyModifier* from a PyObject*
 static inline TriangleSetTopologyModifier* get_TriangleSetTopologyModifier(PyObject* obj) {
-    return dynamic_cast<TriangleSetTopologyModifier*>( get_baseobject(obj) );
+    return sofa::py::unwrap<TriangleSetTopologyModifier>(obj);
 }
 
 
@@ -21,6 +21,7 @@ Topology::Triangle parseTriangleTuple( PyObject* tuple )
 
     if (!PyArg_ParseTuple(tuple, "III",&T[0],&T[1],&T[2]))
     {
+        // TODO wtf
         PyErr_BadArgument();
     }
     return T;

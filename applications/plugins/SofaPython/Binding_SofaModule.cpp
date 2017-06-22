@@ -317,7 +317,7 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* node = get_basenode( pyNode );
+    BaseNode* node = sofa::py::unwrap<BaseNode>( pyNode );
     if (!node) {
         SP_PYERR_SETSTRING_INVALIDTYPE("BaseNode*") ;
         return NULL;
@@ -336,7 +336,7 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* basenode = get_basenode( pyNode );
+    BaseNode* basenode = sofa::py::unwrap<BaseNode>( pyNode );
     if (!basenode) {
         SP_PYERR_SETSTRING_INVALIDTYPE("BaseNode*") ;
         return NULL;
@@ -445,7 +445,7 @@ static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
         return NULL;
     }
 
-    Node* node = get_node(pyNode);
+    Node* node = sofa::py::unwrap<Node>(pyNode);
     if (!node) {
         PyErr_BadArgument();
         return NULL;

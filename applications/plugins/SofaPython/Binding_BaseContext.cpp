@@ -40,6 +40,10 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 using namespace sofa::defaulttype;
 
+static inline BaseContext* get_basecontext(PyObject* obj) {
+    return sofa::py::unwrap<BaseContext>(obj);
+}
+
 
 static PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {

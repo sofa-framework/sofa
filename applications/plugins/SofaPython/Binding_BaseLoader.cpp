@@ -29,6 +29,9 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
 
+static BaseLoader* get_baseloader(PyObject* self) {
+    return sofa::py::unwrap<BaseLoader>(self);
+}
 
 static PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
 {

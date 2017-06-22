@@ -33,7 +33,7 @@ using sofa::core::objectmodel::DataFileNameVector ;
 
 /// getting a DataFileNameVector* from a PyObject*
 static inline DataFileNameVector* get_DataFileNameVector(PyObject* obj) {
-    return get_datafilenamevector(obj);
+    return sofa::py::unwrap<DataFileNameVector>(obj);
 }
 
 

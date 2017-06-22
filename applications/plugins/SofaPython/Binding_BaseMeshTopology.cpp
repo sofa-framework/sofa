@@ -27,6 +27,11 @@
 using namespace sofa::core::topology;
 using namespace sofa::core::objectmodel;
 
+static BaseMeshTopology* get_basemeshtopology(PyObject* self) {
+    return sofa::py::unwrap<BaseMeshTopology>(self);
+}
+
+
 static PyObject * BaseMeshTopology_getNbEdges(PyObject *self, PyObject * /*args*/)
 {
     BaseMeshTopology* obj = get_basemeshtopology( self );

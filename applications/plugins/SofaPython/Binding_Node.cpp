@@ -39,6 +39,11 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
+static inline Node* get_node(PyObject* obj) {
+    return sofa::py::unwrap<Node>(obj);
+}
+
+
 static PyObject * Node_executeVisitor(PyObject *self, PyObject * args) {
     Node* node = get_node(self);
 
@@ -238,7 +243,7 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
     }
 
     /// use functions ffs
-    BaseObject* object = get_baseobject(pyChild);
+    BaseObject* object = sofa::py::unwrap<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
@@ -269,7 +274,7 @@ static PyObject * Node_removeObject(PyObject *self, PyObject * args) {
         return NULL;
     }
 
-    BaseObject* object = get_baseobject(pyChild);
+    BaseObject* object = sofa::py::unwrap<BaseObject>(pyChild);
     if (!object) {
         PyErr_BadArgument();
         return NULL;
