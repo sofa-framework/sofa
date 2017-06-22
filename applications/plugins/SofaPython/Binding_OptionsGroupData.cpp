@@ -27,14 +27,7 @@
 using namespace sofa::helper;
 using namespace sofa::core::objectmodel;
 
-namespace sofa {
-namespace py {
 
-template<class T>
-struct unwrap_traits< Data<T> > : unwrap_traits<BaseData> { };
-
-}
-}
 
 
 
@@ -156,5 +149,5 @@ SP_CLASS_METHODS_END
 
 
 
-SP_CLASS_TYPE_PTR_ATTR(OptionsGroupData,Data<OptionsGroup>,Data)
+SP_CLASS_TYPE_PTR_ATTR(OptionsGroupData, BaseData, Data);
 

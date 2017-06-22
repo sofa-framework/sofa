@@ -28,8 +28,6 @@ using sofa::core::visual::DisplayFlags;
 using sofa::core::visual::tristate ;
 using sofa::core::objectmodel::Data ;
 
-// TODO why is this one wrapped directly? cf OptionGroupData
-
 /// getting a Data<DisplayFlags>* from a PyObject*
 static inline Data<DisplayFlags>* get_DataDisplayFlags(PyObject* obj) {
   return sofa::py::unwrap<Data<DisplayFlags> >(obj);
@@ -95,5 +93,6 @@ SP_CLASS_ATTR(DisplayFlagsData,showWireFrame)
 SP_CLASS_ATTR(DisplayFlagsData,showNormals)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_PTR_ATTR(DisplayFlagsData,Data<DisplayFlags>,Data)
+SP_CLASS_TYPE_PTR_ATTR(DisplayFlagsData, sofa::core::objectmodel::BaseData, Data);
+
 

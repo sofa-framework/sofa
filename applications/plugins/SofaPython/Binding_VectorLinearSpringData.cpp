@@ -290,7 +290,7 @@ static int VectorLinearSpringData_setitem(PyObject *self, PyObject* i, PyObject*
         return -1;
     }
 
-    MyLinearSpring* value=((PyPtr<LinearSpring<SReal>>*)v)->object; // TODO: check dynamic cast
+    MyLinearSpring* value= sofa::py::unwrap<MyLinearSpring>(v); // TODO: check dynamic cast
     VectorLinearSpring& vec = *data->beginEdit();
 
     vec[index] = *value;
@@ -310,5 +310,5 @@ SP_CLASS_METHODS_END
 
 SP_CLASS_MAPPING(VectorLinearSpringData)
 
-SP_CLASS_TYPE_PTR_ATTR_MAPPING(VectorLinearSpringData,DataBinding_VectorLinearSpring,Data)
+SP_CLASS_TYPE_PTR_ATTR_MAPPING(VectorLinearSpringData, sofa::core::objectmodel::BaseData, Data)
 

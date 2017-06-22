@@ -70,5 +70,5 @@ SP_CLASS_METHOD(DataFileNameVector,addPath)
 SP_CLASS_METHOD(DataFileNameVector,clear)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
+SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector, sofa::core::objectmodel::BaseData, Data);
 

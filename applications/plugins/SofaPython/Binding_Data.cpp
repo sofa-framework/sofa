@@ -742,4 +742,4 @@ static struct patch {
 } patcher;
 }
 
-SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData);
+SP_CLASS_TYPE_BASE_PTR_ATTR(Data, BaseData);

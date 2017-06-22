@@ -10,9 +10,8 @@ namespace py {
 /// casting PyObject* to Sofa types
 /// contains only inlined functions and must be included at the right place (!)
 template<class T, class = void>
-struct unwrap_traits {
-    using wrapped_type = T;
-    static const bool use_sptr = false;
+struct wrap_traits {
+    using wrapped_type = PyPtr<T>;
 };
 
 
@@ -21,11 +20,26 @@ template<class T, class Base>
 using requires_derived = typename std::enable_if< std::is_base_of<Base, T>::value>::type;
 }
 
+
+// all base children are wrapped in a base
 template<class T>
-struct unwrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::Base> > {
-    using wrapped_type = sofa::core::objectmodel::Base;
-    static const bool use_sptr = true;
+struct wrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::Base> > {
+    using wrapped_type = PySPtr<sofa::core::objectmodel::Base>;
 };
+
+
+// all data childen are wrapped in a basedata
+template<class T>
+struct wrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::BaseData> > {
+    using wrapped_type = PyPtr<sofa::core::objectmodel::BaseData>;
+};
+
+// all link childen are wrapped in a baselink
+template<class T>
+struct wrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::BaseLink> > {
+    using wrapped_type = PyPtr<sofa::core::objectmodel::BaseLink>;
+};
+
 
 
 
@@ -33,44 +47,40 @@ struct unwrap_traits<T, detail::requires_derived<T, sofa::core::objectmodel::Bas
 
 namespace detail {
 
-/// unwrap a T* wrapped in a pyobject (via PySPtr, based on traits)
-template<class T>
-static inline typename std::enable_if< unwrap_traits<T>::use_sptr, T*>::type
-unwrap(PyObject* obj, T*) {
-    using wrapped_type = typename unwrap_traits<T>::wrapped_type;
-    wrapped_type* ptr = ((PySPtr<wrapped_type>*)obj)->object.get();
-    return dynamic_cast<T*>(ptr);
+
+template<class W>
+static inline W* unwrap(PyPtr<W>* obj) {
+    return obj->object;
 }
 
 
-/// unwrap a T* wrapped in a pyobject (via PyPtr, based on traits)
-template<class T>
-static inline T* unwrap(PyObject* obj, ...) {
-    using wrapped_type = typename unwrap_traits<T>::wrapped_type;
-    wrapped_type* ptr = ((PyPtr<wrapped_type>*)obj)->object;
-    
-    return dynamic_cast<T*>(ptr);
+template<class W>
+static inline W* unwrap(PySPtr<W>* obj) {
+    return obj->object.get();
 }
 
 
 
 /// wrap a T* in a pyobject (via PySPtr, based on traits)
-template<class T>
-static inline typename std::enable_if< unwrap_traits<T>::use_sptr, PyObject*>::type
-wrap(T* obj, PyTypeObject *pto) {
-    using wrapped_type = typename unwrap_traits<T>::wrapped_type;
-
-    PySPtr<wrapped_type> * py_obj = (PySPtr<wrapped_type>*) PyType_GenericAlloc(pto, 0);
+template<class W, class T>
+static inline void wrap(PySPtr<W>* py_obj, T* obj) {
     py_obj->object = obj;
-    return (PyObject*)py_obj;
 }
+
+
+template<class W, class T>
+static inline void wrap(PyPtr<W>* py_obj, T* obj, bool deletable) {
+    py_obj->object = obj;
+    py_obj->deletable = deletable;
+}
+
 
 
 /// unwrap a T* wrapped in a pyobject (via PyPtr, based on traits)
 template<class T>
-static inline typename std::enable_if< !unwrap_traits<T>::use_sptr, PyObject*>::type
+static inline typename std::enable_if< !wrap_traits<T>::use_sptr, PyObject*>::type
 wrap(T* obj, PyTypeObject *pto, bool deletable) {
-    using wrapped_type = typename unwrap_traits<T>::wrapped_type;
+    using wrapped_type = typename wrap_traits<T>::wrapped_type;
 
     PyPtr<wrapped_type>* py_obj = (PyPtr<wrapped_type>*) PyType_GenericAlloc(pto, 0);
     py_obj->object = obj;
@@ -84,7 +94,9 @@ wrap(T* obj, PyTypeObject *pto, bool deletable) {
 // unwrap a python pointer
 template<class T>
 static inline T* unwrap(PyObject* obj) {
-    return detail::unwrap<T>(obj, 0);
+    using wrapped_type = typename wrap_traits<T>::wrapped_type;
+    wrapped_type* wrapped = reinterpret_cast<wrapped_type*>(obj);
+    return dynamic_cast<T*>(detail::unwrap(wrapped));
 }
 
 // wrap a python object in a python object of type pto. you may need to pass
@@ -92,8 +104,20 @@ static inline T* unwrap(PyObject* obj) {
 // delete)
 template<class T, class ... Args>
 static inline PyObject* wrap(T* obj, PyTypeObject *pto, Args&& ... args) {
-    return detail::wrap(obj, pto, std::forward<Args>(args)...);
+    using wrapped_type = typename wrap_traits<T>::wrapped_type;
+    wrapped_type* py_obj = reinterpret_cast<wrapped_type*>( PyType_GenericAlloc(pto, 0) );
+    detail::wrap(py_obj, obj, std::forward<Args>(args)...);
+
+    return reinterpret_cast<PyObject*>(py_obj);
 }
+
+
+;
+
+
+
+
+
 
 }
 }
