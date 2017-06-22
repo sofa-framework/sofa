@@ -151,7 +151,9 @@ SP_CLASS_METHODS_END
 #define SP_CLASS_METHODS_BEGIN(C) static PyMethodDef SP_SOFAPYMETHODS(C)[] = {
 #define SP_CLASS_METHODS_END {0,0,0,0} };
 #define SP_CLASS_METHOD(C,M) {#M, C##_##M, METH_VARARGS, ""},
+#define SP_CLASS_METHOD_DOC(C,M,D) {#M, C##_##M, METH_VARARGS, D},
 #define SP_CLASS_METHOD_KW(C,M) {#M, (PyCFunction)C##_##M, METH_KEYWORDS|METH_VARARGS, ""},
+#define SP_CLASS_METHOD_KW_DOC(C,M,D) {#M, (PyCFunction)C##_##M, METH_KEYWORDS|METH_VARARGS, D},
 
 /*
 static PyGetSetDef DummyClass_PyAttributes[] =
