@@ -117,9 +117,12 @@ void OBJExporter::writeOBJ()
         sofa::helper::io::File mtlFile(mtlfilename.c_str(), std::ios_base::out);
         std::ostream mtlStream(mtlFile.streambuf());
         exportOBJ.setMtlStream( &mtlStream );
+        context->executeVisitor(&exportOBJ);
     }
-
-    context->executeVisitor(&exportOBJ);
+    else
+    {
+        context->executeVisitor(&exportOBJ);
+    }
 
 }
 
