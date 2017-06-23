@@ -65,6 +65,7 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
+    mapping/RigidPseudoAngularMomentumMultiMapping.h    
     mapping/RigidJointMapping.h
     mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
@@ -183,6 +184,7 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
+    mapping/RigidPseudoAngularMomentumMultiMapping.cpp    
     mapping/RigidJointMapping.cpp
     mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
