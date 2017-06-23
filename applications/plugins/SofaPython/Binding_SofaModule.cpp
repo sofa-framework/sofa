@@ -377,7 +377,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
     {
         char* filename;
         int   lineno;
-        if( !PyArg_ParseTuple(args, "sssi", &s_emitter, &message, &filename, &lineno) ) {
+        if( !PyArg_ParseTuple(args, "ssi", &message, &filename, &lineno) ) {
             return NULL;
         }
 
