@@ -126,7 +126,7 @@ bool Message::empty() const
     return end <= 0;
 }
 
-template<>
+SOFA_HELPER_API template<>
 Message& Message::operator<<(const FileInfo::SPtr &fi)
 {
     m_fileInfo = fi;
