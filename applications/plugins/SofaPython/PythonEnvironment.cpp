@@ -274,13 +274,17 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
 {
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getPythonCallingPoint");
-    if (PyCallable_Check(pFunc))
+    if (pFunc && PyCallable_Check(pFunc))
     {
         PyObject* res = PyObject_CallFunction(pFunc, nullptr);
-        std::string tmp=PyString_AsString(PyObject_Str(res));
-        Py_DECREF(res) ;
-        std::cout << "COUCOUCOCUOUC " << tmp << std::endl ;
-        return SOFA_FILE_INFO2(tmp, -1);
+        if(res && PySequence_Check(res) ){
+            PyObject* filename = PySequence_GetItem(res, 0) ;
+            PyObject* number = PySequence_GetItem(res, 1) ;
+            std::string tmp=PyString_AsString(filename);
+            auto lineno = PyInt_AsLong(number);
+            Py_DECREF(res) ;
+            return SOFA_FILE_INFO2(tmp, lineno);
+        }
     }
     return SOFA_FILE_INFO2("undefined", -1);
 }
