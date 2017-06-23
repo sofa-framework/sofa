@@ -10,6 +10,7 @@ set(SOURCE_FILES
     PythonFactory_test.cpp
     PythonScriptControllerHelper_test.cpp
     PythonScriptController_test.cpp
+    SofaModule_test.cpp
 )
 
 set(PYTHON_FILES
