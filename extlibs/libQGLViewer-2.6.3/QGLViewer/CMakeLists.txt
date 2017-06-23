@@ -70,12 +70,12 @@ else()
     qt4_wrap_ui(FORM_FILES ${UI_FILES})
 endif()
 
-foreach(target ${QT_TARGETS})
-    if(WIN32)
+if(WIN32)
+    foreach(target ${QT_TARGETS})
         sofa_copy_files_from_target(${target})
-    endif()
-    sofa_install_files_from_target(${target})
-endforeach()
+        sofa_install_files_from_target(${target})
+    endforeach()
+endif()
 
 # These header files don't need to be processed by the moc.
 list(APPEND HEADER_FILES
