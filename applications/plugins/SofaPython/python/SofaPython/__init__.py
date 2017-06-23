@@ -64,7 +64,7 @@ def getPythonCallingPointAsString():
 def getPythonCallingPoint():
     """returns the tupe with closest filename & line. """
     ## we exclude the first level in the stack because it is the getStackForSofa() function itself.
-    ss=inspect.stack()[2]
+    ss=inspect.stack()[1]
     return (ss[1], ss[2])
 
 def sofaExceptHandler(type, value, tb):
@@ -84,7 +84,6 @@ def sofaExceptHandler(type, value, tb):
     Sofa.msg_error(str(value)+" "+s, "line", 7)
 
 sys.excepthook=sofaExceptHandler
-
 
 class Controller(Sofa.PythonScriptController):
 
