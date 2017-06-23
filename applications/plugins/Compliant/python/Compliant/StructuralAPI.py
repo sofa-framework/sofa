@@ -133,22 +133,22 @@ def single_dof(cls):
     class Result(cls):
         __slots__ = ()
 
-        @property
+        @cls.position.getter
         def position(self):
             return super(Result, self).position[0]
 
 
-        @property
+        @cls.velocity.getter
         def velocity(self):
             return super(Result, self).velocity[0]        
 
 
-        @property
+        @cls.force.getter
         def force(self):
             return super(Result, self).force[0]        
 
 
-        @property
+        @cls.external_force.getter
         def external_force(self):
             return super(Result, self).external_force[0]            
         
@@ -173,22 +173,22 @@ def dofs_type(coord_type, deriv_type = None):
         class Result(cls):
             __slots__ = ()
 
-            @property
+            @cls.position.getter
             def position(self):
                 return super(Result, self).position.view(coord_type)
 
 
-            @property
+            @cls.velocity.getter
             def velocity(self):
                 return super(Result, self).velocity.view(deriv_type)  
 
 
-            @property
+            @cls.force.getter
             def force(self):
                 return super(Result, self).force.view(deriv_type)       
 
 
-            @property
+            @cls.external_force.getter
             def external_force(self):
                 return super(Result, self).external_force.view(deriv_type)
         
