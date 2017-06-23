@@ -417,7 +417,7 @@ SP_CLASS_METHOD_KW_DOC(BaseContext,createObject_noWarning,   // deprecated
                "example:\n"
                "   object = node.createObject_noWarning('MechanicalObject',name='mObject',dx='x',dy='y',dz='z')"
                )
-SP_CLASS_METHOD_DOC(BaseContext,getObject,
+SP_CLASS_METHOD_KW_DOC(BaseContext,getObject,
                 "Returns the object by its path. Can be in this node or another, in function of the path... \n"
                 "examples:\n"
                 "   mecanicalState = node.getObject('DOFs')\n"
