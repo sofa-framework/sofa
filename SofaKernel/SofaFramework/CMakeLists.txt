@@ -144,8 +144,8 @@ set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
-foreach(lib ${Boost_LIBRARIES})
-    sofa_install_files_from_library(${lib})
+foreach(target Boost::system Boost::thread Boost::date_time Boost::filesystem Boost::locale Boost::chrono Boost::atomic)
+    sofa_install_files_from_target(${target})
 endforeach()
 
 
