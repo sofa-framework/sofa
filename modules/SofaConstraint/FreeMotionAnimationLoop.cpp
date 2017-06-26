@@ -183,7 +183,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    mop.propagateXAndV(freePos, freeVel, true); // apply projective constraints
+    mop.projectPositionAndVelocity(freePos, freeVel); // apply projective constraints
+    mop.propagateXAndV(freePos, freeVel);
 
     dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
@@ -200,7 +201,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     computeCollision(params);
     AdvancedTimer::stepEnd  ("Collision");
 
-    mop.propagateX(pos, false); // Why is this done at that point ???
+    mop.propagateX(pos); // Why is this done at that point ???
 
     if (displayTime.getValue())
     {
@@ -228,14 +229,15 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
             // xfree += dv * dt
             freePos.eq(freePos, dv, dt);
-            mop.propagateX(freePos, false); // ignore projective constraints
+            mop.propagateX(freePos);
 
             cparams.setOrder(core::ConstraintParams::POS);
             constraintSolver->solveConstraint(&cparams, pos);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
 
-            mop.propagateV(vel, true); // apply projective constraints
+            mop.projectVelocity(vel); // apply projective constraints
+            mop.propagateV(vel);
             mop.projectResponse(dx);
             mop.propagateDx(dx, true);
 
@@ -249,7 +251,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             cparams.setV(freeVel);
 
             constraintSolver->solveConstraint(&cparams, pos, vel);
-            mop.propagateV(vel, true); // apply projective constraints
+            mop.projectVelocity(vel); // apply projective constraints
+            mop.propagateV(vel);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
             mop.projectResponse(dx);

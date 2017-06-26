@@ -204,7 +204,9 @@ using namespace core::behavior;
 
     void CompliantImplicitSolver::propagate(const core::MechanicalParams* params)
     {
-        simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
+        simulation::MechanicalProjectPositionAndVelocityVisitor project( params );
+        send( project );
+        simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor bob( params );
         send( bob );
     }
 
