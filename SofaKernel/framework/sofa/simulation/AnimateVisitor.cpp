@@ -179,7 +179,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
             //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
-            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
+            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )

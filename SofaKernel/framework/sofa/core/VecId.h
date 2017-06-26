@@ -24,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <sstream>
 #include <iostream>
@@ -150,8 +151,12 @@ class TStandardVec<V_MATDERIV, vaccess>
 public:
     typedef TVecId<V_MATDERIV, vaccess> MyVecId;
 
-    static MyVecId holonomicC()    { return MyVecId(1);}
-    static MyVecId nonHolonomicC() { return MyVecId(2);}
+    static MyVecId constraintJacobian()    { return MyVecId(1);} // jacobian matrix of constraints
+    static MyVecId mappingJacobian() { return MyVecId(2);}         // accumulated matrix of the mappings
+    static MyVecId holonomicC()    { return MyVecId(1);
+                                     dmsg_deprecated("") << "holonomicC is deprecated."
+                                                           "See VecId.h to remove this message and replace by constraintJacobian"
+                                                           "Update your code ! It will be removed after May 2018"; }
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)

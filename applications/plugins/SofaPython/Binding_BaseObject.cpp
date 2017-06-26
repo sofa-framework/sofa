@@ -86,9 +86,7 @@ extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
     BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
     char *valueString;
     PyObject *pyLoader;
-    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader))
-    {
-        PyErr_BadArgument();
+    if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
         return NULL;
     }
     BaseObject* loader=((PySPtr<Base>*)self)->object->toBaseObject();
@@ -134,6 +132,10 @@ extern "C" PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
     return PyString_FromString((node->getName()).c_str());
 }
 
+extern "C" PyObject * BaseObject_getAsACreateObjectParameter(PyObject * self, PyObject *args)
+{
+    return BaseObject_getLinkPath(self, args);
+}
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
@@ -149,6 +151,7 @@ SP_CLASS_METHOD(BaseObject,getPathName)
 SP_CLASS_METHOD(BaseObject,getLinkPath)
 SP_CLASS_METHOD(BaseObject,getSlaves)
 SP_CLASS_METHOD(BaseObject,getName)
+SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 

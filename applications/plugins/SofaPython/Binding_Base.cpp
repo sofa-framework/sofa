@@ -31,22 +31,23 @@ using namespace sofa::core::objectmodel;
 
 #include "PythonFactory.h"
 
-extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
-{
-    Base* obj=((PySPtr<Base>*)self)->object.get();
+// stop copypasting for the lord's sake
+static Base* get_base(PyObject* obj) {
+    return ((PySPtr<Base>*)obj)->object.get();
+}
+
+static PyObject * Base_findData(PyObject *self, PyObject *args ) {
+    Base* obj = get_base(self);
     char *dataName;
-    if (!PyArg_ParseTuple(args, "s",&dataName))
-    {
-        msg_error("Base_findData") <<"Base_findData_impl not a string\n";
-        Py_RETURN_NONE;
+    
+    if (!PyArg_ParseTuple(args, "s", &dataName)) {
+        return NULL;
     }
+    
     BaseData * data = obj->findData(dataName);
-    if (!data)
-    {
-        if( obj->hasField(dataName) )
-            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
-        else
-        {
+    if (!data) {
+        if( obj->hasField(dataName) ) {
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"; } else {
             msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
             std::stringstream s;
             obj->writeDatas(s,";");
@@ -69,19 +70,18 @@ extern "C" PyObject * Base_findData(PyObject *self, PyObject *args )
 }
 
 
-extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
-{
-    Base* obj=((PySPtr<Base>*)self)->object.get();
+static PyObject * Base_findLink(PyObject *self, PyObject *args) {
+    Base* obj = get_base(self);
     char *linkName;
-     if (!PyArg_ParseTuple(args, "s",&linkName))
-         Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "s", &linkName)) {
+        return NULL;
+    }
+    
     BaseLink * link = obj->findLink(linkName);
-    if (!link)
-    {
-        if( obj->hasField(linkName) )
+    if (!link) {
+        if( obj->hasField(linkName) ) {
             msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
-        else
-        {
+        } else {
             msg_error("Base_findLink")<<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'";
             std::stringstream s;
             obj->writeDatas(s,";");
@@ -97,91 +97,83 @@ extern "C" PyObject * Base_findLink(PyObject *self, PyObject *args)
 
 
 // Generic accessor to Data fields (in python native type)
-extern "C" PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name)
-{
-    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
+static PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name) {
+    Base* obj = get_base(o);
     char *attrName = PyString_AsString(attr_name);
 //    printf("Base_GetAttr type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
 
     // see if a Data field has this name...
-    if( BaseData * data = obj->findData(attrName) )
-    {
+    if( BaseData * data = obj->findData(attrName) ) {
         // special cases... from factory (e.g DisplayFlags, OptionsGroup)
-        if( PyObject* res = sofa::PythonFactory::toPython(data) )
+        if( PyObject* res = sofa::PythonFactory::toPython(data) ) {
             return res;
-        else // the data type is not known by the factory, let's create the right Python type....
+        } else {// the data type is not known by the factory, let's create the right Python type....
             return GetDataValuePython(data);
+        }
     }
 
     // see if a Link has this name...
-    if( BaseLink * link = obj->findLink(attrName) )
+    if( BaseLink * link = obj->findLink(attrName) ) {
         return GetLinkValuePython(link); // we have our link... let's create the right Python type....
-
+    }
+    
     //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
     return PyObject_GenericGetAttr(o,attr_name);
 }
 
-extern "C" int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v)
-{
+static int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v) {
     // attribute does not exist: see if a Data field has this name...
-    Base* obj=down_cast<Base>(((PySPtr<Base>*)o)->object.get());
+    Base* obj = get_base(o);
     char *attrName = PyString_AsString(attr_name);
 
 //    printf("Base_SetAttr name=%s\n",attrName);
-    if (BaseData * data = obj->findData(attrName))
-    {
+    if (BaseData * data = obj->findData(attrName)) {
         // data types in Factory can have a specific setter
-        if( PyObject* pyData = sofa::PythonFactory::toPython(data) )
+        if( PyObject* pyData = sofa::PythonFactory::toPython(data) ) {
             return PyObject_SetAttrString( pyData, "value", v );
-        else // the data type is not known by the factory, let's use the default implementation
+        } else {// the data type is not known by the factory, let's use the default implementation
             return SetDataValuePython(data,v);
+        }
     }
 
-    if (BaseLink * link = obj->findLink(attrName))
+    if (BaseLink * link = obj->findLink(attrName)) {
         return SetLinkValuePython(link,v);
-
+    }
+    
     return PyObject_GenericSetAttr(o,attr_name,v);
 }
 
-extern "C" PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/)
-{
+static PyObject * Base_getClassName(PyObject * self, PyObject * /*args*/) {
     // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
-    Base* node = ((PySPtr<Base>*)self)->object.get();
+    Base* node = get_base(self);
 
     return PyString_FromString(node->getClassName().c_str());
 }
 
-extern "C" PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/)
-{
+static PyObject * Base_getTemplateName(PyObject * self, PyObject * /*args*/) {
     // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
-    Base* node = ((PySPtr<Base>*)self)->object.get();
+    Base* node = get_base(self);
 
     return PyString_FromString(node->getTemplateName().c_str());
 }
 
-extern "C" PyObject * Base_getName(PyObject * self, PyObject * /*args*/)
-{
+static PyObject * Base_getName(PyObject * self, PyObject * /*args*/) {
     // BaseNode is not bound in SofaPython, so getPathName is bound in Node instead
-    Base* node = ((PySPtr<Base>*)self)->object.get();
+    Base* node = get_base(self);
 
     return PyString_FromString(node->getName().c_str());
 }
 
-extern "C" PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/)
-{
-    Base * component = ((PySPtr<Base>*)self)->object.get();
-
-    if(!component)
-    {
-        PyErr_BadArgument();
-        return NULL;
-    }
+static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
+    Base * component = get_base(self);
 
     const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
 
     PyObject * pyDict = PyDict_New();
-    for (size_t i=0; i<dataFields.size(); i++)
-        PyDict_SetItem(pyDict, PyString_FromString(dataFields[i]->getName().c_str()), GetDataValuePython(dataFields[i]));
+    for (size_t i=0; i<dataFields.size(); i++) {
+        PyDict_SetItem(pyDict, PyString_FromString(dataFields[i]->getName().c_str()), 
+                       GetDataValuePython(dataFields[i]));
+    }
 
     return pyDict;
 }
@@ -199,6 +191,6 @@ SP_CLASS_METHODS_END
 
 SP_CLASS_ATTRS_BEGIN(Base)
 //SP_CLASS_ATTR(Base,name)
-SP_CLASS_ATTRS_END
+SP_CLASS_ATTRS_END;
 
-SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(Base,Base)
+SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(Base, Base)

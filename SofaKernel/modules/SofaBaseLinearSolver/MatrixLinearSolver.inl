@@ -24,6 +24,8 @@
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
+#include <sofa/helper/BackTrace.h>
+
 namespace sofa {
 
 namespace component {
@@ -161,6 +163,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();
+
             //unsigned int nbRow=0, nbCol=0;
             //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
             //this->getMatrixDimension(&nbRow, &nbCol);

@@ -137,6 +137,25 @@ PythonScriptController::~PythonScriptController()
     }
 }
 
+
+void PythonScriptController::setInstance(PyObject* instance) {
+    // "trust me i'm an engineer"
+    if( m_ScriptControllerInstance ) {
+        Py_DECREF( m_ScriptControllerInstance );
+    }
+    
+    m_ScriptControllerInstance = instance;
+
+    // note: we don't use PyObject_Type as it returns a new reference which is
+    // not handled correctly in loadScript
+    m_ScriptControllerClass = (PyObject*)instance->ob_type;
+    
+    Py_INCREF( instance );
+    
+    refreshBinding();
+}
+
+
 void PythonScriptController::refreshBinding()
 {
     BIND_OBJECT_METHOD(onLoaded)
@@ -209,25 +228,7 @@ void PythonScriptController::loadScript()
                 return;
     }
 
-    BIND_OBJECT_METHOD(onLoaded)
-    BIND_OBJECT_METHOD(createGraph)
-    BIND_OBJECT_METHOD(initGraph)
-    BIND_OBJECT_METHOD(bwdInitGraph)
-    BIND_OBJECT_METHOD(onKeyPressed)
-    BIND_OBJECT_METHOD(onKeyReleased)
-    BIND_OBJECT_METHOD(onMouseButtonLeft)
-    BIND_OBJECT_METHOD(onMouseButtonRight)
-    BIND_OBJECT_METHOD(onMouseButtonMiddle)
-    BIND_OBJECT_METHOD(onMouseWheel)
-    BIND_OBJECT_METHOD(onBeginAnimationStep)
-    BIND_OBJECT_METHOD(onEndAnimationStep)
-    BIND_OBJECT_METHOD(storeResetState)
-    BIND_OBJECT_METHOD(reset)
-    BIND_OBJECT_METHOD(cleanup)
-    BIND_OBJECT_METHOD(onGUIEvent)
-    BIND_OBJECT_METHOD(onScriptEvent)
-    BIND_OBJECT_METHOD(draw)
-    BIND_OBJECT_METHOD(onIdle)
+    refreshBinding();
 }
 
 void PythonScriptController::doLoadScript()

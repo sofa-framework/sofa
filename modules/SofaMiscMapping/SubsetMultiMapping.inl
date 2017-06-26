@@ -49,6 +49,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
 
     unsigned Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size;
 
+
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
 
@@ -75,7 +76,6 @@ void SubsetMultiMapping<TIn, TOut>::init()
             jacobian->add( row, Nin*bcol +k, (SReal)1. );
         }
     }
-
     // finalize the Jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
         baseMatrices[i]->compress();
