@@ -22,6 +22,8 @@
 #ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
 #define SOFA_SIMULATION_SCENECHECKERVISTOR_H
 
+#include "config.h"
+
 #include <map>
 #include <sofa/simulation/Visitor.h>
 
@@ -31,7 +33,7 @@ namespace sofa
 namespace simulation
 {
 
-class SOFA_SIMULATION_CORE_API SceneCheckerVisitor : public Visitor
+class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
     SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
@@ -40,7 +42,7 @@ public:
     void validate(Node* node) ;
     virtual Result processNodeTopDown(Node* node) override ;
 private:
-    std::map<std::string,bool> m_pluginsrequired ;
+    std::map<std::string,bool> m_requiredPlugins ;
 };
 
 } // namespace simulation

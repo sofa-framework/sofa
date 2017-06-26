@@ -48,7 +48,7 @@ void SceneCheckerVisitor::validate(Node* node)
     node->getTreeObjects< RequiredPlugin >(&plugins) ;
 
     for(auto& plugin : plugins)
-        m_pluginsrequired[plugin->getName()] = true ;
+        m_requiredPlugins[plugin->getName()] = true ;
 
     execute(node) ;
 }
@@ -65,7 +65,7 @@ Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
                 std::string pluginName = it->second->getTarget() ;
                 std::string path = PluginManager::getInstance().findPlugin(pluginName) ;
                 if( PluginManager::getInstance().pluginIsLoaded(path)
-                    && m_pluginsrequired.find(pluginName) == m_pluginsrequired.end() )
+                    && m_requiredPlugins.find(pluginName) == m_requiredPlugins.end() )
                 {
                     msg_warning("SceneChecker") << "This scene is using component '" << object->getClassName() << "'. " << msgendl
                                                 << "This component is part of the '" << pluginName << "' plugin but there is no RequiredPlugin name='" << pluginName << "' directive in your scene." << msgendl
