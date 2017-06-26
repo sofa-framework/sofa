@@ -235,7 +235,7 @@ void MechanicalStateController<Vec1fTypes>::applyController()
 
 
     //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    //	//sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };

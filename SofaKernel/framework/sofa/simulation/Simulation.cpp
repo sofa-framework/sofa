@@ -203,7 +203,8 @@ void Simulation::init ( Node* root )
     {
         // Why do we need  a copy of the params here ?
         sofa::core::MechanicalParams mparams(*params);
-        root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+        root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     }
 
     root->execute<UpdateBoundingBoxVisitor>(params);
@@ -226,7 +227,8 @@ void Simulation::initNode( Node* node)
     //node->execute<MechanicalPropagateFreePositionVisitor>(params);
     {
         sofa::core::MechanicalParams mparams(*params);
-        node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        node->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+        node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
         /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
           mparams.x() = xfree;
           MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
@@ -301,7 +303,8 @@ void Simulation::reset ( Node* root )
 
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);
-    root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+    root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+    root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
 }

@@ -1736,9 +1736,9 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                         }
                     }
                 }
-                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor(core::MechanicalParams::defaultInstance()).execute(instrument->getContext());
+                sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor(core::MechanicalParams::defaultInstance()).execute(instrument->getContext());
                 sofa::simulation::UpdateMappingVisitor(core::ExecParams::defaultInstance()).execute(instrument->getContext());
-                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>();
+                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor>();
                 //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
             }
         }
