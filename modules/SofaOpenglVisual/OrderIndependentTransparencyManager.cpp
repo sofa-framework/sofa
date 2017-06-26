@@ -81,13 +81,17 @@ public:
     virtual const char* getClassName() const { return "VisualOITDrawVisitor"; }
 
 protected:
-    Shader* getShader(Node* node) const;
-    Shader* getShader(Node* node, const TagSet& t) const;
+    GLSLShader* getGLSLShader(const TagSet& tagSet) const;
+
+private:
+    typedef std::pair<OglOITShader*, TagSet> TaggedShader;
+    std::list<VisualOITDrawVisitor::TaggedShader> findShaders(Node* node, const TagSet& tagSet) const;
 
 private:
     VisualParams* visualParams;
     GLSLShader* defaultOITShader;
-    std::stack<GLSLShader*> nodeOITShaders;
+
+    std::list<std::list<TaggedShader>> nodeOITShaders;
 
 };
 
@@ -371,26 +375,42 @@ void OrderIndependentTransparencyManager::FrameBufferObject::releaseTextures()
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
 
-Shader* VisualOITDrawVisitor::getShader(Node* node) const
+GLSLShader* VisualOITDrawVisitor::getGLSLShader(const TagSet& tagSet) const
 {
-    return !node->shaders.empty() ? *node->shaders.begin() : nullptr;
+    if(!nodeOITShaders.empty())
+    {
+        const std::list<TaggedShader>& taggedShaders = nodeOITShaders.back();
+        for(std::list<VisualOITDrawVisitor::TaggedShader>::const_iterator itTaggedShader = taggedShaders.begin(); itTaggedShader != taggedShaders.end(); ++itTaggedShader)
+        {
+            if(itTaggedShader->second.includes(tagSet))
+                return itTaggedShader->first->accumulationShader();
+        }
+    }
+
+    return defaultOITShader;
 }
 
-Shader* VisualOITDrawVisitor::getShader(Node* node, const TagSet& t) const
+std::list<VisualOITDrawVisitor::TaggedShader> VisualOITDrawVisitor::findShaders(Node* node, const TagSet& tagSet) const
 {
-    if(t.empty())
+    std::list<TaggedShader> result;
+
+    for(Node::Sequence<Shader>::iterator it = node->shaders.begin(); it != node->shaders.end(); ++it)
     {
-        return getShader(node);
-    }
-    else
-    {
-        for(Node::Sequence<Shader>::iterator it = node->shaders.begin(), iend = node->shaders.end(); it != iend; ++it)
+        Shader* shader = *it;
+
+        TagSet shaderTagSet = shader->getTags();
+        if(shaderTagSet.includes(tagSet))
         {
-            if((*it)->getTags().includes(t))
-                return (*it);
+            OglOITShader* oitShader = dynamic_cast<OglOITShader*>(shader);
+            if(oitShader)
+                result.push_back(TaggedShader({ oitShader, shaderTagSet }));
         }
-        return node->get<Shader>(t, BaseContext::Local);
     }
+
+    if(!nodeOITShaders.empty())
+        result.insert(result.end(), nodeOITShaders.back().begin(), nodeOITShaders.back().end());
+
+    return result;
 }
 
 VisualOITDrawVisitor::Result VisualOITDrawVisitor::processNodeTopDown(Node* node)
@@ -402,20 +422,7 @@ VisualOITDrawVisitor::Result VisualOITDrawVisitor::processNodeTopDown(Node* node
     glMultMatrixd( glMatrix );
 #endif
 
-    GLSLShader* nodeOITShader = nullptr;
-
-    Shader* nodeShader = getShader(node, subsetsToManage);
-    if(nodeShader)
-    {
-        OglOITShader* oglOITShader = dynamic_cast<OglOITShader*>(nodeShader);
-        if(oglOITShader)
-            nodeOITShader = oglOITShader->accumulationShader();
-    }
-
-    if(!nodeOITShader)
-        nodeOITShader = !nodeOITShaders.empty() ? nodeOITShaders.top() : defaultOITShader;
-
-    nodeOITShaders.push(nodeOITShader);
+    nodeOITShaders.push_back(findShaders(node, subsetsToManage));
 
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::fwdVisualModel);
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::processVisualModel);
@@ -431,7 +438,7 @@ void VisualOITDrawVisitor::processNodeBottomUp(Node* node)
 {
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::bwdVisualModel);
 
-    nodeOITShaders.pop();
+    nodeOITShaders.pop_back();
 }
 
 void VisualOITDrawVisitor::fwdVisualModel(simulation::Node*, core::visual::VisualModel* vm)
@@ -458,11 +465,14 @@ void VisualOITDrawVisitor::bwdVisualModel(simulation::Node*,core::visual::Visual
 
 void VisualOITDrawVisitor::processVisualModel(Node*, VisualModel* vm)
 {
+    if(!vm->getTags().includes(subsetsToManage))
+        return;
+
     OglModel* oglModel = dynamic_cast<OglModel*>(vm);
     if(oglModel)
         oglModel->blendTransparency.setValue(false);
 
-    GLSLShader* oitShader = nodeOITShaders.top();
+    GLSLShader* oitShader = getGLSLShader(vm->getTags());
 
     oitShader->TurnOn();
     oitShader->SetInt(oitShader->GetVariable("HasTexture"), vm->hasTexture() ? 1 : 0);
