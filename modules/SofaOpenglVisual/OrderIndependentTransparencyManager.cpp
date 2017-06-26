@@ -91,7 +91,7 @@ private:
     VisualParams* visualParams;
     GLSLShader* defaultOITShader;
 
-    std::list<std::list<TaggedShader>> nodeOITShaders;
+    std::stack<std::list<TaggedShader>> nodeOITShaders;
 
 };
 
@@ -379,7 +379,7 @@ GLSLShader* VisualOITDrawVisitor::getGLSLShader(const TagSet& tagSet) const
 {
     if(!nodeOITShaders.empty())
     {
-        const std::list<TaggedShader>& taggedShaders = nodeOITShaders.back();
+        const std::list<TaggedShader>& taggedShaders = nodeOITShaders.top();
         for(std::list<VisualOITDrawVisitor::TaggedShader>::const_iterator itTaggedShader = taggedShaders.begin(); itTaggedShader != taggedShaders.end(); ++itTaggedShader)
         {
             if(itTaggedShader->second.includes(tagSet))
@@ -408,7 +408,7 @@ std::list<VisualOITDrawVisitor::TaggedShader> VisualOITDrawVisitor::findShaders(
     }
 
     if(!nodeOITShaders.empty())
-        result.insert(result.end(), nodeOITShaders.back().begin(), nodeOITShaders.back().end());
+        result.insert(result.end(), nodeOITShaders.top().begin(), nodeOITShaders.top().end());
 
     return result;
 }
@@ -422,7 +422,7 @@ VisualOITDrawVisitor::Result VisualOITDrawVisitor::processNodeTopDown(Node* node
     glMultMatrixd( glMatrix );
 #endif
 
-    nodeOITShaders.push_back(findShaders(node, subsetsToManage));
+    nodeOITShaders.push(findShaders(node, subsetsToManage));
 
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::fwdVisualModel);
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::processVisualModel);
@@ -438,7 +438,7 @@ void VisualOITDrawVisitor::processNodeBottomUp(Node* node)
 {
     for_each(this, node, node->visualModel, &VisualOITDrawVisitor::bwdVisualModel);
 
-    nodeOITShaders.pop_back();
+    nodeOITShaders.pop();
 }
 
 void VisualOITDrawVisitor::fwdVisualModel(simulation::Node*, core::visual::VisualModel* vm)
