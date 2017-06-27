@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaOpenglVisual/OglTexture.h>
+#include <SofaOpenglVisual/OglTextureCache.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -46,6 +47,7 @@ OglTexture::OglTexture()
     ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
     ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
+    ,cached(initData(&cached, (bool) true, "cached", "Cache Texture ?"))
     ,linearInterpolation(initData(&linearInterpolation, (bool) true, "linearInterpolation", "Interpolate Texture ?"))
     ,generateMipmaps(initData(&generateMipmaps, (bool) true, "generateMipmaps", "Generate mipmaps ?"))
     ,srgbColorspace(initData(&srgbColorspace, (bool) false, "srgbColorspace", "SRGB colorspace ?"))
@@ -69,7 +71,11 @@ OglTexture::OglTexture()
 
 OglTexture::~OglTexture()
 {
-    if (texture) delete texture;
+    if(!textureFilename.getValue().empty() && cached.getValue())
+        texture = OglTextureCache::Instance()->removeTexture(texture);
+
+    delete texture;
+
 //    if (img) delete img; // should be deleted by the texture (but what happens if the texture is never created ?) Why not use smart pointers for that kind of stuff?
 }
 
@@ -80,7 +86,11 @@ void OglTexture::setActiveTexture(unsigned short unit)
 
 void OglTexture::init()
 {
-    if (textureFilename.getFullPath().empty())
+    std::string filename = textureFilename.getFullPath();
+
+    texture = !filename.empty() && cached.getValue() ? OglTextureCache::Instance()->findTexture(filename) : nullptr;
+
+    if(filename.empty())
     {
         if (cubemapFilenamePosX.getFullPath().empty() &&
             cubemapFilenamePosY.getFullPath().empty() &&
@@ -177,31 +187,43 @@ void OglTexture::init()
     }
     else
     {
-        std::string filename = textureFilename.getFullPath();
-        if(sofa::helper::system::DataRepository.findFile(filename))
+        if(!texture)
         {
-            // Ordinary texture.
-            img = helper::io::Image::Create(textureFilename.getFullPath().c_str());
-        }
-        else
-        {
-            serr << "OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
-            //create dummy texture
-            if (img) { delete img; img=0; }
-            img = new helper::io::Image();
-            unsigned int dummyWidth = 128;
-            unsigned int dummyHeight = 128;
-            unsigned int dummyNbb = 8;
+            if(sofa::helper::system::DataRepository.findFile(filename))
+            {
+                // Ordinary texture.
+                img = helper::io::Image::Create(textureFilename.getFullPath().c_str());
+            }
+            else
+            {
+                serr << "OglTexture file " << textureFilename.getFullPath() << " not found." << sendl;
+                //create dummy texture
+                if (img) { delete img; img=0; }
+                img = new helper::io::Image();
+                unsigned int dummyWidth = 128;
+                unsigned int dummyHeight = 128;
+                unsigned int dummyNbb = 8;
 
-            img->init(dummyWidth, dummyHeight, dummyNbb);
+                img->init(dummyWidth, dummyHeight, dummyNbb);
 
-            //Make texture
-            unsigned char* data = img->getPixels();
+                //Make texture
+                unsigned char* data = img->getPixels();
 
-            for(std::size_t i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
-                data[i] = (unsigned char)128;
+                for(std::size_t i=0 ; i < dummyHeight*dummyWidth*(dummyNbb/8); i++)
+                    data[i] = (unsigned char)128;
+            }
         }
     }
+
+    if(!texture)
+    {
+        texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
+                generateMipmaps.getValue(), srgbColorspace.getValue(),
+                minLod.getValue(), maxLod.getValue());
+    }
+
+    if(!filename.empty() && cached.getValue())
+        OglTextureCache::Instance()->addTexture(textureFilename.getFullPath(), texture);
 
     OglShaderElement::init();
 }
@@ -225,12 +247,8 @@ void OglTexture::initVisual()
 //        return;
 //    }
 
-
-    if (texture) delete texture;
-    texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
-            generateMipmaps.getValue(), srgbColorspace.getValue(),
-            minLod.getValue(), maxLod.getValue());
-    texture->init();
+    if(texture && 0 == texture->getId())
+        texture->init();
 
     setActiveTexture(textureUnit.getValue());
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; ++it)

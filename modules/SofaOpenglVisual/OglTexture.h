@@ -58,6 +58,7 @@ protected:
     Data<unsigned short> textureUnit;
     Data<bool> enabled;
     Data<bool> repeat;
+    Data<bool> cached;
     Data<bool> linearInterpolation;
     Data<bool> generateMipmaps;
     Data<bool> srgbColorspace;

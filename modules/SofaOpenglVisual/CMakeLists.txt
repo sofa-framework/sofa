@@ -56,6 +56,7 @@ if(SOFA_HAVE_GLEW)
         OglShadowShader.h
         OglTexture.h
         OglTexturePointer.h
+        OglTextureCache.h
         OglVariable.h
         OglVariable.inl
         OglViewport.h
@@ -77,6 +78,7 @@ if(SOFA_HAVE_GLEW)
         OglShadowShader.cpp
         OglTexture.cpp
         OglTexturePointer.cpp
+        OglTextureCache.cpp
         OglVariable.cpp
         OglViewport.cpp
         PostProcessManager.cpp
