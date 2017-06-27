@@ -49,8 +49,14 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef SingleLink< QuadBendingSprings<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkTopology;
+
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
+
+
+    LinkTopology l_topology;
+
 protected:
     QuadBendingSprings();
 
