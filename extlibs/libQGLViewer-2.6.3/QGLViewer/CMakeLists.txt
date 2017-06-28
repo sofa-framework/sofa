@@ -49,12 +49,12 @@ find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
     message("QGLViewer: Using Qt5")
-    find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets REQUIRED)
+    find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets DBus REQUIRED)
 
-    SET(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets Qt5::DBus)
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Xml_LIBRARIES} ${Qt5DBus_LIBRARIES})
 
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Xml_LIBRARIES})
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
 else()

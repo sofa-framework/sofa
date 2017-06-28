@@ -155,13 +155,13 @@ find_package(Qt5 COMPONENTS Core QUIET)
 if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL DBus REQUIRED)
 
-    SET(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL)
-
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::DBus)
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5DBus_LIBRARIES})
     # target_include_directories(${EXT_QT_INCLUDES})
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
