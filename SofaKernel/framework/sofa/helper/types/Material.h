@@ -1,5 +1,5 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, v17.06                  *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
 *                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
@@ -19,32 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_MATERIAL_H_
-#define SOFA_CORE_LOADER_MATERIAL_H_
 
-#include <sofa/helper/types/Material.h>
+#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
+#define SOFA_HELPER_TYPES_MATERIAL_H_
+
+#include <sofa/core/core.h>
+#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-namespace loader
+namespace types
 {
 
-///The Material object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
-///The following lines is there to provide backward compatibility with existing code base.
-///This is just there for a transitional period of time and will be removed after 2018-01-07
-using sofa::helper::types::Material ;
+class SOFA_HELPER_API Material
+{
+public:
+    std::string 	name;		        /* name of material */
+    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
+    defaulttype::RGBAColor  ambient ;	/* ambient component */
+    defaulttype::RGBAColor  specular;	/* specular component */
+    defaulttype::RGBAColor  emissive;	/* emmissive component */
+    float  shininess;	                /* specular exponent */
+    bool   useDiffuse;
+    bool   useSpecular;
+    bool   useAmbient;
+    bool   useEmissive;
+    bool   useShininess;
+    bool   useTexture;
+    bool   useBumpMapping;
+    bool   activated;
+    std::string   textureFilename; // path to the texture linked to the material
+    std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
-//TODO(dmarchal 2017-06-13): Delete that around 2018-01-07
+    void setColor(float r, float g, float b, float a) ;
 
+    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
+    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
+    Material() ;
+    Material(const Material& mat) ;
+};
 
-} // namespace loader
+} // namespace types
 
-} // namespace core
+} // namespace helper
 
 } // namespace sofa
 
-#endif /* SOFA_CORE_LOADER_MATERIAL_H_ */
+#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */
