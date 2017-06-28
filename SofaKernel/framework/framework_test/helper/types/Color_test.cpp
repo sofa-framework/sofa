@@ -39,17 +39,20 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/defaulttype/RGBAColor.h>
 using sofa::defaulttype::RGBAColor ;
 
-class Color_Test : public Sofa_test<>
+class Color_Test : public Sofa_test<>,
+                   public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
     void SetUp() ;
-    void TearDown() ;;
+    void TearDown() ;
     void checkCreateFromString() ;
     void checkCreateFromDouble() ;
     void checkEquality() ;
     void checkGetSet() ;
     void checkColorDataField() ;
     void checkConstructors() ;
+    void checkStreamingOperator(const std::vector<std::string>&) ;
+    void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
 };
 
 void Color_Test::SetUp()
@@ -73,7 +76,6 @@ void Color_Test::checkCreateFromString()
     EXPECT_EQ( RGBAColor::fromString("blue"), RGBAColor(0.0,0.0,1.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("cyan"), RGBAColor(0.0,1.0,1.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("magenta"), RGBAColor(1.0,0.0,1.0,1.0) ) ;
-    EXPECT_EQ( RGBAColor::fromString("yellow"), RGBAColor(1.0,1.0,0.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("yellow"), RGBAColor(1.0,1.0,0.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("gray"), RGBAColor(0.5,0.5,0.5,1.0) ) ;
 
@@ -168,6 +170,55 @@ void Color_Test::checkGetSet()
     EXPECT_EQ(a, RGBAColor(1.0,2.0,3.0,4.0)) ;
 }
 
+void Color_Test::checkStreamingOperator(const std::vector<std::string>& p)
+{
+    assert(p.size()==3) ;
+
+    std::stringstream input ;
+    std::string result = p[1] ;
+    std::string successOrFail = p[2] ;
+
+    input << p[0] ;
+    RGBAColor color ;
+
+    input >> color ;
+
+    std::stringstream output ;
+    output << color ;
+
+
+    if(successOrFail == "S"){
+        EXPECT_FALSE( input.fail() ) << " Input was: " << input.str();
+        EXPECT_EQ(output.str(), result) << " Input was: " << input.str();
+    } else {
+        EXPECT_TRUE( input.fail() ) << " Input was: " << input.str();
+    }
+}
+
+void Color_Test::checkDoubleStreamingOperator(const std::vector<std::string>& p)
+{
+    assert(p.size()==4) ;
+    RGBAColor color1 ;
+    RGBAColor color2 ;
+
+    std::stringstream input ;
+    std::stringstream output ;
+    std::string result = p[1] ;
+    std::string successOrFail = p[2] ;
+
+    input << p[0] ;
+    input >> color1;
+    input >> color2 ;
+    output << color1 << " and " << color2 ;
+
+    if(successOrFail == "S"){
+        EXPECT_FALSE( input.fail() ) << " Input was: " << input.str();
+        EXPECT_EQ(output.str(), result) << " Input was: " << input.str();
+    } else {
+        EXPECT_TRUE( input.fail() ) << " Input was: " << input.str();
+    }
+}
+
 void Color_Test::checkColorDataField()
 {
     Data<RGBAColor> color ;
@@ -216,4 +267,62 @@ TEST_F(Color_Test, checkEquality)
 {
     this->checkEquality() ;
 }
+
+std::vector<std::vector<std::string>> testvalues =
+{
+    {"    0 0 0 0","0 0 0 0", "S"},
+
+    {"0 0 0 0","0 0 0 0", "S"},
+    {"1 2 3 4","1 2 3 4", "S"},
+    {"0 1 0","0 1 0 1", "S"},
+    {"1 2 3","1 2 3 1", "S"},
+    {"0 0 0 0 #Something","0 0 0 0", "S"},
+    {"0 A 0","", "F"},
+    {"A 0 0","", "F"},
+    {"0 0 A","", "F"},
+
+    {"#00000000","0 0 0 0", "S"},
+    {"#FFFFFFFF","1 1 1 1", "S"},
+    {"#ff00ff00","1 0 1 0", "S"},
+    {"#ff00FF00","1 0 1 0", "S"},
+    {"#000000","0 0 0 1", "S"},
+    {"#FFFFFF","1 1 1 1", "S"},
+    {"#FF00FF #AAFFFAA","1 0 1 1", "S"},
+    {"#F0F #AAAAAA","1 0 1 1", "S"},
+    {"#F0F0 #AAAAAA","1 0 1 0", "S"},
+
+    {"#XXZZBBGG", "", "F"},
+    {"#AAAFFFFBBDDCC","", "F"},
+
+    {"white", "1 1 1 1", "S"},
+    {"blue", "0 0 1 1", "S"},
+    {"black", "0 0 0 1", "S"},
+    {"white&black", "", "F"},
+
+    {"0 0 0 0 1 1 1 1","0 0 0 0 and 1 1 1 1", "S","DOUBLE"},
+    {"1 2 3 4 5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
+    {"1 2 3 4    5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
+    {"1 2 3 4   5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
+    {"0 0 0 1 1 1","", "F","DOUBLE"},
+
+    {"#00ff00ff #ff00ff00","0 1 0 1 and 1 0 1 0", "S","DOUBLE"},
+    {"black blue", "0 0 0 1 and 0 0 1 1", "S","DOUBLE"},
+} ;
+
+TEST_P(Color_Test, checkStreamingOperator)
+{
+    auto& p = GetParam();
+    if(p.size()==3)
+        this->checkStreamingOperator(p);
+    else if(p.size()==4)
+        this->checkDoubleStreamingOperator(p);
+    else
+        FAIL() << "There is a problem with this test.";
+}
+
+INSTANTIATE_TEST_CASE_P(checkStreamingOperator,
+                        Color_Test,
+                        ::testing::ValuesIn(testvalues));
+
+
 

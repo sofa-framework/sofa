@@ -19,32 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_MATERIAL_H_
-#define SOFA_CORE_LOADER_MATERIAL_H_
+#include <sstream>
+using std::stringstream ;
+
+#include <string>
+using std::string ;
+
+#include <sofa/core/objectmodel/Base.h>
+using sofa::core::objectmodel::Data ;
 
 #include <sofa/helper/types/Material.h>
-
-namespace sofa
-{
-
-namespace core
-{
-
-namespace loader
-{
-
-///The Material object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
-///The following lines is there to provide backward compatibility with existing code base.
-///This is just there for a transitional period of time and will be removed after 2018-01-07
 using sofa::helper::types::Material ;
 
-//TODO(dmarchal 2017-06-13): Delete that around 2018-01-07
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
+
+namespace sofa {
+
+class Material_test : public Sofa_test<>
+{
+public:
+
+    void checkConstructor()
+    {
+        Material m;
+        EXPECT_FALSE( m.activated );
+        EXPECT_TRUE( m.useAmbient );
+        EXPECT_TRUE( m.useDiffuse );
+        EXPECT_FALSE( m.useSpecular );
+        EXPECT_FALSE( m.useEmissive );
+        EXPECT_FALSE( m.useShininess );
+        EXPECT_FALSE( m.useTexture );
+        EXPECT_FALSE( m.useBumpMapping );
+    }
+
+    void checkDataRead(const std::string& testmat)
+    {
+        Material m1;
+        m1.name = "notdefault" ;
+        EXPECT_EQ( m1.name, "notdefault" ) ;
+
+        Data<Material> m;
+        m.setValue(m1) ;
+        EXPECT_EQ( m.getValue().name, "notdefault" ) ;
+
+        m.read( testmat );
+        EXPECT_EQ( m.getValue().name, "sofa_logo" ) ;
+        EXPECT_TRUE( m.getValue().useAmbient ) ;
+        EXPECT_TRUE( m.getValue().useDiffuse ) ;
+        EXPECT_TRUE( m.getValue().useSpecular ) ;
+        EXPECT_TRUE( m.getValue().useShininess ) ;
+        EXPECT_FALSE( m.getValue().useEmissive ) ;
+        EXPECT_EQ( m.getValueString(), testmat ) ;
+    }
+};
+
+TEST_F(Material_test, checkConstructor)
+{
+        checkConstructor();
+}
+
+TEST_F(Material_test, checkDataRead)
+{
+        checkDataRead("sofa_logo Diffuse 1 0.3 0.18 0.05 1 Ambient 1 0.05 0.02 0 1 Specular 1 1 1 1 1 Emissive 0 0 0 0 0 Shininess 1 1000 ");
+}
 
 
-} // namespace loader
 
-} // namespace core
-
-} // namespace sofa
-
-#endif /* SOFA_CORE_LOADER_MATERIAL_H_ */
+}// namespace sofa
