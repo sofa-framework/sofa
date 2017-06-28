@@ -2,14 +2,17 @@
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
-SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
+SET(qtplugins_dest_dir bin/plugins)
+SET(qtplatforms_dest_dir bin/plugins/platforms)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}")
+
 IF(APPLE)
-  SET(plugin_dest_dir runSofa.app/Contents)
-  SET(qtconf_dest_dir runSofa.app/Contents/Resources)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
-ENDIF(APPLE)
+    SET(qtconf_dest_dir runSofa.app/Contents/Resources)
+    SET(qtplugins_dest_dir runSofa.app/Contents/plugins)
+    SET(qtplatforms_dest_dir runSofa.app/Contents/MacOS)
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
+ENDIF()
 
 #--------------------------------------------------------------------------------
 # Install the  application, on Apple, the bundle is at the root of the
@@ -17,8 +20,7 @@ ENDIF(APPLE)
 INSTALL(TARGETS ${PROJECT_NAME} 
     BUNDLE DESTINATION . COMPONENT BundlePack
     RUNTIME DESTINATION bin COMPONENT BundlePack
-    LIBRARY DESTINATION lib COMPONENT  BundlePack
-    )
+    LIBRARY DESTINATION lib COMPONENT BundlePack)
 
 ## Install resource files
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION runSofa.app/Contents/MacOS/share/sofa COMPONENT BundlePack )
@@ -41,15 +43,15 @@ get_filename_component(QT_PLUGINS_PLATFORMS_DIR ${QtCocoaLocation} DIRECTORY)
 #--------------------------------------------------------------------------------
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
-INSTALL(DIRECTORY "${QT_PLUGINS_IMAGES_DIR}" DESTINATION ${plugin_dest_dir}/plugins COMPONENT BundlePack)
-INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${plugin_dest_dir}/../Contents/MacOS COMPONENT BundlePack)
+INSTALL(DIRECTORY "${QT_PLUGINS_IMAGES_DIR}" DESTINATION ${qtplugins_dest_dir} COMPONENT BundlePack)
+INSTALL(DIRECTORY "${QT_PLUGINS_PLATFORMS_DIR}" DESTINATION ${qtplatforms_dest_dir} COMPONENT BundlePack)
 
 #--------------------------------------------------------------------------------
 # install a qt.conf file
 # this inserts some cmake code into the install script to write the file
 INSTALL(CODE "
     file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"[Paths]\n Plugins = ../plugins \")
-    " COMPONENT BundlePack)
+" COMPONENT BundlePack)
 
 
 #--------------------------------------------------------------------------------
@@ -70,17 +72,18 @@ SET(DIRS ${QT_LIB_DIR_TEMP} ${CMAKE_INSTALL_PREFIX}/lib)
 # over.
 
 INSTALL(CODE "
-    file(GLOB_RECURSE QTPLUGINS
-      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+    file(GLOB_RECURSE QTPLUGINS_QTPLATFORMS
+        \"\${CMAKE_INSTALL_PREFIX}/${qtplugins_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\"
+        \"\${CMAKE_INSTALL_PREFIX}/${qtplatforms_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
     set(BU_CHMOD_BUNDLE_ITEMS ON)
     include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT BundlePack)
+    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS_QTPLATFORMS}\" \"${DIRS}\")
+" COMPONENT BundlePack)
 
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
 # where CPackConfig.cmake is created by including CPack
 # And then there's ways to customize this as well
 SET(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_SOURCE_DIR}/runSOFA.icns)
-set(CPACK_BINARY_DRAGNDROP ON)
+SET(CPACK_BINARY_DRAGNDROP ON)
 
 # include(CPack)

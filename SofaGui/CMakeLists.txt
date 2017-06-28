@@ -19,12 +19,12 @@ if(NOT SOFA_NO_OPENGL)
         set(QT5_NO_LINK_QTMAIN 1)
         find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
 
-        SET(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL)
+        SET(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Xml)
     else()
         set(QT4_NO_LINK_QTMAIN 1)
         find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGl QtXml)
 
-        SET(QT_TARGETS Qt4::Core Qt4::Gui Qt4::Xml Qt4::OpenGL)
+        SET(QT_TARGETS Qt4::Core Qt4::Gui Qt4::OpenGL Qt4::Xml)
     endif()
 
     if(WIN32)
