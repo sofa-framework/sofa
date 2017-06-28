@@ -96,6 +96,11 @@ using sofa::core::objectmodel::IdleEvent ;
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor ;
 
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::SceneCheckerVisitor ;
+
+using sofa::core::ExecParams ;
+
 namespace sofa
 {
 
@@ -771,7 +776,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
-    //  displayComputationTime(m_displayComputationTime);  // (FF) This can be set outside of the GUI and should not be changed implicitly by the GUI
     stopDumpVisitor();
 }
 
@@ -854,6 +858,11 @@ void RealGUI::fileOpen()
             else
                 fileOpen (s.toStdString());
     }
+
+    /// We want to warn user that there is component that are implemented in specific plugin
+    /// and that there is no RequiredPlugin in their scene.
+    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+    checker.validate(mSimulation.get()) ;
 }
 
 //------------------------------------
