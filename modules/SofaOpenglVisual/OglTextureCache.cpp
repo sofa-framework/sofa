@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaOpenglVisual/OglTextureCache.h>
+#include <algorithm>
 
 namespace sofa {
 
