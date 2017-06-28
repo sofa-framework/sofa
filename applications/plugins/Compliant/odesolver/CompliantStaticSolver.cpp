@@ -130,7 +130,8 @@ void CompliantStaticSolver::ls_secant(helper& op,
 
         if( k ) {
             // update forces
-            op.mec.propagateX(pos, true);
+            op.mec.projectPosition(pos); // apply projective constraints
+            op.mec.propagateX(pos);
             op.forces( op.f );
         }
         
@@ -205,7 +206,8 @@ struct CompliantStaticSolver::potential_energy {
         op.set(pos, tmp, dir, x);
         
         // update forces/energy
-        op.mec.propagateX(pos, true);
+        op.mec.projectPosition(pos); // apply projective constraints
+        op.mec.propagateX(pos);
 
         // TODO apparently, this is not needed
         // op.forces(op.f);
@@ -268,7 +270,8 @@ void CompliantStaticSolver::ls_brent(helper& op,
     // op.set(pos, pos, dir, res.x);
     
     // TODO do we want to do this ?
-    // op.mec.propagateX(pos, true);
+    // op.mec.projectPosition(pos); // apply projective constraints
+    // op.mec.propagateX(pos);
     // op.forces(op.f);
     
 }
@@ -484,7 +487,8 @@ int CompliantStaticSolverClass = core::RegisterObject("Static solver")
         if( error <= augmented ) {
             
             // TODO don't waste time if we have no constraints
-            op.mec.propagateX(pos, true);
+            op.mec.projectPosition(pos); // apply projective constraints
+            op.mec.propagateX(pos);
             op.forces(op.f);
 
             AugmentedLagrangianVisitor vis(&op.mec.mparams, lambda.id() );

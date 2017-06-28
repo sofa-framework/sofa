@@ -444,7 +444,8 @@ static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * 
     const MechanicalParams* instance = MechanicalParams::defaultInstance();
 
     // only mechanical mappings
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>( instance );
+    node->execute<MechanicalProjectPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance()); // projective constraints
+    node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>( instance );
 
     // propagating position and velocity through non mechanical mappings
     node->execute<UpdateMappingVisitor>(instance);
@@ -481,38 +482,43 @@ static PyObject * Node_initVisual(PyObject *self, PyObject * /*args*/) {
 }
 
 
+static PyObject * Node_getAsACreateObjectParameter(PyObject * self, PyObject *args)
+{
+    return Node_getLinkPath(self, args);
+}
 
 SP_CLASS_METHODS_BEGIN(Node)
-SP_CLASS_METHOD(Node, executeVisitor)
-SP_CLASS_METHOD(Node, getRoot)
-SP_CLASS_METHOD(Node, simulationStep)
-SP_CLASS_METHOD(Node, reset)
-SP_CLASS_METHOD(Node, init)
+SP_CLASS_METHOD(Node,executeVisitor)
+SP_CLASS_METHOD(Node,getRoot)
+SP_CLASS_METHOD(Node,simulationStep)
+SP_CLASS_METHOD(Node,reset)
+SP_CLASS_METHOD(Node,init)
 SP_CLASS_METHOD(Node, initVisual)
-SP_CLASS_METHOD_KW(Node, getChild)
-SP_CLASS_METHOD(Node, getChildren)
-SP_CLASS_METHOD(Node, getParents)
-SP_CLASS_METHOD(Node, getPathName)
-SP_CLASS_METHOD(Node, getRootPath)
-SP_CLASS_METHOD(Node, getLinkPath)
-SP_CLASS_METHOD(Node, createChild)
-SP_CLASS_METHOD_KW(Node, addObject)
-SP_CLASS_METHOD(Node, addObject_noWarning) // deprecated
-SP_CLASS_METHOD(Node, removeObject)
-SP_CLASS_METHOD(Node, addChild)
-SP_CLASS_METHOD(Node, removeChild)
-SP_CLASS_METHOD(Node, moveChild)
-SP_CLASS_METHOD(Node, detachFromGraph)
-SP_CLASS_METHOD(Node, sendScriptEvent)
-SP_CLASS_METHOD(Node, sendKeypressedEvent)
-SP_CLASS_METHOD(Node, sendKeyreleasedEvent)
-SP_CLASS_METHOD(Node, getMechanicalState)
-SP_CLASS_METHOD(Node, getMechanicalMapping)
-SP_CLASS_METHOD(Node, getMass)
-SP_CLASS_METHOD(Node, getForceField)
-SP_CLASS_METHOD(Node, propagatePositionAndVelocity)
-SP_CLASS_METHOD(Node, isInitialized)
-SP_CLASS_METHOD(Node, printGraph)
+SP_CLASS_METHOD_KW(Node,getChild)
+SP_CLASS_METHOD(Node,getChildren)
+SP_CLASS_METHOD(Node,getParents)
+SP_CLASS_METHOD(Node,getPathName)
+SP_CLASS_METHOD(Node,getRootPath)
+SP_CLASS_METHOD(Node,getLinkPath)
+SP_CLASS_METHOD(Node,createChild)
+SP_CLASS_METHOD_KW(Node,addObject)
+SP_CLASS_METHOD(Node,addObject_noWarning) // deprecated
+SP_CLASS_METHOD(Node,removeObject)
+SP_CLASS_METHOD(Node,addChild)
+SP_CLASS_METHOD(Node,removeChild)
+SP_CLASS_METHOD(Node,moveChild)
+SP_CLASS_METHOD(Node,detachFromGraph)
+SP_CLASS_METHOD(Node,sendScriptEvent)
+SP_CLASS_METHOD(Node,sendKeypressedEvent)
+SP_CLASS_METHOD(Node,sendKeyreleasedEvent)
+SP_CLASS_METHOD(Node,getMechanicalState)
+SP_CLASS_METHOD(Node,getMechanicalMapping)
+SP_CLASS_METHOD(Node,getMass)
+SP_CLASS_METHOD(Node,getForceField)
+SP_CLASS_METHOD(Node,propagatePositionAndVelocity)
+SP_CLASS_METHOD(Node,isInitialized)
+SP_CLASS_METHOD(Node,printGraph)
+SP_CLASS_METHOD(Node,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Node, Node, Context)

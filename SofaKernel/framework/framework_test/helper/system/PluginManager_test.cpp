@@ -28,7 +28,14 @@
 
 using sofa::helper::system::PluginManager;
 
-static std::string pluginName = "TestPlugin";;
+static std::string pluginName = "TestPlugin" ;
+
+#ifdef NDEBUG
+static std::string pluginFileName = "TestPlugin" ;
+#else
+static std::string pluginFileName = "TestPlugin_d" ;
+#endif //N_DEBUG
+
 static std::string nonpluginName = "RandomNameForAPluginButHopeItDoesNotExist";
 
 const std::string dotExt = "." + sofa::helper::system::DynamicLibrary::extension;
@@ -61,10 +68,10 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
 {
     sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
 
-    std::string pluginPath = pluginDir + separator + prefix + pluginName + dotExt;
+    std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
     std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
-    std::cout << pluginPath << std::endl;
+    std::cout << "Loading plugin: " << pluginPath << std::endl;
 
     ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
     ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));

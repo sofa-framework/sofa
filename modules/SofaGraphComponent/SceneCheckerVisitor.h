@@ -19,58 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define TESTPLUGIN_COMPONENT_B_CPP
+#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
+#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
 
-#include "ComponentB.h"
+#include "config.h"
 
-#include <sofa/core/ObjectFactory.h>
-
+#include <map>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {
 
-namespace test
+namespace simulation
 {
 
-template<class T>
-ComponentB<T>::ComponentB()
+class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
-}
+public:
+    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
+    virtual ~SceneCheckerVisitor() ;
 
+    void validate(Node* node) ;
+    virtual Result processNodeTopDown(Node* node) override ;
+private:
+    std::map<std::string,bool> m_requiredPlugins ;
+};
 
-template<class T>
-ComponentB<T>::~ComponentB()
-{
-}
-
-SOFA_DECL_CLASS(ComponentB)
-
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-#ifndef SOFA_FLOAT
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< ComponentB<float> >()
-    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-;
-
-#ifndef SOFA_FLOAT
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
-#endif
-
-
-
-} // namespace test
+} // namespace simulation
 
 } // namespace sofa
+
+#endif

@@ -416,8 +416,6 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
         return NULL;
     };
 }
-       
-
 
 
 

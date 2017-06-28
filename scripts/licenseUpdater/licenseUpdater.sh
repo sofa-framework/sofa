@@ -9,7 +9,8 @@ usage() {
 }
 
 if [[ "$#" = 4 ]]; then
-    SRC_DIR="$1"
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    SRC_DIR="$(cd "$1" && pwd)"
     LICENSE="$2"
     YEAR="$3"
     VERSION="$4"
@@ -87,20 +88,20 @@ update-header() {
     escaped_header="$(echo "$header" | escape-for-perl)"
     # search for /***(78)***...is free software...***(78)***/ and replace with escaped header
     perl -0777 -i -pe "s/(\/)(\*){78}(.*?)is free software(.*?)(\*){78}(\/)/$escaped_header/s" "$file"
-    rm "$file.bak" 2> /dev/null # Created by Windows only
+    rm -f "$file.bak" 2> /dev/null # Created by Windows only
 }
 
 main() {
     if [ "$LICENSE" == "auto" ]; then
-        if [ ! -e "./LGPL_header.template" ] || [ ! -e "./GPL_header.template" ]; then
-            echo "ERROR: missing LGPL_header.template and/or GPL_header.template in $(pwd)"; exit 1
+        if [ ! -e "$SCRIPT_DIR/LGPL_header.template" ] || [ ! -e "$SCRIPT_DIR/GPL_header.template" ]; then
+            echo "ERROR: missing LGPL_header.template and/or GPL_header.template in $SCRIPT_DIR"; exit 1
         fi
-        LGPL_HEADER="$(prepare-header ./LGPL_header.template)"
-        GPL_HEADER="$(prepare-header ./GPL_header.template)"
+        LGPL_HEADER="$(prepare-header $SCRIPT_DIR/LGPL_header.template)"
+        GPL_HEADER="$(prepare-header $SCRIPT_DIR/GPL_header.template)"
     else
-        file="./"$LICENSE"_header.template"
+        file="${SCRIPT_DIR}/${LICENSE}_header.template"
         if [ ! -e "$file" ]; then
-            echo "ERROR: missing $file in $(pwd)"; exit 1
+            echo "ERROR: missing $file in $SCRIPT_DIR"; exit 1
         fi
         LICENSE_HEADER="$(prepare-header "$file")"
     fi

@@ -19,58 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define TESTPLUGIN_COMPONENT_B_CPP
 
-#include "ComponentB.h"
+#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
+#define SOFA_HELPER_TYPES_MATERIAL_H_
 
-#include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/core.h>
+#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
 
-namespace test
+namespace helper
 {
 
-template<class T>
-ComponentB<T>::ComponentB()
+namespace types
 {
-}
 
-
-template<class T>
-ComponentB<T>::~ComponentB()
+class SOFA_HELPER_API Material
 {
-}
+public:
+    std::string 	name;		        /* name of material */
+    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
+    defaulttype::RGBAColor  ambient ;	/* ambient component */
+    defaulttype::RGBAColor  specular;	/* specular component */
+    defaulttype::RGBAColor  emissive;	/* emmissive component */
+    float  shininess;	                /* specular exponent */
+    bool   useDiffuse;
+    bool   useSpecular;
+    bool   useAmbient;
+    bool   useEmissive;
+    bool   useShininess;
+    bool   useTexture;
+    bool   useBumpMapping;
+    bool   activated;
+    std::string   textureFilename; // path to the texture linked to the material
+    std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
-SOFA_DECL_CLASS(ComponentB)
+    void setColor(float r, float g, float b, float a) ;
 
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-#ifndef SOFA_FLOAT
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< ComponentB<float> >()
-    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-;
+    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
+    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
+    Material() ;
+    Material(const Material& mat) ;
+};
 
-#ifndef SOFA_FLOAT
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
-#endif
+} // namespace types
 
-
-
-} // namespace test
+} // namespace helper
 
 } // namespace sofa
+
+#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */

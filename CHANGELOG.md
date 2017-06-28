@@ -4,7 +4,50 @@
 
 ## On master branch (not released yet)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v16.12...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v17.06...HEAD)
+
+
+### New features
+
+**For users**
+
+**For developpers**
+
+
+### Improvements
+
+**Modules**
+
+**Applications and Plugins**
+
+**Scenes**
+
+
+### Bug Fixes
+
+**Modules**
+    
+**Applications and Plugins**
+
+**Scenes**
+
+
+### Cleaning
+
+**Modules**
+
+**Applications and Plugins**
+
+**Scenes**
+
+
+____________________________________________________________
+
+
+
+## [v17.06](https://github.com/sofa-framework/sofa/tree/v17.06) (2017-06-15)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v16.12...v17.06)
 
 
 ### New features
@@ -25,6 +68,7 @@
 - Implement an implicit version of each of the msg_* API allowing to write  
      msg_info() << "Hello"  in place for msg_info(this) << Hello" 
 - CImgPlugin : creation of a dedicated plugin for image loading based on CImg (#185)
+- Remove deprecated miniBoost dependency (#273)
 
 
 ### Improvements
@@ -35,7 +79,7 @@
     - speed up spheres rendering + code cleaning (#170)
     - updates externs/gtest to a fresh checkout (#213)
     - auto-init/cleanup libraries (#168)
-    - Improve msg_api and logging of message (#190)
+    - Improve and clean msg_api and logging of message (#190, #255, #275). See [documentation](https://www.sofa-framework.org/community/doc/programming-with-sofa/logger/) for more information.
     - Add CMake option to limit cores used to build specific targets (#254)
 - [SofaKernel]
     - Update the RichConsoleStyleMessageFormatter  (#126)
@@ -54,31 +98,20 @@
     - add tests for RequiredPlugin (#258)
 - [SofaHelper]
     - GLSL: load shader source code from a standard string (#158)
+- [SofaBaseTopology]
+    - GridTopology : implement "flat" grids in 1 or 2 dimension by using setting grid resolution to "1" in the corresponding axis, and associated examples (#270)
+    - add tests for RegularGridTopology (#270)
 - [SofaEngine]
     - BREAKING: Add oriented box feature to BoxROI (#108)
 - [SofaConstraint]
     - add instantiation of constraint corrections with Vec2f (#157)
 - [SofaOpenglVisual]
     - add tests for ClipPlane (#258)
-    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaVolumetricData]
     - add tests for DistanceGrid (#258)
     - add tests for Light (#258)
-    - Trivial replacement of std::cout by msg_info (#255)
 - [SofaBoundaryCondition]
     - add tests for ConstantForceField, some of them are OpenIssue demonstrating existing problem, as crashing sofa when using negative or too large values in indices  (#258)
-- [SofaNonUniformFem]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaSparseSolver]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaSphFluid]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaTopology]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaUserInteraction]
-    - Trivial replacement of std::cout by msg_info (#255)
-- [SofaValidation]
-    - Trivial replacement of std::cout by msg_info (#255)
 - [CI]
     - improvement of all test scripts
 
@@ -88,7 +121,6 @@
 - [SceneCreator]
     - Cosmetic changes and remove un-needed include (#169)
 - [SofaPython] 
-    - Trivial replacement of std::cout by msg_info (#255)
     - Macros to bind "sequence" types (#165)
     - ModuleReload (#214)
     - light module reload (#202)
@@ -100,6 +132,7 @@
     - update to use the new TestMessageHandler where msg_error generates test failures (#213)
     - add tests for TestMessageHandler (#213)
 
+
 ### Bug Fixes
 
 **Modules**
@@ -109,7 +142,9 @@
     - use the cmake install DIRECTORY instead of FILES to preserve the files hierarchy when installing (#138)
     - fixing issue related to parsing attributes with atof/atoi (#161)
     - unify color datafield (#206)
-    - Fix several failling tests for a "close to green" dashboard (#271)
+    - Fix CMakeLists bug on Sofa.ini and installedSofa.ini creation (#291)
+    - Fix a lot of failing tests (#271, #279)
+    - Fix compilation with SOFA_FLOATING_POINT_TYPE as float (#262)
 - [SofaKernel]
     - Fix the Filemonitor_test random failure on MacOs (#143)
     - implement a numerical integration for triangle (#249)
@@ -125,15 +160,22 @@
     - MechanicalObject: cleaning: symbols & include (#249)
 - [SofaPhysicsAPI]
     - fix compilation of the project (#167)
+- [SofaUserInteraction]
+    - MouseInteractor: FIX the mouse picking on Mechanical Object (#282)
 
 **Applications and Plugins**
 - [image]
     - Fixes #135 : Check that SofaPython is found before including python directory (#137)
     - Fixes #136 : Use the cmake install DIRECTORY instead of FILES (#138)  
+- [LeapMotion]
+    - FIX compilation for LeapMotion plugin due to moved files (#296)
 - [runSofa]
     - Fix minor consistency issues related to the readOnly flag (#115)
 - [SofaTest]
     - repair the minor API breaks introduced by PR #213 (#269)
+
+**Scenes**
+- Components/engine/GenerateGrid.scn was fixed (#303)
 
 
 ### Cleaning
@@ -145,6 +187,11 @@
 - [SofaKernel]
     - clean DefaultPipeline.cpp/h (API BREAKING) 
     - clean the attributes names in BoxROI (API BREAKING)
+    - TetrahedronFEMForceField clean code (#270)
+    - GridTopology : clean the code & factor the constructor (#270)
+    - RegularGridTopology : clean the constructor's code & remove NDEBUG code (#270)
+    - MechanicalObject : removal of code specific to the grid (#270)
+
 - [SofaVolumetricData]
     - Light: clean and strenghening the interface (#258)
     - DistanceGrid

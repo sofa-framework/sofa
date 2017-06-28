@@ -19,58 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define TESTPLUGIN_COMPONENT_B_CPP
+#include <sstream>
+using std::stringstream ;
 
-#include "ComponentB.h"
+#include <string>
+using std::string ;
 
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/objectmodel/Base.h>
+using sofa::core::objectmodel::Data ;
 
+#include <sofa/helper/types/Material.h>
+using sofa::helper::types::Material ;
 
-namespace sofa
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
+
+namespace sofa {
+
+class Material_test : public Sofa_test<>
 {
+public:
 
-namespace test
-{
+    void checkConstructor()
+    {
+        Material m;
+        EXPECT_FALSE( m.activated );
+        EXPECT_TRUE( m.useAmbient );
+        EXPECT_TRUE( m.useDiffuse );
+        EXPECT_FALSE( m.useSpecular );
+        EXPECT_FALSE( m.useEmissive );
+        EXPECT_FALSE( m.useShininess );
+        EXPECT_FALSE( m.useTexture );
+        EXPECT_FALSE( m.useBumpMapping );
+    }
 
-template<class T>
-ComponentB<T>::ComponentB()
+    void checkDataRead(const std::string& testmat)
+    {
+        Material m1;
+        m1.name = "notdefault" ;
+        EXPECT_EQ( m1.name, "notdefault" ) ;
+
+        Data<Material> m;
+        m.setValue(m1) ;
+        EXPECT_EQ( m.getValue().name, "notdefault" ) ;
+
+        m.read( testmat );
+        EXPECT_EQ( m.getValue().name, "sofa_logo" ) ;
+        EXPECT_TRUE( m.getValue().useAmbient ) ;
+        EXPECT_TRUE( m.getValue().useDiffuse ) ;
+        EXPECT_TRUE( m.getValue().useSpecular ) ;
+        EXPECT_TRUE( m.getValue().useShininess ) ;
+        EXPECT_FALSE( m.getValue().useEmissive ) ;
+        EXPECT_EQ( m.getValueString(), testmat ) ;
+    }
+};
+
+TEST_F(Material_test, checkConstructor)
 {
+        checkConstructor();
+}
+
+TEST_F(Material_test, checkDataRead)
+{
+        checkDataRead("sofa_logo Diffuse 1 0.3 0.18 0.05 1 Ambient 1 0.05 0.02 0 1 Specular 1 1 1 1 1 Emissive 0 0 0 0 0 Shininess 1 1000 ");
 }
 
 
-template<class T>
-ComponentB<T>::~ComponentB()
-{
-}
 
-SOFA_DECL_CLASS(ComponentB)
-
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-#ifndef SOFA_FLOAT
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< ComponentB<float> >()
-    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-;
-
-#ifndef SOFA_FLOAT
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
-#endif
-
-
-
-} // namespace test
-
-} // namespace sofa
+}// namespace sofa

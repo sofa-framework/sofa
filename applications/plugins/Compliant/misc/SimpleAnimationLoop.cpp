@@ -96,11 +96,16 @@ class SOFA_Compliant_API SimpleAnimateVisitor : public Visitor {
             using namespace sofa::core;
             
             // this is needed
-            MechanicalPropagatePositionAndVelocityVisitor propagate(&mparams,
-                                                                    next,
-                                                                    VecCoordId::position(),
-                                                                    VecDerivId::velocity(),
-                                                                    true);
+            MechanicalProjectPositionAndVelocityVisitor project(&mparams,
+                                                                next,
+                                                                VecCoordId::position(),
+                                                                VecDerivId::velocity());
+            project.execute(node);
+            MechanicalPropagateOnlyPositionAndVelocityVisitor propagate(&mparams,
+                                                                        next,
+                                                                        VecCoordId::position(),
+                                                                        VecDerivId::velocity(),
+                                                                        true);
             propagate.execute(node);
 
             // stop after first solver

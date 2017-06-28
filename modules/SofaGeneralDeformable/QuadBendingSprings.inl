@@ -103,7 +103,6 @@ void QuadBendingSprings<DataTypes>::init()
 
     if( !l_topology.get() )
     {
-        sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
         l_topology = down_cast<core::topology::BaseMeshTopology>(this->getContext()->getMeshTopology());
         if( !l_topology ) { serr<<"No BaseMeshTopology found."<<sendl; return; }
         else sout<<"using BaseMeshTopology "<<l_topology.get()->getPathName()<<sendl;

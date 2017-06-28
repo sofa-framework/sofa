@@ -67,6 +67,7 @@ public:
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  Vec4f& colour) = 0 ;
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour) = 0;
 
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour) =  0;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const Vec4f& colour) = 0 ;

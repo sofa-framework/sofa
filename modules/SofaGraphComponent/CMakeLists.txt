@@ -16,6 +16,7 @@ set(HEADER_FILES
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
+    SceneCheckerVisitor.h
     config.h
     initGraphComponent.h
 )
@@ -34,12 +35,13 @@ set(SOURCE_FILES
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp
+    SceneCheckerVisitor.cpp
     initGraphComponent.cpp
 )
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore SofaSimulationTree)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GRAPH_COMPONENT")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

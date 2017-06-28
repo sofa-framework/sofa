@@ -236,7 +236,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         {
             // Triangles
             int nbTriangles = topology->getNbTriangles();
-            glBegin(GL_TRIANGLES);
             for (int i=0; i<nbTriangles; i++)
             {
                 Vec4f color = isnan(triData[i])
@@ -250,7 +249,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
                     color, color, color);
             }
-            glEnd();
         }
         else if( !pointTriData.empty() )
         {
@@ -289,7 +287,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         if( !quadData.empty() )
         {
             int nbQuads = topology->getNbQuads();
-            glBegin(GL_QUADS);
             for (int i=0; i<nbQuads; i++)
             {
                 Vec4f color = isnan(quadData[i])
@@ -302,7 +299,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ], m_normals[ t[3] ],
                     color, color, color, color);
             }
-            glEnd();
         }
         else if( !pointQuadData.empty() )
         {
@@ -349,7 +345,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
         // Just the points
         glPointSize(10);
-        glBegin(GL_POINTS);
         for (unsigned int i=0; i<x.size(); ++i)
         {
             Vec4f color = isnan(ptData[i])
@@ -357,7 +352,6 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                 : defaulttype::RGBAColor::fromVec4(eval(ptData[i]));
             vparams->drawTool()->drawPoint(x[i], color);
         }
-        glEnd();
 
     } else if (bDrawPointData) {
         helper::ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);

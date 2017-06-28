@@ -184,7 +184,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
             //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
-            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
+            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )
@@ -197,13 +197,16 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
         {
             helper::ScopedAdvancedTimer step("MechanicalPropagatePositionAndVelocity");
-            MechanicalPropagatePositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-                                                          VecDerivId::dx(),
-#endif
-                                                          true).execute( node );
-        }
-        
+	        MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
+	            sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+	        ).execute( node );
+	        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+	#ifdef SOFA_SUPPORT_MAPPED_MASS
+	                VecDerivId::dx(),
+	#endif
+	                true).execute( node );
+	    }
+
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);
 

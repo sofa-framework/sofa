@@ -431,7 +431,7 @@ namespace sofa
 					if (node)
 					{
 						sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-						sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+						sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
 						sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
 						sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 					}
