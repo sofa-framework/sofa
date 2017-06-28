@@ -69,10 +69,18 @@ struct PluginManager_test: public ::testing::Test
     void TearDown()
     {
         PluginManager&pm = PluginManager::getInstance();
-
         //empty loaded plugin(s)
-        for (PluginManager::PluginMap::iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
-            ASSERT_TRUE(pm.unloadPlugin((*it).first));
+        std::vector<std::string> toDelete;
+        for (PluginManager::PluginMap::const_iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
+        {
+            toDelete.push_back((*it).first);
+            //std::cout << pm.getPluginMap().size() << std::endl;
+            //std::cout << "Try to unload Plugin :" << (*it).first << std::endl;
+            //ASSERT_TRUE(pm.unloadPlugin((*it).first));
+        }
+
+        for(std::string p : toDelete)
+            ASSERT_TRUE(pm.unloadPlugin(p));
 
         ASSERT_EQ(pm.getPluginMap().size(), 0u);
     }
@@ -86,8 +94,11 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
     std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
+    std::cout << pm.getPluginMap().size() << std::endl;
     ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
+    std::cout << pm.getPluginMap().size() << std::endl;
     ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
+    std::cout << pm.getPluginMap().size() << std::endl;
 
     ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
     ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
