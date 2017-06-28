@@ -497,7 +497,6 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
     normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
 
-
     drawTriangleStrip(points, normals,colour);
     if (radius1 > 0) drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
     if (radius2 > 0) drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);

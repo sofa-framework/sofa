@@ -78,7 +78,6 @@ private:
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges;
 
-
     float r,g,b,a;
     // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 

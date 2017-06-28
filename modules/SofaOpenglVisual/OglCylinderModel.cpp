@@ -48,6 +48,10 @@ OglCylinderModel::OglCylinderModel()
     , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
 	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+    , r(0.5f)
+    , g(0.5f)
+    , b(0.5f)
+    , a(1.0f)
 {
 }
 
