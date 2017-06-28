@@ -1183,11 +1183,12 @@ void VisualModelImpl::updateVisual()
             }
         }
         computePositions();
-        updateBuffers();
-
         computeNormals();
         if (m_updateTangents.getValue())
             computeTangents();
+
+        updateBuffers();
+
         d_isModified.setValue( false );
     }
 

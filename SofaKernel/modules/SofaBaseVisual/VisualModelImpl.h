@@ -138,6 +138,8 @@ public:
 
     virtual Data<VecDeriv>*	write(core::VecDerivId v )
     {
+        d_isModified.setValue( true );
+
         if( v == core::VecDerivId::normal() )
             return &m_vnormals;
 
