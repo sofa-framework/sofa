@@ -68,6 +68,7 @@ public:
         , defaultOITShader(oitShader)
         , nodeOITShaders()
     {
+
     }
 
     Result processNodeTopDown(Node* node);
@@ -251,7 +252,7 @@ void OrderIndependentTransparencyManager::drawOpaques(VisualParams* visualParams
 
     visualParams->pass() = VisualParams::Std;
     VisualDrawVisitor drawStandardVisitor(visualParams);
-    drawStandardVisitor.setTags(this->getTags());
+    drawStandardVisitor.setTags(getTags());
     node->execute(&drawStandardVisitor);
 }
 
@@ -263,7 +264,7 @@ void OrderIndependentTransparencyManager::drawTransparents(VisualParams* visualP
 
     visualParams->pass() = VisualParams::Transparent;
     VisualOITDrawVisitor drawTransparentVisitor(visualParams, oitShader);
-    drawTransparentVisitor.setTags(this->getTags());
+    drawTransparentVisitor.setTags(getTags());
     node->execute(&drawTransparentVisitor);
 }
 
