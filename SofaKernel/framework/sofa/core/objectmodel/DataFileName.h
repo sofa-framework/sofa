@@ -82,8 +82,8 @@ public:
 
     void endEdit(const core::ExecParams* params = 0)
     {
-        updatePath();
         Inherit::endEdit(params);
+        updatePath();
     }
 
     void setValue(const std::string& v)
@@ -170,8 +170,8 @@ public:
 
     void endEdit(const core::ExecParams* params = 0)
     {
-        updatePath();
         Inherit::endEdit(params);
+        updatePath();
     }
 
     void setValue(const sofa::helper::vector<std::string>& v)
@@ -201,20 +201,14 @@ public:
     virtual bool read(const std::string& s )
     {
         bool ret = Inherit::read(s);
-        if (ret || fullpath.empty()) updatePath();
+        if (ret || m_fullpath.empty()) updatePath();
         return ret;
     }
 
-    virtual const std::string& getRelativePath(unsigned int i) { return getValue()[i]; }
     virtual const std::string& getFullPath(unsigned int i) const
     {
         this->updateIfDirty();
-        return fullpath[i];
-    }
-    virtual const std::string& getAbsolutePath(unsigned int i) const
-    {
-        this->updateIfDirty();
-        return fullpath[i];
+        return m_fullpath[i];
     }
 
     virtual void update()
@@ -226,7 +220,7 @@ public:
 protected:
     void updatePath();
 
-    sofa::helper::vector<std::string> fullpath;
+    sofa::helper::vector<std::string> m_fullpath;
 
 private:
     DataFileNameVector(const Inherit& d);

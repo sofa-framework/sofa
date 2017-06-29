@@ -75,6 +75,31 @@ public:
         d_filename.setValue(FRAMEWORK_TEST_RESOURCES_DIR "/" filename) ;
         EXPECT_EQ( filename, d_filename.getRelativePath() ) ;
     }
+
+
+    void checkNonexistentFile(){
+        d_filename.setValue(filename"pouet") ;
+        EXPECT_EQ( filename"pouet", d_filename.getValue()) ;
+        EXPECT_EQ( filename"pouet", d_filename.getRelativePath() ) ; // duplicated value for nonexistent file
+        EXPECT_EQ( filename"pouet", d_filename.getFullPath() )  ; // duplicated value for nonexistent file
+    }
+
+
+    // begins with a link then the value is modified locally
+    void checkSetParent(){
+        DataFileName parent;
+        parent.setValue(filename);
+        d_filename.setParent(&parent) ;
+
+        EXPECT_EQ( filename, d_filename.getRelativePath() ) ;
+        EXPECT_EQ( FRAMEWORK_TEST_RESOURCES_DIR "/" filename, d_filename.getFullPath() )  ;
+
+        d_filename.setValue( filename"pouet" ) ;
+        EXPECT_EQ( filename"pouet", d_filename.getValue()) ;
+        EXPECT_EQ( filename"pouet", d_filename.getRelativePath() ) ; // duplicated value for nonexistent file
+        EXPECT_EQ( filename"pouet", d_filename.getFullPath() )  ; // duplicated value for nonexistent file
+    }
+
 };
 
 TEST_F(DataFileName_test, checkSetGetValues)
@@ -90,4 +115,14 @@ TEST_F(DataFileName_test, checkSetGetFullPath)
 TEST_F(DataFileName_test, checkSetGetRelativePath)
 {
     this->checkSetGetRelativePath();
+}
+
+TEST_F(DataFileName_test, checkNonexistentFile)
+{
+    this->checkNonexistentFile();
+}
+
+TEST_F(DataFileName_test, checkSetParent)
+{
+    this->checkSetParent();
 }
