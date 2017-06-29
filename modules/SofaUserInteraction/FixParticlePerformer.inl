@@ -77,7 +77,7 @@ void FixParticlePerformer<DataTypes>::start()
 
     //Fix all the points
     typename projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< projectiveconstraintset::FixedConstraint<DataTypes> >();
-    fixFixation->f_fixAll.setValue(true);
+    fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
     //Add Interaction ForceField

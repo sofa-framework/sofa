@@ -80,9 +80,9 @@ protected:
     friend class PartialFixedConstraintInternalData<DataTypes>;
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<SReal> _drawSize;
+    SetIndex d_indices;
+    Data<bool> d_fixAll;
+    Data<SReal> d_drawSize;
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.
@@ -114,7 +114,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams*) override;
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
+    bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
