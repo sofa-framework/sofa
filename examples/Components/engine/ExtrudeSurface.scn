@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showCollisionModels" />
     <Node name="extrude">
