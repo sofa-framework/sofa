@@ -12,11 +12,15 @@
 **For users**
 
 **For developpers**
+- [SofaKernel]
+    - Change the way all MechanicalVisitor apply projective constraints. This change is breaking the API and external solver's code need to be updated (#216)
 
 
 ### Improvements
 
 **Modules**
+- [SofaGraphComponent]
+    - Add SceneCheckerVisitor to detect missing RequiredPlugin (#306)
 
 **Applications and Plugins**
 
@@ -26,8 +30,10 @@
 ### Bug Fixes
 
 **Modules**
-    
+
 **Applications and Plugins**
+- [MultiThreading]
+    - FIX: examples installation (#299)
 
 **Scenes**
 

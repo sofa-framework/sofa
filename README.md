@@ -38,7 +38,7 @@ Before creating any issue or pull request, please read carefully [our CONTRIBUTI
 ### Authors
 See [Authors.txt](https://github.com/sofa-framework/sofa/blob/master/Authors.txt)
 
-### Licence
+### License
 SOFA is LGPL, except:
 - applications/projects (GPL)
 - applications/sofa (GPL)
