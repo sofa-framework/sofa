@@ -3,7 +3,7 @@
 
     <OrderIndependentTransparencyManager />
 
-    <Node>
+    <Node name="Raptor">
         <MeshObjLoader name="loader" filename="mesh/raptor_8kp.obj"/>
 
         <OglModel name="Red"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="0 0 0" scale="1 1 1" />
@@ -22,28 +22,26 @@
         <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 1 0 1 Ambient 0 1 1 1 1 Specular 1 1 1 1 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="-12 0 0" scale="0.1 0.1 0.1" />
     </Node>
 
-    <Node>
+    <Node name="Cylinder0">
         <MeshObjLoader name="loader" filename="mesh/cylinder.obj"/>
 
-        <OglModel name="Red"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="1 1 1" />
-        <OglModel name="Green"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.2 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.8 0.8 0.8" />
-        <OglModel name="Blue"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.3 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.6 0.6 0.6" />
-        <OglModel name="Magenta"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.4 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.4 0.4 0.4" />
-        <OglModel name="Cyan"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.2 0.2 0.2" />
-
-        <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale="0.1 0.1 0.1" />
+        <OglModel name="Red0"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="1 1 1" />
+        <OglModel name="Red1"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.2 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="0.8 0.8 0.8" />
+        <OglModel name="Red2"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.3 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="0.6 0.6 0.6" />
+        <OglModel name="Red3"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.4 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="0.4 0.4 0.4" />
+        <OglModel name="Red4"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="0.2 0.2 0.2" />
+        <OglModel name="Red5"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="4 0 0" scale3d="0.1 0.1 0.1" />
     </Node>
 
-    <Node>
+    <Node name="Cylinder1">
         <MeshObjLoader name="loader" filename="mesh/cylinder.obj"/>
 
-        <OglModel name="Yellow"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.1 0.1 0.1" />
-
-        <OglModel name="Cyan"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.2 0.2 0.2" />
-        <OglModel name="Magenta"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.4 0.4 0.4" />
-        <OglModel name="Blue"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.6 0.6 0.6" />
-        <OglModel name="Green"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="0.8 0.8 0.8" />
-        <OglModel name="Red"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale="1 1 1" />
+        <OglModel name="Red0"  src="@loader" material="Default Diffuse 1 1 0 0 1 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="0.1 0.1 0.1" />
+        <OglModel name="Red1"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="0.2 0.2 0.2" />
+        <OglModel name="Red2"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="0.4 0.4 0.4" />
+        <OglModel name="Red3"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="0.6 0.6 0.6" />
+        <OglModel name="Red4"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="0.8 0.8 0.8" />
+        <OglModel name="Red5"  src="@loader" alphaBlend="false" material="Default Diffuse 1 1 0 0 0.75 Ambient 0 1 1 1 1 Specular 1 1 0 0 1 Emissive 0 1 0 0 1 Shininess 1 100" translation="8 0 0" scale3d="1 1 1" />
     </Node>
 
 </Node>
