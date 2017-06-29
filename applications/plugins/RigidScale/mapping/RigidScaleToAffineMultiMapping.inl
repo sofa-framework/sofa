@@ -20,9 +20,11 @@ namespace mapping
 template <class I1, class I2, class O>
 RigidScaleToAffineMultiMapping<I1,I2,O>::RigidScaleToAffineMultiMapping():
 Inherit()
-, index(initData(&index, helper::vector<unsigned>(), "index", "list of couples (index in rigid DOF + index in scale with the type Vec3d)"))
+, index(initData(&index, helper::vector<unsigned>(), "index", "list of *triples* (index in rigid DOF + index in scale with the type Vec3d + output index?)"))
 , automaticInit(initData(&automaticInit, false, "autoInit", "Init the scale and affine mechanical state, and the index data."))
 , useGeometricStiffness(initData(&useGeometricStiffness, false, "useGeometricStiffness", "To specify if the geometric stiffness is used or not."))
+, dont_be_silly_during_autoinit(initData(&dont_be_silly_during_autoinit, false, "dont_be_silly_during_autoinit",
+                                         "dont set input dofs value during autoinit"))
 , _Js(2)
 {
 }
@@ -226,21 +228,42 @@ void RigidScaleToAffineMultiMapping<I1, I2, O>::autoInit()
             std::cout << "RigidScaleToAffineMultiMapping : Setup failed. There is no more rigid DOFs. " << std::endl;
 			return;
 		}		
-		// Fill
-		for (unsigned int i = 0; i < (in1Size); ++i)
-		{
-			// index
-			for (unsigned int j = 0; j < 3; ++j) _index.push_back(i);
-			// Scale, Affine
-			_x2.push_back(InCoord2(defaulttype::Vector3(1, 1, 1)));
-			_xout.push_back(OutCoord());
-		}
-		// Update of the different data
-		this->index.setValue(_index);
-		(this->stateIn2->x).setValue(_x2);
-		(this->stateIn2->x0).setValue(_x2);
-		(this->stateOut->x).setValue(_xout);
-		(this->stateOut->x0).setValue(_xout);
+
+        if(!dont_be_silly_during_autoinit.getValue() ) {
+
+            // Fill            
+            for (unsigned int i = 0; i < (in1Size); ++i)
+                {
+                    // index
+                    for (unsigned int j = 0; j < 3; ++j) {
+                        // max: this is probably the silliest default value possible
+                        _index.push_back(i);
+                    }
+                    // Scale, Affine
+                    _x2.push_back(InCoord2(defaulttype::Vector3(1, 1, 1)));
+                    _xout.push_back(OutCoord());
+                }
+            // Update of the different data
+            this->index.setValue(_index);
+
+            // max: setting *input* values in a mapping seems like the worst
+            // idea ever, especially when called automatically
+            (this->stateIn2->x).setValue(_x2);
+            (this->stateIn2->x0).setValue(_x2);
+
+            // max: setting this here is completely pointless as it will be
+            // overwritten during apply. especially since they're default
+            // initialized anyways.
+            (this->stateOut->x).setValue(_xout);
+            (this->stateOut->x0).setValue(_xout);
+            
+        }
+
+
+        if(!index.getValue().size()) {
+            msg_warning() << "no source indices given, assuming '0 0 0'";
+            index.setValue( {0, 0, 0} );
+        }
 	}
 }
 
