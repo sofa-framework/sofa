@@ -45,7 +45,7 @@ ____________________________________________________________
 
 
 
-## [v17.06](https://github.com/sofa-framework/sofa/tree/v17.06) (2017-06-15)
+## [v17.06](https://github.com/sofa-framework/sofa/tree/v17.06)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v16.12...v17.06)
 
@@ -81,6 +81,7 @@ ____________________________________________________________
     - auto-init/cleanup libraries (#168)
     - Improve and clean msg_api and logging of message (#190, #255, #275). See [documentation](https://www.sofa-framework.org/community/doc/programming-with-sofa/logger/) for more information.
     - Add CMake option to limit cores used to build specific targets (#254)
+    - Fix rgbacolor parsing (#305)
 - [SofaKernel]
     - Update the RichConsoleStyleMessageFormatter  (#126)
     - creation of a defaulttype::RGBAColor (#119)
@@ -94,6 +95,7 @@ ____________________________________________________________
     - MeshSTL.cpp replace a std:cerr by a msg_error so that FIX the corresponding failing test (#213)
     - adding listener mechanism to SceneLoader (#204)
     - Grid Topologies cleanup + new SphereGrid (#164)
+    - Add CMake option SOFA_WITH_EXPERIMENTAL_FEATURES (default OFF) to enable MechanicalObject::buildIdentityBlocksInJacobian (#276)
 - [SofaGraphComponents]
     - add tests for RequiredPlugin (#258)
 - [SofaHelper]
@@ -120,10 +122,11 @@ ____________________________________________________________
     - mouse events are now transmitted to the scene with QtGLViewer (#132)
 - [SceneCreator]
     - Cosmetic changes and remove un-needed include (#169)
-- [SofaPython] 
+- [SofaPython]
     - Macros to bind "sequence" types (#165)
     - ModuleReload (#214)
     - light module reload (#202)
+    - change the way createObject() handle its arguments to simplify scene writing + batch of tests (#286)
 - [SofaTest]
     - add Backtrace::autodump to all tests to ease debugging (#191)
     - add automatic tests for updateForceMask (#209)
@@ -131,6 +134,8 @@ ____________________________________________________________
     - TestMessageHandler : new and robust implementation to connect msg_* message to test failure  (#213)
     - update to use the new TestMessageHandler where msg_error generates test failures (#213)
     - add tests for TestMessageHandler (#213)
+- [SofaCUDA] 
+    - FIX NVCC flags for debug build on Windows (#300)
 
 
 ### Bug Fixes
@@ -156,6 +161,9 @@ ____________________________________________________________
     - FileMonitor: fix the recurrent problem with file 'SofaKernel/framework/framework_test/resources/existing.txt' pointed in Issue #146 (#258)
 - [SofaFramework]
     - fix the integration scheme for Quaternion (#172) and fix values with which the quaternion is being compared after creation from euler angles
+- [SofaHelper]
+    - VisualToolGL: fix single primitive calls (#293)
+    - ImagePNG: Fix library linking in debug configuration under MSVS (#298)
 - [SofaBaseMechanics]
     - MechanicalObject: cleaning: symbols & include (#249)
 - [SofaPhysicsAPI]
@@ -215,7 +223,7 @@ ____________________________________________________________
 
 
 
-## [v16.12](https://github.com/sofa-framework/sofa/tree/v16.12) (2017-01-09)
+## [v16.12](https://github.com/sofa-framework/sofa/tree/v16.12)
 
 **Last commit: on Jan 08, 2017**  
 [Full log](https://github.com/sofa-framework/sofa/compare/v16.08...v16.12)
@@ -330,7 +338,7 @@ ____________________________________________________________
 
 
 
-## [v16.08](https://github.com/sofa-framework/sofa/tree/v16.08) (2016-08-05)
+## [v16.08](https://github.com/sofa-framework/sofa/tree/v16.08)
 
 **Last commit: on Jul 28, 2016**  
 [Full log](https://github.com/sofa-framework/sofa/compare/v15.12...v16.08)
@@ -704,7 +712,7 @@ ____________________________________________________________
 
 
 
-## [v15.12](https://github.com/sofa-framework/sofa/tree/v15.12) (2016-03-21)
+## [v15.12](https://github.com/sofa-framework/sofa/tree/v15.12)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/v15.09...v15.12)
 
@@ -713,6 +721,6 @@ ____________________________________________________________
 
 
 
-## [v15.09](https://github.com/sofa-framework/sofa/tree/v15.09) (2016-02-01)
+## [v15.09](https://github.com/sofa-framework/sofa/tree/v15.09)
 
 [Full log](https://github.com/sofa-framework/sofa/compare/release-v15.12...v15.09)
