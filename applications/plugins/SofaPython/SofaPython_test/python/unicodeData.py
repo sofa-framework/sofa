@@ -28,4 +28,6 @@ class VerifController(SofaTest.Controller):
 
         Sofa.msg_info(mechanical_object.name)
         mechanical_object.name = mechanical_object.name
+
+    def onEndAnimationStep(self, dt):
         self.sendSuccess()
