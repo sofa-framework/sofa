@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaDeformable)
 
 set(HEADER_FILES
+    AngularSpringForceField.h
+    AngularSpringForceField.inl
     MeshSpringForceField.h
     MeshSpringForceField.inl
     RestShapeSpringsForceField.h
@@ -15,6 +17,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    AngularSpringForceField.cpp
     MeshSpringForceField.cpp
     RestShapeSpringsForceField.cpp
     SpringForceField.cpp
