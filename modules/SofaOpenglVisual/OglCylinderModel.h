@@ -66,20 +66,12 @@ public:
     virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/);
 
 private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-private:
     Data<float>		radius;
-    // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<defaulttype::RGBAColor>	d_color;
     Data<bool> d_depthTest;
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
     Data<SeqEdges> d_edges;
-
-    float r,g,b,a;
-    // component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;
