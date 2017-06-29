@@ -18,57 +18,89 @@ namespace sofa
 {
 struct MonitorTest : public Monitor<Rigid3>
 {
-	void testInit(MechanicalObject<Rigid3>* mo)
-	{
-		helper::vector<unsigned> i1 = indices.getValue();
-		const Rigid3::VecCoord& i2 = mo->x.getValue();
-
-		ASSERT_TRUE(i1.size() <= i2.size());
-		for (int i = 0; i < i1.size(); ++i) EXPECT_EQ(i1[i], i2[i]);
-	}
-
-	void testModif(MechanicalObject<Rigid3>* mo)
-	{
-		helper::vector<unsigned int> idx = indices.getValue();
+  void testInit(MechanicalObject<Rigid3>* mo)
+  {
 		const Rigid3::VecCoord& i1 = *X;
 		const Rigid3::VecCoord& i2 = mo->x.getValue();
-		const Rigid3::VecDeriv& f1 = *F;
-		const Rigid3::VecDeriv& f2 = mo->f.getValue();
-		const Rigid3::VecDeriv& v1 = *V;
-		const Rigid3::VecDeriv& v2 = mo->v.getValue();
 
-		ASSERT_TRUE(idx.size() <= i2.size());
-		for (int i = 0; i < idx.size(); ++i)
-			EXPECT_EQ(i1[idx[i]], i2[idx[i]]);
+		EXPECT_TRUE(i1.size() == i2.size());
+		for (size_t i = 0; i < i1.size(); ++i) EXPECT_EQ(i1[i], i2[i]);
+  }
 
-		for (int i = 0; i < idx.size(); ++i)
-			EXPECT_EQ(f1[idx[i]], f2[idx[i]]);
+  void testModif(MechanicalObject<Rigid3>* mo)
+  {
+		helper::vector<unsigned int> idx = indices.getValue();
+    const Rigid3::VecCoord& i1 = *X;
+    const Rigid3::VecCoord& i2 = mo->x.getValue();
+    const Rigid3::VecDeriv& f1 = *F;
+    const Rigid3::VecDeriv& f2 = mo->f.getValue();
+    const Rigid3::VecDeriv& v1 = *V;
+    const Rigid3::VecDeriv& v2 = mo->v.getValue();
 
-		for (int i = 0; i < idx.size(); ++i)
-			EXPECT_EQ(v1[idx[i]], v2[idx[i]]);
-	}
+		EXPECT_TRUE(idx.size() <= i2.size());
+		for (size_t i = 0; i < idx.size(); ++i) EXPECT_EQ(i1[idx[i]], i2[idx[i]]);
+
+		for (size_t i = 0; i < idx.size(); ++i) EXPECT_EQ(f1[idx[i]], f2[idx[i]]);
+
+		for (size_t i = 0; i < idx.size(); ++i) EXPECT_EQ(v1[idx[i]], v2[idx[i]]);
+  }
 };
 
 struct Monitor_test : public sofa::Sofa_test<>
 {
   sofa::simulation::Node::SPtr root;
+  sofa::simulation::SceneLoaderXML loader;
 	MonitorTest* monitor;
-	MechanicalObject<Rigid3>* mo;
+	MechanicalObject<Rigid3>::SPtr mo;
 
-	Monitor_test() {}
+  Monitor_test() {}
 
-	void testInit() { monitor->testInit(mo); }
-	void testModiff() { monitor->testModif(mo); }
-	void SetUp()
+	void testInit()
+	{
+		// Checks that monitor gets the correct values at init
+		monitor->testInit(mo.get());
+	}
+  void testModif()
   {
-		std::string scene = "examples/Components/misc/MonitorTest.scn";
+		// make a few steps before checkinf if values are correctly updated in Monitor
+		for (int i = 0 ; i < 10 ; ++i)
+			simulation::getSimulation()->animate(root.get(), 1.0);
 
-    root = sofa::simulation::SceneLoaderXML::load(scene.c_str());
+		monitor->testModif(mo.get());
+  }
+  void SetUp()
+  {
+		std::string scene =
+				"<Node name='root' gravity='0 -9.81 0'>"
+				"<DefaultAnimationLoop/>"
+				"<Node name='node'>"
+				"<EulerImplicit rayleighStiffness='0' printLog='false' />"
+				"<CGLinearSolver iterations='100' threshold='0.00000001' "
+				"tolerance='1e-5'/>"
+				"<MeshGmshLoader name='loader' filename='mesh/smCube27.msh' "
+				"createSubelements='true' />"
+				"<MechanicalObject template='Rigid3d' src='@loader' name='MO' />"
+				"<Monitor template='Rigid3d' name='monitor' listening='1' indices='0' "
+				"ExportPositions='true' ExportVelocities='true' ExportForces='true' />"
+				"<UniformMass totalmass='1' />"
+				"</Node>"
+				"</Node>";
+
+		root = SceneLoaderXML::loadFromMemory("MonitorTest", scene.c_str(),
+																					scene.size());
     root->init(sofa::core::ExecParams::defaultInstance());
 
-    monitor = dynamic_cast<Monitor*>(root->getObject("monitor"));
-    mo = dynamic_cast<MechanicalObject*>(root->getObject("MO"));
-  }
+		std::string s = "/node/monitor";
+		Monitor<Rigid3>* ptr = NULL;
+		ptr = root->get<Monitor<Rigid3> >(s);
+		EXPECT_FALSE(ptr == NULL);
+
+		monitor = reinterpret_cast<MonitorTest*>(ptr);
+		EXPECT_FALSE(monitor == 0);
+
+		root->get<MechanicalObject<Rigid3> >(mo, "/node/MO");
+		EXPECT_FALSE(mo == 0);
+	}
 
   void TearDown() {}
 };
