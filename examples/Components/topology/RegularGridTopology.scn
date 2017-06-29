@@ -31,7 +31,7 @@
         <UniformMass totalmass="100.0" />
         <RegularGrid nx="8" ny="6" nz="6" xmin="-0.25" xmax="7.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />
         <BoxConstraint box="2.5 0 -2.5 5 3 2" />
-        <HexahedronFEMForceField name="FEM" youngModulus="6000" poissonRatio="0.4" method="large" />
+        <RegularGridSpringForceField name="Springs" stiffness="100" damping="4" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="5 0 0" />
             <BarycentricMapping input="@.." output="@Visual" />
