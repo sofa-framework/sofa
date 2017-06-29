@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseNode.h>
 #include "PythonToSofa.inl"
 
+#include <sstream>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -381,6 +382,26 @@ int SetDataValuePython(BaseData* data, PyObject* args)
         return 0;
     }
 
+    // Unicode
+    if (PyUnicode_Check(args))
+    {
+        std::stringstream streamstr;
+        PyObject* tmpstr = PyUnicode_AsUTF8String(args);
+        streamstr << PyString_AsString(tmpstr) ;
+        Py_DECREF(tmpstr);
+        std::string str(streamstr.str());
+
+        if( str.size() > 0u && str[0]=='@' ) // DataLink
+        {
+            data->setParent(str);
+            data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+        }
+        else
+        {
+            data->read(str);
+        }
+        return 0;
+    }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     const bool valid = (typeinfo && typeinfo->ValidInfo());
 
