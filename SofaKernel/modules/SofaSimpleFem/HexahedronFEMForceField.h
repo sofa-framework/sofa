@@ -343,6 +343,8 @@ public:
     void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
 
+    void computeBBox(const core::ExecParams* params, bool onlyVisible);
+
     void draw(const core::visual::VisualParams* vparams);
 
     void handleTopologyChange()
