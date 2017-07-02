@@ -5,6 +5,7 @@
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/objectmodel/Data.h>
 #include "GenericConstraintResolution.h"
+#include <SofaConstraint/BilateralConstraintResolution.h>
 
 namespace isphysics
 {
@@ -14,7 +15,9 @@ namespace interaction
 template< class DataTypes >
 UniformConstraint<DataTypes>::UniformConstraint()
     :d_softW(initData(&d_softW, sofa::helper::vector<Real>(1, Real(0)), "softW", "Local compliance to apply on each dof"))
-    , m_constraintIndex(0)
+    ,d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation\
+                                                            is computed."))
+    ,m_constraintIndex(0)
 {
 
 }
@@ -84,16 +87,25 @@ void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::Con
     
     auto softW  = sofa::helper::read(d_softW, cParams);
 
-    for (std::size_t i = 0; i < this->getMState()->getSize(); ++i)
+    if (d_iterative.getValue(cParams))
     {
-        for (std::size_t j = 0; j < Deriv::size(); ++j)
+        for (std::size_t i = 0; i < this->getMState()->getSize(); ++i)
         {
-            isphysics::contact::GenericConstraintResolution* cr = new isphysics::contact::GenericConstraintResolution();
-            cr->setSoftW(  (softW.size() == this->getMState()->getSize() ? softW[i] : softW[0]) );
-            cr->setBilateralOnNormal(true);
-            crVector[offset++] = cr;
-
+            for (std::size_t j = 0; j < Deriv::size(); ++j)
+            {
+                isphysics::contact::GenericConstraintResolution* cr = new isphysics::contact::GenericConstraintResolution();
+                cr->setSoftW(  (softW.size() == this->getMState()->getSize() ? softW[i] : softW[0]) );
+                cr->setBilateralOnNormal(true);
+                crVector[offset++] = cr;
+            }
         }
+    }
+    else
+    {
+        const std::size_t nbLines = this->getMState()->getSize() * Deriv::size();
+        sofa::component::constraintset::BilateralConstraintResolutionNDof* cr = new sofa::component::constraintset::BilateralConstraintResolutionNDof(nbLines);
+        crVector[offset] = cr;
+        offset += nbLines;
     }
 }
 
