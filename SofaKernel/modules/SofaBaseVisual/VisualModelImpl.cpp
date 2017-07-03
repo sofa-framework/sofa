@@ -100,9 +100,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
-                                  (Real)arg->getAttributeAsFloat("scale",1.0),
-                                  (Real)arg->getAttributeAsFloat("scale",1.0)));
+        Real scale = (Real)arg->getAttributeAsFloat("scale",1.0);
+        m_scale.setValue( Vec3Real(scale,scale,scale) );
     }
     else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
     {
