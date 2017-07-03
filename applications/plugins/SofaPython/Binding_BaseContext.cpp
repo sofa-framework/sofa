@@ -168,6 +168,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     BaseObjectDescription desc(type,type);
 
     bool warning = printWarnings;
+    bool init = false;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -181,6 +182,11 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
             {
                 if PyBool_Check(value)
                         warning = (value==Py_True);
+            }
+            else if( !strcmp( PyString_AsString(key), "init") )
+            {
+                if PyBool_Check(value)
+                        init = (value==Py_True);
             }
             else
             {
@@ -216,7 +222,12 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
         }
     }
 
-    if( warning )
+    if( init )
+    {
+        obj->init();
+        obj->bwdInit();
+    }
+    else if( warning )
     {
         Node *node = static_cast<Node*>(context);
         if (node && node->isInitialized())
