@@ -83,28 +83,34 @@ namespace sofa {
         void SetRandomTestedRotationAndTranslation()
         {
             // Random Rotation
-            SReal x,y,z,w;
+            SReal x,y,z,w=0;
             // Random axis
             x = SReal(helper::drand(1));
             y = SReal(helper::drand(1));
             z = SReal(helper::drand(1));
             // If the rotation axis is null
             Vec3 rotationAxis(x,y,z);
-            if(rotationAxis.norm() < 1e-7)
-            {
-                rotationAxis = Vec3(0,0,1);
-            }
-            rotationAxis.normalize();
+            rotationAxis.normalize( Vec3(0,0,1), 1e-7 ); // with failsafe
+
             // Random angle between 0 and M_PI
-            w = helper::drand()* M_PI;
+            while( !w )
+                w = helper::drand()* M_PI;
+
             // Quat = (rotationAxis*sin(angle/2) , cos(angle/2)) angle = 2*w
             testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
-   
+
+            // to be sure
+            if( !testedQuaternion.normalize() )
+            {
+                msg_warning("RigidLinearDeformationMappings_test")<<"testedQuaternion is too small  -  random values: "<<x<<" "<<y<<" "<<z<<" "<<w<<"   testedQuaternion="<<testedQuaternion;
+                testedQuaternion.set( 0, 0, 0, 1 );
+            }
+
             // Translation
-           for(size_t i=0;i<testedTranslation.size();++i)
-           {
-               testedTranslation[i]=helper::drand(2);
-           }
+            for(size_t i=0;i<testedTranslation.size();++i)
+            {
+                testedTranslation[i]=helper::drand(2);
+            }
 
         }
 
