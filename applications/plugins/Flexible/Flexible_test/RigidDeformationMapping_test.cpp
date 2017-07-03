@@ -112,6 +112,9 @@ namespace sofa {
                 testedTranslation[i]=helper::drand(2);
             }
 
+
+            msg_info("RigidLinearDeformationMappings_test")<<"random values: "<<x<<" "<<y<<" "<<z<<" "<<w<<"   testedQuaternion="<<testedQuaternion<<"   -   testedTranslation="<<testedTranslation;
+
         }
 
         using Inherited::runTest;
