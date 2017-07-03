@@ -28,6 +28,9 @@
 #define strcasecmp stricmp
 #endif
 
+
+MSG_REGISTER_CLASS(sofa::helper::io::MeshTopologyLoader, "MeshTopologyLoader")
+
 namespace sofa
 {
 
@@ -39,16 +42,8 @@ namespace io
 
 using namespace sofa::defaulttype;
 
-
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
-    #ifndef NDEBUG
-    std::string fname(filename);
-    std::size_t namepos = fname.find_last_of("/");
-    std::string name = fname.substr(namepos+1);
-    std::cout << "Loading OBJ topology : " << name << std::endl;
-    #endif
-    
     mesh = helper::io::Mesh::Create(filename);
     if (mesh==NULL)
         return false;
@@ -75,7 +70,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 addLine(facet[1],facet[0]);
         }
         else if (facet.size()==4)
-        {  
+        {
             // Quad
             addQuad(facet[0],facet[1],facet[2],facet[3]);
         }
@@ -95,7 +90,6 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 int i2 = facet[(j+1)%facet.size()];
                 if (edges.count(std::make_pair(i1,i2))!=0)
                 {
-                    /*	std::cerr << "ERROR: Duplicate edge.\n";*/
                 }
                 else if (edges.count(std::make_pair(i2,i1))==0)
                 {
@@ -110,26 +104,19 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 #endif
     }
 
-//    delete mesh;
+    /// delete mesh;
     return true;
 }
 
 bool MeshTopologyLoader::loadStl(const char *filename)
 {
-    #ifndef NDEBUG
-    std::string fname(filename);
-    std::size_t namepos = fname.find_last_of("/");
-    std::string name = fname.substr(namepos+1);
-    std::cout << "Loading STL topology : " << name << std::endl;
-    #endif
-    
     mesh = helper::io::Mesh::Create(filename);
     if (mesh==NULL)
         return false;
-    
+
     setNbPoints((int)mesh->getVertices().size());
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
-    
+
     for (size_t i=0; i<mesh->getVertices().size(); i++)
     {
         addPoint((SReal)mesh->getVertices()[i][0],
@@ -143,7 +130,7 @@ bool MeshTopologyLoader::loadStl(const char *filename)
             addTriangle(facet[0],facet[j-1],facet[j]);
     }
     return true;
-  
+
 }
 
 bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
@@ -169,20 +156,19 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
         addPoint(x, y, z);
         if ((int)pmap.size() <= index) pmap.resize(index+1);
         pmap[index] = i;
-        //std::cout << "pmap[" << index << "] = " << pmap[index] << std::endl;
     }
 
     file >> cmd;
     if (cmd != "$ENDNOD" && cmd != "$EndNodes")
     {
-        std::cerr << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << std::endl;
+        msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" ;
         return false;
     }
 
     file >> cmd;
     if (cmd != "$ELM" && cmd != "$Elements")
     {
-        std::cerr << "'$ELM' or '$Elements' expected, found '" << cmd << "'" << std::endl;
+        msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'" ;
         return false;
     }
 
@@ -233,9 +219,7 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
                 nnodes = 1;
                 break;
             default:
-                std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << std::endl;
-                //fclose(file);
-                //return false;
+                msg_error() << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." ;
                 nnodes = 0;
             }
         }
@@ -247,7 +231,6 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
             int t = 0;
             file >> t;
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-            // std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
         }
         switch (etype)
         {
@@ -257,7 +240,6 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
             break;
         case 2: // Triangle
             addTriangle(nodes[0], nodes[1], nodes[2]);
-            //std::cout << "Adding triangle (" << nodes[0] << ", " << nodes[1] << ", " << nodes[2] << ")" << std::endl;
             ++ntris;
             break;
         case 3: // Quad
@@ -282,21 +264,9 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
     {
-        std::cerr << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << std::endl;
+        msg_error() << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" ;
         return false;
     }
-    else
-    {
-        // 			std::cout << "Done parsing Gmsh file." << std::endl;
-    }
-    // 	std::cout << "Loading topology complete:";
-    // 	if (npoints>0) std::cout << ' ' << npoints << " points";
-    // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
-    // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
-    // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-    // 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
-    // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
-    // 	std::cout << std::endl;
 
     return true;
 }
@@ -304,11 +274,6 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
 bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
 {
     std::string cmd;
-    //int npoints = 0;
-    //int nlines = 0;
-
-    
-    
     file >> cmd;
 
     // then find out number of masses and springs
@@ -317,8 +282,6 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
         int totalNumMasses;
         file >> totalNumMasses;
         setNbPoints(totalNumMasses);
-        //npoints=totalNumMasses;
-        // 		std::cout << "Model contains "<< totalNumMasses <<" masses";
     }
 
     if (cmd=="nums")
@@ -326,9 +289,6 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
         int totalNumSprings;
         file >> totalNumSprings;
         setNbLines(totalNumSprings);
-        //nlines=totalNumSprings;
-        //		setNumSprings(totalNumSprings);
-        //      std::cout<<" and "<< totalNumSprings <<" springs"<<std::endl;
     }
 
 
@@ -340,14 +300,7 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-//            if (mass < 0)
-//            {
-                // fixed point initialization
-//                mass = -mass;
-                //fixed = true;
-//            }
             addPoint(px,py,pz);
         }
         else if (cmd=="lspg")	// linear springs connector
@@ -355,7 +308,7 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
-            
+
             if (vector_spring)
             {
                 double restx=0.0,resty=0.0,restz=0.0;
@@ -389,18 +342,10 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
         }
         else		// it's an unknown keyword
         {
-            std::cerr << "Unknown MassSpring keyword:" << cmd;
+            msg_error() << "Unknown MassSpring keyword:" ;
             return false;
         }
     }
-// 	std::cout << "Loading topology complete:";
-// 	if (npoints>0) std::cout << ' ' << npoints << " points";
-// 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
-// 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
-// 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetrahedra>0) std:doc format stl:cout << ' ' << ntetrahedra << " tetrahedra";
-// 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
-// 	std::cout << std::endl;
 
     return true;
 }
@@ -414,7 +359,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
     int nquads = 0;
     int ntetrahedra = 0;
     int ncubes = 0;
-
 
     while (!file.eof())
     {
@@ -508,18 +452,10 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
         }
         else		// it's an unknown keyword
         {
-            std::cerr << "Unknown Mesh keyword:" << cmd;
+            msg_error() << "Unknown Mesh keyword:" << cmd;
             return false;
         }
     }
-// 	std::cout << "Loading topology complete:";
-// 	if (npoints>0) std::cout << ' ' << npoints << " points";
-// 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
-// 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
-// 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
-// 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
-// 	std::cout << std::endl;
 
     return true;
 }
@@ -531,8 +467,6 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     std::ifstream file(filename);
     if (!file.good()) return false;
 
-// 	std::cout << "Loading Gmsh topology '" << filename << "' - ";
-
     int gmshFormat = 0;
 
     std::string cmd;
@@ -541,7 +475,6 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
-// 		std::cout << "Gmsh format 2.0" << std::endl;
         std::string line;
         std::getline(file, line); // we don't care about this line
         if (line=="") std::getline(file, line);
@@ -559,7 +492,6 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     else
     {
         gmshFormat = 1;
-// 		std::cout << "Gmsh format 1.0" << std::endl;
     }
 
 
@@ -598,7 +530,7 @@ bool MeshTopologyLoader::loadCGAL(const char *filename)
     if (!file.good())
         return false;
 
-    std::cout << "Loading CGAL mesh file " << filename << " ... " << std::endl;
+    msg_info() << "Loading CGAL mesh file " << filename << " ... " ;
 
     std::getline(file, line);
 
@@ -648,153 +580,21 @@ bool MeshTopologyLoader::loadCGAL(const char *filename)
             }
         }
 
-        std::cout << "Loading CGAL topology complete:";
-        std::cout << "   " << npoints << " points";
-        std::cout << "   " << ntri   << " triangles";
-        std::cout << "   " << ntetra << " tetrahedra) ";
-        std::cout << std::endl;
+        msg_info() << "Loading CGAL topology complete:" << msgendl
+                   << "   " << npoints << " points" << msgendl
+                   << "   " << ntri   << " triangles" << msgendl
+                   << "   " << ntetra << " tetrahedra) ";
         fileLoaded = true;
     }
     else
     {
-        std::cout << "Incorrect file format - not recognized as CGAL 'MeshVersionFormatted 1' - aborting..." << std::endl;
+        msg_error() << "Incorrect file format - not recognized as CGAL 'MeshVersionFormatted 1' - (aborting)" ;
     }
 
     file.close();
 
     return fileLoaded;
 }
-
-/*
-  std::vector<int> pmap;
-  for (int i=0; i<npoints; ++i)
-    {
-      int index = i;
-      double x,y,z;
-      file >> index >> x >> y >> z;
-      addPoint(x, y, z);
-      if ((int)pmap.size() <= index) pmap.resize(index+1);
-      pmap[index] = i;
-      //std::cout << "pmap[" << index << "] = " << pmap[index] << std::endl;
-    }
-
-  file >> cmd;
-  if (cmd != "$ENDNOD" && cmd != "$EndNodes")
-    {
-      std::cerr << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << std::endl;
-      return false;
-    }
-
-  file >> cmd;
-  if (cmd != "$ELM" && cmd != "$Elements")
-    {
-      std::cerr << "'$ELM' or '$Elements' expected, found '" << cmd << "'" << std::endl;
-      return false;
-    }
-
-
-
-    int nelems = 0;
-    file >> nelems;
-    for (int i=0; i<nelems; ++i)
-      {
-        int index, etype, rphys, relem, nnodes, ntags, tag;
-        if (gmshFormat==1)
-          {
-            // version 1.0 format is
-            // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            file >> index >> etype >> rphys >> relem >> nnodes;
-          }
-        else if (gmshFormat == 2)
-          {
-            // version 2.0 format is
-            // elm-number elm-type number-of-tags < tag > ... node-number-list
-            file >> index >> etype >> ntags;
-
-            for (int t=0; t<ntags; t++)
-              {
-                file >> tag;
-                // read the tag but don't use it
-              }
-
-            switch (etype)
-              {
-              case 1: // Line
-                nnodes = 2;
-                break;
-              case 2: // Triangle
-                nnodes = 3;
-                break;
-              case 3: // Quad
-                nnodes = 4;
-                break;
-              case 4: // Tetra
-                nnodes = 4;
-                break;
-              case 5: // Hexa
-                nnodes = 8;
-                break;
-			  case 15: // Point
-				nnodes = 1;
-				break;
-              default:
-                std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << std::endl;
-                //fclose(file);
-                //return false;
-                nnodes = 0;
-              }
-          }
-
-        helper::vector<int> nodes;
-        nodes.resize(nnodes);
-        for (int n=0; n<nnodes; ++n)
-          {
-            int t = 0;
-            file >> t;
-            nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-            // std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
-          }
-        switch (etype)
-          {
-          case 1: // Line
-            addLine(nodes[0], nodes[1]);
-            ++nlines;
-            break;
-          case 2: // Triangle
-            addTriangle(nodes[0], nodes[1], nodes[2]);
-            //std::cout << "Adding triangle (" << nodes[0] << ", " << nodes[1] << ", " << nodes[2] << ")" << std::endl;
-            ++ntris;
-            break;
-          case 3: // Quad
-            addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
-            ++nquads;
-            break;
-          case 4: // Tetra
-            addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
-            ++ntetrahedra;
-            break;
-          case 5: // Hexa
-            addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
-            ++ncubes;
-            break;
-		  default:
-			//if the type is not handled, skip rest of the line
-			std::string tmp;
-			std::getline(file, tmp);
-          }
-      }
-
-    file >> cmd;
-    if (cmd != "$ENDELM" && cmd!="$EndElements")
-      {
-        std::cerr << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << std::endl;
-        return false;
-      }
-    else
-      {
-        // 			std::cout << "Done parsing Gmsh file." << std::endl;
-      }
-*/
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -977,7 +777,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
             int n;
             std::string typestr;
             ln >> n >> typestr;
-            std::cout << "Found " << n << " " << typestr << " points" << std::endl;
+            msg_info() << "Found " << n << " " << typestr << " points" ;
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
             if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
@@ -987,7 +787,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << std::endl;
+            msg_info() << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" ;
             inputPolygons = new VTKDataIO<int>;
             if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
             nbf = ni - 3*n;
@@ -1013,7 +813,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
             }
         }
         else if (!kw.empty())
-            std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
+            msg_warning() << "Unknown keyword " << kw ;
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
     }
@@ -1031,7 +831,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
                 for (int j=0; j<nv; ++j)
                     if ((unsigned)inFP[i+j] >= (unsigned)(inputPoints->dataSize/3))
                     {
-                        std::cerr << "ERROR: invalid point " << inFP[i+j] << " in polygon " << poly << std::endl;
+                        msg_error() << "Invalid point " << inFP[i+j] << " in polygon " << poly ;
                         valid = false;
                     }
             }
@@ -1109,7 +909,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
                 addCube(inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3], inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]);
                 break;
             default:
-                std::cerr << "ERROR: unsupported cell type " << t << std::endl;
+                msg_error() << "Unsupported cell type " << t ;
             }
             i += nv;
         }
@@ -1126,7 +926,7 @@ bool MeshTopologyLoader::load(const char *filename)
     std::string fname(filename);
     if (!sofa::helper::system::DataRepository.findFile(fname))
     {
-        printf("Cannot find file: %s \n", filename);
+        msg_error() << "Cannot find file: " << filename ;
         return false;
     }
 
@@ -1147,8 +947,8 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadMeshFile(fname.c_str());
 
     if(!fileLoaded)
-        printf("Error loading mesh file: %s \n", fname.c_str());
-    
+        msg_error() << "Unable to load mesh file '" << fname << "'" ;
+
     return fileLoaded;
 }
 

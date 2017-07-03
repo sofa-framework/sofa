@@ -28,6 +28,20 @@
 
 #include <cstdio>
 
+/// This allow MeshTrian to interact with the messaging system.
+namespace sofa {
+namespace helper {
+namespace logging {
+    inline bool notMuted(const sofa::helper::io::MeshTrian* ){ return true; }
+    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::MeshTrian*)
+    {
+        return ComponentInfo::SPtr(new ComponentInfo("MeshTrian")) ;
+    }
+} /// logging
+} /// helper
+} /// sofa
+
+
 namespace sofa
 {
 
@@ -47,7 +61,7 @@ void MeshTrian::init (std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error() << "File '" << filename << "' not found." ;
         return;
     }
     FILE *f = fopen(filename.c_str(), "r");
@@ -57,7 +71,7 @@ void MeshTrian::init (std::string filename)
         fclose(f);
     }
     else
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error() << "File '" << filename << "' not found." ;
 }
 
 void MeshTrian::readTrian (FILE* file)
@@ -68,15 +82,14 @@ void MeshTrian::readTrian (FILE* file)
     int nbp=0;
 
     if (fscanf(file, "%d\n", &nbp) == EOF)
-        std::cerr << "Error: MeshTrian: fscanf function has encountered an error." << std::endl;
-
+        msg_error() << "fscanf function has encountered an error." ;
 
     vertices.resize(nbp);
     Vec3d fromFile;
     for (int p=0; p<nbp; p++)
     {
         if (fscanf(file, "%lf %lf %lf\n", &fromFile[0], &fromFile[1], &fromFile[2]) == EOF)
-            std::cerr << "Error: MeshTrian: fscanf function has encountered an error." << std::endl;
+            msg_error() << "fscanf function has encountered an error." ;
         vertices[p][0] = (SReal)fromFile[0];
         vertices[p][1] = (SReal)fromFile[1];
         vertices[p][2] = (SReal)fromFile[2];
@@ -84,7 +97,7 @@ void MeshTrian::readTrian (FILE* file)
 
     int nbf=0;
     if (fscanf(file, "%d\n", &nbf) == EOF )
-        std::cerr << "Error: MeshTrian: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
 
     facets.resize(nbf);
     for (int f=0; f<nbf; f++)
@@ -95,16 +108,9 @@ void MeshTrian::readTrian (FILE* file)
         facets[f][2].resize(3);
         int dummy = 0;
         if ( fscanf(file, "%d %d %d %d %d %d\n", &facets[f][0][0], &facets[f][0][1], &facets[f][0][2], &dummy, &dummy, &dummy) == EOF )
-            std::cerr << "Error: MeshTrian: fscanf function has encountered an error." << std::endl;
+            msg_error() << "fscanf function has encountered an error." ;
     }
 
-    // announce the model statistics
-#ifndef NDEBUG
-    std::cout << " Vertices: " << vertices.size() << std::endl;
-    std::cout << " Normals: " << normals.size() << std::endl;
-    std::cout << " Texcoords: " << texCoords.size() << std::endl;
-    std::cout << " Triangles: " << facets.size() << std::endl;
-#endif
     if (vertices.size()>0)
     {
         // compute bbox
@@ -121,9 +127,6 @@ void MeshTrian::readTrian (FILE* file)
                     maxBB[c] = p[c];
             }
         }
-#ifndef NDEBUG
-        std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
-#endif
     }
 
 }

@@ -28,6 +28,20 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+/// This allow MeshTrian to interact with the messaging system.
+namespace sofa {
+namespace helper {
+namespace logging {
+    inline bool notMuted(const sofa::helper::io::MeshVTK* ){ return true; }
+    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::MeshVTK*)
+    {
+        return ComponentInfo::SPtr(new ComponentInfo("MeshVTK")) ;
+    }
+} /// logging
+} /// helper
+} /// sofa
+
+
 namespace sofa
 {
 
@@ -48,7 +62,7 @@ void MeshVTK::init(std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error() << "File '" << filename << "' not found." ;
         return;
     }
     loaderType = "vtu";
@@ -62,8 +76,8 @@ void MeshVTK::readVTU(const std::string &filename)
     vtu.LoadFile(filename);
     if (vtu.Error())
     {
-        std::cerr << "Error while loading file " << filename << std::endl;
-        std::cerr << vtu.ErrorDesc() << std::endl;
+        msg_error() << "Error while loading file '" << filename << "':"
+                    << vtu.ErrorDesc() ;
         return;
     }
     TiXmlElement* piece = vtu.FirstChildElement("VTKFile")->FirstChildElement("UnstructuredGrid")->FirstChildElement("Piece");
@@ -131,7 +145,7 @@ void MeshVTK::readVTU(const std::string &filename)
             facets.push_back(vertNormTexIndices);
             break;
         default:
-            std::cerr << "ERROR: " << filename << " - Unsupported cell type: " << cellType << std::endl;
+            msg_error() << "In '" << filename << "' - Unsupported cell type: " << cellType ;
             return;
         }
     }
