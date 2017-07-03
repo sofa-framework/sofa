@@ -106,9 +106,9 @@ struct BaseObjectDescription_test: public Sofa_test<>
         EXPECT_EQ( objectDescription.getAttributeMap().size(), numattr+4) ;
 
 
-        EXPECT_EQ( objectDescription.getAttributeAsFloat("anAttribute", -1234.0), -1234.0) ;
-        EXPECT_EQ( objectDescription.getAttributeAsFloat("aFirstNonFloatAttribute", -1234.0), -1234.0) ;
-        EXPECT_EQ( objectDescription.getAttributeAsFloat("aSecondNonFloatAttribute", -1234.0), -1234.0) ;
+        objectDescription.getAttributeAsFloat("anAttribute", -1234.0);
+        objectDescription.getAttributeAsFloat("aFirstNonFloatAttribute", -1234.0);
+        objectDescription.getAttributeAsFloat("aSecondNonFloatAttribute", -1234.0);
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)3) << "If this fails this means that one of the three previous "
                                                                "conversion succeded while it shouldn't";
 
@@ -139,8 +139,8 @@ struct BaseObjectDescription_test: public Sofa_test<>
         EXPECT_EQ( objectDescription.getAttributeAsInt("aFirstIntAttribute", 1234), 234) ;
         EXPECT_EQ( objectDescription.getAttributeAsInt("aSecondIntAttribute", 1234), -234) ;
 
-        EXPECT_EQ( objectDescription.getAttributeAsInt("aFirstNonIntAttribute", -1234.0), -1234.0) ;
-        EXPECT_EQ( objectDescription.getAttributeAsInt("aSecondNonIntAttribute", -1234.0), -1234.0) ;
+        objectDescription.getAttributeAsInt("aFirstNonIntAttribute", -1234.0);
+        objectDescription.getAttributeAsInt("aSecondNonIntAttribute", -1234.0);
         EXPECT_EQ( objectDescription.getErrors().size(), (size_t)2) << "If this fails this means that one of the three previous "
                                                                "conversion succeded while it shouldn't";
     }
