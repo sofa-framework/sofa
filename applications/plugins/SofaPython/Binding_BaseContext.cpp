@@ -194,26 +194,30 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     }
 
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
+
+    if( !desc.getErrors().empty() )
+    {
+        SP_MESSAGE_WARNING( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            SP_MESSAGE_WARNING(*it);
+    }
+
     if (obj==0)
     {
-        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
-        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            SP_MESSAGE_ERROR(*it);
         PyErr_BadArgument();
         return NULL;
     }
 
+    for( auto it : desc.getAttributeMap() )
+    {
+        if (!it.second.isAccessed())
+        {
+            obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" << obj->sendl;
+        }
+    }
 
     if( warning )
     {
-        for( auto it : desc.getAttributeMap() )
-        {
-            if (!it.second.isAccessed())
-            {
-                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" << obj->sendl;
-            }
-        }
-
         Node *node = static_cast<Node*>(context);
         if (node && node->isInitialized())
             SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
