@@ -152,7 +152,6 @@ struct CompliantMapping<TOut (T...) >::impl_type {
     static void apply_assemble (self_type* self, const core::MechanicalParams* mparams,
                                 core::MultiVecCoordId out_pos_id,
                                 core::ConstMultiVecCoordId in_pos_id) {
-        
         // apply
         self->apply(mparams,
                     out_coord_view(self, out_pos_id),
@@ -445,7 +444,12 @@ template<class TOut, class ... T>
 void CompliantMapping<TOut (T...) >::apply(const core::MechanicalParams* mparams,
                                            core::MultiVecCoordId out_pos_id,
                                            core::ConstMultiVecCoordId in_pos_id)  {
-    impl::apply_assemble(this, mparams, out_pos_id, in_pos_id);
+    try{
+        impl::apply_assemble(this, mparams, out_pos_id, in_pos_id);
+    } catch( error& e ) {
+        msg_error() << e.what() << ", aborting";
+    }
+
 }
 
 template<class TOut, class ... T>

@@ -105,6 +105,10 @@ public:
     
 protected:
 
+    struct error : std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+    
     // derived classes need to implement this
     virtual void apply(const core::MechanicalParams* mparams,
                        coord_view<TOut> out_pos,
