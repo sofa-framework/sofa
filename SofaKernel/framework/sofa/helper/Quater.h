@@ -39,7 +39,7 @@ template<class Real>
 class SOFA_HELPER_API Quater
 {
 protected:
-    defaulttype::Vec<4,Real> _q;
+    defaulttype::VecNoInit<4,Real> _q;
 
 public:
 

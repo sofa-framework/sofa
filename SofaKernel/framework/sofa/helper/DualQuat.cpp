@@ -20,9 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_HELPER_DUALQUAT_CPP
-#include "DualQuat.inl"
 
-#include "Quater.inl"
+#include "DualQuat.inl"
 
 namespace sofa
 {
