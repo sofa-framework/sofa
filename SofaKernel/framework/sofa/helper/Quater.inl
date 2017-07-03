@@ -143,45 +143,27 @@ Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1) const
 template<class Real>
 Quater<Real> Quater<Real>::operator*(const Real& r) const
 {
-    Quater<Real>  ret;
-    ret[0] = _q[0] * r;
-    ret[1] = _q[1] * r;
-    ret[2] = _q[2] * r;
-    ret[3] = _q[3] * r;
-    return ret;
+    return Quater<Real>( _q*r );
 }
 
 
 template<class Real>
 Quater<Real> Quater<Real>::operator/(const Real& r) const
 {
-    Quater<Real>  ret;
-    ret[0] = _q[0] / r;
-    ret[1] = _q[1] / r;
-    ret[2] = _q[2] / r;
-    ret[3] = _q[3] / r;
-    return ret;
+    return Quater<Real>( _q * 1.0 / r );
 }
 
 template<class Real>
 void Quater<Real>::operator*=(const Real& r)
 {
-    Quater<Real>  ret;
-    _q[0] *= r;
-    _q[1] *= r;
-    _q[2] *= r;
-    _q[3] *= r;
+    _q *= r;
 }
 
 
 template<class Real>
 void Quater<Real>::operator/=(const Real& r)
 {
-    Quater<Real>  ret;
-    _q[0] /= r;
-    _q[1] /= r;
-    _q[2] /= r;
-    _q[3] /= r;
+    _q *= 1.0 / r;
 }
 
 
@@ -241,22 +223,21 @@ Quater<Real> Quater<Real>::inverse() const
     return ret;
 }
 
-/// Quater<Real>s always obey:  a^2 + b^2 + c^2 + d^2 = 1.0
-/// If they don't add up to 1.0, dividing by their magnitude will
-/// renormalize them.
+
 template<class Real>
-void Quater<Real>::normalize()
+bool Quater<Real>::normalize()
 {
-    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    if( mag != 0)
-    {
-        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-        for (int i = 0; i < 4; i++)
-        {
-            _q[i] *= sqr;
-        }
-    }
+    return _q.normalize();
 }
+
+
+template<class Real>
+Real Quater<Real>::norm() const
+{
+    return _q.norm();
+}
+
+
 
 template<class Real>
 void Quater<Real>::fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z)
