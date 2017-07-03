@@ -39,7 +39,8 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	virtual void init();
 
     Data<SReal> omega;
-
+    Data<bool> paranoia;
+    
   protected:
 
 	virtual void solve_impl(vec& x,

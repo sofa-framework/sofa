@@ -17,7 +17,9 @@ namespace linearsolver {
 
 BaseSequentialSolver::BaseSequentialSolver()
 	: omega(initData(&omega, (SReal)1.0, "omega",
-                     "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
+                     "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
+      paranoia(initData(&paranoia, false, "paranoia", "add paranoid steps to counter numerical issues")) 
+      
 {}
 
 
@@ -127,8 +129,6 @@ static void add_sparse_product_to_dense(ColDenseMatrix& out,
 }
 
 void BaseSequentialSolver::factor_impl(const system_type& system) {
-	const Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
-    
     // fill and factor sub-kkt system
     SubKKT::projected_primal(sub, system);
 
@@ -324,7 +324,9 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	// TODO is this needed to avoid error accumulation? apparently not, but
 	// would be nice to have a paranoid flag to control it
 
-    // net.noalias() = mapping_response * lambda;
+    if(paranoia.getValue()) {
+        net.noalias() = mapping_response * lambda;
+    }
     
 	return error_squared;
 }
@@ -349,13 +351,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
                                       bool correct,
                                       real damping) const {
 	assert( response );
-
-	// reset bench if needed
-	if( this->bench ) {
-		bench->clear();
-		bench->restart();
-	}
-
 
 	// free velocity
     vec free_res( sys.m );
@@ -388,9 +383,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
 	const real epsilon = relative.getValue() ? 
 		constant.norm() * precision.getValue() : precision.getValue();
 
-    // TODO remove bench solvers and provide python bindings/callbacks  
-	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
 	vec old;
@@ -403,9 +395,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
         
         const SReal cv_squared = step( lambda, net, sys, constant, error, delta, correct, damping );
 
-        // TODO remove bench solvers and provide python bindings/callbacks
-		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-		
         cv = std::sqrt( cv_squared );
 		if( cv < epsilon ) break;
 	}
@@ -418,14 +407,14 @@ void BaseSequentialSolver::solve_impl(vec& res,
         serr << "lcp rhs: " << constant.transpose() << sendl;
         serr << "lcp lambda: " << lambda.transpose() << sendl;
 
-        // only make sense when all constraints are unilateral
-        const SReal unilateral_error =
-            (JP * (mapping_response * lambda)
-             + sys.C * lambda
-             + damping * lambda
-             - constant).array().min(lambda.array()).matrix().norm();
+        // // only make sense when all constraints are unilateral
+        // const SReal unilateral_error =
+        //     (JP * (mapping_response * lambda)
+        //      + sys.C * lambda
+        //      + damping * lambda
+        //      - constant).array().min(lambda.array()).matrix().norm();
         
-        serr << "unilateral error: " << unilateral_error << sendl;
+        // serr << "unilateral error: " << unilateral_error << sendl;
         
         serr << sendl;
     }
@@ -433,8 +422,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
     
     if( this->f_printLog.getValue() ) {
         serr << "iterations: " << k << ", error: " << cv << sendl;
-
-        
     }
 
 }
