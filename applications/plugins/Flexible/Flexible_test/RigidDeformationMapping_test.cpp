@@ -61,62 +61,25 @@ namespace sofa {
         typedef defaulttype::Vector3 Vec3;
 
         /// Tested Rotation: random rotation matrix  
-        defaulttype::Mat<3,3,Real> testedRotation; 
-        Quat testedQuaternion;
-        /// Tested Translation: random translation
-        Vec3 testedTranslation;
+        defaulttype::Mat<3,3,Real> testedRotation;
 
         // Constructor: call the constructor of the base class which loads the scene to test
         RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
         {
-            // rotation and translation
-            this->SetRandomTestedRotationAndTranslation();
+            // random rotation and translation
+            Coord randomRigid = Coord::rand(180);
+
+            msg_info("RigidLinearDeformationMappings_test")<<"randomRigid="<<randomRigid; // to debug
+
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
             typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
-            affineConstraint->m_quaternion.setValue(testedQuaternion);
-            affineConstraint->m_translation.setValue(testedTranslation);
-            testedQuaternion.toMatrix(testedRotation);
+            affineConstraint->m_quaternion.setValue(randomRigid.getOrientation());
+            affineConstraint->m_translation.setValue(randomRigid.getCenter());
+            randomRigid.getOrientation().toMatrix(testedRotation);
 
             static_cast<_Mapping*>(this->mapping)->d_geometricStiffness.setValue( 1 );
         }
              
-        void SetRandomTestedRotationAndTranslation()
-        {
-            // Random Rotation
-            SReal x,y,z,w=0;
-            // Random axis
-            x = SReal(helper::drand(1));
-            y = SReal(helper::drand(1));
-            z = SReal(helper::drand(1));
-            // If the rotation axis is null
-            Vec3 rotationAxis(x,y,z);
-            rotationAxis.normalize( Vec3(0,0,1), 1e-7 ); // with failsafe
-
-            // Random angle between 0 and M_PI
-            while( !w )
-                w = helper::drand()* M_PI;
-
-            // Quat = (rotationAxis*sin(angle/2) , cos(angle/2)) angle = 2*w
-            testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
-
-            // to be sure
-            if( !testedQuaternion.normalize() )
-            {
-                msg_warning("RigidLinearDeformationMappings_test")<<"testedQuaternion is too small  -  random values: "<<x<<" "<<y<<" "<<z<<" "<<w<<"   testedQuaternion="<<testedQuaternion;
-                testedQuaternion.set( 0, 0, 0, 1 );
-            }
-
-            // Translation
-            for(size_t i=0;i<testedTranslation.size();++i)
-            {
-                testedTranslation[i]=helper::drand(2);
-            }
-
-
-            msg_info("RigidLinearDeformationMappings_test")<<"random values: "<<x<<" "<<y<<" "<<z<<" "<<w<<"   testedQuaternion="<<testedQuaternion<<"   -   testedTranslation="<<testedTranslation;
-
-        }
-
         using Inherited::runTest;
         /// After simulation compare the positions of deformation gradients to the theoretical positions.
         bool runTest(double convergenceAccuracy)
