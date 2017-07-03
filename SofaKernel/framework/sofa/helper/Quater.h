@@ -94,7 +94,7 @@ public:
 
     void clear()
     {
-        _q.clear();
+        _q.set(0,0,0,1);
     }
 
     void fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z);
