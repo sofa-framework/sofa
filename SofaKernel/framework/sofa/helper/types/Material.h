@@ -19,40 +19,56 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
-#define SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
 
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/BaseMapping.h>
+#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
+#define SOFA_HELPER_TYPES_MATERIAL_H_
+
+#include <sofa/core/core.h>
+#include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace helper
 {
 
-/// propagating position and velocity through non-mechanical mappings
-/// (while MechanicalPropagateOnlyPositionAndVelocityVisitor is propagating mechanical mappings)
-class SOFA_SIMULATION_CORE_API UpdateMappingVisitor : public Visitor
+namespace types
+{
+
+class SOFA_HELPER_API Material
 {
 public:
-    UpdateMappingVisitor(const sofa::core::ExecParams* params) : Visitor(params) {}
-    void processMapping(simulation::Node* node, core::BaseMapping* obj);
-    void processMechanicalMapping(simulation::Node*, core::BaseMapping* obj);
+    std::string 	name;		        /* name of material */
+    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
+    defaulttype::RGBAColor  ambient ;	/* ambient component */
+    defaulttype::RGBAColor  specular;	/* specular component */
+    defaulttype::RGBAColor  emissive;	/* emmissive component */
+    float  shininess;	                /* specular exponent */
+    bool   useDiffuse;
+    bool   useSpecular;
+    bool   useAmbient;
+    bool   useEmissive;
+    bool   useShininess;
+    bool   useTexture;
+    bool   useBumpMapping;
+    bool   activated;
+    std::string   textureFilename; // path to the texture linked to the material
+    std::string   bumpTextureFilename; // path to the bump texture linked to the material
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    void setColor(float r, float g, float b, float a) ;
 
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "mapping"; }
-    virtual const char* getClassName() const { return "UpdateMappingVisitor"; }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
+    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
+    Material() ;
+    Material(const Material& mat) ;
 };
 
-} // namespace simulation
+} // namespace types
+
+} // namespace helper
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */

@@ -120,9 +120,9 @@ public:
 protected:
     sofa::helper::system::FileEventListener* m_filelistener {nullptr} ;
 
-    PyObject *m_ScriptControllerClass      {nullptr} ;   /// class implemented in the script to use
-                                                         /// to instanciate the python controller
-    PyObject *m_ScriptControllerInstance   {nullptr} ;   /// instance of m_ScriptControllerClass
+    PyObject *m_ScriptControllerClass      {nullptr} ;   // class implemented in the script to use
+                                                         // to instanciate the python controller
+    PyObject *m_ScriptControllerInstance   {nullptr} ;   // instance of m_ScriptControllerClass
 
     // optionnal script entry points:
     PyObject *m_Func_onKeyPressed          {nullptr} ;

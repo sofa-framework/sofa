@@ -19,40 +19,71 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
-#define SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
+#include <sstream>
+using std::stringstream ;
 
-#include <sofa/simulation/Visitor.h>
-#include <sofa/core/BaseMapping.h>
+#include <string>
+using std::string ;
 
-namespace sofa
-{
+#include <sofa/core/objectmodel/Base.h>
+using sofa::core::objectmodel::Data ;
 
-namespace simulation
-{
+#include <sofa/helper/types/Material.h>
+using sofa::helper::types::Material ;
 
-/// propagating position and velocity through non-mechanical mappings
-/// (while MechanicalPropagateOnlyPositionAndVelocityVisitor is propagating mechanical mappings)
-class SOFA_SIMULATION_CORE_API UpdateMappingVisitor : public Visitor
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
+
+namespace sofa {
+
+class Material_test : public Sofa_test<>
 {
 public:
-    UpdateMappingVisitor(const sofa::core::ExecParams* params) : Visitor(params) {}
-    void processMapping(simulation::Node* node, core::BaseMapping* obj);
-    void processMechanicalMapping(simulation::Node*, core::BaseMapping* obj);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
+    void checkConstructor()
+    {
+        Material m;
+        EXPECT_FALSE( m.activated );
+        EXPECT_TRUE( m.useAmbient );
+        EXPECT_TRUE( m.useDiffuse );
+        EXPECT_FALSE( m.useSpecular );
+        EXPECT_FALSE( m.useEmissive );
+        EXPECT_FALSE( m.useShininess );
+        EXPECT_FALSE( m.useTexture );
+        EXPECT_FALSE( m.useBumpMapping );
+    }
 
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "mapping"; }
-    virtual const char* getClassName() const { return "UpdateMappingVisitor"; }
+    void checkDataRead(const std::string& testmat)
+    {
+        Material m1;
+        m1.name = "notdefault" ;
+        EXPECT_EQ( m1.name, "notdefault" ) ;
 
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+        Data<Material> m;
+        m.setValue(m1) ;
+        EXPECT_EQ( m.getValue().name, "notdefault" ) ;
+
+        m.read( testmat );
+        EXPECT_EQ( m.getValue().name, "sofa_logo" ) ;
+        EXPECT_TRUE( m.getValue().useAmbient ) ;
+        EXPECT_TRUE( m.getValue().useDiffuse ) ;
+        EXPECT_TRUE( m.getValue().useSpecular ) ;
+        EXPECT_TRUE( m.getValue().useShininess ) ;
+        EXPECT_FALSE( m.getValue().useEmissive ) ;
+        EXPECT_EQ( m.getValueString(), testmat ) ;
+    }
 };
 
-} // namespace simulation
+TEST_F(Material_test, checkConstructor)
+{
+        checkConstructor();
+}
 
-} // namespace sofa
+TEST_F(Material_test, checkDataRead)
+{
+        checkDataRead("sofa_logo Diffuse 1 0.3 0.18 0.05 1 Ambient 1 0.05 0.02 0 1 Specular 1 1 1 1 1 Emissive 0 0 0 0 0 Shininess 1 1000 ");
+}
 
-#endif
+
+
+}// namespace sofa

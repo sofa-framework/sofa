@@ -440,13 +440,14 @@ static PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/
 
 static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
-
+  
     using sofa::core::MechanicalParams;
     const MechanicalParams* instance = MechanicalParams::defaultInstance();
 
     /// only mechanical mappings
-    node->execute<MechanicalPropagatePositionAndVelocityVisitor>( instance );
-
+    node->execute<MechanicalProjectPositionAndVelocityVisitor>(instance); // projective constraints
+    node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(instance); // only mechanical mappings
+     
     /// propagating position and velocity through non mechanical mappings
     node->execute<UpdateMappingVisitor>(instance);
 

@@ -19,11 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
-#define SOFA_SIMULATION_TREE_UPDATEMAPPINGACTION_H
+#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
+#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
 
+#include "config.h"
+
+#include <map>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
@@ -31,24 +33,16 @@ namespace sofa
 namespace simulation
 {
 
-/// propagating position and velocity through non-mechanical mappings
-/// (while MechanicalPropagateOnlyPositionAndVelocityVisitor is propagating mechanical mappings)
-class SOFA_SIMULATION_CORE_API UpdateMappingVisitor : public Visitor
+class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
 public:
-    UpdateMappingVisitor(const sofa::core::ExecParams* params) : Visitor(params) {}
-    void processMapping(simulation::Node* node, core::BaseMapping* obj);
-    void processMechanicalMapping(simulation::Node*, core::BaseMapping* obj);
+    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
+    virtual ~SceneCheckerVisitor() ;
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-
-    /// Return a category name for this action.
-    /// Only used for debugging / profiling purposes
-    virtual const char* getCategoryName() const { return "mapping"; }
-    virtual const char* getClassName() const { return "UpdateMappingVisitor"; }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const { return true; }
+    void validate(Node* node) ;
+    virtual Result processNodeTopDown(Node* node) override ;
+private:
+    std::map<std::string,bool> m_requiredPlugins ;
 };
 
 } // namespace simulation
