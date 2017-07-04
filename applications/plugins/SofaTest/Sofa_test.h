@@ -252,6 +252,7 @@ void copyFromData( Vector& v, const ReadData& d){
 /// Copy the Vector to the Data. They must have the same size.
 template<class WriteData, class Vector>
 void copyToData( WriteData& d, const Vector& v){
+    assert( d.size() == v.size() );
     for( unsigned i=0; i<d.size(); i++)
         d[i] = v[i];
 }
