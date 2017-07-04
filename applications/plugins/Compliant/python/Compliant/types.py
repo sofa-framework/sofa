@@ -207,10 +207,21 @@ class Quaternion(np.ndarray):
 
     @imag.setter
     def imag(self, value): self[imag_slice] = value
+
+
+    @property
+    def coeffs(self): return self.view(np.ndarray )
+
+    @coeffs.setter
+    def coeffs(self, value):
+        self.coeffs[:] = value
+        
     
     def normalize(self):
         '''normalize quaternion'''
-        self /= norm(self)
+        result = norm(self)
+        self /= result
+        return result
 
     def flip(self):
         '''flip quaternion in the real positive halfplane, if needed'''
