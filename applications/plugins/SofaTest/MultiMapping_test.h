@@ -177,7 +177,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         // transfer the parent values in the parent states
         for( size_t i=0; i<parentCoords.size(); i++ )
         {
-            this->inDofs[i]->resize(parentCoords[i].size());
+            inDofs[i]->resize(parentCoords[i].size());
             WriteInVecCoord xin = inDofs[i]->writePositions();
             copyToData(xin,parentCoords[i]); // xin = parentNew[i]
         }
@@ -266,6 +266,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         // apply geometric stiffness
         for( Index p=0; p<Np.size(); p++ ) {
+            inDofs[p]->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
             WriteInVecDeriv dxin = inDofs[p]->writeDx();
             copyToData( dxin, vp[p] );
             dfp[p] = InVecDeriv(Np[p], InDeriv() );
