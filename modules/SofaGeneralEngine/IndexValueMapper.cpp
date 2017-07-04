@@ -39,7 +39,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(IndexValueMapper)
 
-int IndexValueMapperClass = core::RegisterObject("?")
+int IndexValueMapperClass = core::RegisterObject("Input values to output values mapper. Includes indices rules, such as replacement, resize")
 #ifndef SOFA_FLOAT
         .add< IndexValueMapper<Vec3dTypes> >(true)
 #endif //SOFA_FLOAT
