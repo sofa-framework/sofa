@@ -18,8 +18,8 @@ namespace linearsolver {
 BaseSequentialSolver::BaseSequentialSolver()
 	: omega(initData(&omega, (SReal)1.0, "omega",
                      "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
-      paranoia(initData(&paranoia, false, "paranoia", "add paranoid steps to counter numerical issues")) 
-      
+      paranoia(initData(&paranoia, false, "paranoia", "add paranoid steps to counter numerical issues")), 
+      homogenize(initData(&homogenize, false, "homogenize", "homogenize block diagonals (fixing friction anisotropy)"))
 {}
 
 
@@ -210,8 +210,14 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
             
 		}
 
-        // TODO homogenize friction constraints
-        
+        // homogenize friction constraints
+        if(homogenize.getValue()) {
+            chunk_type view(&diagonal(b.offset), b.size);
+            const SReal max = view.maxCoeff();
+            view = view.unaryExpr([max](const SReal& di) {
+                    return di > 0 ? max : di;
+                });
+        }
     }
 
     if(debug.getValue() ) {
