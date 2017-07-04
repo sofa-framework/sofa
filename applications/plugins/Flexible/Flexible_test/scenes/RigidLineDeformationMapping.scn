@@ -14,7 +14,7 @@
     <MeshTopology name="mesh" lines="0 1" position="@DOFs.position" drawEdges="true"/>
     
     <!--Constraint and roi-->
-    <BoxROI name="Box" box="-10 -10 -10 30 30 30" position="@Rigid.position" />
+    <BoxROI template="Rigid" name="Box" box="-10 -10 -10 30 30 30" position="@DOFs.position" />
     <AffineMovementConstraint template="Rigid" name="affineConstraint" endConstraintTime="0.02" indices="@Box.indices" meshIndices = "@Box.indices"/>
   
     <!--Mass-->
