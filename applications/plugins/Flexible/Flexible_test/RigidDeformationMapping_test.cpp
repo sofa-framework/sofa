@@ -68,9 +68,6 @@ namespace sofa {
         {
             // random rotation and translation
             Coord randomRigid = Coord::rand(180);
-
-            msg_info("RigidLinearDeformationMappings_test")<<"randomRigid="<<randomRigid; // to debug
-
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
             typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
             affineConstraint->m_quaternion.setValue(randomRigid.getOrientation());
