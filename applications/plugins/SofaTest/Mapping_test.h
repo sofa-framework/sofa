@@ -159,7 +159,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
-        root = simulation->createNewGraph("root");
         root = sofa::simulation::getSimulation()->load(fileName.c_str());
 
         // InDofs
@@ -242,21 +241,33 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mparams.setSymmetricMatrix(false);
 
         inDofs->resize(parentInit.size());
+        {
         WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentInit); // xin = parentInit
+        }
 
         outDofs->resize(childInit.size());
         outDofs->forceMask.assign(outDofs->getSize(),true); // child mask must be filled-up
+        {
         WriteOutVecCoord xout = outDofs->writePositions();
         copyToData(xout,childInit);
+        }
+
 
         /// Init based on parentInit
         sofa::simulation::getSimulation()->init(root.get());
 
         /// Updated to parentNew
+        {
+        WriteInVecCoord xin = inDofs->writePositions();
         copyToData(xin,parentNew);
+        }
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position());
         mapping->applyJ(&mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity());
+
+
+
+        ReadOutVecCoord xout = outDofs->readPositions();
 
         /// test apply: check if the child positions are the expected ones
         bool succeed=true;
@@ -293,11 +304,15 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             fc[i] = Out::randomDeriv( 0.1, 1.0 );
         }
         fp2.fill( InDeriv() );
+        {
         WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
+        }
         //        cout<<"random child forces  fc = "<<fc<<endl;
+        {
         WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData( fout, fc );
+        }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp, inDofs->readForces() );
         //          cout<<"parent forces fp = "<<fp<<endl;
@@ -313,20 +328,29 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         //          cout<<"new parent positions xp1 = " << xp1 << endl;
 
         // propagate small velocity
+        {
         WriteInVecDeriv vin = inDofs->writeVelocities();
         copyToData( vin, vp );
+        }
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
+        {
         ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
+        }
         //          cout<<"child velocity vc = " << vc << endl;
 
 
         // apply geometric stiffness
         inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
+        {
         WriteInVecDeriv dxin = inDofs->writeDx();
         copyToData( dxin, vp );
+        }
         dfp.fill( InDeriv() );
+        {
+        WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, dfp );
+        }
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
@@ -379,8 +403,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
         fp.fill( InDeriv() );
+        {
+        WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, fp );  // reset parent forces before accumulating child forces
+        }
+        {
+        WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData( fout, preTreatment(fc) );
+        }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp, inDofs->readForces() );
 
@@ -390,8 +420,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // propagate small displacement
+        {
         WriteInVecCoord pin (inDofs->writePositions());
         copyToData( pin, xp1 );
+        }
         //            cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
         ReadOutVecCoord pout = outDofs->readPositions();
@@ -416,8 +448,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // update parent force based on the same child forces
         fp2.fill( InDeriv() );
+        {
+        WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
+        }
+        {
+        WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData( fout, preTreatment(fc) );
+        }
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp2, inDofs->readForces() );
         //        cout<<"updated parent forces fp2 = "<< fp2 << endl;
@@ -481,8 +519,15 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         inDofs->forceMask.assign(inDofs->getSize(),false);
         outDofs->forceMask.assign(outDofs->getSize(),true);
         mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
+        {
+        WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
+        }
+        {
+        WriteOutVecDeriv fout = outDofs->writeForces();
         for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        }
+
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp, inDofs->readForces() );
         for( unsigned i=0; i<Np; i++ ) {
