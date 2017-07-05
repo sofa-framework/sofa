@@ -327,10 +327,15 @@ public:
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
-        for (int i=0; i<L; i++)
-            for (int j=0; j<C; j++)
-                this->elems[i][j]=m[j][i];
-    }
+				if (L == C && reinterpret_cast<Mat<C,L,real>*>(this) == &m)
+						this->operator =(transposed());
+				else
+				{
+						for (int i=0; i<L; i++)
+								for (int j=0; j<C; j++)
+										this->elems[i][j]=m[j][i];
+				}
+		}
 
     /// Return the transpose of m.
     Mat<C,L,real> transposed() const
@@ -599,10 +604,26 @@ public:
             this->elems[i]-=m[i];
     }
 
+
+		/// invert this
+		Mat<L,C,real>& inverted()
+		{
+			Mat<L,C,real> m = *this;
+			invertMatrix(*this, m);
+			return *this;
+		}
+
     /// Invert matrix m
     bool invert(const Mat<L,C,real>& m)
     {
-        return invertMatrix(*this, m);
+				if (&m == this)
+				{
+						Mat<L,C,real> mat = m;
+						bool res = invertMatrix(mat, m);
+						this->operator =(mat);
+						return res;
+				}
+				return invertMatrix(*this, m);
     }
 
     static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
