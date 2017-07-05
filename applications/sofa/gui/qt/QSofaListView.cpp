@@ -36,6 +36,11 @@
 #include <QtGlobal> // version macro
 #include <QMessageBox>
 
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QUrl>
+#include <QClipboard>
+
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 namespace sofa
@@ -78,21 +83,13 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     AddObjectDialog_ = new AddObject ( &list_object, this );
     AddObjectDialog_->hide();
 
-
-    //addColumn(QString());
-
-//    header()->setClickEnabled(false, header()->count() - 1);
-//    header()->
-    //header()->setResizeEnabled(false, header()->count() - 1);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     header()->setResizeMode(header()->count() - 1, QHeaderView::Fixed);
 #else
     header()->setSectionResizeMode(header()->count() - 1, QHeaderView::Fixed);
 #endif // SOFA_QT5
-    //header()->setLabel(0, QString());
 
     setRootIsDecorated(true);
-    //setTreeStepSize(15);
     setIndentation(15);
     graphListener_ = new GraphListenerQListView(this);
 
@@ -111,12 +108,8 @@ QSofaListView::~QSofaListView()
 
 void QSofaListView::Clear(Node* rootNode)
 {
-
     if(graphListener_ != NULL)
     {
-        /*if(attribute_ = VISUAL){
-          simulation::getSimulation()->getVisualRoot()->removeListener(graphListener_);
-        }*/
         delete graphListener_;
     }
 
@@ -125,7 +118,7 @@ void QSofaListView::Clear(Node* rootNode)
     graphListener_ = new GraphListenerQListView(this);
 
     this->setSortingEnabled(false);
-//    setSorting ( -1 );
+
     header()->hide();
     graphListener_->addChild ( NULL, rootNode );
     graphListener_->freeze ( rootNode );
@@ -172,7 +165,7 @@ void QSofaListView::collapseNode(QTreeWidgetItem* item)
     for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
-        child->setExpanded(false);// setOpen ( false );
+        child->setExpanded(false);
     }
     item->setExpanded ( true );
     emit Lock(false);
@@ -191,7 +184,7 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
     for(int i=0 ; i<item->childCount() ; i++)
     {
         QTreeWidgetItem* child = item->child(i);
-        child->setExpanded(true);// setOpen ( false );
+        child->setExpanded(true);
         expandNode(item);
     }
 
@@ -265,7 +258,14 @@ void QSofaListView::Freeze()
 
 void QSofaListView::Unfreeze()
 {
+    if(!graphListener_)
+        return;
+    if(!graphListener_->findObject(this->topLevelItem(0)))
+        return;
+
     Node* groot = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
+    if(!groot)
+        return;
     graphListener_->unfreeze(groot);
 }
 
@@ -295,10 +295,8 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     if( item == NULL) return;
 
     updateMatchingObjectmodel(item);
-    //updateMatchingObjectmodel();
 
     QAction* act;
-
     bool object_hasData = false;
     if(object_.type == typeObject)
     {
@@ -308,92 +306,74 @@ void QSofaListView::RunSofaRightClicked( const QPoint& point)
     contextMenu->setObjectName( "ContextMenu");
     if( object_.isNode() )
     {
-        //int index_menu = contextMenu->insertItem("Focus", this,SLOT( focusNode() )  );
         act = contextMenu->addAction("Focus", this,SLOT(focusNode()));
         bool enable = object_.ptr.Node->f_bbox.getValue().isValid() && !object_.ptr.Node->f_bbox.getValue().isFlat();
         act->setEnabled(enable);
-        //contextMenu->setItemEnabled(index_menu,enable);
     }
     if( object_.isObject() )
     {
-       // int index_menu = contextMenu->insertItem("Focus", this,SLOT( focusObject() ) );
         act = contextMenu->addAction("Focus", this,SLOT(focusObject()));
         bool enable = object_.ptr.Object->f_bbox.getValue().isValid() && !object_.ptr.Object->f_bbox.getValue().isFlat() ;
-        //contextMenu->setItemEnabled(index_menu,enable);
         act->setEnabled(enable);
     }
-    //contextMenu->insertSeparator();
+
     contextMenu->addSeparator();
 
     //Creation of the context Menu
     if ( object_.type == typeNode)
     {
-//        contextMenu->insertItem ( "Collapse", this, SLOT ( collapseNode() ) );
         act = contextMenu->addAction("Collapse", this,SLOT(collapseNode()));
-//        contextMenu->insertItem ( "Expand", this, SLOT ( expandNode() ) );
         act = contextMenu->addAction("Expand", this,SLOT(expandNode()));
-//        contextMenu->insertSeparator ();
         contextMenu->addSeparator();
         /*****************************************************************************************************************/
         if (object_.ptr.Node->isActive())
         {
-//            contextMenu->insertItem ( "Deactivate", this, SLOT ( DeactivateNode() ) );
             act = contextMenu->addAction("Deactivate", this,SLOT(DeactivateNode()));
         }
         else
         {
-//            contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
             act = contextMenu->addAction("Activate", this,SLOT(ActivateNode()));
         }
         if (object_.ptr.Node->isSleeping())
         {
-//            contextMenu->insertItem ( "Wake up", this, SLOT ( WakeUpNode() ) );
             act = contextMenu->addAction("Wake up", this,SLOT(WakeUpNode()));
         }
         else
         {
-//            contextMenu->insertItem ( "Put to sleep", this, SLOT ( PutNodeToSleep() ) );
             act = contextMenu->addAction("Put to sleep", this,SLOT(PutNodeToSleep()));
         }
-//        contextMenu->insertSeparator ();
         contextMenu->addSeparator();
         /*****************************************************************************************************************/
-
-//        contextMenu->insertItem ( "Save Node", this, SLOT ( SaveNode() ) );
         act = contextMenu->addAction("Save Node", this,SLOT(SaveNode()));
-//        contextMenu->insertItem ( "Export OBJ", this, SLOT ( exportOBJ() ) );
         act = contextMenu->addAction("Export OBJ", this,SLOT(exportOBJ()));
 
         if ( attribute_ == SIMULATION)
         {
-//            contextMenu->insertItem ( "Add Node", this, SLOT ( RaiseAddObject() ) );
             act = contextMenu->addAction("Add Node", this,SLOT(RaiseAddObject()));
-
-//            int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( RemoveNode() ) );
             act = contextMenu->addAction("Remove Node", this,SLOT(RemoveNode()));
             //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
             if ( !isNodeErasable ( object_.ptr.Node ) )
             {
-//                contextMenu->setItemEnabled ( index_menu,false );
                 act->setEnabled(false);
             }
         }
     }
-    //contextMenu->insertItem ( "Modify", this, SLOT ( Modify() ) );
     act = contextMenu->addAction("Modify", this,SLOT(Modify()));
     if(object_hasData)
     {
         if(item->childCount() > 0)
         {
-//            contextMenu->insertItem("Hide Data",this, SLOT ( HideDatas() ) );
             act = contextMenu->addAction("Hide Data", this,SLOT(HideDatas()));
         }
         else
         {
-//            contextMenu->insertItem("Show Data", this, SLOT ( ShowDatas() ) );
             act = contextMenu->addAction("Show Data", this,SLOT(ShowDatas()));
         }
     }
+
+    contextMenu->addSeparator();
+    act = contextMenu->addAction("Copy file path", this,SLOT(copyFilePathToClipBoard()));
+    act = contextMenu->addAction("Open file in editor", this,SLOT(openInEditor()));
 
     contextMenu->exec ( this->mapToGlobal(point) /*, index */);
 }
@@ -490,13 +470,6 @@ void QSofaListView::RemoveNode()
         Node::SPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
-//            //Attempt to destroy the Root node : create an empty node to handle new graph interaction
-//            Node::SPtr root = simulation::getSimulation()->createNewGraph( "Root" );
-//            graphListener_->removeChild ( NULL, node.get());
-//            graphListener_->addChild ( NULL, root.get() );
-//            emit RootNodeChanged(root.get(),NULL);
-
-            //
             if ( QMessageBox::warning ( this, "Removing root", "root node cannot be removed" ) )
                 return;
 
@@ -591,6 +564,19 @@ void QSofaListView::HideDatas()
     }
 }
 
+void QSofaListView::openInEditor()
+{
+    QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
+    QDesktopServices::openUrl(QUrl::fromLocalFile(finfo.absoluteFilePath()));
+}
+
+void QSofaListView::copyFilePathToClipBoard()
+{
+    QFileInfo finfo(QApplication::activeWindow()->windowFilePath());
+    QApplication::clipboard()->setText(finfo.absoluteFilePath()) ;
+}
+
+
 void QSofaListView::ShowDatas()
 {
     if ( object_.type == typeObject )
@@ -678,9 +664,6 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
     simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
     if ( xml == NULL ) return;
 
-    // helper::system::SetDirectory chdir ( path.c_str() );
-
-    //std::cout << "Initializing objects"<<std::endl;
     if ( !xml->init() )
         dmsg_error("QSofaListView") << "Objects initialization failed." ;
 
@@ -720,9 +703,8 @@ void QSofaListView::loadObject ( std::string path, double dx, double dy, double 
 
 void QSofaListView::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
 {
-    if ( node == NULL ) return;
-    //const SReal conversionDegRad = 3.141592653/180.0;
-    //Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
+    if ( node == NULL )
+        return;
     TransformationVisitor transform(sofa::core::ExecParams::defaultInstance());
     transform.setTranslation(dx,dy,dz);
     transform.setRotation(rx,ry,rz);
