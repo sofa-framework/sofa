@@ -759,7 +759,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );
-                scoped::timer step("assembly: add_H");
+                // scoped::timer step("assembly: add_H");
                 // actual response matrix mapping
                 if( !zero(c.H) ) add_H(ltdl(Jc, c.H), 0);
             }
