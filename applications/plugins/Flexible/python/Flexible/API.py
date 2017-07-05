@@ -253,8 +253,8 @@ class Deformable:
             data = dict()
             with open(filename,'r') as f:
                 data.update(json.load(f))
-                self.mapping.indices= str(data['indices'])
-                self.mapping.weights= str(data['weights'])
+                self.mapping.indices= repr(data['indices'])
+                self.mapping.weights= repr(data['weights'])
                 if printLog:
                     Sofa.msg_info("Flexible.API.Deformable",'Imported Weights from '+filename)
 
@@ -489,12 +489,12 @@ class FEMDof:
                 data.update(json.load(f))
                 if 'mappingType' in data:
                     if data['mappingType'].find("Linear") != -1:
-                        self.mapping.indices= str(data['indices'])
-                        self.mapping.weights= str(data['weights'])
+                        self.mapping.indices= repr(data['indices'])
+                        self.mapping.weights= repr(data['weights'])
                     elif data['mappingType'].find("SubsetMultiMapping") != -1:
-                        self.mapping.indexPairs= str(data['indexPairs'])
+                        self.mapping.indexPairs= repr(data['indexPairs'])
                     elif data['mappingType'].find("SubsetMapping") != -1:
-                        self.mapping.indices= str(data['indices'])
+                        self.mapping.indices= repr(data['indices'])
                 if printLog:
                     Sofa.msg_info("Flexible.API.FEMDof",'Imported FEM Dof mapping from '+filename)
 
@@ -622,10 +622,10 @@ class Behavior:
             data = dict()
             with open(filename,'r') as f:
                 data.update(json.load(f))
-                self.mapping.indices= str(data['indices'])
-                self.mapping.weights= str(data['weights'])
-                self.mapping.weightGradients= str(data['weightGradients'])
-                self.mapping.weightHessians= str(data['weightHessians'])    
+                self.mapping.indices= repr(data['indices'])
+                self.mapping.weights= repr(data['weights'])
+                self.mapping.weightGradients= repr(data['weightGradients'])
+                self.mapping.weightHessians= repr(data['weightHessians'])
                 if printLog:
                     Sofa.msg_info("Flexible.API.Behavior",'Imported Weights from '+filename)
 
