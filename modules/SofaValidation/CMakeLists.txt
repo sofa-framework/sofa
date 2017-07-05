@@ -48,6 +48,5 @@ sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
 
 ## Add test project
 if(SOFA_BUILD_TESTS)
-  find_package(SofaTest QUIET)
   add_subdirectory(SofaValidation_test)
 endif()
