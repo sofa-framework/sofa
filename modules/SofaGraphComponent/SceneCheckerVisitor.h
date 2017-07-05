@@ -19,32 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_MATERIAL_H_
-#define SOFA_CORE_LOADER_MATERIAL_H_
+#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
+#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
 
-#include <sofa/helper/types/Material.h>
+#include "config.h"
+
+#include <map>
+#include <sofa/simulation/Visitor.h>
 
 namespace sofa
 {
 
-namespace core
+namespace simulation
 {
 
-namespace loader
+class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
+public:
+    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
+    virtual ~SceneCheckerVisitor() ;
 
-///The Material object that was previously in this sofa::core::loader is now in sofa::helper:types::Material.
-///The following lines is there to provide backward compatibility with existing code base.
-///This is just there for a transitional period of time and will be removed after 2018-01-07
-using sofa::helper::types::Material ;
+    void validate(Node* node) ;
+    virtual Result processNodeTopDown(Node* node) override ;
+private:
+    std::map<std::string,bool> m_requiredPlugins ;
+};
 
-//TODO(dmarchal 2017-06-13): Delete that around 2018-01-07
-
-
-} // namespace loader
-
-} // namespace core
+} // namespace simulation
 
 } // namespace sofa
 
-#endif /* SOFA_CORE_LOADER_MATERIAL_H_ */
+#endif
