@@ -13,13 +13,13 @@
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/torus2_scale3.obj" dx="0" dy="20" dz="29" color="blue" />
+            <OglModel name="Visual" filename="mesh/torus2_scale3.obj" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader"  dx="0" dy="20" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />
@@ -34,13 +34,13 @@
         <RegularGrid nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/dragon.obj" dx="20" dy="20" dz="29" color="red" />
+            <OglModel name="Visual" filename="mesh/dragon.obj" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader"  dx="20" dy="20" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />
@@ -55,25 +55,25 @@
         <RegularGrid nx="6" ny="3" nz="5" xmin="-10" xmax="8" ymin="-3" ymax="2.5" zmin="-7" zmax="7" />
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu1">
-            <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
+            <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" color="0.17 0.70 0.05" />
             <BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
         <Node name="Visu2">
-            <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
+            <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" color="0.04 0.19 0.52" />
             <BarycentricMapping input="@.." output="@VisualEyes" />
         </Node>
         <Node name="Visu3">
-            <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
+            <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" color="0.44 0.43 0.00" />
             <BarycentricMapping input="@.." output="@VisualEyebrows" />
         </Node>
         <Node name="Visu4">
-            <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
+            <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" color="0.47 0.25 0.03" />
             <BarycentricMapping input="@.." output="@VisualLips" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader"  dx="-20" dy="20" dz="29" />
+            <MechanicalObject src="@loader" />
             <Triangle />
             <Line />
             <Point />
