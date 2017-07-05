@@ -61,6 +61,11 @@ void SceneCheckerVisitor::installChangeSets()
     }) ;
 
     addHookInChangeSet("17.06", [](Base* o){
+        if(o->getClassName() == "BoxStiffSpringForceField" )
+            msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
+    }) ;
+
+    addHookInChangeSet("17.06", [](Base* o){
         if(o->getClassName() == "TheComponentWeWantToRemove" )
             msg_warning(o) << "TheComponentWewantToRemove is deprecated since sofa 17.06. It have been replaced by TheSuperComponent. #See PR318" ;
     }) ;
