@@ -139,7 +139,6 @@ set(SOURCE_FILES
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     StateMask.cpp
-    SVector.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp

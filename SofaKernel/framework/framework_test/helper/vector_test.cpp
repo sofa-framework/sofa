@@ -106,6 +106,9 @@ std::vector<std::vector<std::string>> intvalues={
     {"-100", "-100", "None"},
     {"", "", "None"},
 
+    /// using [,] notation
+    {"[0, 1, 2, 3, 4, 5, 6]", "0 1 2 3 4 5 6", "None"},
+
     /// The test the A-B range notation
     {"10-15 21", "10 11 12 13 14 15 21", "None"},
     {"15-10 21", "15 14 13 12 11 10 21", "None"},
@@ -143,7 +146,7 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// TEST THE vector<int> behavior
+/// TEST THE vector<unsigned int> behavior
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef vector_test<unsigned int> vector_test_unsigned_int;
@@ -157,6 +160,9 @@ std::vector<std::vector<std::string>> uintvalues={
     {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
     {"100", "100", "None"},
     {"", "", "None"},
+
+    /// using [,] notation
+    {"[0, 1, 2, 3, 4, 5, 6]", "0 1 2 3 4 5 6", "None"},
 
     /// Test the A-B range notation
     {"10-15 21", "10 11 12 13 14 15 21", "None"},
@@ -186,6 +192,23 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
+
+typedef vector_test<SReal> vector_test_sreal;
+TEST_P(vector_test_sreal, checkReadWriteBehavior)
+{
+    this->checkVector(GetParam()) ;
+}
+
+std::vector<std::vector<std::string>> srealvalues={
+    /// First test valid values
+    {"0.2 1.3 2.4 3.5 4.6 5.7 6.8", "0.2 1.3 2.4 3.5 4.6 5.7 6.8", "None"},
+
+    /// using [,] notation
+    {"[0.2, 1.3, 2.4, 3.5, 4.6, 5.7, 6.8]", "0.2 1.3 2.4 3.5 4.6 5.7 6.8", "None"}
+};
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
+                        vector_test_sreal,
+                        ::testing::ValuesIn(srealvalues));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
