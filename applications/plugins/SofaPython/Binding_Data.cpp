@@ -764,6 +764,7 @@ static PyObject * Data_isDirty(PyObject * self, PyObject * /*args*/)
 static PyObject * Data_str(PyObject *self)
 {
     BaseData* data = get_basedata( self );
+    SP_MESSAGE_DEPRECATED("Sofa.Data.__str__(): Use getValueString() method instead");
     return PyString_FromString(data->getValueString().c_str());
 }
 
