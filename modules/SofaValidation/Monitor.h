@@ -114,8 +114,7 @@ public:
 		Data< RGBAColor > d_trajectoriesColor;
 
 		Data< double > d_showSizeFactor;
-		Data< core::objectmodel::DataFileName > d_fileName;
-
+		core::objectmodel::DataFileName  d_fileName;
 
 protected:
 
