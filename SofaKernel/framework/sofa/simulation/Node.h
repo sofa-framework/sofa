@@ -33,6 +33,8 @@
 #ifndef SOFA_SIMULATION_CORE_NODE_H
 #define SOFA_SIMULATION_CORE_NODE_H
 
+#include <type_traits>
+
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -351,15 +353,27 @@ public:
         getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
     }
 
-
-
-
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
     void getNodeObjects(Container* list)
     {
         this->get<Object, Container>(list, Local);
     }
+
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container>
+    Container& getNodeObjects(Container& result){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, Local);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container>
+    Container& getNodeObjects(Container* result){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, Local);
+        return result ;
+    }
+
 
     /// Return an object of this node deriving from a given class, or NULL if not found.
     /// Note that only the first object is returned.
@@ -482,8 +496,8 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
-	/// override context setSleeping to add notification.
-	virtual void setSleeping(bool /*val*/);
+    /// override context setSleeping to add notification.
+    virtual void setSleeping(bool /*val*/);
 
 protected:
     bool debug_;
@@ -501,7 +515,7 @@ protected:
     virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);
-	virtual void notifySleepChanged();
+    virtual void notifySleepChanged();
 
 
     BaseContext* _context;
