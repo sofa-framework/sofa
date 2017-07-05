@@ -140,7 +140,7 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
     }
 
 
-    PyObject* tmpstr=PyObject_Str(value);
+    PyObject* tmpstr=PyObject_Repr(value);
     out << PyString_AsString(tmpstr) ;
     Py_DECREF(tmpstr) ;
     return out ;
