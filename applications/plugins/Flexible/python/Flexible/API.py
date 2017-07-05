@@ -234,7 +234,7 @@ class Deformable:
         if self.mapping.getClassName().find("Linear") == -1:
             return
         filename = self.getFilename(filenamePrefix,directory)
-        data = {'indices': self.mapping.indices, 'weights': self.mapping.weights}
+        data = {'indices': str(self.mapping.findData('indices')), 'weights': str(self.mapping.findData('weights'))}
         with open(filename, 'w') as f:
             json.dump(data, f)
             if printLog:
@@ -633,8 +633,8 @@ class Behavior:
         filename = self.getFilename(filenamePrefix,directory)
         volumeDim = len(self.sampler.volume)/ len(self.sampler.position) if len(self.sampler.position)>0 and isinstance(self.sampler.volume, list) is True else 1 # when volume is a list (several GPs or order> 1)
         data = {'type': self.type, 'volumeDim': str(volumeDim), 'inputVolume': SofaPython.Tools.listListToStr(self.sampler.volume), 'position': SofaPython.Tools.listListToStr(self.sampler.position),
-                'indices': self.mapping.indices, 'weights': self.mapping.weights,
-                'weightGradients': self.mapping.weightGradients, 'weightHessians': self.mapping.weightHessians}
+                'indices': str(self.mapping.findData('indices')), 'weights': str(self.mapping.findData('weights')),
+                'weightGradients': str(self.mapping.findData('weightGradients')), 'weightHessians': str(self.mapping.findData('weightHessians'))}
         # @todo: add restShape ?
         with open(filename, 'w') as f:
             json.dump(data, f)
