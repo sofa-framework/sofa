@@ -72,6 +72,9 @@ static const std::string& getExecutablePath();
 /// @brief Get the path to the directory of the executable that is currently running.
 static const std::string& getExecutableDirectory();
 
+/// @brief Get the path where plugins are located
+static const std::string& getPluginDirectory();
+
 /// @brief Get the path to the "root" path of Sofa (i.e. the build directory or
 /// the installation prefix).
 ///

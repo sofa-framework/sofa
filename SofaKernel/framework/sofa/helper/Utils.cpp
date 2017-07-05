@@ -230,6 +230,20 @@ const std::string& Utils::getExecutableDirectory()
     return path;
 }
 
+
+const std::string& Utils::getPluginDirectory()
+{
+    static std::string pluginDir;
+
+#ifdef WIN32
+    pluginDir = helper::Utils::getExecutableDirectory();
+#else
+    pluginDir = helper::Utils::getSofaPathPrefix() + "/lib";
+#endif
+
+    return pluginDir;
+}
+
 static std::string computeSofaPathPrefix()
 {
     char* pathVar = getenv("SOFA_ROOT");
