@@ -42,7 +42,7 @@ OglTexturePointer::OglTexturePointer()
     ,textureUnit(initData(&textureUnit, (unsigned short) 1, "textureUnit", "Set the texture unit"))
     ,enabled(initData(&enabled, (bool) true, "enabled", "enabled ?"))
 {
-    
+    msg_deprecated() << "Use the OglTexture component directly, the texture are cache automatically";
 }
 
 OglTexturePointer::~OglTexturePointer()
