@@ -413,6 +413,59 @@ public:
         this->assign(r);
     }
 
+    std::istream& readDelimiter (std::istream& in )
+    {
+        char c;
+        in >> c;
+
+        if( in.eof() )
+            return in; // empty stream
+
+        if ( c != '[' )
+        {
+            msg_error("Vec") << "read : Bad begin character : " << c << ", expected  [";
+            return in;
+        }
+        std::streampos pos = in.tellg();
+        in >> c;
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            in.seekg( pos ); // coming-back to previous character
+            c = ',';
+            for( int i=0; i<N; ++i ) {
+                in>>(*this)[i];
+                in>>c;
+                if (c!=',')
+                    break;
+            }
+            if ( c != ']' )
+                msg_error("Vec") << "read : Bad end character : " << c << ", expected  ]";
+            return in;
+        }
+    }
+
+    std::istream& read(std::istream& in)
+    {
+        if( in.eof() )
+            return in; // empty stream
+        std::streampos pos = in.tellg();
+        char c;
+        in >> c;
+        in.seekg( pos ); // coming-back to the beginning of the stream
+        if ( c == '[' ) {
+            return readDelimiter(in);
+        }
+        else {
+            for( int i=0; i<N; ++i )
+                in>>(*this)[i];
+            return in;
+        }
+    }
+
     // Access to i-th element.
     // Already in fixed_array
     //real& operator[](int i)
@@ -800,18 +853,17 @@ public:
 template<int N,typename Real>
 std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 {
-    for( int i=0; i<N; ++i )
-        in>>v[i];
-    return in;
+    return v.read(in);
 }
 
 /// Write to an output stream
 template<int N,typename Real>
 std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 {
+    out << "[";
     for( int i=0; i<N-1; ++i )
-        out<<v[i]<<" ";
-    out<<v[N-1];
+        out<<v[i]<<", ";
+    out<<v[N-1] << "]";
     return out;
 }
 
