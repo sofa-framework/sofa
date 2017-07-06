@@ -32,6 +32,12 @@ set(HEADER_FILES
     Color.h
 )
 
+if(EIGEN3_FOUND OR Eigen3_FOUND)
+    list(APPEND HEADER_FILES 
+         MapMapSparseMatrixEigenUtils.h
+        )
+endif()
+
 set(SOURCE_FILES
     BaseMatrix.cpp
     BoundingBox.cpp
