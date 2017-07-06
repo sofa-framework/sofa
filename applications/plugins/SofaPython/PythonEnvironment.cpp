@@ -48,7 +48,7 @@ namespace simulation
 
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
-    gil lock;
+    PythonEnvironment::gil lock;
     Py_InitModule(name.c_str(), methodDef);
 }
 
@@ -439,7 +439,7 @@ void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 
 
 
-static PyGILState_Release lock() {
+static PyGILState_STATE lock() {
     // this ensures that we start with no active thread before first locking the
     // gil: this way the last gil unlock lets python threads to run (otherwise
     // the main thread still holds the gil, preventing python threads to run
