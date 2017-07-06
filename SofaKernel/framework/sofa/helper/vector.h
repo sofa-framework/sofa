@@ -164,13 +164,7 @@ public:
 
     std::ostream& write(std::ostream& os) const
     {
-        if( this->size()>0 )
-        {
-            for( size_type i=0; i<this->size()-1; ++i )
-                os<<(*this)[i]<<" ";
-            os<<(*this)[this->size()-1];
-        }
-        return os;
+        return this->writeDelimiter(os);
     }
 
     std::istream& readDelimiter (std::istream& in )
