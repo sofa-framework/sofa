@@ -220,8 +220,8 @@ public:
         else {
             T t=T();
             this->clear();
-            while(in>>t)
-            {
+            while(!in.eof()) {
+                in>>t;
                 this->push_back(t);
             }
             if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
