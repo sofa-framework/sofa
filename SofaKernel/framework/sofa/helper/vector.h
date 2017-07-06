@@ -151,11 +151,11 @@ public:
         if ( !this->empty() )
         {
             typename vector<T>::const_iterator i = this->begin();
-            os << "[ " << *i;
+            os << "[" << *i;
             ++i;
             for ( ; i!=this->end(); ++i )
                 os << ", " << *i;
-            os << " ]";
+            os << "]";
 
         }
         else os << "[]"; // empty vector
