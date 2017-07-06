@@ -209,10 +209,11 @@ public:
 
     std::istream& read(std::istream& in)
     {
+        std::streampos pos = in.tellg();
         char c;
         in >> c;
         if( in.eof() ) return in; // empty stream
-        in.seekg( 0 ); // coming-back to the beginning of the stream
+        in.seekg( pos ); // coming-back to the previous position
         if ( c == '[' ) {
             return readDelimiter(in);
         }
