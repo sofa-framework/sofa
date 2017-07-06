@@ -169,13 +169,13 @@ public:
 
     std::istream& readDelimiter (std::istream& in )
     {
-        T t=T();
         this->clear();
-        char c;
 
+        char c;
         in >> c;
 
-        if( in.eof() ) return in; // empty stream
+        if( in.eof() ) // empty stream
+            return in;
 
         if ( c != '[' )
         {
@@ -190,6 +190,7 @@ public:
         }
         else
         {
+            T t=T();
             in.seekg( pos ); // coming-back to previous character
             c = ',';
             while( !in.eof() && c == ',')
@@ -212,7 +213,8 @@ public:
         std::streampos pos = in.tellg();
         char c;
         in >> c;
-        if( in.eof() ) return in; // empty stream
+        if( in.eof() )
+            return in; // empty stream
         in.seekg( pos ); // coming-back to the previous position
         if ( c == '[' ) {
             return readDelimiter(in);
@@ -224,7 +226,8 @@ public:
                 in>>t;
                 this->push_back(t);
             }
-            if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+            if( in.rdstate() & std::ios_base::eofbit )
+                in.clear();
             return in;
         }
     }
