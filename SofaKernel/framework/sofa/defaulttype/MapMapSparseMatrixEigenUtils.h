@@ -99,13 +99,29 @@ struct EigenSparseToMapMapSparseMatrixVec
             {
                 auto rowIterator = mat.writeLine(rowIndex);
 
-                assert(rowNonZeros % TVec::size() == 0); // the filling must be compatible with the bloc size
+                int i = 0;
+                const int*  colPtr = innerIndexPtr + offset;
+                const Real* valPtr = valuePtr + offset;
+                int   blockIndex   = *colPtr / TVec::size();
+                int   blockOffset  = *colPtr - (blockIndex * TVec::size());
 
-                for (int i=0;i<rowNonZeros; i+=TVec::size() )
+
+                while (i != rowNonZeros)
                 {
-                    int colIndex       = *(innerIndexPtr + offset + i);
-                    const Real* valPtr = (valuePtr + offset + i);
-                    rowIterator.setCol(colIndex, TVec(valPtr));
+                    TVec val;
+                    int currentBlockIndex = blockIndex;
+                    int currentCol   = *colPtr;
+                    while (currentBlockIndex == blockIndex && i != rowNonZeros)
+                    {
+                        val[blockOffset] = *valuePtr;
+                        ++i;
+                        ++colPtr;
+                        ++valuePtr;
+                        blockIndex = *colPtr / TVec::size();
+                        blockOffset = *colPtr - (blockIndex * TVec::size());
+                    }
+
+                    rowIterator.addCol(currentBlockIndex, val);
                 }
             }
         }
