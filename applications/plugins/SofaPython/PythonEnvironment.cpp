@@ -421,6 +421,27 @@ void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 
 
 
+static PyGILState_Release lock() {
+    // this ensures that we start with no active thread before locking the
+    // gil. the first gil should be taken right after the python initializer is
+    // initialized.
+    static const PyThreadState* init = PyEval_SaveThread(); (void) init;
+    return PyGILState_Ensure();
+}
+
+
+PythonEnvironment::gil::gil()
+    : state(lock()) {
+    
+}
+
+
+PythonEnvironment::gil::~gil() {
+    PyGILState_Release(state);
+}
+
+
+
 } // namespace simulation
 
 } // namespace sofa
