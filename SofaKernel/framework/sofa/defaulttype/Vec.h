@@ -443,7 +443,7 @@ public:
                     break;
             }
             if (in.fail()) {
-                msg_error("Vector") << "Error reading [,] separated values";
+                msg_error("Vec") << "Error reading [,] separated values";
                 return in;
             }
             if ( c != ']' )
@@ -467,7 +467,7 @@ public:
             for( int i=0; i<N; ++i )
                 in>>(*this)[i];
             if (in.fail())
-                msg_error("Vector") << "Error reading space separated values";
+                msg_error("Vec") << "Error reading space separated values";
             return in;
         }
     }
