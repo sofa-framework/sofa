@@ -84,7 +84,7 @@ public:
     /// in a scope. these should be surrounding any python code called from c++,
     /// i.e. in all the methods in PythonEnvironment and all the methods in
     /// PythonScriptController.
-    class gil {
+    class SOFA_SOFAPYTHON_API gil {
         const PyGILState_STATE state;
         const char* const trace;
     public:
@@ -93,7 +93,7 @@ public:
     };
 
 
-    class no_gil {
+    class SOFA_SOFAPYTHON_API no_gil {
         PyThreadState* const state;
         const char* const trace;
     public:
