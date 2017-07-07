@@ -228,6 +228,10 @@ public:
             this->clear();
             while(!in.eof()) {
                 in>>t;
+                if (in.fail()) {
+                    msg_error("(S)Vector") << "Error reading space separated values";
+                    return in;
+                }
                 this->push_back(t);
             }
             if( in.rdstate() & std::ios_base::eofbit )
