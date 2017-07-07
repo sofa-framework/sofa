@@ -86,8 +86,9 @@ public:
     /// PythonScriptController.
     class gil {
         const PyGILState_STATE state;
+        const char* trace;
     public:
-        gil();
+        gil(const char* trace = nullptr);
         ~gil();
     };
     
