@@ -21,7 +21,7 @@ def createScene(rootNode):
         classname = 'TestDataSerialization',
         name = 'script' )
     
-    # input python list with delimiters
+    # input python list
     node = rootNode.createChild("nodeB")
     node.createObject('MechanicalObject', template="Vec3", name="dof", position=position)
     node.createObject('PythonScriptController',
