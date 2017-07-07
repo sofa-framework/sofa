@@ -439,8 +439,12 @@ public:
             for( int i=0; i<N; ++i ) {
                 in>>(*this)[i];
                 in>>c;
-                if (c!=',')
+                if (c!=',' || in.fail())
                     break;
+            }
+            if (in.fail()) {
+                msg_error("Vector") << "Error reading [,] separated values";
+                return in;
             }
             if ( c != ']' )
                 msg_error("Vec") << "read : Bad end character : " << c << ", expected  ]";
@@ -462,6 +466,8 @@ public:
         else {
             for( int i=0; i<N; ++i )
                 in>>(*this)[i];
+            if (in.fail())
+                msg_error("Vector") << "Error reading space separated values";
             return in;
         }
     }
