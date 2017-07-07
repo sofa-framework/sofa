@@ -13,6 +13,24 @@ def createScene(rootNode):
         classname = 'TestDataSerialization',
         name = 'script' )
     
+    # simple input string, space before
+    node = rootNode.createChild("nodeA")
+    node.createObject('MechanicalObject', template="Vec3", name="dof", position="1 1 1 2 2 2 3 3 3 ")
+    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness="1.2 2.3 3.4 ")
+    node.createObject('PythonScriptController',
+        filename = __file__,
+        classname = 'TestDataSerialization',
+        name = 'script' )
+
+    # simple input string, space at the end
+    node = rootNode.createChild("nodeA")
+    node.createObject('MechanicalObject', template="Vec3", name="dof", position="1 1 1 2 2 2 3 3 3 ")
+    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness="1.2 2.3 3.4 ")
+    node.createObject('PythonScriptController',
+        filename = __file__,
+        classname = 'TestDataSerialization',
+        name = 'script' )
+
     position = [[1, 1, 1], [2, 2, 2], [3, 3, 3]]
     thickness = [1.2, 2.3, 3.4]
     # input string with delimiters
