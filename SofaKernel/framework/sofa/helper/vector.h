@@ -196,6 +196,10 @@ public:
             while( !in.eof() && c == ',')
             {
                 in >> t;
+                if (in.fail()) {
+                    msg_error("(S)Vector") << "Error reading [,] separated values";
+                    return in;
+                }
                 this->push_back ( t );
                 in >> c;
             }
