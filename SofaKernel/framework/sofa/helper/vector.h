@@ -171,12 +171,11 @@ public:
     {
         this->clear();
 
-        char c;
-        in >> c;
-
         if( in.eof() ) // empty stream
             return in;
 
+        char c;
+        in >> c;
         if ( c != '[' )
         {
             msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
@@ -193,32 +192,26 @@ public:
             T t=T();
             in.seekg( pos ); // coming-back to previous character
             c = ',';
-            while( !in.eof() && c == ',')
+            while( (in >> t) && c == ',')
             {
-                in >> t;
-                if (in.fail()) {
-                    msg_error("(S)Vector") << "Error reading [,] separated values";
-                    return in;
-                }
                 this->push_back ( t );
                 in >> c;
             }
+            if (in.fail())
+                msg_error("(S)Vector") << "Error reading [,] separated values";
             if ( c != ']' )
-            {
                 msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
-                return in;
-            }
+            return in;
         }
-        return in;
     }
 
     std::istream& read(std::istream& in)
     {
+        if( in.eof() )
+            return in; // empty stream
         std::streampos pos = in.tellg();
         char c;
         in >> c;
-        if( in.eof() )
-            return in; // empty stream
         in.seekg( pos ); // coming-back to the previous position
         if ( c == '[' ) {
             return readDelimiter(in);
@@ -226,16 +219,15 @@ public:
         else {
             T t=T();
             this->clear();
-            while(!in.eof()) {
-                in>>t;
-                if (in.fail()) {
-                    msg_error("(S)Vector") << "Error reading space separated values";
-                    return in;
-                }
+            while(in>>t) {
                 this->push_back(t);
             }
-            if( in.rdstate() & std::ios_base::eofbit )
+            // in case of white spaces at the end of the stream, this is normal that the last read failed,
+            // but we know it, eof is true
+            if (in.eof())
                 in.clear();
+            if (in.fail())
+                msg_error("Vector") << "Error reading space separated values";
             return in;
         }
     }
