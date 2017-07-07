@@ -55,8 +55,6 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        simulation::PythonEnvironment::gil lock(__func__);
-        
         first = false;
 
         component::collision::CompliantSolverMerger::add();
@@ -68,6 +66,7 @@ void initExternalModule()
         // adding _Compliant python module
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
+            simulation::PythonEnvironment::gil lock(__func__);
             static PyObject *s__CompliantPythonModule = SP_INIT_MODULE(_Compliant);
 
             // adding more bindings to the _Compliant module

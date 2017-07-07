@@ -55,6 +55,8 @@ void initExternalModule()
 #ifdef SOFA_HAVE_SOFAPYTHON
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
+            simulation::PythonEnvironment::gil lock(__func__);
+            
             // adding new bindings for Data<Image<T>>
             SP_ADD_CLASS_IN_FACTORY(ImageCData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageC>)
             SP_ADD_CLASS_IN_FACTORY(ImageUCData,sofa::core::objectmodel::Data<sofa::defaulttype::ImageUC>)
