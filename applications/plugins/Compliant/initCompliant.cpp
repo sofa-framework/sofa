@@ -55,6 +55,8 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
+        simulation::PythonEnvironment::gil lock(__func__);
+        
         first = false;
 
         component::collision::CompliantSolverMerger::add();
