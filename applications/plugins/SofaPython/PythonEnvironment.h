@@ -86,10 +86,19 @@ public:
     /// PythonScriptController.
     class gil {
         const PyGILState_STATE state;
-        const char* trace;
+        const char* const trace;
     public:
         gil(const char* trace = nullptr);
         ~gil();
+    };
+
+
+    class no_gil {
+        PyThreadState* const state;
+        const char* const trace;
+    public:
+        no_gil(const char* trace = nullptr);
+        ~no_gil();
     };
     
 };

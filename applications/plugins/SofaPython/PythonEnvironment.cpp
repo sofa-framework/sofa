@@ -469,14 +469,32 @@ PythonEnvironment::gil::gil(const char* trace)
 
 PythonEnvironment::gil::~gil() {
 
+    PyGILState_Release(state);
+    
     if(debug_gil && trace) {
-        std::clog << "<< " << trace << " releases the gil" << std::endl;
+        std::clog << "<< " << trace << " released the gil" << std::endl;
     }
     
-    PyGILState_Release(state);
 }
 
 
+
+PythonEnvironment::no_gil::no_gil(const char* trace)
+    : state(PyEval_SaveThread()),
+      trace(trace) {
+    if(debug_gil && trace) {
+        std::clog << ">> " << trace << " temporarily released the gil" << std::endl;
+    }
+}
+
+PythonEnvironment::no_gil::~no_gil() {
+
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
+    }
+    
+    PyEval_RestoreThread(state);
+}
 
 } // namespace simulation
 
