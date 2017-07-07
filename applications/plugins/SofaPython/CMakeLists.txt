@@ -62,6 +62,7 @@ set(HEADER_FILES
     PythonScriptFunction.h
     PythonVisitor.h
     SceneLoaderPY.h
+    SceneLoaderPYSON.h
     ScriptController.h
     ScriptEvent.h
     ScriptFunction.h
@@ -117,9 +118,11 @@ set(SOURCE_FILES
     PythonScriptFunction.cpp
     PythonVisitor.cpp
     SceneLoaderPY.cpp
+    SceneLoaderPYSON.cpp
     ScriptController.cpp
     ScriptEvent.cpp
     ScriptFunction.cpp
+    Template.cpp
     initSofaPython.cpp
 )
 

@@ -22,56 +22,82 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
-
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
-
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include <SofaSceneAssist/SceneAssist.h>
+using sofa::SceneAssist ;
+
+#include <SofaSceneAssist/BasePrefab.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace _apiversion_
+namespace objectmodel
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+namespace _baseprefab_
 {
+
+BasePrefab::BasePrefab() :
+    d_instancePath(initData(&d_instancePath, std::string("d"), "instancePath", "Path to the node containing the instance of this prefab"))
+{}
+
+BasePrefab::~BasePrefab() {}
+
+void BasePrefab::init()
+{
+    Super::init() ;
+
+    if( m_childNode.get() == nullptr) {
+        BaseContext::SPtr context = getContext() ;
+        if( context.get() )
+        {
+            m_childNode = SceneAssist::createNode(context, getName()+"Instance") ;
+            d_instancePath.setValue(m_childNode->getPathName()) ;
+
+            //SingleLink<Node, BasePrefab, BaseLink::FLAG_STOREPATH>* link =
+            //new SingleLink<Node, BasePrefab, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK>(m_childNode->initLink("source", "The prefab that generates this node"), this) ;
+        }
+
+        /// We remove this component from the node and adds its to its instance holder.
+        context->removeObject( this ) ;
+        m_childNode->addObject( this ) ;
+    }
+
+    doInit(m_childNode) ;
 }
 
-APIVersion::~APIVersion()
+void BasePrefab::reinit()
 {
+    Super::reinit() ;
+
+    std::vector<BaseObject*> c;
+    for(auto& aChild : m_childNode->getNodeObjects(c))
+    {
+        if(aChild != this)
+            SceneAssist::deleteObjectFrom(m_childNode.get(), aChild);
+    }
+
+    for(auto& aChild : m_childNode->getChildren())
+    {
+        SceneAssist::deleteNode(m_childNode, aChild);
+    }
+
+
+    doReinit(m_childNode);
 }
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+SOFA_DECL_CLASS(BasePrefab)
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+} // namespace _baseprefab_
 
-} // namespace _apiversion_
+} // namespace objectmodel
 
-} // namespace component
+} // namespace core
 
 } // namespace sofa
+

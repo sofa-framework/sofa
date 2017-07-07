@@ -15,6 +15,7 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -22,56 +23,3 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
-
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
-
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "APIVersion.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _apiversion_
-{
-
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
-{
-}
-
-APIVersion::~APIVersion()
-{
-}
-
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
-
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
-
-} // namespace _apiversion_
-
-} // namespace component
-
-} // namespace sofa

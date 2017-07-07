@@ -41,7 +41,13 @@ using sofa::simulation::Node ;
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include <SofaSceneAssist/BasePrefab.h>
+using sofa::core::objectmodel::BasePrefab ;
+
+#include <SofaSceneAssist/config.h>
+
+#include <SofaSceneAssist/SceneAssist.h>
+using sofa::SceneAssist ;
 
 namespace sofa
 {
@@ -49,28 +55,33 @@ namespace sofa
 namespace component
 {
 
-namespace _apiversion_
+namespace _repeat_
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+class Undefined : public BaseObject
+{
+
+public:
+    SOFA_CLASS(Undefined, BaseObject);
+
+protected:
+    Undefined() ;
+    virtual ~Undefined() ;
+
+private:
+};
+
+Undefined::Undefined() : BaseObject()
 {
 }
 
-APIVersion::~APIVersion()
-{
-}
+Undefined::~Undefined(){}
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+SOFA_DECL_CLASS(Undefined)
+int UndefinedClass = core::RegisterObject("An unknow object have been created.")
+        .add< Undefined >();
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
-
-} // namespace _apiversion_
+} // namespace _baseprefab_
 
 } // namespace component
 

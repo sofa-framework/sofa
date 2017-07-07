@@ -44,6 +44,13 @@
 
 #include <type_traits>
 
+namespace sofa{
+namespace component{
+namespace _template_ {
+    class Template ;
+}
+}
+}
 
 namespace sofa
 {
@@ -238,7 +245,16 @@ public:
 
         if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
 
+        sofa::component::_template_::Template* t = dynamic_cast<sofa::component::_template_::Template*>(obj) ;
+        if( t ) return toPython( t );
+
         return toPython( s_boundComponents[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
+    }
+
+    /// to convert a BaseContext-inherited object to its corresponding pyObject
+    static PyObject* toPython(sofa::component::_template_::Template* obj)
+    {
+        return toPython( s_boundComponents[sofa::component::_template_::Template], obj, &SP_SOFAPYTYPEOBJECT(Template) );
     }
 
     /// to convert a BaseContext-inherited object to its corresponding pyObject

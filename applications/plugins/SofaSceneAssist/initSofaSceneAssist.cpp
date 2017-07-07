@@ -15,63 +15,58 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include <SofaSceneAssist/config.h>
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
-
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "APIVersion.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _apiversion_
-{
-
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
-{
+extern "C" {
+    SOFA_SOFASCENEASSIST_API void initExternalModule();
+    SOFA_SOFASCENEASSIST_API const char* getModuleName();
+    SOFA_SOFASCENEASSIST_API const char* getModuleVersion();
+    SOFA_SOFASCENEASSIST_API const char* getModuleLicense();
+    SOFA_SOFASCENEASSIST_API const char* getModuleDescription();
+    SOFA_SOFASCENEASSIST_API const char* getModuleComponentList();
 }
 
-APIVersion::~APIVersion()
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
-const std::string& APIVersion::getApiLevel()
+const char* getModuleName()
 {
-    return d_level.getValue() ;
+    return "SofaSceneAssist";
 }
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-} // namespace _apiversion_
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-} // namespace component
 
-} // namespace sofa
+const char* getModuleDescription()
+{
+    return "This plugin contains a set of function to assist in the making of scenes by providing"
+            " prefabs and other tools.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "BasePrefab";
+}
+
+SOFA_LINK_CLASS(BasePrefab)
+
+/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms

@@ -41,7 +41,13 @@ using sofa::simulation::Node ;
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include <SofaSceneAssist/BasePrefab.h>
+using sofa::core::objectmodel::BasePrefab ;
+
+#include <SofaSceneAssist/config.h>
+
+#include <SofaSceneAssist/SceneAssist.h>
+using sofa::SceneAssist ;
 
 namespace sofa
 {
@@ -52,19 +58,26 @@ namespace component
 namespace _apiversion_
 {
 
+class APIVersion : public BaseObject
+{
+
+public:
+    SOFA_CLASS(APIVersion, BaseObject);
+
+protected:
+    APIVersion() ;
+    virtual ~APIVersion() ;
+
+private:
+    Data<std::string>  d_level ;
+};
+
 APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+     d_level ( initData(&d_level, 0, "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
 {
 }
 
-APIVersion::~APIVersion()
-{
-}
-
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+APIVersion::~APIVersion(){}
 
 SOFA_DECL_CLASS(APIVersion)
 int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")

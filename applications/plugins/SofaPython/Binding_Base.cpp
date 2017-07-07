@@ -39,15 +39,16 @@ static Base* get_base(PyObject* obj) {
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
     char *dataName;
-    
+
     if (!PyArg_ParseTuple(args, "s", &dataName)) {
         return NULL;
     }
-    
+
     BaseData * data = obj->findData(dataName);
     if (!data) {
         if( obj->hasField(dataName) ) {
-            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data"; } else {
+            msg_error("Base_findData")<<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
+        } else {
             msg_error("Base_findData")<<"object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
             std::stringstream s;
             obj->writeDatas(s,";");
@@ -76,7 +77,7 @@ static PyObject * Base_findLink(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "s", &linkName)) {
         return NULL;
     }
-    
+
     BaseLink * link = obj->findLink(linkName);
     if (!link) {
         if( obj->hasField(linkName) ) {
@@ -116,7 +117,7 @@ static PyObject* Base_GetAttr(PyObject *o, PyObject *attr_name) {
     if( BaseLink * link = obj->findLink(attrName) ) {
         return GetLinkValuePython(link); // we have our link... let's create the right Python type....
     }
-    
+
     //        printf("Base_GetAttr ERROR data not found - type=%s name=%s attrName=%s\n",obj->getClassName().c_str(),obj->getName().c_str(),attrName);
     return PyObject_GenericGetAttr(o,attr_name);
 }
@@ -139,7 +140,7 @@ static int Base_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v) {
     if (BaseLink * link = obj->findLink(attrName)) {
         return SetLinkValuePython(link,v);
     }
-    
+
     return PyObject_GenericSetAttr(o,attr_name,v);
 }
 
@@ -171,7 +172,7 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
 
     PyObject * pyDict = PyDict_New();
     for (size_t i=0; i<dataFields.size(); i++) {
-        PyDict_SetItem(pyDict, PyString_FromString(dataFields[i]->getName().c_str()), 
+        PyDict_SetItem(pyDict, PyString_FromString(dataFields[i]->getName().c_str()),
                        GetDataValuePython(dataFields[i]));
     }
 

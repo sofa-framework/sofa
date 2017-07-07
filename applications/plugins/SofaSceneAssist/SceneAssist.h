@@ -22,56 +22,52 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
+#ifndef SOFASCENEASSIST_SCENEASSIST_H
+#define SOFASCENEASSIST_SCENEASSIST_H
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "APIVersion.h"
+#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/core/BehaviorModel.h>
+#include <SofaSceneAssist/config.h>
 
 namespace sofa
 {
 
-namespace component
+namespace _sceneassist_
 {
 
-namespace _apiversion_
+using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseContext ;
+using sofa::core::objectmodel::BaseNode ;
+using sofa::core::objectmodel::Base ;
+using sofa::core::objectmodel::BaseObjectDescription ;
+using sofa::simulation::Node ;
+
+typedef std::map<std::string, std::string> Dict ;
+
+class SceneAssist
 {
+public:
+    static Node::SPtr createNode(Node* node, const std::string name) ;
+    static Node::SPtr createNode(BaseNode::SPtr& node, const std::string name) ;
+    static Node::SPtr createNode(Node::SPtr& node, const std::string name) ;
+    static Node::SPtr createNode(BaseContext::SPtr& context, const std::string name) ;
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
-{
-}
+    static BaseObject::SPtr createObject(Node::SPtr& node, const std::string type, const Dict& kw = Dict()) ;
+    static BaseObject::SPtr createObject(BaseContext* context, const std::string type, const Dict& kw = Dict()) ;
+    static BaseObject::SPtr createObject(Base* context, const std::string type, const Dict& kw = Dict()) ;
 
-APIVersion::~APIVersion()
-{
-}
+    static void deleteObjectFrom(BaseContext* context, BaseObject* object) ;
+    static void deleteNode(Node* parent, Node* node) ;
+    static void deleteNode(Node* parent, BaseNode::SPtr& node) ;
+    static void deleteNode(Node::SPtr parent, BaseNode* node) ;
+} ;
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+} /// namespace _sceneassist_
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+using _sceneassist_::Dict ;
+using _sceneassist_::SceneAssist ;
 
-} // namespace _apiversion_
+} /// namespace sofa
 
-} // namespace component
-
-} // namespace sofa
+#endif // SOFASCENEASSIST_SCENEASSIST_H

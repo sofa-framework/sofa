@@ -41,7 +41,13 @@ using sofa::simulation::Node ;
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include <SofaSceneAssist/BasePrefab.h>
+using sofa::core::objectmodel::BasePrefab ;
+
+#include <SofaSceneAssist/config.h>
+
+#include <SofaSceneAssist/SceneAssist.h>
+using sofa::SceneAssist ;
 
 namespace sofa
 {
@@ -49,28 +55,59 @@ namespace sofa
 namespace component
 {
 
-namespace _apiversion_
+namespace _repeat_
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+class Repeat : public BasePrefab
 {
+
+public:
+    SOFA_CLASS(Repeat, BasePrefab);
+
+    virtual void doInit(Node::SPtr& prefabInstance) override ;
+    virtual void doReinit(Node::SPtr& prefabInstance) override ;
+
+protected:
+    Repeat() ;
+    virtual ~Repeat() ;
+
+private:
+    Data<int>  d_numChild ;
+    Data<int>  d_numObject ;
+};
+
+Repeat::Repeat() :
+     d_numChild ( initData(&d_numChild, 0, "numChild", "Number of child node"))
+    ,d_numObject ( initData(&d_numObject, 0, "numObject", "Number of objects in nodes"))
+{
+    d_numChild.setGroup("Prefab") ;
+    d_numObject.setGroup("Prefab") ;
 }
 
-APIVersion::~APIVersion()
+Repeat::~Repeat(){}
+
+void Repeat::doInit(Node::SPtr &prefabInstance)
 {
+    doReinit(prefabInstance) ;
 }
 
-const std::string& APIVersion::getApiLevel()
+void Repeat::doReinit(Node::SPtr &prefabInstance)
 {
-    return d_level.getValue() ;
+    for(int i=0;i<d_numChild.getValue();i++)
+    {
+        std::stringstream tmp;
+        tmp << "child_" << i ;
+        auto childNode = SceneAssist::createNode(prefabInstance,  tmp.str() ) ;
+        for(unsigned int j=0;j<d_numObject.getValue();j++)
+            SceneAssist::createObject(childNode, "MechanicalObject", {{"name", "obj"}}) ;
+    }
 }
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+SOFA_DECL_CLASS(Repeat)
+int RepeatClass = core::RegisterObject("Repeat.")
+        .add< Repeat >();
 
-} // namespace _apiversion_
+} // namespace _baseprefab_
 
 } // namespace component
 

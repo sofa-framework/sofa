@@ -1,0 +1,25 @@
+<Node name="root">
+	<APIVersion level="17.12"/>
+
+	<Python>
+		print("Loading scene version 1.0")
+		def generatePosition(r):
+			p = []
+			for i in range(0,r):
+				p += [0.0,0.0,0.0]	
+			return p
+	</Python>
+
+	<VisualParam/>
+
+	## On entre dans une nouvelle frame. 
+	<Node name="child">
+		<Python>
+			for i in range(0,10):
+				child.createObject("MechanicalObject", name='myName') 
+		</Python>
+	</Node>
+
+	<MechanicalObject name='0' positions='generatePosition(10)'>
+
+</Node> 

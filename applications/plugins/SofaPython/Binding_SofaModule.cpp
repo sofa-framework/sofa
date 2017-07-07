@@ -278,7 +278,7 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     double density;
     double sx = 1, sy = 1, sz = 1;
     double rx = 0, ry = 0, rz = 0;
-    
+
     if (!PyArg_ParseTuple(args, "sd|dddddd", &meshFilename, &density,
                           &sx, &sy, &sz,
                           &rx, &ry, &rz)) {
@@ -363,7 +363,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
         }
 
         action(emitter, message);
-    } else { 
+    } else {
         // no emitter
         if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
@@ -371,7 +371,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
 
         action(s_emitter, message);
     }
-    
+
     Py_RETURN_NONE;
 }
 
@@ -396,14 +396,14 @@ static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
             msg_warning(emitter) << message;
         });
-    
+
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
             msg_error(emitter) << message;
         });
-    
+
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
@@ -510,7 +510,27 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 }
 
 
+static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * args)
+{
+    if(PyTuple_Size(args))
+    {
+        PyErr_SetString(PyExc_RuntimeError, "This function expects no arguments.");
+        return NULL;
+    }
 
+    std::vector<ObjectFactory::ClassEntry::SPtr> entries ;
+    ObjectFactory::getInstance()->getAllEntries(entries) ;
+
+    PyObject *pyList = PyList_New(entries.size());
+    for (size_t i=0; i<entries.size(); i++){
+        PyObject *tuple = PyList_New(2);
+        PyList_SetItem(tuple, 0, Py_BuildValue("s", entries[i]->className.c_str()));
+        PyList_SetItem(tuple, 1, Py_BuildValue("s", entries[i]->description.c_str()));
+        PyList_SetItem(pyList, (Py_ssize_t)i, tuple);
+    }
+
+    return pyList;
+}
 
 // Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -536,6 +556,7 @@ SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
+SP_MODULE_METHOD(Sofa,getAvailableComponents)
 SP_MODULE_METHODS_END
 
 

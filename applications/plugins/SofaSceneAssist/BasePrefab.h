@@ -22,56 +22,64 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
+#ifndef SOFASCENEASSIST_BASEPREFAB_H
+#define SOFASCENEASSIST_BASEPREFAB_H
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
+#include <SofaSimulationGraph/DAGNode.h>
+#include <sofa/core/BehaviorModel.h>
+#include <SofaSceneAssist/config.h>
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
 
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "APIVersion.h"
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace _apiversion_
+namespace objectmodel
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+namespace _baseprefab_
 {
-}
 
-APIVersion::~APIVersion()
+using sofa::core::objectmodel::BaseObject ;
+using sofa::simulation::graph::DAGNode ;
+using sofa::simulation::Node ;
+
+class BasePrefab : public BaseObject
 {
-}
+public:
+    SOFA_CLASS(BasePrefab, BaseObject);
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+    typedef BaseObject Super;
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+    /////////////////// Inherited from BaseObject ////////////////////
+    virtual void init() override ;
+    virtual void reinit() override ;
+    //////////////////////////////////////////////////////////////////
 
-} // namespace _apiversion_
+    virtual void doInit(Node::SPtr& prefabInstance) = 0 ;
+    virtual void doReinit(Node::SPtr& prefabInstance) = 0 ;
 
-} // namespace component
+protected:
+    BasePrefab() ;
+    virtual ~BasePrefab() ;
+
+    Node::SPtr m_childNode ;
+    Data<std::string> d_instancePath ;
+};
+
+} // namespace _baseprefab_
+
+using _baseprefab_::BasePrefab ;
+
+} // namespace objectmodel
+
+} // namespace core
 
 } // namespace sofa
+
+
+#endif // SOFASCENEASSIST_BASEPREFAB_H

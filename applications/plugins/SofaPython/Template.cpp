@@ -23,25 +23,22 @@
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::Base ;
 
 #include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
-
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
-
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
+using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
-#include "APIVersion.h"
+#include "PythonMacros.h"
+#include "Binding_BaseObject.h"
+
+#include "PythonMacros.h"
+
+SP_DECLARE_CLASS_TYPE(Template)
+
 
 namespace sofa
 {
@@ -49,29 +46,68 @@ namespace sofa
 namespace component
 {
 
-namespace _apiversion_
+namespace _template_
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+class Template : public BaseObject
+{
+
+public:
+    SOFA_CLASS(Template, BaseObject);
+
+    Template() ;
+    virtual ~Template() ;
+
+    PyObject* m_rawTemplate ;
+};
+
+Template::Template() : BaseObject()
 {
 }
 
-APIVersion::~APIVersion()
-{
-}
+Template::~Template(){}
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+SOFA_DECL_CLASS(Template)
+int TemplateClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
+        .add< Template >();
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
 
-} // namespace _apiversion_
+
+} // namespace _baseprefab_
 
 } // namespace component
 
 } // namespace sofa
+
+
+using sofa::component::_template_::Template ;
+
+static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
+{
+    Template* obj= ((PySPtr<Template>*)self)->object.get() ;
+
+    obj->m_rawTemplate = nullptr ;
+    if (!PyArg_ParseTuple(args, "O", &(obj->m_rawTemplate))) {
+        return NULL;
+    }
+
+    return obj->m_rawTemplate ;
+}
+
+static PyObject * Template_getTemplate(PyObject *self, PyObject * args)
+{
+    Template* obj= ((PySPtr<Template>*)self)->object.get() ;
+
+    return obj->m_rawTemplate ;
+}
+
+
+SP_CLASS_METHODS_BEGIN(Template)
+SP_CLASS_METHOD(Template, setTemplate)
+SP_CLASS_METHOD(Template, getTemplate)
+SP_CLASS_METHODS_END
+
+
+SP_CLASS_TYPE_SPTR(Template,Template,BaseObject)
+
+

@@ -1,0 +1,76 @@
+Node : {
+        Python : '''
+        import sys
+        print("=================== The Pure Syntax: Test1 ================")
+        '''
+
+	#PYSONVersion : "1.0"
+	#RequirePlugin : "SofaPython"
+	#RequirePlugin : "SofaPython"
+
+	#Import : obj1
+	#Import : obj2
+
+        APIVersion : {
+                name : "v17.06"
+                level : "17.12"
+        }
+
+
+        ######################### COMMENT#######################################################
+        name : "root"
+
+
+        Python : '''
+                print("The name of this Node is: {"+name+"}")
+                print("The name of this Node is: {"+self.name+"}")
+                print("The name of this Node is: {"+root.name+"}")
+        '''
+
+
+        Node : {
+                name : "childNode1"
+
+                Python : '''
+                print("The name of this Node is: {"+self.name+"}")
+                '''
+        }
+
+
+        ////////////////////////// THIS IS A COMMENT ///////////////////////////////////////////
+        ######################### COMMENT#######################################################
+        Node : {
+                name : "childNode2"
+
+                Python : '''
+                        print("The name of this Node is: {"+self.name+"}")
+                        '''
+
+                VisualModel : {
+                        name : "visual1"
+                        filename : p"os.getcwd()+'/yolo.txt'"
+                }
+        }
+        
+        Python : '''
+                for i in range(0, 10):
+                    self.createChild("TEST"+str(i))
+                '''
+
+
+        Node : {
+            name : "templateInstance"
+            Python : '''
+                    template=root.getObject("template1")
+                    for i in range(0, 10):
+                        self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
+                    '''
+	}
+
+        Python : '''
+                print("=================== The Pure Syntax FIN ================")
+                #print(dumpSofa(self))
+                #print("ARGS: " + dir(sys))
+                '''
+}
+

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderPY.h"
+#include "SceneLoaderPYSON.h"
 #include <SofaPython/config.h>
 #include "PythonEnvironment.h"
 
@@ -32,7 +33,7 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     if (first)
     {
         sofa::simulation::PythonEnvironment::Init();
-        first = false;        
+        first = false;
     }
 }
 
@@ -64,10 +65,12 @@ SOFA_SOFAPYTHON_API const char* getModuleComponentList()
 
 }
 
-
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 SOFA_LINK_CLASS(PythonScriptController)
 
 
-// register the loader in the factory
+/// register the loader in the factory
 const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+
+/// register the loader in the factory
+const sofa::simulation::SceneLoader* loaderPYSON = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPYSON());

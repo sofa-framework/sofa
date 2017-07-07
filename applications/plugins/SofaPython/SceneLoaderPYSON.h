@@ -15,63 +15,67 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#ifndef SCENELOADERPYSON_H
+#define SCENELOADERPYSON_H
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
+#include <SofaPython/config.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
+#include <sofa/simulation/Visitor.h>
+#include <string>
+#include <map>
 
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "APIVersion.h"
+extern "C" {
+    struct PyMethodDef;
+}
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace _apiversion_
+namespace _sceneloaderpyson_
 {
 
-APIVersion::APIVersion() :
-     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+/// The scene loader/exporter for python scene files
+class SOFA_SOFAPYTHON_API SceneLoaderPYSON : public SceneLoader
 {
-}
+public:
+    /// Pre-loading check
+    virtual bool canLoadFileExtension(const char *extension) override ;
 
-APIVersion::~APIVersion()
-{
-}
+    /// Pre-saving check
+    virtual bool canWriteFileExtension(const char *extension) override ;
 
-const std::string& APIVersion::getApiLevel()
-{
-    return d_level.getValue() ;
-}
+    /// load the file
+    virtual Node::SPtr load(const char *filename) override ;
 
-SOFA_DECL_CLASS(APIVersion)
-int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
-        .add< APIVersion >();
+    /// write the file
+    virtual void write(Node* node, const char *filename) override ;
 
-} // namespace _apiversion_
+    /// get the file type description
+    virtual std::string getFileTypeDesc();
 
-} // namespace component
+    /// get the list of file extensions
+    virtual void getExtensionList(ExtensionList* list);
+};
+
+
+
+} // namespace _sceneloaderpyson_
+
+using _sceneloaderpyson_::SceneLoaderPYSON ;
+
+} // namespace simulation
 
 } // namespace sofa
+
+
+
+#endif // SCENELOADERPY_H
