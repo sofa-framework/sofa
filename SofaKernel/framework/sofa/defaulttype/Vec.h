@@ -436,18 +436,20 @@ public:
         {
             in.seekg( pos ); // coming-back to previous character
             c = ',';
-            for( int i=0; i<N; ++i ) {
-                in>>(*this)[i];
-                in>>c;
-                if (c!=',' || in.fail())
+            int i=0;
+            for( ; i<N; ++i ) {
+                if (!( in >> (*this)[i] ))
+                    break;
+                if (!(in>>c) || c!=',')
                     break;
             }
-            if (in.fail()) {
-                msg_error("Vec") << "Error reading [,] separated values";
-                return in;
-            }
+            if (i != N)
+                msg_error("Vec") << "Error reading [,] separated values, number of values: " << i << " expected: " << N;
             if ( c != ']' )
                 msg_error("Vec") << "read : Bad end character : " << c << ", expected  ]";
+            if (in.fail())
+                msg_error("Vec") << "Error reading [,] separated values";
+
             return in;
         }
     }
@@ -464,8 +466,12 @@ public:
             return readDelimiter(in);
         }
         else {
-            for( int i=0; i<N; ++i )
-                in>>(*this)[i];
+            int i=0;
+            for( ; i<N; ++i )
+                if (!( in >> (*this)[i] ))
+                    break;
+            if (i != N)
+                msg_error("Vec") << "Error reading space separated values, number of values: " << i << " expected: " << N;
             if (in.fail())
                 msg_error("Vec") << "Error reading space separated values";
             return in;
