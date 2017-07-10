@@ -43,6 +43,8 @@
 
 #include <time.h>
 
+#include <sofa/helper/system/FileMonitor.h>
+
 // Recorder GUI is not used (broken in most scenes)
 #define SOFA_GUI_QT_NO_RECORDER
 
@@ -245,6 +247,8 @@ public:
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
     virtual void fileOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileReOpen(std::string filename, bool temporaryFile=false);
+
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
@@ -328,6 +332,7 @@ protected:
 
     sofa::simulation::Node::SPtr mSimulation;
 
+    sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:
     void addViewer();//? where is the implementation ?
 
