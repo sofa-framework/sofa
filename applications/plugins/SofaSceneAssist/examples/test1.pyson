@@ -1,33 +1,9 @@
-<Node name="tptp">	
-	<Visual name="test" filename=p"getcwd()/file.txt">
-		<Python>
-			print("Cece est un objet "+parent.name)
-			parent.setVisualModel("lfkqmkf")
-		</Python>	
-	</Visual>
-
-	<Template name="MyTemplate">
-		<Node name="file">
-			<Python>
-				print("Cece est un objet "+parent.name)
-					for i in range(0, numchild):
-					parent.createChild("toto") 
-			</Python>
-		</Python>
-	</Template>
-
-	<MyTemplate numchild=10>
-	</MyTemplate>
-
-	<MyTemplate numchild=20>
-	</MyTemplate>
-</Node>
-
 Node : {
         Python : '''
         import sys
         print("=================== The Pure Syntax: Test1 ================")
         '''
+
 
     #PYSONVersion : "1.0"
     #RequirePlugin : "SofaPython"
@@ -66,7 +42,7 @@ Node : {
         ######################### COMMENT#######################################################
 
         Node : {
-                name : "childNode2"
+                name : "jeN'Aime pas ce nom"
 
                 Python : '''
                         print("The name of this Node is: {"+self.name+"}")
@@ -82,7 +58,7 @@ Node : {
 
         Python : '''
                 for i in range(0, 10):
-                    self.createChild("TEST"+str(i))
+                    self.createChild("NON"+str(i))
                 '''
 
 

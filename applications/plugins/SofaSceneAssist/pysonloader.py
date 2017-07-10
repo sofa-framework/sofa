@@ -20,7 +20,7 @@
 #*******************************************************************************
 #*                              SOFA :: Framework                              *
 #*                                                                             *
-#* Authors: damien.marchal@univ-lille1.fr Copyright (C) CNRS                   *
+#* Contributors: damien.marchal@univ-lille1.fr Copyright (C) CNRS              *
 #*                                                                             *
 #* Contact information: contact@sofa-framework.org                             *
 #******************************************************************************/
