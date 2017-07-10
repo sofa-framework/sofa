@@ -93,7 +93,6 @@
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent ;
 
-#include <sofa/helper/>
 
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor ;
@@ -163,6 +162,24 @@ RealGUI* gui = NULL;
 QApplication* application = NULL;
 
 const char* progname="";
+
+class RealGUIFileListener : public sofa::helper::system::FileEventListener
+{
+public:
+    RealGUIFileListener(RealGUI* realgui){
+        std::cout << "CONSTRUCTOR" << std::endl ;
+        m_realgui = realgui ;
+    }
+    virtual ~RealGUIFileListener(){}
+
+    virtual void fileHasChanged(const std::string& filename) override
+    {
+        std::cout << "FILE CONTENT HAS CHANGED: "<< filename  << std::endl ;
+        m_realgui->fileReOpen(filename) ;
+        std::cout << "FILE RELOADED: "<< filename  << std::endl ;
+    }
+    RealGUI* m_realgui ;
+};
 
 
 //======================= STATIC METHODS ========================= {
@@ -695,6 +712,50 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 //------------------------------------
 
+void RealGUI::fileReOpen( std::string filename, bool temporaryFile)
+{
+    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    if (extension == "simu")
+    {
+        return fileOpenSimu(filename);
+    }
+
+    startButton->setChecked(false);
+    descriptionScene->hide();
+    htmlPage->clear();
+    startDumpVisitor();
+    update();
+    //Hide all the dialogs to modify the graph
+    emit ( newScene() );
+
+    if ( sofa::helper::system::DataRepository.findFile (filename) )
+        filename = sofa::helper::system::DataRepository.getFile ( filename );
+    else
+        return;
+
+    sofa::simulation::xml::numDefault = 0;
+
+    if( currentSimulation() ) this->unloadScene();
+    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
+    simulation::getSimulation()->init ( mSimulation.get() );
+    if ( mSimulation == NULL )
+    {
+        msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
+        return;
+    }
+    setScene ( mSimulation, filename.c_str(), temporaryFile );
+    configureGUI(mSimulation.get());
+
+    this->setWindowFilePath(filename.c_str());
+    setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
+    stopDumpVisitor();
+
+    /// We want to warn user that there is component that are implemented in specific plugin
+    /// and that there is no RequiredPlugin in their scene.
+    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+    checker.validate(mSimulation.get()) ;
+}
+
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
@@ -717,6 +778,13 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         return;
 
     sofa::simulation::xml::numDefault = 0;
+
+    if(m_filelistener){
+        FileMonitor::removeListener(m_filelistener) ;
+        delete m_filelistener;
+    }
+    m_filelistener = new RealGUIFileListener(this) ;
+    FileMonitor::addFile(filename, m_filelistener ) ;
 
     if( currentSimulation() ) this->unloadScene();
     mSimulation = simulation::getSimulation()->load ( filename.c_str() );
