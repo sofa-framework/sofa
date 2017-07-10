@@ -416,18 +416,21 @@ public:
     std::istream& readDelimiter (std::istream& in )
     {
         char c;
-        in >> c;
 
-        if( in.eof() )
+        if( !(in >> c) || in.eof() )
             return in; // empty stream
 
         if ( c != '[' )
         {
-            msg_error("Vec") << "read : Bad begin character : " << c << ", expected  [";
+            msg_error("Vec") << "read: Bad begin character : " << c << ", expected  [";
             return in;
         }
         std::streampos pos = in.tellg();
-        in >> c;
+        if (!(in >> c)) {
+            msg_error("Vec") << "Error reading [,] separated values, expecting data after [";
+            return in;
+        }
+
         if( c == ']' ) // empty vector
         {
             return in;
@@ -435,12 +438,11 @@ public:
         else
         {
             in.seekg( pos ); // coming-back to previous character
-            c = ',';
             int i=0;
-            for( ; i<N; ++i ) {
-                if (!( in >> (*this)[i] ))
-                    break;
-                if (!(in>>c) || c!=',')
+            c = ' ';
+            while( (i<N) && ( in>>(*this)[i] ) ) {
+                ++i;
+                if ( !( in>>c ) || c!=',')
                     break;
             }
             if (i != N)
@@ -456,12 +458,12 @@ public:
 
     std::istream& read(std::istream& in)
     {
-        if( in.eof() )
-            return in; // empty stream
         std::streampos pos = in.tellg();
         char c;
-        in >> c;
-        in.seekg( pos ); // coming-back to the beginning of the stream
+
+        if( !( in >> c ) || in.eof() )
+            return in; // empty stream
+        in.seekg( pos ); // coming-back to the previous character
         if ( c == '[' ) {
             return readDelimiter(in);
         }

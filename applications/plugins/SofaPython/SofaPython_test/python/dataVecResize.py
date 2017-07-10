@@ -21,7 +21,7 @@ class VerifController(SofaTest.Controller):
         # two-dimensional vector resize
 
         self.ASSERT(len(self.dof.position) == 6, "test1")
-        self.dof.position = [9, 9, 9]  # smaller
+        self.dof.position = [[9, 9, 9]]  # smaller
         self.ASSERT(len(self.dof.position) == 1, "test2")
         self.dof.position = []  # empty list
         self.ASSERT(len(self.dof.position) == 0, "test3")
