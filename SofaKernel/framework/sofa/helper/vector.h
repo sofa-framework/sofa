@@ -200,7 +200,7 @@ public:
             if ( c != ']' )
                 msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
             if (in.eof())
-                return in;
+                in.clear(std::ios::eofbit);
             if (in.fail())
                 msg_error("(S)Vector") << "Error reading [,] separated values";
             return in;
@@ -209,11 +209,11 @@ public:
 
     std::istream& read(std::istream& in)
     {
-        if( in.eof() )
-            return in; // empty stream
         std::streampos pos = in.tellg();
         char c;
         in >> c;
+        if( in.eof() )
+            return in; // empty stream
         in.seekg( pos ); // coming-back to the previous position
         if ( c == '[' ) {
             return readDelimiter(in);
@@ -227,7 +227,7 @@ public:
             // in case of white spaces at the end of the stream, this is normal that the last read failed,
             // but we know it, eof is true
             if (in.eof())
-                return in;
+                in.clear(std::ios::eofbit);
             if (in.fail())
                 msg_error("Vector") << "Error reading space separated values";
             return in;
