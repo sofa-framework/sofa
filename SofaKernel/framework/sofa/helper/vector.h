@@ -430,17 +430,23 @@ std::istream& vector<unsigned int>::read( std::istream& in )
     }
 }
 
+
 /// Output stream
 /// Specialization for writing vectors of unsigned char
 template<> inline
-std::ostream& vector<unsigned char>::write(std::ostream& os) const
+std::ostream& vector<unsigned char>::writeDelimiter(std::ostream& os) const
 {
-    if( this->size()>0 )
+    if ( !this->empty() )
     {
-        for( size_type i=0; i<this->size()-1; ++i )
-            os<<(int)(*this)[i]<<" ";
-        os<<(int)(*this)[this->size()-1];
+        typename vector<unsigned char>::const_iterator i = this->begin();
+        os << "[" << (int)*i;
+        ++i;
+        for ( ; i!=this->end(); ++i )
+            os << ", " << (int)*i;
+        os << "]";
+
     }
+    else os << "[]"; // empty vector
     return os;
 }
 
@@ -449,14 +455,63 @@ std::ostream& vector<unsigned char>::write(std::ostream& os) const
 template<> inline
 std::istream& vector<unsigned char>::read(std::istream& in)
 {
-    int t;
-    this->clear();
-    while(in>>t)
-    {
-        this->push_back((unsigned char)t);
+    char c;
+    std::streampos pos = in.tellg();
+    in >> c;
+    if( in.eof() ) return in; // empty stream
+    in.seekg( pos ); // coming-back to the previous position
+    if ( c == '[' ) {
+        this->clear();
+
+        char c;
+        in >> c;
+        if( in.eof() ) // empty stream
+            return in;
+        if ( c != '[' )
+        {
+            msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
+            return in;
+        }
+        std::streampos pos = in.tellg();
+        in >> c;
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            int t;
+            in.seekg( pos ); // coming-back to previous character
+            c = ' ';
+            while( (in >> t) && (in >> c))
+            {
+                if (t>255)
+                    msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+                this->push_back ( (unsigned char) t );
+                if (c!=',')
+                    break;
+            }
+            if ( c != ']' )
+                msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+            if (in.eof())
+                in.clear(std::ios::eofbit);
+            if (in.fail())
+                msg_error("(S)Vector") << "Error reading [,] separated values";
+            return in;
+        }
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    return in;
+    else {
+        int t;
+        this->clear();
+        while(in>>t)
+        {
+            if (t>255)
+                msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+            this->push_back((unsigned char)t);
+        }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
 }
 
 /// reading specialization for std::string
