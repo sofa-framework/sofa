@@ -9,7 +9,7 @@ import units
 def listToStr(x):
     """ concatenate lists for use with data.
     """
-    Sofa.msg_deprecated("SofaPython.Tools.listToStr", "In Node.createObject: no need to explicitely convert a list to string using ")
+    Sofa.msg_deprecated("SofaPython.Tools.listToStr", "In Node.createObject: no need to explicitely convert a list to string")
     return repr(x)
 
 def listListToStr(xx):
