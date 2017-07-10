@@ -77,8 +77,7 @@ class Deformable:
         self.visual.setColor(color[0],color[1],color[2],color[3]) # the previous assignement fails when reloading a scene..
         self.normals = self.visual
 
-    def loadVisualCylinder(self, meshPath, offset = [0,0,0,0,0,0,1], scale=[1,1,1], color=[1,1,1,1],radius=0.01,**kwargs):
-        r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+    def loadVisualCylinder(self, radius=0.01):
         self.visual = self.node.createObject("OglCylinderModel", radius=radius, position="@topology.position", edges="@topology.edges" )
         self.normals = self.visual
 
