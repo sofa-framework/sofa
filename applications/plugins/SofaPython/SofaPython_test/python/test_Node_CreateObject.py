@@ -15,8 +15,8 @@ def createScene(rootNode):
     
     # simple input string, space before
     node = rootNode.createChild("nodeA")
-    node.createObject('MechanicalObject', template="Vec3", name="dof", position="1 1 1 2 2 2 3 3 3 ")
-    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness="1.2 2.3 3.4 ")
+    node.createObject('MechanicalObject', template="Vec3", name="dof", position=" 1 1 1 2 2 2 3 3 3")
+    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness=" 1.2 2.3 3.4")
     node.createObject('PythonScriptController',
         filename = __file__,
         classname = 'TestDataSerialization',
@@ -42,6 +42,24 @@ def createScene(rootNode):
         classname = 'TestDataSerialization',
         name = 'script' )
     
+    # input string with delimiters, space before
+    node = rootNode.createChild("nodeB")
+    node.createObject('MechanicalObject', template="Vec3", name="dof", position=" "+repr(position))
+    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness=" "+repr(thickness))
+    node.createObject('PythonScriptController',
+        filename = __file__,
+        classname = 'TestDataSerialization',
+        name = 'script' )
+
+    # input string with delimiters, space after
+    node = rootNode.createChild("nodeB")
+    node.createObject('MechanicalObject', template="Vec3", name="dof", position=repr(position)+" ")
+    node.createObject('DilateEngine', template="Vec3", name="dilate", thickness=repr(thickness)+" ")
+    node.createObject('PythonScriptController',
+        filename = __file__,
+        classname = 'TestDataSerialization',
+        name = 'script' )
+
     # input python list
     node = rootNode.createChild("nodeB")
     node.createObject('MechanicalObject', template="Vec3", name="dof", position=position)
