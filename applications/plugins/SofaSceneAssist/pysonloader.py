@@ -29,6 +29,7 @@ import difflib
 import hjson
 import os
 
+templates = {}
 sofaComponents = []
 for (name, desc) in Sofa.getAvailableComponents():
 	sofaComponents.append(name)
@@ -211,6 +212,7 @@ def processObject(parent, key, kv, stack, frame):
 	return obj
 	
 def processTemplate(parent, key, kv, stack, frame):
+	global templates 
 	name = "undefined"
 	properties = {}
 	pattern = [] 
@@ -221,13 +223,26 @@ def processTemplate(parent, key, kv, stack, frame):
 			properties = value
 		else:
 			pattern.append( (key, value) ) 
-	print("SOFA: "+str(dir(Sofa)))
-	o = parent.createObject("Template")
-	print("TOTO: "+str(dir(o)))
-	o.setTemplate(pattern)
+	o = parent.createObject("Template", name=str(name))
+	
+	o.setTemplate(value)
+	frame[str(name)] = o
+	templates[str(name)] = o  
+	print("SETTEMPLATE: "+str(name)+" -> "+str(o.getTemplate()))
+	
 	return o
 	
+def instanciateTemplate(parent, key, kv, stack, frame):
+	global templates
+	print("Instanciate template: "+key + "-> "+str(kv))
+	for k,v in kv:
+		frame[k] = v
+	n = templates[key].getTemplate()
+	print("tempLATE: "+str(n))
+	processNode(parent, "Node", n, stack, frame)
+	
 def processNode(parent, key, kv, stack, frame):
+	global templates
 	#print("PN:"+ parent.name + " : " + key + " stack frame is: "+str(stack))
 	stack.append(frame)
 	populateFrame(key, frame, stack)
@@ -243,6 +258,8 @@ def processNode(parent, key, kv, stack, frame):
 			elif key in sofaComponents:
 				o = processObject(tself, key, value, stack, {})
 				tself.addObject(o)
+			elif key in templates:
+				instanciateTemplate(tself, key,value, stack, frame)
 			else:
 				processParameter(tself, key, value, stack, frame)
 	else:

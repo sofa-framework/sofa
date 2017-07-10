@@ -1,15 +1,40 @@
+<Node name="tptp">	
+	<Visual name="test" filename=p"getcwd()/file.txt">
+		<Python>
+			print("Cece est un objet "+parent.name)
+			parent.setVisualModel("lfkqmkf")
+		</Python>	
+	</Visual>
+
+	<Template name="MyTemplate">
+		<Node name="file">
+			<Python>
+				print("Cece est un objet "+parent.name)
+					for i in range(0, numchild):
+					parent.createChild("toto") 
+			</Python>
+		</Python>
+	</Template>
+
+	<MyTemplate numchild=10>
+	</MyTemplate>
+
+	<MyTemplate numchild=20>
+	</MyTemplate>
+</Node>
+
 Node : {
         Python : '''
         import sys
         print("=================== The Pure Syntax: Test1 ================")
         '''
 
-	#PYSONVersion : "1.0"
-	#RequirePlugin : "SofaPython"
-	#RequirePlugin : "SofaPython"
+    #PYSONVersion : "1.0"
+    #RequirePlugin : "SofaPython"
+    #RequirePlugin : "SofaPython"
 
-	#Import : obj1
-	#Import : obj2
+    #Import : obj1
+    #Import : obj2
 
         APIVersion : {
                 name : "v17.06"
@@ -39,6 +64,7 @@ Node : {
 
         ////////////////////////// THIS IS A COMMENT ///////////////////////////////////////////
         ######################### COMMENT#######################################################
+
         Node : {
                 name : "childNode2"
 
@@ -46,26 +72,19 @@ Node : {
                         print("The name of this Node is: {"+self.name+"}")
                         '''
 
+				Fuck : {}
+
                 VisualModel : {
                         name : "visual1"
                         filename : p"os.getcwd()+'/yolo.txt'"
                 }
         }
-        
+
         Python : '''
                 for i in range(0, 10):
                     self.createChild("TEST"+str(i))
                 '''
 
-
-        Node : {
-            name : "templateInstance"
-            Python : '''
-                    template=root.getObject("template1")
-                    for i in range(0, 10):
-                        self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
-                    '''
-	}
 
         Python : '''
                 print("=================== The Pure Syntax FIN ================")

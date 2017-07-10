@@ -66,6 +66,7 @@ set(HEADER_FILES
     ScriptController.h
     ScriptEvent.h
     ScriptFunction.h
+    Template.h
 )
 
 set(SOURCE_FILES

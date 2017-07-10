@@ -22,20 +22,13 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::Base ;
-
+#ifndef SOFAPYTHON_TEMPLATE_H
+#define SOFAPYTHON_TEMPLATE_H
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include "PythonMacros.h"
-#include "Binding_BaseObject.h"
-
-#include "Template.h"
+#include <SofaPython/PythonMacros.h>
+SP_DECLARE_CLASS_TYPE(Template)
 
 
 namespace sofa
@@ -47,55 +40,26 @@ namespace component
 namespace _template_
 {
 
-Template::Template() : BaseObject()
+class Template : public BaseObject
 {
-}
 
-Template::~Template(){}
+public:
+    SOFA_CLASS(Template, BaseObject);
 
-SOFA_DECL_CLASS(Template)
-int TemplateClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
-        .add< Template >();
+    Template() ;
+    virtual ~Template() ;
+
+    PyObject* m_rawTemplate { nullptr };
+};
 
 
+} // namespace _template_
 
-} // namespace _baseprefab_
+using _template_::Template ;
 
 } // namespace component
 
 } // namespace sofa
 
-
-using sofa::component::_template_::Template ;
-
-static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
-{
-    Template* obj= dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
-    if(obj->m_rawTemplate)
-        Py_DECREF(obj->m_rawTemplate);
-
-    obj->m_rawTemplate = nullptr ;
-    if (!PyArg_ParseTuple(args, "O", &(obj->m_rawTemplate))) {
-        return NULL;
-    }
-    Py_INCREF(obj->m_rawTemplate);
-    return obj->m_rawTemplate ;
-}
-
-static PyObject * Template_getTemplate(PyObject *self, PyObject * args)
-{
-    Template* obj= dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
-    Py_INCREF(obj->m_rawTemplate);
-    return obj->m_rawTemplate ;
-}
-
-
-SP_CLASS_METHODS_BEGIN(Template)
-SP_CLASS_METHOD(Template, setTemplate)
-SP_CLASS_METHOD(Template, getTemplate)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(Template,Template,BaseObject)
-
+#endif /// SOFAPYTHON_TEMPLATE_H
 

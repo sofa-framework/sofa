@@ -93,6 +93,8 @@
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent ;
 
+#include <sofa/helper/>
+
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileMonitor ;
 

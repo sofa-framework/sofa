@@ -1,46 +1,29 @@
 Node : {
-        Python : '''
-        import sys
-        print("=================== The Pure Syntax: Test1 ================")
-        '''
+		Import : MyShapeLibrary
 
-	#PYSONVersion : "1.0"
-	#RequirePlugin : "SofaPython"
-	#RequirePlugin : "SofaPython"
-
-	#Import : obj1
-	#Import : obj2
-
-        APIVersion : "v17.06"
-	RequiredPlugin : "SofaPython"
-
-
-        ######################### COMMENT#######################################################
         name : "root"
 
+        APIVersion : "v17.06"
+        RequiredPlugin : "SofaPython"
 
         Python : '''
-        	print("The name of this Node is: {"+name+"}")
+                print("The name of this Node is: {"+name+"}")
                 print("The name of this Node is: {"+self.name+"}")
                 print("The name of this Node is: {"+root.name+"}")
         '''
-
-
 
         Node : {
                 name : "node1"
 
                 Python : '''
-			print("The name of this Node is: {"+self.name+"}")
-	                '''
+	                print("The name of this Node is: {"+self.name+"}")
+                    '''
         }
 
 
-        ////////////////////////// THIS IS A COMMENT ///////////////////////////////////////////
-        ######################### COMMENT#######################################################
         Node : {
-                name : "MyTemplateNode"
-
+                name : "A Simple Node"
+				toto : ""
                 Python : '''
                         print("The name of this Node is: {"+self.name+"}")
                         '''
@@ -52,33 +35,65 @@ Node : {
         }
 
 
-        Template : {
-            name : "template1"
-            Node : {
-                name : "myInstanceNode"
+        Node : {
+            name : "aNode"
+            Python : '''for i in range(0, 10):
+                             aNode.createChild('anEmptyNode'+str(i))  # ICI SELF != PARENT
+                     '''
+        }
 
-                VisualModel : {
+
+		Delegate : {
+			onChange : parent.position 
+
+			MyTemplate : {
+				name = "name"
+				param1 = parent.position
+			}
+		}
+
+
+        Template : {
+            name : "MyTemplate"
+
+            Node : {
+                name : "mytemplate"
+
+                VisualModelImpl : {
+                    name : p"nodename"
+                    filename : p"os.getcwd()+'/'+nodename+'.txt'"
+                }
+                
+				VisualModelImpl : {
                     name : p"nodename"
                     filename : p"os.getcwd()+'/'+nodename+'.txt'"
                 }
 
-                Python : '''
-                print("The name of this Node is: {"+self.name+"}")
-                print("Root...what is your name ? "+root.name)
-                print("How many children have the root ? " + str(len(root.children)) )
-                '''
+				Python : '''
+						for i in range(0, numfils):
+						         mytemplate.createChild('aChild'+str(numfils))'''
+			}
+        }
+
+        Node : {
+            name : "templateInstance"
+            MyTemplate : { name : "test1"
+                           nodename : "one"
+                           numfils : 10
+                }
+        }
+
+        Node : {
+            name : "templateInstance"
+            MyTemplate : { name : "test1"
+                           nodename : "deux"
+                           numfils : 15
             }
         }
-   
-        Python : '''
-                for i in range(0, 10):
-                    self.addChild(Node(name='test'+str(i), gravity="aucune"))
-                '''
-
 
         Node : {
             Python : '''
-                    template=root.findTemplate("template1")
+                    template=template1
                     for i in range(0, 10):
                         self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
                     '''
@@ -86,8 +101,6 @@ Node : {
 
         Python : '''
                 print("=================== The Pure Syntax FIN ================")
-                #print(dumpSofa(self))
-                #print("ARGS: " + dir(sys))
                 '''
 }
 
