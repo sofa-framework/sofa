@@ -54,11 +54,11 @@ static struct SceneTests : public Python_test_list
         // add python scene tests here
         // TODO create more test with several (random?) arguments
 
+        addTest( "test_Node_CreateObject.py", scenePath);
         addTest( "sysPathDuplicate.py", scenePath );
         addTest( "dataVecResize.py", scenePath );
         addTest( "automaticNodeInitialization.py", scenePath );
         addTest( "unicodeData.py", scenePath);
-        addTest( "test_Node_CreateObject.py", scenePath);
         
         // call it several times in the same python environment to simulate a reload
         for( int i=0 ; i<5 ; ++i )

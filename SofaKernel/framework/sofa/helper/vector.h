@@ -171,11 +171,10 @@ public:
     {
         this->clear();
 
-        if( in.eof() ) // empty stream
-            return in;
-
         char c;
         in >> c;
+        if( in.eof() ) // empty stream
+            return in;
         if ( c != '[' )
         {
             msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
@@ -191,16 +190,19 @@ public:
         {
             T t=T();
             in.seekg( pos ); // coming-back to previous character
-            c = ',';
-            while( (in >> t) && c == ',')
+            c = ' ';
+            while( (in >> t) && (in >> c))
             {
                 this->push_back ( t );
-                in >> c;
+                if (c!=',')
+                    break;
             }
-            if (in.fail())
-                msg_error("(S)Vector") << "Error reading [,] separated values";
             if ( c != ']' )
                 msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+            if (in.eof())
+                return in;
+            if (in.fail())
+                msg_error("(S)Vector") << "Error reading [,] separated values";
             return in;
         }
     }
@@ -225,7 +227,7 @@ public:
             // in case of white spaces at the end of the stream, this is normal that the last read failed,
             // but we know it, eof is true
             if (in.eof())
-                in.clear();
+                return in;
             if (in.fail())
                 msg_error("Vector") << "Error reading space separated values";
             return in;
@@ -264,9 +266,10 @@ template<> inline
 std::istream& vector<int>::read( std::istream& in )
 {
     char c;
+    std::streampos pos = in.tellg();
     in >> c;
     if( in.eof() ) return in; // empty stream
-    in.seekg( 0 ); // coming-back to the beginning of the stream
+    in.seekg( pos ); // coming-back to previous position
     if ( c == '[' ) {
         return readDelimiter(in);
     }
@@ -352,9 +355,10 @@ template<> inline
 std::istream& vector<unsigned int>::read( std::istream& in )
 {
     char c;
+    std::streampos pos = in.tellg();
     in >> c;
     if( in.eof() ) return in; // empty stream
-    in.seekg( 0 ); // coming-back to the beginning of the stream
+    in.seekg( pos ); // coming-back to the previous position
     if ( c == '[' ) {
         return readDelimiter(in);
     }
