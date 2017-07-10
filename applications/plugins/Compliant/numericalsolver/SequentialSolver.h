@@ -40,6 +40,7 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 
     Data<SReal> omega;
     Data<bool> paranoia;
+    Data<bool> homogenize;    
     
   protected:
 
