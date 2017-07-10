@@ -69,8 +69,8 @@ def contacts(node, **kwargs):
                       alarmDistance = kwargs.get('alarm_dist', 0.02),
                       contactDistance = kwargs.get('contact_dist', 0.01))
     node.createObject('DefaultContactManager',
-                      response = kwargs.get('response',
-                                            'FrictionCompliantContact'))
+                      response = kwargs.get('response', 'FrictionCompliantContact'),
+                      responseParams="mu=0.7")
 
 import sys
 import os

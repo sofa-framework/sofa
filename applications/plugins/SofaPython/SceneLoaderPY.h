@@ -51,7 +51,9 @@ public:
 
     /// load the file
     virtual Node::SPtr load(const char *filename);
-    Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+
+    // max: added out parameter to get the root *before* createScene is called
+    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = 0);
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file

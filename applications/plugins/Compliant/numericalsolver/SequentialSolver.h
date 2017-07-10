@@ -39,7 +39,9 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	virtual void init();
 
     Data<SReal> omega;
-
+    Data<bool> paranoia;
+    Data<bool> homogenize;    
+    
   protected:
 
 	virtual void solve_impl(vec& x,
@@ -78,27 +80,15 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
         bool activated; // is the constraint activated, otherwise its lambda is forced to be 0
 	};
 	
-	typedef std::vector<block> blocks_type;
+	using blocks_type = std::vector<block>;
 	blocks_type blocks;
-
+    
     void fetch_blocks(const system_type& system);
 
-    // constraint responses
-    typedef Eigen::LDLT< dmat > inverse_type;
-
-	// blocks inverse
-	typedef std::vector< inverse_type > blocks_inv_type;
-	blocks_inv_type blocks_inv;
-	
-	// blocks factorization
-    typedef Eigen::Map<dmat> schur_type;
-	void factor_block(inverse_type& inv, const schur_type& schur);
-
-	// blocks solve
-	typedef Eigen::Map< vec > chunk_type;
-    void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
-
-
+    vec diagonal;
+    
+	using chunk_type = Eigen::Map< vec >;
+    using const_chunk_type = Eigen::Map< const vec >;    
 
 };
 

@@ -291,7 +291,11 @@ class Mapping(object):
         return np.hstack( tuple(v[i] for v in self.in_vel for i in xrange(len(v))) )
     
 def cat(x):
-    return ' '.join(map(str, x))
+    try:
+        iter(x)
+        return ' '.join(map(cat, x))
+    except:
+        return str(x)
 
 
 class Constraint(Mapping):

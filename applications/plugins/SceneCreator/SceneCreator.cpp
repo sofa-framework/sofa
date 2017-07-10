@@ -31,6 +31,8 @@
 //Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationCommon/init.h>
+#include <SofaSimulationGraph/init.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include "GetVectorVisitor.h"
 #include "GetAssembledSizeVisitor.h"
@@ -854,11 +856,19 @@ Node::SPtr massSpringString
 
 Node::SPtr initSofa()
 {
+    sofa::simulation::common::init();
+    sofa::simulation::graph::init();
+
     setSimulation(new simulation::graph::DAGSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
 }
 
+void cleanupSofa()
+{
+    sofa::simulation::graph::cleanup();
+    sofa::simulation::common::cleanup();
+}
 
 void initScene(Node::SPtr _root)
 {

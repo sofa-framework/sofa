@@ -196,10 +196,11 @@ public:
         @sa endBlockRow()
         @warning empty rows should be created with a call to beginBlockRow + endSortedBlockRow
         */
-    void beginBlockRow(unsigned row)
-    {
-        bRow = row;
-        bColumns.clear();
+
+
+    
+    void beginBlockRow(unsigned row) {
+        block_row = row;
         blocks.clear();
     }
 
@@ -215,12 +216,10 @@ public:
 
         @warning the block must NOT already exist
         */
-    void createBlock( unsigned column,  const Block& b )
-    {
-        blocks.push_back(b);
-        bColumns.push_back(column);
+    void createBlock( unsigned column, const Block& b ) {
+        blocks.push_back( blocks_type(column, b) );
     }
-
+    
     /** Finalize the creation of the current block row.
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b )
@@ -228,22 +227,16 @@ public:
       If the block have been given in column order,
       endSortedBlockRow() is more efficient.
       */
-    void endBlockRow()
-    {
-        vector<unsigned> p = helper::sortedPermutation(bColumns); // indices in ascending column order
-
-        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
-        {
-            this->beginRow(r+ bRow*Nout);
-            for(unsigned i=0; i<p.size(); i++ )  // process the blocks in ascending order
-            {
-                const Block& b = blocks[p[i]];
-                for( unsigned c=0; c<Nin; c++ )
-                {
-                    this->insertBack( r + bRow*Nout, c + bColumns[p[i]] * Nin, b[r][c]);
-                }
-            }
-        }
+    void endBlockRow() {
+        
+        // sort blocks by columns
+        std::sort(blocks.begin(), blocks.end(), 
+                  [](const blocks_type& lhs, const blocks_type& rhs) {
+                      return lhs.first < rhs.first;
+                  });
+        
+        endSortedBlockRow();
+        
     }
 
 
@@ -252,17 +245,18 @@ public:
       @sa beginBlockRow(unsigned row)
       @sa createBlock( unsigned column,  const Block& b ) in column order
       */
-    void endSortedBlockRow()
-    {
-        for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
-        {
-            this->beginRow(r+ bRow*Nout);
-            for(unsigned i=0; i<bColumns.size(); i++ )  // process the blocks in ascending order
-            {
-                const Block& b = blocks[i];
-                for( unsigned c=0; c<Nin; c++ )
-                {
-                    this->insertBack( r + bRow*Nout, c + bColumns[i] * Nin, b[r][c]);
+    void endSortedBlockRow() {
+        for(unsigned r = 0; r < Nout; ++r) { 
+            // process one scalar row after another
+            
+            const std::size_t row = block_row * Nout + r;
+            this->beginRow( row );
+            for(const blocks_type& b : blocks) { 
+                // process the blocks in ascending order
+                
+                for(unsigned c = 0; c < Nin; ++c ) {
+                    const std::size_t col = Nin * b.first + c;
+                    this->insertBack( row, col, b.second[r][c]);
                 }
             }
         }
@@ -321,10 +315,6 @@ public:
 
     }
 
-#ifdef _OPENMP
-#define EIGENSPARSEMATRIX_PARALLEL
-#endif
-
 protected:
 
 	// max: factored out the two exact same implementations for
@@ -338,20 +328,13 @@ protected:
 		// use optimized product if possible
         if(canCast(data)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
-            else
-                map(result).noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, map(data).template cast<Real>() );
-#else
             if( alias(result, data) ) {
-                this->map(result) = (this->compressedMatrix *
-                                     this->map(data).template cast<Real>()).template cast<OutReal>();
+                map(result) = (this->compressedMatrix *
+                                     map(data).template cast<Real>()).template cast<OutReal>();
             } else {
-                this->map(result).noalias() = (this->compressedMatrix *
-                                               this->map(data).template cast<Real>()).template cast<OutReal>();
+                map(result).noalias() = (this->compressedMatrix *
+                                               map(data).template cast<Real>()).template cast<OutReal>();
             }
-#endif
 			
 			return;
 		}
@@ -365,11 +348,7 @@ protected:
 		}
 		
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
-#else
         aux2.noalias() = this->compressedMatrix * aux1;
-#endif
 
         // convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
@@ -388,15 +367,6 @@ protected:
 		// use optimized product if possible
 		if( canCast(data) ) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
-            else
-            {
-                typename map_traits<OutType>::map_type r = map(result);
-                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, this->map(data).template cast<Real>() * fact ).template cast<OutReal>();
-            }
-#else
 			// TODO multiply only the smallest dimension by fact 
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
@@ -404,8 +374,7 @@ protected:
                 typename map_traits<OutType>::map_type r = map(result);
                 r.noalias() += (this->compressedMatrix * (map(data).template cast<Real>() * fact)).template cast<OutReal>();
             }
-#endif
-			
+
 			return;
 		}
 
@@ -418,11 +387,7 @@ protected:
 		}
         
         // compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix, aux1 );
-#else
         aux2.noalias() = this->compressedMatrix * aux1;
-#endif
         
         // convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
@@ -432,6 +397,46 @@ protected:
 		}
 	}
 
+public:
+    template<class InType, class OutType, class Mask>
+    void addMultTransposeMask(InType& result, const OutType& data, const Mask& mask, Real fact = 1.0) const {
+        if( data.empty() ) return;
+
+        if(!canCast(result)) {
+            static std::ostream& once =
+                std::cerr << "warning: addMultTransposeMask fallback to addMultTranspose" << std::endl;
+            (void) once;
+            
+            addMultTranspose_impl(result, data, fact);
+            return;
+        }
+
+        VectorEigenIn tmp;
+        
+        for(std::size_t i = 0, n = mask.size(); i < n; ++i) {
+
+            if(!mask.getEntry(i) ) continue;
+
+            const std::size_t off = i * Nout;
+            
+            if( alias(result, data) ) {
+                tmp = (this->compressedMatrix.middleRows(off, Nout).transpose()
+                       * (map(data).template segment<Nout>(off).template cast<Real>()
+                          * fact)).template cast<InReal>();
+                
+                map(result) += tmp;
+            } else {
+                map(result).noalias() += (this->compressedMatrix.middleRows(off, Nout).transpose()
+                                          * (map(data).template segment<Nout>(off).template cast<Real>()
+                                             * fact)).template cast<InReal>();
+            }
+            
+        }
+        
+    }
+    
+protected:
+    
 	template<class InType, class OutType>
     void addMultTranspose_impl( InType& result, const OutType& data, Real fact) const {
 
@@ -440,14 +445,6 @@ protected:
 		// use optimized product if possible
 		if(canCast(result)) {
 
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-            if( alias(result, data) )
-                map(result) += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
-            else {
-                typename map_traits<InType>::map_type r = map(result);
-                r.noalias() += linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), this->map(data).template cast<Real>() * fact ).template cast<InReal>();
-            }
-#else
             // TODO multiply only the smallest dimension by fact
             if( alias(result, data) ) {
                 map(result) += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
@@ -455,11 +452,11 @@ protected:
                 typename map_traits<InType>::map_type r = map(result);
                 r.noalias() += (this->compressedMatrix.transpose() * (map(data).template cast<Real>() * fact)).template cast<InReal>();
             }
-#endif
-			
+
 			return;
 		}
 
+        
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
 
@@ -470,11 +467,7 @@ protected:
 		}
 		
 		// compute the product
-#ifdef EIGENSPARSEMATRIX_PARALLEL
-        aux2.noalias() = linearsolver::mul_EigenSparseDenseMatrix_MT( this->compressedMatrix.transpose(), aux1 );
-#else
         aux2.noalias() = this->compressedMatrix.transpose() * aux1;
-#endif
 
 		// convert the result back to the Sofa type
         for(unsigned i = 0, n = result.size(); i < n; ++i) {
@@ -564,9 +557,10 @@ private:
      * createBlock( unsigned column, const Block& b ) and
      * endBlockRow() */
 
-    unsigned bRow;
-    vector<unsigned> bColumns;
-    vector<Block> blocks;
+    std::size_t block_row;
+    using blocks_type = std::pair<std::size_t, Block>;
+    std::vector< blocks_type > blocks;
+    
     //@}
 
 	

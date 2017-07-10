@@ -39,7 +39,7 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block for MLSMapping */
 template<class TIn, class TOut>
-class MLSJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+class MLSJacobianBlock : public BaseJacobianBlock<TIn,TOut,SReal> {};
 
 
 

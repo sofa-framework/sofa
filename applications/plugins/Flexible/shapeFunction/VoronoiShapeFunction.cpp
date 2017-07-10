@@ -22,7 +22,7 @@
 #define FLEXIBLE_VoronoiShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/VoronoiShapeFunction.h"
+#include "VoronoiShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

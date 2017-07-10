@@ -210,7 +210,7 @@ void  ProjectToPlaneConstraint<DataTypes>::reinit()
         }
         i++;
     }
-    jacobian.compress();
+    jacobian.finalize();
 //    cerr<<"ProjectToPlaneConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
 
 }

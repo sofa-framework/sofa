@@ -1,13 +1,24 @@
 <?xml version="1.0"?>
 <Node name="root" >
-    <Node name="origin" >
-        <VisualStyle displayFlags="showWireframe" />
-        <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
-        <VisualModel name="visual" src="@loader" color="yellow" />
-    </Node>
-    <Node name="smoothed" >
-        <VisualStyle displayFlags="hideWireframe" />
-        <MeshTopology name="topology" src="@/origin/loader"/>
-        <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@/origin/loader.position" nb_iterations="1" showOutput="true"/>
-    </Node>
+    
+        <VisualStyle displayFlags="showAll"/>
+
+        
+        <Node name="umbrealla_laplacian" >
+            <MeshObjLoader name="initLoader" filename="mesh/dragon.obj" />        
+            <MeshTopology name="initTopology" src="@initLoader"  drawEdges="true"/>        
+            <BoxROI name="boxroi" box="-5 0 -5 10 5 5" drawBoxes="1" position="@initLoader.position"/>
+                <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@initLoader.position" nb_iterations="10"  input_indices="@boxroi.indices" method="umbrealla"/>
+                <MeshTopology name="outPutTopology" src="@initLoader" position="@smoother.output_position"  drawTriangles="true"/>
+        </Node>
+                
+        
+        <Node name="cotangent_laplacian" >
+                <MeshObjLoader name="initLoader" filename="mesh/dragon.obj" translation="25 0 0"/>        
+                <MeshTopology name="initTopology" src="@initLoader"  drawEdges="true"/>        
+                <BoxROI name="boxroi" box="20 0 -5 35 5 5" drawBoxes="1" position="@initLoader.position"/>
+                <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@initLoader.position" nb_iterations="10"  input_indices="@boxroi.indices" method="cotangent"/>
+                <MeshTopology name="outPutTopology" src="@initLoader" position="@smoother.output_position"  drawTriangles="true"/>
+        </Node>
+
 </Node>

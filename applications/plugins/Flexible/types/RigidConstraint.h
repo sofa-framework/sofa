@@ -61,7 +61,7 @@ public:
 
     typedef helper::vector<unsigned int> Indices;
 
-    typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
+    typedef linearsolver::EigenBaseSparseMatrix<Real> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
     typedef typename SparseMatrix::Block Block;                                       ///< projection matrix
     enum {bsize=SparseMatrix::Nin};                                                   ///< size of a block
@@ -167,7 +167,7 @@ public:
             else jacobian.insertBackBlock(i,i,Block::s_identity);         // unconstrained particle: set diagonal to identity block
             i++;
         }
-        jacobian.compress();
+        jacobian.finalize();
 
         SparseMatrix J;
         J.copy(jacobian, M->colSize(), offset); // projection matrix for an assembled state

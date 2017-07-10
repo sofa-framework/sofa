@@ -31,8 +31,9 @@ struct SE3 {
 	typedef Eigen::Matrix<real, 6, 6> mat66;
 	typedef Eigen::Matrix<real, 3, 3> mat33;
     typedef Eigen::Matrix<real, 3, 6> mat36;
+    typedef Eigen::Matrix<real, 6, 3> mat63;    
 
-	typedef Eigen::Quaternion<real> quat;
+	typedef Eigen::Quaternion<real, Eigen::DontAlign> quat;
 
 	// sofa order: (translation, rotation)
 	typedef vec6 twist;
@@ -70,10 +71,10 @@ struct SE3 {
 	}
 
 	static ::sofa::helper::Quater<real> coord(const quat& at) {
-		return ::sofa::helper::Quater<real>(at.coeffs()(1),
-		                                    at.coeffs()(2),
-		                                    at.coeffs()(3),
-		                                    at.coeffs()(0));
+		return ::sofa::helper::Quater<real>(at.x(),
+                                            at.y(),
+                                            at.z(),
+                                            at.w());
 	}
 	
 	// rotation quaternion
@@ -87,6 +88,21 @@ struct SE3 {
 		return map( at.getCenter() );
 	}
 
+
+	// aliases
+	static quat orient(const coord_type& at) {
+		return rotation(at);
+	}
+
+	static vec3 pos(const coord_type& at) {
+		return translation(at);
+	}
+
+    // apply rigid transformation to a vector
+    static vec3 apply(const coord_type& g, const vec3& x) {
+        return orient(g) * x + pos(g);
+    }
+    
 
 	// standard coordinates for SE(3) tangent vectors are body and
 	// spatial coordinates. SOFA uses its own custom coordinate system,
@@ -238,6 +254,15 @@ struct SE3 {
 	}
 
 
+    // SO(3) x R3 product
+	static coord_type direct_prod(const coord_type& a, const coord_type& b) {
+        coord_type res;
+        res.getOrientation() = coord( rotation(a) * rotation(b) );
+        res.getCenter() = a.getCenter() + b.getCenter();
+        return res;
+	}
+    
+
 	static const real epsilon() {
 		return std::numeric_limits<real>::epsilon();
 	}
@@ -258,6 +283,8 @@ struct SE3 {
         real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
         real theta;
 
+        // max: is this really needed ?
+
         // to avoid numerical instabilities of acos for theta < 5°
         if(w>0.999) // theta < 5° -> _q[3] = cos(theta/2) > 0.999
         {
@@ -273,7 +300,7 @@ struct SE3 {
 
         assert(sin_half_theta>=0);
         if( sin_half_theta < epsilon() ) {
-            return q.vec();
+            return 2 * q.vec(); // max: fixed
         } else {
             return theta * (q.vec()/sin_half_theta); 
         }
@@ -294,26 +321,21 @@ struct SE3 {
 
 	// SO(3) log derivative, body coordinates
 	static mat33 dlog(const quat& q) {
-		vec3 log_q = log(q);
-		mat33 res = mat33::Identity() + hat( log_q );
-
-		real theta = log_q.norm();
-		if( theta < epsilon() ) return res;
-
-		vec3 n = log_q.normalized();
-
-		real cos = std::cos(theta);
         
-		real sinc = SE3::sinc(theta);
+		const vec3 x = log(q);
+		const real theta = x.norm();
+        
+		if( theta < epsilon() ) {
+            return mat33::Identity() + hat( x / 2 );
+        }
+        
+		const vec3 n = x / theta;
+        const real half_theta = theta / 2;
+        
+        const mat33 P = n * n.transpose();
 
-		assert( std::abs( sinc ) > epsilon() );
-
-        real alpha = cos / sinc - 1;
-		// real alpha = theta / std::tan(theta) - 1.0;
-
-		res += alpha * (mat33::Identity() - n * n.transpose() );
-
-		return res;
+        // checked from Bullo et al. 1995 (PD control in the Euclidean group)
+        return P + (half_theta / std::tan(half_theta)) * (mat33::Identity() - P) + hat(x / 2);
 	}
 
 

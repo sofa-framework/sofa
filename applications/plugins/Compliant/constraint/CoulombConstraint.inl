@@ -7,11 +7,17 @@ namespace linearsolver {
 
 template<class DataTypes>
 CoulombConstraint<DataTypes>::CoulombConstraint(SReal mu)
-    : horizontalProjection( true )
+    : mu(mu),
+      horizontalProjection( true )
 {
-    this->mu = mu;
 	assert(mu >= 0); 
 }
+
+template<class DataTypes>
+SReal CoulombConstraint<DataTypes>::frictionCoefficient() const {
+    return mu;
+}
+
 
 template<class DataTypes>
 void CoulombConstraint<DataTypes>::project( SReal* out, unsigned n, unsigned /*index*/, bool correct ) const

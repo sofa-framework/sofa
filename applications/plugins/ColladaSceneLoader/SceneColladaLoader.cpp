@@ -756,7 +756,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                             currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-                            LinearMapping<Rigid3Types, Vec3Types>::VecVReal& weights = *currentLinearMapping->f_w.beginEdit();
+                            LinearMapping<Rigid3Types, Vec3Types>::VecVWeight& weights = *currentLinearMapping->f_w.beginEdit();
                             LinearMapping<Rigid3Types, Vec3Types>::VecVRef& indices = *currentLinearMapping->f_index.beginEdit();
 
                             indices.resize(vertexMap.size());

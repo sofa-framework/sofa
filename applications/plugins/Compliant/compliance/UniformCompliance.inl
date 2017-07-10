@@ -20,7 +20,7 @@ template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , compliance( initData(&compliance, (Real)0, "compliance", "Compliance value uniformly applied to all the DOF."))
-    , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+     , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
     , resizable( initData(&resizable, false, "resizable", "can the associated dofs can be resized? (in which case the matrices must be updated)"))
 	  
 {
@@ -54,7 +54,7 @@ void UniformCompliance<DataTypes>::reinit()
                 matC.insertBack(i, i, c);
             }
 
-            matC.compressedMatrix.finalize();
+            matC.finalize();
         }
 
         if( helper::rabs(c) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
@@ -82,7 +82,7 @@ void UniformCompliance<DataTypes>::reinit()
                 matK.insertBack(i, i, k);
             }
 
-            matK.compressedMatrix.finalize();
+            matK.finalize();
         }
 
 //    }
@@ -102,7 +102,7 @@ void UniformCompliance<DataTypes>::reinit()
             matB.insertBack(i, i, -d);
 		}
 
-		matB.compressedMatrix.finalize();
+        matB.finalize();
 	}
     else matB.compressedMatrix.resize(0,0);
 	

@@ -22,7 +22,7 @@
 #define SOFA_TopologyGaussPointSAMPLER_CPP
 
 #include <Flexible/config.h>
-#include "../quadrature/TopologyGaussPointSampler.h"
+#include "TopologyGaussPointSampler.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

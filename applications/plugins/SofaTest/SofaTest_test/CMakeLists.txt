@@ -26,3 +26,5 @@ target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
+
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

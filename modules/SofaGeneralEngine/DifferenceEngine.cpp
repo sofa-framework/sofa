@@ -40,20 +40,24 @@ int DifferenceEngineClass = core::RegisterObject("Computing the difference betwe
 #ifndef SOFA_FLOAT
         .add< DifferenceEngine<Vec1d> >()
         .add< DifferenceEngine<Vec3d> >(true) // default template
+        .add< DifferenceEngine<double> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< DifferenceEngine<Vec1f> >()
         .add< DifferenceEngine<Vec3f> >()
+        .add< DifferenceEngine<float> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1d>;
 template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3d>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<double>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec1f>;
 template class SOFA_GENERAL_ENGINE_API DifferenceEngine<Vec3f>;
+template class SOFA_GENERAL_ENGINE_API DifferenceEngine<float>;
 #endif
 
 } // namespace engine

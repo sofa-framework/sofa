@@ -36,14 +36,14 @@ namespace helper
 namespace io
 {
 
-File::File() :
-    myFileAccess(BaseFileAccess::Create())
+File::File(BaseFileAccess* fileAccess) :
+    myFileAccess(fileAccess)
 {
 
 }
 
-File::File(const std::string& filename, std::ios_base::openmode openMode) :
-    myFileAccess(BaseFileAccess::Create())
+File::File(const std::string& filename, std::ios_base::openmode openMode, BaseFileAccess* fileAccess) :
+    myFileAccess(fileAccess)
 {
     open(filename, openMode);
 }
@@ -77,7 +77,7 @@ void File::close()
 std::streambuf* File::streambuf() const
 {
     if(!checkFileAccess())
-        return NULL;
+        return nullptr;
 
     return myFileAccess->streambuf();
 }

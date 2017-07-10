@@ -170,16 +170,18 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
     typedef typename Out::Real OutReal;
-    enum { spatial_dimensions = Out::spatial_dimensions };
+    enum { spatial_dimensions = Out::spatial_dimensions };    
     enum { material_dimensions = OutDataTypesInfo<Out>::material_dimensions };
+
     //@}
 
     /** @name  Shape Function types    */
     //@{
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
+    typedef typename JacobianBlockType::WeightType WeightType;
+    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,WeightType,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
-    typedef typename BaseShapeFunction::VReal VReal;
-    typedef typename BaseShapeFunction::VecVReal VecVReal;
+    typedef typename BaseShapeFunction::VWeight VWeight;
+    typedef typename BaseShapeFunction::VecVWeight VecVWeight;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::VecVGradient VecVGradient;
@@ -234,7 +236,7 @@ public:
      * \param ddw child weight hessians
      * \param F child initial frame
      */
-    virtual void resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0);
+    virtual void resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVWeight& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0);
 
     /** @name Mapping functions */
     //@{
@@ -279,7 +281,7 @@ public:
     ///@brief Get a pointer to the shape function where the weights are computed
     virtual BaseShapeFunction* getShapeFunction() { return _shapeFunction; }
     ///@brief Get parent's influence weights on each child
-    virtual VecVReal getWeights(){ return f_w.getValue(); }
+    virtual VecVWeight getWeights(){ return f_w.getValue(); }
     ///@brief Get parent's influence weights gradient on each child
     virtual VecVGradient getWeightsGradient(){ return f_dw.getValue(); }
     ///@brief Get parent's influence weights hessian on each child
@@ -295,9 +297,9 @@ public:
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10);
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false);
 
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)=0;
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
-    virtual void mapDeformationGradientRate(MaterialToSpatial& /*F*/, const Coord &/*p0*/, const MaterialToSpatial& /*M*/, const VRef& /*ref*/, const VReal& /*w*/, const VGradient& /*dw*/)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VWeight& w)=0;
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VWeight& w, const VGradient& dw)=0;
+    virtual void mapDeformationGradientRate(MaterialToSpatial& /*F*/, const Coord &/*p0*/, const MaterialToSpatial& /*M*/, const VRef& /*ref*/, const VWeight& /*w*/, const VGradient& /*dw*/)
     {
         std::cout << SOFA_CLASS_METHOD << " : not implemented here, see child classes." << std::endl;
     }
@@ -306,7 +308,7 @@ public:
 
     SparseMatrix& getJacobianBlocks();
 
-    void setWeights(const VecVReal& weights, const VecVRef& indices)
+    void setWeights(const VecVWeight& weights, const VecVRef& indices)
     {
         f_index = indices;
         f_w = weights;
@@ -320,7 +322,7 @@ public:
 //                                            /**< @warning For each parent i, child index <b>and parent index (again)</b> are stored.
 //                                                 @warning Therefore to get access to parent's child index only you have to perform a loop over index[i] with an offset of size 2.
 //                                             */
-    Data<VecVReal >       f_w;         ///< Influence weights of the parents for each child
+    Data<VecVWeight >       f_w;         ///< Influence weights of the parents for each child
     Data<VecVGradient >   f_dw;        ///< Influence weight gradients
     Data<VecVHessian >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients

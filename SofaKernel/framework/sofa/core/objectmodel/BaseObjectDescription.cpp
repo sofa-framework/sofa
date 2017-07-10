@@ -135,9 +135,8 @@ float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const 
     if(end !=  attrstr+strlen(attrstr)){
         std::stringstream msg;
         msg << "Unable to parse a float value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
-               "Use the default value '"<<defaultVal<< "' instead.";
+               "Using value '"<<retval;
         errors.push_back(msg.str());
-        return defaultVal ;
     }
 
     return retval ;
@@ -159,9 +158,8 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
     if(end !=  attrstr+strlen(attrstr)){
         std::stringstream msg;
         msg << "Unable to parse an integer value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
-               "Use the default value '"<<defaultVal<< "' instead.";
+               "Using value '"<<retval;
         errors.push_back(msg.str());
-        return defaultVal;
     }
 
     return retval ;

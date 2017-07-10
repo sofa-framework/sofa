@@ -74,8 +74,8 @@ public:
 
     /** @name  Shape Function types    */
     //@{
-    typedef helper::vector<Real> VReal;
-    typedef helper::vector< helper::SVector<Real> > VecVReal;
+    typedef helper::vector<Real> VWeight;
+    typedef helper::vector< helper::SVector<Real> > VecVWeight;
     typedef helper::vector<unsigned int> VRef;
     typedef helper::vector< helper::SVector<unsigned int> > VecVRef;
     //@}
@@ -91,7 +91,7 @@ public:
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
         const VecVRef& indices = this->d_index.getValue();
-        const VecVReal& w = this->d_w.getValue();
+        const VecVWeight& w = this->d_w.getValue();
         this->toModel->resize(indices.size());
 
         // init jacobian blocks
@@ -299,7 +299,7 @@ protected:
     SparseMatrix jacobian;   ///< Jacobian of the mapping
 
     Data<VecVRef > d_index;      ///< Store child to parent relationship. index[i][j] is the index of the j-th parent influencing child i.
-    Data<VecVReal > d_w;      ///< Influence weights of the parent for each child
+    Data<VecVWeight > d_w;      ///< Influence weights of the parent for each child
 
     helper::StateMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::StateMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements
@@ -325,7 +325,7 @@ protected:
             J.endBlockRow();
         }
 
-        J.compress();
+        J.finalize();
     }
 
 

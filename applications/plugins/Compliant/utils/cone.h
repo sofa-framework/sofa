@@ -62,13 +62,13 @@ Eigen::Matrix<U, 3, 1> cone_horizontal(const Eigen::Matrix<U, 3, 1>& f,
 									   U mu = 1.0) {
 	typedef Eigen::Matrix<U, 3, 1> vec3;
 	
-	assert( std::abs(normal.norm() - 1) < std::numeric_limits<U>::epsilon() );
+	assert( std::abs(normal.norm() - 1) <= std::numeric_limits<U>::epsilon() );
 	
 	// normal coordinate
 	const U theta_n = f.dot(normal); 
 
     // negative half-plane
-    if( theta_n < 0 ) return vec3::Zero();
+    if( theta_n <= 0 ) return vec3::Zero();
     
 	// normal / tangent forces
 	const vec3 f_n = normal * theta_n;
@@ -81,27 +81,21 @@ Eigen::Matrix<U, 3, 1> cone_horizontal(const Eigen::Matrix<U, 3, 1>& f,
 
 	// tangent norm
 	const U theta_t = f_t.norm();
-	
-	const bool inside_cone = (theta_n >= 0) && (theta_t <= mu * theta_n);
-	
-	// projection
-	if( !inside_cone ) {
 
-        // negative half plane
-		if( theta_n <= 0 ) {
-            return vec3::Zero();
-        }
+    assert( theta_n > 0 );
+	const bool inside_cone = (theta_t <= mu * theta_n);
 
-        // along normal
-        if( theta_t == 0 ) {
-            return f_n;
-        }
+    if( inside_cone ) {
+        return f;
+    }
 
-        // general case
-		return f_n + f_t * (mu * theta_n / theta_t);
-	} else {
-		return f;
-	}
+    // general case
+    assert( theta_t > 0 && "theta_t == 0 implies inside cone");
+
+    // scale tangent part to cone boundary
+    const U scaling = (mu * theta_n / theta_t);
+    
+    return f_n + f_t * scaling;
 }
 
 

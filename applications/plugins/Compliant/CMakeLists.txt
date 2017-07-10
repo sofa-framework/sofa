@@ -23,6 +23,7 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/ConstraintValue.h
     constraint/CoulombConstraint.h
+    constraint/UserCoulombConstraint.h    
     constraint/CoulombConstraint.inl
     constraint/DampingValue.h
     constraint/HolonomicConstraintValue.h
@@ -42,6 +43,7 @@ set(HEADER_FILES
     forcefield/UniformLinearPotentialEnergy.h
     forcefield/CompliantPenaltyForceField.h
     forcefield/UniformStiffness.h
+    forcefield/UniformDamping.h    
     forcefield/UniformStiffness.inl
     forcefield/DiagonalStiffness.h
     forcefield/DiagonalStiffness.inl
@@ -63,11 +65,14 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/QuadraticMapping.h
     mapping/RigidComMultiMapping.h
+    mapping/RigidPseudoAngularMomentumMultiMapping.h    
     mapping/RigidJointMapping.h
     mapping/RigidRestJointMapping.h
     mapping/RigidJointMultiMapping.h
     mapping/RigidJointFromTargetMapping.h
     mapping/SafeDistanceMapping.h
+    mapping/RigidLogMapping.h
+    mapping/RigidOrientLogMapping.h    
     misc/CompliantAttachButtonSetting.h
     misc/CompliantSolverMerger.h
     misc/FailNode.h
@@ -96,6 +101,7 @@ set(HEADER_FILES
     numericalsolver/SequentialSolver.h
     numericalsolver/SubKKT.h
     numericalsolver/SubKKT.inl
+    numericalsolver/PythonSolver.h
     odesolver/CompliantImplicitSolver.h
     odesolver/CompliantNLImplicitSolver.h
     odesolver/CompliantPostStabilizationAnimationLoop.h
@@ -144,6 +150,7 @@ set(SOURCE_FILES
     constraint/Constraint.cpp
     constraint/ConstraintValue.cpp
     constraint/CoulombConstraint.cpp
+    constraint/UserCoulombConstraint.cpp    
     constraint/DampingValue.cpp
     constraint/HolonomicConstraintValue.cpp
     constraint/OffsettedConstraintValue.cpp
@@ -161,6 +168,7 @@ set(SOURCE_FILES
     forcefield/UniformLinearPotentialEnergy.cpp
     forcefield/CompliantPenaltyForceField.cpp
     forcefield/UniformStiffness.cpp
+    forcefield/UniformDamping.cpp
     forcefield/DiagonalStiffness.cpp
     initCompliant.cpp
     mapping/AdditionMapping.cpp
@@ -177,10 +185,13 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/QuadraticMapping.cpp
     mapping/RigidComMultiMapping.cpp
+    mapping/RigidPseudoAngularMomentumMultiMapping.cpp    
     mapping/RigidJointMapping.cpp
     mapping/RigidRestJointMapping.cpp
     mapping/RigidJointMultiMapping.cpp
     mapping/RigidJointFromTargetMapping.cpp
+    mapping/RigidLogMapping.cpp
+    mapping/RigidOrientLogMapping.cpp    
     mapping/SafeDistanceMapping.cpp
     misc/CompliantAttachButtonSetting.cpp
     misc/CompliantSolverMerger.cpp
@@ -205,6 +216,7 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/SequentialSolver.cpp
     numericalsolver/SubKKT.cpp
+    numericalsolver/PythonSolver.cpp    
     odesolver/CompliantImplicitSolver.cpp
     odesolver/CompliantNLImplicitSolver.cpp
     odesolver/CompliantPostStabilizationAnimationLoop.cpp
@@ -216,8 +228,7 @@ set(SOURCE_FILES
     preconditioner/IncompleteCholeskyPreconditioner.cpp
     utils/anderson.cpp
     utils/nlnscg.cpp
-    utils/sub_kkt.cpp
-)
+    utils/sub_kkt.cpp)
 
 
 

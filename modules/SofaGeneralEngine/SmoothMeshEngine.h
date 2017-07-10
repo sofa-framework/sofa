@@ -27,6 +27,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/OptionsGroup.h>
 
 
 namespace sofa
@@ -39,7 +40,11 @@ namespace engine
 {
 
 /**
- * This class computes the laplacian smooth of a mesh
+ * This class computes the Laplacian smooth of a mesh subset.
+
+ @warning only implements the "simplest" centered Laplacian (not weighted)
+ @todo add an option to select the Laplacian method
+
  */
 template <class DataTypes>
 class SmoothMeshEngine : public core::DataEngine
@@ -52,7 +57,9 @@ public:
 
 protected:
 
-    sofa::core::topology::BaseMeshTopology* m_topo;
+
+    typedef SingleLink< SmoothMeshEngine<DataTypes>, core::topology::BaseMeshTopology, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkBaseTopology;
+    LinkBaseTopology l_topology;
 
     SmoothMeshEngine();
 
@@ -61,7 +68,6 @@ public:
     void init();
     void reinit();
     void update();
-    virtual void draw(const core::visual::VisualParams* vparams);
 
     Data<VecCoord> input_position;
     Data<helper::vector <unsigned int> > input_indices;
@@ -69,8 +75,9 @@ public:
 
     Data<unsigned int> nb_iterations;
 
-    Data<bool> showInput;
-    Data<bool> showOutput;
+
+    Data< helper::OptionsGroup > d_method; ///< Laplacian formulation
+
 
     virtual std::string getTemplateName() const
     {
@@ -83,6 +90,9 @@ public:
     }
 
 protected:
+
+    /// performing the Laplacian interpolation
+    void laplacian( unsigned method, VecCoord& out, size_t index, const VecCoord& in );
 
 };
 

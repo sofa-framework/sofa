@@ -24,7 +24,7 @@
 #define FLEXIBLE_StabilizedHookeMaterialBlock_H
 
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "StabilizedHookeMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

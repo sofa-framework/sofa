@@ -56,7 +56,9 @@ public:
     bool isDerivedFrom(const std::string& name, const std::string& module = "__main__");
     void doLoadScript();
     void refreshBinding();
-    
+
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg);
+
     // setup from existing python instance
     void setInstance(PyObject* instance);
     
@@ -101,21 +103,25 @@ protected:
 
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
-
+    virtual void script_onEvent(core::objectmodel::Event* event);
+    
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*);
 
     /// Idle event is sent a regular interval from the host application
     virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event);
 
+    
     /// @}
 
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
+    sofa::core::objectmodel::Data<std::string>  m_modulename;    
     sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; // array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
+    sofa::core::objectmodel::Data<bool>         m_doOnEvent;
 
 protected:
     sofa::helper::system::FileEventListener* m_filelistener ;
@@ -132,6 +138,7 @@ protected:
     PyObject *m_Func_onMouseWheel {nullptr} ;
     PyObject *m_Func_onGUIEvent {nullptr} ;
     PyObject *m_Func_onScriptEvent {nullptr} ;
+    PyObject* m_Func_onEvent {nullptr} ;
     PyObject *m_Func_onBeginAnimationStep {nullptr} ;
     PyObject *m_Func_onEndAnimationStep {nullptr} ;
     PyObject *m_Func_onLoaded {nullptr} ;

@@ -506,7 +506,6 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     pointsCloseCylinder2.push_back(pointsCloseCylinder2[1]);
     normalsCloseCylinder2.push_back(normalsCloseCylinder2[1]);
 
-
     drawTriangleStrip(points, normals,colour);
     if (radius1 > 0) drawTriangleFan(pointsCloseCylinder1, normalsCloseCylinder1,colour);
     if (radius2 > 0) drawTriangleFan(pointsCloseCylinder2, normalsCloseCylinder2,colour);
@@ -1223,16 +1222,21 @@ void DrawToolGL::disableBlending()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
 {
+
+    glEnable(GL_COLOR_MATERIAL);
     glColor4fv(color.ptr());
 
     sofa::helper::gl::GlText::draw(text, p, (double)scale);
+    glDisable(GL_COLOR_MATERIAL);
 }
 
 void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)
 {
+    glEnable(GL_COLOR_MATERIAL);
     glColor4f(color[0], color[1], color[2], color[3]);
 
     sofa::helper::gl::GlText::textureDraw_Indices(positions, scale);
+    glDisable(GL_COLOR_MATERIAL);
 }
 
 void DrawToolGL::saveLastState()
@@ -1253,6 +1257,19 @@ void DrawToolGL::readPixels(int x, int y, int w, int h, float* rgb, float* z)
     if(z != NULL && sizeof(*z) == sizeof(float) * w * h)
         glReadPixels(x, y, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, z);
 }
+
+
+
+void DrawToolGL::enableDepthTest()
+{
+    glEnable(GL_DEPTH_TEST);
+}
+
+void DrawToolGL::disableDepthTest()
+{
+    glDisable(GL_DEPTH_TEST);
+}
+
 
 } // namespace visual
 

@@ -22,6 +22,13 @@ import SofaPython.mass
 import math
 import sys
 
+
+from SofaPython import SofaNumpy as sofa_numpy
+from SofaPython.SofaNumpy import numpy_data
+from types import Rigid3
+
+import numpy as np
+
 # to specify the floating point encoding:
 # "d" to force double
 # "f" to force float
@@ -38,11 +45,244 @@ geometric_stiffness = 0
 def scaleOffset(scale, offset):
     """ scale the translation part of an offset
     """
-    return (scale*numpy.asarray(offset[0:3])).tolist() + offset[3:]
+    return (scale*numpy.asarray(offset[0:3])).tolist() + numpy.asarray(offset[3:]).tolist()
 
-class RigidBody:
-    ## Generic Rigid Body
 
+
+def numpy_property(attr_name, attr_data, index = 0):
+    '''easily bind data properties as attributes'''
+
+    def getter(self):
+        obj = getattr(self, attr_name)
+        return numpy_data(obj, attr_data)[index]
+
+    def setter(self, value):
+        obj = getattr(self, attr_name)
+        numpy_data(obj, attr_data)[index] = value
+        
+    return property(getter, setter)
+
+
+
+class DOFs(object):
+    '''state vector view for a mechanical object'''
+    
+    __slots__ = ('dofs', )
+    
+    def __init__(self, dofs):
+        self.dofs = dofs
+        
+    @property
+    def position(self):
+        return numpy_data(self.dofs, 'position')
+    
+    @position.setter
+    def position(self, value):
+        self.position[:] = value
+
+
+    @property
+    def velocity(self):
+        return numpy_data(self.dofs, 'velocity')
+    
+    @velocity.setter
+    def velocity(self, value):
+        self.velocity[:] = value
+
+
+    @property
+    def force(self):
+        return numpy_data(self.dofs, 'force')
+    
+    @force.setter
+    def force(self, value):
+        self.force[:] = value
+
+
+    @property
+    def external_force(self):
+        return numpy_data(self.dofs, 'externalForce')
+    
+    @external_force.setter
+    def external_force(self, value):
+        self.external_force[:] = value
+
+        
+    @property
+    def template(self):
+        return self.dofs.getTemplateName()
+
+
+    @property
+    def show(self):
+        return self.dofs.showObject
+
+    @show.setter
+    def show(self, value):
+        self.dofs.showObject = value
+
+
+    @property
+    def context(self):
+        return self.dofs.getContext()
+
+
+def single_dof(cls):
+    '''decorator for single dof views'''
+
+    class Result(cls):
+        __slots__ = ()
+
+        @cls.position.getter
+        def position(self):
+            return super(Result, self).position[0]
+
+
+        @cls.velocity.getter
+        def velocity(self):
+            return super(Result, self).velocity[0]        
+
+
+        @cls.force.getter
+        def force(self):
+            return super(Result, self).force[0]        
+
+
+        @cls.external_force.getter
+        def external_force(self):
+            return super(Result, self).external_force[0]            
+        
+    return Result
+
+
+@single_dof
+class DOF(DOFs):
+    '''single dof view'''
+    pass
+
+
+
+def dofs_type(coord_type, deriv_type = None):
+    '''gives properly typed access to decorated class'''
+    
+    deriv_type = deriv_type or coord_type.Deriv
+    
+    def decorator(cls):
+
+        # TODO maybe just add these to the class instead
+        class Result(cls):
+            __slots__ = ()
+
+            @cls.position.getter
+            def position(self):
+                return super(Result, self).position.view(coord_type)
+
+
+            @cls.velocity.getter
+            def velocity(self):
+                return super(Result, self).velocity.view(deriv_type)  
+
+
+            @cls.force.getter
+            def force(self):
+                return super(Result, self).force.view(deriv_type)       
+
+
+            @cls.external_force.getter
+            def external_force(self):
+                return super(Result, self).external_force.view(deriv_type)
+        
+        return Result
+
+    return decorator
+
+
+
+
+
+@dofs_type(Rigid3)
+@single_dof
+class MappedRigid(DOFs):
+    '''rigid dof mapped from another rigid'''
+    
+    __slots__ = 'mapping', 'parent'
+    
+    def __init__(self, dofs, mapping):
+        DOFs.__init__(self, dofs)
+        self.mapping = mapping
+        assert mapping.getClassName() == 'AssembledRigidRigidMapping'
+
+    @property
+    def offset(self):
+        import ctypes
+        ptr, shape, typename = self.mapping.findData('source').getValueVoidPtr()
+        array = (ctypes.c_double * 7).from_address(ptr)
+
+        return np.ctypeslib.as_array( array ).view(Rigid3)
+
+    @offset.setter
+    def offset(self, value):
+        self.offset[:] = value
+        
+    @property
+    def parent_context(self):
+        return self.context.getParents()[0]
+    
+
+@dofs_type(Rigid3)
+@single_dof
+class RigidDOF(DOFs):
+    '''rigid single dof view'''
+    
+    def map_rigid(self, name):
+        node = self.context.createChild(name)
+
+        dofs = node.createObject('MechanicalObject', template = 'Rigid3', size = 1)
+        mapping = node.createObject('AssembledRigidRigidMapping', template = 'Rigid3,Rigid3',
+                                    input = self.dofs.getLinkPath(),
+                                    output = dofs.getLinkPath(),
+                                    source = '0 0 0 0 0 0 0 1')
+        
+        return MappedRigid(dofs, mapping)
+
+    # TODO map_points
+    
+
+    
+class RigidBody(RigidDOF):
+    '''a rigid body with single dof'''
+
+    @property
+    def total_mass(self):
+        return self.mass.mass[0]
+
+    @total_mass.setter
+    def total_mass(self, value):
+        self.mass.mass = value
+
+
+    @property
+    def inertia(self):
+        return self.mass.inertia[0]
+
+    @inertia.setter
+    def inertia(self, value):
+        self.mass.inertia = value
+
+    @property
+    def inertia_forces(self):
+        return self.mass.inertia.inertia_forces
+
+    @inertia_forces.setter
+    def inertia_forces(self, value):
+        self.mass.inertia_forces = value
+
+
+    
+
+    # TODO provide accessors to the above for user frame (offseted by
+    # com/inertia/offset)
+    
 
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
@@ -54,13 +294,13 @@ class RigidBody:
         self.framecom = Frame.Frame()
         self.fixedConstraint = None # to fix the RigidBody
 
-    def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+    def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = 0 ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
         self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
-    def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
+    def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = 0) :
         self.framecom = Frame.Frame()
         self.framecom.rotation = info.inertia_rotation
         self.framecom.translation = info.com
@@ -74,7 +314,7 @@ class RigidBody:
                                 inertia = concat(info.diagonal_inertia),
                                 inertia_forces = inertia_forces )
 
-    def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
+    def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = 0 ):
         ## create the rigid body by manually giving its inertia
         self.frame = Frame.Frame( offset )
         self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
@@ -119,7 +359,7 @@ class RigidBody:
 
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
-        return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+        return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
     def setFixed(self, isFixed=True):
         """ Add/remove a fixed constraint for this rigid, also set speed to 0
@@ -137,7 +377,7 @@ class RigidBody:
         def __init__(self, node, filepath, scale3d, offset, name_suffix=''):
             self.node = node.createChild( "collision"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-            self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r), triangulate=True)
+            self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=r.tolist(), triangulate=True)
             self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
             self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
             self.triangles = self.node.createObject('TriangleModel', name='model')
@@ -171,8 +411,7 @@ class RigidBody:
             self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
-                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r),
-                                                useNormals=False, updateNormals=True)
+                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=r.tolist() )
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 
@@ -214,7 +453,7 @@ class RigidBody:
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
-            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', indices='0', forces=concat(forces))
 
         def addMappedPoint(self, name, relativePosition=[0,0,0], isMechanical=True):
             ## adding a relative position to the rigid body
@@ -292,24 +531,26 @@ class GenericRigidJoint:
             ## limits is a list of limits in each unconstrained directions
             ## always lower and upper bounds per direction, so its size is two times the number of unconstrained directions
             ## (following the order txmin,txmax,tymin,tymax,tzmin,tzmax,rxmin,rxmax,rymin,rymax,rzmin,rzmax)
+            ## limits can be set to None to represent unlimited directions
+
+            usefulLimits = []
+
             l = 0
             limitMasks=[]
-            hasLimits = False
             for m in xrange(6):
-                if self.mask[m] == 0 and limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
-                    hasLimits = True
-                    limits[l+1] *= -1.0 # inverted upper bound
+                if self.mask[m] == 0: # limits can only set in unconstrained directions
+                    if limits[l] is not None and limits[l+1] is not None: # unconstrained direction with limits
+                        limitMaskL = [0]*6
+                        limitMaskU = [0]*6
+                        limitMaskL[m] = 1 # lower bound
+                        limitMaskU[m] = -1  # inverted upper bound
+                        limitMasks.append( limitMaskL )
+                        limitMasks.append( limitMaskU )
+                        usefulLimits.append( limits[l] )
+                        usefulLimits.append( -limits[l+1] ) # inverted upper bound
                     l += 2
-                    limitMaskL = [0]*6
-                    limitMaskU = [0]*6
-                    # lower bound
-                    limitMaskL[m] = 1
-                    limitMasks.append( limitMaskL )
-                    # upper bound
-                    limitMaskU[m] = -1  # inverted upper bound
-                    limitMasks.append( limitMaskU )
-            if hasLimits:
-                return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+            if usefulLimits:
+                return GenericRigidJoint.Limits( self.node, limitMasks, usefulLimits, compliance )
             else:
                 return None
 
@@ -392,7 +633,7 @@ class GenericRigidJoint:
 
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))
-            self.force = self.node.createObject('ConstantForceField', template='Vec1'+template_suffix, forces=concat(forces), points=concat(points.tolist()) )
+            self.force = self.node.createObject('ConstantForceField', template='Vec1'+template_suffix, forces=concat(forces), indices=concat(points.tolist()) )
 
         def setForces( self, forces ):
             self.force.forces = concat(forces)

@@ -181,11 +181,10 @@ void BaseData::update()
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
 #endif
         updateFromParentValue(parentBaseData);
-        // If the value is dirty clean it
-        if(this->isDirty())
-        {
-            cleanDirty();
-        }
+
+        // check if the parent have really been cleaned
+        if( parentBaseData->isDirty() ) setDirtyValue();
+        else cleanDirty();
     }
 }
 
@@ -292,9 +291,7 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 /// @return true if copy was successfull
 bool BaseData::copyValue(const BaseData* parent)
 {
-    if (updateFromParentValue(parent))
-        return true;
-    return false;
+    return updateFromParentValue(parent);
 }
 
 bool BaseData::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)

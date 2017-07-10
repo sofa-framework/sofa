@@ -75,7 +75,7 @@ public:
             matC.beginRow( i );
             matC.insertBack(i, i, compliance);
         }
-        matC.compressedMatrix.finalize();
+        matC.finalize();
 
     }
 

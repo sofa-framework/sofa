@@ -140,11 +140,51 @@ extern template class SOFA_MISC_MAPPING_API ProjectionToTargetPlaneMapping< defa
 /** Maps point positions to their projections on a plane defined by a center and a normal.
     Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
-    In: parent point positions, plane (center, normal)
+    In: parent point positions, plane (center, normal) @warning normal must be normalized
 
     Out: orthogonal projection of each point on the plane
 
     @author Matthieu Nesme
+
+
+    // mapping
+    out = p - factor * n * ( ( p - o ) * n ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
+    out_i = p_i - factor * n_i * sum_j( ( p_j - o_j ) * n_j ); // projection on the plane, o=plane orign, n=plane normal, p=point to project
+
+    // Jacobians
+    dout_i/dp_i = 1 - factor * n_i * n_i
+    dout_i/dp_j =   - factor * n_i * n_j
+
+    dout_i/do_i = factor * n_i * n_i
+    dout_i/do_j = factor * n_i * n_j
+
+    dout_i/dn_i = - factor * ( (p_i-o_i)*n_i + sum_j( ( p_j - o_j ) * n_j ) )
+    dout_i/dn_j = - factor * n_i * (p_j-o_j)
+
+    // Hessian
+    d2out/d2p = 0
+    d2out/d2o = 0
+    d2out/dp.do = 0
+
+    d2out_i/dp_i.dn_i = - factor*2*n_i
+    d2out_i/dp_i.dn_j = 0
+    d2out_i/dp_j.dn_i = - factor*n_j
+    d2out_i/dp_j.dn_j = - factor*n_i
+    d2out_i/dp_j.dn_k = 0
+
+    d2out_i/do_i.dn_i = factor*2*n_i
+    d2out_i/do_i.dn_j = 0
+    d2out_i/do_j.dn_i = factor*n_j
+    d2out_i/do_j.dn_j = factor*n_i
+    d2out_i/do_j.dn_k = 0
+
+
+    d2out_i/dn_ii = - factor * ( 2*(p_i-o_i) )
+    d2out_i/dn_ij = d2out/dn_ji  = - factor (p_j-o_j)
+    d2out_i/dn_jj = 0
+    d2out_i/dn_jk = 0
+
+
   */
 template <class TIn, class TOut>
 class ProjectionToPlaneMultiMapping : public core::MultiMapping<TIn, TOut>
@@ -172,6 +212,7 @@ public:
     typedef Data<OutVecDeriv> OutDataVecDeriv;
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
+    typedef linearsolver::EigenSparseMatrix<TIn,TIn>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
@@ -194,10 +235,11 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+    // geometric stiffness
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ );
+    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ );
+    virtual const defaulttype::BaseMatrix* getK(){ return &K; }
+
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
 
     virtual void updateForceMask();
@@ -208,6 +250,7 @@ protected:
 
     SparseMatrixEigen jacobian0, jacobian1;                      ///< Jacobians of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobians of the mapping, in a vector
+    SparseKMatrixEigen K; ///< geometric stiffness
 };
 
 

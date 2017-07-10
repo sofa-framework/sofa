@@ -17,15 +17,15 @@
     <UniformMass totalMass="1" />
 
     <!--maintain point (0,0,0) fixed -->
-    <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" />
+    <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" position="@DOFs.position" hexahedra="@hexahedra.hexahedra"/>
     <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" />
 
     <!--constrain point (0,1,0) to the y axis -->
-    <BoxROI template="Vec3d" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" />
+    <BoxROI template="Vec3d" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" position="@DOFs.position" hexahedra="@hexahedra.hexahedra"/>
     <ProjectToLineConstraint origin="0 0 0" direction="0 1 0" indices="@[-1].indices" />
 
     <!--constraint face x=0 to stay in this plane-->
-    <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
+    <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" position="@DOFs.position" hexahedra="@hexahedra.hexahedra"/>
     <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
 
     <BarycentricShapeFunction template="ShapeFunctiond" />

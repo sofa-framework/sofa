@@ -707,14 +707,14 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 //    m_vtexcoords.updateIfDirty();
 }
 
-bool OglModel::hasTransparent()
+bool OglModel::hasTransparent() const
 {
     if(alphaBlend.getValue())
         return true;
     return VisualModelImpl::hasTransparent();
 }
 
-bool OglModel::hasTexture()
+bool OglModel::hasTexture() const
 {
     return !textures.empty() || tex;
 }
@@ -872,14 +872,13 @@ void OglModel::initVisual()
     }
 #endif
 
-    updateBuffers();
-
     // forcing the normal computation if we do not want to use the given ones
     if( !this->m_useNormals.getValue() ) { this->m_vnormals.beginWriteOnly()->clear(); this->m_vnormals.endEdit(); }
     computeNormals();
-
     if (m_updateTangents.getValue())
         computeTangents();
+
+    updateBuffers();
 
     if ( alphaBlend.getValue() )
     {

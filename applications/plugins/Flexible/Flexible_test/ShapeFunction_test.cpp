@@ -89,7 +89,7 @@ namespace sofa {
             simulation::Node::SPtr patchNode = this->root->getChild("Patch");
 
             // Complete the scene
-            typedef core::behavior::ShapeFunctionTypes<3, SReal> ShapeFunctionType;
+            typedef core::behavior::ShapeFunctionTypes<3, SReal, SReal> ShapeFunctionType;
 
             // Get Image container
             typedef typename component::container::ImageContainer<ImageUC> ImageContainer;

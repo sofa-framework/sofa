@@ -45,7 +45,7 @@ namespace engine
 {
 
 /**
- * This class find all the points located inside a given box.
+ * This class find all the points located in a plane.
  */
 template <class DataTypes>
 class PlaneROI : public core::DataEngine

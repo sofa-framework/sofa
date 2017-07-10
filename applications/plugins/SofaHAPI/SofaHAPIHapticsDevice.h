@@ -35,7 +35,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/behavior/BaseController.h>
 #include <SofaUserInteraction/Controller.h>
 #include <SofaHaptics/ForceFeedback.h>
 

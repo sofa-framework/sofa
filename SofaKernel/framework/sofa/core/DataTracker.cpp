@@ -37,21 +37,34 @@ void DataTracker::trackData( const objectmodel::BaseData& data )
     m_dataTrackers[&data] = data.getCounter();
 }
 
-bool DataTracker::isDirty( const objectmodel::BaseData& data )
+bool DataTracker::wasModified( const objectmodel::BaseData& data ) const
 {
-    return m_dataTrackers[&data] != data.getCounter();
+    return m_dataTrackers.at(&data) != data.getCounter();
 }
 
-bool DataTracker::isDirty()
+bool DataTracker::wasModified() const
 {
-    for( DataTrackers::iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+    for( DataTrackers::const_iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
         if( it->second != it->first->getCounter() ) return true;
     return false;
 }
 
+bool DataTracker::isDirty( const objectmodel::BaseData& data ) const
+{
+    return wasModified(data) || data.isDirty();
+}
+
+bool DataTracker::isDirty() const
+{
+    for( DataTrackers::const_iterator it=m_dataTrackers.begin(),itend=m_dataTrackers.end() ; it!=itend ; ++it )
+        if( it->second != it->first->getCounter() || it->first->isDirty() ) return true;
+    return false;
+}
+
+
 void DataTracker::clean( const objectmodel::BaseData& data )
 {
-    m_dataTrackers[&data] = data.getCounter();
+    m_dataTrackers.at(&data) = data.getCounter();
 }
 
 void DataTracker::clean()

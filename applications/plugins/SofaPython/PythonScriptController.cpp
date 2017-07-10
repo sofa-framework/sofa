@@ -113,6 +113,8 @@ PythonScriptController::PythonScriptController()
                           "Python script filename"))
     , m_classname(initData(&m_classname, "classname",
                            "Python class implemented in the script to instanciate for the controller"))
+    , m_modulename(initData(&m_modulename, std::string("__main__"), "modulename", 
+                            "Python module holding the class"))
     , m_variables(initData(&m_variables, "variables",
                            "Array of string variables (equivalent to a c-like argv)" ) )
     , m_timingEnabled(initData(&m_timingEnabled, true, "timingEnabled",
@@ -122,6 +124,7 @@ PythonScriptController::PythonScriptController()
     , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
+    , m_doOnEvent( initData(&m_doOnEvent, false, "receive_all_events", "listens to all events through onEvent"))
     , m_ScriptControllerClass(0)
     , m_ScriptControllerInstance(0)
 {
@@ -135,6 +138,8 @@ PythonScriptController::~PythonScriptController()
         FileMonitor::removeListener(m_filelistener) ;
         delete m_filelistener ;
     }
+    if( m_ScriptControllerInstance )
+        Py_DECREF( m_ScriptControllerInstance );
 }
 
 
@@ -175,6 +180,7 @@ void PythonScriptController::refreshBinding()
     BIND_OBJECT_METHOD(cleanup)
     BIND_OBJECT_METHOD(onGUIEvent)
     BIND_OBJECT_METHOD(onScriptEvent)
+    BIND_OBJECT_METHOD(onEvent)        
     BIND_OBJECT_METHOD(draw)
     BIND_OBJECT_METHOD(onIdle)
 }
@@ -203,8 +209,8 @@ void PythonScriptController::loadScript()
     }
 
     // classe
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-    m_ScriptControllerClass = PyDict_GetItemString(pDict,m_classname.getValueString().c_str());
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule(m_modulename.getValue().c_str()));
+    m_ScriptControllerClass = PyDict_GetItemString(pDict, m_classname.getValueString().c_str());
     if (!m_ScriptControllerClass)
     {
         SP_MESSAGE_ERROR( getName() << " load error (class \""<<m_classname.getValueString()<<"\" not found)." )
@@ -220,7 +226,10 @@ void PythonScriptController::loadScript()
     }
 
     // créer l'instance de la classe
+    if( m_ScriptControllerInstance )
+        Py_DECREF( m_ScriptControllerInstance );
     m_ScriptControllerInstance = BuildPySPtr<Base>(this,(PyTypeObject*)m_ScriptControllerClass);
+    Py_INCREF( m_ScriptControllerInstance );
 
     if (!m_ScriptControllerInstance)
     {
@@ -251,6 +260,22 @@ void PythonScriptController::script_onLoaded(Node *node)
 {
     SP_CALL_MODULEFUNC(m_Func_onLoaded, "(O)", sofa::PythonFactory::toPython(node))
 }
+
+
+void PythonScriptController::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+{
+    Controller::parse(arg);
+
+    //std::cout<<getName()<<" ScriptController::parse"<<std::endl;
+
+    // load & bind script
+    loadScript();
+    // call script notifications...
+    script_onLoaded( down_cast<simulation::Node>(getContext()) );
+    script_createGraph( down_cast<simulation::Node>(getContext()) );
+}
+
+
 
 void PythonScriptController::script_createGraph(Node *node)
 {
@@ -352,6 +377,14 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),pyEvent->getEventName().c_str(),pyEvent->getUserData())
 }
 
+
+void PythonScriptController::script_onEvent(core::objectmodel::Event* event) {
+    SP_CALL_MODULEFUNC(m_Func_onEvent, "(sl)",
+                       event->getClassName(),
+                       (std::size_t)event);
+}
+
+
 void PythonScriptController::script_draw(const core::visual::VisualParams*)
 {
     ActivableScopedAdvancedTimer advancedTimer(m_timingEnabled.getValue(), "PythonScriptController_draw", this);
@@ -361,11 +394,14 @@ void PythonScriptController::script_draw(const core::visual::VisualParams*)
 
 void PythonScriptController::handleEvent(core::objectmodel::Event *event)
 {
-    if (PythonScriptEvent::checkEventType(event))
-    {
+    if (PythonScriptEvent::checkEventType(event)) {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
+    } else {
+        if(m_doOnEvent.getValue() ) {
+            script_onEvent(event);
+        }
+        ScriptController::handleEvent(event);
     }
-    else ScriptController::handleEvent(event);
 }
 
 

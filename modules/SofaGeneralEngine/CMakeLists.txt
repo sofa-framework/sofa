@@ -110,6 +110,7 @@ set(HEADER_FILES
     ValuesFromPositions.inl
     Vertex2Frame.h
     Vertex2Frame.inl
+    DataEngineMonitor.h
     config.h
     initGeneralEngine.h
 )
@@ -172,6 +173,7 @@ set(SOURCE_FILES
     ValuesFromIndices.cpp
     ValuesFromPositions.cpp
     Vertex2Frame.cpp
+    DataEngineMonitor.cpp
     initGeneralEngine.cpp
 )
 

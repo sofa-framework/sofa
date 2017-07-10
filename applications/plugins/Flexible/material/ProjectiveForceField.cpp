@@ -22,7 +22,7 @@
 #define SOFA_ProjectiveFORCEFIELD_CPP
 
 #include <Flexible/config.h>
-#include "../material/ProjectiveForceField.h"
+#include "ProjectiveForceField.h"
 #include "../types/DeformationGradientTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

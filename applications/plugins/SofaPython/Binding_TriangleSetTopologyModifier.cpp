@@ -1,9 +1,18 @@
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa;
 using namespace sofa::core::topology;
 using namespace sofa::component::topology;
+
+
+
+/// getting a TriangleSetTopologyModifier* from a PyObject*
+static inline TriangleSetTopologyModifier* get_TriangleSetTopologyModifier(PyObject* obj) {
+    return dynamic_cast<TriangleSetTopologyModifier*>( get_baseobject(obj) );
+}
+
 
 
 Topology::Triangle parseTriangleTuple( PyObject* tuple )
@@ -111,7 +120,7 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
 {
 
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
     
     PyObject* triangleArgs  = NULL;
     PyObject* ancestorsArgs = NULL;
@@ -141,7 +150,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, P
 
 extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
 {
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
     
     PyObject* triangleIndicesArg      = NULL;
     PyObject* removeIsolatedEdgesArg  = NULL;
@@ -185,7 +194,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self
 extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
 {
 
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
     PyObject* trianglesArg            = NULL;
     PyObject* triangleIndicesArg      = NULL;

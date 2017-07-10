@@ -69,6 +69,7 @@ template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3dTyp
 
 void BaseMouseInteractor::cleanup()
 {
+    std::unique_lock<mutex_type> lock(mutex);
     while (!performers.empty())
     {
         removeInteractionPerformer(*performers.begin());
@@ -79,6 +80,7 @@ void BaseMouseInteractor::cleanup()
 
 void BaseMouseInteractor::handleEvent(core::objectmodel::Event *e)
 {
+    std::unique_lock<mutex_type> lock(mutex);
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)
     {
@@ -88,11 +90,13 @@ void BaseMouseInteractor::handleEvent(core::objectmodel::Event *e)
 
 void BaseMouseInteractor::addInteractionPerformer( InteractionPerformer *perf)
 {
+    std::unique_lock<mutex_type> lock(mutex);
     performers.insert(performers.end(),perf);
 }
 
 bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 {
+    std::unique_lock<mutex_type> lock(mutex);    
     VecPerformer::iterator found=std::find(performers.begin(), performers.end(), i);
     if (found == performers.end()) return false;
     else
@@ -105,6 +109,7 @@ bool BaseMouseInteractor::removeInteractionPerformer( InteractionPerformer *i)
 
 void BaseMouseInteractor::updatePosition(SReal )
 {
+    std::unique_lock<mutex_type> lock(mutex);    
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)
     {
@@ -116,6 +121,7 @@ void BaseMouseInteractor::updatePosition(SReal )
 
 void BaseMouseInteractor::draw(const core::visual::VisualParams* vparams)
 {
+    std::unique_lock<mutex_type> lock(mutex);
 #ifndef SOFA_NO_OPENGL
     VecPerformer::iterator it=performers.begin(), it_end=performers.end();
     for (; it!=it_end; ++it)

@@ -65,7 +65,7 @@ public:
     /** @name Shape function stuff */
     //@{
     typedef core::behavior::BaseShapeFunction<ShapeFunctionTypes> BaseShapeFunction;
-    typedef typename BaseShapeFunction::VReal VReal;
+    typedef typename BaseShapeFunction::VWeight VWeight;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VRef VRef;

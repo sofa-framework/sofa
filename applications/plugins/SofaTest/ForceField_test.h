@@ -160,10 +160,14 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // copy the position and velocities to the scene graph
         this->dof->resize(n);
+        {
         typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         copyToData( xdof, x );
+        }
+        {
         typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities();
         copyToData( vdof, v );
+        }
 
         // init scene and compute force
         sofa::simulation::getSimulation()->init(this->node.get());
@@ -199,9 +203,12 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // change position
         VecDeriv dX(n);
+        {
+        typename DOF::WriteVecCoord xdof = this->dof->writePositions();
         for( unsigned i=0; i<n; i++ ){
             dX[i] = DataTypes::randomDeriv( deltaRange.first * this->epsilon(), deltaRange.second * this->epsilon() );  // todo: better random, with negative values
             xdof[i] += dX[i];
+        }
         }
 
         // compute new force and difference between previous force
@@ -243,8 +250,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
         dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
+        {
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         copyToData ( wdx, dX );
+        }
         simulation::MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
         node->execute(computeDf);
         VecDeriv dF;
@@ -282,7 +291,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // =================== test updateForceMask
         // ensure that each dof receiving a force is in the mask
-        for( unsigned i=0; i<xdof.size(); i++ ) {
+        for( unsigned i=0; i<this->dof->getSize(); i++ ) {
             if( newF[i] != Deriv() && !dof->forceMask.getEntry(i) ){
                 ADD_FAILURE() << "updateForceMask did not set mask to every dof influenced by the ForceField" << std::endl;
                 break;

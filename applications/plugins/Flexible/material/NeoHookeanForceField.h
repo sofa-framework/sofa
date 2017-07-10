@@ -23,8 +23,8 @@
 #define SOFA_NeoHookeanFORCEFIELD_H
 
 #include <Flexible/config.h>
-#include "../material/BaseMaterialForceField.h"
-#include "../material/NeoHookeanMaterialBlock.h"
+#include "BaseMaterialForceField.h"
+#include "NeoHookeanMaterialBlock.h"
 
 
 namespace sofa

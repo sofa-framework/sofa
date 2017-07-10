@@ -100,9 +100,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        m_scale.setValue(Vec3Real((Real)arg->getAttributeAsFloat("scale",1.0),
-                                  (Real)arg->getAttributeAsFloat("scale",1.0),
-                                  (Real)arg->getAttributeAsFloat("scale",1.0)));
+        Real scale = (Real)arg->getAttributeAsFloat("scale",1.0);
+        m_scale.setValue( Vec3Real(scale,scale,scale) );
     }
     else if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
     {
@@ -189,7 +188,7 @@ VisualModelImpl::~VisualModelImpl()
 {
 }
 
-bool VisualModelImpl::hasTransparent()
+bool VisualModelImpl::hasTransparent() const
 {
     const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
@@ -208,7 +207,7 @@ bool VisualModelImpl::hasTransparent()
     return false;
 }
 
-bool VisualModelImpl::hasOpaque()
+bool VisualModelImpl::hasOpaque() const
 {
     const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
@@ -576,7 +575,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             useTopology = true;
         }
 
-        modified = true;
+        d_isModified.setValue( true );
     }
 
     if (!xformsModified)
@@ -1155,14 +1154,14 @@ void VisualModelImpl::updateVisual()
         }
     */
 #ifdef SOFA_SMP
-    modified = true;
+    d_isModified.setValue( true );
 #endif
     //sout << "VMI::updateVisual()" << sendl;
     //if ((m_positions.getValue()).size()>10)
     //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
     //if ((m_vertices.getValue()).size()>10)
     //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
-    if (modified && (!getVertices().empty() || useTopology))
+    if ( d_isModified.getValue() && (!getVertices().empty() || useTopology))
     {
         if (useTopology)
         {
@@ -1183,12 +1182,13 @@ void VisualModelImpl::updateVisual()
             }
         }
         computePositions();
-        updateBuffers();
-
         computeNormals();
         if (m_updateTangents.getValue())
             computeTangents();
-        modified = false;
+
+        updateBuffers();
+
+        d_isModified.setValue( false );
     }
 
     m_positions.updateIfDirty();

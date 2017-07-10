@@ -9,7 +9,7 @@ IterativeSolver::IterativeSolver()
 	: precision(initData(&precision, 
 	                     SReal(1e-3),
 	                     "precision",
-	                     "residual norm threshold")),
+	                     "convergence error threshold. setting 0 will force iterations")),
 	  iterations(initData(&iterations,
 	                      unsigned(10),
 	                      "iterations",

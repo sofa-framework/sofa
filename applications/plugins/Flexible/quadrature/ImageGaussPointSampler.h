@@ -23,10 +23,8 @@
 #define SOFA_ImageGaussPointSAMPLER_H
 
 #include <Flexible/config.h>
-#include "../quadrature/BaseGaussPointSampler.h"
+#include "BaseGaussPointSampler.h"
 #include "../deformationMapping/BaseDeformationMapping.h"
-
-#include "../types/PolynomialBasis.h"
 
 #include <image/ImageTypes.h>
 #include <image/ImageAlgorithms.h>

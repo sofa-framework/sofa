@@ -357,6 +357,9 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // get python exceptions and print their error message
 void printPythonExceptions();
 
+// deal with SystemExit before PyErr_Print does
+void handle_python_error(const char* message);
+
 
 // =============================================================================
 // PYTHON SEARCH FOR A FUNCTION WITH A GIVEN NAME
@@ -404,44 +407,43 @@ void printPythonExceptions();
 }\
 }
 
-#define SP_CALL_MODULEFUNC(func, ...) \
-{ \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
-        if (!res) { \
-            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC") PyErr_Print(); \
-        } \
-        else Py_DECREF(res); \
-    } \
-}
+#define SP_CALL_MODULEFUNC(func, ...)                                   \
+    {                                                                   \
+     if (func) {                                                        \
+         PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+         if (!res) {                                                    \
+             handle_python_error("SP_CALL_MODULEFUNC");                 \
+         }                                                              \
+         else Py_DECREF(res);                                           \
+     }                                                                  \
+    }
 
 
-#define SP_CALL_MODULEFUNC_NOPARAM(func) \
-{ \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,0); \
-        if (!res) { \
-            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC_NOPARAM") PyErr_Print(); \
-         } \
-        else Py_DECREF(res); \
-    } \
-}
+#define SP_CALL_MODULEFUNC_NOPARAM(func)                            \
+    {                                                               \
+        if (func) {                                                 \
+            PyObject *res = PyObject_CallObject(func,0);            \
+            if (!res) {                                             \
+                handle_python_error("SP_CALL_MODULEFUNC_NOPARAM");  \
+            }                                                       \
+            else Py_DECREF(res);                                    \
+        }                                                           \
+    }
 
 // call a function that returns a boolean
-#define SP_CALL_MODULEBOOLFUNC(func, ...) { \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
-        if (!res) \
-        { \
-            SP_MESSAGE_EXCEPTION( "SP_CALL_MODULEFUNC_BOOL" ) \
-            PyErr_Print(); \
-        } \
-        else \
-        { \
-            if PyBool_Check(res) b = ( res == Py_True ); \
-            Py_DECREF(res); \
-        } \
-    } \
+#define SP_CALL_MODULEBOOLFUNC(func, ...) {                             \
+        if (func) {                                                     \
+            PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+            if (!res)                                                   \
+                {                                                       \
+                    handle_python_error("SP_CALL_MODULEFUNC_BOOL");     \
+                }                                                       \
+            else                                                        \
+                {                                                       \
+                    if PyBool_Check(res) b = ( res == Py_True );        \
+                    Py_DECREF(res);                                     \
+                }                                                       \
+        }                                                               \
 }
 
 

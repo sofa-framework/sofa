@@ -167,11 +167,14 @@ protected:
     inline To Linear_TransferFunction(const Ti& vi, const iomap & mp) const
     {
         To vo=mp.begin()->second;
-        iomapit mit;
+        iomapit mit=mp.begin();
+        if(vi<mp.begin()->first) return vo;
         for (iomapit it=mp.begin(); it!=mp.end(); it++)
         {
-            if (it->first>vi && it!=mp.begin())
+            if (it->first>=vi)
             {
+                if(mit->second==it->second || it->first==vi) return it->second;
+
                 double alpha=(((double)it->first-(double)vi)/((double)it->first-(double)mit->first));
                 double v= alpha*(double)mit->second + (1.-alpha)*(double)it->second;
                 return (To)v;

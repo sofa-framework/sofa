@@ -22,13 +22,21 @@
 
 #include "Binding_RegularGridTopology.h"
 #include "Binding_GridTopology.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::topology;
 using namespace sofa::core::objectmodel;
 
+
+/// getting a RegularGridTopology* from a PyObject*
+static inline RegularGridTopology* get_RegularGridTopology(PyObject* obj) {
+    return down_cast<RegularGridTopology>( get_topology(obj) );
+}
+
+
 extern "C" PyObject * RegularGridTopology_setPos(PyObject *self, PyObject * args)
 {
-    RegularGridTopology* obj=down_cast<RegularGridTopology>(((PySPtr<Base>*)self)->object->toTopology());
+    RegularGridTopology* obj = get_RegularGridTopology( self );
     double xmin,xmax,ymin,ymax,zmin,zmax;
     if (!PyArg_ParseTuple(args, "dddddd",&xmin,&xmax,&ymin,&ymax,&zmin,&zmax))
     {

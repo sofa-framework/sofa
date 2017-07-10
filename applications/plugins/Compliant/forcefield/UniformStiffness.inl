@@ -48,7 +48,7 @@ void UniformStiffness<DataTypes>::reinit()
             matC.beginRow(i);
             matC.insertBack(i, i, compliance);
         }
-        matC.compressedMatrix.finalize();
+        matC.finalize();
     }
     else matC.compressedMatrix.resize(0,0);
 
@@ -64,7 +64,7 @@ void UniformStiffness<DataTypes>::reinit()
                 matK.insertBack(i, i, -k);
             }
 
-            matK.compressedMatrix.finalize();
+            matK.finalize();
         }
 
 //    }
@@ -84,7 +84,7 @@ void UniformStiffness<DataTypes>::reinit()
             matB.insertBack(i, i, -d);
 		}
 
-		matB.compressedMatrix.finalize();
+        matB.finalize();
 	}
     else matB.compressedMatrix.resize(0,0);
 	
@@ -110,14 +110,6 @@ SReal UniformStiffness<DataTypes>::getPotentialEnergy( const core::MechanicalPar
     return e;
 }
 
-
-template<class DataTypes>
-const sofa::defaulttype::BaseMatrix* UniformStiffness<DataTypes>::getStiffnessMatrix(const core::MechanicalParams*)
-{
-    if( resizable.getValue() && (defaulttype::BaseMatrix::Index)this->mstate->getSize() != matC.rows() ) reinit();
-
-    return &matC;
-}
 
 
 template<class DataTypes>

@@ -22,7 +22,7 @@
 #ifndef FLEXIBLE_VolumePreservationMaterialBlock_H
 #define FLEXIBLE_VolumePreservationMaterialBlock_H
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 
 namespace sofa
 {

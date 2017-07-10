@@ -1,5 +1,6 @@
 #include "Binding_PointSetTopologyModifier.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::topology;
 using namespace sofa::core::topology;
@@ -9,9 +10,17 @@ using namespace sofa::core::topology;
     //                const bool addDOF = true);
 
 
+
+/// getting a PointSetTopologyModifier* from a PyObject*
+static inline PointSetTopologyModifier* get_PointSetTopologyModifier(PyObject* obj) {
+    return dynamic_cast<PointSetTopologyModifier*>( get_baseobject(obj) );
+}
+
+
+
 extern "C" PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObject * args)
 {
-    PointSetTopologyModifier* obj = dynamic_cast<PointSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
+    PointSetTopologyModifier* obj = get_PointSetTopologyModifier( self );
 
     PyObject* ancestorElemsArg = NULL;
 
@@ -30,7 +39,7 @@ extern "C" PyObject * PointSetTopologyModifier_addPoints(PyObject *self, PyObjec
         for(std::size_t i=0;i<nbAncestorElems;++i)
         {
             PyObject * pyPointAncestor = PyList_GetItem(ancestorElemsArg,i);
-            PointAncestorElem* pointAncestor = dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)pyPointAncestor)->object);
+            PointAncestorElem* pointAncestor = get<PointAncestorElem>( pyPointAncestor );
             ancestorElems.push_back( *pointAncestor );
         }
 

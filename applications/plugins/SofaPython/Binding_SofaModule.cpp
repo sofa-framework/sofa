@@ -27,6 +27,7 @@
 #include "Binding_BaseState.h"
 #include "Binding_Node.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -37,7 +38,9 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 //#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
 
 #include "SceneLoaderPY.h"
 
@@ -53,12 +56,12 @@ using namespace sofa::simulation;
 
 
 // set the viewer resolution
-extern "C" PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
+static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
 {
     return Py_BuildValue("s", SOFAPYTHON_VERSION_STR);
 }
 
-extern "C" PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
 {
     char *name;
     if (!PyArg_ParseTuple(args, "s",&name)) {
@@ -109,7 +112,7 @@ static PyObject * Sofa_createObject(PyObject * /*self*/, PyObject * args, PyObje
 }
 
 
-extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getObject(BaseContext,path) is deprecated. Please use BaseContext.getObject(path) instead." )
@@ -118,7 +121,7 @@ extern "C" PyObject * Sofa_getObject(PyObject * /*self*/, PyObject * /*args*/)
 
 }
 
-extern "C" PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
+static PyObject * Sofa_getChildNode(PyObject * /*self*/, PyObject * /*args*/)
 {
     // deprecated on date 2012/07/18
     SP_MESSAGE_DEPRECATED( "Sofa.getChildNode(Node,path) is deprecated. Please use Node.getChild(path) instead." )
@@ -186,7 +189,7 @@ static PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * args)
 
 
 // set the viewer resolution
-extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
     float r = 0.0f, g = 0.0f, b = 0.0f;
     sofa::defaulttype::RGBAColor color;
@@ -217,7 +220,7 @@ extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObjec
 }
 
 // set the viewer camera
-extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 {
     float px = 0.0f, py = 0.0f, pz = 0.0f;
     float qx = 0.0f, qy = 0.0f, qz = 0.0f, qw = 1.0f;
@@ -305,7 +308,7 @@ static PyObject * Sofa_exportGraph(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    BaseNode* node = get_basenode( pyNode );
     if (!node) {
         // this should not happen
         PyErr_BadArgument();
@@ -326,7 +329,7 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
         return NULL;
     }
 
-    BaseNode* basenode=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    BaseNode* basenode = get_basenode( pyNode );
     if (!basenode) {
         // this should not happen
         PyErr_BadArgument();
@@ -441,8 +444,27 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 }
 
 
+static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
+{
+    PyObject* pyNode;
+    if (!PyArg_ParseTuple(args, "O", &pyNode)) {
+        return NULL;
+    }
 
-extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
+    Node* node = get_node(pyNode);
+    if (!node) {
+        PyErr_BadArgument();
+        return NULL;
+    }
+
+    sofa::simulation::getSimulation()->unload( node );
+
+    Py_RETURN_NONE;
+}
+
+
+
+static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
 {
     size_t argSize = PyTuple_Size(args);
 
@@ -467,13 +489,14 @@ extern "C" PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyO
     }
 
     sofa::simulation::SceneLoaderPY loader;
-    sofa::simulation::Node::SPtr node = loader.loadSceneWithArguments(filename,arguments);
-    return sofa::PythonFactory::toPython(node.get());
+    sofa::simulation::Node::SPtr root;
+    loader.loadSceneWithArguments(filename, arguments, &root);
+    return sofa::PythonFactory::toPython(root.get());
 }
 
 
 
-extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
+static PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
 {
     char *pluginName;
     if (!PyArg_ParseTuple(args, "s", &pluginName)) {
@@ -498,18 +521,22 @@ extern "C" PyObject * Sofa_loadPlugin(PyObject * /*self*/, PyObject * args)
                 }
             }
         }
-    }
-    else
-    {
-        SP_MESSAGE_WARNING( "Sofa_loadPlugin: cannot find plugin: " << pluginName );
-        PyErr_BadArgument();
+    } else {
+        std::stringstream ss;
+        ss << "cannot find plugin " << pluginName;
+
+        SP_MESSAGE_WARNING(ss.str());
+        PyErr_SetString(PyExc_EnvironmentError, ss.str().c_str());
         return NULL;
     }
 
-    Py_RETURN_NONE;
+    return PyString_FromString(path.c_str());
 }
 
 
+static PyObject * Sofa_path(PyObject * /*self*/, PyObject * /*args*/) {
+    return PyString_FromString(sofa::helper::Utils::getSofaPathPrefix().c_str());
+}
 
 
 // Methods of the module
@@ -534,8 +561,10 @@ SP_MODULE_METHOD(Sofa,msg_warning)
 SP_MODULE_METHOD(Sofa,msg_error)
 SP_MODULE_METHOD(Sofa,msg_fatal)
 SP_MODULE_METHOD(Sofa,loadScene)
+SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
+SP_MODULE_METHOD(Sofa, path)
 SP_MODULE_METHODS_END
 
 

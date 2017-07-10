@@ -221,6 +221,9 @@ SOFA_SceneCreator_API Vector getVector( core::ConstVecId id, bool independentOnl
 /// Initialize the sofa library and create the root of the scene graph
 SOFA_SceneCreator_API simulation::Node::SPtr initSofa();
 
+/// Cleaning-up the sofa library before leaving
+SOFA_SceneCreator_API void cleanupSofa();
+
 /// Initialize the scene graph
 SOFA_SceneCreator_API void initScene(simulation::Node::SPtr root);
 

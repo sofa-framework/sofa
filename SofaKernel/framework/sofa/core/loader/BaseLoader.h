@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/helper/io/File.h>
 
 #include <string>
 #include <cstring>
@@ -88,25 +89,24 @@ public:
             return false;
         }
 
-        std::ifstream file(filename);
+        sofa::helper::io::File file(filename);
+        std::istream stream(file.streambuf());
 
         // -- Check if file is readable:
-        if (!file.good())
+        if (!stream.good())
         {
             serr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << sendl;
             return false;
         }
 
         // -- Check first line:
-        file >> cmd;
+        stream >> cmd;
         if (cmd.empty())
         {
             serr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
-            file.close();
             return false;
         }
 
-        file.close();
         return true;
     }
 

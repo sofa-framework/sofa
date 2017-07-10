@@ -13,17 +13,20 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-			
+
 
 BaseSequentialSolver::BaseSequentialSolver()
-	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
+	: omega(initData(&omega, (SReal)1.0, "omega",
+                     "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" )),
+      paranoia(initData(&paranoia, false, "paranoia", "add paranoid steps to counter numerical issues")), 
+      homogenize(initData(&homogenize, false, "homogenize", "homogenize block diagonals (fixing friction anisotropy)"))
 {}
 
 
 BaseSequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
 
 void BaseSequentialSolver::fetch_blocks(const system_type& system) {
-
+    
 //    serr<<SOFA_CLASS_METHOD<<sendl;
 
     // TODO don't free memory ?
@@ -31,24 +34,25 @@ void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 	
 	unsigned off = 0;
 
-    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
-    {
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i) {
 		system_type::dofs_type* const dofs = system.compliant[i];
         const system_type::constraint_type& constraint = system.constraints[i];
 
         const unsigned dim = dofs->getDerivDimension();
 
-        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
-        {
+        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k) {
             block b;
 
             b.offset = off;
             b.size = dim;
             b.projector = constraint.projector.get();
 
-            assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
-            b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
-
+            assert( !b.projector || !b.projector->mask || 
+                    b.projector->mask->empty() || b.projector->mask->size() == max );
+            
+            b.activated = !b.projector || !b.projector->mask
+              || b.projector->mask->empty() || (*b.projector->mask)[k];
+            
             blocks.push_back( b );
             off += dim;
         }
@@ -57,17 +61,7 @@ void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 }
 
 
-// TODO optimize remaining allocs
-void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
-	inv.compute( schur );
 
-#ifndef NDEBUG
-    if( inv.info() != Eigen::Success ){
-        std::cerr << SOFA_CLASS_METHOD<<"non invertible block Schur." << std::endl;
-        std::cerr << schur << std::endl;
-    }
-#endif
-}
 
 void BaseSequentialSolver::factor(const system_type& system) {
 
@@ -75,83 +69,163 @@ void BaseSequentialSolver::factor(const system_type& system) {
     factor_impl( system );
 }
 
+
+template<class LHSIterator, class RHSIterator>
+static inline SReal sparse_dot(LHSIterator&& lhs, RHSIterator&& rhs) {
+
+    SReal res = 0;
+
+    while(lhs && rhs) {
+
+        if( rhs.index() < lhs.index() ) {
+            ++rhs;
+        } else if (rhs.index() > lhs.index()) {
+            ++lhs;
+        } else {
+            res += lhs.value() * rhs.value();
+            
+            ++lhs;
+            ++rhs;
+        }
+    }
+    
+    return res;
+}
+
+
+
+template<class RowSparse, class ColSparse>
+static inline SReal sparse_dot(const RowSparse& lhs, unsigned i,
+                               const ColSparse& rhs, unsigned j) {
+    typename RowSparse::InnerIterator it_lhs(lhs, i);
+    typename ColSparse::InnerIterator it_rhs(rhs, j);
+
+    return sparse_dot(std::move(it_lhs), std::move(it_rhs));
+}
+
+
+
+template<class ColDenseMatrix, class RowSparse, class ColSparse>
+static void add_sparse_product_to_dense(ColDenseMatrix& out, 
+                                        const RowSparse& lhs, const ColSparse& rhs,
+                                        bool only_upper) {
+    assert(lhs.cols() == rhs.rows());
+
+    // TODO static_assert RowSparse is row-major && ColSparse is col-major
+    for(unsigned j = 0, cols = rhs.cols(); j < cols; ++j) {
+        for(typename ColSparse::InnerIterator it_rhs(rhs, j); it_rhs; ++it_rhs) {
+            const unsigned k = it_rhs.index();
+            const SReal v = it_rhs.value();
+            
+            for(typename RowSparse::InnerIterator it_lhs(lhs, k);
+                it_lhs; ++it_lhs) {
+                const unsigned i = it_lhs.index();
+                if(only_upper && (i > j)) break;
+                out(i, j) += v * it_lhs.value();
+            }
+        }
+    }
+
+}
+
 void BaseSequentialSolver::factor_impl(const system_type& system) {
-	scoped::timer timer("system factorization");
- 
-	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
-
-	// response matrix
-	assert( response );
-
-
+    // fill and factor sub-kkt system
     SubKKT::projected_primal(sub, system);
 
+	assert( response );    
     sub.factor(*response);
 	
 	// compute block responses
 	const unsigned n = blocks.size();
-	
+    
     if( !n ) return;
+    
+    diagonal.resize( system.n );
 
-	blocks_inv.resize( n );
-
-
-    sub.solve_opt( *response, mapping_response, system.J );  // mapping_response = PHinv(JP)^T
-
+    // project constraint matrix
     JP = system.J * system.P;
 
-	// to avoid allocating matrices for each block, could be a vec instead ?
-    dmat storage;
+    // compute mapping_response = Hinv * J^T
+    sub.solve_opt( *response, mapping_response, JP );  
+    
 
 	// build blocks and factorize
 	for(unsigned i = 0; i < n; ++i) {
 		const block& b = blocks[i];
 		
-		// resize storage if needed TODO alloc max size only once
-        if( (dmat::Index)b.size > storage.rows() ) storage.resize(b.size, b.size);
-		
-		// view on storage
-		schur_type schur(storage.data(), b.size, b.size);
-		
-		// temporary sparse mat, difficult to remove :-/
-        static cmat tmp; // try to improve matrix allocation
-        tmp = JP.middleRows(b.offset, b.size) *
-            mapping_response.middleCols(b.offset, b.size);
-		
-		// fill constraint block
-        schur = tmp;
-		
-		// real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
-		// assert( std::sqrt(symmetry) < 1e-8 );
-		
-		// add diagonal C block
 		for( unsigned r = 0; r < b.size; ++r) {
-            for(rmat::InnerIterator it(system.C, b.offset + r); it; ++it) {
-				
-				// paranoia, i has it
-				assert( it.col() >= int(b.offset) );
-				assert( it.col() < int(b.offset + b.size) );
-				
-				schur(r, it.col() - int(b.offset)) += it.value();
-			}
+
+            const unsigned off = b.offset + r;
+            
+            SReal& d = diagonal(off);
+            d = sparse_dot(JP, off, mapping_response, off);
+
+            // TODO is this the fastest?
+            const SReal c = system.C.coeff(off, off);
+            
+            d += c;
+            
+            // sanity check
+            if( d <= 0 ){
+                
+                // empty constraint row, this is an error
+                const SReal norm = system.J.row(off).norm();
+                if( norm == 0 ) {
+                    serr << "zero constraint row: " << off << sendl;
+                    simulation::Node* node = 0;
+                    
+                    if(b.projector) {
+                        node = dynamic_cast<simulation::Node*>(b.projector->getContext());
+                    } else {
+                        unsigned tmp = 0;
+                        for(const auto& c : system.compliant) {
+                            const unsigned size = c->getMatrixSize();
+                            if( (tmp + size) > off) {
+                                node = dynamic_cast<simulation::Node*>(c->getContext());
+                                break;
+                            } else {
+                                tmp += size;
+                            }
+                        }
+                        assert( tmp == system.n );
+                        assert( off < system.n );
+                    }
+                    
+                    assert(node);
+                    if( node ) {
+                        auto mapping = node->mechanicalMapping.get();
+                        serr << "mapping: " << mapping->getPathName() << sendl;
+                    }
+                    
+                    assert(false && "empty constraint row");
+                }
+
+                // constraint row got zero-ed after fixed-constraint projection:
+                // flag as disabled
+                assert( c >= 0 );
+                assert(JP.row(off).norm() == 0);
+                
+                d = -1;
+            }
+            
 		}
 
-        factor_block( blocks_inv[i], schur );
+        // homogenize friction constraints
+        if(homogenize.getValue()) {
+            chunk_type view(&diagonal(b.offset), b.size);
+            const SReal max = view.maxCoeff();
+            view = view.unaryExpr([max](const SReal& di) {
+                    return di > 0 ? max : di;
+                });
+        }
     }
 
+    if(debug.getValue() ) {
+        serr << "diagonal: " << diagonal.transpose() << sendl;
+    }
 }
 
-// TODO make sure this does not cause any alloc
-void BaseSequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
-	assert( !has_nan(rhs.eval()) );
-	result = rhs;
 
-    bool ret = inv.solveInPlace(result);
-    assert( !has_nan(result.eval()) );
-    assert( ret );
-
-	(void) ret;
-}
 
 
 
@@ -182,13 +256,10 @@ SReal BaseSequentialSolver::step(vec& lambda,
                                  const vec& rhs,
                                  vec& error, vec& delta,
                                  bool correct,
-                                 real /*damping*/ ) const {
+                                 real damping ) const {
 
-	// TODO size asserts
-	
-	// error norm2 estimate (seems conservative and much cheaper to
-	// compute anyways)
-	real estimate = 0;
+    // fix-point error squared-norm: ||f(x) - x||^2
+    real error_squared = 0;
 
     SReal omega = this->omega.getValue();
 		
@@ -202,46 +273,49 @@ SReal BaseSequentialSolver::step(vec& lambda,
         chunk_type delta_chunk(&delta(b.offset), b.size);
 
         // if the constraint is activated, solve it
-        if( b.activated )
-        {
+        if( b.activated ) {
             chunk_type error_chunk(&error(b.offset), b.size);
 
-            // update rhs TODO track and remove possible allocs
+            // update error
             error_chunk.noalias() = rhs.segment(b.offset, b.size);
             error_chunk.noalias() -= JP.middleRows(b.offset, b.size) * net;
             error_chunk.noalias() -= sys.C.middleRows(b.offset, b.size) * lambda;
+            error_chunk.noalias() -= damping * lambda_chunk;
+            
+            const const_chunk_type diag_chunk(&diagonal(b.offset), b.size);
+            
+            // solve for lambda changes w/ jacobi iteration
+            delta_chunk = error_chunk.array() / (diag_chunk.array() + damping);
+            assert( !has_nan(delta_chunk) );
 
-            // error estimate update, we sum current chunk errors
-            // estimate += error_chunk.squaredNorm();
-
-            // solve for lambda changes
-            solve_block(delta_chunk, blocks_inv[i], error_chunk);
-
+            // handle disabled constraints
+            delta_chunk.array() *= (diag_chunk.array() > 0).template cast<SReal>();
+            
             // backup old lambdas
             error_chunk = lambda_chunk;
 
             // update lambdas
-            lambda_chunk = lambda_chunk + omega * delta_chunk;
+            lambda_chunk += omega * delta_chunk;
 
             // project new lambdas if needed
             if( b.projector ) {
+                
                 b.projector->project( lambda_chunk.data(), lambda_chunk.size(), i, correct );
-                assert( !has_nan(lambda_chunk.eval()) );
+                assert( !has_nan(lambda_chunk) );
+
             }
 
-            // correct lambda differences based on projection
+            // recompute deltas from projected lambdas
             delta_chunk = lambda_chunk - error_chunk;
-        }
-        else // deactivated constraint
-        {
-            // force lambda to be 0
+
+        } else {
+            // deactivated constraint: force lambda to be 0
             delta_chunk = -lambda_chunk;
             lambda_chunk.setZero();
         }
 
-		// we estimate the total lambda change. since GS convergence
-		// is linear, this can give an idea about current precision.
-		estimate += delta_chunk.squaredNorm();
+        // update fixpoint error
+		error_squared += delta_chunk.squaredNorm();
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
@@ -253,12 +327,14 @@ SReal BaseSequentialSolver::step(vec& lambda,
 
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
-	// TODO is this needed to avoid error accumulation ?
-	// net = mapping_response * lambda;
+	// TODO is this needed to avoid error accumulation? apparently not, but
+	// would be nice to have a paranoid flag to control it
 
-	// TODO flag to return real residual estimate !! otherwise
-	// convergence plots are not fair.
-	return estimate;
+    if(paranoia.getValue()) {
+        net.noalias() = mapping_response * lambda;
+    }
+    
+	return error_squared;
 }
 
 void BaseSequentialSolver::solve(vec& res,
@@ -281,13 +357,6 @@ void BaseSequentialSolver::solve_impl(vec& res,
                                       bool correct,
                                       real damping) const {
 	assert( response );
-
-	// reset bench if needed
-	if( this->bench ) {
-		bench->clear();
-		bench->restart();
-	}
-
 
 	// free velocity
     vec free_res( sys.m );
@@ -312,7 +381,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
     vec delta = vec::Zero(sys.n);
 	
 	// lcp rhs 
-    vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
+    const vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
 	
 	// lcp error
     vec error = vec::Zero(sys.n);
@@ -320,30 +389,46 @@ void BaseSequentialSolver::solve_impl(vec& res,
 	const real epsilon = relative.getValue() ? 
 		constant.norm() * precision.getValue() : precision.getValue();
 
-	if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-
-
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
-//	vec primal;
+	vec old;
+
+    // convergence error
+    SReal cv = 0;
+    
 	for(k = 0; k < max; ++k) {
+        old = lambda;
+        
+        const SReal cv_squared = step( lambda, net, sys, constant, error, delta, correct, damping );
 
-        real estimate2 = step( lambda, net, sys, constant, error, delta, correct, damping );
-
-		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
-		
-		// stop if we only gain one significant digit after precision
-		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
+        cv = std::sqrt( cv_squared );
+		if( cv < epsilon ) break;
 	}
-
+    
     res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
+    if(debug.getValue() ) {
+        serr << "lcp pass: " << (correct ? "correct" : "dynamics") << sendl;
+        serr << "lcp rhs: " << constant.transpose() << sendl;
+        serr << "lcp lambda: " << lambda.transpose() << sendl;
 
+        // // only make sense when all constraints are unilateral
+        // const SReal unilateral_error =
+        //     (JP * (mapping_response * lambda)
+        //      + sys.C * lambda
+        //      + damping * lambda
+        //      - constant).array().min(lambda.array()).matrix().norm();
+        
+        // serr << "unilateral error: " << unilateral_error << sendl;
+        
+        serr << sendl;
+    }
 
-    if( this->f_printLog.getValue() )
-        serr << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
-	
+    
+    if( this->f_printLog.getValue() ) {
+        serr << "iterations: " << k << ", error: " << cv << sendl;
+    }
 
 }
 
@@ -356,9 +441,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
 
 
 SOFA_DECL_CLASS(SequentialSolver)
-int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
-
-
+static int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
 
 
 
@@ -577,6 +660,10 @@ void SequentialSolver::solve_local(vec& res,
     if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )
         return solve_impl( res, sys, rhs, correct, damping );
 
+    if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() ) {
+        return solve_impl( res, sys, rhs, correct, damping );
+    }
+    
     const size_t localsize = m_localSystem.size();
 
     vec localrhs(localsize), localres(localsize);
@@ -626,7 +713,6 @@ void SequentialSolver::fetch_unilateral_blocks(const system_type& system)
 
                 assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
                 b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
-
                 blocks.push_back( b );
                 off += dim;
             }

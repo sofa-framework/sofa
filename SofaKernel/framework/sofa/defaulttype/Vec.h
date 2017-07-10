@@ -413,6 +413,73 @@ public:
         this->assign(r);
     }
 
+    std::istream& readDelimiter (std::istream& in )
+    {
+        char c;
+
+        if( !(in >> c) || in.eof() )
+            return in; // empty stream
+
+        if ( c != '[' )
+        {
+            msg_error("Vec") << "read: Bad begin character : " << c << ", expected  [";
+            return in;
+        }
+        std::streampos pos = in.tellg();
+        if (!(in >> c)) {
+            msg_error("Vec") << "Error reading [,] separated values, expecting data after [";
+            return in;
+        }
+
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            in.seekg( pos ); // coming-back to previous character
+            int i=0;
+            c = ' ';
+            while( (i<N) && ( in>>(*this)[i] ) ) {
+                ++i;
+                if ( !( in>>c ) || c!=',')
+                    break;
+            }
+            if (i != N)
+                msg_error("Vec") << "Error reading [,] separated values, number of values: " << i << " expected: " << N;
+            if ( c != ']' )
+                msg_error("Vec") << "read : Bad end character : " << c << ", expected  ]";
+            if (in.fail())
+                msg_error("Vec") << "Error reading [,] separated values";
+
+            return in;
+        }
+    }
+
+    std::istream& read(std::istream& in)
+    {
+        std::streampos pos = in.tellg();
+        char c;
+
+        if( !( in >> c ) || in.eof() )
+            return in; // empty stream
+        in.seekg( pos ); // coming-back to the previous character
+        if ( c == '[' ) {
+            return readDelimiter(in);
+        }
+        else {
+            int i=0;
+            for( ; i<N; ++i )
+                if (!( in >> (*this)[i] ))
+                    break;
+            if (i != N)
+                msg_error("Vec") << "Error reading space separated values, number of values: " << i << " expected: " << N;
+            if (in.fail())
+                msg_error("Vec") << "Error reading space separated values";
+            return in;
+        }
+    }
+
     // Access to i-th element.
     // Already in fixed_array
     //real& operator[](int i)
@@ -800,18 +867,17 @@ public:
 template<int N,typename Real>
 std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
 {
-    for( int i=0; i<N; ++i )
-        in>>v[i];
-    return in;
+    return v.read(in);
 }
 
 /// Write to an output stream
 template<int N,typename Real>
 std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
 {
+    out << "[";
     for( int i=0; i<N-1; ++i )
-        out<<v[i]<<" ";
-    out<<v[N-1];
+        out<<v[i]<<", ";
+    out<<v[N-1] << "]";
     return out;
 }
 

@@ -63,7 +63,7 @@ protected:
 
     typename node_type::SPtr contact_node;
 
-    typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
+    typedef core::behavior::MechanicalState<defaulttype::Vec1Types> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
 
     typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec1Types> contact_map_type;
@@ -75,8 +75,9 @@ protected:
     typedef forcefield::UniformCompliance<defaulttype::Vec1Types> compliance_type;
     compliance_type::SPtr compliance;
 
+    // TODO why do we have friction stuff here? this should go elsewhere
     typename node_type::SPtr friction_node;
-    typedef container::MechanicalObject<defaulttype::Vec2Types> friction_dofs_type;
+    typedef core::behavior::MechanicalState<defaulttype::Vec2Types> friction_dofs_type;
     typename friction_dofs_type::SPtr friction_dofs;
     typedef mapping::ContactMapping<ResponseDataTypes, defaulttype::Vec2Types> friction_map_type;
     typename friction_map_type::SPtr friction_map;
@@ -116,7 +117,7 @@ protected:
 
         this->make_delta();
 
-        contact_node = node_type::create( this->getName() + "_contact_frame" );
+        contact_node = node_type::create("");
 
         this->delta_node->addChild( contact_node.get() );
 
@@ -124,15 +125,13 @@ protected:
         contact_node->updateSimulationContext();
 
         // 1d contact dofs
-        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = this->template make_dofs<defaulttype::Vec1Types>();
         contact_dofs->resize( size );
-        contact_dofs->setName( this->getName() + "_contact_dofs" );
         contact_node->addObject( contact_dofs.get() );
 
         // contact mapping
         contact_map = core::objectmodel::New<contact_map_type>();
         contact_map->setModels( this->delta_dofs.get(), contact_dofs.get() );
-        contact_map->setName( this->getName() + "_contact_mapping" );
         contact_node->addObject( contact_map.get() );
 
         this->copyNormals( *editOnly(contact_map->normal) );
@@ -153,6 +152,7 @@ protected:
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
         compliance->damping.setValue( this->damping_ratio.getValue() );
+        compliance->resizable.setValue( true );
         compliance->init();
 
 
@@ -183,7 +183,7 @@ protected:
     // viscous friction
     void create_friction_node( SReal frictionCoefficient, size_t size, helper::vector<bool>* cvmask )
     {
-        friction_node = node_type::create( this->getName() + "_contact_tangents" );
+        friction_node = node_type::create("");
 
         this->delta_node->addChild( friction_node.get() );
 
@@ -191,15 +191,13 @@ protected:
         friction_node->updateSimulationContext();
 
         // 2d friction dofs
-        friction_dofs = sofa::core::objectmodel::New<friction_dofs_type>();
+        friction_dofs = this->template make_dofs<defaulttype::Vec2Types>();
         friction_dofs->resize( size );
-        friction_dofs->setName( this->getName() + "_friction_dofs" );
         friction_node->addObject( friction_dofs.get() );
 
         // mapping
         friction_map = core::objectmodel::New<friction_map_type>();
         friction_map->setModels( this->delta_dofs.get(), friction_dofs.get() );
-        friction_map->setName( this->getName() + "_friction_mapping" );
         friction_map->mask = *cvmask; // by pointer copy, the vector was deleted before being used in contact mapping...  // TODO improve this by avoiding a copy
         friction_node->addObject( friction_map.get() );
 
@@ -252,8 +250,8 @@ protected:
         {
             compliance->compliance.setValue( this->compliance_value.getValue() );
             compliance->damping.setValue( this->damping_ratio.getValue() );
-            compliance->reinit();
         }
+
 
 //        // every contact points must propagate constraint forces
 //        for(unsigned i = 0; i < size; ++i)

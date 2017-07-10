@@ -309,6 +309,12 @@ public:
         return elems;
     }
 
+    // direct access to data
+    T* data()
+    {
+        return elems;
+    }
+
     /// direct access to array
     const Array& array() const
     {

@@ -575,10 +575,17 @@ std::string  MechanicalVAllocVisitor<vtype>::getInfos() const
     return name;
 }
 
+
+template< VecType vtype>
+bool MechanicalVReallocVisitor<vtype>::stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+{
+    return !m_propagate;
+}
+
 template< VecType vtype>
 Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState *mm)
 {
-    mm->vRealloc( this->params, this->getId(mm) );
+    this->alloc( mm );
     return RESULT_CONTINUE;
 }
 
@@ -586,9 +593,7 @@ template< VecType vtype>
 Visitor::Result MechanicalVReallocVisitor<vtype>::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
     if (m_propagate)
-    {
-        mm->vRealloc(this->params, this->getId(mm) );
-    }
+        this->alloc( mm );
 
     return RESULT_CONTINUE;
 }
@@ -598,17 +603,15 @@ Visitor::Result MechanicalVReallocVisitor<vtype>::fwdInteractionForceField(simul
 {
     if (m_interactionForceField)
     {
-        core::behavior::BaseMechanicalState* mm = ff->getMechModel1();
-        mm->vRealloc( this->params, this->getId(mm) );
-        mm = ff->getMechModel2();
-        mm->vRealloc( this->params, this->getId(mm) );
+        this->alloc( ff->getMechModel1() );
+        this->alloc( ff->getMechModel2() );
     }
 
     return RESULT_CONTINUE;
 }
 
 template< VecType vtype>
-typename MechanicalVReallocVisitor<vtype>::MyVecId MechanicalVReallocVisitor<vtype>::getId( core::behavior::BaseMechanicalState* mm )
+void MechanicalVReallocVisitor<vtype>::alloc( core::behavior::BaseMechanicalState* mm )
 {
     MyVecId vid = v->getId(mm);
     if( vid.isNull() ) // not already allocated
@@ -616,8 +619,10 @@ typename MechanicalVReallocVisitor<vtype>::MyVecId MechanicalVReallocVisitor<vty
         vid = MyVecId(MyVecId::V_FIRST_DYNAMIC_INDEX);
         mm->vAvail( this->params, vid );
         v->setId( mm, vid );
+        mm->vAlloc( this->params, vid );
     }
-    return vid;
+    else
+        mm->vRealloc( this->params, vid );
 }
 
 template< VecType vtype>

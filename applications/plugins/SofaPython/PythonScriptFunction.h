@@ -71,11 +71,11 @@ private:
 class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
 public:
-	explicit PythonScriptFunction(PyObject* pyCallableObject, bool own);
+    explicit PythonScriptFunction(PyObject* pyCallableObject=nullptr, bool own=false);
 	virtual ~PythonScriptFunction();
 
 	PyObject* callableObject() const					{return m_pyCallableObject;}
-	void setCallableObject(PyObject* callableObject)	{m_pyCallableObject = callableObject;}
+    void setCallableObject(PyObject* callableObject, bool own);
 
 private:
 	virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;

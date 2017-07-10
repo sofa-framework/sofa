@@ -85,7 +85,9 @@ template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
     : Inherit()
     , indexPairs( initData( &indexPairs, helper::vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
-{}
+{
+    this->addAlias( &indexPairs, "pairs" );
+}
 
 template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()

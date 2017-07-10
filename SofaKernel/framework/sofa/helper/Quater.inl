@@ -143,45 +143,27 @@ Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1) const
 template<class Real>
 Quater<Real> Quater<Real>::operator*(const Real& r) const
 {
-    Quater<Real>  ret;
-    ret[0] = _q[0] * r;
-    ret[1] = _q[1] * r;
-    ret[2] = _q[2] * r;
-    ret[3] = _q[3] * r;
-    return ret;
+    return Quater<Real>( _q*r );
 }
 
 
 template<class Real>
 Quater<Real> Quater<Real>::operator/(const Real& r) const
 {
-    Quater<Real>  ret;
-    ret[0] = _q[0] / r;
-    ret[1] = _q[1] / r;
-    ret[2] = _q[2] / r;
-    ret[3] = _q[3] / r;
-    return ret;
+    return Quater<Real>( _q * 1.0 / r );
 }
 
 template<class Real>
 void Quater<Real>::operator*=(const Real& r)
 {
-    Quater<Real>  ret;
-    _q[0] *= r;
-    _q[1] *= r;
-    _q[2] *= r;
-    _q[3] *= r;
+    _q *= r;
 }
 
 
 template<class Real>
 void Quater<Real>::operator/=(const Real& r)
 {
-    Quater<Real>  ret;
-    _q[0] /= r;
-    _q[1] /= r;
-    _q[2] /= r;
-    _q[3] /= r;
+    _q *= 1.0 / r;
 }
 
 
@@ -241,22 +223,21 @@ Quater<Real> Quater<Real>::inverse() const
     return ret;
 }
 
-/// Quater<Real>s always obey:  a^2 + b^2 + c^2 + d^2 = 1.0
-/// If they don't add up to 1.0, dividing by their magnitude will
-/// renormalize them.
+
 template<class Real>
-void Quater<Real>::normalize()
+bool Quater<Real>::normalize()
 {
-    Real mag = (_q[0] * _q[0] + _q[1] * _q[1] + _q[2] * _q[2] + _q[3] * _q[3]);
-    if( mag != 0)
-    {
-        Real sqr = static_cast<Real>(1.0 / sqrt(mag));
-        for (int i = 0; i < 4; i++)
-        {
-            _q[i] *= sqr;
-        }
-    }
+    return _q.normalize();
 }
+
+
+template<class Real>
+Real Quater<Real>::norm() const
+{
+    return _q.norm();
+}
+
+
 
 template<class Real>
 void Quater<Real>::fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z)
@@ -482,8 +463,8 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) cons
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5ï¿½
+    if(q[3]>0.999) // theta < 5ï¿½ -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));
@@ -517,8 +498,8 @@ defaulttype::Vec<3,Real> Quater<Real>::quatToRotationVector() const
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5ï¿½
+    if(q[3]>0.999) // theta < 5ï¿½ -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));

@@ -2,6 +2,7 @@
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/PropagateEventVisitor.h>
 
 #include "../assembly/AssemblyVisitor.h"
 #include "../utils/scoped.h"
@@ -37,7 +38,8 @@ using namespace core::behavior;
                          "print debug stuff")),
           constraint_forces(initData(&constraint_forces,
                                      "constraint_forces",
-                                     "add constraint forces to mstate's 'force' vector at compliance levels at the end of the time step. (0->do nothing, 1->add to existing forces, 2->clear existing forces, 3-> clear existing forces and propagate constraint forces toward independent dofs) ")),
+                                     "add constraint forces to mstate's 'force' vector at compliance levels at the end of the time step."
+                                     "(0->do nothing, 1->add to existing forces, 2->clear existing forces, 3-> clear existing forces and propagate constraint forces toward independent dofs) ")),
           alpha( initData(&alpha,
                           SReal(1),
                           "implicitVelocity",
@@ -60,6 +62,8 @@ using namespace core::behavior;
             true,
             "neglecting_compliance_forces_in_geometric_stiffness",
             "isn't the name clear enough?"))
+        , extra_solves(initData(&extra_solves, unsigned(0), "extra_solves",
+                                "extra dynamics solves. a SolveEndEvent is sent after each solve if nonzero"))
     {
         storeDSol = false;
         assemblyVisitor = NULL;
@@ -516,12 +520,21 @@ using namespace core::behavior;
         assemblyVisitor->assemble(sys);
     }
 
+
+simulation::Node* CompliantImplicitSolver::node() {
+    assert( dynamic_cast<simulation::Node*>(getContext()) );
+    return static_cast<simulation::Node*>(getContext());
+}
+
+SOFA_EVENT_CPP( CompliantImplicitSolver::SolveEndEvent );
+
+
     void CompliantImplicitSolver::solve(const core::ExecParams* params,
                                 SReal dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 
-        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params );
+        node()->precomputeTraversalOrder( params );
 
         assert(kkt);
 
@@ -546,7 +559,8 @@ using namespace core::behavior;
         // stiffness depends on its child force
         compute_forces( sop, f, &_ck );
 
-        // assemble system
+        // assemble system. note: we need to assemble after compute_forces since
+        // it depends on masks
         perform_assembly( &sop.mparams(), sys );
 
         // debugging
@@ -591,15 +605,13 @@ using namespace core::behavior;
                 kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 
                 if( debug.getValue() ) {
-                    serr << "correction rhs:" << std::endl
-                              << rhs.transpose() << std::endl
-                              << "solution:" << std::endl
-                              << x.transpose() << sendl;
+                    serr << "correction rhs: " << rhs.transpose() << sendl;
+                    serr << "solution: " << x.transpose() << sendl;
                 }
 
-                MultiVecDeriv v_stab( &sop.vop ); // a temporary multivec not to modify velocity
-                set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-                integrate( sop, posId, v_stab.id() );
+                _vstab.realloc( &sop.vop ); // a temporary multivec not to modify velocity
+                set_state_v( sys, x, _vstab.id() ); // set v (no need to set lambda)
+                integrate( sop, posId, _vstab.id() );
             }
 
             // actual dynamics
@@ -614,50 +626,82 @@ using namespace core::behavior;
                 kkt->solve(x, sys, rhs);
 				
                 if( debug.getValue() ) {
-                    sout << "dynamics rhs:" << std::endl
-                              << rhs.transpose() << std::endl
-                              << "solution:" << std::endl
-                              << x.transpose() << sendl;
+                    serr << "dynamics rhs: " << rhs.transpose() << sendl;
+                    serr << "solution: " << x.transpose() << sendl;
                 }
+                
                 if( storeDSol ) {
                     dynamics_rhs = rhs;
                     dynamics_solution = x;
                 }
 
+                core::MultiVecDerivId state_id;
+                SReal acc_factor = 0;
 
-                switch( formulation.getValue().getSelectedId() )
-                {
+                switch( formulation.getValue().getSelectedId() ) {
                 case FORMULATION_VEL: // p+ = p- + h.v
-                    set_state( sys, x, velId ); // set v and lambda
-                    integrate( sop, posId, velId );
+                    state_id = velId;
+                    acc_factor = 0;
                     break;
                 case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), 1.0  );
+                    state_id = _acc.id();
+                    acc_factor = 1.0;
                     break;
                 case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
-                    set_state( sys, x, _acc.id() ); // set v and lambda
-                    integrate( sop, posId, velId, _acc.id(), dt  );
+                    state_id = _acc.id();
+                    acc_factor = dt;
                     break;
+                }                
+
+                auto set_state = [&] {
+                    this->set_state( sys, x, state_id );
+                };
+
+                auto integrate = [&] {
+                    if( acc_factor ) this->integrate( sop, posId, velId, _acc.id(), acc_factor );
+                    else this->integrate( sop, posId, velId );
+                };
+
+                auto propagate_lambdas = [&] {
+                    
+                    const unsigned constraint_f = constraint_forces.getValue().getSelectedId();
+                    if( constraint_f && sys.n ) {
+                        scoped::timer step("constraint_forces");
+                        simulation::propagate_constraint_force_visitor
+                            vis( &sop.mparams(),
+                                  core::VecId::force(), lagrange.id(),
+                                  useVelocity ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
+                        send( vis );
+                    }
+                };
+
+                // extra solves
+                for(unsigned k = 0, kmax = extra_solves.getValue(); k < kmax; ++k) {
+
+                    set_state();
+                    propagate_lambdas();
+                    
+                    {
+                        SolveEndEvent ev; ev.index = k;
+                        simulation::PropagateEventVisitor act ( params, &ev );
+                        node()->execute ( act );
+                    }
+
+                    compute_forces( sop, f, &_ck );
+                    rhs_dynamics( sop, rhs, sys, _ck, posId, velId );
+                    
+                    kkt->solve(x, sys, rhs);
                 }
 
-                // TODO is this even needed at this point ? NO it is done by the animation loop
-//                propagate( &sop.mparams() );
+                set_state();
+                integrate();
+                propagate_lambdas();
             }
 
-
-            // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
-            unsigned constraint_f = constraint_forces.getValue().getSelectedId();
-            if( constraint_f && sys.n ) {
-                scoped::timer step("constraint_forces");
-                simulation::propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? 1.0/sys.dt : 1.0, constraint_f>1, constraint_f==3 );
-                send( prop );
-            }
-
+            
             // constraint post-stabilization
-            if( stabilizationType>=POST_STABILIZATION_RHS )
-            {
-                post_stabilization( sop, posId, velId, stabilizationType==POST_STABILIZATION_ASSEMBLY);
+            if( stabilizationType >= POST_STABILIZATION_RHS ) {
+                post_stabilization( sop, posId, velId, stabilizationType == POST_STABILIZATION_ASSEMBLY);
             }
         }
 
@@ -692,9 +736,8 @@ using namespace core::behavior;
     {
         if( !sys.n ) return;
 
-        if( realloc )
-        {
-            static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
+        if( realloc ) {
+            node()->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
             _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
         }
 
@@ -747,11 +790,12 @@ using namespace core::behavior;
                       << x.transpose() << sendl;
         }
 
-        MultiVecDeriv v_stab( &sop.vop );  // a temporary multivec not to modify velocity
-        set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-        integrate( sop, posId, v_stab.id() );
 
-        propagate( &sop.mparams() );
+        _vstab.realloc( &sop.vop ); // a temporary multivec not to modify velocity
+        set_state_v( sys, x, _vstab.id() ); // set v (no need to set lambda)
+        integrate( sop, posId, _vstab.id() );
+
+        // propagate( &sop.mparams() );
     }
 
 

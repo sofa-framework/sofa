@@ -47,9 +47,6 @@ struct NormalizationMappingTest : public Mapping_test<Mapping>
 
     bool test()
     {
-        // geometric stiffness does not seem to be correctly implemented (or the test is incorrect?)
-        this->flags &= ~self::TEST_GEOMETRIC_STIFFNESS;
-
         // parents
         typename self::InVecCoord xin(2);
         xin[0] = typename self::InCoord(1,1,1);

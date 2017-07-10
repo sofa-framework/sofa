@@ -62,7 +62,10 @@ public:
     Data<unsigned int> exportEveryNbSteps;
     Data<bool> exportAtBegin;
     Data<bool> exportAtEnd;
-    bool  activateExport;
+    Data<bool> d_exportMTL; ///< export a .mtl with the .obj? (true by default)
+
+    bool activateExport; ///< to activate export of several steps with the keybboard -> mouais...
+
 protected:
     OBJExporter();
     virtual ~OBJExporter();

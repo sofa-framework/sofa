@@ -90,6 +90,34 @@ namespace sofa {
                     }
 				}
 
+
+                void update_force_mask_from_jacobian() {
+                    auto& mask = *this->maskFrom;
+                    mask.assign(mask.size(), false);
+                    
+                    const auto& cm = jacobian.compressedMatrix;
+                    
+                    for(unsigned i = 0, n = this->maskTo->size(); i < n; ++i) {
+
+                        for(unsigned k = 0; k < Out::deriv_total_size; ++k) {
+                            const unsigned row = i * Out::deriv_total_size + k;
+
+                            using eigen_type = typename jacobian_type::CompressedMatrix;
+                            using iterator_type = typename eigen_type::InnerIterator;
+
+                            for(iterator_type it(cm, row); it; ++it) {
+                                const unsigned col = it.col();
+                                // TODO that makes a good lot of integer divisions :-/
+                                const unsigned src_index = col / In::deriv_total_size;
+                                mask.insertEntry(src_index);
+                            }
+                            
+                        }
+
+                    }
+                }
+                
+                
 				virtual void applyJT(const core::ConstraintParams*,
 				                     Data< typename self::InMatrixDeriv>& , 
 				                     const Data<typename self::OutMatrixDeriv>& ) {

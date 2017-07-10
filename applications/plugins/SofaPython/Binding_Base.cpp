@@ -30,11 +30,9 @@ using namespace sofa::core::objectmodel;
 #include <sofa/helper/logging/Messaging.h>
 
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
-// stop copypasting for the lord's sake
-static Base* get_base(PyObject* obj) {
-    return ((PySPtr<Base>*)obj)->object.get();
-}
+
 
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
@@ -178,6 +176,16 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
     return pyDict;
 }
 
+
+// down cast to the lowest type known by the factory
+// there is maybe a more pythonish way to do so? :)
+static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
+    Base* component = get_base(self);
+    return sofa::PythonFactory::toPython(component);
+}
+
+
+
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD(Base,findData)
 SP_CLASS_METHOD(Base,findLink)
@@ -185,7 +193,8 @@ SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
 SP_CLASS_METHOD(Base,getDataFields)
-SP_CLASS_METHODS_END
+SP_CLASS_METHOD(Base,downCast)
+SP_CLASS_METHODS_END;
 
 //SP_CLASS_DATA_ATTRIBUTE(Base,name)
 

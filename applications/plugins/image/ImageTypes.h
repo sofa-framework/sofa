@@ -222,21 +222,20 @@ public:
                     cimg_forXYZ(img(l),x,y,z)
             {
                 cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
-                long double val=vect.magnitude();
-                T tval=(T)val;
+                T tval=(T)vect.magnitude();
                 if(value_min>tval) value_min=tval;
-                if(value_max<tval) value_max=tval;
+                else if(value_max<tval) value_max=tval;
             }
             if(value_max==value_min) value_max=value_min+(T)1;
+            long double mul= ((long double)dimx-1.)/((long double)value_max-(long double)value_min);
             cimglist_for(img,l)
                     cimg_forXYZ(img(l),x,y,z)
             {
                 cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
-                long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                if(v<0) v=0;
-                else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                ++res((int)(v),0,0,0);
+                long double v = ((long double)val-(long double)value_min)*mul;
+                if(v<0) v=0; else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                ++res((int)(v));
             }
         }
         else
@@ -244,17 +243,13 @@ public:
             value_min=img.min();
             value_max=img.max();
             if(value_max==value_min) value_max=value_min+(T)1;
+            long double mul= ((long double)dimx-1.)/((long double)value_max-(long double)value_min);
             cimglist_for(img,l)
                     cimg_forXYZC(img(l),x,y,z,c)
             {
-                if((long double)value_max-(long double)value_min !=0)
-                {
-                    const T val = img(l)(x,y,z,c);
-                    long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
-                    if(v<0) v=0;
-                    else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
-                    ++res((int)(v),0,0,c);
-                }
+                long double v = ((long double)img(l)(x,y,z,c)-(long double)value_min)*mul;
+                if(v<0) v=0; else if(v>(long double)(dimx-1)) v=(long double)(dimx-1);
+                ++res((int)(v),0,0,c);
             }
         }
         return res;
@@ -489,9 +484,10 @@ public:
 
 
 
-//  implementation of linear (scale+rotation+translation) and perspective transforms
-//  for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
-
+/**  implementation of linear (scale+rotation+translation) and perspective transforms
+ * for perspective transforms (only for 2D images), the pinhole camera is located at ( scalex(dimx-1)/2, scaley(dimy-1)/2, -scalez/2)
+ * the reference for the transformation is the center of the [0,0,0] voxel (or [0,0] pixel for 2D image)
+ */
 template<typename _Real>
 struct ImageLPTransform : public TImageTransform<12,_Real>
 {
@@ -501,7 +497,8 @@ struct ImageLPTransform : public TImageTransform<12,_Real>
     typedef typename Inherited::Coord Coord;
 
 protected:
-    Real camx;	Real camy; // used only for perpective transforms (camera offset = c_x and c_y pinhole camera intrinsic parameters)
+
+    Vec<2,Real> camPos; // used only for perpective transforms (camera offset = c_x and c_y pinhole camera intrinsic parameters)
 
 public:
     Coord& getTranslation() { return *reinterpret_cast<Coord*>(&this->P[0]); }
@@ -521,7 +518,7 @@ public:
         :Inherited()
     {
         getScale()[0]=getScale()[1]=getScale()[2]=getScaleT()=(Real)1.0;
-        camx = camy = (Real)0.0;
+        camPos[0] = camPos[1] = (Real)0.0;
     }
 
     virtual ~ImageLPTransform() {}
@@ -529,7 +526,9 @@ public:
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
-    void setCamPos(const Real& cx,const Real& cy) {this->camx=cx;  this->camy=cy; }
+    void setCamPos(const Real& cx,const Real& cy) { camPos.set(cx,cy); }
+    Vec<2,Real>& getCamPos() { return camPos; }
+    const Vec<2,Real>& getCamPos() const { return camPos; }
 
     //internal data update
     virtual void update()
@@ -548,39 +547,40 @@ public:
         else if(isPerspective()==1)
         {
             Coord sp=ip.linearProduct(getScale());
-            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camx);
-            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camy);
+            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camPos[0]);
+            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camPos[1]);
             return qrotation.rotate( sp ) + getTranslation();
         }
         else if(isPerspective()==2) // half perspective, half orthographic
         {
             Coord sp=ip.linearProduct(getScale());
-            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camx);
+            sp[0]+=(Real)2.0*ip[2]*getScale()[0]*(ip[0]-camPos[0]);
             return qrotation.rotate( sp ) + getTranslation();
         }
         else // half perspective, half orthographic
         {
             Coord sp=ip.linearProduct(getScale());
-            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camy);
+            sp[1]+=(Real)2.0*ip[2]*getScale()[1]*(ip[1]-camPos[1]);
             return qrotation.rotate( sp ) + getTranslation();
         }
     }
     virtual Real fromImage(const Real& ip) const	{ return ip*getScaleT() + getOffsetT(); }
+
     virtual Coord toImage(const Coord& p) const
     {
         if(isPerspective()==0) return qrotation.inverseRotate( p-getTranslation() ).linearDivision(getScale());
         else if(isPerspective()==1)
         {
             Coord sp=qrotation.inverseRotate( p-getTranslation() );
-            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camx/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
-            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camy/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camPos[0]/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camPos[1]/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
             sp[2]=(Real)0.0;
             return sp;
         }
         else if(isPerspective()==2)
         {
             Coord sp=qrotation.inverseRotate( p-getTranslation() );
-            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camx/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[0]=(sp[0]/getScale()[0] + (Real)2.0*sp[2]*camPos[0]/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
             sp[1]=sp[1]/getScale()[1];
             sp[2]=(Real)0.0;
             return sp;
@@ -589,7 +589,7 @@ public:
         {
             Coord sp=qrotation.inverseRotate( p-getTranslation() );
             sp[0]=sp[0]/getScale()[0];
-            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camy/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
+            sp[1]=(sp[1]/getScale()[1] + (Real)2.0*sp[2]*camPos[1]/getScale()[2])/((Real)1.0 + (Real)2.0*sp[2]/getScale()[2]);
             sp[2]=(Real)0.0;
             return sp;
         }

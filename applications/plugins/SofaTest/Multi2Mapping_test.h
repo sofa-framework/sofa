@@ -293,6 +293,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         // apply geometric stiffness
         for( Index p=0; p<Np1.size(); p++ )
         {
+            this->in1Dofs[p]->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
             WriteIn1VecDeriv dxin1 = this->in1Dofs[p]->writeDx(); // It seems it does not work, i dont why
             copyToData( dxin1, vIn1p[p] ); // It seems it does not work, i dont why
             this->in1Dofs[p]->dx.setValue(vIn1p[p]); // Then i replace it by this lines
@@ -302,6 +303,7 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
         for( Index p=0; p<Np2.size(); p++ )
         {
+            this->in2Dofs[p]->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
             WriteIn2VecDeriv dxin2 = this->in2Dofs[p]->writeDx(); // It seems it does not work, i dont why
             copyToData( dxin2, vIn2p[p] ); // It seems it does not work, i dont why
             this->in2Dofs[p]->dx.setValue(vIn2p[p]); // Then i replace it by this lines

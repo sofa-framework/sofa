@@ -22,7 +22,7 @@
 #define FLEXIBLE_ImageShapeFunctionContainer_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/ImageShapeFunctionContainer.h"
+#include "ImageShapeFunctionContainer.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

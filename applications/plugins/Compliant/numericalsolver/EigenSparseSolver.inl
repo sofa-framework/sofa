@@ -31,11 +31,13 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
     bool m_trackSparsityPattern;
     cmat::Index m_previousSize;
     cmat::Index m_previousNonZeros;
+    real m_regularization;
 
     pimpl_type()
         : m_trackSparsityPattern(false)
         , m_previousSize(0)
         , m_previousNonZeros(0)
+        , m_regularization(0)
     {}
 
 
@@ -51,7 +53,24 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
         compute( tmp );
 
         if( solver.info() != Eigen::Success ) {
-            std::cerr << "EigenSparseSolver non invertible matrix" << std::endl;
+
+            // try to regularize
+            if( m_regularization )
+            {
+                cmat identity(tmp.rows(),tmp.cols());
+                identity.setIdentity();
+                tmp += identity * m_regularization;
+                compute( tmp );
+
+                msg_warning("EigenSparseSolver") << "non invertible matrix, regularizing";
+
+                if( solver.info() != Eigen::Success )
+                {
+                    msg_warning("EigenSparseSolver") << "non invertible matrix, even after automatic regularization";
+                }
+            }
+            else
+                msg_warning("EigenSparseSolver") << "non invertible matrix";
         }
     }
 
@@ -131,6 +150,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::reinit() {
     }
 
     pimpl->m_trackSparsityPattern = d_trackSparsityPattern.getValue();
+    pimpl->m_regularization = d_regularization.getValue();
 }
 
 template<class LinearSolver,bool symmetric>

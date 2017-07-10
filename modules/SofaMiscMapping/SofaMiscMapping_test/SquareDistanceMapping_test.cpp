@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include <SofaTest/Mapping_test.h>
+#include <SofaTest/MultiMapping_test.h>
 #include <SofaMiscMapping/SquareDistanceMapping.h>
 
 
@@ -52,9 +53,12 @@ struct SquareDistanceMappingTest : public Mapping_test<SquareDistanceMapping>
 //        map->f_computeDistance.setValue(true);
         map->d_geometricStiffness.setValue(1);
 
-        component::topology::EdgeSetTopologyContainer::SPtr edges = modeling::addNew<component::topology::EdgeSetTopologyContainer>(this->root);
-        edges->addEdge( 0, 1 );
-        edges->addEdge( 2, 1 );
+        {
+        typename SquareDistanceMapping::VecPair pairs(2);
+        pairs[0].set(0,1);
+        pairs[1].set(2,1);
+        map->d_pairs.setValue(pairs);
+        }
 
         // parent positions
         InVecCoord incoord(3);
@@ -124,6 +128,101 @@ TYPED_TEST( SquareDistanceMappingTest , test )
 //{
 //    ASSERT_TRUE(this->test_restLength());
 //}
+
+
+
+
+
+//////////////
+
+
+
+/**  Test suite for SquareDistanceMultiMapping.
+ *
+ * @author Matthieu Nesme
+ * @date 2017
+ */
+template <typename SquareDistanceMultiMapping>
+struct SquareDistanceMultiMappingTest : public MultiMapping_test<SquareDistanceMultiMapping>
+{
+    typedef typename SquareDistanceMultiMapping::In InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::Coord InCoord;
+
+    typedef typename SquareDistanceMultiMapping::Out OutDataTypes;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::Coord OutCoord;
+
+
+    bool test(unsigned nbParents)
+    {
+        this->errorMax *= 10;
+
+        this->setupScene(nbParents); // nbParents parents, 1 child
+
+        SquareDistanceMultiMapping* map = static_cast<SquareDistanceMultiMapping*>( this->mapping );
+//        map->f_computeDistance.setValue(true);
+        map->d_geometricStiffness.setValue(1);
+
+
+        // parent positions
+        helper::vector< InVecCoord > incoords(nbParents);
+
+        // expected child positions
+        OutVecCoord expectedoutcoord(nbParents*(nbParents-1)*.5); // link them all together
+
+
+        typename SquareDistanceMultiMapping::VecPair pairs;
+        unsigned nb=0;
+        for( unsigned i=0; i<nbParents; i++ )
+        {
+            incoords[i].resize(1);
+            InDataTypes::set( incoords[i][0], i,i,i );
+
+            for( unsigned j=0;j<i;++j)
+            {
+                typename SquareDistanceMultiMapping::Pair p;
+                p[0][0] = j; p[0][1] = 0;
+                p[1][0] = i; p[1][1] = 0;
+                pairs.push_back(p);
+
+                expectedoutcoord[nb++][0] = 3.0*(i-j)*(i-j);
+            }
+        }
+
+        map->d_pairs.setValue(pairs);
+
+        return this->runTest( incoords, expectedoutcoord );
+    }
+
+};
+
+
+// Define the list of types to instanciate.
+using testing::Types;
+typedef Types<
+component::mapping::SquareDistanceMultiMapping<defaulttype::Vec3Types,defaulttype::Vec1Types>,
+component::mapping::SquareDistanceMultiMapping<defaulttype::Rigid3Types,defaulttype::Vec1Types>
+> MultiDataTypes; // the types to instanciate.
+
+// Test suite for all the instanciations
+TYPED_TEST_CASE( SquareDistanceMultiMappingTest, MultiDataTypes );
+
+// test case
+TYPED_TEST( SquareDistanceMultiMappingTest , twoParents )
+{
+    ASSERT_TRUE(this->test(2));
+}
+
+TYPED_TEST( SquareDistanceMultiMappingTest , threeParents )
+{
+    ASSERT_TRUE(this->test(3));
+}
+
+TYPED_TEST( SquareDistanceMultiMappingTest , fourParents )
+{
+    ASSERT_TRUE(this->test(4));
+}
 
 
 } // namespace

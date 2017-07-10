@@ -118,6 +118,8 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 {
 
+    static const bool use_constraints = false;
+    
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->isActive()) return Visitor::RESULT_PRUNE;
     if (node->isSleeping()) return Visitor::RESULT_PRUNE;
@@ -132,10 +134,13 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 //          std::cerr << "AnimateVisitor::processNodeTopDown, ERROR: no BaseAnimationLoop found while searching down from node: " << node->getName() << std::endl;
 
 //        }
-        sofa::core::MechanicalParams mparams(*this->params);
-        mparams.setDt(dt);
-        MechanicalResetConstraintVisitor resetConstraint(&mparams);
-        node->execute(&resetConstraint);
+
+        if(use_constraints) {
+            sofa::core::MechanicalParams mparams(*this->params);
+            mparams.setDt(dt);
+            MechanicalResetConstraintVisitor resetConstraint(&mparams);
+            node->execute(&resetConstraint);
+        }
     }
 
     if (dt == 0) setDt(node->getDt());
@@ -175,7 +180,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         sofa::core::MechanicalParams m_mparams(*this->params);
         m_mparams.setDt(dt);
 
-        {
+        if(use_constraints){
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
             //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
@@ -190,14 +195,17 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
             end(node, node->solver[i], t0);
         }
 
-        MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
-            sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
-        ).execute( node );
-        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
-#ifdef SOFA_SUPPORT_MAPPED_MASS
-                VecDerivId::dx(),
-#endif
-                true).execute( node );
+        {
+            helper::ScopedAdvancedTimer step("MechanicalPropagatePositionAndVelocity");
+	        MechanicalProjectPositionAndVelocityVisitor(&m_mparams, nextTime,
+	            sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity()
+	        ).execute( node );
+	        MechanicalPropagateOnlyPositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+	#ifdef SOFA_SUPPORT_MAPPED_MASS
+	                VecDerivId::dx(),
+	#endif
+	                true).execute( node );
+	    }
 
         MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);

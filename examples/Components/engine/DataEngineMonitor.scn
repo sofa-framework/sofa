@@ -1,0 +1,9 @@
+<Node name="root">
+    <Node name="engines">
+        <MeshObjLoader name="loader" filename="mesh/Armadillo_verysimplified.obj" />
+        <VisualModel name="visual" src="@loader" />
+        <TransformEngine template="Vec3" name="transform" translation="0 0 0" rotation="0 0 0" input_position="@loader.position" />
+        <BoxROI template="Vec3" name="boxROI" box="0 0 0 10 10 10" position="@transform.output_position" edges="@loader.edges" triangles="@loader.triangles" drawBoxes="1" drawTriangles="1" drawSize="1"/>
+        <DataEngineMonitor name="engineMonitor" engines="@transform @boxROI" printLog="True"/>
+    </Node>
+</Node>

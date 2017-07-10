@@ -49,9 +49,36 @@ namespace engine
  */
 
 
+
+/// Default implementation does not compile
+template <class ImageType>
+struct MarchingCubesSpecialization
+{
+};
+
+/// forward declaration
+template <class ImageType> class MarchingCubesEngine;
+
+
+/// Specialization for regular Image
+template <class T>
+struct MarchingCubesSpecialization<defaulttype::Image<T>>
+{
+    typedef MarchingCubesEngine<defaulttype::Image<T>> MarchingCubesT;
+
+    static cimg_library::CImg<float> getIsosurface( MarchingCubesT* This, cimg_library::CImgList<unsigned int>& faces, const float val, const int sizex=-100, const int sizey=-100, const int sizez=-100)
+    {
+        typename MarchingCubesT::raImage in(This->image);
+        const cimg_library::CImg<T>& img = in->getCImg(This->time); // get image at time t
+        return img.get_shared_channel(0).get_isosurface3d (faces, val,sizex,sizey,sizez);
+    }
+};
+
 template <class _ImageTypes>
 class MarchingCubesEngine : public core::DataEngine
 {
+    friend struct MarchingCubesSpecialization<_ImageTypes>;
+
 public:
     typedef core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE(MarchingCubesEngine,_ImageTypes),Inherited);
@@ -121,11 +148,7 @@ protected:
 
     virtual void update()
     {
-        raImage in(this->image);
 		raTransform inT(this->transform);
-
-        // get image at time t
-        const cimg_library::CImg<T>& img = in->getCImg(this->time);
 
         // get subdivision
         defaulttype::Vec<3,int> r((int)this->subdiv.getValue()[0],(int)this->subdiv.getValue()[1],(int)this->subdiv.getValue()[2]);
@@ -136,7 +159,7 @@ protected:
 
         // marching cubes using cimg
         cimg_library::CImgList<unsigned int> faces;
-        cimg_library::CImg<float> points = img.get_shared_channel(0).get_isosurface3d (faces, val,r[0],r[1],r[2]);
+        cimg_library::CImg<float> points = MarchingCubesSpecialization<ImageTypes>::getIsosurface(this,faces,val,r[0],r[1],r[2]);
 
         // update points and faces
         waPositions pos(this->position);

@@ -7,6 +7,8 @@ def createScene(node):
     objloader = node.createObject("MeshObjLoader",filename="mesh/snake_body.obj")
     print type(objloader.filename), objloader.filename, objloader.filename.fullPath
 
+    objloader.filename = "modified"
+    print type(objloader.filename), objloader.filename, objloader.filename.fullPath
 
     # DataFileNameVector
     oglshader = node.createObject("OglShader")

@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_VolumeMapping_H
 #define SOFA_COMPONENT_MAPPING_VolumeMapping_H
 
+#include <Flexible/config.h>
 #include <sofa/core/Mapping.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -38,13 +39,6 @@ namespace component
 
 namespace mapping
 {
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template<class InDataTypes, class OutDataTypes>
-class VolumeMappingInternalData
-{
-public:
-};
 
 
 /** Maps point positions to volume
@@ -85,6 +79,12 @@ public:
     typedef typename sofa::core::topology::BaseMeshTopology::index_type Index;
     typedef sofa::helper::vector< Index > VecIndex;
 
+    Data<helper::vector<Real> > offset;
+    Data<unsigned int> f_nbMeshes;
+    helper::vectorData< SeqTriangles > vf_triangles;
+    helper::vectorData< SeqQuads > vf_quads;
+    Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
+
     virtual void init()
     {
         baseMatrices.resize( 1 );
@@ -101,11 +101,10 @@ public:
         this->Inherit::reinit();
     }
 
-    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord A, const InCoord B, const InCoord C)
+    Real processTriangle(const unsigned meshIndex, const unsigned a, const unsigned b, const unsigned c, const InCoord& A, const InCoord& B, const InCoord& C)
     {
         InDeriv ab = B - A;
         InDeriv ac = C - A;
-        InDeriv bc = C - B;
         InDeriv sn = (ab.cross(ac))/6.;
 
         for(unsigned k=0; k<Nin; k++ )
@@ -116,21 +115,10 @@ public:
         }
         if( f_geometricStiffness.getValue() )
         {
-            defaulttype::Mat<3,3,Real> DsnDA;
-            DsnDA[0][0]=0;           DsnDA[0][1]=-bc[2]/6.;   DsnDA[0][2]=bc[1]/6.;
-            DsnDA[1][0]=bc[2]/6.;    DsnDA[1][1]=0;           DsnDA[1][2]=-bc[0]/6.;
-            DsnDA[2][0]=-bc[1]/6.;   DsnDA[2][1]=bc[0]/6.;    DsnDA[2][2]=0;
-
-            defaulttype::Mat<3,3,Real> DsnDB;
-            DsnDB[0][0]=0;           DsnDB[0][1]=ac[2]/6.;    DsnDB[0][2]=-ac[1]/6.;
-            DsnDB[1][0]=-ac[2]/6.;   DsnDB[1][1]=0;           DsnDB[1][2]=ac[0]/6.;
-            DsnDB[2][0]=ac[1]/6.;    DsnDB[2][1]=-ac[0]/6.;   DsnDB[2][2]=0;
-
-
-            defaulttype::Mat<3,3,Real> DsnDC;
-            DsnDC[0][0]=0;           DsnDC[0][1]=-ab[2]/6.;   DsnDC[0][2]=ab[1]/6.;
-            DsnDC[1][0]=ab[2]/6.;    DsnDC[1][1]=0;           DsnDC[1][2]=-ab[0]/6.;
-            DsnDC[2][0]=-ab[1]/6.;   DsnDC[2][1]=ab[0]/6.;    DsnDC[2][2]=0;
+            InDeriv bc = C - B;
+            defaulttype::Mat<3,3,Real> DsnDA= defaulttype::crossProductMatrix<Real>(bc)*(+1./6.);
+            defaulttype::Mat<3,3,Real> DsnDB= defaulttype::crossProductMatrix<Real>(ac)*(-1./6.);
+            defaulttype::Mat<3,3,Real> DsnDC= defaulttype::crossProductMatrix<Real>(ab)*(+1./6.);
 
             for(unsigned j=0; j<Nin; j++ )
                 for(unsigned k=0; k<Nin; k++ )
@@ -155,14 +143,20 @@ public:
     {
         helper::WriteOnlyAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
+        helper::ReadAccessor< Data<helper::vector<Real> > > off = offset;
+        bool useGeomStiffness = f_geometricStiffness.getValue();
 
-        for(size_t m=0;m<f_nbMeshes.getValue();++m) v[m][0] = m<offset.getValue().size()?offset.getValue()[m]:offset.getValue()[0];
-        hessian.resize(v.size());
-        for(size_t m=0;m<f_nbMeshes.getValue();++m) hessian[m].resizeBlocks(x.size(),x.size());
-        K.resizeBlocks(x.size(),x.size());
+        for(size_t m=0;m<f_nbMeshes.getValue();++m) v[m][0] = off[std::min(m,offset.getValue().size())];
         jacobian.resizeBlocks(v.size(),x.size());
 
-        for (size_t m = 0; m < f_nbMeshes.getValue(); ++m)
+        if( useGeomStiffness )
+        {
+            hessian.resize(v.size());
+            for(size_t m=0;m<f_nbMeshes.getValue();++m) hessian[m].resizeBlocks(x.size(),x.size());
+            K.resizeBlocks(x.size(),x.size());
+        }
+
+        for (size_t m = 0, nbMeshes = f_nbMeshes.getValue() ; m < nbMeshes ; ++m)
         {
             raTriangles triangles(*this->vf_triangles[m]);
             raQuads quads(*this->vf_quads[m]);
@@ -179,7 +173,7 @@ public:
                 v[m][0] += processTriangle(m,q[0],q[1],q[2],x[q[0]],x[q[1]],x[q[2]]);
                 v[m][0] += processTriangle(m,q[0],q[2],q[3],x[q[0]],x[q[2]],x[q[3]]);
             }
-            hessian[m].compress();
+            if(useGeomStiffness)            hessian[m].compress();
         }
 
         jacobian.compress();
@@ -248,13 +242,6 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<helper::vector<Real> > offset;
-
-    Data<unsigned int> f_nbMeshes;
-    helper::vectorData< SeqTriangles > vf_triangles;
-    helper::vectorData< SeqQuads > vf_quads;
-    Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
-
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     helper::vector<SparseKMatrixEigen> hessian;
@@ -262,15 +249,6 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_VolumeMapping_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API VolumeMapping< Vec3dTypes, Vec1dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API VolumeMapping< Vec3fTypes, Vec1fTypes >;
-#endif
-
-#endif
 
 } // namespace mapping
 

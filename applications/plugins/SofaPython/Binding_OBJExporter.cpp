@@ -23,13 +23,21 @@
 
 #include "Binding_OBJExporter.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
+
+/// getting a OBJExporter* from a PyObject*
+static inline OBJExporter* get_OBJExporter(PyObject* obj) {
+    return down_cast<OBJExporter>( get_baseobject(obj) );
+}
+
+
 extern "C" PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
 {
-    OBJExporter* obj = down_cast<OBJExporter>(((PySPtr<Base>*)self)->object->toBaseObject());
+    OBJExporter* obj = get_OBJExporter( self );
 	obj->writeOBJ();
     Py_RETURN_NONE;
 }

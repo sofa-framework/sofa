@@ -21,14 +21,14 @@
   <MeshMatrixMass massDensity="1.0" lumping="false"/>
   
   <!--BoxFixed-->
-  <BoxROI name="boxRoiFix" box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" drawSize="1"/>
+  <BoxROI name="boxRoiFix" box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" drawSize="1" position="@DOFs.position" />
   <FixedConstraint name="FixedConstraint" indices="@boxRoiFix.indices"/>
   
   <!--FixedPlaneConstraint-->
   <FixedPlaneConstraint direction="0 0 1" dmin="-0.01" dmax="0.01" />
 
   <!-- Box pressure -->
-  <BoxROI name="boxPressure" box="-0.2 -0.2 0.99 0.2 0.2 1.01" computeTriangles="true" drawBoxes="1" drawSize="1"/>
+  <BoxROI name="boxPressure" box="-0.2 -0.2 0.99 0.2 0.2 1.01" computeTriangles="true" drawBoxes="1" drawSize="1" position="@DOFs.position" />
   
   <!--TrianglePressureForceField-->
   <TrianglePressureForceField template="Vec3d" triangleList="@boxPressure.triangleIndices"/>

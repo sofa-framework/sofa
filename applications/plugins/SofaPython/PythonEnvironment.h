@@ -78,6 +78,8 @@ public:
     private:
         SceneLoaderListerner(){}
     };
+
+    struct system_exit : std::exception { };
 };
 
 

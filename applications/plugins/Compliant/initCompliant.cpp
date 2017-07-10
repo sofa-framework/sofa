@@ -60,7 +60,7 @@ void initExternalModule()
         component::collision::CompliantSolverMerger::add();
 
         // previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
-        static_assert( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5, "" );
+        static_assert( EIGEN_WORLD_VERSION*10000+EIGEN_MAJOR_VERSION*100+EIGEN_MINOR_VERSION  >= 30205, "Eigen is too old (min 3.2.5)" );
 
 #ifdef SOFA_HAVE_SOFAPYTHON
         // adding _Compliant python module

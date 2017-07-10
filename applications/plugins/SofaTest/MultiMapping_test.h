@@ -44,7 +44,6 @@ typedef std::size_t Index;
 
 /** @brief Base class for the MultiMapping tests, directly adapted from Mapping_test.
  * @sa Mapping_test
-
   @author François Faure @date 2014
   */
 
@@ -90,9 +89,22 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
+    Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 
 
-    MultiMapping_test():deltaRange(1,1000),errorMax(10)
+    static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
+    static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
+    static const unsigned char TEST_applyDJT = 4; ///< testing applyDJT
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    static const unsigned char TEST_GEOMETRIC_STIFFNESS = TEST_applyDJT | TEST_getK; ///< testing functions used in assembly API getJS getKS
+    unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
+
+
+    MultiMapping_test()
+        : deltaRange(1,1000)
+        , errorMax(10)
+        , errorFactorDJ(1)
+        , flags(TEST_ASSEMBLY_API | TEST_GEOMETRIC_STIFFNESS)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -153,6 +165,10 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
+        if( !(flags & TEST_getJs) )          msg_warning("MappingTest") << "getJs is not tested";
+        if( !(flags & TEST_getK) )           msg_warning("MappingTest") << "getK is not tested";
+        if( !(flags & TEST_applyDJT) )       msg_warning("MappingTest") << "applyDJT is not tested";
+
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -161,7 +177,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         // transfer the parent values in the parent states
         for( size_t i=0; i<parentCoords.size(); i++ )
         {
-            this->inDofs[i]->resize(parentCoords[i].size());
+            inDofs[i]->resize(parentCoords[i].size());
             WriteInVecCoord xin = inDofs[i]->writePositions();
             copyToData(xin,parentCoords[i]); // xin = parentNew[i]
         }
@@ -250,6 +266,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         // apply geometric stiffness
         for( Index p=0; p<Np.size(); p++ ) {
+            inDofs[p]->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
             WriteInVecDeriv dxin = inDofs[p]->writeDx();
             copyToData( dxin, vp[p] );
             dfp[p] = InVecDeriv(Np[p], InDeriv() );
@@ -257,6 +274,21 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( fin, dfp[p] );
         }
         mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
+
+        // getting a copy ok K as soon it is computed
+        typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+        EigenSparseKMatrix K;
+        if( const defaulttype::BaseMatrix* bk = mapping->getK() )
+        {
+            if( const EigenSparseKMatrix* ek = dynamic_cast<const EigenSparseKMatrix*>(bk) )
+                K = *ek;
+            else
+            {
+                succeed = false;
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+            }
+        }
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness
@@ -264,37 +296,40 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         }
 
         // Jacobian will be obsolete after applying new positions
-        const helper::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
-        OutVecDeriv Jv(Nc);
-        for( Index p=0; p<Np.size(); p++ ){
-            //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
-            EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
-            assert(JJ!=NULL);
-            JJ->addMult(Jv,vp[p]);
-        }
+        if( flags & TEST_getJs )
+        {
+            const helper::vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
+            OutVecDeriv Jv(Nc);
+            for( Index p=0; p<Np.size(); p++ ){
+                //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
+                EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
+                assert(JJ!=NULL);
+                JJ->addMult(Jv,vp[p]);
+            }
 
-        // ================ test applyJT()
-        helper::vector<InVecDeriv> jfc(Np.size());
-        for( Index p=0; p<Np.size(); p++ ) {
-            jfc[p] = InVecDeriv( Np[p],InDeriv());
-            EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
-            JJ->addMultTranspose(jfc[p],fc);
-            if( this->vectorMaxDiff(jfc[p],fp[p])>this->epsilon()*errorMax ){
-                succeed = false;
-                ADD_FAILURE() << "applyJT test failed"<<std::endl<<"jfc["<< p <<"] = " << jfc[p] << std::endl<<" fp["<< p <<"] = " << fp[p] << std::endl;
-            }
-        }
-        // ================ test getJs()
-        // check that J.vp = vc
-        if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
-            succeed = false;
+            // ================ test applyJT()
+            helper::vector<InVecDeriv> jfc(Np.size());
             for( Index p=0; p<Np.size(); p++ ) {
-                std::cout<<"J["<< p <<"] = "<< std::endl << *(*J)[p] << std::endl;
-                std::cout<<"vp["<< p <<"] = " << vp[p] << std::endl;
+                jfc[p] = InVecDeriv( Np[p],InDeriv());
+                EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
+                JJ->addMultTranspose(jfc[p],fc);
+                if( this->vectorMaxDiff(jfc[p],fp[p])>this->epsilon()*errorMax ){
+                    succeed = false;
+                    ADD_FAILURE() << "applyJT test failed"<<std::endl<<"jfc["<< p <<"] = " << jfc[p] << std::endl<<" fp["<< p <<"] = " << fp[p] << std::endl;
+                }
             }
-            std::cout<<"Jvp = " << Jv << std::endl;
-            std::cout<<"vc  = " << vc << std::endl;
-            ADD_FAILURE() << "getJs() test failed"<<std::endl<<"Jvp = " << Jv << std::endl <<"vc  = " << vc << std::endl;
+            // ================ test getJs()
+            // check that J.vp = vc
+            if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
+                succeed = false;
+    //            for( Index p=0; p<Np.size(); p++ ) {
+    //                std::cout<<"J["<< p <<"] = "<< std::endl << *(*J)[p] << std::endl;
+    //                std::cout<<"vp["<< p <<"] = " << vp[p] << std::endl;
+    //            }
+    //            std::cout<<"Jvp = " << Jv << std::endl;
+    //            std::cout<<"vc  = " << vc << std::endl;
+                ADD_FAILURE() << "getJs() test failed"<<std::endl<<"Jvp = " << Jv << std::endl <<"vc  = " << vc << std::endl;
+            }
         }
 
 
@@ -340,6 +375,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
 
 
+
         // update parent force based on the same child forces
         for( Index p=0; p<Np.size(); p++ ){
             fp2[p].fill( InDeriv() );
@@ -357,52 +393,47 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
                 fp12[p][i] = fp2[p][i]-fp[p][i];       // fp2 - fp
             }
 //            cout<<"fp2["<< p <<"] - fp["<< p <<"] = " << fp12[p] << endl;
+
+
             // ================ test applyDJT()
-            if( this->vectorMaxDiff(dfp[p],fp12[p])>this->epsilon()*errorMax ){
-                succeed = false;
-                ADD_FAILURE() << "applyDJT test failed" << std::endl <<
-                                 "dfp["<<p<<"]    = " << dfp[p] << std::endl <<
-                                 "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << std::endl;
+            if( flags & TEST_applyDJT )
+            {
+                if( this->vectorMaxDiff(dfp[p],fp12[p])>this->epsilon()*errorMax*errorFactorDJ ){
+                    succeed = false;
+                    ADD_FAILURE() << "applyDJT test failed, difference should be less than " << this->epsilon()*errorMax*errorFactorDJ << std::endl <<
+                                     "dfp["<<p<<"]    = " << dfp[p] << std::endl <<
+                                     "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << std::endl;
+                }
             }
         }
 
 
         // ================ test getK()
-        InVecDeriv totalvp;
-        for( Index p=0; p<Np.size(); p++ ) {
-            for( Index pi=0; pi<vp[p].size(); pi++ ) {
-                totalvp.push_back(vp[p][pi]);
+        if( flags & TEST_getK )
+        {
+            InVecDeriv totalvp;
+            for( Index p=0; p<Np.size(); p++ ) {
+                for( Index pi=0; pi<vp[p].size(); pi++ ) {
+                    totalvp.push_back(vp[p][pi]);
+                }
             }
-        }
-        InVecDeriv Kv(totalvp.size());
+            InVecDeriv Kv(totalvp.size());
+            // K can be null or empty for linear mappings
+            // still performing the test with a null Kv vector to check if the mapping is really linear
+            if( K.compressedMatrix.nonZeros() ) K.mult(Kv,totalvp);
 
-        const defaulttype::BaseMatrix* bk = mapping->getK();
-        // K can be null or empty for linear mappings
-        // still performing the test with a null Kv vector to check if the mapping is really linear
-        if( bk != NULL ){
+            // check that K.vp = dfp
+            for( Index p=0, offset=0; p<Np.size(); p++ ) {
 
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-            if( K == NULL ){
-                succeed = false;
-                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
-                // TODO perform a slow conversion with a big warning rather than a failure?
-            }
+                InVecDeriv Kvp( Kv.begin()+offset, Kv.begin()+offset+fp12[p].size() );
+                offset+=fp12[p].size();
 
-            if( K->compressedMatrix.nonZeros() ) K->mult(Kv,totalvp);
-        }
-
-        // check that K.vp = dfp
-        for( Index p=0, offset=0; p<Np.size(); p++ ) {
-
-            InVecDeriv Kvp( Kv.begin()+offset, Kv.begin()+offset+fp12[p].size() );
-            offset+=fp12[p].size();
-
-            if( this->vectorMaxDiff(Kvp,fp12[p])>this->epsilon()*errorMax ){
-                succeed = false;
-                ADD_FAILURE() << "K test failed on parent "<< p << ", difference should be less than " << this->epsilon()*errorMax  << std::endl
-                              << "Kv    = " << Kvp << std::endl
-                              << "dfp = " << fp12[p] << std::endl;
+                if( this->vectorMaxDiff(Kvp,fp12[p])>this->epsilon()*errorMax*errorFactorDJ ){
+                    succeed = false;
+                    ADD_FAILURE() << "K test failed on parent "<< p << ", difference should be less than " << this->epsilon()*errorMax*errorFactorDJ  << std::endl
+                                  << "Kv    = " << Kvp << std::endl
+                                  << "dfp = " << fp12[p] << std::endl;
+                }
             }
         }
 

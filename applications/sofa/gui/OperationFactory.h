@@ -64,6 +64,14 @@ public:
         return &instance;
     };
 
+    ~OperationFactory()
+    {
+        for( auto&it : registry )
+        {
+            delete it.second;
+        }
+    }
+
     static std::string GetDescription(const std::string &name)
     {
         const RegisterStorage &reg = getInstance()->registry;
@@ -96,18 +104,19 @@ class SOFA_SOFAGUI_API RegisterOperation
 {
 public:
     std::string name;
-    OperationCreator *creator;
 
     RegisterOperation(const std::string &n)
-    {
-        name = n;
-    }
+        : name(n)
+    {}
 
     template <class TOperation>
     int add()
     {
-        creator = new TOperationCreator< TOperation >();
+        OperationCreator *creator = new TOperationCreator< TOperation >();
         OperationFactory::getInstance()->registry.insert(std::make_pair(name, creator));
+
+        // registry now has the ownership of creator
+
         return 0; // we return an int so that this method can be called from static variable initializers
     }
 };

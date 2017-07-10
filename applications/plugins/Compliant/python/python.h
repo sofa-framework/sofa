@@ -3,9 +3,18 @@
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
-template<class T>
-struct opaque {
 
+namespace python {
+
+template<class T>
+struct opaque;
+
+
+template<class T>
+struct opaque<T*> {
+
+    explicit operator bool() const { return data; }
+    
     opaque() : data(0) { }
     
     T* data;
@@ -21,15 +30,38 @@ struct opaque {
 
 };
 
+template<class Real>
+struct vec {
+    Real* data;
+
+    std::size_t outer;
+    std::size_t inner;
+    
+    template<class T>
+    static vec map(const std::vector<T>& value) {
+        return {const_cast<Real*>(&value[0][0]),
+                value.size(),
+                T::total_size};
+    }
+
+    static vec map(const std::vector<Real>& value) {
+        return {const_cast<Real*>(value.data()),
+                value.size(),
+                1};
+    }
+    
+};
+}
+
 
 namespace sofa {
 namespace defaulttype {
 
 template<class T>
-struct DataTypeInfo< opaque<T> > {
+struct DataTypeInfo< python::opaque<T*> > {
     // can't believe there is no default-impl i can override
 
-    typedef opaque<T> DataType;
+    typedef python::opaque<T*> DataType;
     typedef DataType BaseType;
     typedef DataType ValueType;
     
@@ -50,7 +82,7 @@ struct DataTypeInfo< opaque<T> > {
     static std::size_t size() { return 1; }
     static std::size_t size(const DataType& /*data*/) { return 1; }
     
-    static std::size_t byteSize() { return sizeof(opaque<T>); }    
+    static std::size_t byteSize() { return sizeof(python::opaque<T*>); }    
     static bool setSize(DataType& /*data*/, std::size_t /*size*/) { return false; }
 
     template <typename U>

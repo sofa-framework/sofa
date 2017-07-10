@@ -1,7 +1,15 @@
 #include "Binding_TopologyChange.h"
 #include <sofa/core/topology/TopologyChange.h>
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::topology;
+
+
+
+/// getting a PointAncestorElem* from a PyObject*
+static inline PointAncestorElem* get_PointAncestorElem(PyObject* obj) {
+    return get<PointAncestorElem>( obj );
+}
 
 
 // =============================================================================
@@ -16,14 +24,14 @@ PyObject * PointAncestorElem_PyNew(PyTypeObject * /*type*/, PyObject * /*args*/,
 void PointAncestorElem_PyFree(void * self)
 {
     if (!((PyPtr<PointAncestorElem>*)self)->deletable) return;
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( (PyObject*)self );
     delete obj; // done!
 }
 
 
 SP_CLASS_ATTR_GET(PointAncestorElem,type)(PyObject *self, void*)
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -35,7 +43,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem,type)(PyObject *self, void*)
 
 SP_CLASS_ATTR_SET(PointAncestorElem, type)(PyObject *self, PyObject * args, void*)
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -48,7 +56,7 @@ SP_CLASS_ATTR_SET(PointAncestorElem, type)(PyObject *self, PyObject * args, void
 
 SP_CLASS_ATTR_GET(PointAncestorElem,index)(PyObject *self, void*)
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -60,7 +68,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem,index)(PyObject *self, void*)
 
 SP_CLASS_ATTR_SET(PointAncestorElem, index)(PyObject *self, PyObject * args, void*)
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -72,7 +80,7 @@ SP_CLASS_ATTR_SET(PointAncestorElem, index)(PyObject *self, PyObject * args, voi
 
 SP_CLASS_ATTR_GET(PointAncestorElem, localCoords)( PyObject *self, void* )
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();
@@ -91,7 +99,7 @@ SP_CLASS_ATTR_GET(PointAncestorElem, localCoords)( PyObject *self, void* )
 
 SP_CLASS_ATTR_SET(PointAncestorElem, localCoords)( PyObject* self,  PyObject * args, void*)
 {
-    PointAncestorElem* obj=dynamic_cast<PointAncestorElem*>(((PyPtr<PointAncestorElem>*)self)->object);
+    PointAncestorElem* obj = get_PointAncestorElem( self );
     if (!obj)
     {
         PyErr_BadArgument();

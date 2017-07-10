@@ -23,7 +23,7 @@
 #define FLEXIBLE_BezierShapeFunction_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BarycentricShapeFunction.h"
+#include "BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaHighOrderTopology/HighOrderTetrahedronSetTopologyContainer.h>
 #include <SofaHighOrderTopology/BezierTetrahedronSetGeometryAlgorithms.h>
@@ -53,7 +53,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
@@ -88,7 +88,7 @@ public:
         return res;
     }
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
         Inherit::computeShapeFunction(childPosition,ref,w,dw,ddw,cell);
 
@@ -102,7 +102,7 @@ public:
         size_t nbRef = tbiArray.size();
         //        this->f_nbRef.setValue(nbRef);
         VRef ref_n(nbRef);
-        VReal w_n(nbRef);
+        VWeight w_n(nbRef);
         VGradient dw_n(nbRef);
         VHessian ddw_n(nbRef);
         for(size_t i=0; i<nbRef; ++i)

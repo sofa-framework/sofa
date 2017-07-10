@@ -21,10 +21,12 @@ set(PYTHON_FILES
     python/test_Quaternion.py
     python/test_Tools.py
     python/test_mass.py
+    python/test_memory.py
     python/test_units.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py
+    python/test_Node_CreateObject.py
 )
 
 

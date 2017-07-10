@@ -104,6 +104,7 @@ TYPED_TEST_CASE(UniformStiffness_test, TestTypes);
 // test case
 TYPED_TEST( UniformStiffness_test , extension )
 {
+    this->errorMax *= 3;
     this->debug = false;
 
     // run test

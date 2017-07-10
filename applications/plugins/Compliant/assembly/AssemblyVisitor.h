@@ -59,8 +59,12 @@ public:
 	void bottom_up(simulation::Visitor* vis) const;
 
 public:
-	simulation::Node* start_node;
+    // used during traversal
+	mutable simulation::Node* start_node;
 
+    // last traversal root 
+    simulation::Node* root;
+    
 	// collect data chunks during visitor execution
 	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 	virtual void processNodeBottomUp(simulation::Node* node);
@@ -97,24 +101,31 @@ public:
         /// Note it includes having a mechanical child
         /// or a child mapped with a mapping generating geometric stiffness
         bool mechanical;
-		
-		bool master() const { return mechanical && map.empty(); }
-        bool compliant() const { return mechanical && notempty(C); }
+
+        // these are in AssemblyVisitor now
+		// bool master() const { return mechanical && map.empty(); }
+        // bool compliant() const { return mechanical && notempty(C); }
 		
 		unsigned vertex;
 		
 		// TODO SPtr here ?
 		dofs_type* dofs;
+        
 
 		typedef std::map< dofs_type*, mapped> map_type;
 		map_type map;
 		
 		// check consistency
-		bool check() const;
+		// bool check() const;
 
 		void debug() const;
 	};
 
+
+    bool is_master(const chunk& c) const;
+    bool is_compliant(const chunk& c) const;
+    
+    
     // a special structure to handle InteractionForceFields
     struct InteractionForceField
     {
@@ -251,12 +262,17 @@ private:
 // -> or at least its implementation could be written in the .cpp
 struct AssemblyVisitor::process_helper {
 
+    const AssemblyVisitor* owner;
     process_type& res;
     const graph_type& g;
 
-    process_helper(process_type& res, const graph_type& g)
-        : res(res), g(g)  {
-
+    process_helper(const AssemblyVisitor* owner,
+                   process_type& res,
+                   const graph_type& g)
+        : owner(owner),
+          res(res),
+          g(g)  {
+        
     }
 
     void operator()(unsigned v) const {
@@ -268,7 +284,7 @@ struct AssemblyVisitor::process_helper {
         fullmapping_type& full = res.fullmapping;
         offset_type& offsets = res.offset.master;
 
-        if( c->master() || !c->mechanical ) return;
+        if( owner->is_master(*c) || !c->mechanical ) return;
 
         rmat& Jc = full[ curr ]; // (output) full mapping from independent dofs to mapped dofs c
         assert( empty(Jc) );
@@ -310,17 +326,23 @@ struct AssemblyVisitor::process_helper {
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
-                if( p->master() && empty(Jp) ) {
-                    Jp = shift_right<rmat>( find(offsets, pdofs), p->size, size_m);
+                if( owner->is_master(*p) && empty(Jp) ) {
+                    shift_right<rmat>( Jp, find(offsets, pdofs), p->size, size_m);
                 }
 
                 // Jp can be empty for multinodes, when a child is mapped only from a subset of its parents
                 if(!empty(Jp) ){
                     // scoped::timer step("mapping matrix product");
 
+#ifdef SOFA_USE_MASK
+                    // note: Jp is already masked
+                    const std::vector<bool>& child_mask = curr->forceMask.getEntries();
+                    add_prod_mask(Jc, *jc, Jp, child_mask, curr->getDerivDimension() ); 
+#else                    
                     // TODO optimize this, it is the most costly part
                     add_prod(Jc, *jc, Jp ); // full mapping
-
+#endif
+                    
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
@@ -337,6 +359,11 @@ struct AssemblyVisitor::process_helper {
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
+        if( zero(Jc) ) {
+            std::cerr << "zero mapping concatenation! " << "dofs: " << curr->getPathName() << std::endl;
+            std::cerr << "mask: " << curr->forceMask.getEntries() << std::endl;
+        }
+        
 //        if( zero(Jc) && curr->getSize() !=0 )  {
 //            // If the dof size is null, let's consider it is not a big deal.
 //            // Indeed, having null dof is useful when setting up a static graph that is filled in dynamically

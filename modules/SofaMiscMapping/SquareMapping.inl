@@ -82,7 +82,7 @@ void SquareMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ 
         jacobian.insertBack( i, i, 2.0*x );
     }
 
-    jacobian.compress();
+    jacobian.finalize();
 }
 
 

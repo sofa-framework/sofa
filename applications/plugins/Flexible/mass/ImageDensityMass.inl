@@ -128,7 +128,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
 
             // compute interpolation points/weights
             VRef controlPoints;  ///< The cp indices. controlPoints[j] is the index of the j-th parent influencing child.
-            VReal weights; ///< The cp weights. weights[j] is the weight of the j-th parent influencing child.
+            VWeight weights; ///< The cp weights. weights[j] is the weight of the j-th parent influencing child.
             m_shapeFunction->computeShapeFunction( voxelPos, controlPoints, weights);
 
             // get the voxel density

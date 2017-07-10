@@ -95,22 +95,13 @@ protected:
     virtual ~OrderIndependentTransparencyManager();
 
 public:
-    void init();
-    void bwdInit();
-    void reinit();
     void initVisual();
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
-
-    void draw(const core::visual::VisualParams* vparams);
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    bool drawScene(core::visual::VisualParams* visualParams);
 
 protected:
-    void drawOpaques(core::visual::VisualParams* vp);
-    void drawTransparents(core::visual::VisualParams* vp, helper::gl::GLSLShader* oitShader);
+    void drawOpaques(core::visual::VisualParams* visualParams);
+    void drawTransparents(core::visual::VisualParams* visualParams, helper::gl::GLSLShader* oitShader);
 
 private:
     FrameBufferObject            fbo;

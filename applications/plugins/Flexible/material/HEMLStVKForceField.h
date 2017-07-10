@@ -158,7 +158,7 @@ public:
                     Mtr[i][j] = Mtr[j][i] = trace( C[i]*C[j] ); // TODO no need for computing the entire matrice product
             }
 
-            Mat66 M = lambda/8.0*( defaulttype::tensorProduct( vtr, vtr ) ) + mu/4.0*Mtr;
+            Mat66 M = lambda/8.0*( defaulttype::dyad( vtr ) ) + mu/4.0*Mtr;
             M *= std::abs( dot(edge0,cross(edge1,edge2)) / 6.0 ); // vol   TODO get volume from a Gauss point sampler
 
             const core::topology::BaseMeshTopology::EdgesInTetrahedron& edges = topology->getEdgesInTetrahedron(t);

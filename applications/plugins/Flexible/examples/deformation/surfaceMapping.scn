@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -0.5 0 " dt="0.03"  >
+  
+      <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="Compliant"/>
+  
+    <VisualStyle displayFlags="hideBehaviorModels  hideWireframe" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+    
+<!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
+        <CompliantImplicitSolver  />
+        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
+        <CompliantAttachButtonSetting/>
+
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+		<Mesh name="mesh" src="@loader" />
+		<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />
+	     <UniformMass totalMass="250" />
+
+        <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+        <FixedConstraint indices="@FixedROI.indices" />
+
+        <BarycentricShapeFunction  />
+
+        <Node 	name="behavior"   >
+		    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
+		    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	    <LinearMapping template="Vec3d,F331"  />
+
+	    	<Node 	name="Strain"   >
+				<MechanicalObject  template="E331" name="E"  />
+	    		<CorotationalStrainMapping template="F331,E331"   method="svd"/>
+	        	<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0." viscosity="0"    />
+		    </Node>
+        </Node>
+
+
+
+	<Node name="collision"  >
+	     <MeshObjLoader name="loader" filename="mesh/torus.obj" />
+	     <Mesh src="@loader"/>
+ 	     <MechanicalObject  />
+         <Triangle />
+         <LinearMapping template="Vec3d,Vec3d"/>
+
+
+        <Node 	name="behavior_surf"   >
+		    <MechanicalObject  template="Vec1d" name="Surface"   />
+    	    <SurfaceMapping template="Vec3d,Vec1d" geometricStiffness="false" triangles="@../loader.triangles" offset="-25"/>   <!-- the offset is the opposite of the target surface -->
+		    <UniformCompliance template="Vec1d" compliance="0"/>
+        </Node>
+
+		<Node name="Visual"  >
+		     <VisualModel   />
+             <IdentityMapping template="Vec3d,ExtVec3f"/>
+		</Node>
+    </Node>
+
+    </Node>

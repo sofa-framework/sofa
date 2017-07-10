@@ -200,8 +200,15 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     Data<bool> neglecting_compliance_forces_in_geometric_stiffness; ///< isn't the name clear enough?
 
 
+    // if for some reason you need additional dynamic solves. an event is sent
+    // before each additional solves
+    Data<unsigned> extra_solves;
+
+    simulation::Node* node();
+    
   protected:
 
+    
     // keep a pointer on the visitor used to assemble
     simulation::AssemblyVisitor *assemblyVisitor;
 
@@ -309,6 +316,16 @@ public:
                              core::MultiVecCoordId posId, core::MultiVecDerivId velId,
                              bool fullAssembly, bool realloc=false );
 
+
+    class SOFA_Compliant_API SolveEndEvent : public sofa::core::objectmodel::Event {
+    public:
+        std::size_t index = 0;
+
+        SOFA_EVENT_H( SolveEndEvent );
+        virtual const char* getClassName() const { return "SolveEndEvent"; }
+    };
+
+
 protected:
 
     system_type sys; ///< assembled equation system
@@ -320,9 +337,13 @@ protected:
     /// temporary multivecs
     core::behavior::MultiVecDeriv _ck; ///< the right part of the implicit system (c_k term)
     core::behavior::MultiVecDeriv _acc; ///< acceleration when FORMULATION_ACC, or dv when FORMULATION_DV
+    core::behavior::MultiVecDeriv _vstab; ///< only used with stabilization (not to modify velocity)
 
 
 };
+
+
+
 
 }
 }

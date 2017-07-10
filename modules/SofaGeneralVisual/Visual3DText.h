@@ -64,6 +64,8 @@ public:
 
     virtual void drawTransparent(const core::visual::VisualParams* vparams);
 
+    virtual bool hasTexture() const { return true; }
+
 public:
     Data<std::string> d_text;
     Data<defaulttype::Vec3f> d_position;

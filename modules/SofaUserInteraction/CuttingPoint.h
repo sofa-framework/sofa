@@ -33,7 +33,6 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
-#include <sofa/core/behavior/BaseController.h>
 #include <fstream>
 
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>

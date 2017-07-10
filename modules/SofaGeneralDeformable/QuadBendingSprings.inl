@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
+#include <sofa/helper/cast.h>
 
 namespace sofa
 {
@@ -40,6 +41,7 @@ template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : sofa::component::interactionforcefield::StiffSpringForceField<DataTypes>()
     , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , l_topology( initLink( "topology", "Link to a BaseMeshTopology component"))
 {
 }
 
@@ -99,8 +101,14 @@ void QuadBendingSprings<DataTypes>::init()
     std::map< IndexPair, IndexPair > edgeMap;
     std::set< IndexPair > springSet;
 
-    sofa::core::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
-    assert( topology );
+    if( !l_topology.get() )
+    {
+        l_topology = down_cast<core::topology::BaseMeshTopology>(this->getContext()->getMeshTopology());
+        if( !l_topology ) { serr<<"No BaseMeshTopology found."<<sendl; return; }
+        else sout<<"using BaseMeshTopology "<<l_topology.get()->getPathName()<<sendl;
+    }
+
+    core::topology::BaseMeshTopology* topology = l_topology.get();
 
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = topology->getQuads();
     //sout<<"==================================QuadBendingSprings<DataTypes>::init(), quads size = "<<quads.size()<<sendl;

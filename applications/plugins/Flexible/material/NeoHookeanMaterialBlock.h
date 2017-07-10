@@ -24,7 +24,7 @@
 #define FLEXIBLE_NeoHookeanMaterialBlock_H
 
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../BaseJacobian.h"
 #include "NeoHookeanMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>

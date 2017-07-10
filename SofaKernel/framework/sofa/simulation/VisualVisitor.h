@@ -40,7 +40,8 @@ namespace core
 {
 namespace visual
 {
-class VisualParams;
+    class VisualParams;
+    class Shader;
 } // namespace visual
 } // namespace core
 
@@ -53,7 +54,7 @@ class SOFA_SIMULATION_CORE_API VisualVisitor : public Visitor
 public:
     VisualVisitor(core::visual::VisualParams* params)
         : Visitor(params)
-        ,vparams(params)
+        , vparams(params)
     {}
 
     virtual void processVisualModel(simulation::Node* node, core::visual::VisualModel* vm) = 0;
@@ -76,16 +77,19 @@ public:
 
 protected:
     core::visual::VisualParams* vparams;
+
 };
 
 class SOFA_SIMULATION_CORE_API VisualDrawVisitor : public VisualVisitor
 {
 public:
-    bool hasShader;
     VisualDrawVisitor(core::visual::VisualParams* params)
         : VisualVisitor(params)
+        , nodeShaders()
     {
+
     }
+
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
     virtual void fwdVisualModel(simulation::Node* node, core::visual::VisualModel* vm);
@@ -96,6 +100,48 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void printInfo(const core::objectmodel::BaseContext*,bool )  {return;}
 #endif
+
+protected:
+    core::visual::Shader* getShader(const TagSet& tagSet) const
+    {
+        if(!nodeShaders.empty())
+        {
+            const std::list<TaggedShader>& taggedShaders = nodeShaders.top();
+            for(std::list<TaggedShader>::const_iterator itTaggedShader = taggedShaders.begin(); itTaggedShader != taggedShaders.end(); ++itTaggedShader)
+            {
+                if(itTaggedShader->second.includes(tagSet))
+                    return itTaggedShader->first;
+            }
+        }
+
+        return nullptr;
+    }
+
+private:
+    typedef std::pair<core::visual::Shader*, TagSet> TaggedShader;
+    std::list<VisualDrawVisitor::TaggedShader> findShaders(Node* node, const TagSet& tagSet) const
+    {
+        std::list<TaggedShader> result;
+
+        for(Node::Sequence<core::visual::Shader>::iterator it = node->shaders.begin(); it != node->shaders.end(); ++it)
+        {
+            core::visual::Shader* shader = *it;
+            if(!shader)
+                continue;
+
+            TagSet shaderTagSet = shader->getTags();
+            if(shaderTagSet.includes(tagSet))
+                result.push_back(TaggedShader({ shader, shaderTagSet }));
+        }
+
+        if(!nodeShaders.empty())
+            result.insert(result.end(), nodeShaders.top().begin(), nodeShaders.top().end());
+
+        return result;
+    }
+
+private:
+    std::stack<std::list<TaggedShader>> nodeShaders;
 };
 
 class SOFA_SIMULATION_CORE_API VisualUpdateVisitor : public Visitor

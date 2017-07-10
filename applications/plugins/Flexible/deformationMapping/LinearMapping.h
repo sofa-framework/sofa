@@ -61,7 +61,7 @@ public:
 
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::Hessian Hessian;
@@ -84,7 +84,7 @@ protected:
 
 
 public :
-    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
+    virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VWeight& w)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -106,7 +106,7 @@ public :
         }
     }
 
-    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VWeight& w, const VGradient& dw)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -127,7 +127,7 @@ public :
         F=Fc.getF();
     }
 
-    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VWeight& w, const VGradient& dw)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
         helper::ReadAccessor<Data<InVecDeriv> > in (*this->fromModel->read(core::ConstVecDerivId::velocity()));

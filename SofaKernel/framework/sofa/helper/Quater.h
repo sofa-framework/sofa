@@ -38,8 +38,8 @@ namespace helper
 template<class Real>
 class SOFA_HELPER_API Quater
 {
-private:
-    Real _q[4];
+protected:
+    defaulttype::VecNoInit<4,Real> _q;
 
 public:
 
@@ -52,8 +52,14 @@ public:
     template<class Real2>
     Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
     template<class Real2>
-    Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
+    Quater(const Quater<Real2>& q) { *this=q; }
+    template<class Real2>
+    Quater( const defaulttype::Vec<4,Real2>& v) { _q = v; }
     Quater( const defaulttype::Vec<3,Real>& axis, Real angle );
+
+    template<class Real2>
+    Quater& operator=(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; return *this; }
+
 
     static Quater identity()
     {
@@ -63,34 +69,32 @@ public:
 
     void set(Real x, Real y, Real z, Real w)
     {
-        _q[0] = x;
-        _q[1] = y;
-        _q[2] = z;
-        _q[3] = w;
+        _q.set( x, y, z, w );
     }
 
 
     /// Cast into a standard C array of elements.
     const Real* ptr() const
     {
-        return this->_q;
+        return _q.data();
     }
 
     /// Cast into a standard C array of elements.
     Real* ptr()
     {
-        return this->_q;
+        return _q.data();
     }
 
     /// Normalize a quaternion
-    void normalize();
+    /// returns false iff the norm is too small
+    bool normalize();
+
+    /// returns the norm of this quaternion
+    Real norm() const;
 
     void clear()
     {
-        _q[0]=0.0;
-        _q[1]=0.0;
-        _q[2]=0.0;
-        _q[3]=1.0;
+        _q.set(0,0,0,1);
     }
 
     void fromFrame(defaulttype::Vec<3,Real>& x, defaulttype::Vec<3,Real>&y, defaulttype::Vec<3,Real>&z);

@@ -40,9 +40,8 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
-	// NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
-	// which will most probably be the case when there are no visual models, so we skip the search unless we have visual models. 
-	hasShader = !node->visualModel.empty() && (node->getShader()!=NULL); 
+
+    nodeShaders.push(findShaders(node, subsetsToManage));
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
@@ -56,6 +55,10 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
+
+    nodeShaders.pop();
+
+    this->VisualVisitor::processNodeBottomUp(node);
 }
 
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
@@ -65,7 +68,8 @@ void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmo
 #ifdef DEBUG_DRAW
         std::cerr << ">" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif
-        o->draw(vparams);
+        if(o->getTags().includes(subsetsToManage))
+            o->draw(vparams);
 #ifdef DEBUG_DRAW
         std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif
@@ -94,12 +98,14 @@ void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::
 #endif
 }
 
-void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
+void VisualDrawVisitor::processVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
 {
+    const TagSet& tagSet = vm->getTags();
+    if(!tagSet.includes(subsetsToManage))
+        return;
+
     //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
-    sofa::core::visual::Shader* shader = NULL;
-    if (hasShader)
-        shader = node->getShader(subsetsToManage);
+    core::visual::Shader* shader = getShader(tagSet);
 
     switch(vparams->pass())
     {

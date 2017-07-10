@@ -32,6 +32,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/helper/io/File.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -60,6 +61,7 @@ OBJExporter::OBJExporter()
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
     , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
+    , d_exportMTL( initData(&d_exportMTL, true, "exportMTL", "export a .mtl with the .obj?"))
     , activateExport(false)
 {
     this->f_listening.setValue(true);
@@ -88,20 +90,40 @@ void OBJExporter::writeOBJ()
     }
     if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
         filename += ".obj";
-    std::ofstream outfile(filename.c_str());
 
-    std::string mtlfilename = objFilename.getFullPath();
-    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
-        mtlfilename += ".mtl";
+    if( f_printLog.getValue() )
+    {
+        sout << "Exporting OBJ as: " << filename.c_str();
+        if( d_exportMTL.getValue() ) sout<<" (with MTL file)";
+        sout<<sendl;
+    }
+
+
+    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance());
+
+    sofa::helper::io::File outFile(filename.c_str(), std::ios_base::out);
+    std::ostream outStream(outFile.streambuf());
+    exportOBJ.setObjStream( &outStream );
+
+
+    if( d_exportMTL.getValue() )
+    {
+        std::string mtlfilename = objFilename.getFullPath();
+        if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
+            mtlfilename += ".mtl";
+        else
+            mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
+
+        sofa::helper::io::File mtlFile(mtlfilename.c_str(), std::ios_base::out);
+        std::ostream mtlStream(mtlFile.streambuf());
+        exportOBJ.setMtlStream( &mtlStream );
+        context->executeVisitor(&exportOBJ);
+    }
     else
-        mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
-    std::ofstream mtlfile(mtlfilename.c_str());
-    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
-    context->executeVisitor(&exportOBJ);
-    outfile.close();
-    mtlfile.close();
+    {
+        context->executeVisitor(&exportOBJ);
+    }
 
-    msg_info() << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() ;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)

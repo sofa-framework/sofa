@@ -37,7 +37,7 @@ namespace engine
 {
 
 /// Computing the Sum between two vector of dofs
-/// output = input - substractor
+/// output = sum(input)
 template <class TDataType>
 class SumEngine : public core::DataEngine
 {

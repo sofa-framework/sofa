@@ -22,7 +22,7 @@
 #ifndef FLEXIBLE_HookeMaterialBlock_H
 #define FLEXIBLE_HookeMaterialBlock_H
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../types/StrainTypes.h"
 #include <Eigen/Core>
 #include <Eigen/Dense>

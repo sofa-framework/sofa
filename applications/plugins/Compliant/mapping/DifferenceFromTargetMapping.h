@@ -25,6 +25,9 @@ namespace mapping
  This is used in compliant constraints to obtain relative
  violation dofs, on which a compliance may be applied
  (ie conversion to a holonomic constraint)
+
+ // mtournier: this is false for rotations when `inverted` is set
+
 */
 template <class TIn, class TOut >
 class DifferenceFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
@@ -35,10 +38,11 @@ public:
     typedef DifferenceFromTargetMapping Self;
 
     typedef typename TIn::VecCoord InVecCoord;
+    typedef typename TOut::VecCoord OutVecCoord;
 
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    Data< InVecCoord > targets;
+    Data< OutVecCoord > targets;
     Data< helper::vector<unsigned> > d_targetIndices;
 
     Data< bool > d_inverted;
@@ -68,7 +72,7 @@ public:
         else this->toModel->resize( ind.size() );
 
         // if targets is empty, set it with actual positions
-        InVecCoord& t = *targets.beginEdit();
+        OutVecCoord& t = *targets.beginEdit();
         if( t.empty() )
         {
             helper::ReadAccessor<Data<InVecCoord> > x = this->fromModel->read(core::ConstVecCoordId::position());
@@ -76,7 +80,7 @@ public:
             {
                 t.resize( this->fromModel->getSize() );
                 for( size_t j = 0 ; j < t.size() ; ++j )
-                    t[j] = x[j];
+                    t[j] = TIn::getCPos( x[j] );
             }
             else
             {
@@ -84,7 +88,7 @@ public:
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
-                    t[j] = x[k];
+                    t[j] = TIn::getCPos( x[k] );
                 }
             }
         }
@@ -96,7 +100,7 @@ public:
     virtual void apply(typename Self::out_pos_type& out,
                        const typename Self::in_pos_type& in )
     {
-        const InVecCoord& t = targets.getValue();
+        const OutVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
         bool inverted = d_inverted.getValue();
         const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
@@ -108,13 +112,13 @@ public:
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = t[targetIndex] - in[j];
+                    out[j] = t[targetIndex] - TIn::getCPos( in[j] );
                 }
             else
                 for( size_t j = 0 ; j < in.size() ; ++j )
                 {
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = in[j] - t[targetIndex];
+                    out[j] = TIn::getCPos( in[j] ) - t[targetIndex];
                 }
         }
         else
@@ -125,21 +129,21 @@ public:
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = t[targetIndex] - in[k];
+                    out[j] = t[targetIndex] - TIn::getCPos( in[k] );
                 }
             else
                 for( size_t j = 0 ; j < ind.size() ; ++j )
                 {
                     const unsigned k = ind[j];
                     unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
-                    out[j] = in[k] - t[targetIndex];
+                    out[j] = TIn::getCPos( in[k] ) - t[targetIndex];
                 }
         }
     }
 
     virtual void assemble( const typename Self::in_pos_type& in )
     {
-        assert( Nout==Nin ); // supposing TIn==TOut
+        // assert( Nout==Nin ); // supposing TIn==TOut // no longer true :-/
 
         const helper::vector<unsigned>& ind = indices.getValue();
         typename Self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
@@ -148,8 +152,27 @@ public:
         if( ind.empty() )
         {
             J.resize( Nout * in.size(), Nin * in.size());
-            J.setIdentity();
-            if( inverted ) J *= -1;
+
+            if( Nout==Nin )
+            {
+                J.setIdentity();
+                if( inverted ) J *= -1;
+            }
+            else
+            {
+                const int value = inverted ? -1 : 1;
+
+                for( size_t j = 0 ; j < in.size() ; ++j )
+                {
+                    for( size_t w=0 ; w<Nout ; ++w )
+                    {
+                        const size_t line = j*Nout+w;
+                        const size_t col = j*Nin+w;
+                        J.startVec( line );
+                        J.insertBack( line, col ) = value;
+                    }
+                }
+            }
         }
         else
         {
@@ -164,7 +187,7 @@ public:
                 for( size_t w=0 ; w<Nout ; ++w )
                 {
                     const size_t line = j*Nout+w;
-                    const size_t col = k*Nout+w;
+                    const size_t col = k*Nin+w;
                     J.startVec( line );
                     J.insertBack( line, col ) = value;
                 }
@@ -178,7 +201,7 @@ public:
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        const InVecCoord& t = targets.getValue();
+        const OutVecCoord& t = targets.getValue();
         const helper::vector<unsigned>& ind = indices.getValue();
         const helper::vector<unsigned>& targetIndices = d_targetIndices.getValue();
 
@@ -190,7 +213,7 @@ public:
             {
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
                 points[2*j] = t[targetIndex];
-                points[2*j+1] = pos[j];
+                points[2*j+1] = TIn::getCPos( pos[j] );
             }
         }
         else
@@ -201,7 +224,7 @@ public:
                 unsigned targetIndex = targetIndices.empty() ? std::min(t.size()-1,j) : targetIndices[j];
                 const unsigned k = ind[j];
                 points[2*j] = t[targetIndex];
-                points[2*j+1] = pos[k];
+                points[2*j+1] = TIn::getCPos( pos[k] );
             }
         }
 
@@ -216,6 +239,23 @@ public:
 
 
 };
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(DIFFERENCEFROMTARGETMAPPING_CPP)
+
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_Compliant_API DifferenceFromTargetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+#endif
+
+
+#endif
 
 
 

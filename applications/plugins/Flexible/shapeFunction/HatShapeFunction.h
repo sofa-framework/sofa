@@ -55,14 +55,14 @@ public:
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
 	typedef typename Inherit::VRef VRef;
 	typedef typename Inherit::Cell Cell;
     typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VecVRef VecVRef;
-    typedef typename Inherit::VecVReal VecVReal;
+    typedef typename Inherit::VecVWeight VecVWeight;
     typedef typename Inherit::VecVGradient VecVGradient;
     typedef typename Inherit::VecVHessian VecVHessian;
     typedef HatShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
@@ -73,7 +73,7 @@ public:
     Data<helper::OptionsGroup> method;
     Data< ParamTypes > param;
 
-    virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
+    virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
     {
         helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();

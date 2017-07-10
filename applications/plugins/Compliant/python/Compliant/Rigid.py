@@ -132,7 +132,7 @@ class Body:
                 self.inertia = [1, 1, 1] # inertia tensor
                 self.color = [1, 1, 1]   # not sure this is used 
                 self.offset = None       # rigid offset for com/inertia axes
-                self.inertia_forces = False # compute inertia forces flag
+                self.inertia_forces = 0 # compute inertia forces flag
                 self.group = None
                 self.mu = 0           # friction coefficient
                 self.scale = [1, 1, 1]

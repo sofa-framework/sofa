@@ -45,13 +45,13 @@ class BasicShapesGL
 public:
     struct GLBuffers
     {
-        GLuint VBO, IBO;
+        GLuint VBO = 0, IBO = 0;
         GLuint verticesBufferSize, normalsBufferSize, texcoordsBufferSize, totalSize;
         GLuint indicesSize;
     };
     struct CustomGLBuffer
     {
-        GLuint VBO;
+        GLuint VBO = 0;
         GLuint bufferSize;
         GLint location;
     };

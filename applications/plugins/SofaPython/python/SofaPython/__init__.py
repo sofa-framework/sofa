@@ -66,8 +66,10 @@ class Controller(Sofa.PythonScriptController):
         # call createGraph for compatibility purposes
         self.createGraph(node)
 
+
         # check whether derived class has 'onLoaded'
         cls = type(self)
         if not cls.onLoaded is Sofa.PythonScriptController.onLoaded:
             Sofa.msg_warning('SofaPython', 
                              '`onLoaded` is defined in subclass but will not be called in the future' )
+                             

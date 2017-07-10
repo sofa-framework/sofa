@@ -43,7 +43,7 @@ protected:
     typename node_type::SPtr contact_node;
 
     typedef defaulttype::Vec3Types contact_type;
-    typedef container::MechanicalObject<contact_type> contact_dofs_type;
+    typedef core::behavior::MechanicalState<contact_type> contact_dofs_type;
     typename contact_dofs_type::SPtr contact_dofs;
 
     typedef mapping::ContactMapping<ResponseDataTypes, contact_type> contact_map_type;
@@ -82,15 +82,14 @@ protected:
         // node->addChild( delta.node.get() );
 
         // TODO maybe remove this mapping level
-        contact_node = node_type::create( this->getName() + "_contact_frame" );
+        contact_node = node_type::create("");
 
         this->delta_node->addChild( contact_node.get() );
 
         // ensure all graph context parameters (e.g. dt are well copied)
         contact_node->updateSimulationContext();
 
-
-        contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
+        contact_dofs = this->template make_dofs<defaulttype::Vec3Types>();
 
         contact_dofs->resize( size );
         contact_node->addObject( contact_dofs.get() );
@@ -118,6 +117,7 @@ protected:
         contact_node->addObject( compliance.get() );
         compliance->compliance.setValue( this->compliance_value.getValue() );
         compliance->damping.setValue( this->damping_ratio.getValue() );
+        compliance->resizable.setValue( true );
         compliance->init();
 
 
@@ -168,10 +168,6 @@ protected:
             compliance->compliance.setValue( this->compliance_value.getValue() );
             compliance->damping.setValue( this->damping_ratio.getValue() );
         }
-
-        // don't forget reinit as dofs size may have changed !
-        compliance->reinit();
-
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);

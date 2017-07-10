@@ -27,7 +27,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
@@ -291,7 +291,7 @@ protected:
         C.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
             C.insertBackBlock( i, i, material[i].getC() );
-        C.compress();
+        C.finalize();
     }
 
     SparseMatrixEigen K;
@@ -303,7 +303,7 @@ protected:
         K.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
             K.insertBackBlock( i, i, material[i].getK() );
-        K.compress();
+        K.finalize();
     }
 
 
@@ -316,7 +316,7 @@ protected:
         B.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
             B.insertBackBlock( i, i, material[i].getB() );
-        B.compress();
+        B.finalize();
     }
 
 };

@@ -25,6 +25,7 @@
 #include "Binding_Base.h"
 #include "Binding_Vector.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 #include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::defaulttype;
@@ -39,7 +40,7 @@ using namespace sofa::defaulttype;
 
 extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     PyPtr<Vector3>* pyVec;
     if (!PyArg_ParseTuple(args, "O",&pyVec))
         Py_RETURN_NONE;
@@ -49,25 +50,25 @@ extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)
 
 extern "C" PyObject * BaseContext_getGravity(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return SP_BUILD_PYPTR(Vector3,Vector3,new Vector3(obj->getGravity()),true); // "true", because I manage the deletion myself
 }
 
 extern "C" PyObject * BaseContext_getTime(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getTime());
 }
 
 extern "C" PyObject * BaseContext_getDt(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyFloat_FromDouble(obj->getDt());
 }
 
 extern "C" PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return sofa::PythonFactory::toPython(obj->getRootContext());
 }
 
@@ -82,33 +83,15 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
         return out << PyString_AsString(value) ;
     }
 
-
-    if( PySequence_Check(value) )
+    /// Unicode are converted to string.
+    if(PyUnicode_Check(value))
     {
-        /// It is a sequence...so we can iterate over it.
-        PyObject *iterator = PyObject_GetIter(value);
-        if(iterator)
-        {
-            bool first = true;
-            while(PyObject* next = PyIter_Next(iterator))
-            {
-                if(first) first = false;
-                else out << ' ';
+        PyObject* tmpstr = PyUnicode_AsUTF8String(value);
+        out << PyString_AsString(tmpstr) ;
+        Py_DECREF(tmpstr);
 
-                pythonToSofaDataString(next, out);
-                Py_DECREF(next);
-            }
-            Py_DECREF(iterator);
-
-            if (PyErr_Occurred())
-            {
-                msg_error("SofaPython") << "error while iterating." << msgendl
-                                        << PythonEnvironment::getStackAsString() ;
-            }
-            return out;
-        }
+        return out;
     }
-
 
     /// Check if the object has an explicit conversion to a Sofa path. If this is the case
     /// we use it.
@@ -118,7 +101,7 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
     }
 
     /// Default conversion for standard type:
-    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
+    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) || PySequence_Check(value) ))
     {
         msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
                                   << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
@@ -130,8 +113,14 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
     }
 
 
-    PyObject* tmpstr=PyObject_Str(value);
-    out << PyString_AsString(tmpstr) ;
+    PyObject* tmpstr=PyObject_Repr(value);
+    if (!tmpstr) {
+        msg_error("SofaPython") << "error during string serialization." << msgendl
+                                << PythonEnvironment::getStackAsString();
+        return out;
+    }
+
+    out << PyString_AsString(tmpstr);
     Py_DECREF(tmpstr) ;
     return out ;
 }
@@ -140,7 +129,7 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 // object factory
 extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
 
     char *type;
     if (!PyArg_ParseTuple(args, "s",&type))
@@ -154,6 +143,7 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     BaseObjectDescription desc(type,type);
 
     bool warning = printWarnings;
+    bool init = false;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -168,6 +158,11 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
                 if PyBool_Check(value)
                         warning = (value==Py_True);
             }
+            else if( !strcmp( PyString_AsString(key), "init") )
+            {
+                if PyBool_Check(value)
+                        init = (value==Py_True);
+            }
             else
             {
                 std::stringstream s;
@@ -180,26 +175,35 @@ extern "C" PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * 
     }
 
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
+
+    if( !desc.getErrors().empty() )
+    {
+        SP_MESSAGE_WARNING( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            SP_MESSAGE_WARNING(*it);
+    }
+
     if (obj==0)
     {
-        SP_MESSAGE_ERROR( "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" );
-        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
-            SP_MESSAGE_ERROR(*it);
         PyErr_BadArgument();
         return NULL;
     }
 
-
-    if( warning )
+    for( auto it : desc.getAttributeMap() )
     {
-        for( auto it : desc.getAttributeMap() )
+        if (!it.second.isAccessed())
         {
-            if (!it.second.isAccessed())
-            {
-                obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\"" << obj->sendl;
-            }
+            obj->serr <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" << obj->sendl;
         }
+    }
 
+    if( init )
+    {
+        obj->init();
+        obj->bwdInit();
+    }
+    else if( warning )
+    {
         Node *node = static_cast<Node*>(context);
         if (node && node->isInitialized())
             SP_MESSAGE_WARNING( "Sofa.Node.createObject("<<type<<") called on a node("<<node->getName()<<") that is already initialized" )
@@ -221,7 +225,7 @@ extern "C" PyObject * BaseContext_createObject_noWarning(PyObject * self, PyObje
 /// returns None with a warning if the object is not found
 extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObject * kw)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
@@ -271,7 +275,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args, Py
 extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject * args)
 {
     SP_MESSAGE_DEPRECATED("BaseContext_getObject_noWarning is deprecated, use the keyword warning=False in BaseContext_getObject instead.")
-            BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
     {
@@ -296,7 +300,7 @@ extern "C" PyObject * BaseContext_getObject_noWarning(PyObject * self, PyObject 
 // @TODO: pass keyword arguments rather than optional arguments?
 extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
 {
-    BaseContext* context=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* context = get_basecontext( self );
     char* search_direction= NULL;
     char* type_name= NULL;
     char* name= NULL;
@@ -379,12 +383,12 @@ SP_CLASS_METHODS_END
 
 extern "C" PyObject * BaseContext_getAttr_animate(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->getAnimate());
 }
 extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();
@@ -396,12 +400,12 @@ extern "C" int BaseContext_setAttr_animate(PyObject *self, PyObject * args, void
 
 extern "C" PyObject * BaseContext_getAttr_active(PyObject *self, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     return PyBool_FromLong(obj->isActive());
 }
 extern "C" int BaseContext_setAttr_active(PyObject *self, PyObject * args, void*)
 {
-    BaseContext* obj=((PySPtr<Base>*)self)->object->toBaseContext();
+    BaseContext* obj = get_basecontext( self );
     if (!PyBool_Check(args))
     {
         PyErr_BadArgument();

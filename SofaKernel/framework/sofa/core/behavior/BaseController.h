@@ -42,7 +42,7 @@ namespace behavior
  * Interface of user interaction on SOFA Components.
  * Empty class to provide an interface for the Factory
  */
-class BaseController : public virtual core::objectmodel::BaseObject
+class BaseController : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(BaseController, core::objectmodel::BaseObject);

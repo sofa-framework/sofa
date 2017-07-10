@@ -167,7 +167,7 @@ GtestMessageFrameIgnore::GtestMessageFrameIgnore(Message::Type type)
 
 
 
-GtestMessageHandler::GtestMessageHandler(Message::Class mclass)
+GtestMessageHandler::GtestMessageHandler(Message::Class /*mclass*/)
 {
     for(unsigned int i=0; i < Message::TypeCount ; ++i)
     {

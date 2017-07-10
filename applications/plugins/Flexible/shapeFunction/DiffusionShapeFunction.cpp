@@ -22,7 +22,7 @@
 #define FLEXIBLE_DiffusionShapeFunction_CPP
 
 #include <Flexible/config.h>
-#include "../shapeFunction/DiffusionShapeFunction.h"
+#include "DiffusionShapeFunction.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

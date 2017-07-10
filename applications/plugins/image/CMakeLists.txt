@@ -28,7 +28,9 @@ set(SOURCE_FILES
     MergeImages.cpp
     MeshToImageEngine.cpp
     TransferFunction.cpp
+    ThresholdingEngine.cpp
     VoronoiToMeshEngine.cpp
+    VoronoiImageEngine.cpp
     initImage.cpp
 )
 
@@ -55,8 +57,10 @@ set(HEADER_FILES
     MergeImages.h
     MeshToImageEngine.h
     TransferFunction.h
+    ThresholdingEngine.h
     VectorVis.h
     VoronoiToMeshEngine.h
+    VoronoiImageEngine.h
 )
 
 
@@ -71,8 +75,8 @@ if( SofaPython_FOUND )
         python/SofaImage/__init__.py
     )
 
-    list(APPEND SOURCE_FILES python/Binding_ImageData.cpp)
-    list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
+    list(APPEND SOURCE_FILES python/Binding_ImageData.cpp python/Binding_ImageTransformData.cpp)
+    list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl python/Binding_ImageTransformData.h)
 endif()
 
 

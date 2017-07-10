@@ -23,6 +23,7 @@
 #include "Binding_BaseMapping.h"
 #include "Binding_BaseObject.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa;
 using namespace sofa::core;
@@ -32,7 +33,7 @@ using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     helper::vector<BaseState*> from = mapping->getFrom();
 
@@ -46,7 +47,7 @@ extern "C" PyObject * BaseMapping_getFrom(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     helper::vector<BaseState*> to = mapping->getTo();
 
@@ -62,7 +63,7 @@ extern "C" PyObject * BaseMapping_getTo(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     PyObject* pyFrom;
     if (!PyArg_ParseTuple(args, "O",&pyFrom))
@@ -71,7 +72,7 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    BaseState* from=((PySPtr<Base>*)pyFrom)->object->toBaseState();
+    BaseState* from = get_basestate( pyFrom );
     if (!from)
     {
         SP_MESSAGE_ERROR( "BaseMapping_setFrom: is not a BaseState*" );
@@ -86,13 +87,13 @@ extern "C" PyObject * BaseMapping_setFrom(PyObject * self, PyObject * args)
 
 extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     PyObject* pyTo;
     if (!PyArg_ParseTuple(args, "O",&pyTo))
         Py_RETURN_NONE;
 
-    BaseState* to=((PySPtr<Base>*)pyTo)->object->toBaseState();
+    BaseState* to = get_basestate( pyTo );
     if (!to)
     {
         PyErr_BadArgument();
@@ -106,7 +107,7 @@ extern "C" PyObject * BaseMapping_setTo(PyObject * self, PyObject * args)
 
 extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     mapping->apply(MechanicalParams::defaultInstance(),VecCoordId::position(),ConstVecCoordId::position());
 
@@ -115,7 +116,7 @@ extern "C" PyObject * BaseMapping_apply(PyObject * self, PyObject * /*args*/)
 
 extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     mapping->applyJ(MechanicalParams::defaultInstance(),VecDerivId::velocity(),ConstVecDerivId::velocity());
 
@@ -123,12 +124,34 @@ extern "C" PyObject * BaseMapping_applyJ(PyObject * self, PyObject * /*args*/)
 }
 
 
+extern "C" PyObject * BaseMapping_applyJT(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping  = get_basemapping( self );
+
+    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    
+    Py_RETURN_NONE;
+}
+
+
+extern "C" PyObject * BaseMapping_applyDJT(PyObject * self, PyObject * /*args*/)
+{
+    BaseMapping* mapping  = get_basemapping( self );
+
+    // note: the position delta must be set in dx beforehand
+    mapping->applyJT(MechanicalParams::defaultInstance(),VecDerivId::force(),ConstVecDerivId::force());
+    
+    Py_RETURN_NONE;
+}
+
+
+
 
 // TODO inefficient
 // have a look to how to directly bind Eigen sparse matrices
 extern "C" PyObject * BaseMapping_getJs(PyObject * self, PyObject * /*args*/)
 {
-    BaseMapping* mapping = ((PySPtr<Base>*)self)->object->toBaseMapping();
+    BaseMapping* mapping  = get_basemapping( self );
 
     const helper::vector<sofa::defaulttype::BaseMatrix*>* Js = mapping->getJs();
 
@@ -164,6 +187,8 @@ SP_CLASS_METHOD(BaseMapping,setFrom)
 SP_CLASS_METHOD(BaseMapping,setTo)
 SP_CLASS_METHOD(BaseMapping,apply)
 SP_CLASS_METHOD(BaseMapping,applyJ)
+SP_CLASS_METHOD(BaseMapping,applyJT)
+SP_CLASS_METHOD(BaseMapping,applyDJT)
 SP_CLASS_METHOD(BaseMapping,getJs)
 SP_CLASS_METHODS_END
 

@@ -34,7 +34,6 @@
 #include <sofa/helper/Quater.h>
 
 
-#include <sofa/core/behavior/BaseController.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaUserInteraction/Controller.h>

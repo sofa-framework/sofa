@@ -36,7 +36,7 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block
 */
-template<class TIn, class TOut>
+template<class TIn, class TOut, typename WeightType_>
 class BaseJacobianBlock
 {
 public:
@@ -55,6 +55,8 @@ public:
 
     typedef Mat<Out::deriv_total_size,In::deriv_total_size,Real> MatBlock;
     typedef Mat<In::deriv_total_size,In::deriv_total_size,Real> KBlock;
+
+    typedef WeightType_ WeightType;  ///< scalar or multi-dimensional weight
 
     // Called in Apply
     virtual void addapply( OutCoord& result, const InCoord& data )=0;

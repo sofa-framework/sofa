@@ -14,6 +14,7 @@
 #include <sofa/simulation/Simulation.h>
 #include "../assembly/AssemblyVisitor.h"
 #include "../odesolver/CompliantImplicitSolver.h"
+#include <SofaPython/PythonToSofa.inl>
 
 
 
@@ -39,7 +40,7 @@ extern "C" PyObject * _Compliant_getAssembledImplicitMatrix(PyObject * /*self*/,
         Py_RETURN_NONE;
     }
 
-    BaseNode* node=((PySPtr<Base>*)pyNode)->object->toBaseNode();
+    BaseNode* node = get_basenode( pyNode );
     if (!node)
     {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
@@ -95,7 +96,7 @@ extern "C" PyObject * _Compliant_getImplicitAssembledSystem(PyObject * /*self*/,
         Py_RETURN_NONE;
     }
 
-    sofa::core::objectmodel::BaseNode* node=((PySPtr<sofa::core::objectmodel::Base>*)pyNode)->object->toBaseNode();
+    sofa::core::objectmodel::BaseNode* node = get_basenode(pyNode);
     if (!node)
     {
         SP_MESSAGE_ERROR( "_Compliant_getAssembledImplicitMatrix: first argument is not a BaseNode" );
@@ -135,7 +136,7 @@ extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(get_odesolver( pySolver) );
     if (!solver)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );
@@ -143,7 +144,7 @@ extern "C" PyObject * _Compliant_getLambda(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-    BaseMechanicalState* mstate = ((PySPtr<Base>*)pyState)->object->toBaseMechanicalState();
+    BaseMechanicalState* mstate = get_basemechanicalstate( pyState );
     if (!mstate)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseMechanicalState" );
@@ -183,7 +184,7 @@ extern "C" PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject 
         Py_RETURN_NONE;
     }
 
-    BaseContext* context = ((PySPtr<Base>*)pyNode)->object->toBaseContext();
+    BaseContext* context = get_basecontext( pyNode );
     if (!context)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a BaseContext" );
@@ -191,7 +192,7 @@ extern "C" PyObject * _Compliant_propagateLambdas(PyObject * /*self*/, PyObject 
         Py_RETURN_NONE;
     }
 
-    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>(((PySPtr<Base>*)pySolver)->object->toOdeSolver());
+    CompliantImplicitSolver* solver = static_cast<CompliantImplicitSolver*>( get_odesolver( pySolver ) );
     if (!solver)
     {
         SP_MESSAGE_ERROR( "_Compliant_getConstraintForce: wrong arguments - not a CompliantImplicitSolver" );

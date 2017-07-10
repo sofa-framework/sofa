@@ -44,6 +44,7 @@ SOFA_DECL_CLASS(MeshSTLLoader)
 
 int MeshSTLLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
         .add< MeshSTLLoader >()
+        .addAlias("MeshStlLoader")
         ;
 
 //Base VTK Loader

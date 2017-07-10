@@ -90,8 +90,8 @@ protected:
     struct PythonBoundType : public BasePythonBoundType
     {
         PythonBoundType(PyTypeObject*pyTypeObject):BasePythonBoundType(pyTypeObject){}
-        virtual bool canCast(sofa::core::objectmodel::Base* obj) const { return dynamic_cast<T*>(obj); }
-        virtual bool canCast(sofa::core::objectmodel::BaseData* data) const { return dynamic_cast<T*>(data); }
+        virtual bool canCast(sofa::core::objectmodel::Base* obj) const { return dynamic_cast<T*>(obj)!=nullptr; }
+        virtual bool canCast(sofa::core::objectmodel::BaseData* data) const { return dynamic_cast<T*>(data)!=nullptr; }
     };
 
     /// a list of Abstract classes that can be cheaply deduced from Base* (by static_cast)

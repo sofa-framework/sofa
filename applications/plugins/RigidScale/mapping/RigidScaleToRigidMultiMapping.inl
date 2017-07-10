@@ -257,7 +257,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
 
                 typename BaseShapeFunction::Coord out_pos;
                 typename BaseShapeFunction::VRef ref;
-                typename BaseShapeFunction::VReal w;
+                typename BaseShapeFunction::VWeight w;
                 helper::WriteOnlyAccessor<Data< helper::vector<unsigned> > > ra_index(this->index);
                 for (std::size_t ind0 = 0; ind0 < outSize; ++ind0) {
                     defaulttype::StdVectorTypes<typename BaseShapeFunction::Coord,typename BaseShapeFunction::Coord>::set( out_pos, xout_const[ind0][0] , xout_const[ind0][1] , xout_const[ind0][2]);
@@ -270,7 +270,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
                         ra_index.push_back(ind0);ra_index.push_back(ref[0]);ra_index.push_back(ref[0]);
                     }
                     else {
-                        typename BaseShapeFunction::VReal::iterator itMax = std::max_element(w.begin(),w.end());
+                        typename BaseShapeFunction::VWeight::iterator itMax = std::max_element(w.begin(),w.end());
                         std::size_t indexMax = std::distance(w.begin(), itMax);
                         ra_index.push_back(ind0);ra_index.push_back(indexMax);ra_index.push_back(indexMax);
                         serr << "Child " << ind0 << " has more than one parent, use the most important parent with weight: " << *itMax << sendl;
@@ -317,7 +317,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::computeRigidFromRigidAndScale(con
     // Variables
     Matrix3 scale;
     // Conversion of the scale into a 3x3 matrix
-    for (unsigned int i = 0; i < 3; ++i) scale[i][i] = in2[i];
+    computeScaleMatrix(in2, scale);
     // Final position
     out = se3::prod(in1, OutCoord(scale*rOut.getCenter(), rOut.getOrientation()));
 	return;
@@ -352,7 +352,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ1(SparseJMatrixEigen1& _J, c
 		// Block writing end
 		_J.endBlockRow();		
 	}
-    _J.compress();
+    _J.finalize();
 }
 
 template <class I1, class I2, class O>
@@ -384,7 +384,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateJ2(SparseJMatrixEigen2& _J, c
 		// Block writing end
 		_J.endBlockRow();
 	}
-	_J.compress();
+    _J.finalize();
 }
 
 template <class I1, class I2, class O>
@@ -430,7 +430,7 @@ void RigidScaleToRigidMultiMapping<I1,I2,O>::updateK1(SparseKMatrixEigen1& _K, c
 
             assert( parentIdx == ind1 );
 
-            for (unsigned int k=0; k<3; ++k) S[k][k] = vIn2[ind2][k];
+            computeScaleMatrix(vIn2[ind2], S);
 
             const OutDeriv& force = childForce[ind0];
             const typename OutDeriv::Vec3& f = force.getLinear();

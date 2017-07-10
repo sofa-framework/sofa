@@ -20,12 +20,33 @@ IncompleteCholeskyPreconditioner::IncompleteCholeskyPreconditioner()
 {}
 
 
+  template<class T, T, class R = void> struct sfinae {
+    using type = R;
+  };
+  
+  // sfinae for picking the right shift method
+  template<class Preconditioner>
+  static void set_shift(Preconditioner& preconditioner, SReal value,
+                        typename sfinae<void (Preconditioner::*)(SReal) ,
+                        &Preconditioner::setInitialShift>::type*) {
+      preconditioner.setInitialShift( value );
+  }
+
+
+  template<class Preconditioner>
+  static void set_shift(Preconditioner& preconditioner, SReal value,
+                        typename sfinae<void (Preconditioner::*)(SReal) ,
+                        &Preconditioner::setShift>::type*) {
+      preconditioner.setShift( value );
+  }
+  
 
 void IncompleteCholeskyPreconditioner::reinit()
 {
     BasePreconditioner::reinit();
     m_factorized = false;
-    preconditioner.setShift( d_shift.getValue() );
+
+    set_shift(preconditioner, d_shift.getValue(), (void*)0);
 }
 
 void IncompleteCholeskyPreconditioner::compute( const rmat& H )
@@ -45,7 +66,7 @@ void IncompleteCholeskyPreconditioner::compute( const rmat& H )
         // if singular, try to regularize by adding a tiny diagonal matrix
         rmat identity(H.rows(),H.cols());
         identity.setIdentity();
-        preconditioner.compute( H + identity * std::numeric_limits<SReal>::epsilon() );
+        preconditioner.compute<rmat>( H + identity * std::numeric_limits<SReal>::epsilon() );
 
         if( preconditioner.info() != Eigen::Success )
         {

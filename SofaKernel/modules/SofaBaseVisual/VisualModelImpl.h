@@ -85,13 +85,13 @@ public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
     topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_restPositions;
     topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals;
-    bool modified; ///< True if input vertices modified since last rendering
+    Data<bool> d_isModified; ///< True if input vertices modified since last rendering
 
     ExtVec3fState()
         : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
         , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
         , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
-        , modified(false)
+        , d_isModified(initData (&d_isModified, true, "isModified", "are input vertices modified since last rendering?"))
     {
         m_positions.setGroup("Vector");
         m_restPositions.setGroup("Vector");
@@ -109,7 +109,7 @@ public:
         restPositions.resize(vsize); // todo allocate restpos only when it is necessary
         normals.resize(vsize);
 
-        modified = true;
+        d_isModified.setValue( true );
     }
 
     virtual size_t getSize() const { return m_positions.getValue().size(); }
@@ -117,7 +117,7 @@ public:
     //State API
     virtual       Data<VecCoord>* write(     core::VecCoordId  v )
     {
-        modified = true;
+        d_isModified.setValue( true );
 
         if( v == core::VecCoordId::position() )
             return &m_positions;
@@ -138,6 +138,8 @@ public:
 
     virtual Data<VecDeriv>*	write(core::VecDerivId v )
     {
+        d_isModified.setValue( true );
+
         if( v == core::VecDerivId::normal() )
             return &m_vnormals;
 
@@ -329,8 +331,8 @@ protected:
 public:
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    virtual bool hasTransparent();
-    bool hasOpaque();
+    virtual bool hasTransparent() const;
+    bool hasOpaque() const;
 
     void drawVisual(const core::visual::VisualParams* vparams);
     void drawTransparent(const core::visual::VisualParams* vparams);

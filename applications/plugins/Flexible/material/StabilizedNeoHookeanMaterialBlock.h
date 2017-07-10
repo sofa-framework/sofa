@@ -24,7 +24,7 @@
 #define FLEXIBLE_StabilizedNeoHookeanMaterialBlock_H
 
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "StabilizedNeoHookeanMaterialBlock.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

@@ -331,6 +331,36 @@ protected:
 
     };
     /// @}
+
+
+
+    /// more optimized component getters
+
+    /// Topology
+    virtual sofa::core::topology::Topology* getTopology() const;
+
+    /// Mesh Topology (unified interface for both static and dynamic topologies)
+    virtual sofa::core::topology::BaseMeshTopology* getMeshTopology() const;
+
+    /// Degrees-of-Freedom
+    virtual sofa::core::BaseState* getState() const;
+
+    /// Mechanical Degrees-of-Freedom
+    virtual sofa::core::behavior::BaseMechanicalState* getMechanicalState() const;
+
+    /// Shader
+    virtual sofa::core::visual::Shader* getShader() const;
+    virtual sofa::core::visual::Shader* getShader(const sofa::core::objectmodel::TagSet& t) const;
+
+    /// @name Solvers and main algorithms
+    /// @{
+
+    virtual sofa::core::behavior::BaseAnimationLoop* getAnimationLoop() const;
+    virtual sofa::core::behavior::OdeSolver* getOdeSolver() const;
+    virtual sofa::core::collision::Pipeline* getCollisionPipeline() const;
+    virtual sofa::core::visual::VisualLoop* getVisualLoop() const;
+
+    /// @}
 };
 
 } // namespace graph

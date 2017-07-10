@@ -67,7 +67,6 @@ void Visual3DText::reinit()
 
 void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if(!vparams->displayFlags().getShowVisualModels()) return;
 
     const defaulttype::Vec3f& pos = d_position.getValue();
@@ -75,20 +74,15 @@ void Visual3DText::drawTransparent(const core::visual::VisualParams* vparams)
 
     const bool& depthTest = d_depthTest.getValue();
     if( !depthTest )
-    {
-        glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_DEPTH_TEST);
-    }
-
-    vparams->drawTool()->setLightingEnabled(true);
-
+        vparams->drawTool()->disableDepthTest();
 
     vparams->drawTool()->draw3DText(pos,scale,d_color.getValue(),d_text.getValue().c_str());
 
-
     if( !depthTest )
-        glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->enableDepthTest();
+
+
+//    sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
 }
 
 

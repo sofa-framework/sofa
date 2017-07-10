@@ -185,6 +185,9 @@ public:
         return name.getValue();
     }
 
+    /// Return the full path name, simply returns the name by default
+    virtual std::string getPathName() const { return getName(); }
+
     /// Set the name of this object
     void setName(const std::string& n);
 

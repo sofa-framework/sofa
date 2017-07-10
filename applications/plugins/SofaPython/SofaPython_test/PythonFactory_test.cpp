@@ -2,6 +2,7 @@
 
 #include <SofaPython/PythonFactory.h>
 #include <SofaPython/Binding_BaseObject.h>
+using sofa::core::objectmodel::BaseObject;
 
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -9,10 +10,9 @@
 using sofa::simulation::Node;
 
 #include <sofa/core/ObjectFactory.h>
+#include <SofaPython/PythonToSofa.inl>
 
-#include "../SceneLoaderPY.h"
-using sofa::simulation::SceneLoaderPY ;
-using sofa::core::objectmodel::BaseObject ;
+
 
 namespace sofa {
 
@@ -55,7 +55,7 @@ SP_DECLARE_CLASS_TYPE(ExternalComponent)
 
 extern "C" PyObject * ExternalComponent_helloWorld(PyObject *self, PyObject * /*args*/)
 {
-    sofa::ExternalComponent* obj= down_cast<sofa::ExternalComponent>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object->toBaseObject());
+    sofa::ExternalComponent* obj = down_cast<sofa::ExternalComponent>( get_baseobject(self) );
     obj->helloWorld();
     Py_RETURN_NONE;
 }
@@ -114,7 +114,7 @@ protected:
                  "class NonCustomizedObject(object):   \n"
                  "   def __init__(self):               \n"
                  "        return None                  \n"
-                 "   def __str__(self):                \n"
+                 "   def __repr__(self):               \n"
                  "        return 'default'             \n"
                  "class CustomObject(object):           \n"
                  "   def getAsACreateObjectParameter(self):            \n"
@@ -156,13 +156,13 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'aString'", "aString"},
      {"'aString'.join('[ ]')", "[aString aString]"},
      {"' '.join(['AA', 'BB', 'CC'])", "AA BB CC"},
-     {"[1, 2, 3, 4]", "1 2 3 4"},
-     {"[1.0, 2.0, 3.0, 4.0]", "1.0 2.0 3.0 4.0"},
-     {"['ab', 'cd', 'ef', 'gh']", "ab cd ef gh"},
-     {"[[1,2], [3,4], [5,6]]", "1 2 3 4 5 6"},
-     {"[['aa','bb'], ['cc','dd'], ['ee','ff']]", "aa bb cc dd ee ff"},
-     {"range(1,5)", "1 2 3 4"},
-     {"xrange(1,5)", "1 2 3 4"},
+     {"[1, 2, 3, 4]", "[1, 2, 3, 4]"},
+     {"[1.0, 2.0, 3.0, 4.0]", "[1.0, 2.0, 3.0, 4.0]"},
+     {"['ab', 'cd', 'ef', 'gh']", "['ab', 'cd', 'ef', 'gh']"},
+     {"[[1,2], [3,4], [5,6]]", "[[1, 2], [3, 4], [5, 6]]"},
+     {"[['aa','bb'], ['cc','dd'], ['ee','ff']]", "[['aa', 'bb'], ['cc', 'dd'], ['ee', 'ff']]"},
+     {"range(1,5)", "[1, 2, 3, 4]"},
+     {"xrange(1,5)", "xrange(1, 5)"},
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},

@@ -24,7 +24,7 @@
 #define FLEXIBLE_MooneyRivlinMaterialBlock_H
 
 
-#include "../material/BaseMaterial.h"
+#include "BaseMaterial.h"
 #include "../BaseJacobian.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

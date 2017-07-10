@@ -476,6 +476,11 @@ public:
         return m_values[DDGNode::currentAspect(params)].getValue();
     }
 
+    inline const T& getValueWithoutUpdating(const core::ExecParams* params = 0) const
+    {
+        return m_values[DDGNode::currentAspect(params)].getValue();
+    }
+
     void copyAspect(int destAspect, int srcAspect)
     {
         m_values[destAspect] = m_values[srcAspect];

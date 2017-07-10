@@ -87,20 +87,18 @@ void NormalsFromPoints<DataTypes>::update()
         const Coord  v1 = raPositions[raTriangles[i][0]];
         const Coord  v2 = raPositions[raTriangles[i][1]];
         const Coord  v3 = raPositions[raTriangles[i][2]];
-        Coord n = cross(v2-v1, v3-v1);
+        Coord n = cross(v2-v1, v3-v1).normalized();
         if (useAngles)
         {
-            Real nnorm = n.norm();
-            Coord e12 = v2-v1; Real e12norm = e12.norm();
-            Coord e23 = v3-v2; Real e23norm = e23.norm();
-            Coord e31 = v1-v3; Real e31norm = e31.norm();
-            waNormals[raTriangles[i][0]] += n * (acos(-(e31*e12)/(e31norm*e12norm))/nnorm);
-            waNormals[raTriangles[i][1]] += n * (acos(-(e12*e23)/(e12norm*e23norm))/nnorm);
-            waNormals[raTriangles[i][2]] += n * (acos(-(e23*e31)/(e23norm*e31norm))/nnorm);
+            Coord e12 = (v2-v1).normalized();
+            Coord e23 = (v3-v2).normalized();
+            Coord e31 = (v1-v3).normalized();
+            waNormals[raTriangles[i][0]] += n * acos(-(e31*e12));
+            waNormals[raTriangles[i][1]] += n * acos(-(e12*e23));
+            waNormals[raTriangles[i][2]] += n * acos(-(e23*e31));
         }
         else
         {
-            n.normalize();
             waNormals[raTriangles[i][0]] += n;
             waNormals[raTriangles[i][1]] += n;
             waNormals[raTriangles[i][2]] += n;
@@ -112,27 +110,27 @@ void NormalsFromPoints<DataTypes>::update()
         const Coord & v2 = raPositions[raQuads[i][1]];
         const Coord & v3 = raPositions[raQuads[i][2]];
         const Coord & v4 = raPositions[raQuads[i][3]];
-        Coord n1 = cross(v2-v1, v4-v1); Real n1norm = n1.norm();
-        Coord n2 = cross(v3-v2, v1-v2); Real n2norm = n2.norm();
-        Coord n3 = cross(v4-v3, v2-v3); Real n3norm = n3.norm();
-        Coord n4 = cross(v1-v4, v3-v4); Real n4norm = n4.norm();
+        Coord n1 = cross(v2-v1, v4-v1).normalized();
+        Coord n2 = cross(v3-v2, v1-v2).normalized();
+        Coord n3 = cross(v4-v3, v2-v3).normalized();
+        Coord n4 = cross(v1-v4, v3-v4).normalized();
         if (useAngles)
         {
-            Coord e12 = v2-v1; Real e12norm = e12.norm();
-            Coord e23 = v3-v2; Real e23norm = e23.norm();
-            Coord e34 = v4-v3; Real e34norm = e34.norm();
-            Coord e41 = v1-v4; Real e41norm = e41.norm();
-            waNormals[raQuads[i][0]] += n1 * (acos(-(e41*e12)/(e41norm*e12norm))/n1norm);
-            waNormals[raQuads[i][1]] += n2 * (acos(-(e12*e23)/(e12norm*e23norm))/n2norm);
-            waNormals[raQuads[i][2]] += n3 * (acos(-(e23*e34)/(e23norm*e34norm))/n3norm);
-            waNormals[raQuads[i][3]] += n4 * (acos(-(e34*e41)/(e34norm*e41norm))/n3norm);
+            Coord e12 = (v2-v1).normalized();
+            Coord e23 = (v3-v2).normalized();
+            Coord e34 = (v4-v3).normalized();
+            Coord e41 = (v1-v4).normalized();
+            waNormals[raQuads[i][0]] += n1 * acos(-(e41*e12));
+            waNormals[raQuads[i][1]] += n2 * acos(-(e12*e23));
+            waNormals[raQuads[i][2]] += n3 * acos(-(e23*e34));
+            waNormals[raQuads[i][3]] += n4 * acos(-(e34*e41));
         }
         else
         {
-            waNormals[raQuads[i][0]] += n1 / n1norm;
-            waNormals[raQuads[i][1]] += n2 / n2norm;
-            waNormals[raQuads[i][2]] += n3 / n3norm;
-            waNormals[raQuads[i][3]] += n4 / n4norm;
+            waNormals[raQuads[i][0]] += n1;
+            waNormals[raQuads[i][1]] += n2;
+            waNormals[raQuads[i][2]] += n3;
+            waNormals[raQuads[i][3]] += n4;
         }
     }
 
@@ -140,8 +138,9 @@ void NormalsFromPoints<DataTypes>::update()
         for (unsigned int i = 0; i < waNormals.size(); i++)
             waNormals[i]=-waNormals[i];
 
+    const Coord failsafe = Coord(1,1,1).normalized();
     for (unsigned int i = 0; i < waNormals.size(); i++)
-        waNormals[i].normalize();
+        waNormals[i].normalize(failsafe);
 
     cleanDirty();
 }

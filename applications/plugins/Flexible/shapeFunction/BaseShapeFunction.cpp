@@ -25,7 +25,7 @@
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 
-#include "../shapeFunction/BaseShapeFunction.h"
+#include "BaseShapeFunction.h"
 
 
 namespace sofa

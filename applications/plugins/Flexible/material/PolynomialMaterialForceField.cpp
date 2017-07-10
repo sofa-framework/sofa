@@ -22,7 +22,7 @@
 #define SOFA_PolynomialMaterialFORCEFIELD_CPP
 
 #include <Flexible/config.h>
-#include "../material/PolynomialMaterialForceField.h"
+#include "PolynomialMaterialForceField.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

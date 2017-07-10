@@ -41,20 +41,20 @@ PythonScriptFunctionParameter::PythonScriptFunctionParameter(PyObject* data, boo
 	m_own(own),
 	m_pyData(data)
 {
-    
+
 }
 
 PythonScriptFunctionParameter::~PythonScriptFunctionParameter()
 {
-
+    Py_XDECREF(m_pyData);
 }
 
 PythonScriptFunctionResult::PythonScriptFunctionResult() : ScriptFunctionResult(),
 	m_own(false),
 	m_pyData(0)
 {
-	if(m_own && m_pyData)
-		Py_DECREF(m_pyData);
+    if(m_own)
+        Py_XDECREF(m_pyData);
 }
 
 PythonScriptFunctionResult::PythonScriptFunctionResult(PyObject* data, bool own) : ScriptFunctionResult(),
@@ -66,8 +66,8 @@ PythonScriptFunctionResult::PythonScriptFunctionResult(PyObject* data, bool own)
 
 PythonScriptFunctionResult::~PythonScriptFunctionResult()
 {
-	if(m_own && m_pyData)
-		Py_DECREF(m_pyData);
+    if(m_own)
+        Py_XDECREF(m_pyData);
 }
 
 PythonScriptFunction::PythonScriptFunction(PyObject* pyCallableObject, bool own) : ScriptFunction(),
@@ -79,8 +79,17 @@ PythonScriptFunction::PythonScriptFunction(PyObject* pyCallableObject, bool own)
 
 PythonScriptFunction::~PythonScriptFunction()
 {
-	if(m_own && m_pyCallableObject)
-		Py_DECREF(m_pyCallableObject);
+    if(m_own)
+        Py_XDECREF(m_pyCallableObject);
+}
+
+void PythonScriptFunction::setCallableObject(PyObject* callableObject, bool own)
+{
+    if(m_own)
+        Py_XDECREF(m_pyCallableObject);
+
+    m_pyCallableObject = callableObject;
+    m_own = own;
 }
 
 void PythonScriptFunction::onCall(const ScriptFunctionParameter* parameter, ScriptFunctionResult* result) const
@@ -96,7 +105,8 @@ void PythonScriptFunction::onCall(const ScriptFunctionParameter* parameter, Scri
 		pyParameter = pythonScriptParameter->data();
 
 	PyObject* pyResult = PyObject_CallObject(m_pyCallableObject, pyParameter);
-	if(!pyResult)
+
+    if(!pyResult)
 	{
 		SP_MESSAGE_EXCEPTION("in PythonScriptFunction: python function call failed")
 		PyErr_Print();

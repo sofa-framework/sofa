@@ -48,26 +48,12 @@ VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::c
 
 void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
 {
-    /* template < VecType vtype > MechanicalVAvailVisitor;  */
-    /* this can be probably merged in a single operation with the MultiVecId design */
-    core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
-    //executeVisitor( MechanicalVAvailVisitor<core:V_COORD>( params, id) );
-    //v.assign(id);
-    MechanicalVAvailVisitor<core::V_COORD> avail(params, id);
-    executeVisitor( &avail );
-    //v.assign(id);
-    v.setId(avail.states, id);
-    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params, v) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params, &v) );
 }
 
 void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
 {
-    core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    MechanicalVAvailVisitor<core::V_DERIV> avail(params, id);
-    executeVisitor( &avail );
-    //v.assign(id);
-    v.setId(avail.states, id);
-    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params, v) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params, &v) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField, bool propagate)
@@ -82,27 +68,11 @@ void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionF
 
 void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate)
 {
-    if( v.isNull() )
-    {
-        core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<core::V_COORD> avail(params, id);
-        executeVisitor( &avail );
-        //v.assign(id);
-        v.setId(avail.states, id);
-    }
     executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params, &v, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate)
 {
-    if( v.isNull() )
-    {
-        core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<core::V_DERIV> avail(params, id);
-        executeVisitor( &avail );
-        //v.assign(id);
-        v.setId(avail.states, id);
-    }
     executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params, &v, interactionForceField, propagate) );
 }
 

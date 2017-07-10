@@ -23,7 +23,7 @@
 #define SOFA_GaussPointSmoother_H
 
 #include <Flexible/config.h>
-#include "../quadrature/BaseGaussPointSampler.h"
+#include "BaseGaussPointSampler.h"
 #include "../shapeFunction/BaseShapeFunction.h"
 #include <sofa/helper/SVector.h>
 
@@ -55,10 +55,10 @@ public:
 
     /** @name  Shape Function types    */
     //@{
-    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
+    typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
-    typedef BaseShapeFunction::VReal VReal;
-    typedef BaseShapeFunction::VecVReal VecVReal;
+    typedef BaseShapeFunction::VWeight VWeight;
+    typedef BaseShapeFunction::VecVWeight VecVWeight;
     typedef BaseShapeFunction::VRef VRef;
     typedef BaseShapeFunction::VecVRef VecVRef;
     //@}
@@ -67,7 +67,7 @@ public:
     Data< helper::vector<volumeIntegralType> > d_inputVolume;  ///< parent volumes from another GP sampler
 
     Data<VecVRef > d_index;      ///< computed child to parent relationship using local shape function. index[i][j] is the index of the j-th parent influencing child i.
-    Data<VecVReal > d_w;      ///< Influence weights
+    Data<VecVWeight > d_w;      ///< Influence weights
 
     virtual void init()
     {
@@ -121,7 +121,7 @@ protected:
         const unsigned int childSize = positions.size();
 
         helper::WriteOnlyAccessor<Data< VecVRef > > indices(this->d_index);
-        helper::WriteOnlyAccessor<Data< VecVReal > > weights(this->d_w);
+        helper::WriteOnlyAccessor<Data< VecVWeight > > weights(this->d_w);
 
         waVolume volumes(this->f_volume);
         helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);

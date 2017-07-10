@@ -77,6 +77,12 @@ struct BoxROITest :  public ::testing::Test
         m_node = m_root->createChild("node") ;
         m_boxroi = New< TheBoxROI >() ;
         m_node->addObject(m_boxroi) ;
+
+        m_boxroi->d_computeEdges.setValue(true);
+        m_boxroi->d_computeTriangles.setValue(true);
+        m_boxroi->d_computeQuad.setValue(true);
+        m_boxroi->d_computeTetrahedra.setValue(true);
+        m_boxroi->d_computeHexahedra.setValue(true);
     }
 
     void TearDown()

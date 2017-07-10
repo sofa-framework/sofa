@@ -222,8 +222,8 @@ struct TestSparseMatrices : public Sofa_test<_Real>
         matMultiplication = mat * matMultiplier;
         crs1.mul( crsMultiplication, crsMultiplier );
         fullMat.mul( fullMultiplication, fullMultiplier );
-        eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier ); // sparse x sparse
-        eiBase.mul_MT( eiDenseMultiplication, eiDenseMultiplier ); // sparse x dense
+        eiBase.mul( eiBaseMultiplication, eiBaseMultiplier ); // sparse x sparse
+        eiBase.mul( eiDenseMultiplication, eiDenseMultiplier ); // sparse x dense
 
         matTransposeMultiplication = mat.multTranspose( mat );
         crs1.mulTranspose( crsTransposeMultiplication, crs1 );
@@ -305,7 +305,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             }
             mb.endBlockRow();
         }
-        mb.compress();
+        mb.finalize();
 
 
         //    serr()<<"MatrixTest<Real,RN,CN>::checkEigenMatrixBlockRowFilling, ma = " << ma << endl;
@@ -397,7 +397,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
             }
 
         }
-        mb.compress();
+        mb.finalize();
 
         ASSERT_TRUE( Sofa_test<_Real>::matrixMaxDiff(ma,mb) < 100*Sofa_test<_Real>::epsilon() );
     }
@@ -492,25 +492,10 @@ TEST_F(TsProductTimings, benchmark )
     stop = get_time();
     msg_info()<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
-#ifdef _OPENMP
-    eiBaseMultiplication.clear();
-    start = get_time();
-    eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
-    stop = get_time();
-    msg_info()<<"Eigen Base MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
-#endif
-
     start = get_time();
     eiDenseMultiplication = eiBase.compressedMatrix * eiDenseMultiplier;
     stop = get_time();
     msg_info()<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
-
-#ifdef _OPENMP
-    start = get_time();
-    eiDenseMultiplication.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiBase.compressedMatrix, eiDenseMultiplier, omp_get_max_threads()/2 );
-    stop = get_time();
-    msg_info()<<"Eigen Sparse*Dense MT:\t\t"<<stop-start<<" (ms)"<<std::endl;
-#endif
 
     msg_info()<<"=== Eigen Matrix-Vector Products:"<<std::endl;
     unsigned nbrows = 100, nbcols;
@@ -555,24 +540,6 @@ TEST_F(TsProductTimings, benchmark )
 
         msg_info()<<"ST: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
 
-
-
-    #ifdef _OPENMP
-        min=std::numeric_limits<double>::max(), max=0, sum=0;
-        for( int i=0; i<100 ; ++i )
-        {
-            start = get_time();
-//            res.noalias() = typename Eigen::SparseDenseProductReturnType_MT<Eigen::SparseMatrix<SReal,Eigen::RowMajor>,Eigen::Matrix<SReal, Eigen::Dynamic, 1> >::Type( A.derived(), rhs.derived() );
-//            component::linearsolver::mul_EigenSparseDenseMatrix_MT( res, A, rhs );
-            res.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( A, rhs );
-            stop = get_time();
-            double current = stop-start;
-            sum+=current;
-            if( current<min ) min=current;
-            if( current>max ) max=current;
-        }
-        msg_info()<<"MT: "<<sum/100.0<<" "<<min<<" "<<max<<std::endl;
-    #endif
     }
 
 

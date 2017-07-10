@@ -49,6 +49,7 @@ SOFA_DECL_CLASS(MeshObjLoader)
 
 int MeshObjLoaderClass = core::RegisterObject("Specific mesh loader for Obj file format.")
         .add< MeshObjLoader >()
+        .addAlias("MeshOBJLoader")
         ;
 
 
@@ -75,7 +76,7 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::load()
 {
-    sout << "Loading OBJ file: " << m_filename << sendl;
+    sout << "Loading " << m_filename << sendl;
 
     bool fileRead = false;
 
@@ -84,8 +85,7 @@ bool MeshObjLoader::load()
         return false;
 
     const char* filename = m_filename.getFullPath().c_str();
-    File file;
-    file.open(filename);
+    File file(filename);
     istream stream(file.streambuf());
 
     // -- Reading file
@@ -99,8 +99,6 @@ bool MeshObjLoader::load()
 bool MeshObjLoader::readOBJ (istream &stream, const char* filename)
 {
     SOFA_UNUSED(filename);
-
-    dmsg_info() << " readOBJ" ;
 
     vector<Vector3>& my_positions = *(d_positions.beginWriteOnly());
     vector<int> nodes, nIndices;

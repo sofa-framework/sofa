@@ -20,21 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <map>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/topology/TopologyChange.h>
-
-#include <sofa/core/loader/VoxelLoader.h>
-
 #include <SofaOpenglVisual/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
-
-#include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
 {
@@ -55,10 +43,11 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
 OglCylinderModel::OglCylinderModel()
-    : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
+    : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder."))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
+    , d_depthTest(initData(&d_depthTest, true, "depthTest", "perform depth test"))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
@@ -85,10 +74,17 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
+    const bool& depthTest = d_depthTest.getValue();
+    if( !depthTest )
+    {
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_DEPTH_TEST);
+    }
+
     vparams->drawTool()->setLightingEnabled(true);
     Real _radius = radius.getValue();
 
-    Vec<4,float> col( r, g, b, a );
+    const defaulttype::RGBAColor& col = d_color.getValue();
 
     const SeqEdges& edges = d_edges.getValue();
 
@@ -99,68 +95,11 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
+
+    if( !depthTest )
+        glPopAttrib();
 }
 
-
-void OglCylinderModel::setColor(float r, float g, float b, float a)
-{
-    this->r = r;
-    this->g = g;
-    this->b = b;
-    this->a = a;
-}
-
-static int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-void OglCylinderModel::setColor(std::string color)
-{
-    if (color.empty()) return;
-    float r = 1.0f;
-    float g = 1.0f;
-    float b = 1.0f;
-    float a = 1.0f;
-    if (color[0]>='0' && color[0]<='9')
-    {
-        sscanf(color.c_str(),"%f %f %f %f", &r, &g, &b, &a);
-    }
-    else if (color[0]=='#' && color.length()>=7)
-    {
-        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
-        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
-        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
-        if (color.length()>=9)
-            a = (hexval(color[7])*16+hexval(color[8]))/255.0f;
-    }
-    else if (color[0]=='#' && color.length()>=4)
-    {
-        r = (hexval(color[1])*17)/255.0f;
-        g = (hexval(color[2])*17)/255.0f;
-        b = (hexval(color[3])*17)/255.0f;
-        if (color.length()>=5)
-            a = (hexval(color[4])*17)/255.0f;
-    }
-    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
-    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
-    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
-    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
-    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else
-    {
-        serr << "Unknown color "<<color<<sendl;
-        return;
-    }
-    setColor(r,g,b,a);
-}
 
 void OglCylinderModel::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& /*nindex*/, int& /*tindex*/, int& /*count*/)
 {

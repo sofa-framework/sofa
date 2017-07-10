@@ -77,15 +77,20 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
-    return loadSceneWithArguments(filename);
+    sofa::simulation::Node::SPtr root;
+    loadSceneWithArguments(filename, {}, &root);
+    return root;
 }
 
-sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
+void SceneLoaderPY::loadSceneWithArguments(const char *filename,
+                                           const std::vector<std::string>& arguments,
+                                           Node::SPtr* root_out)
 {
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
-        SP_MESSAGE_ERROR( "header script run error." )
-        return NULL;
+        SP_MESSAGE_ERROR( "header script run error." );
+        if( root_out ) *root_out = 0;
+        return;
     }
 
     PythonEnvironment::runString("createScene=None");
@@ -100,8 +105,9 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
     {
         // LOAD ERROR
-        SP_MESSAGE_ERROR( "scene script load error." )
-        return NULL;
+        SP_MESSAGE_ERROR( "scene script load error." );
+        if( root_out ) *root_out = 0;
+        return;
     }
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
@@ -111,9 +117,10 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");
-        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-
-        return rootNode;
+        if(root_out) *root_out = rootNode;
+        
+        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
+        return;
     }
     else
     {
@@ -121,16 +128,18 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
         if (PyCallable_Check(pFunc))
         {
             Node::SPtr rootNode = Node::create("root");
-            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-
+            if(root_out) *root_out = rootNode;
+            
+            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
             rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
 
-            return rootNode;
+            return;
         }
     }
 
-    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." )
-    return NULL;
+    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." );
+    if( root_out ) *root_out = 0;
+    return;
 }
 
 

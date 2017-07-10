@@ -75,7 +75,10 @@ BaseSofa_test::BaseSofa_test(){
     MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
 }
 
-BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
+BaseSofa_test::~BaseSofa_test() {
+    clearSceneGraph();
+    modeling::cleanupSofa();
+}
 
 void BaseSofa_test::clearSceneGraph(){ modeling::clearScene(); }
 

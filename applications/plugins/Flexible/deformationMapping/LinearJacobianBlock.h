@@ -32,7 +32,7 @@ namespace defaulttype
 
 /** Template class used to implement one jacobian block for linearMapping */
 template<class TIn, class TOut>
-class LinearJacobianBlock : public BaseJacobianBlock<TIn,TOut> {};
+class LinearJacobianBlock : public BaseJacobianBlock<TIn,TOut,SReal> {};
 
 
 

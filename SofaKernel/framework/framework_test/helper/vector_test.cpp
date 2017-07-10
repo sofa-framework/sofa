@@ -100,40 +100,43 @@ TEST_P(vector_test_int, checkReadWriteBehavior)
 
 std::vector<std::vector<std::string>> intvalues={
     /// First test valid values
-    {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
-    {"0 -1 2 -3 4 5 6", "0 -1 2 -3 4 5 6", "None"},
-    {"100", "100", "None"},
-    {"-100", "-100", "None"},
-    {"", "", "None"},
+    {"0 1 2 3 4 5 6", "[0, 1, 2, 3, 4, 5, 6]", "None"},
+    {"0 -1 2 -3 4 5 6", "[0, -1, 2, -3, 4, 5, 6]", "None"},
+    {"100", "[100]", "None"},
+    {"-100", "[-100]", "None"},
+    {"", "[]", "None"},
+
+    /// using [,] notation
+    {"[0, 1, 2, 3, 4, 5, 6]", "[0, 1, 2, 3, 4, 5, 6]", "None"},
 
     /// The test the A-B range notation
-    {"10-15 21", "10 11 12 13 14 15 21", "None"},
-    {"15-10 21", "15 14 13 12 11 10 21", "None"},
-    {"10-15 -2 21", "10 11 12 13 14 15 -2 21", "None"},
-    {"15-10 -2 21", "15 14 13 12 11 10 -2 21", "None"},
+    {"10-15 21", "[10, 11, 12, 13, 14, 15, 21]", "None"},
+    {"15-10 21", "[15, 14, 13, 12, 11, 10, 21]", "None"},
+    {"10-15 -2 21", "[10, 11, 12, 13, 14, 15, -2, 21]", "None"},
+    {"15-10 -2 21", "[15, 14, 13, 12, 11, 10, -2, 21]", "None"},
 
     /// Test the A-B-INC range notation
-    {"10-16-2 21", "10 12 14 16 21", "None"},
+    {"10-16-2 21", "[10, 12, 14, 16, 21]", "None"},
 
     /// The test the A-B negative range notation
-    {"-5-0", "-5 -4 -3 -2 -1 0", "None"},
-    {"-5-5", "-5 -4 -3 -2 -1 0 1 2 3 4 5", "None"},
-    {"5--5", "5 4 3 2 1 0 -1 -2 -3 -4 -5", "None"},
-    {"-10--5", "-10 -9 -8 -7 -6 -5", "None"},
-    {"-5--10", "-5 -6 -7 -8 -9 -10", "None"},
+    {"-5-0", "[-5, -4, -3, -2, -1, 0]", "None"},
+    {"-5-5", "[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", "None"},
+    {"5--5", "[5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5]", "None"},
+    {"-10--5", "[-10, -9, -8, -7, -6, -5]", "None"},
+    {"-5--10", "[-5, -6, -7, -8, -9, -10]", "None"},
 
     /// Test the A-B-INC range notation
-    {"10-16-2 21", "10 12 14 16 21", "None"},
+    {"10-16-2 21", "[10, 12, 14, 16, 21]", "None"},
 
     /// Test the A-B-INC negative range notation
-    {"10-16--2 21", "16 14 12 10 21", "None"},
-    {"-10--16--2 21", "-10 -12 -14 -16 21", "None"},
+    {"10-16--2 21", "[16, 14, 12, 10, 21]", "None"},
+    {"-10--16--2 21", "[-10, -12, -14, -16, 21]", "None"},
 
     /// Now we test correct handling of problematic input
-    {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
-    {"5 6---10 0", "5 0 0", "Warning"},
-    {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
-    {"3.14 4.15 5.16", "0 0 0", "Warning"}
+    {"5 6 - 10 0", "[5, 6, 0, 10, 0]", "Warning"},
+    {"5 6---10 0", "[5, 0, 0]", "Warning"},
+    {"zero 1 2 trois quatre cinq 6", "[0, 1, 2, 0, 0, 0, 6]", "Warning"},
+    {"3.14 4.15 5.16", "[0, 0, 0]", "Warning"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_int,
@@ -143,7 +146,7 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-/// TEST THE vector<int> behavior
+/// TEST THE vector<unsigned int> behavior
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef vector_test<unsigned int> vector_test_unsigned_int;
@@ -154,38 +157,58 @@ TEST_P(vector_test_unsigned_int, checkReadWriteBehavior)
 
 std::vector<std::vector<std::string>> uintvalues={
     /// First test valid values
-    {"0 1 2 3 4 5 6", "0 1 2 3 4 5 6", "None"},
-    {"100", "100", "None"},
-    {"", "", "None"},
+    {"0 1 2 3 4 5 6", "[0, 1, 2, 3, 4, 5, 6]", "None"},
+    {"100", "[100]", "None"},
+    {"", "[]", "None"},
+
+    /// using [,] notation
+    {"[0, 1, 2, 3, 4, 5, 6]", "[0, 1, 2, 3, 4, 5, 6]", "None"},
 
     /// Test the A-B range notation
-    {"10-15 21", "10 11 12 13 14 15 21", "None"},
-    {"15-10 21", "15 14 13 12 11 10 21", "None"},
+    {"10-15 21", "[10, 11, 12, 13, 14, 15, 21]", "None"},
+    {"15-10 21", "[15, 14, 13, 12, 11, 10, 21]", "None"},
 
     /// Test the A-B range notation
-    {"10-16-2 21", "10 12 14 16 21", "None"},
-    {"10-16--2 21", "16 14 12 10 21", "None"},
+    {"10-16-2 21", "[10, 12, 14, 16, 21]", "None"},
+    {"10-16--2 21", "[16, 14, 12, 10, 21]", "None"},
 
     /// Test the A-B negative range notation
-    {"-5-5", "0 1 2 3 4 5", "Warning"},
-    {"0--5", "0", "Warning"},
-    {"5--5", "5 4 3 2 1 0", "Warning"},
-    {"-10--5", "0", "Warning"},
-    {"-5--10", "0", "Warning"},
+    {"-5-5", "[0, 1, 2, 3, 4, 5]", "Warning"},
+    {"0--5", "[0]", "Warning"},
+    {"5--5", "[5, 4, 3, 2, 1, 0]", "Warning"},
+    {"-10--5", "[0]", "Warning"},
+    {"-5--10", "[0]", "Warning"},
 
     /// Test correct handling of problematic input
-    {"-5", "0", "Warning"},
-    {"0 -1 2 -3 4 5 6", "0 0 2 0 4 5 6", "Warning"},
-    {"-100", "0", "Warning"},
-    {"5 6 - 10 0", "5 6 0 10 0", "Warning"},
-    {"zero 1 2 trois quatre cinq 6", "0 1 2 0 0 0 6", "Warning"},
-    {"3.14 4.15 5.16", "0 0 0", "Warning"},
-    {"5 6---10 0", "5 0 0", "Warning"}
+    {"-5", "[0]", "Warning"},
+    {"0 -1 2 -3 4 5 6", "[0, 0, 2, 0, 4, 5, 6]", "Warning"},
+    {"-100", "[0]", "Warning"},
+    {"5 6 - 10 0", "[5, 6, 0, 10, 0]", "Warning"},
+    {"zero 1 2 trois quatre cinq 6", "[0, 1, 2, 0, 0, 0, 6]", "Warning"},
+    {"3.14 4.15 5.16", "[0, 0, 0]", "Warning"},
+    {"5 6---10 0", "[5, 0, 0]", "Warning"}
 };
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
 
+
+typedef vector_test<SReal> vector_test_sreal;
+TEST_P(vector_test_sreal, checkReadWriteBehavior)
+{
+    this->checkVector(GetParam()) ;
+}
+
+std::vector<std::vector<std::string>> srealvalues={
+    /// First test valid values
+    {"0.2 1.3 2.4 3.5 4.6 5.7 6.8", "[0.2, 1.3, 2.4, 3.5, 4.6, 5.7, 6.8]", "None"},
+
+    /// using [,] notation
+    {"[0.2, 1.3, 2.4, 3.5, 4.6, 5.7, 6.8]", "[0.2, 1.3, 2.4, 3.5, 4.6, 5.7, 6.8]", "None"}
+};
+INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
+                        vector_test_sreal,
+                        ::testing::ValuesIn(srealvalues));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///

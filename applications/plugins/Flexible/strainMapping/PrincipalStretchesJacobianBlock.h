@@ -40,7 +40,7 @@ namespace defaulttype
 {
 
 template<class TIn, class TOut>
-class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
+class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut,SReal>
 {
 };
 
@@ -50,14 +50,14 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 
 
 //template<class TIn, class TOut>
-//class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
+//class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut,SReal>
 //{
 //public:
 
 //    typedef TIn In;
 //    typedef TOut Out;
 
-//    typedef BaseJacobianBlock<In,Out> Inherit;
+//    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
 //    typedef typename Inherit::InCoord InCoord;
 //    typedef typename Inherit::InDeriv InDeriv;
 //    typedef typename Inherit::OutCoord OutCoord;
@@ -65,6 +65,7 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 //    typedef typename Inherit::MatBlock MatBlock;
 //    typedef typename Inherit::KBlock KBlock;
 //    typedef typename Inherit::Real Real;
+//    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
 //    typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
 //    typedef typename Out::StrainVec StrainVec;  ///< Vec representing a strain
@@ -240,14 +241,14 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 /** Template class used to implement one jacobian block for PrincipalStretchesMapping*/
 template<class InReal, class OutReal, int MaterialDimension>
 class PrincipalStretchesJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
-           : public BaseJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> >
+           : public BaseJacobianBlock< DefGradientTypes<3,MaterialDimension,0,InReal>, PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal>, SReal >
 {
 public:
 
     typedef DefGradientTypes<3,MaterialDimension,0,InReal> In;
     typedef PrincipalStretchesStrainTypes<3,MaterialDimension,0,OutReal> Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -255,6 +256,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     typedef typename In::Frame Frame;  ///< Matrix representing a deformation gradient
     typedef typename Out::StrainVec StrainVec;  ///< Vec representing a strain

@@ -6,6 +6,7 @@ set(SOURCE_FILES
     DistanceMapping_test.cpp
     ProjectionToTargetLineMapping_test.cpp
     ProjectionToTargetPlaneMapping_test.cpp
+    ProjectionToPlaneMultiMapping_test.cpp
     SubsetMultiMapping_test.cpp
     SquareDistanceMapping_test.cpp
     SquareMapping_test.cpp

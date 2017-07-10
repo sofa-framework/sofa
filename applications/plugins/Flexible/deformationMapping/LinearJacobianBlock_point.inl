@@ -41,13 +41,13 @@ namespace defaulttype
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , V3(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , V3(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , V3(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef V3(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -55,6 +55,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
 
@@ -117,13 +118,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , EV3(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , EV3(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , EV3(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef EV3(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -131,6 +132,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
 
@@ -194,13 +196,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , F331(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F331(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , F331(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef F331(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -208,6 +210,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
@@ -277,13 +280,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , F321(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F321(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , F321(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef F321(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -291,6 +294,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
@@ -359,13 +363,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , F311(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F311(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , F311(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef F311(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -373,6 +377,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
@@ -443,13 +448,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , Affine3(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , Affine3(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , Affine3(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef Affine3(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -457,6 +462,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
 
@@ -534,13 +540,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V3(InReal) , F332(OutReal) > :
-    public  BaseJacobianBlock< V3(InReal) , F332(OutReal) >
+    public  BaseJacobianBlock< V3(InReal) , F332(OutReal), SReal >
 {
 public:
     typedef V3(InReal) In;
     typedef F332(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -548,6 +554,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
@@ -575,8 +582,7 @@ public:
 
     static const bool constant=true;
 
-    OutCoord C;       ///< =  w.(p0-t0)   ,  (p0-t0).grad w + w.I,  (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w]   =  constant term
-    Real Pt;           ///< =   w     =  dp/dt
+    OutCoord C;       ///< =  (p0-t0).grad w.M + w.M,  ( (p0-t0).(grad2 w)_k^T + [(grad w)_k.I +  I_k.grad w] ).M  =  constant term
     mGradient Ft;  ///< =   grad w.M     =  d F/dt
     mHessian dFt;  ///< =   (grad2 w)_k^T.M   =  d (grad F)_k/dt
 
@@ -646,13 +652,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V2(InReal) , V2(OutReal) > :
-    public  BaseJacobianBlock< V2(InReal) , V2(OutReal) >
+    public  BaseJacobianBlock< V2(InReal) , V2(OutReal), SReal >
 {
 public:
     typedef V2(InReal) In;
     typedef V2(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -660,6 +666,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
 
@@ -723,13 +730,13 @@ public:
 
 template<class InReal,class OutReal>
 class LinearJacobianBlock< V2(InReal) , F221(OutReal) > :
-    public  BaseJacobianBlock< V2(InReal) , F221(OutReal) >
+    public  BaseJacobianBlock< V2(InReal) , F221(OutReal), SReal >
 {
 public:
     typedef V2(InReal) In;
     typedef F221(OutReal) Out;
 
-    typedef BaseJacobianBlock<In,Out> Inherit;
+    typedef BaseJacobianBlock<In,Out,SReal> Inherit;
     typedef typename Inherit::InCoord InCoord;
     typedef typename Inherit::InDeriv InDeriv;
     typedef typename Inherit::OutCoord OutCoord;
@@ -737,6 +744,7 @@ public:
     typedef typename Inherit::MatBlock MatBlock;
     typedef typename Inherit::KBlock KBlock;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::WeightType WeightType;  ///< scalar weight of type SReal
 
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };

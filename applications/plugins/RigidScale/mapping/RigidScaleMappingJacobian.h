@@ -35,11 +35,22 @@ namespace component
 namespace mapping
 {
 	typedef defaulttype::Mat<3, 3, SReal> Mat3x3;
+    typedef defaulttype::Mat<12, 1, SReal> Mat12x1;
 	typedef defaulttype::Mat<12, 3, SReal> Mat12x3;
 	typedef defaulttype::Mat<12, 6, SReal> Mat12x6;
-
+    typedef defaulttype::Mat<6, 1, SReal> Mat6x1;
     typedef defaulttype::Mat<6, 3, SReal> Mat6x3;
     typedef defaulttype::Mat<6, 6, SReal> Mat6x6;
+
+    //============================================================
+    // Utils function
+    //============================================================
+    template <class CoordIn2> 
+    inline void computeScaleMatrix(CoordIn2 scale, Mat3x3& res)
+    {
+        unsigned int j = scale.size()-1;
+        for (unsigned int i = 0; i < 3; ++i) res[i][i] = scale[i>j?j:i];
+    }
 
     //============================================================
     // Jacobian of RigidToAffineMultiMapping
@@ -122,6 +133,41 @@ namespace mapping
 		return;
 	}
 
+
+    // Computation of J2 = df(r,s)/ds
+    template<class CoordIn1, class CoordIn2, class CoordOut>
+    inline void computeFrameJacobianS(const CoordIn1& rigid, const CoordIn2& /*scale*/, CoordOut& /*output*/, Mat12x1& res)
+    {
+        // variable
+        Mat3x3 R; // Sw = Skew matrix, R = Rotation matrix, S = scale matrix, A = Affine matrix, R_dot = R*Sw
+                  // Computation of rotation and scale matrices
+        defaulttype::RigidTypes::Quat q = rigid.getOrientation();
+        // -- rotation
+        q.toMatrix(R);
+
+        // Computation of the Jacobian
+        // dt/ds
+        res[0][0] = 0;      
+        res[1][0] = 0;		
+        res[2][0] = 0;		
+
+        // dR/ds
+        res[3][0] = R[0][0]; 
+        res[4][0] = R[0][1];
+        res[5][0] = R[0][2];
+        //-------------------------------------------------------------------
+        res[6][0] = R[1][0];
+        res[7][0] = R[1][1];
+        res[8][0] = R[1][2];
+        //-------------------------------------------------------------------
+        res[9][0] = R[2][0]; 
+        res[10][0] = R[2][1];
+        res[11][0] = R[2][2];
+
+        return;
+    }
+
+
     //============================================================
     // Jacobian of RigidScaleToRigidMultiMapping
     //============================================================
@@ -135,9 +181,9 @@ namespace mapping
         // Conversion of the rigid quaternion into a rotation matrix
         q.toMatrix(R);
         // Conversion of the scale into a 3x3 matrix
-        for (unsigned int i = 0; i < 3; ++i) S[i][i] = scale[i];
+        computeScaleMatrix(scale, S);
         // Computation of the new position
-        CoordIn2 t0_up = (R*S)*relativeCoordinate.getCenter();
+        defaulttype::Vector3 t0_up = (R*S)*relativeCoordinate.getCenter();
 
         // Computation of the Jacobian
         // df1/dt
@@ -170,7 +216,7 @@ namespace mapping
         defaulttype::Rigid3Types::Quat q = rigid.getOrientation();
         // Conversion of the rigid quaternion into a rotation matrix
         q.toMatrix(R);
-        CoordIn2 t0(relativeCoordinate.getCenter());
+        defaulttype::Vector3 t0(relativeCoordinate.getCenter());
         // Computation of the Jacobian
         // df1/ds
         res[0][0] = R[0][0]*t0[0];  res[0][1] = R[0][1]*t0[1];  res[0][2] = R[0][2]*t0[2];
@@ -180,6 +226,28 @@ namespace mapping
         res[3][0] = 0;              res[3][1] = 0;              res[3][2] = 0;
         res[4][0] = 0;              res[4][1] = 0;              res[4][2] = 0;
         res[5][0] = 0;              res[5][1] = 0;              res[5][2] = 0;
+    }
+
+    template<class CoordIn1, class CoordIn2, class CoordOut>
+    inline void computeFrameRigidJacobianS(const CoordIn1& rigid, const CoordIn2& /*scale*/, const CoordOut& relativeCoordinate, const CoordOut& /*affine*/, Mat6x1& res)
+    {
+        // Variabless
+        Mat3x3 R;
+        // Get important components
+        defaulttype::Rigid3Types::Quat q = rigid.getOrientation();
+        // Conversion of the rigid quaternion into a rotation matrix
+        q.toMatrix(R);
+        defaulttype::Vector3 t0(relativeCoordinate.getCenter());
+        t0 = R * t0;
+        // Computation of the Jacobian
+        // df1/ds
+        res[0][0] = t0[0];
+        res[1][0] = t0[1];
+        res[2][0] = t0[2];
+        // df2/ds
+        res[3][0] = 0;              
+        res[4][0] = 0;              
+        res[5][0] = 0;              
     }
 
 }// mapping

@@ -23,7 +23,7 @@
 #define FLEXIBLE_BarycentricShapeFunction_H
 
 #include <Flexible/config.h>
-#include "../shapeFunction/BaseShapeFunction.h"
+#include "BaseShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <algorithm>
@@ -50,7 +50,7 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VCoord VCoord;
-    typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::VWeight VWeight;
     typedef typename Inherit::VGradient VGradient;
     typedef typename Inherit::VHessian VHessian;
     typedef typename Inherit::VRef VRef;
@@ -68,7 +68,7 @@ public:
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
 
-    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
         InternalShapeFunction<spatial_dimensions>::computeShapeFunction( this, childPosition, this->cellIndex, ref, w, dw, ddw, cell );
     }
@@ -219,7 +219,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();
@@ -250,14 +250,23 @@ protected:
                 if ( triangles.empty() && quads.empty() )
                 {
                     if ( edges.empty() ) return;
-                    //no 3D elements, nor 2D elements -> map on 1D elements
-                    for ( unsigned int i = 0; i < edges.size(); i++ )
-                        if(cell==-1 || cell==(int)i)
-                        {
-                            Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
-                            double d = std::max ( -v[0], v[0]-(Real)1. );
-                            if ( d<=distance ) { coefs = v; distance = d; index = i; }
+
+                    // no 3D elements, nor 2D elements -> map on 1D elements
+                    auto update_distance_edge = [&](unsigned i) {
+                        Coord v = B->bases[i] * ( childPosition - parent[edges[i][0]] );
+                        double d = std::max ( -v[0], v[0]-(Real)1. );
+                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                    };
+
+                    if( cell == -1 ) {
+                        // warning: linear search!
+                        for(unsigned i = 0, imax = edges.size(); i < imax; ++i ) {
+                            update_distance_edge(i);
                         }
+                    } else {
+                        update_distance_edge(cell);
+                    }
+                    
                     if ( index!=-1 ) // addPointInLine
                     {
                         ref[0]=edges[index][0]; ref[1]=edges[index][1];
@@ -269,21 +278,41 @@ protected:
                 else
                 {
                     // no 3D elements -> map on 2D elements
-                    for ( unsigned int i = 0; i < triangles.size(); i++ )
-                        if(cell==-1 || cell==(int)i)
-                        {
-                            Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
-                            double d = getDistanceTriangle( v );
-                            if ( d<=distance ) { coefs = v; distance = d; index = i; }
-                        }
-                    int c0 = triangles.size();
-                    for ( unsigned int i = 0; i < quads.size(); i++ )
-                        if(cell==-1 || cell==(int)(i+c0))
-                        {
+                    const int c0 = triangles.size();
+
+                    auto update_distance_triangle = [&](unsigned i) {
+                        Coord v = B->bases[i] * ( childPosition - parent[triangles[i][0]] );
+                        double d = getDistanceTriangle( v );
+                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                    };
+
+                    auto update_distance_quad = [&](unsigned i) {
                             Coord v = B->bases[c0+i] * ( childPosition - parent[quads[i][0]] );
                             double d = getDistanceQuad( v );
                             if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+                    };
+
+                    if( cell == -1 ) {
+                        // warning: linear search!
+                        for(int i = 0; i < c0; ++i) {
+                            update_distance_triangle(i);
                         }
+
+                        for(unsigned i = 0, imax = quads.size(); i < imax; ++i) {
+                            update_distance_quad(i);
+                        }
+                        
+                    } else {
+                        if( cell < c0 ) {
+                            assert( cell >= 0 );
+                            update_distance_triangle(cell);
+                        } else {
+                            const unsigned i = cell - c0;
+                            update_distance_quad(i);
+                        }
+                        
+                    }
+                    
                     if ( index!=-1 && index<c0 ) // addPointInTriangle
                     {
                         ref[0]=triangles[index][0];                          ref[1]=triangles[index][1];  ref[2]=triangles[index][2];
@@ -320,22 +349,46 @@ protected:
             else
             {
                 // map on 3D elements
-                for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
-                    if(cell==-1 || cell==(int)i)
-                    {
-                        Coord v = B->bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
-                        double d = getDistanceTetra( v );
-                        if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                const int c0 = tetrahedra.size();
+
+                auto update_distance_tetra = [&](unsigned i) {
+                    Coord v = B->bases[i] * ( childPosition - parent[tetrahedra[i][0]] );
+                    double d = getDistanceTetra( v );
+                    if ( d<=distance ) { coefs = v; distance = d; index = i; }
+                };
+
+                auto update_distance_hexa = [&](unsigned i) {
+                    Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
+                    
+                    // Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
+                    double d = getDistanceHexa( v );
+                    if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+                };
+
+                
+                if( cell == -1 ) {
+
+                    // warning: linear search!
+                    for(int i = 0; i < c0; ++i) {
+                        update_distance_tetra(i);
                     }
-                int c0 = tetrahedra.size();
-                for ( unsigned int i = 0; i < cubes.size(); i++ )
-                    if(cell==-1 || cell==(int)(i+c0))
-                    {
-                        Coord v = B->bases[c0+i] * ( childPosition - parent[cubes[i][0]] );  // for cuboid hexahedra
-//                        Coord v; Coord ph[8];  for ( unsigned int j = 0; j < 8; j++ ) ph[j]=parent[cubes[i][j]]; computeHexaTrilinearWeights(v,ph,childPosition,1E-10); // for arbitrary hexahedra
-                        double d = getDistanceHexa( v );
-                        if ( d<=distance ) { coefs = v; distance = d; index = c0+i; }
+
+                    for(int i = 0, imax = cubes.size(); i < imax; ++i ){
+                        update_distance_hexa(i);
                     }
+                    
+                } else {
+                    assert( cell >= 0 );
+                    
+                    if( cell < c0 ) {
+                        update_distance_tetra(cell);
+                    } else {
+                        const unsigned i = cell - c0;
+                        update_distance_hexa(i);
+                    }
+                }
+                
+                
                 if ( index!=-1 && index<c0 ) // addPointInTet
                 {
                     ref[0]=tetrahedra[index][0];                                         ref[1]=tetrahedra[index][1];  ref[2]=tetrahedra[index][2];    ref[3]=tetrahedra[index][3];
@@ -468,7 +521,7 @@ protected:
             }
         }
 
-        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+        static void computeShapeFunction( const BarycentricShapeFunction<ShapeFunctionTypes_>* B, const Coord& childPosition, Cell &index, VRef& ref, VWeight& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
         {
             // resize input
             unsigned int nbRef=B->f_nbRef.getValue();

@@ -45,9 +45,7 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(DifferenceEngine,TDataType),core::DataEngine);
 
     typedef TDataType DataType;
-    typedef typename DataType::value_type Real;
     typedef helper::vector<DataType> VecData;
-    typedef helper::vector<Real> VecReal;
 
     DifferenceEngine();
 
@@ -82,10 +80,12 @@ protected:
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;
+extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<double>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1f>;
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3f>;
+extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<float>;
 #endif
 #endif
 

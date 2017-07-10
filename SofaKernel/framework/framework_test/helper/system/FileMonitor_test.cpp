@@ -91,7 +91,7 @@ TEST(FileMonitor, addFileNotExist_test)
     MyFileListener listener ;
 
     // Should refuse to add a file that does not exists
-     EXPECT_EQ( FileMonitor::addFile(getPath("nonexisting.txt"), &listener), -1 ) ;
+     EXPECT_LT( FileMonitor::addFile(getPath("nonexisting.txt"), &listener), 0 ) ;
 
      FileMonitor::removeListener(&listener) ;
 }
@@ -101,7 +101,7 @@ TEST(FileMonitor, addFileNotExist2_test)
     MyFileListener listener ;
 
     // Should refuse to add a file that does not exists
-     EXPECT_EQ( FileMonitor::addFile(getPath(""),"nonexisting.txt", &listener), -1 ) ;
+     EXPECT_LT( FileMonitor::addFile(getPath(""),"nonexisting.txt", &listener), 0 ) ;
 
      FileMonitor::removeListener(&listener) ;
 }

@@ -86,7 +86,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
         helper::vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
-        core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
+        static const core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
         
 		for( unsigned i = 0; i < n; ++i ) {
             const core::State<TIn>* from = this->getFromModels()[i];
@@ -124,27 +124,32 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     virtual void applyJ(const core::MechanicalParams*, const helper::vector<OutDataVecDeriv*>& outDeriv, const helper::vector<const InDataVecDeriv*>& inDeriv)
     {
-        unsigned n = js.size();
-        unsigned i = 0;
+        bool first = true;
 
-        // let the first valid jacobian set its contribution    out = J_0 * in_0
-        for( ; i < n ; ++i )
-        {
-            if( jacobian(i).rowSize() > 0 )
-            {
-                jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
-                break;
+        for(unsigned i = 0, n = js.size(); i < n ; ++i ) {
+            if( jacobian(i).rowSize() > 0 ) {
+                if(first) {
+                    jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
+                    first = false;
+                } else {
+                    jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
+                }
+                    
             }
         }
 
-        ++i;
+        if( first ) {
+            
+            // nothing written: jacobian is zero and we still have to clear
+            helper::WriteOnlyAccessor<Data<OutVecDeriv> > out (*outDeriv[0]);
 
-        // the next valid jacobians will add their contributions    out += J_i * in_i
-        for( ; i < n ; ++i )
-        {
-            if( jacobian(i).rowSize() > 0 )
-                jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
+            for(auto& x : out) {
+                x = typename TOut::Deriv();
+            }
+
         }
+       
+
 
     }
 
@@ -285,24 +290,28 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	virtual void alloc() {
 		
 		const unsigned n = this->getFrom().size();
-		if( n != js.size() ) {
-            release();
 
-            // alloc
-            if( js.size() != n ) {
-                js.resize( n );
+        // add needed jacobians
+        for(unsigned i = js.size(); i < n; ++i) {
+            js.push_back( new SparseMatrixEigen );
+        }
 
-                for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
-            }
-		}
+
+        // release unneeded jacobians
+        for(unsigned i = n; i < js.size(); ++i) {
+            delete js[i];
+        }
+
+        js.resize(n);
 	}
 
 	// delete jacobians
-    void release() {
+    void clear() {
         for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			delete js[i];
-			js[i] = 0;
 		}
+
+        js.clear();
 	}
 
 	
@@ -326,7 +335,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
   public:
 	
     virtual ~AssembledMultiMapping() {
-		release();
+		clear();
 	}
 
 

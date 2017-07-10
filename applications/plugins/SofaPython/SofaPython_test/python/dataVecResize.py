@@ -21,15 +21,15 @@ class VerifController(SofaTest.Controller):
         # two-dimensional vector resize
 
         self.ASSERT(len(self.dof.position) == 6, "test1")
-        self.dof.position = [9, 9, 9]  # smaller
+        self.dof.position = [[9, 9, 9]]  # smaller
         self.ASSERT(len(self.dof.position) == 1, "test2")
         self.dof.position = []  # empty list
         self.ASSERT(len(self.dof.position) == 0, "test3")
-        self.dof.position = [9, 9, 9] * 9  # larger
+        self.dof.position = [[9, 9, 9]] * 9  # larger
         self.ASSERT(len(self.dof.position) == 9, "test4")
         self.dof.position = ""  # empty string
         self.ASSERT(len(self.dof.position) == 0, "test5")
-        self.dof.position = SofaPython.Tools.listToStr([9, 9, 9] * 9)  # larger string
+        self.dof.position = repr([[9, 9, 9]] * 9)  # larger string
         self.ASSERT(len(self.dof.position) == 9, "test6")
 
 

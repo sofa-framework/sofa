@@ -125,59 +125,41 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 {
     if (dir == SearchRoot)
     {
-        if (parent() != NULL) return parent()->getObject(class_info, tags, dir);
+        if (parent() != NULL) return parent()->getObject(class_info, tags, SearchDown);
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
-#ifdef DEBUG_GETOBJECT
-    std::string cname = class_info.name();
-    if (cname != std::string("N4sofa4core6ShaderE"))
-        std::cout << "GNODE: search for object of type " << class_info.name() << std::endl;
-    std::string gname = "N4sofa9component8topology32TetrahedronSetGeometryAlgorithms";
-    bool isg = cname.length() >= gname.length() && std::string(cname, 0, gname.length()) == gname;
-#endif
     if (dir != SearchParents)
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             core::objectmodel::BaseObject* obj = it->get();
             if (tags.empty() || (obj)->getTags().includes(tags))
             {
-#ifdef DEBUG_GETOBJECT
-                if (isg)
-                    std::cout << "GNODE: testing object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
-#endif
                 result = class_info.dynamicCast(obj);
-                if (result != NULL)
-                {
-#ifdef DEBUG_GETOBJECT
-                    std::cout << "GNODE: found object " << (obj)->getName() << " of type " << (obj)->getClassName() << std::endl;
-#endif
-                    break;
-                }
+                if (result) return result;
             }
         }
 
-    if (result == NULL)
+    assert( result == NULL );
+
+    switch(dir)
     {
-        switch(dir)
+    case Local:
+        break;
+    case SearchParents:
+    case SearchUp:
+        if (parent()) result = parent()->getObject(class_info, tags, SearchUp);
+        break;
+    case SearchDown:
+        for(ChildIterator it = child.begin(); it != child.end(); ++it)
         {
-        case Local:
-            break;
-        case SearchParents:
-        case SearchUp:
-            if (parent()) result = parent()->getObject(class_info, tags, SearchUp);
-            break;
-        case SearchDown:
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
-            {
-                result = (*it)->getObject(class_info, tags, dir);
-                if (result != NULL) break;
-            }
-            break;
-        case SearchRoot:
-            dmsg_error("GNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE.";
-            break;
+            result = (*it)->getObject(class_info, tags, dir);
+            if (result != NULL) break;
         }
+        break;
+    case SearchRoot:
+        dmsg_error("GNode") << "SearchRoot SHOULD NOT BE POSSIBLE HERE!";
+        break;
     }
 
     return result;
@@ -441,7 +423,6 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
 
 SOFA_DECL_CLASS(GNode)
 
-//helper::Creator<xml::NodeElement::Factory, GNode> GNodeDefaultClass("default");
 helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("GNode");
 
 } // namespace tree

@@ -23,7 +23,7 @@
 #define SOFA_TopologyGaussPointSAMPLER_H
 
 #include <Flexible/config.h>
-#include "../quadrature/BaseGaussPointSampler.h"
+#include "BaseGaussPointSampler.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
