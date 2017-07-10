@@ -68,7 +68,7 @@ class Image:
     def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None, offset = [0,0,0,0,0,0,1], scale=[1,1,1]):
         mesh = Image.Mesh(value, insideValue)
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
-        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True, translation=concat(offset[:3]) , rotation=concat(Quaternion.to_euler(offset[3:])  * 180.0 / math.pi), scale3d=concat(scale))
+        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True, translation=concat(offset[:3]) , rotation=(Quaternion.to_euler(offset[3:])  * 180.0 / math.pi).tolist(), scale3d=concat(scale))
         self.__addMesh(mesh,closingValue,roiIndices,roiValue,_name)
 
     def addExternMesh(self, externMesh, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None):

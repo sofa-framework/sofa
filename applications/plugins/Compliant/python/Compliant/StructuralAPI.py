@@ -377,7 +377,7 @@ class RigidBody(RigidDOF):
         def __init__(self, node, filepath, scale3d, offset, name_suffix=''):
             self.node = node.createChild( "collision"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-            self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r), triangulate=True)
+            self.loader = SofaPython.Tools.meshLoader(self.node, filename=filepath, name='loader', scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=r.tolist(), triangulate=True)
             self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
             self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
             self.triangles = self.node.createObject('TriangleModel', name='model')
@@ -411,7 +411,7 @@ class RigidBody(RigidDOF):
             self.node = node.createChild( "visual"+name_suffix )  # node
             r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
             self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), fileMesh=filepath,
-                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
+                                                scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=r.tolist() )
             self.mapping = self.node.createObject('RigidMapping', name="mapping")
             idxVisualModel+=1
 
