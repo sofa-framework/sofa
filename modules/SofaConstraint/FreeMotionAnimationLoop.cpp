@@ -56,6 +56,9 @@ using namespace sofa::simulation;
 
 FreeMotionAnimationLoop::FreeMotionAnimationLoop(simulation::Node* gnode)
     : Inherit(gnode)
+    , d_linearizeMappingsAroundFreeMotion(initData(&d_linearizeMappingsAroundFreeMotion,false,"linearizeMappingsAroundFreeMotion","If true the linearisation (jacobian) used for constraint accumulation and solving\
+                                                                                                                                   will be around the freemotion, otherwise the linearisation around the position at\
+                                                                                                                                   the beginning of the time step is used."))
     , m_solveVelocityConstraintFirst(initData(&m_solveVelocityConstraintFirst , false, "solveVelocityConstraintFirst", "solve separately velocity constraint violations before position constraint violations"))
     , constraintSolver(NULL)
     , defaultSolver(NULL)
@@ -200,7 +203,13 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     computeCollision(params);
     AdvancedTimer::stepEnd  ("Collision");
 
-    mop.propagateX(pos); // Why is this done at that point ???
+
+    if (!d_linearizeMappingsAroundFreeMotion.getValue())
+    {
+        // call apply() method in each mapping so as to recompute their linearisation around 
+        // the position at the beginning of the time step
+        mop.propagateX(pos); 
+    }
 
     if (displayTime.getValue())
     {
