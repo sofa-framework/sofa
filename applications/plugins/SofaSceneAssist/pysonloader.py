@@ -38,19 +38,12 @@ SofaStackFrame = []
 
 sofaRoot = None
 	
+imports = {}
 
-class SofaObject(object):
-	def __init__(self):
-		self.params = {}
-		
-	def __getattr__(self, name):
-		return self.params[name]
-		
-	def __getitem__(self, name):
-		return self.params[name]
 
-	def __setitem__(self, name, value):
-		self.params[name] = value
+class MyObjectHook(object):
+	def __call__(self, s):
+		return s
 
 def instantiate(o, g):
 	#parent, key, kv, stack, frame
@@ -62,60 +55,6 @@ def instantiate(o, g):
 	n=processNode(None, n, a, o.stack, frame)
 	o.stack.pop(-1)
 	return n
-
-class Template(SofaObject):
-	def __init__(self, name, properties, template, stack) :
-		self.params = {}
-		self.params["name"] = name
-		self.properties = properties
-		self.template = template
-		self.stack = stack 
-
-class Node(SofaObject):
-	def __init__(self, parent, **kwargs):
-		self.params = {}
-		self.params["name"] = "undefined"
-		self.params["gravity"] = "3.0 4.0 5.0"
-		for i in kwargs:
-			self.params[i] = kwargs[i]
-
-		self.children = []
-		self.objects = []
-		self.templates = []		
-		self.sofaObject = parent.createChild(self.params["name"])
-	
-	def findData(self, name):
-		return self.sofaObject.findData(name)
-		
-	def findChild(self, name):
-		for child in self.children:
-			if child.name == name:
-				return child
-		return None
-		
-	def findTemplate(self, name):
-		
-		for template in self.templates:
-			if template.name == name:
-				return template
-		
-		for child in self.children:
-			r = child.findTemplate(name)
-			if r != None:
-				return r
-		return None
-
-	def addChild(self, c):
-		self.children.append(c)
-
-	def addObject(self, c):
-		self.objects.append(c)
-	
-	def addTemplate(self, c):
-		self.templates.append(c)
-
-	def __repr__(self):
-		return "Node "+ str(self.params) 
 
 def dumpSofa(s, prefix=""):
 	res = ""
@@ -169,7 +108,7 @@ def evalPython(key, kv, stack, frame):
 
 def processParameter(parent, name, value, stack, frame):
 	if isinstance(value, list):
-		matches = difflib.get_close_matches(name, sofaComponents, n=4)
+		matches = difflib.get_close_matches(name, sofaComponents+templates.keys(), n=4)
 		Sofa.msg_error(parent.name, "Unknow parameter or Component [" + name + "] suggestions -> "+str(matches))
 	else:		
 		## Python Hook to build an eval function. 
@@ -187,8 +126,11 @@ def processParameter(parent, name, value, stack, frame):
 		
 def createObject(parentNode, name, stack , frame):
 	if name in sofaComponents:
-		#print("CREATE OBJET: " + str(frame["name"]))
-		n = parentNode.createObject(name, name=str(frame["name"]))
+		n=None
+		if "name" in frame:
+			n = parentNode.createObject(name, name=str(frame["name"]))
+		else:
+			n = parentNode.createObject(name)	
 		return n
 	return parentNode.createObject("Undefined")
 	
@@ -204,15 +146,64 @@ def processObject(parent, key, kv, stack, frame):
 	frame = {}
 	if not isinstance(kv, list):
 		kv = [("name" , kv)]
-	frame["name"] = kv[0][1]
+	
+	for k,v in kv:
+		if k == "name":	
+			frame["name"] = v
+
 	stack.append(frame)
 	frame["self"] = obj = createObject(parent, key, stack, frame)
 	processObjectDict(obj, kv, stack, frame)	
 	stack.pop(-1) 	
 	return obj
 	
+# TODO add a warning to indicate that a template is loaded twice.
+def importTemplates(content):
+	templates = {}
+	for key, value in content:
+		if key == "Template":
+			name = "undefined"
+			properties = {}
+			rvalue = []
+			for k,v in value:
+				if k == "name":
+					name = str(v)
+				elif k == "properties":
+					properties = v
+				else:
+					rvalue.append((k, v))
+			templates[name] = {"properties":properties, "content" : rvalue}
+		else:
+			Sofa.msg_warning("SceneLoaderPYSON", "An imported file contains something that is not a Template.")
+
+	return templates 
+
+# TODO gérer les imports circulaires...
+def processImport(parent, key, kv, stack, frame):
+	global imports, templates
+	if not (isinstance(kv, str) or isinstance(kv, unicode)):
+		print("Expecting a single 'string' entry....in procesImport " + str(type(kv)))
+		return 
+	filename = kv+".pyson"
+	if not os.path.exists(filename):
+		dircontent = os.listdir(os.getcwd())
+		matches = difflib.get_close_matches(filename, dircontent, n=4)
+		Sofa.msg_error(parent.name, "The file '" + filename + "' does not exists. Do you mean: "+str(matches))
+		return 
+	Sofa.msg_info("SceneLoaderPYSON", "Importing "+ os.getcwd() + "/"+filename)
+		
+	f = open(filename).read()
+	loadedcontent = hjson.loads(f, object_pairs_hook=MyObjectHook())
+	imports[filename] = importTemplates(loadedcontent)
+	print("IMPORTED TEMPLATE: " + str(imports[filename].keys())) 
+
+	for tname in imports[filename].keys():
+		templates[kv+"."+tname] = imports[filename][tname]	
+	print("TEMPLATES: "+str(templates))
+
 def processTemplate(parent, key, kv, stack, frame):
 	global templates 
+	print("PROCESS TEMPLATE...")
 	name = "undefined"
 	properties = {}
 	pattern = [] 
@@ -231,30 +222,57 @@ def processTemplate(parent, key, kv, stack, frame):
 	print("SETTEMPLATE: "+str(name)+" -> "+str(o.getTemplate()))
 	
 	return o
-	
+
+aliases = {}
+def processAlias(parent, key, kv, stack, frame):
+	global aliases	
+	oldName, newName = kv.split('-')
+	aliases[newName]=oldName
+
 def instanciateTemplate(parent, key, kv, stack, frame):
 	global templates
 	print("Instanciate template: "+key + "-> "+str(kv))
 	for k,v in kv:
 		frame[k] = v
-	n = templates[key].getTemplate()
-	print("tempLATE: "+str(n))
-	processNode(parent, "Node", n, stack, frame)
+	n=None
+	if isinstance(templates[key], Sofa.Template):
+		n = templates[key].getTemplate()
+	else: 
+		n = templates[key]["content"] 
+		for k,v in templates[key]["properties"]:
+			if not k in frame:
+				frame[k] = str(v)
+	print("Template: "+str(n))
+	processNode(parent, "Node", n, stack, frame,doCreate=False)
 	
-def processNode(parent, key, kv, stack, frame):
-	global templates
+def processNode(parent, key, kv, stack, frame, doCreate=True):
+	global templates, aliases
 	#print("PN:"+ parent.name + " : " + key + " stack frame is: "+str(stack))
 	stack.append(frame)
 	populateFrame(key, frame, stack)
-	tself = frame["self"] = parent.createChild("undefined")
+	if doCreate:
+		tself = frame["self"] = parent.createChild("undefined")
+	else:
+		tself = parent	
 	if isinstance(kv, list):
 		for key,value in kv:
-			if key == "Node":
+			if isinstance(key, unicode):
+				key = str(key)
+
+			if key in aliases:
+				print("Alias resolution to: "+aliases[key])
+				key = aliases[key]
+
+			if key == "Import":
+				n = processImport(tself, key, value, stack, {})		
+			elif key == "Node":
 				n = processNode(tself, key, value, stack, {})	
 			elif key == "Python":	
 				processPython(tself, key, value, stack, {})
 			elif key == "Template":
 				tself.addObject( processTemplate(tself, key, value, stack, {}) )
+			elif key == "Using":
+				processAlias(tself, key,value, stack, frame)			
 			elif key in sofaComponents:
 				o = processObject(tself, key, value, stack, {})
 				tself.addObject(o)
@@ -266,6 +284,7 @@ def processNode(parent, key, kv, stack, frame):
 		print("LEAF: "+kv)
 	stack.pop(-1)
 	return tself
+
 
 def processTree(parent, key, kv):
 	stack = []
@@ -287,19 +306,37 @@ def processTree(parent, key, kv):
 		print("LEAF: "+kv)
 
 
-
-class MyObjectHook(object):
-	def __call__(self, s):
-		return s
+def saveTree(rootNode, space):
+	print(space+"Node : {")
+	nspace=space+"    "
+	for child in rootNode.getChildren():
+		saveTree(child, nspace)
+		
+	for obj in rootNode.getObjects():
+		print(nspace+obj.getClassName() + " : { " )
+		print(nspace+"    name : "+str(obj.name)) 
+		print(nspace+" } ")	
+		
+	print(space+"}")
+	
+def save(rootNode, filename):
+	print("PYSCIN SAVE: "+str(filename))
+	saveTree(rootNode,"")
 
 def load(rootNode, filename):
-	global sofaRoot 
+	global sofaRoot
 	sofaRoot = rootNode
+	filename = os.path.abspath(filename)
+	dirname = os.path.dirname(filename) 
+
 	print("PYSCIN LOAD: "+str(filename))
-	print("PYSCIN root: "+str(sofaRoot.name))
+	print("PYSCIN ROOT: "+str(dirname))
+
+	olddirname = os.getcwd()
+	os.chdir(dirname)	
 
 	f = open(filename).read()
-	r = processTree(sofaRoot,"", hjson.loads(f, object_pairs_hook=MyObjectHook()))
+	r = processTree(sofaRoot, "", hjson.loads(f, object_pairs_hook=MyObjectHook()))
+
+	os.chdir(olddirname)	
 	return r
-	
-	#return "ZOB"
