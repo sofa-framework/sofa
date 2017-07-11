@@ -122,7 +122,7 @@ struct ConstantForceField_test : public Sofa_test<>
     {
         map<string, vector< pair<string, string> >> values =
         {
-            {"indices",   { {"0 1","0 1"}, {"1 0", "1 0"}, {"-1 5", "0 5"} } }
+            {"indices",   { {"0 1","[0, 1]"}, {"1 0", "[1, 0]"}, {"-1 5", "[0, 5]"} } }
         };
 
         for(auto& kv : values){

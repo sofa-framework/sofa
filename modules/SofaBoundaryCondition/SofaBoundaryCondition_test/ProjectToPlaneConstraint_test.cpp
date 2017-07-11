@@ -68,6 +68,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     /// Create the context for the matrix tests.
     void SetUp()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -104,6 +105,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     */
     void init_oneConstrainedParticle()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         indices.clear();
         indices.push_back(1);
         std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
@@ -117,6 +119,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
     */
     void init_allParticlesConstrained()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         indices.clear();
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
@@ -130,6 +133,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectPosition()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
        VecCoord xprev(numNodes);
        typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
        for (unsigned i=0; i<numNodes; i++){
@@ -170,6 +174,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     bool test_projectVelocity()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
        VecDeriv vprev(numNodes);
        typename MechanicalObject::WriteVecDeriv v = dofs->writeVelocities();
        for (unsigned i=0; i<numNodes; i++){
@@ -210,6 +215,7 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     void TearDown()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
 //        cerr<<"tearing down"<<endl;

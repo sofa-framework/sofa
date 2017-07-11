@@ -226,8 +226,8 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
              {"stiffness", {{"", "500"}, {"-1.0", "500"}, {"0.0", "0"}, {"1.0", "1"}}},
              {"maxForce",  {{"", "0"}, {"-1.0","0"}, {"0.5","0.5"}, {"1.5","1.5"}}},
              {"bilateral", {{"", "0"}, {"0","0"}, {"1","1"}, {"2","1"}, {"-1","1"}}},
-             {"localRange", {{"","-1 -1"}, {"-2 -1", "-1 -1"}, {"-2 1", "-1 -1"}, {"0 0","0 0"}, {"1 -5","-1 -1"},
-                             {"4 7","4 7"}, {"7 4","-1 -1"} }}
+             {"localRange", {{"","[-1, -1]"}, {"-2 -1", "[-1, -1]"}, {"-2 1", "[-1, -1]"}, {"0 0","[0, 0]"}, {"1 -5","[-1, -1]"},
+                             {"4 7","[4, 7]"}, {"7 4","[-1, -1]"} }}
         };
 
         for(auto& kv : values){
@@ -241,7 +241,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-            EXPECT_MSG_EMIT(Error);
+            IGNORE_MSG(Error);
             Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                               scene.str().c_str(),
                                                               scene.str().size()) ;
