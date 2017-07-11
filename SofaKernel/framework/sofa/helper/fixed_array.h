@@ -54,6 +54,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <cstddef>
 #include <stdexcept>
@@ -342,18 +343,83 @@ public:
     //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
-        static_assert(N>0, "Cannot create a zero size arrays") ;
-        for( size_type i=0; i<N-1; i++ )
-            out << a.elems[i]<<" ";
-        out << a.elems[N-1];
+        out << "[";
+        for( std::size_t i=0; i<N-1; ++i )
+            out<<a[i]<<", ";
+        out<<a[N-1] << "]";
         return out;
+    }
+
+    std::istream& read(std::istream& in)
+    {
+        std::size_t i=0;
+        for( ; i<N; ++i )
+            if (!( in >> (*this)[i] ))
+                break;
+        if (i != N)
+            msg_error("fixed_array") << "Error reading space separated values, number of values: " << i << " expected: " << N;
+        if (in.fail())
+            msg_error("fixed_array") << "Error reading space separated values";
+        return in;
+    }
+
+    std::istream& readDelimiter (std::istream& in )
+    {
+        char c;
+
+        if( !(in >> c) || in.eof() )
+            return in; // empty stream
+
+        if ( c != '[' )
+        {
+            msg_error("fixed_array") << "read: Bad begin character : " << c << ", expected  [";
+            return in;
+        }
+        std::streampos pos = in.tellg();
+        if (!(in >> c)) {
+            msg_error("fixed_array") << "Error reading [,] separated values, expecting data after [";
+            return in;
+        }
+
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            in.seekg( pos ); // coming-back to previous character
+            std::size_t i=0;
+            c = ' ';
+            while( (i<N) && ( in>>(*this)[i] ) ) {
+                ++i;
+                if ( !( in>>c ) || c!=',')
+                    break;
+            }
+            if (i != N)
+                msg_error("fixed_array") << "Error reading [,] separated values, number of values: " << i << " expected: " << N;
+            if ( c != ']' )
+                msg_error("fixed_array") << "read : Bad end character : " << c << ", expected  ]";
+            if (in.fail())
+                msg_error("fixed_array") << "Error reading [,] separated values";
+
+            return in;
+        }
     }
 
     inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
     {
-        for( size_type i=0; i<N; i++ )
-            in>>a.elems[i];
-        return in;
+        std::streampos pos = in.tellg();
+        char c;
+
+        if( !( in >> c ) || in.eof() )
+            return in; // empty stream
+        in.seekg( pos ); // coming-back to the previous character
+        if ( c == '[' ) {
+            return a.readDelimiter(in);
+        }
+        else {
+            return a.read(in);
+        }
     }
 
     inline bool operator < (const fixed_array& v ) const
