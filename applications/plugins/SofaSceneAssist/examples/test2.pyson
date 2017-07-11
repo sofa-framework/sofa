@@ -1,4 +1,4 @@
-Node : {		
+Node : {		 
         name : "root"
 
         APIVersion : "v17.06"
@@ -42,6 +42,9 @@ Node : {
 
 		Template : {
             name : "MyTemplate"
+			propertes : { 
+						numfils : 3, 
+						nodename : "default" }
 
             Node : {
                 name : "mytemplate"
@@ -58,7 +61,7 @@ Node : {
 
 				Python : '''
 						for i in range(0, numfils):
-						         mytemplate.createChild('aChild'+str(numfils))'''
+						         mytemplate.createChild('aChild'+str(i))'''
 			}
         }
 
@@ -74,13 +77,13 @@ Node : {
             name : "templateInstance"
             MyTemplate : { name : "test1"
                            nodename : "deux"
-                           numfils : 15
+                           numfils : 5
             }
         }
 
         Node : {
             Python : '''
-                    template=template1
+                    template=MyTemplate
                     for i in range(0, 10):
                         self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
                     '''
