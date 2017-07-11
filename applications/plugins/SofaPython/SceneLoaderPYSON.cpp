@@ -70,6 +70,34 @@ void SceneLoaderPYSON::getExtensionList(ExtensionList* list)
     list->push_back("pyson");
 }
 
+void SceneLoaderPYSON::write(sofa::simulation::Node* n, const char *filename)
+{
+    std::stringstream s;
+    s << "from pysonloader import save as pysonsave" ;
+
+    msg_info("SceneLoaderPYSON") << "Trying saving file: " << filename ;
+
+    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+
+    PyObject* result = PyRun_String(s.str().c_str(), Py_file_input, pDict, pDict);
+    if (result==nullptr){
+         PyErr_Print();
+         return;
+    }
+
+    PyObject *pFunc = PyDict_GetItemString(pDict, "pysonsave");
+    if (PyCallable_Check(pFunc))
+    {
+        Node::SPtr rootNode = Node::create("root");
+        SP_CALL_MODULEFUNC(pFunc, "(Os)", sofa::PythonFactory::toPython(n), filename)
+        return;
+    }
+
+    assert(PyCallable_Check(pFunc));
+    return;
+}
+
+
 sofa::simulation::Node::SPtr SceneLoaderPYSON::load(const char *filename)
 {
     std::stringstream s;
@@ -97,124 +125,6 @@ sofa::simulation::Node::SPtr SceneLoaderPYSON::load(const char *filename)
     assert(PyCallable_Check(pFunc));
     return nullptr ;
 }
-
-void SceneLoaderPYSON::write(Node* node, const char *filename)
-{
-    msg_error("SceneLoaderPYSON") << "Nothing will work" ;
-}
-
-
-#if 0
-sofa::simulation::Node::SPtr SceneLoaderPYSON::loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments)
-{
-    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
-    {
-        SP_MESSAGE_ERROR( "header script run error." )
-        return NULL;
-    }
-
-    PythonEnvironment::runString("createScene=None");
-    PythonEnvironment::runString("createSceneAndController=None");
-
-    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
-
-    // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir ( filename );
-
-    notifyLoadingScene();
-    if(!PythonEnvironment::runFile(helper::system::SetDirectory::GetFileName(filename).c_str(), arguments))
-    {
-        // LOAD ERROR
-        SP_MESSAGE_ERROR( "scene script load error." )
-        return NULL;
-    }
-
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-    // pFunc is also a borrowed reference
-    PyObject *pFunc = PyDict_GetItemString(pDict, "createScene");
-    if (PyCallable_Check(pFunc))
-    {
-        Node::SPtr rootNode = Node::create("root");
-        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-
-        return rootNode;
-    }
-    else
-    {
-        PyObject *pFunc = PyDict_GetItemString(pDict, "createSceneAndController");
-        if (PyCallable_Check(pFunc))
-        {
-            Node::SPtr rootNode = Node::create("root");
-            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()))
-
-            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
-
-            return rootNode;
-        }
-    }
-
-    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." )
-    return NULL;
-}
-
-
-bool SceneLoaderPYSON::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
-{
-    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
-    {
-        SP_MESSAGE_ERROR( "header script run error." )
-        return false;
-    }
-
-    PythonEnvironment::runString("createScene=None");
-    PythonEnvironment::runString("createSceneAndController=None");
-
-    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
-
-    // it runs the unecessary SofaPython script but it is not a big deal
-    if(!PythonEnvironment::runFile(filename,arguments))
-    {
-        // LOAD ERROR
-        SP_MESSAGE_ERROR( "script load error." )
-        return false;
-    }
-
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-    // pFunc is also a borrowed reference
-    PyObject *pFunc = PyDict_GetItemString(pDict, "run");
-    if (PyCallable_Check(pFunc))
-    {
-        PyObject *res = PyObject_CallObject(pFunc,0);
-        printPythonExceptions();
-
-        if( !res )
-        {
-            SP_MESSAGE_ERROR( "Python test 'run' function does not return any value" )
-            return false;
-        }
-        else if( !PyBool_Check(res) )
-        {
-            SP_MESSAGE_ERROR( "Python test 'run' function does not return a boolean" )
-            Py_DECREF(res);
-            return false;
-        }
-
-        bool result = ( res == Py_True );
-        Py_DECREF(res);
-
-        return result;
-    }
-    else
-    {
-        SP_MESSAGE_ERROR( "Python test has no 'run'' function" )
-        return false;
-    }
-}
-#endif //
-
-
 
 
 } // namespace _sceneloaderpyson_
