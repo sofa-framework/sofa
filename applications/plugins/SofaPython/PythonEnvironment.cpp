@@ -158,8 +158,10 @@ void PythonEnvironment::Release()
     // Finish the Python Interpreter
 
     // obviously can't use raii here
-    PyGILState_Ensure();    
-    Py_Finalize();
+    if( Py_IsInitialized() ) {
+        PyGILState_Ensure();    
+        Py_Finalize();
+    }
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
