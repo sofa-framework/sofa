@@ -89,7 +89,7 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
         m_thisObject->findData("substractor")->read("0. 0. 0.5  0. 1. 1.  0. 1. 2.");
         m_thisObject->update();
 
-        EXPECT_TRUE(m_thisObject->findData("output")->getValueString() == "0 0.5 0 0 -1 0 0 -2 1");
+        EXPECT_TRUE(m_thisObject->findData("output")->getValueString() == "[[0, 0.5, 0], [0, -1, 0], [0, -2, 1]]");
     }
 
 

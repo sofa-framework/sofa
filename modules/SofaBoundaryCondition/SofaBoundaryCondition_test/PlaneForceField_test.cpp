@@ -241,6 +241,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
+            EXPECT_MSG_EMIT(Error);
             Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                               scene.str().c_str(),
                                                               scene.str().size()) ;

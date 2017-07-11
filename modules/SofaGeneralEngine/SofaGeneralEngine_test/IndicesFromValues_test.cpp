@@ -38,7 +38,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("-1");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "7");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "[7]");
     }
 
     void search_two_indices(){
@@ -47,7 +47,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("-1. 1.");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "7 5");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "[7, 5]");
     }
 
 
@@ -57,7 +57,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "[]");
     }
 
     void search_in_nothing(){
@@ -66,7 +66,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("1");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"[]");
     }
 
     void search_nothing_in_nothing(){
@@ -75,7 +75,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read(" ");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"[]");
     }
 
     void search_existing_and_nonexisting(){
@@ -84,7 +84,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("1.  4. ");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"5");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"[5]");
     }
 
 
@@ -94,7 +94,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("4. ");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "[]");
     }
 
     void search_a_sequence(){
@@ -103,7 +103,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
         m_thisObject->findData("values")->read("1. 0. -1. ");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(), "[]");
     }
 
 
