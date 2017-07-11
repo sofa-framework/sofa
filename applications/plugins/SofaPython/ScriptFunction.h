@@ -54,6 +54,8 @@ public:
 
 };
 
+
+// mtournier: wtf is this supposed to be/do?
 class SOFA_SOFAPYTHON_API ScriptFunction
 {
 protected:
