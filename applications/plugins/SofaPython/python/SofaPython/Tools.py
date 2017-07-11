@@ -10,13 +10,18 @@ def listToStr(x):
     """ concatenate lists for use with data.
     """
     Sofa.msg_deprecated("SofaPython.Tools.listToStr", "In Node.createObject: no need to explicitely convert a list to string")
-    return repr(x)
+    return ' '.join(map(str, x))
+#    return repr(x)
 
 def listListToStr(xx):
     """ concatenate lists of list for use with data.
     """
     Sofa.msg_deprecated("SofaPython.Tools.listListToStr", "In Node.createObject: no need to explicitely convert a list to string")
-    return repr(xx)
+    str_xx=""
+    for x in xx:
+        str_xx += listToStr(x) + " "
+    return str_xx
+#    return repr(xx)
 
 def strToListFloat(s):
     """ Convert a string to a list of float
