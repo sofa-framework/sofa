@@ -119,8 +119,10 @@ void PythonMainScriptController::loadScript()
 
 }
 
-void PythonMainScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
+void PythonMainScriptController::script_onIdleEvent(const IdleEvent* event)
 {
+    // there's no such thing as a macro being better than something ;-)    
+    (void) event;
     PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle)
 }
