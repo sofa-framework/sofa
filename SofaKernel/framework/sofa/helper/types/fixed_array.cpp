@@ -26,6 +26,7 @@
 #define FIXED_ARRAY_CPP
 
 #include "../fixed_array.h"
+
 namespace sofa
 {
 namespace helper
