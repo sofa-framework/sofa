@@ -60,7 +60,7 @@ SP_DECLARE_CLASS_TYPE(ExternalComponent)
 static PyObject * ExternalComponent_helloWorld(PyObject *self, PyObject * /*args*/)
 {
     sofa::ExternalComponent* obj = sofa::py::unwrap<sofa::ExternalComponent>(self);
-       
+
     obj->helloWorld();
     Py_RETURN_NONE;
 }
@@ -119,7 +119,7 @@ protected:
                  "class NonCustomizedObject(object):   \n"
                  "   def __init__(self):               \n"
                  "        return None                  \n"
-                 "   def __str__(self):                \n"
+                 "   def __repr__(self):                \n"
                  "        return 'default'             \n"
                  "class CustomObject(object):           \n"
                  "   def getAsACreateObjectParameter(self):            \n"
