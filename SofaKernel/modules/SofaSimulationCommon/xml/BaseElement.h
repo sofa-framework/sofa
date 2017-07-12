@@ -52,9 +52,6 @@ enum IncludeNodeType
 class SOFA_SIMULATION_COMMON_API BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
-    //std::string name;
-    //std::string type;
-
     std::string basefile;
     std::string m_srcfile;
     int m_srcline;

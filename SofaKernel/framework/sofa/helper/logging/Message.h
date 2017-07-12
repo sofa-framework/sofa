@@ -100,6 +100,9 @@ protected:
 
 };
 
+
+template<> Message& Message::operator<<(const FileInfo &fi) ;
+
 SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 SOFA_HELPER_API const std::string toString(const Message::Type type) ;
 

@@ -147,17 +147,8 @@ protected:
         {
         case QEvent::FileOpen:
         {
-//            std::string filename = static_cast<QFileOpenEvent *>(event)->file().toStdString();
             if(this->topLevelWidgets().count() < 1)
                 return false;
-//            RealGUI* mainGui = static_cast<RealGUI*>(this->topLevelWidgets()[0]);
-            //mainGui->fileOpen(filename);
-
-//            if (filename != std::string(static_cast<RealGUI*>(QApplication::topLevelWidgets()[0])->windowFilePath().toStdString()))
-//            {
-//                static_cast<RealGUI*>(QApplication::topLevelWidgets()[0])->fileOpen(static_cast<QFileOpenEvent *>(event)->file().toStdString());
-//            }
-
             return true;
         }
         default:
@@ -299,7 +290,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 {
     setupUi(this);
 
-//    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
 
     createPluginManager();
@@ -331,19 +321,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
-    //dockWidget=new QDockWidget(tr(""), this);
-    //dockWidget->setResizeEnabled(true);
-    //dockWidget->setFixedWidth(300);
     dockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dockWidget->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
-    //addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-    //dockWidget->setWidget(optionTabs);
 
     connect(dockWidget, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(toolsDockMoved()));
-
-    /*moveDockWindow(dockWidget, Qt::DockLeft);
-    dockWidget->setFixedExtentWidth(400);
-    dockWidget->setFixedExtentHeight(600);*/
 
     // create a Dock Window to receive the Sofa Recorder
 #ifndef SOFA_GUI_QT_NO_RECORDER
@@ -394,26 +375,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
-
-    //Center the application
-    /** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
-    /*
-    QSettings settings;
-    settings.beginGroup("viewer");
-    int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
-    settings.endGroup();
-
-    if (screenNumber >= QApplication::desktop()->screenCount())
-        screenNumber = QApplication::desktop()->primaryScreen();
-
-    int offset = 0;
-    if (screenNumber > 0)
-        for (int i = 0 ; i < screenNumber; i++)
-            offset = QApplication::desktop()->availableGeometry(i).width();
-
-    const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
-    this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
-    */
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
@@ -719,14 +680,6 @@ int RealGUI::closeGUI()
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
 
-//    std::string viewerFileName;
-//    std::string path = sofa::helper::system::DataRepository.getFirstPath();
-//    viewerFileName = path.append("/share/config/sofaviewer.ini");
-
-//    std::ofstream out(viewerFileName.c_str(),std::ios::out);
-//    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
-//    out.close();
-
     delete this;
     return 0;
 }
@@ -777,6 +730,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     stopDumpVisitor();
+
+    /// We want to warn user that there is component that are implemented in specific plugin
+    /// and that there is no RequiredPlugin in their scene.
+    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+    checker.validate(mSimulation.get()) ;
 }
 
 
@@ -858,11 +816,6 @@ void RealGUI::fileOpen()
             else
                 fileOpen (s.toStdString());
     }
-
-    /// We want to warn user that there is component that are implemented in specific plugin
-    /// and that there is no RequiredPlugin in their scene.
-    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-    checker.validate(mSimulation.get()) ;
 }
 
 //------------------------------------
@@ -916,11 +869,13 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
     if (root)
     {
+        /// We want to warn user that there is component that are implemented in specific plugin
+        /// and that there is no RequiredPlugin in their scene.
+        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.validate(root.get()) ;
+
         mSimulation = root;
-
         eventNewTime();
-
-        //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setChecked(root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
         simulationGraph->Clear(root.get());

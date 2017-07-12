@@ -15,53 +15,63 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
-#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#include "config.h"
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseContext ;
 
-#include <functional>
-#include <map>
+#include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
 
-#include <sofa/simulation/Visitor.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
+using sofa::core::objectmodel::BaseObjectDescription ;
+
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::RegisterObject ;
+
+#include "APIVersion.h"
 
 namespace sofa
 {
-namespace simulation
+
+namespace component
 {
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
 
-class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
+namespace _apiversion_
 {
-public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    virtual ~SceneCheckerVisitor() ;
 
-    void validate(Node* node) ;
+APIVersion::APIVersion() :
+     d_level ( initData(&d_level, 0, "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+{
+}
 
-    void enableValidationAPIVersion(Node *node, const std::string& currentApiLevel) ;
-    void enableValidationRequiredPlugins(Node* node) ;
+APIVersion::~APIVersion()
+{
+}
 
-    virtual Result processNodeTopDown(Node* node) override ;
+const std::string& APIVersion::getApiLevel()
+{
+    return d_level.getValue() ;
+}
 
-    void installChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-private:
-    std::map<std::string,bool> m_requiredPlugins ;
-    bool m_isRequiredPluginValidationEnabled {true} ;
-    bool m_isAPIVersionValidationEnabled {true} ;
-    std::string m_currentApiLevel {"17.12"} ;
-    std::string m_selectedApiLevel {"17.06"} ;
+SOFA_DECL_CLASS(APIVersion)
+int APIVersionClass = core::RegisterObject("Specify the APIVersion of the component used in a scene.")
+        .add< APIVersion >();
 
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
-};
+} // namespace _apiversion_
 
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa
-
-#endif

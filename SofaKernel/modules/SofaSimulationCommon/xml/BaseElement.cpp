@@ -44,14 +44,10 @@ BaseElement::BaseElement(const std::string& name, const std::string& type, BaseE
     : BaseObjectDescription(name.c_str(), type.c_str()), parent(NULL), includeNodeType(INCLUDE_NODE_CHILD)
 {
     if (newParent!=NULL) newParent->addChild(this);
-    //attributes["name"]=&this->name;
-    //attributes["type"]=&this->type;
 }
 
 BaseElement::~BaseElement()
 {
-    //attributes.erase("name");
-    //attributes.erase("type");
     for (ChildList::iterator it = children.begin();
             it != children.end(); ++it)
     {
@@ -96,18 +92,6 @@ void BaseElement::setSrcLine(const int l)
     m_srcline = l ;
 }
 
-
-// const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
-// {
-// 	return attributes;
-// }
-//
-// std::map<std::string,std::string*>& BaseElement::getAttributeMap()
-// {
-// 	return attributes;
-// }
-
-
 bool BaseElement::presenceAttribute(const std::string& s)
 {
     return (attributes.find(s) != attributes.end());
@@ -118,11 +102,6 @@ bool BaseElement::removeAttribute(const std::string& attr)
     AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return false;
-    //if (it->second == &name)
-    //    return false;
-    //if (it->second == &type)
-    //    return false;
-    //delete it->second;
     attributes.erase(it);
     return true;
 }

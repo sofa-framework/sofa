@@ -126,6 +126,13 @@ bool Message::empty() const
     return end <= 0;
 }
 
+template<>
+Message& Message::operator<<(const FileInfo &fi)
+{
+    (*m_fileInfo.get()) = fi;
+    return *this;
+}
+
 
 
 } // logging
