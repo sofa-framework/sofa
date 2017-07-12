@@ -87,12 +87,21 @@ PluginManager::~PluginManager()
 void PluginManager::readFromIniFile(const std::string& path)
 {
     std::ifstream instream(path.c_str());
-    std::string pluginPath;
-
-    while(std::getline(instream,pluginPath))
+    std::string pluginPath, line, version;
+    while(std::getline(instream, line))
     {
+        if (line.empty()) continue;
+
+        std::istringstream is(line);
+        is >> pluginPath;
+        if (is.eof())
+            msg_deprecated("PluginManager") << path << " file is using a deprecated syntax (version information missing). Please update it in the near future.";
+        else
+            is >> version; // information not used for now
         if(loadPlugin(pluginPath))
+        {
             m_pluginMap[pluginPath].initExternalModule();
+        }
     }
     instream.close();
 }
@@ -104,7 +113,8 @@ void PluginManager::writeToIniFile(const std::string& path)
     for( iter = m_pluginMap.begin(); iter!=m_pluginMap.end(); ++iter)
     {
         const std::string& pluginPath = (iter->first);
-        outstream << pluginPath << "\n";
+        outstream << pluginPath << " ";
+        outstream << m_pluginMap[pluginPath].getModuleVersion() << "\n";
     }
     outstream.close();
 }

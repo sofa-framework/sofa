@@ -650,6 +650,18 @@ public:
         return *hostWriteAt(i);
     }
 
+    const T* data( ) const
+    {
+        checkIndex ( 0 );
+        return hostReadAt(0);
+    }
+
+    T* data( )
+    {
+        checkIndex ( 0 );
+        return hostWriteAt(0);
+    }
+
     const T& getCached ( size_type i ) const
     {
         checkIndex ( i );

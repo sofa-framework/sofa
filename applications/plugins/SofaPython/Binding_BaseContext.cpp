@@ -92,9 +92,22 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
         return out << PyString_AsString(value) ;
     }
 
+    /// Unicode are converted to string.
+    if(PyUnicode_Check(value))
+    {
+        PyObject* tmpstr = PyUnicode_AsUTF8String(value);
+        out << PyString_AsString(tmpstr) ;
+        Py_DECREF(tmpstr);
+
+        return out;
+    }
 
     if( PySequence_Check(value) )
     {
+        if(!PyList_Check(value))
+        {
+            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
+        }
         /// It is a sequence...so we can iterate over it.
         PyObject *iterator = PyObject_GetIter(value);
         if(iterator)

@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sstream>
+
 #include "Binding_Data.h"
 #include "Binding_LinearSpring.h"
 
@@ -356,8 +358,28 @@ int SetDataValuePython(BaseData* data, PyObject* args)
         return 0;
     }
 
+    // Unicode
+    if (PyUnicode_Check(args))
+    {
+        std::stringstream streamstr;
+        PyObject* tmpstr = PyUnicode_AsUTF8String(args);
+        streamstr << PyString_AsString(tmpstr) ;
+        Py_DECREF(tmpstr);
+        std::string str(streamstr.str());
+
+        if( str.size() > 0u && str[0]=='@' ) // DataLink
+        {
+            data->setParent(str);
+            data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
+        }
+        else
+        {
+            data->read(str);
+        }
+        return 0;
+    }
     /// Get the info about the data value through the introspection mechanism.
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); 
     const bool valid = (typeinfo && typeinfo->ValidInfo());
 
     const int rowWidth = valid ? typeinfo->size() : 1;
