@@ -5,7 +5,7 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
     <DiscreteIntersection/>
- <!--   <Node name="LiverFFD-lowres">
+    <Node name="LiverFFD-lowres">
         <EulerImplicit />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
@@ -23,7 +23,7 @@
             <Sphere name="Surf" listRadius="@[-2].listRadius" />
             <BarycentricMapping input="@.." output="@." />
         </Node>
-    </Node> -->
+    </Node>
     <Node name="LiverFFD-hires">
         <EulerImplicit />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
