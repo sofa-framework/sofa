@@ -178,6 +178,7 @@ public:
         if ( c != '[' )
         {
             msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::failbit);
             return in;
         }
         std::streampos pos = in.tellg();
@@ -197,8 +198,10 @@ public:
                 if (c!=',')
                     break;
             }
-            if ( c != ']' )
+            if ( c != ']' ) {
                 msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::failbit);
+            }
             if (in.eof())
                 in.clear(std::ios::eofbit);
             if (in.fail())
@@ -224,7 +227,7 @@ public:
             while(in>>t) {
                 this->push_back(t);
             }
-            // in case of white spaces at the end of the stream, this is normal that the last read failed,
+            // in case of white spaces at the end of the stream, this is normal that the last read fails,
             // but we know it, eof is true
             if (in.eof())
                 in.clear(std::ios::eofbit);
@@ -470,6 +473,7 @@ std::istream& vector<unsigned char>::read(std::istream& in)
         if ( c != '[' )
         {
             msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::failbit);
             return in;
         }
         std::streampos pos = in.tellg();
@@ -485,14 +489,20 @@ std::istream& vector<unsigned char>::read(std::istream& in)
             c = ' ';
             while( (in >> t) && (in >> c))
             {
-                if (t>255)
+                if (t>255) {
                     msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+                    in.setstate(std::ios::failbit);
+                    return in;
+                }
                 this->push_back ( (unsigned char) t );
                 if (c!=',')
                     break;
             }
-            if ( c != ']' )
+            if ( c != ']' ) {
                 msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::failbit);
+                return in;
+            }
             if (in.eof())
                 in.clear(std::ios::eofbit);
             if (in.fail())
@@ -505,8 +515,11 @@ std::istream& vector<unsigned char>::read(std::istream& in)
         this->clear();
         while(in>>t)
         {
-            if (t>255)
+            if (t>255) {
                 msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+                in.setstate(std::ios::failbit);
+                return in;
+            }
             this->push_back((unsigned char)t);
         }
         if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
