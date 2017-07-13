@@ -39,7 +39,6 @@ Node : {
                      '''
         }
 
-
         Template : {
             name : "MyTemplate"
             propertes : {

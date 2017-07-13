@@ -19,8 +19,8 @@ Node : {
                 # Now we instantiate the MotorPulley using the short "." syntax
                 PulleyMotor :
                 {
-                        aname : "MonMoteur2"
-                        model : "HiTec3"
+                        aname : "myMotor2"
+                        model : "HiTec4b"
                 }
 }
 

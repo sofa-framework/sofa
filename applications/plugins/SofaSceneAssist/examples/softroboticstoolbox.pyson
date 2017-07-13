@@ -1,32 +1,33 @@
 
-	Template : {
-		name : "Cube"
-	}
+        Template : {
+                name : "Cube"
+        }
 
-	Template : {
-		name : "PulleyMotor"
+        Template : {
+                name : "PulleyMotor"
 
-		properties : {
-			aname : "pulleymotor"
-			model : "model1"
-		}
+                properties : {
+                        aname : "pulleymotor"
+                        model : "model1"
 
-		Node : {
-			name : p"aname"
-			Node : {
-				name : "mechanical"
-				MechanicalState : {
-					name : "mstate"
-					position : "0 0 0 0 0 1 0 0 2"
-				}
-			}
+                }
 
-			Node : {
-				name : "visualmodel" 
-				OglModel : {
-					filename : p"'../motor/'+str(model)+'.stl'" 
-				}			
-			}
-		}
-	}
+                Node : {
+                        name : p"aname"
+                        Node : {
+                                name : "mechanical"
+                                MechanicalState : {
+                                        name : "mstate"
+                                        position : "0 0 0 0 0 1 0 0 2"
+                                }
+                        }
+
+                        Node : {
+                                name : "visualmodel"
+                                OglModel : {
+                                        filename : p"'../motor/'+str(model)+'.stl'"
+                                }
+                        }
+                }
+        }
 

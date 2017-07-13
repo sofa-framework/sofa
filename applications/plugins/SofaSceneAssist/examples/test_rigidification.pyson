@@ -1,0 +1,17 @@
+Node : {
+    name : "root"
+
+    Node : {
+        name : "toRigid"
+        MechanicalObject : {}
+        OglModel : {}
+    }
+
+    Python : '''
+        for i in range(0,10):
+            toRigid.addChild("ChildName"+str(0))
+
+        '''
+}
+
+

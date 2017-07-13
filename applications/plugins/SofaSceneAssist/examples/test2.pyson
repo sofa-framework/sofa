@@ -1,4 +1,4 @@
-Node : {		 
+Node : {
         name : "root"
 
         APIVersion : "v17.06"
@@ -11,19 +11,22 @@ Node : {
         '''
 
         Node : {
-                name : "node1"
+                name : "node2"
 
                 Python : '''
-	                print("The name of this Node is: {"+self.name+"}")
+                    print("The name of this Node is: {"+self.name+"}")
                     '''
         }
 
-
         Node : {
                 name : "A Simple Node"
-				Python : '''
+                Python : '''
                         print("The name of this Node is: {"+self.name+"}")
                         '''
+
+                MechanicalObject : {
+                        name : "mstate"
+                }
 
                 OglModel : {
                         name : "visual1"
@@ -31,60 +34,73 @@ Node : {
                 }
         }
 
+        OglModal : {}
 
         Node : {
             name : "aNode"
-            Python : '''for i in range(0, 10):
+            Python : '''for i in range(0, 2):
                              aNode.createChild('anEmptyNode'+str(i))  # ICI SELF != PARENT
                      '''
         }
 
-
-		Template : {
+        Template : {
             name : "MyTemplate"
-			propertes : { 
-						numfils : 3, 
-						nodename : "default" }
+            properties : {
+                        numfils : 3,
+                        nodename : "default" }
 
             Node : {
-                name : "mytemplate"
+                name : p"nodename"
+
+                MechanicalObject : {
+                    name : "mstate"
+                }
 
                 VisualModelImpl : {
                     name : p"nodename"
                     filename : p"os.getcwd()+'/'+nodename+'.txt'"
                 }
-                
-				VisualModelImpl : {
+
+                VisualModelImpl : {
                     name : p"nodename"
                     filename : p"os.getcwd()+'/'+nodename+'.txt'"
                 }
 
-				Python : '''
-						for i in range(0, numfils):
-						         mytemplate.createChild('aChild'+str(i))'''
-			}
+                Python : '''
+                        for i in range(0, numfils):
+                                 self.createChild('aChild'+str(i))'''
+            }
         }
 
         Node : {
             name : "templateInstance"
             MyTemplate : { name : "test1"
-                           nodename : "one"
-                           numfils : 10
+                           nodename : "zerro"
+                           numfils : 1
                 }
         }
 
         Node : {
             name : "templateInstance"
             MyTemplate : { name : "test1"
-                           nodename : "deux"
-                           numfils : 5
+                           nodename : "two"
+                           numfils : 2
             }
         }
+
+    Node : {
+        name : "templateInstance"
+        MyTemplate : { name : "eulalieOlivier"
+                   nodename : "threeEulalie"
+                   numfils : 10
+        }
+    }
+
 
         Node : {
             Python : '''
                     template=MyTemplate
-                    for i in range(0, 10):
+                    for i in range(0, 5):
                         self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
                     '''
             }
