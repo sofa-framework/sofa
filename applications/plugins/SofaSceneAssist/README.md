@@ -1,20 +1,32 @@
-The PSL language for Sofa 
+The Python Scene Language for Sofa 
 ===========
-
-PSL is a new scene description langage for the sofa framework. 
+The Python Scene Language mix both XML and PyScn advantage in a single and powerful framework.
+It feature:
+- descriptive fragments (as XML scene)
+- programable fragments (with Python)
+- support for scene templates (customisable dynamic element that can be reused and instantiated)
+- support templates libraries (for scene element reuse and sharing)
+- support explicit aliasing (to simplify scene writing)
+- ...
 
 To give you a taste of the language here is a small scene that import a library of scene element and instantiate 
 a PneuNets actuator from it.
 
-```json
+```hjson
 Node {
-	name : "root"
+	name : "myNameIsRoot"
 
 	Import : SoftRobotActuators
 	Alias : SoftRobotActuators.PneuNets-PneuNets
 
-	Python : {
-		Sofa.msg_info(root, "PSL is very cool")
+	Node : {
+		Python : {
+			Sofa.msg_info(root, "PSL is very cool and it is scoped !!!")
+			for i in range(0,10):
+				self.addChild("one")
+				parent.addChild("two")
+				myNameIsRoot.addChild("three")
+		}
 	}
 
 	PneuNets : { 
@@ -24,19 +36,7 @@ Node {
 }
 ```
 
-The rationals underlying the language design are to combine 
-the advantage of descriptive language (as is XML) as well as the advantages of dynamicity through procedural programming. 
-To do so the language is merging concept from both SCN files and PYSCN in a single unified framework. 
-Some good features of the languages:
-- stuctural and descriptive (as the XML the language structure match the scene)
-- programmable with python
-- support template (a group of pre-defined dynamic element that can be reused and instantiated)
-- support importing libraries of template (for scene element reuse and sharing)
-- support explicit aliasing (to simplify scene writing)
-
-The language can be defined in term of abstract syntax and using a concrete syntaxe. For the simplicity of the following 
-we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON is currently 
-implemented but other alternative are also possible eg. XML or YAML ones. 
+We hope this example gave you some envy to learn more about it. Let's start with a big longer description of the langage feature and syntax. The language itself can be defined in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON is currently implemented in Sofa but please keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
 
 Let's start with a simple scene example in XML
 ```xml
@@ -73,7 +73,7 @@ for i in range(0,10):
 ```
 
 The equivalent scene PSL(HJSON) is the following 
-```json
+```hjson
 Node {
 	name : "root"
 	Node {
