@@ -106,8 +106,6 @@ public:
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
     virtual void draw(const core::visual::VisualParams* vparams);
 
- //   const VecIndex& getIndices() const { return m_indices; }
-
 protected :
 
     core::behavior::MechanicalState<DataTypes> *mState;

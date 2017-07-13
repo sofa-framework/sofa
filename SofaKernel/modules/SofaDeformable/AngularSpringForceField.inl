@@ -62,7 +62,7 @@ void AngularSpringForceField<DataTypes>::bwdInit()
 
     if (angularStiffness.getValue().empty())
     {
-        sout << "AngularSpringForceField: no angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << sendl;
+		msg_info("AngularSpringForceField") << "No angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << "\n";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -72,7 +72,7 @@ void AngularSpringForceField<DataTypes>::bwdInit()
 
     mState = dynamic_cast<core::behavior::MechanicalState<DataTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) {
-        serr << "MechanicalStateFilter has no binding MechanicalState" << sendl;
+		msg_error("AngularSpringForceField") << "MechanicalStateFilter has no binding MechanicalState" << "\n";
     }
     matS.resize(mState->getMatrixSize(), mState->getMatrixSize());
 }
@@ -82,7 +82,7 @@ void AngularSpringForceField<DataTypes>::reinit()
 {
     if (angularStiffness.getValue().empty())
     {
-        sout << "AngularSpringForceField: no angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << sendl;
+		msg_info("AngularSpringForceField") << "nN angular stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << "\n";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -96,20 +96,16 @@ template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     if(!mState) {
-        std::cout << "No Mechanical State found, no force will be computed..." << std::endl;
+		msg_info("AngularSpringForceField") << "No Mechanical State found, no force will be computed..." << "\n";
         return;
     }
 
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
-//    helper::ReadAccessor<Data<VecCoord> > p0 = *this->mState->read(core::VecCoordId::restPosition());
     f1.resize(p1.size());
-//    const VecReal& k = angularStiffness.getValue();
-
     for (unsigned int i = 1; i < indices.getValue().size(); i++)
     {
         const unsigned int index = indices.getValue()[i];
-        //defaulttype::Quat dq = p1[index].getOrientation() * p0[index].getOrientation().inverse();
         defaulttype::Quat dq = p1[index].getOrientation() * p1[index-1].getOrientation().inverse();
         defaulttype::Vec3d axis;
         double angle = 0.0;
@@ -118,8 +114,8 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
 
         Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-        // to avoid numerical instabilities of acos for theta < 5�
-        if(dq[3]>0.999999) // theta < 5� -> q[3] = cos(theta/2) > 0.999
+		// to avoid numerical instabilities of acos for theta < 5
+		if(dq[3]>0.999999) // theta < 5 -> q[3] = cos(theta/2) > 0.999
         {
             sin_half_theta = sqrt(dq[0] * dq[0] + dq[1] * dq[1] + dq[2] * dq[2]);
             angle = (Real)(2.0 * asin(sin_half_theta));
@@ -137,15 +133,12 @@ void AngularSpringForceField<DataTypes>::addForce(const core::MechanicalParams* 
         else
             axis = defaulttype::Vec<3,Real>(dq[0], dq[1], dq[2])/sin_half_theta;
 
-        std::cout << ">> Node " << index << " with angle: " << angle << " and direction: " << axis << std::endl;
-
-        if (i < this->k.size())
+		if (i < this->k.size())
             stiffness = this->k[i] = angularStiffness.getValue()[i];
          else
             stiffness = this->k[0] = angularStiffness.getValue()[0];
 
         getVOrientation(f1[index]) -= axis * angle * stiffness;
-//      std::cout << "angular force[" << i << "] = " << dir * angle * stiffness << std::endl;
     }
 }
 
@@ -156,7 +149,6 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
 
-    //const VecReal& k = angularStiffness.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     for (unsigned int i=0; i<indices.getValue().size(); i++)
@@ -167,7 +159,6 @@ void AngularSpringForceField<DataTypes>::addDForce(const core::MechanicalParams*
 template<class DataTypes>
 void AngularSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
-   // const VecReal& k = angularStiffness.getValue();
     const int N = 6;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
