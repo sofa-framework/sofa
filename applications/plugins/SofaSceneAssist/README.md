@@ -1,12 +1,13 @@
 The Python Scene Language for Sofa 
 ===========
-The Python Scene Language mix both XML and PyScn advantage in a single and powerful framework.
+The Python Scene Language mix advantage of XML and PyScn in a single and powerful framework. 
 It feature:
-- descriptive fragments (as XML scene)
-- programable fragments (with Python)
+- structural and descriptive (as XML scene)
+- programable (with Python)
 - support for scene templates (customisable dynamic element that can be reused and instantiated)
 - support templates libraries (for scene element reuse and sharing)
 - support explicit aliasing (to simplify scene writing)
+- can be saved in a readable way
 - ...
 
 To give you a taste of the language here is a small scene that import a library of scene element and instantiate 
