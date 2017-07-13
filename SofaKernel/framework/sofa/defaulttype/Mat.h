@@ -360,10 +360,10 @@ public:
         return m;
     }
 
-        /// Transpose the square matrix.
-        void transpose()
+    /// Transpose the square matrix.
+    void transpose()
     {
-                assert(L == C && "Cannot self-transpose a non-square matrix. Use transposed() instead");
+        assert(L == C && "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
             {
