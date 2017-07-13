@@ -1,17 +1,15 @@
 The Python Scene Language for Sofa 
 ===========
 The Python Scene Language mix advantage of XML and PyScn in a single and powerful framework. 
-It feature:
-- structural and descriptive (as XML scene)
-- programable (with Python)
-- support for scene templates (customisable dynamic element that can be reused and instantiated)
-- support templates libraries (for scene element reuse and sharing)
-- support explicit aliasing (to simplify scene writing)
-- can be saved in a readable way
-- ...
+It features:
+- structural and descriptive scenes (as XML scene)
+- programable and dynamic fragment (with embeded Python)
+- scene templates (customisable dynamic element that can be reused and instantiated)
+- templates libraries (for scene element reuse and sharing)
+- explicit aliasing (to simplify scene writing)
+And it can be loaded & saved in a consistant way. 
 
-To give you a taste of the language here is a small scene that import a library of scene element and instantiate 
-a PneuNets actuator from it.
+To give you a taste of the language here is a small scene that import a library of scene element (here our SoftRobotActuator library) and instantiate a PneuNets actuator from it. It also create several dynamic node...just to show the syntax: 
 
 ```hjson
 Node {
@@ -22,7 +20,7 @@ Node {
 
 	Node : {
 		Python : {
-			Sofa.msg_info(root, "PSL is very cool and it is scoped !!!")
+			Sofa.msg_info(root, "PSL offer scene direct scene element access to python code with scoping !!!")
 			for i in range(0,10):
 				self.addChild("one")
 				parent.addChild("two")
