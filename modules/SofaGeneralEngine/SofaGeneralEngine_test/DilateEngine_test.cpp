@@ -93,12 +93,12 @@ struct DilateEngine_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->update();
 
         // Check output
-        EXPECT_TRUE(m_thisObject->findData("output_position")->getValueString()=="0 0 0 1 0 0 0 1 0"); // Should stay invariant
-        EXPECT_TRUE(m_thisObject->findData("normal")->getValueString()=="0 0 1 0 0 1 0 0 1");
+        EXPECT_TRUE(m_thisObject->findData("output_position")->getValueString()=="[[0, 0, 0], [1, 0, 0], [0, 1, 0]]"); // Should stay invariant
+        EXPECT_TRUE(m_thisObject->findData("normal")->getValueString()=="[[0, 0, 1], [0, 0, 1], [0, 0, 1]]");
 
         m_thisObject->findData("distance")->read("0.1");
         m_thisObject->update();
-        EXPECT_TRUE(m_thisObject->findData("output_position")->getValueString()=="0 0 0.1 1 0 0.1 0 1 0.1"); // Should apply distance along normal
+        EXPECT_TRUE(m_thisObject->findData("output_position")->getValueString()=="[[0, 0, 0.1], [1, 0, 0.1], [0, 1, 0.1]]"); // Should apply distance along normal
     }
 
 };

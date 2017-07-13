@@ -81,7 +81,7 @@ struct ConstantForceField_test : public Sofa_test<>
                  "   <EulerImplicitSolver/>                                                      \n"
                  "   <MechanicalObject name='mstate' size='2' template='"<<  DataTypes::Name() << "'/> \n"
                  "   <UniformMass/>                                                                    \n"
-                 "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0'/>         \n"
+                 "   <ConstantForceField name='myForceField' indices='0' force='100.0 0.0 0 0 0 0'/>         \n"
                  "</Node>                                                                                                                                                               \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -122,7 +122,7 @@ struct ConstantForceField_test : public Sofa_test<>
     {
         map<string, vector< pair<string, string> >> values =
         {
-            {"indices",   { {"0 1","0 1"}, {"1 0", "1 0"}, {"-1 5", "0 5"} } }
+            {"indices",   { {"0 1","[0, 1]"}, {"1 0", "[1, 0]"}, {"-1 5", "[0, 5]"} } }
         };
 
         for(auto& kv : values){
