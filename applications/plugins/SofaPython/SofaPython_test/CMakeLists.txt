@@ -8,6 +8,7 @@ set(SOURCE_FILES
     python_test_list.cpp
     memory.cpp
     PythonFactory_test.cpp
+    SofaModule_test.cpp
     PythonScriptControllerHelper_test.cpp
 )
 
@@ -22,6 +23,7 @@ set(PYTHON_FILES
     python/test_Tools.py
     python/test_mass.py
     python/test_units.py
+    python/test_SofaModule.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py

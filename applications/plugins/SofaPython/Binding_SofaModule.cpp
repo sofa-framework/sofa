@@ -36,8 +36,10 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-//#include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::ComponentInfo ;
+using sofa::helper::logging::SofaComponentInfo ;
 
 #include "SceneLoaderPY.h"
 
@@ -348,44 +350,54 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
 
 static const std::string s_emitter = "PythonScript";
 
-// please use functions instead of copypasting all the time god dammit
+
 template<class Action>
 static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
+    PyObject* py_emitter {nullptr};
+    PyObject* py_message {nullptr};
+
     const size_t argSize = PyTuple_Size(args);
 
-    char* message;
-
-    // the logic would be to have the optional arg in last position :-/
     if( argSize == 2 ) {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) ) {
+        if( !PyArg_ParseTuple(args, "OO", &py_emitter, &py_message) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
             return NULL;
         }
 
-        action(emitter, message);
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message) );
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message) );
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
     } else {
         // no emitter
+        char* message;
         if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
         }
 
-        action(s_emitter, message);
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message);
     }
 
     Py_RETURN_NONE;
 }
 
-// also, we'd probably would be better off having 'error', 'fatal', 'info' as
-// argument
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_info(emitter) << message;
         });
 }
 
 static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
 
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_deprecated(emitter) << message;
         });
 
@@ -393,21 +405,21 @@ static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
 
 static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
 
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_warning(emitter) << message;
         });
 
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_error(emitter) << message;
         });
 
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_fatal(emitter) << message;
         });
 }
