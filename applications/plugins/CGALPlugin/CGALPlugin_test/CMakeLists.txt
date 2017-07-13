@@ -8,7 +8,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    MeshFromImageWithFeatures_test.cpp
+    MeshGenerationFromImage_test.cpp
 )
 
 
