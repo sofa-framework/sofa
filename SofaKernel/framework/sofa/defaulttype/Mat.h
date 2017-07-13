@@ -324,18 +324,31 @@ public:
         return id;
     }
 
+
+    template<int S>
+    static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs)
+    {
+        return &lhs == &rhs;
+    }
+
+    template<int I, int J>
+    static bool canSelfTranspose(const Mat<I, J, real>& /*lhs*/, const Mat<J, I, real>& /*rhs*/)
+    {
+        return false;
+    }
+
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
-				if (L == C && reinterpret_cast<Mat<C,L,real>*>(this) == &m)
-						this->operator =(transposed());
-				else
-				{
-						for (int i=0; i<L; i++)
-								for (int j=0; j<C; j++)
-										this->elems[i][j]=m[j][i];
-				}
-		}
+        if (canSelfTranspose(*this, m))
+            transpose();
+        else
+        {
+            for (int i=0; i<L; i++)
+                for (int j=0; j<C; j++)
+                    this->elems[i][j]=m[j][i];
+        }
+    }
 
     /// Return the transpose of m.
     Mat<C,L,real> transposed() const
@@ -347,10 +360,10 @@ public:
         return m;
     }
 
-    /// Transpose current matrix.
-    void transpose()
+        /// Transpose the square matrix.
+        void transpose()
     {
-        static_assert(L == C, "");
+                assert(L == C && "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
             {
@@ -605,25 +618,34 @@ public:
     }
 
 
-		/// invert this
-		Mat<L,C,real>& inverted()
-		{
-			Mat<L,C,real> m = *this;
-			invertMatrix(*this, m);
-			return *this;
-		}
-
-    /// Invert matrix m
-    bool invert(const Mat<L,C,real>& m)
+    /// invert this
+    Mat<L,C,real>& inverted()
     {
-				if (&m == this)
-				{
-						Mat<L,C,real> mat = m;
-						bool res = invertMatrix(mat, m);
-						this->operator =(mat);
-						return res;
-				}
-				return invertMatrix(*this, m);
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        Mat<L,C,real> m = *this;
+        invertMatrix(*this, m);
+        return *this;
+    }
+
+    /// assert when trying to invert a non-square matrix
+    bool invert(const Mat<L,C,real>& /*m*/)
+    {
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        return false;
+    }
+
+    /// Invert square matrix m
+    template<int S>
+    bool invert(const Mat<S,S,real>& m)
+    {
+        if (&m == this)
+        {
+            Mat<S,S,real> mat = m;
+            bool res = invertMatrix(mat, m);
+            this->operator =(mat);
+            return res;
+        }
+        return invertMatrix(*this, m);
     }
 
     static Mat<L,C,real> transformTranslation(const Vec<C-1,real>& t)
