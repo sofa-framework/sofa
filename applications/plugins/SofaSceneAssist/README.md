@@ -1,16 +1,16 @@
 The Python Scene Language for Sofa 
 ===========
-The Python Scene Language mix advantage of XML and PyScn in a single and powerful framework. 
-It features:
-- structural and descriptive scenes (as XML scene)
-- programable and dynamic fragment (with embeded Python)
-- scene templates (customisable dynamic element that can be reused and instantiated)
-- templates libraries (for scene element reuse and sharing)
-- explicit aliasing (to simplify scene writing)
-And it can be loaded & saved in a consistant way. 
+The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. 
+PSL features:
+- descriptive scenes (as XML)
+- programable fragments (with embeded Python)
+- scene templates (customisable dynamic element that can instantiated)
+- libraries (for scene elements reuse and sharing)
+- explicit aliasing (to simplify scene writing).
 
-To give you a taste of the language here is a small scene that import a library of scene element (here our SoftRobotActuator library) and instantiate a PneuNets actuator from it. It also create several dynamic node...just to show the syntax: 
+And, compared to Python, it preserve scene structure when it is loaded & saved.
 
+To give you a taste of the language in its JSON flavor here is a small scene in which we import the SoftRobotActuator library. This library contains templates, on of them is the PneuNets actuator. Once imported, the template is then instanciated in the scene.  
 ```hjson
 Node {
 	name : "myNameIsRoot"
@@ -19,13 +19,13 @@ Node {
 	Alias : SoftRobotActuators.PneuNets-PneuNets
 
 	Node : {
-		Python : {
+		Python : ''''
 			Sofa.msg_info(root, "PSL offer scene direct scene element access to python code with scoping !!!")
 			for i in range(0,10):
 				self.addChild("one")
 				parent.addChild("two")
 				myNameIsRoot.addChild("three")
-		}
+		'''
 	}
 
 	PneuNets : { 
@@ -35,7 +35,10 @@ Node {
 }
 ```
 
-We hope this example gave you some envy to learn more about it. Let's start with a big longer description of the langage feature and syntax. The language itself can be defined in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON is currently implemented in Sofa but please keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
+We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
+
+#### The PSL language. 
+The language itself is defined either in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON flavor of the language is currently implemented in Sofa but keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
 
 Let's start with a simple scene example in XML
 ```xml
@@ -45,7 +48,6 @@ Let's start with a simple scene example in XML
 		<OglModel filename="anObj.obj"/> 
 	</Node>
 </Node>
-}
 ```
 
 The equivalent scene PSL(HJSON) is the following 
@@ -60,8 +62,8 @@ Node {
 }
 ```
 
-The drawback of XML is that everything is static. This is why more and more people are using python to describe scene as it allow
- to write things like that: 
+The drawback SCN files is that everything is static. This is why more and more people are using python 
+to describe scene as it allows to write: 
 ```python
 root = Sofa.createNode("root")
 child1 = root.createNode("child1")
@@ -87,9 +89,7 @@ Node {
 }
 ```
 
-At first sight the PSL version look a bit more complex. But it solve a deep problem of the python version. It can be loaded & saved and preserving the scene structure ! 
-This is because in python the script is executed (consumed) at loading time and is not part of the scene so the only possible saving is to 
-store the *result* of the execution of the script as in: 
+At first sight the PSL version look a bit more complex. But it solve a deep problem of the python version. It can  preserve the scene structure when it is loaded & saved. This is because in python scenes the script is executed (consumed) at loading time and is not part of the scene. The consequence is that the only possible saving is to store the *result* of the execution of the script, totally loosing the advantages of python as visible in the previous scene saved in python: 
 ```python
 root = Sofa.createNode("root")
 child1 = root.createNode("child1")
@@ -107,8 +107,4 @@ child1.createNode("child_8")
 child1.createNode("child_9")
 ```
 
-With PSL, this does not happen because dynamic fragment of the language are stored un-executed in the scene graph. They can thus be easily saved in their initial form. 
-
-
-
-
+With PSL, this is not a problem because the dynamic fragment are stored *un-executed* in the scene graph. They can thus be easily modifie, re-run and saved. 
