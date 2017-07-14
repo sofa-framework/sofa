@@ -37,7 +37,7 @@ Node {
 
 We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
 
-#### The PSL language. 
+#### Introduction. 
 The language itself is defined either in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON flavor of the language is currently implemented in Sofa but keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
 
 Let's start with a simple scene example in XML
@@ -108,3 +108,84 @@ child1.createNode("child_9")
 ```
 
 With PSL, this is not a problem because the dynamic fragment are stored *un-executed* in the scene graph. They can thus be easily modifie, re-run and saved. 
+
+#### Templates
+A Template is a component that stores a sub-graph in its textual, or parsed, form. The Template then can be instantiated 
+in the graph.
+
+```hjson
+Node : {
+	name : "root"
+	Template : {
+		name : "MyTemplate"
+		properties : { name : "undefined"
+			       numpoints : 3 
+		}
+		Node : {
+			name : p"aName" 
+			MechanicalObject: { position=p"range(0, numparts*3)" }
+			UniformMass : {}
+			Node : {
+				name : "visual"
+				BarycentricMapping : {}
+				OglModel : { filename = "myOBJ.obj"}
+			}
+		}
+	}
+
+	/// The template can then be instantiated using its name as in:
+	MyTemplate : {
+		name : "defined1"
+		numpoints : 100 
+	}
+	
+	MyTemplate : {
+		name : "defined2"
+		numpoints : 10 
+	}
+	
+	/// Or using Python 
+	Python : '''
+		for i in range(0,10):
+			instantiate(root, "MyTemplate", {name:"defined"+str(i), numpoints : i})
+		'''
+}
+```
+
+#### Import 
+To allow template re-usability it is possible to store them in file or directories that can be imported with the Import directive. 
+In a file named mylibrary.pyjson" define  a template 
+```hjson
+	Template { name : "MotorA" ... }
+	Template { name : "MotorB" ... }
+	Template { name : "MotorC" .... }
+```
+
+Then in your scene file you load and use the template in the following way:
+```hjson
+Node : {
+	Import : mylibrary 
+	
+	mylibrary.MotorA : {}
+	mylibrary.MotorB : {}
+	... 
+}
+```
+
+##### Aliasing
+In Sofa the aliasing system is implicit and the alias are defined in the sofa code source. This is really trouble some as users need to *discover* that in a scene "Mesh" is in fact an alias to a "MeshTopology" object. Without proper tools the solution is often to search in the source code which was an alias. 
+
+In PSL we are preserving the use of Alias but we make them explicit. So each scene can defined its own set of alias and anyone reading the scene knows what are the alias and what are the real underlying objects. 
+```hjson 
+	Import : mylibrary 
+
+	Alias : TSPhereModel-CollisionSphere
+	Alias : mylibrary.MotorA-MotorA
+	Alias : mylibrary.MotorB-MotorB
+	
+	/// Now we can use either
+	TSPhereModel : {}
+	
+	/// or
+	CollisionSphere : {}
+```
