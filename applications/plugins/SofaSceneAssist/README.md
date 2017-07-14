@@ -1,14 +1,14 @@
 The Python Scene Language for Sofa 
 ===========
 The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. 
+
 PSL features:
 - descriptive scenes (as XML)
 - programable fragments (with embeded Python)
 - scene templates (customisable dynamic element that can instantiated)
 - libraries (for scene elements reuse and sharing)
 - explicit aliasing (to simplify scene writing).
-
-And, compared to Python, it preserve scene structure when it is loaded & saved.
+- preserve scene structure when it is loaded & saved.
 
 To give you a taste of the language in its JSON flavor here is a small scene in which we import the SoftRobotActuator library. This library contains templates, on of them is the PneuNets actuator. Once imported, the template is then instanciated in the scene.  
 ```css
