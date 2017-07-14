@@ -51,7 +51,7 @@ Let's start with a simple scene example in XML
 ```
 
 The equivalent scene PSL(HJSON) is the following 
-```json
+```hjson
 Node {
 	name : "root"
 	Node {
