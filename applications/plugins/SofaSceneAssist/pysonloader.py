@@ -45,17 +45,27 @@ class MyObjectHook(object):
 	def __call__(self, s):
 		return s
 
-def instantiate(o, g):
-	#parent, key, kv, stack, frame
+#@deprecated 
+def instantiate(o, kvparams):
+	"""Instanciate a template.
+	   All the properties provided in kvparams are added the a new frame. 
+	   This Frame is added at the end of the stack frame. 
+	   The o parameter is holding the template classname and its corresponding code. 
+	   The template is then executed in the context provided by the stackframe.  		
+	"""
+	# Build the new frame and add it t the stack
 	frame = {}
-	for key in g:
-		frame[key] = g[key]	
+	for key in kvparams:
+		frame[key] = kvparams[key]	
 	o.stack.append(frame)
+	
+	# Get the template 
 	n, a= o.template[0]
 	n=processNode(None, n, a, o.stack, frame)
 	o.stack.pop(-1)
 	return n
 
+#@deprecated 
 def dumpSofa(s, prefix=""):
 	res = ""
 	if isinstance(s, Node):
@@ -69,15 +79,21 @@ def dumpSofa(s, prefix=""):
 		res += prefix+str(s) + "\n"
 	return res
 	
+
 def flattenStackFrame(sf):
+	"""Return the stack frame content into a single "flat" dictionnary.
+	   The most recent entries are overriden the oldest.
+	   """
 	res = {}
 	for frame in sf:
 		for k in frame:
-			res[k] = frame[k
-			]
+			res[k] = frame[k]
 	return res	
 
 def getFromStack(name, stack):
+	"""Search in the stack for a given name. The search is proceeding from 
+	   the most recent entries to the oldest. If 'name' cannot be found 
+	   in the stack None is returned. """
 	for frame in reversed(stack):
 		for k in frame: 
 			if k == name:
@@ -85,23 +101,26 @@ def getFromStack(name, stack):
 	return None
 
 def populateFrame(cname, frame, stack):
+	"""Initialize a frame from the current attributes of the 'self' object 
+	   This is needed to expose the data as first class object. 
+	""" 
 	fself = getFromStack("self", stack)
 	if fself == None:
 		return 
-	for datafield in fself.getDataFields():
-		frame[datafield] = lambda tname : sys.out.write("T NAME") 
+	#for datafield in fself.getDataFields():
+	#	frame[datafield] = lambda tname : sys.out.write("T NAME") 
 					     
 
 def processPython(parent, key, kv, stack, frame):
-	#print("Process Python...")
+	"""Process a python fragment of code with context provided by the content of the stack."""
 	try:
 		r = flattenStackFrame(stack)
 		exec(kv, r)
 	except Exception, e:
-		Sofa.msg_error(parent.name, "Unable to process Python "+str(e)+str("\n")+kv)
+		Sofa.msg_error(parent, "Unable to process Python "+str(e)+str("\n")+kv)
 
 def evalPython(key, kv, stack, frame):
-	#print("Process Python...")
+	"""Process a python fragment of code with context provided by the content of the stack."""
 	r = flattenStackFrame(stack)
 	return eval(kv, r)
 
@@ -109,30 +128,35 @@ def evalPython(key, kv, stack, frame):
 def processParameter(parent, name, value, stack, frame):
 	if isinstance(value, list):
 		matches = difflib.get_close_matches(name, sofaComponents+templates.keys(), n=4)
-		Sofa.msg_error(parent.name, "Unknow parameter or Component [" + name + "] suggestions -> "+str(matches))
+		c=parent.createChild("[XX"+name+"XX]")
+    		Sofa.msg_error(c, "Unknow parameter or Component [" + name + "] suggestions -> "+str(matches))
 	else:		
 		## Python Hook to build an eval function. 
 		if value[0] == 'p' and value[1] == '"':
 			value = evalPython(None, value[2:-1], stack, frame) 
 				
 		try:
-			frame["self"].findData(name).setValue(0, str(value))
+			frame["self"].findData(name).setValueString(str(value))
 		except Exception,e:
-			Sofa.msg_error(parent.name, "Unable to get the argument " + name)
+			Sofa.msg_error(parent, "Unable to get the argument " + name)
 			
 		if name == "name":
 			frame[value] = frame["self"] 
 			frame["name"] = value
 		
-def createObject(parentNode, name, stack , frame):
+def createObject(parentNode, name, stack , frame, kv):
+	print("CREATE OBJECT {"+name+"} WITH: "+str(kv)+ "in context "+parentNode.name) 
 	if name in sofaComponents:
 		n=None
 		if "name" in frame:
-			n = parentNode.createObject(name, name=str(frame["name"]))
+			n = parentNode.createObject(name, **kv)
 		else:
-			n = parentNode.createObject(name)	
+			n = parentNode.createObject(name, **kv)	
 		return n
-	return parentNode.createObject("Undefined")
+		
+	failureObject = parentNode.createObject("Undefined", **kv)
+	Sofa.msg_error(failureObject, "Unable to create object "+str(key)) 
+	return failureObject
 	
 def processObjectDict(obj, dic, stack, frame):
 	for key,value in dic:
@@ -142,21 +166,38 @@ def processObjectDict(obj, dic, stack, frame):
 			processParameter(obj, key, value, stack ,frame)
 								
 def processObject(parent, key, kv, stack, frame):
+    try:
+	global sofaComponents 
 	populateFrame(key, frame, stack)
 	frame = {}
+	kwargs = {}
 	if not isinstance(kv, list):
 		kv = [("name" , kv)]
-	
+		
 	for k,v in kv:
+		if v[0] == 'p' and v[1] == '"':
+			v = evalPython(None, v[2:-1], stack, frame) 
+		
 		if k == "name":	
 			frame["name"] = v
+		
+		kwargs[k] = str(v)
 
 	stack.append(frame)
-	frame["self"] = obj = createObject(parent, key, stack, frame)
-	processObjectDict(obj, kv, stack, frame)	
+	frame["self"] = obj = createObject(parent, key, stack, frame, kwargs)
 	stack.pop(-1) 	
-	return obj
 	
+	if key == "RequiredPlugin" : 
+		sofaComponents = []
+		for (name, desc) in Sofa.getAvailableComponents():
+			sofaComponents.append(name)	
+	
+	return obj
+    except Exception:
+    	c=parent.createChild("[XX"+key+"XX]")
+    	Sofa.msg_error(c, "Problem in creating the Object")
+   	return None
+   		
 # TODO add a warning to indicate that a template is loaded twice.
 def importTemplates(content):
 	templates = {}
@@ -188,9 +229,9 @@ def processImport(parent, key, kv, stack, frame):
 	if not os.path.exists(filename):
 		dircontent = os.listdir(os.getcwd())
 		matches = difflib.get_close_matches(filename, dircontent, n=4)
-		Sofa.msg_error(parent.name, "The file '" + filename + "' does not exists. Do you mean: "+str(matches))
+		Sofa.msg_error(parent, "The file '" + filename + "' does not exists. Do you mean: "+str(matches))
 		return 
-	Sofa.msg_info("SceneLoaderPYSON", "Importing "+ os.getcwd() + "/"+filename)
+	Sofa.msg_info(parent, "Importing "+ os.getcwd() + "/"+filename)
 		
 	f = open(filename).read()
 	loadedcontent = hjson.loads(f, object_pairs_hook=MyObjectHook())
@@ -203,7 +244,6 @@ def processImport(parent, key, kv, stack, frame):
 
 def processTemplate(parent, key, kv, stack, frame):
 	global templates 
-	print("PROCESS TEMPLATE...")
 	name = "undefined"
 	properties = {}
 	pattern = [] 
@@ -215,12 +255,10 @@ def processTemplate(parent, key, kv, stack, frame):
 		else:
 			pattern.append( (key, value) ) 
 	o = parent.createObject("Template", name=str(name))
-	
+	o.listening = True 
 	o.setTemplate(value)
 	frame[str(name)] = o
 	templates[str(name)] = o  
-	print("SETTEMPLATE: "+str(name)+" -> "+str(o.getTemplate()))
-	
 	return o
 
 aliases = {}
@@ -228,6 +266,45 @@ def processAlias(parent, key, kv, stack, frame):
 	global aliases	
 	oldName, newName = kv.split('-')
 	aliases[newName]=oldName
+
+def reinstanciateTemplate(templateInstance):
+	global templates
+
+	key = templateInstance.name 
+	instanceProperties = eval(templateInstance.src)
+	print("RE-Instanciate template: "+ templateInstance.name )
+	print("             properties: "+ str(instanceProperties) )
+	
+	
+	#print("TODO: "+str(dir(templateInstance)))
+	for c in templateInstance.getChildren():
+		templateInstance.removeChild(c)
+	
+	c = templateInstance.getObjects()
+	for o in c:
+		templateInstance.removeObject(o)
+	
+	# Is there a template with this name, if this is the case 
+	# Retrieve the associated templates .
+	if isinstance(templates[key], Sofa.Template):
+		n = templates[key].getTemplate()
+		print("L0 ? ") 
+	else: 
+		print("LA")
+		n = templates[key]["content"] 
+		for k,v in templates[key]["properties"]:
+			if not k in frame:
+				frame[k] = str(v)
+	print("?? "+str(templates))		
+	print("Template: "+str(n))
+	frame = {}
+	frame["parent"]=templateInstance
+	for k,v in instanceProperties:
+		frame[k] = v
+	stack = [frame]
+	n = processNode(templateInstance, "Node", n, stack, frame, doCreate=True)
+	#n.name = key
+	
 
 def instanciateTemplate(parent, key, kv, stack, frame):
 	global templates
@@ -243,7 +320,24 @@ def instanciateTemplate(parent, key, kv, stack, frame):
 			if not k in frame:
 				frame[k] = str(v)
 	print("Template: "+str(n))
-	processNode(parent, "Node", n, stack, frame,doCreate=False)
+	n = processNode(parent, "Node", n, stack, frame, doCreate=True)
+	n.name = key
+	
+
+	for k,v in kv:
+		if not hasattr(n, k):
+			print("ADDING NEW ATTRIBUTE "+str(n))
+			if isinstance(v, int):
+				n.addData(k, key+".Properties", "Help", "d", v)
+			elif isinstance(v, str):
+				n.addData(k, key+".Properties", "Help", "s", v)
+			elif isinstance(v, float):
+				n.addData(k, key+".Properties", "Help", "f", v)
+			data = n.findData(k) 
+			templates[key].trackData(data) 
+
+	n.addData("src", key+".Properties", "No help", "s", repr(kv))
+	
 	
 def processNode(parent, key, kv, stack, frame, doCreate=True):
 	global templates, aliases
@@ -275,7 +369,8 @@ def processNode(parent, key, kv, stack, frame, doCreate=True):
 				processAlias(tself, key,value, stack, frame)			
 			elif key in sofaComponents:
 				o = processObject(tself, key, value, stack, {})
-				tself.addObject(o)
+				if o != None:
+					tself.addObject(o)
 			elif key in templates:
 				instanciateTemplate(tself, key,value, stack, frame)
 			else:

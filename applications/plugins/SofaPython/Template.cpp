@@ -28,12 +28,19 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseObject ;
 
+#include <sofa/core/objectmodel/IdleEvent.h>
+using sofa::core::objectmodel::IdleEvent ;
+
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
+
 #include "PythonMacros.h"
 #include "Binding_BaseObject.h"
+
+#include "PythonFactory.h"
+using sofa::PythonFactory ;
 
 #include "Template.h"
 
@@ -46,17 +53,75 @@ namespace component
 
 namespace _template_
 {
+using sofa::core::objectmodel::BaseNode ;
+using sofa::simulation::Node ;
 
-Template::Template() : BaseObject()
+Template::Template() : BaseObject(),
+    m_template(initData(&m_template, std::string(""), "template", "Current template source" , true, false))
 {
+    m_template.setGroup("Template.properties");
 }
 
 Template::~Template(){}
 
+void Template::handleEvent(Event *event)
+{
+    if (dynamic_cast<sofa::core::objectmodel::IdleEvent *>(event))
+        checkAndDoUpdates() ;
+    else
+        BaseObject::handleEvent(event);
+}
+
+void Template::checkAndDoUpdates()
+{
+    for(BaseData* data : m_trackedDatas){
+        if(m_dataTracker.isDirty(*data)){
+            std::cout << "Data is cleaned ... or not " << data->getValueString() << std::endl ;
+            m_dataTracker.clean(*data) ;
+
+
+            Base* base = data->getOwner() ;
+            Node* node = dynamic_cast<Node*>(base) ;
+
+            //std::vector<BaseObject*> ct;
+            //node->getTreeObjects<BaseObject, std::vector<BaseObject*>>(&ct);
+
+            //for(auto& i : ct){
+            //    node->removeObject(i) ;
+            //}
+
+            /// Re-instantiate it.
+            PyObject* pDict = PyModule_GetDict(PyImport_AddModule("pysonloader"));
+            PyObject* pFunc = PyDict_GetItemString(pDict, "reinstanciateTemplate");
+
+            if(!pDict || !pFunc)
+                return;
+
+            std::cout << "INSTANTIATE TEMPLATE " << pFunc << std::endl ;
+
+            if (PyCallable_Check(pFunc))
+            {
+                PyObject* tgt = PythonFactory::toPython(data->getOwner());
+                PyObject* res = PyObject_CallFunction(pFunc, "O", tgt) ;
+
+                if(PyErr_Occurred())
+                    PyErr_Print();
+            }
+
+        }
+    }
+}
+
+void Template::addDataToTrack(BaseData* d)
+{
+    std::cout << "ADDING TO DATA TRACKER.. " << d->getName() <<  std::endl ;
+    m_dataTracker.trackData(*d) ;
+    m_trackedDatas.push_back(d);
+}
+
 SOFA_DECL_CLASS(Template)
 int TemplateClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
         .add< Template >();
-
 
 
 } // namespace _baseprefab_
@@ -65,7 +130,7 @@ int TemplateClass = core::RegisterObject("An object template encoded as parsed h
 
 } // namespace sofa
 
-
+using sofa::core::objectmodel::BaseData ;
 using sofa::component::_template_::Template ;
 
 static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
@@ -78,6 +143,14 @@ static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
     if (!PyArg_ParseTuple(args, "O", &(obj->m_rawTemplate))) {
         return NULL;
     }
+
+    std::stringstream s ;
+    PyObject* tmpstr = PyObject_Repr(obj->m_rawTemplate);
+    s << PyString_AsString(tmpstr) ;
+    obj->m_template.setValue(s.str()) ;
+
+    Py_DECREF(tmpstr);
+    Py_INCREF(obj->m_rawTemplate);
     Py_INCREF(obj->m_rawTemplate);
     return obj->m_rawTemplate ;
 }
@@ -85,16 +158,36 @@ static PyObject * Template_setTemplate(PyObject *self, PyObject * args)
 static PyObject * Template_getTemplate(PyObject *self, PyObject * args)
 {
     Template* obj= dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
-    Py_INCREF(obj->m_rawTemplate);
-    return obj->m_rawTemplate ;
+    if(obj->m_rawTemplate){
+        Py_INCREF(obj->m_rawTemplate);
+        return obj->m_rawTemplate ;
+    }
+    return nullptr ;
+}
+
+static PyObject * Template_trackData(PyObject *self, PyObject * args)
+{
+
+    Template* obj = dynamic_cast<Template*>(((PySPtr<Base>*)self)->object.get()) ;
+    PyObject* o  {nullptr} ;
+    if (!PyArg_ParseTuple(args, "O", &o)) {
+        return NULL ;
+    }
+
+    BaseData* bd = ((PyPtr<BaseData>*)o)->object ;
+    if(obj && bd)
+        obj->addDataToTrack(bd) ;
+    else
+        return NULL ;
+    Py_RETURN_NONE ;
 }
 
 
 SP_CLASS_METHODS_BEGIN(Template)
 SP_CLASS_METHOD(Template, setTemplate)
 SP_CLASS_METHOD(Template, getTemplate)
+SP_CLASS_METHOD(Template, trackData)
 SP_CLASS_METHODS_END
-
 
 SP_CLASS_TYPE_SPTR(Template,Template,BaseObject)
 

@@ -246,18 +246,18 @@ void Base::processStream(std::ostream& out)
 {
     if (serr==out)
     {
-        addMessage( (MessageDispatcher::log(serr.messageClass(),
-                                            serr.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                            serr.fileInfo()) << serr.str()).getMessage() );
+        MessageDispatcher::log(serr.messageClass(),
+                               serr.messageType(), sofa::helper::logging::getComponentInfo(this),
+                               serr.fileInfo()) << serr.str() ;
         serr.clear();
     }
     else if (sout==out)
     {
         if (f_printLog.getValue())
         {
-            addMessage( (MessageDispatcher::log(sout.messageClass(),
-                                                  sout.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                                  sout.fileInfo()) << sout.str()).getMessage() );
+            MessageDispatcher::log(sout.messageClass(),
+                                   sout.messageType(), sofa::helper::logging::getComponentInfo(this),
+                                   sout.fileInfo()) << sout.str();
         }
 
         sout.clear();
@@ -266,6 +266,7 @@ void Base::processStream(std::ostream& out)
 
 void Base::addMessage(const Message &m) const
 {
+    std::cout << getName() << ": ADD MESSAGE TO BACKLOG: " << m_messageslog.size() << std::endl ;
     if(m_messageslog.size() >= ERROR_LOG_SIZE ){
         m_messageslog.pop_front();
     }

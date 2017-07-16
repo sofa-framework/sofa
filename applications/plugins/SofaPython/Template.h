@@ -27,9 +27,20 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseObject ;
 
+#include <sofa/helper/vector.h>
+
+#include <sofa/core/DataTracker.h>
+
 #include <SofaPython/PythonMacros.h>
 SP_DECLARE_CLASS_TYPE(Template)
 
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class BaseData ;
+        }
+    }
+}
 
 namespace sofa
 {
@@ -39,10 +50,13 @@ namespace component
 
 namespace _template_
 {
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Event;
+using sofa::core::DataTracker;
+using sofa::helper::vector ;
 
 class Template : public BaseObject
 {
-
 public:
     SOFA_CLASS(Template, BaseObject);
 
@@ -50,6 +64,14 @@ public:
     virtual ~Template() ;
 
     PyObject* m_rawTemplate { nullptr };
+    Data<std::string> m_template  ;
+
+    void addDataToTrack(BaseData*) ;
+    virtual void handleEvent(Event *event) override ;
+private:
+    void checkAndDoUpdates() ;
+    DataTracker m_dataTracker ;
+    vector<BaseData*> m_trackedDatas ;
 };
 
 

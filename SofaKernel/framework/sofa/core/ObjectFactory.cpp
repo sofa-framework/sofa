@@ -128,6 +128,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
+            std::cout << "WE HAVE A TEMPLATE " << templatename << std::endl;
             Creator::SPtr c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(*it2);
@@ -136,12 +137,16 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         // If object cannot be created with the given template (or the default one), try all possible ones
         if (creators.empty())
         {
+            std::cout << "WE HAVE NO TEMPLATE FOR" << templatename << " , " << classname <<  std::endl;
+
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
                 Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg))
+                if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
+                    std::cout << "BUT WE FOUND  SOME " << std::endl ;
+                }
             }
         }
     }

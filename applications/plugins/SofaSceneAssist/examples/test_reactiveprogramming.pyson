@@ -1,0 +1,31 @@
+Node : {
+        name : "root"
+
+        APIVersion : "v17.06"
+        RequiredPlugin : "SofaPython"
+
+        Template : {
+            name : "Shape"
+            properties : { numstep : 3 }
+            Node : {
+                Python : '''
+                    print("NumStep: "+str(numstep))
+                '''
+                MechanicalObject : {}
+            }
+        }
+
+        Shape : {
+            numstep : 5        
+		}
+
+        Shape : {
+            numstep : 4
+        }
+
+		Python : '''
+				print("Hello world NNN "+str(dir(root)))
+			'''
+}
+
+

@@ -1,5 +1,5 @@
-# This file is a test to insure that the import function is still functionning.
-# In case of failure a "msg_error" message is reported.
+/// This file is a test to insure that the import function is still functionning.
+/// In case of failure a "msg_error" message is reported.
 Node : {
         name : "root"
 
