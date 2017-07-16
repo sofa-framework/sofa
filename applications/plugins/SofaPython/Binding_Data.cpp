@@ -499,11 +499,11 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
     int index;
     PyObject *value;
-    
+
     if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
         return NULL;
     }
-    
+
     if ((unsigned int)index >= typeinfo->size())
     {
         // out of bounds!
@@ -511,7 +511,7 @@ static PyObject * Data_setValue(PyObject *self, PyObject * args)
         PyErr_BadArgument();
         return NULL;
     }
-    
+
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
         typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
@@ -728,9 +728,17 @@ extern "C" PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject
     return Data_getLinkPath(self, args);
 }
 
+static PyObject * Data_setValueString(PyObject *self, PyObject * args)
+{
+    return Data_read(self, args) ;
+}
+
+
+
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
+SP_CLASS_METHOD(Data,setValueString)
 SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD(Data,getValue)
 SP_CLASS_METHOD(Data,getSize)
