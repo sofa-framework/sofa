@@ -31,9 +31,141 @@ using namespace sofa::core::objectmodel;
 
 #include "PythonFactory.h"
 
+#include "PythonEnvironment.h"
+using sofa::simulation::PythonEnvironment ;
+
 // stop copypasting for the lord's sake
 static Base* get_base(PyObject* obj) {
     return ((PySPtr<Base>*)obj)->object.get();
+}
+
+//TODO(dmarchal 2017-07-15) Factor that before PR.
+/// This function converts an PyObject into a sofa string.
+/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
+{
+    /// String are just returned as string.
+    if (PyString_Check(value))
+    {
+        return out << PyString_AsString(value) ;
+    }
+
+
+    if( PySequence_Check(value) )
+    {
+        /// It is a sequence...so we can iterate over it.
+        PyObject *iterator = PyObject_GetIter(value);
+        if(iterator)
+        {
+            bool first = true;
+            while(PyObject* next = PyIter_Next(iterator))
+            {
+                if(first) first = false;
+                else out << ' ';
+
+                pythonToSofaDataString(next, out);
+                Py_DECREF(next);
+            }
+            Py_DECREF(iterator);
+
+            if (PyErr_Occurred())
+            {
+                msg_error("SofaPython") << "error while iterating." << msgendl
+                                        << PythonEnvironment::getStackAsString() ;
+            }
+            return out;
+        }
+    }
+
+
+    /// Check if the object has an explicit conversion to a Sofa path. If this is the case
+    /// we use it.
+    if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
+       PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
+       return pythonToSofaDataString(retvalue, out);
+    }
+
+    /// Default conversion for standard type:
+    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
+    {
+        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
+                                  << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
+                                  << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
+                                  << "This function should return a string usable as a parameter in createObject()." << msgendl
+                                  << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
+                                     "to the object you are passing the createObject function." << msgendl
+                                  << PythonEnvironment::getStackAsString() ;
+    }
+
+
+    PyObject* tmpstr=PyObject_Str(value);
+    out << PyString_AsString(tmpstr) ;
+    Py_DECREF(tmpstr) ;
+    return out ;
+}
+
+//TODO(dmarchal 2017-07-15) Factor that before PR.
+char* getStringCopy(char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
+
+static PyObject * Base_addData(PyObject *self, PyObject *args ) {
+    Base* obj = get_base(self);
+    char* dataName;
+    char* dataClass;
+    char* dataHelp;
+    char* dataRawType;
+    PyObject* dataValue;
+
+    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+        return NULL;
+    }
+
+    dataName = getStringCopy(dataName) ;
+    dataClass = getStringCopy(dataClass) ;
+    dataHelp  = getStringCopy(dataHelp) ;
+
+
+    //TODO(dmarchal 2017-07-15) il y a une fuite mémoire ici. A cause de l'init qui ne fait
+    // pas de copie des chaines... mais juste du swallow du coup on se retrouve à copier les nom
+    // à chaque template. C'est méga naze !
+    BaseData* bd = nullptr ;
+    if(dataRawType[0] == 's'){
+        Data<std::string>* t = new Data<std::string>() ;
+        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'b'){
+        Data<bool>* t = new Data<bool>();
+        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'd'){
+        Data<int>* t = new Data<int>();
+        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'f'){
+        Data<float>* t = new Data<float>();
+        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else{
+        std::stringstream msg;
+        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
+        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
+        return NULL;
+    }
+
+    std::stringstream tmp;
+    pythonToSofaDataString(dataValue, tmp) ;
+    bd->read( tmp.str() ) ;
+    bd->setGroup(dataClass);
+
+    Py_RETURN_NONE ;
 }
 
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
@@ -180,6 +312,7 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
 }
 
 SP_CLASS_METHODS_BEGIN(Base)
+SP_CLASS_METHOD(Base,addData)
 SP_CLASS_METHOD(Base,findData)
 SP_CLASS_METHOD(Base,findLink)
 SP_CLASS_METHOD(Base,getClassName)
