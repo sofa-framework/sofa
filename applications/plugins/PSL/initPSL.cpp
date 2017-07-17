@@ -19,15 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSceneAssist/config.h>
+#include <PSL/config.h>
+
+#include <PSL/Undefined.h>
 
 extern "C" {
-    SOFA_SOFASCENEASSIST_API void initExternalModule();
-    SOFA_SOFASCENEASSIST_API const char* getModuleName();
-    SOFA_SOFASCENEASSIST_API const char* getModuleVersion();
-    SOFA_SOFASCENEASSIST_API const char* getModuleLicense();
-    SOFA_SOFASCENEASSIST_API const char* getModuleDescription();
-    SOFA_SOFASCENEASSIST_API const char* getModuleComponentList();
+    SOFA_PSL_API void initExternalModule();
+    SOFA_PSL_API const char* getModuleName();
+    SOFA_PSL_API const char* getModuleVersion();
+    SOFA_PSL_API const char* getModuleLicense();
+    SOFA_PSL_API const char* getModuleDescription();
+    SOFA_PSL_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -64,9 +66,9 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     /// string containing the names of the classes provided by the plugin
-    return "BasePrefab";
+    return "";
 }
 
-SOFA_LINK_CLASS(BasePrefab)
+SOFA_LINK_CLASS(Undefined)
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms

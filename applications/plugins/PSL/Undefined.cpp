@@ -22,64 +22,61 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#ifndef SOFASCENEASSIST_BASEPREFAB_H
-#define SOFASCENEASSIST_BASEPREFAB_H
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseContext ;
 
-#include <SofaSimulationGraph/DAGNode.h>
-#include <sofa/core/BehaviorModel.h>
-#include <SofaSceneAssist/config.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
 
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
+using sofa::core::objectmodel::BaseObjectDescription ;
 
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::RegisterObject ;
+
+#include <PSL/config.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace _undefined_
 {
 
-namespace _baseprefab_
+class Undefined : public BaseObject
 {
 
-using sofa::core::objectmodel::BaseObject ;
-using sofa::simulation::graph::DAGNode ;
-using sofa::simulation::Node ;
-
-class BasePrefab : public BaseObject
-{
 public:
-    SOFA_CLASS(BasePrefab, BaseObject);
-
-    typedef BaseObject Super;
-
-    /////////////////// Inherited from BaseObject ////////////////////
-    virtual void init() override ;
-    virtual void reinit() override ;
-    //////////////////////////////////////////////////////////////////
-
-    virtual void doInit(Node::SPtr& prefabInstance) = 0 ;
-    virtual void doReinit(Node::SPtr& prefabInstance) = 0 ;
+    SOFA_CLASS(Undefined, BaseObject);
 
 protected:
-    BasePrefab() ;
-    virtual ~BasePrefab() ;
+    Undefined() ;
+    virtual ~Undefined() ;
 
-    Node::SPtr m_childNode ;
-    Data<std::string> d_instancePath ;
+private:
 };
+
+Undefined::Undefined() : BaseObject()
+{
+}
+
+Undefined::~Undefined(){}
+
+SOFA_DECL_CLASS(Undefined)
+int UndefinedClass = core::RegisterObject("An unknow object have been created.")
+        .add< Undefined >();
 
 } // namespace _baseprefab_
 
-using _baseprefab_::BasePrefab ;
-
-} // namespace objectmodel
-
-} // namespace core
+} // namespace component
 
 } // namespace sofa
-
-
-#endif // SOFASCENEASSIST_BASEPREFAB_H

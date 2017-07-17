@@ -15,74 +15,20 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#ifndef SOFASCENEASSIST_CONFIG_H
+#define SOFASCENEASSIST_CONFIG_H
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
+#include <sofa/helper/system/config.h>
 
-#include <sofa/core/objectmodel/BaseNode.h>
-using sofa::core::objectmodel::BaseNode ;
+#ifdef SOFA_BUILD_SOFASCENEASSIST
+#  define SOFA_TARGET sofa_tostring(SofaSceneAssist)
+#  define SOFA_PSL_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_PSL_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription ;
-
-#include <sofa/simulation/Node.h>
-using sofa::simulation::Node ;
-
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-using sofa::core::RegisterObject ;
-
-#include <SofaSceneAssist/BasePrefab.h>
-using sofa::core::objectmodel::BasePrefab ;
-
-#include <SofaSceneAssist/config.h>
-
-#include <SofaSceneAssist/SceneAssist.h>
-using sofa::SceneAssist ;
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace _repeat_
-{
-
-class Undefined : public BaseObject
-{
-
-public:
-    SOFA_CLASS(Undefined, BaseObject);
-
-protected:
-    Undefined() ;
-    virtual ~Undefined() ;
-
-private:
-};
-
-Undefined::Undefined() : BaseObject()
-{
-}
-
-Undefined::~Undefined(){}
-
-SOFA_DECL_CLASS(Undefined)
-int UndefinedClass = core::RegisterObject("An unknow object have been created.")
-        .add< Undefined >();
-
-} // namespace _baseprefab_
-
-} // namespace component
-
-} // namespace sofa
+#endif

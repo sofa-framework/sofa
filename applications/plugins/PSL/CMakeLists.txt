@@ -1,22 +1,17 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaSceneAssist)
+project(PSL)
 
 set(HEADER_FILES
     config.h
-    SceneAssist.h
-    BasePrefab.h
+    Undefined.h
 )
 
 set(SOURCE_FILES
-    initSofaSceneAssist.cpp
-    SceneAssist.cpp
-    BasePrefab.cpp
-    Repeat.cpp
+    initPSL.cpp
     Undefined.cpp
 )
 
 find_package(SofaFramework REQUIRED)
-
 
 find_package(SofaPython QUIET)
 if( SofaPython_FOUND )
@@ -39,8 +34,8 @@ target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaSceneAssist_libraries
-        EXPORT SofaSceneAssistTargets
+        COMPONENT PSL_libraries
+        EXPORT PSLTargets
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
