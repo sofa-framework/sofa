@@ -352,15 +352,19 @@ def instanciateTemplate(parent, key, kv, stack, frame):
 
 		for k,v in kv:
 			if not hasattr(n, k):
-				#print("ADDING NEW ATTRIBUTE "+str(k)+" -> "+str(n))
+				print("ADDING NEW ATTRIBUTE "+str(k)+" -> "+str(v))
 				if isinstance(v, int):
 					n.addData(k, key+".Properties", "Help", "d", v)
 				elif isinstance(v, str) or isinstance(v,unicode):
 					n.addData(k, key+".Properties", "Help", "s", str(v))
 				elif isinstance(v, float):
 					n.addData(k, key+".Properties", "Help", "f", v)
-				data = n.findData(k) 
-				templates[key].trackData(data) 
+				elif isinstance(v, unicode):
+					n.addData(k, key+".Properties", "Help", "f", str(v))
+				#else: 
+				#	n.addData(k, key+".Properties", "Help", "s", str(v))				
+				#data = n.findData(k) 
+				#templates[key].trackData(data) 
 	
 		n.addData("src", key+".Properties", "No help", "s", repr(kv))
 	stack.pop(-1)	
