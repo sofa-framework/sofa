@@ -27,16 +27,19 @@
 
 #include "Binding_DataFileNameVector.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::helper;
-using namespace sofa::core::objectmodel;
+using sofa::core::objectmodel::DataFileNameVector ;
+
+/// getting a DataFileNameVector* from a PyObject*
+static inline DataFileNameVector* get_DataFileNameVector(PyObject* obj) {
+    return sofa::py::unwrap<DataFileNameVector>(obj);
+}
 
 
-
-
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+static PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
 {
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     sofa::helper::vector<std::string>& val = *data->beginEdit();
     val.clear();
@@ -45,13 +48,13 @@ extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
+static PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 {
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
+        return nullptr;
 
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     data->addPath(path);
 
@@ -62,14 +65,10 @@ extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
 SP_CLASS_ATTRS_END
 
-
-
 SP_CLASS_METHODS_BEGIN(DataFileNameVector)
 SP_CLASS_METHOD(DataFileNameVector,addPath)
 SP_CLASS_METHOD(DataFileNameVector,clear)
 SP_CLASS_METHODS_END
 
-
-
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
+SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector, sofa::core::objectmodel::BaseData, Data);
 

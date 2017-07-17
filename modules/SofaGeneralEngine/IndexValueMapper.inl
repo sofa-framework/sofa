@@ -25,7 +25,6 @@
 #include "IndexValueMapper.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {

@@ -1,9 +1,18 @@
 #include "Binding_TriangleSetTopologyModifier.h"
 #include "Binding_PointSetTopologyModifier.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa;
-using namespace sofa::core::topology;
-using namespace sofa::component::topology;
+#include <sofa/helper/vector.h>
+using sofa::helper::vector;
+
+using sofa::component::topology::TriangleSetTopologyModifier ;
+using sofa::core::topology::Topology ;
+
+
+/// getting a TriangleSetTopologyModifier* from a PyObject*
+static inline TriangleSetTopologyModifier* get_TriangleSetTopologyModifier(PyObject* obj) {
+    return sofa::py::unwrap<TriangleSetTopologyModifier>(obj);
+}
 
 
 Topology::Triangle parseTriangleTuple( PyObject* tuple )
@@ -12,14 +21,16 @@ Topology::Triangle parseTriangleTuple( PyObject* tuple )
 
     if (!PyArg_ParseTuple(tuple, "III",&T[0],&T[1],&T[2]))
     {
+        // TODO wtf
         PyErr_BadArgument();
     }
     return T;
 }
 
-sofa::helper::vector< Topology::Triangle  > parseTriangleList( PyObject* args )
+
+vector< Topology::Triangle  > parseTriangleList( PyObject* args )
 {
-    sofa::helper::vector< Topology::Triangle > triangles;
+    vector< Topology::Triangle > triangles;
 
     bool isList = PyList_Check(args);
     if( !isList ) return triangles;
@@ -46,11 +57,13 @@ sofa::helper::vector< Topology::Triangle  > parseTriangleList( PyObject* args )
     return triangles;
 }
 
+
 template < class T >
 T pyConvert( PyObject* /*obj */ )
 {
     return T();
 }
+
 
 template < >
 double pyConvert<double>( PyObject* obj )
@@ -58,11 +71,13 @@ double pyConvert<double>( PyObject* obj )
     return PyFloat_AsDouble(obj);
 }
 
+
 template < >
 float pyConvert<float>( PyObject* obj )
 {
     return static_cast<float>( PyFloat_AsDouble(obj) );
 }
+
 
 template < >
 unsigned int pyConvert<unsigned int>( PyObject* obj )
@@ -70,11 +85,12 @@ unsigned int pyConvert<unsigned int>( PyObject* obj )
     return static_cast<unsigned int>(PyInt_AsLong(obj) );
 }
 
+
 template < class T >
-sofa::helper::vector< T > parseVector( PyObject* args )
+vector< T > parseVector( PyObject* args )
 {
     std::size_t nbRows = PyList_Size(args);
-    sofa::helper::vector<T> values;
+    vector<T> values;
     values.reserve(nbRows);
 
     for(std::size_t i=0;i<nbRows;++i)
@@ -86,20 +102,18 @@ sofa::helper::vector< T > parseVector( PyObject* args )
     return values;
 }
 
-template < class T >
-sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject* args )
-{
-    sofa::helper::vector< sofa::helper::vector< T > > vectorOfvector;
 
-//    bool isList = PyList_Check(args);
-//    bool isTwoDimensionsList = PyList_Check(PyList_GetItem(args,0));
+template < class T >
+vector< vector< T > > parseVectorOfVector( PyObject* args )
+{
+    vector< vector< T > > vectorOfvector;
 
     std::size_t nbRows = PyList_Size(args);
     for (std::size_t i=0; i<nbRows; ++i)
     {
         PyObject *row = PyList_GetItem(args,i);
 
-        sofa::helper::vector<T> values = parseVector<T>( row );
+        vector<T> values = parseVector<T>( row );
 
         vectorOfvector.push_back(values);
     }
@@ -108,51 +122,50 @@ sofa::helper::vector< sofa::helper::vector< T > > parseVectorOfVector( PyObject*
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_addTriangles(PyObject *self, PyObject * args)
 {
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
-    
     PyObject* triangleArgs  = NULL;
     PyObject* ancestorsArgs = NULL;
     PyObject* coefsArgs     = NULL;
 
-    if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs)) 
+    if (PyArg_UnpackTuple(args, "addTriangles", 1, 3, &triangleArgs, &ancestorsArgs, &coefsArgs))
     {
-        sofa::helper::vector< Topology::Triangle > triangles = parseTriangleList( triangleArgs );
+        vector< Topology::Triangle > triangles = parseTriangleList( triangleArgs );
 
         if( !triangles.empty() )
         {
             if(ancestorsArgs && coefsArgs )
             {
-                sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArgs );
-                sofa::helper::vector< sofa::helper::vector< double       > > coefs     = parseVectorOfVector<double>(coefsArgs);
+                vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArgs );
+                vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArgs);
                 obj->addTriangles(triangles, ancestors, coefs );
             }
             else
             {
                 obj->addTriangles( triangles );
-            }  
+            }
         }
     }
     Py_RETURN_NONE;
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self, PyObject * args)
 {
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
-    
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
+
     PyObject* triangleIndicesArg      = NULL;
     PyObject* removeIsolatedEdgesArg  = NULL;
     PyObject* removeIsolatedPointsArg = NULL;
 
-    if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg)) 
+    if (PyArg_UnpackTuple(args, "removeTriangles", 1, 3, &triangleIndicesArg, &removeIsolatedEdgesArg, &removeIsolatedPointsArg))
     {
-        sofa::helper::vector< unsigned int > triangleIndices;
+        vector< unsigned int > triangleIndices;
         bool removeIsolatedEdges=true;
         bool removeIsolatedPoints=true;
-        
+
         if( ! PyList_Check(triangleIndicesArg) )
         {
             PyErr_BadArgument();
@@ -174,7 +187,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self
         {
             removeIsolatedPoints=false;
         }
-        
+
         obj->removeTriangles(triangleIndices,removeIsolatedEdges,removeIsolatedPoints);
     }
 
@@ -182,10 +195,9 @@ extern "C" PyObject * TriangleSetTopologyModifier_removeTriangles(PyObject *self
 }
 
 
-extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
+static PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *self, PyObject * args)
 {
-
-    TriangleSetTopologyModifier* obj=dynamic_cast<TriangleSetTopologyModifier*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
+    TriangleSetTopologyModifier* obj = get_TriangleSetTopologyModifier( self );
 
     PyObject* trianglesArg            = NULL;
     PyObject* triangleIndicesArg      = NULL;
@@ -193,17 +205,17 @@ extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *s
     PyObject* coefsArg                = NULL;
     PyObject* triangles2RemoveArg      = NULL;
 
-    if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg, 
-                                                         &triangleIndicesArg, 
+    if (PyArg_UnpackTuple(args, "removeTriangles", 5, 5, &trianglesArg,
+                                                         &triangleIndicesArg,
                                                          &ancestorsArg,
                                                          &coefsArg,
                                                          &triangles2RemoveArg) )
     {
-        sofa::helper::vector< Topology::Triangle > triangles = parseTriangleList( trianglesArg );
-        sofa::helper::vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
-        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
-        sofa::helper::vector< sofa::helper::vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
-        sofa::helper::vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
+        vector< Topology::Triangle > triangles = parseTriangleList( trianglesArg );
+        vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
+        vector< vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
+        vector< vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
+        vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
 
         obj->addRemoveTriangles(triangles.size(),triangles,triangleIndices,ancestors,coefs, triangles2remove );
 
@@ -218,4 +230,4 @@ SP_CLASS_METHOD(TriangleSetTopologyModifier,removeTriangles)
 SP_CLASS_METHOD(TriangleSetTopologyModifier,addRemoveTriangles)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(TriangleSetTopologyModifier,TriangleSetTopologyModifier,PointSetTopologyModifier)
+SP_CLASS_TYPE_SPTR(TriangleSetTopologyModifier, TriangleSetTopologyModifier, PointSetTopologyModifier)

@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <SofaPython/SceneLoaderPY.h>
+
 #include "InitPlugin_test.h"
 
 namespace sofa {
@@ -12,7 +13,10 @@ namespace sofa {
 /// a Python_test is defined by a python filepath and optional arguments
 struct SOFA_TestPlugin_API Python_test_data
 {
-    Python_test_data( const std::string& filepath, const std::vector<std::string>& arguments ) : filepath(filepath), arguments(arguments) {}
+    Python_test_data( const std::string& filepath,
+                      const std::vector<std::string>& arguments )
+        : filepath(filepath), arguments(arguments) {}
+
     std::string filepath;
     std::vector<std::string> arguments; // argc/argv in the python script
 };
@@ -23,11 +27,23 @@ struct SOFA_TestPlugin_API Python_test_list
     std::vector<Python_test_data> list;
 protected:
     /// add a Python_test_data with given path
-    void addTest( const std::string& filename, const std::string& path="", const std::vector<std::string>& arguments=std::vector<std::string>(0) )
+    void addTest( const std::string& filename,
+                  const std::string& path="",
+                  const std::vector<std::string>& arguments=std::vector<std::string>(0) )
     {
         list.push_back( Python_test_data( filepath(path,filename), arguments ) );
     }
+
+
+    /// add all the python test files in `dir` starting with `prefix`
+    void addTestDir(const std::string& dir, const std::string& prefix = "test_");
+
+
+
 private:
+
+
+
     /// concatenate path and filename
     static std::string filepath( const std::string& path, const std::string& filename )
     {
@@ -70,7 +86,9 @@ public:
 class SOFA_TestPlugin_API Python_scene_test : public Python_test {
 
 public:
+    std::size_t max_steps;
 
+    Python_scene_test();
     void run( const Python_test_data& );
 
 };

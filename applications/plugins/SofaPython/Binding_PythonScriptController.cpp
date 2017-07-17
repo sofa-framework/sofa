@@ -30,6 +30,8 @@ using namespace sofa::component::controller;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
+#include "PythonToSofa.inl"
+
 #include <sofa/helper/logging/Messaging.h>
 
 // These functions are empty ones: they are meant to be overriden by real python
@@ -39,20 +41,12 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-// also, can we PLEASE STOP COPYPASTING EVERYTHING KTHXBY
 
-
-
-template<class T>
-static inline T* get(PyObject* obj) {
-    // functions plz
-    return dynamic_cast<T*>(((PySPtr<Base>*)obj)->object.get());
-}
-
-
+#ifdef LOG_UNIMPLEMENTED_METHODS
 static inline PythonScriptController* get_controller(PyObject* obj) {
-    return get<PythonScriptController>(obj);
+    return down_cast<PythonScriptController>( get_baseobject( obj ) );
 }
+#endif
 
 
 static PyObject * PythonScriptController_onIdle(PyObject * self, PyObject * args) {
@@ -375,6 +369,15 @@ static PyObject * PythonScriptController_draw(PyObject * self, PyObject * /*args
 
 
 
+static PyObject * PythonScriptController_instance(PyObject * self, PyObject * /*args*/)
+{
+    PythonScriptController* obj=dynamic_cast<PythonScriptController*>(((PySPtr<Base>*)self)->object.get());
+    return obj->scriptControllerInstance();
+}
+
+
+
+
 struct error { };
 
 template<class T>
@@ -385,12 +388,13 @@ static inline T* operator || (T* obj, error e) {
 
 
 
-static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* kwargs) {
+static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* /*kwargs*/) {
 
     try {
         PyObject* py_node = PyTuple_GetItem(args, 0) || error();
-        BaseContext* ctx = get<BaseContext>(py_node) || error();
-
+        
+        BaseContext* ctx = sofa::py::unwrap<BaseContext>(py_node) || error();
+    
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();
         
@@ -437,9 +441,11 @@ SP_CLASS_METHOD(PythonScriptController,onGUIEvent)
 SP_CLASS_METHOD(PythonScriptController,onScriptEvent)
 SP_CLASS_METHOD(PythonScriptController,draw)
 SP_CLASS_METHOD(PythonScriptController,onIdle)
+SP_CLASS_METHOD(PythonScriptController,instance)
 SP_CLASS_METHODS_END
 
 
+namespace {
 static struct patch {
 
     patch() {
@@ -448,6 +454,6 @@ static struct patch {
     }
     
 } patcher;
-
+}
 
 SP_CLASS_TYPE_SPTR(PythonScriptController, PythonScriptController, BaseObject);

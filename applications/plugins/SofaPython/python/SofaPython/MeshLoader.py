@@ -77,11 +77,14 @@ def loadOBJ(filename):
             faceN = []
             for f in vals[1:]:
                 w = f.split("/")
+                
                 faceV.append(int(w[0])-1)
-                if len(w) > 1:
+
+                if len(w) > 1 and w[1]:
                     faceUV.append(int(w[1])-1)
-                if len(w) > 2:
+                if len(w) > 2 and w[2]:
                     faceN.append(int(w[2])-1)
+                    
             m.faceVertices.append(faceV)
             m.faceUv.append(faceUV)
             m.faceNormals.append(faceN)
