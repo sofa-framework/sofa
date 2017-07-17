@@ -32,7 +32,7 @@ SOFA_SOFAPYTHON_API void initExternalModule()
     if (first)
     {
         sofa::simulation::PythonEnvironment::Init();
-        first = false;        
+        first = false;
     }
 }
 
@@ -53,7 +53,7 @@ SOFA_SOFAPYTHON_API const char* getModuleLicense()
 
 SOFA_SOFAPYTHON_API const char* getModuleDescription()
 {
-    return "Imbeds Python scripts in Sofa";
+    return "Python Environment and modules for scripting in Sofa";
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleComponentList()

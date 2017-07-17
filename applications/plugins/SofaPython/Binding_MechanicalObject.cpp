@@ -23,6 +23,7 @@
 #include "Binding_MechanicalObject.h"
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_Vector.h"
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core;
@@ -31,9 +32,16 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
 
+/// getting a MechanicalObject3* from a PyObject*
+static inline MechanicalObject3* get_MechanicalObject3(PyObject* obj) {
+    return down_cast<MechanicalObject3>( get_basemechanicalstate(obj) );
+}
+
+
+
 extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -53,7 +61,7 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
 
 extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -73,7 +81,7 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
 
 extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -93,21 +101,21 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
 
 extern "C" PyObject * MechanicalObject_getTranslation(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getTranslation());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }
 
 extern "C" PyObject * MechanicalObject_getRotation(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getRotation());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }
 
 extern "C" PyObject * MechanicalObject_getScale(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getScale());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }

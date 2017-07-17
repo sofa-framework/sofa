@@ -20,63 +20,40 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Binding_BaseLoader.h"
+
+#include "Binding_STLExporter.h"
 #include "Binding_BaseObject.h"
 #include "PythonToSofa.inl"
 
-using namespace sofa::core::loader;
-using namespace sofa::core;
+using namespace sofa::component::misc;
 using namespace sofa::core::objectmodel;
 
-
-static BaseLoader* get_baseloader(PyObject* self) {
-    return sofa::py::unwrap<BaseLoader>(self);
+/// getting a STLExporter* from a PyObject*
+static inline STLExporter* get_STLExporter(PyObject* obj) {
+    return sofa::py::unwrap<STLExporter>(obj);
 }
 
-static PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
+static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj = get_baseloader( self );
-    bool result = obj->load();
-    return PyBool_FromLong(result);
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTL();
+    Py_RETURN_NONE;
 }
 
-
-static PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
+static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj = get_baseloader( self );
-    bool result = obj->canLoad();
-    return PyBool_FromLong(result);
-}
-
-
-static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
-{
-    BaseLoader* obj = get_baseloader( self );
-    char *filename;
-    if (!PyArg_ParseTuple(args, "s",&filename))
-    {
-        return NULL;
-    }
-    obj->setFilename(filename);
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTLBinary();
     Py_RETURN_NONE;
 }
 
 
-static PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
-{
-    BaseLoader* obj = get_baseloader( self );
-    std::string filename = obj->getFilename();
-    return PyString_FromString(filename.c_str());
-}
-
-
-SP_CLASS_METHODS_BEGIN(BaseLoader)
-SP_CLASS_METHOD(BaseLoader,load)
-SP_CLASS_METHOD(BaseLoader,canLoad)
-SP_CLASS_METHOD(BaseLoader,setFilename)
-SP_CLASS_METHOD(BaseLoader,getFilename)
+SP_CLASS_METHODS_BEGIN(STLExporter)
+SP_CLASS_METHOD(STLExporter,writeSTL)
+SP_CLASS_METHOD(STLExporter,writeSTLBinary)
 SP_CLASS_METHODS_END
 
 
-SP_CLASS_TYPE_SPTR(BaseLoader,BaseLoader,BaseObject)
+SP_CLASS_TYPE_SPTR(STLExporter,STLExporter,BaseObject)
+
 
