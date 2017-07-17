@@ -44,7 +44,7 @@ namespace _sceneloaderpyson_
 {
 
 /// The scene loader/exporter for python scene files
-class SOFA_SOFAPYTHON_API SceneLoaderPYSON : public SceneLoader
+class SOFA_SOFAPYTHON_API SceneLoaderPSL : public SceneLoader
 {
 public:
     /// Pre-loading check
@@ -70,7 +70,7 @@ public:
 
 } // namespace _sceneloaderpyson_
 
-using _sceneloaderpyson_::SceneLoaderPYSON ;
+using _sceneloaderpyson_::SceneLoaderPSL ;
 
 } // namespace simulation
 

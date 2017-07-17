@@ -21,7 +21,7 @@
 ******************************************************************************/
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
-#include "SceneLoaderPYSON.h"
+#include "SceneLoaderPSL.h"
 
 
 #include <sofa/simulation/Simulation.h>
@@ -45,37 +45,38 @@ namespace simulation
 namespace _sceneloaderpyson_
 {
 
-bool SceneLoaderPYSON::canLoadFileExtension(const char *extension)
+bool SceneLoaderPSL::canLoadFileExtension(const char *extension)
 {
     std::string ext = extension;
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-    return (ext=="pyson");
+    return (ext=="pyson" || ext=="psl");
 }
 
-bool SceneLoaderPYSON::canWriteFileExtension(const char *extension)
+bool SceneLoaderPSL::canWriteFileExtension(const char *extension)
 {
     return canLoadFileExtension(extension);
 }
 
 /// get the file type description
-std::string SceneLoaderPYSON::getFileTypeDesc()
+std::string SceneLoaderPSL::getFileTypeDesc()
 {
-    return "SOFA Json Scenes + Python";
+    return "Pythonized Scene Language";
 }
 
 /// get the list of file extensions
-void SceneLoaderPYSON::getExtensionList(ExtensionList* list)
+void SceneLoaderPSL::getExtensionList(ExtensionList* list)
 {
     list->clear();
     list->push_back("pyson");
+    list->push_back("psl");
 }
 
-void SceneLoaderPYSON::write(sofa::simulation::Node* n, const char *filename)
+void SceneLoaderPSL::write(sofa::simulation::Node* n, const char *filename)
 {
     std::stringstream s;
-    s << "from pysonloader import save as pysonsave" ;
+    s << "from pslloader import save as pslsave" ;
 
-    msg_info("SceneLoaderPYSON") << "Trying saving file: " << filename ;
+    msg_info("SceneLoaderPSL") << "Trying saving file: " << filename ;
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
@@ -85,7 +86,7 @@ void SceneLoaderPYSON::write(sofa::simulation::Node* n, const char *filename)
          return;
     }
 
-    PyObject *pFunc = PyDict_GetItemString(pDict, "pysonsave");
+    PyObject *pFunc = PyDict_GetItemString(pDict, "pslsave");
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");
@@ -98,10 +99,10 @@ void SceneLoaderPYSON::write(sofa::simulation::Node* n, const char *filename)
 }
 
 
-sofa::simulation::Node::SPtr SceneLoaderPYSON::load(const char *filename)
+sofa::simulation::Node::SPtr SceneLoaderPSL::load(const char *filename)
 {
     std::stringstream s;
-    s << "from pysonloader import load as pysonload" ;
+    s << "from pslloader import load as pslload" ;
 
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
@@ -111,10 +112,10 @@ sofa::simulation::Node::SPtr SceneLoaderPYSON::load(const char *filename)
          return nullptr;
     }
 
-    msg_info("SceneLoaderPYSON") << "Loading file: " << filename ;
+    msg_info("SceneLoaderPSL") << "Loading file: " << filename ;
     PyRun_String("print(dir())", Py_file_input, pDict, pDict);
 
-    PyObject *pFunc = PyDict_GetItemString(pDict, "pysonload");
+    PyObject *pFunc = PyDict_GetItemString(pDict, "pslload");
     if (PyCallable_Check(pFunc))
     {
         Node::SPtr rootNode = Node::create("root");

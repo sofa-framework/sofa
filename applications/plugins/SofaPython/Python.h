@@ -15,62 +15,68 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPY.h"
-#include "SceneLoaderPSL.h"
-#include <SofaPython/config.h>
-#include "PythonEnvironment.h"
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#ifndef SOFA_PYTHON_H
+#define SOFA_PYTHON_H
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseObject ;
 
+#include <sofa/helper/vector.h>
 
-extern "C" {
+#include <sofa/core/DataTracker.h>
 
-SOFA_SOFAPYTHON_API void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::PythonEnvironment::Init();
-        first = false;
+#include <SofaPython/PythonMacros.h>
+SP_DECLARE_CLASS_TYPE(Python)
+
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class BaseData ;
+        }
     }
 }
 
-SOFA_SOFAPYTHON_API const char* getModuleName()
+namespace sofa
 {
-    return "SofaPython";
-}
 
-SOFA_SOFAPYTHON_API const char* getModuleVersion()
+namespace component
 {
-    return SOFAPYTHON_VERSION_STR;
-}
 
-SOFA_SOFAPYTHON_API const char* getModuleLicense()
+namespace _python_
 {
-    return "LGPL";
-}
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Event;
+using sofa::core::DataTracker;
+using sofa::helper::vector ;
 
-SOFA_SOFAPYTHON_API const char* getModuleDescription()
+class Python : public BaseObject
 {
-    return "Imbeds Python scripts in Sofa";
-}
+public:
+    SOFA_CLASS(Python, BaseObject);
 
-SOFA_SOFAPYTHON_API const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
-}
+    Python() ;
+    virtual ~Python() ;
 
-}
+    PyObject* m_rawPython { nullptr };
+    Data<std::string> m_source  ;
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(PythonScriptController)
+    void addDataToTrack(BaseData*) ;
+};
 
 
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+} // namespace _template_
 
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPYSON = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPSL());
+using _python_::Python ;
+
+} // namespace component
+
+} // namespace sofa
+
+#endif /// SOFA_PYTHON_H
+
