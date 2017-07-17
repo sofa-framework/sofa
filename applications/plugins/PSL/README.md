@@ -37,6 +37,11 @@ Node {
 
 We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
 
+#### Installation
+The language is defined as a sofa Plugin named PSL. 
+It makes use of the H-JSON parser available at: http://hjson.org/
+
+
 #### Introduction. 
 The language itself is defined either in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON flavor of the language is currently implemented in Sofa but keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
 
