@@ -51,8 +51,10 @@ static struct SceneTests : public Python_test_list
     {
         static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR);
 
+        // add python scene tests here
         // TODO create more test with several (random?) arguments
 
+        addTest( "test_Node_CreateObject.py", scenePath);
         addTest( "sysPathDuplicate.py", scenePath );
         addTest( "dataVecResize.py", scenePath );
         addTest( "automaticNodeInitialization.py", scenePath );
@@ -62,7 +64,6 @@ static struct SceneTests : public Python_test_list
         for( int i=0 ; i<5 ; ++i )
             addTest( "moduleReload.py",  scenePath );
 
-        // add python scene tests here
     }
 } sceneTests;
 

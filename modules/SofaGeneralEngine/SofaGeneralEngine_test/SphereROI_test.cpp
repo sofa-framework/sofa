@@ -115,8 +115,8 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("position")->read("0. 0. 0. 1. 0. 0. 2. 0. 0.");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"0 1");
-        EXPECT_EQ(m_thisObject->findData("indicesOut")->getValueString(),"2");
+        EXPECT_EQ(m_thisObject->findData("indices")->getValueString(),"[0, 1]");
+        EXPECT_EQ(m_thisObject->findData("indicesOut")->getValueString(),"[2]");
     }
 
 
@@ -129,8 +129,8 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("edges")->read("0 1 1 2");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("edgesInROI")->getValueString(),"0 1");
+        EXPECT_EQ(m_thisObject->findData("edgeIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_thisObject->findData("edgesInROI")->getValueString(),"[[0, 1]]");
     }
 
 
@@ -143,8 +143,8 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("triangles")->read("0 1 2 1 3 2");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("trianglesInROI")->getValueString(),"0 1 2");
+        EXPECT_EQ(m_thisObject->findData("triangleIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_thisObject->findData("trianglesInROI")->getValueString(),"[[0, 1, 2]]");
     }
 
 
@@ -157,8 +157,8 @@ struct SphereROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("tetrahedra")->read("0 1 2 3 1 2 4 3");
         m_thisObject->update();
 
-        EXPECT_EQ(m_thisObject->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_thisObject->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+        EXPECT_EQ(m_thisObject->findData("tetrahedronIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_thisObject->findData("tetrahedraInROI")->getValueString(),"[[0, 1, 2, 3]]");
     }
 };
 

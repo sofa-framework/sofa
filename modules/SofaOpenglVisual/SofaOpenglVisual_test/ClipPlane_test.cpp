@@ -106,7 +106,7 @@ TEST_F(TestClipPlane, checkClipPlaneIdInValidValues)
 
 TEST_F(TestClipPlane, checkClipPlaneNormalInvalidNormalValue)
 {
-    EXPECT_MSG_EMIT(Warning) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     checkClipPlaneAttributesValues("normal", "1 0");
 }

@@ -102,8 +102,8 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->findData("setIndices2")->read("5 6");
         m_thisObject->update();
 
-        EXPECT_TRUE(m_thisObject->findData("indices")->getValueString() == "2 3 4");
-        EXPECT_TRUE(m_thisObject->findData("pointsInROI")->getValueString() == "0 0 2 0 0 3 0 0 4");
+        EXPECT_TRUE(m_thisObject->findData("indices")->getValueString() == "[2, 3, 4]");
+        EXPECT_TRUE(m_thisObject->findData("pointsInROI")->getValueString() == "[[0, 0, 2], [0, 0, 3], [0, 0, 4]]");
     }
 
 

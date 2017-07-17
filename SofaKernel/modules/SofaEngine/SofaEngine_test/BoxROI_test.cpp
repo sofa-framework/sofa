@@ -244,7 +244,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("position")->read("0. 0. 0. 1. 1. 1. 2. 2. 2.");
         m_boxroi->update();
 
-        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1");
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"[0, 1]");
     }
 
 
@@ -256,8 +256,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("edges")->read("0 1 1 2");
         m_boxroi->update();
 
-        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
+        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"[[0, 1]]");
     }
 
 
@@ -269,8 +269,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("triangles")->read("0 1 2 1 3 2");
         m_boxroi->update();
 
-        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
+        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"[[0, 1, 2]]");
     }
 
 
@@ -282,8 +282,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("tetrahedra")->read("0 1 2 3 1 2 4 3");
         m_boxroi->update();
 
-        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"[[0, 1, 2, 3]]");
     }
 
 
@@ -295,7 +295,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("position")->read("1. 0. 0.   1. 0. 1.   0. 0. 1.");
         m_boxroi->init();
 
-        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1");
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"[0, 1]");
     }
 
 
@@ -308,8 +308,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("edges")->read("0 1 0 2");
         m_boxroi->init();
 
-        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
+        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"[[0, 1]]");
     }
 
 
@@ -322,8 +322,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("triangles")->read("0 1 2 0 3 1");
         m_boxroi->init();
 
-        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
+        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"[[0, 1, 2]]");
     }
 
 
@@ -336,8 +336,8 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("tetrahedra")->read("0 1 2 3 0 1 2 4");
         m_boxroi->init();
 
-        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"[0]");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"[[0, 1, 2, 3]]");
     }
 
 
@@ -349,7 +349,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->findData("position")->read("1. 0. 0.   -1. 0. 0.   2. 0. 0.   -2. 0. 0.  1. -1. 0.  -1. 1. 0.");
         m_boxroi->init();
 
-        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1 2 3");
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"[0, 1, 2, 3]");
     }
 
 

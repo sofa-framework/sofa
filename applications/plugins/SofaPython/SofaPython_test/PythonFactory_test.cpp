@@ -114,7 +114,7 @@ protected:
                  "class NonCustomizedObject(object):   \n"
                  "   def __init__(self):               \n"
                  "        return None                  \n"
-                 "   def __str__(self):                \n"
+                 "   def __repr__(self):               \n"
                  "        return 'default'             \n"
                  "class CustomObject(object):           \n"
                  "   def getAsACreateObjectParameter(self):            \n"
@@ -156,13 +156,13 @@ std::vector<std::vector<std::string>> dataconversionvalues =
      {"'aString'", "aString"},
      {"'aString'.join('[ ]')", "[aString aString]"},
      {"' '.join(['AA', 'BB', 'CC'])", "AA BB CC"},
-     {"[1, 2, 3, 4]", "1 2 3 4"},
-     {"[1.0, 2.0, 3.0, 4.0]", "1.0 2.0 3.0 4.0"},
-     {"['ab', 'cd', 'ef', 'gh']", "ab cd ef gh"},
-     {"[[1,2], [3,4], [5,6]]", "1 2 3 4 5 6"},
-     {"[['aa','bb'], ['cc','dd'], ['ee','ff']]", "aa bb cc dd ee ff"},
-     {"range(1,5)", "1 2 3 4"},
-     {"xrange(1,5)", "1 2 3 4"},
+     {"[1, 2, 3, 4]", "[1, 2, 3, 4]"},
+     {"[1.0, 2.0, 3.0, 4.0]", "[1.0, 2.0, 3.0, 4.0]"},
+     {"['ab', 'cd', 'ef', 'gh']", "['ab', 'cd', 'ef', 'gh']"},
+     {"[[1,2], [3,4], [5,6]]", "[[1, 2], [3, 4], [5, 6]]"},
+     {"[['aa','bb'], ['cc','dd'], ['ee','ff']]", "[['aa', 'bb'], ['cc', 'dd'], ['ee', 'ff']]"},
+     {"range(1,5)", "[1, 2, 3, 4]"},
+     {"xrange(1,5)", "xrange(1, 5)"},
      {"'XX_'+first.findData('name').getLinkPath()", "XX_@/theFirst.name"},
      {"first.findData('name').getLinkPath()", "theFirst"},
      {"first.findData('name')", "theFirst"},

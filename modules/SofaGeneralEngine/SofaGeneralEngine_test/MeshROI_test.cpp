@@ -144,7 +144,7 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
         ASSERT_NE(root, nullptr) ;
 
         root->getChild("node")->getObject("MeshROI")->init();
-        EXPECT_EQ(root->getChild("node")->getObject("MeshROI")->findData("box")->getValueString(),"-11.4529 -7.38909 -5.04461 11.4121 8.31288 5.01514");
+        EXPECT_EQ(root->getChild("node")->getObject("MeshROI")->findData("box")->getValueString(),"[-11.4529, -7.38909, -5.04461, 11.4121, 8.31288, 5.01514]");
     }
 
     /*
@@ -173,8 +173,8 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     {
         m_root->init(sofa::core::ExecParams::defaultInstance());
 
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indices")->getValueString(),"0 3 4 5 7");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indicesOut")->getValueString(),"1 2 6");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indices")->getValueString(),"[0, 3, 4, 5, 7]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("indicesOut")->getValueString(),"[1, 2, 6]");
     }
 
     /// Test isEdgeInMesh computation with a simple example
@@ -182,10 +182,10 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     {
         m_root->init(sofa::core::ExecParams::defaultInstance());
 
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"0 1 2 3 4 15");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"5 6 7 8 9 10 11 12 13 14 16 17");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 7 4 7 0 4 3 7 0 3 4 5");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"6 7 2 7 2 6 2 3 2 5 1 2 1 5 5 6 1 4 0 1 4 6 0 2");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"[0, 1, 2, 3, 4, 15]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"[[0, 7], [4, 7], [0, 4], [3, 7], [0, 3], [4, 5]]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"[[6, 7], [2, 7], [2, 6], [2, 3], [2, 5], [1, 2], [1, 5], [5, 6], [1, 4], [0, 1], [4, 6], [0, 2]]");
     }
 
 
@@ -194,10 +194,10 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     {
         m_root->init(sofa::core::ExecParams::defaultInstance());
 
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleIndices")->getValueString(), "0 1 2 3 6 7 8 9 10 11");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleOutIndices")->getValueString(),"4 5");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("trianglesInROI")->getValueString(),"4 0 7 0 3 7 2 6 7 2 7 3 0 4 1 4 5 1 4 7 6 4 6 5 0 1 2 0 2 3");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("trianglesOutROI")->getValueString(),"1 5 2 5 6 2");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleIndices")->getValueString(), "[0, 1, 2, 3, 6, 7, 8, 9, 10, 11]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("triangleOutIndices")->getValueString(),"[4, 5]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("trianglesInROI")->getValueString(),"[[4, 0, 7], [0, 3, 7], [2, 6, 7], [2, 7, 3], [0, 4, 1], [4, 5, 1], [4, 7, 6], [4, 6, 5], [0, 1, 2], [0, 2, 3]]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("trianglesOutROI")->getValueString(),"[[1, 5, 2], [5, 6, 2]]");
     }
 
     /// Test isTetrahedraInMesh computation with a simple example
@@ -205,10 +205,10 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
     {
         m_root->init(sofa::core::ExecParams::defaultInstance());
 
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronIndices")->getValueString(),"");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronOutIndices")->getValueString(),"");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedraInROI")->getValueString(),"");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedraOutROI")->getValueString(),"");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronIndices")->getValueString(),"[]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedronOutIndices")->getValueString(),"[]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedraInROI")->getValueString(),"[]");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("tetrahedraOutROI")->getValueString(),"[]");
     }
 };
 

@@ -146,28 +146,95 @@ public:
 
 #endif // SOFA_VECTOR_ACCESS_FAILURE
 
+    std::ostream& writeDelimiter (std::ostream& os ) const
+    {
+        if ( !this->empty() )
+        {
+            typename vector<T>::const_iterator i = this->begin();
+            os << "[" << *i;
+            ++i;
+            for ( ; i!=this->end(); ++i )
+                os << ", " << *i;
+            os << "]";
+
+        }
+        else os << "[]"; // empty vector
+        return os;
+    }
 
     std::ostream& write(std::ostream& os) const
     {
-        if( this->size()>0 )
+        return this->writeDelimiter(os);
+    }
+
+    std::istream& readDelimiter (std::istream& in )
+    {
+        this->clear();
+
+        char c;
+        in >> c;
+        if( in.eof() ) // empty stream
+            return in;
+        if ( c != '[' )
         {
-            for( size_type i=0; i<this->size()-1; ++i )
-                os<<(*this)[i]<<" ";
-            os<<(*this)[this->size()-1];
+            msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::failbit);
+            return in;
         }
-        return os;
+        std::streampos pos = in.tellg();
+        in >> c;
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            T t=T();
+            in.seekg( pos ); // coming-back to previous character
+            c = ' ';
+            while( (in >> t) && (in >> c))
+            {
+                this->push_back ( t );
+                if (c!=',')
+                    break;
+            }
+            if ( c != ']' ) {
+                msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::failbit);
+            }
+            if (in.eof())
+                in.clear(std::ios::eofbit);
+            if (in.fail())
+                msg_error("(S)Vector") << "Error reading [,] separated values";
+            return in;
+        }
     }
 
     std::istream& read(std::istream& in)
     {
-        T t=T();
-        this->clear();
-        while(in>>t)
-        {
-            this->push_back(t);
+        std::streampos pos = in.tellg();
+        char c;
+        in >> c;
+        if( in.eof() )
+            return in; // empty stream
+        in.seekg( pos ); // coming-back to the previous position
+        if ( c == '[' ) {
+            return readDelimiter(in);
         }
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-        return in;
+        else {
+            T t=T();
+            this->clear();
+            while(in>>t) {
+                this->push_back(t);
+            }
+            // in case of white spaces at the end of the stream, this is normal that the last read fails,
+            // but we know it, eof is true
+            if (in.eof())
+                in.clear(std::ios::eofbit);
+            if (in.fail())
+                msg_error("Vector") << "Error reading space separated values";
+            return in;
+        }
     }
 
     /// Output stream
@@ -201,77 +268,87 @@ public:
 template<> inline
 std::istream& vector<int>::read( std::istream& in )
 {
-    int t;
-    this->clear();
-    std::string s;
-    std::stringstream msg;
-    unsigned int numErrors=0;
+    char c;
+    std::streampos pos = in.tellg();
+    in >> c;
+    if( in.eof() ) return in; // empty stream
+    in.seekg( pos ); // coming-back to previous position
+    if ( c == '[' ) {
+        return readDelimiter(in);
+    }
+    else {
+        int t;
+        this->clear();
+        std::string s;
+        std::stringstream msg;
+        unsigned int numErrors=0;
 
-    /// Cut the input stream in words using the standard's '<space>' token eparator.
-    while(in>>s)
-    {
-        /// Check if there is the sign '-' in the string s.
-        std::string::size_type hyphen = s.find_first_of('-',1);
-
-        /// If there is no '-' in s
-        if (hyphen == std::string::npos)
+        /// Cut the input stream in words using the standard's '<space>' token eparator.
+        while(in>>s)
         {
-            /// Convert the word into an integer number.
-            /// Use strtol because it reports error in case of parsing problem.
-            t = getInteger(s, msg, numErrors) ;
-            this->push_back(t);
-        }
+            /// Check if there is the sign '-' in the string s.
+            std::string::size_type hyphen = s.find_first_of('-',1);
 
-        /// If there is at least one '-'
-        else
-        {
-            int t1,t2,tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getInteger(s1, msg, numErrors) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
-            if (hyphen2 == std::string::npos)
+            /// If there is no '-' in s
+            if (hyphen == std::string::npos)
             {
-                std::string s2(s,hyphen+1);
-                t2 = getInteger(s2, msg, numErrors) ;
-                tinc = (t1<t2) ? 1 : -1;
+                /// Convert the word into an integer number.
+                /// Use strtol because it reports error in case of parsing problem.
+                t = getInteger(s, msg, numErrors) ;
+                this->push_back(t);
             }
+
+            /// If there is at least one '-'
             else
             {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
-                t2 =  getInteger(s2, msg, numErrors) ;
-                tinc =  getInteger(s3, msg, numErrors) ;
-                if (tinc == 0)
+                int t1,t2,tinc;
+                std::string s1(s,0,hyphen);
+                t1 = getInteger(s1, msg, numErrors) ;
+                std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+                if (hyphen2 == std::string::npos)
                 {
+                    std::string s2(s,hyphen+1);
+                    t2 = getInteger(s2, msg, numErrors) ;
                     tinc = (t1<t2) ? 1 : -1;
-                    msg << "- Increment 0 is replaced by "<< tinc << msgendl;
                 }
-                if ((t2-t1)*tinc < 0)
+                else
                 {
-                    // increment not of the same sign as t2-t1 : swap t1<->t2
-                    t = t1;
-                    t1 = t2;
-                    t2 = t;
+                    std::string s2(s,hyphen+1,hyphen2-hyphen-1);
+                    std::string s3(s,hyphen2+1);
+                    t2 =  getInteger(s2, msg, numErrors) ;
+                    tinc =  getInteger(s3, msg, numErrors) ;
+                    if (tinc == 0)
+                    {
+                        tinc = (t1<t2) ? 1 : -1;
+                        msg << "- Increment 0 is replaced by "<< tinc << msgendl;
+                    }
+                    if ((t2-t1)*tinc < 0)
+                    {
+                        // increment not of the same sign as t2-t1 : swap t1<->t2
+                        t = t1;
+                        t1 = t2;
+                        t2 = t;
+                    }
                 }
-            }
 
-            /// Go in backward order.
-            if (tinc < 0)
-                for (t=t1; t>=t2; t+=tinc)
-                    this->push_back(t);
-            /// Go in Forward order
-            else
-                for (t=t1; t<=t2; t+=tinc)
-                    this->push_back(t);
+                /// Go in backward order.
+                if (tinc < 0)
+                    for (t=t1; t>=t2; t+=tinc)
+                        this->push_back(t);
+                /// Go in Forward order
+                else
+                    for (t=t1; t<=t2; t+=tinc)
+                        this->push_back(t);
+            }
         }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        if(numErrors!=0)
+        {
+            msg_warning("vector<int>") << "Unable to parse vector values:" << msgendl
+                                       << msg.str() ;
+        }
+        return in;
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(numErrors!=0)
-    {
-        msg_warning("vector<int>") << "Unable to parse vector values:" << msgendl
-                                   << msg.str() ;
-    }
-    return in;
 }
 
 
@@ -280,83 +357,99 @@ std::istream& vector<int>::read( std::istream& in )
 template<> inline
 std::istream& vector<unsigned int>::read( std::istream& in )
 {
-    std::stringstream errmsg ;
-    unsigned int errcnt = 0 ;
-    unsigned int t = 0 ;
+    char c;
+    std::streampos pos = in.tellg();
+    in >> c;
+    if( in.eof() ) return in; // empty stream
+    in.seekg( pos ); // coming-back to the previous position
+    if ( c == '[' ) {
+        return readDelimiter(in);
+    }
+    else {
+        std::stringstream errmsg ;
+        unsigned int errcnt = 0 ;
+        unsigned int t = 0 ;
 
-    this->clear();
-    std::string s;
-    while(in>>s)
-    {
-        std::string::size_type hyphen = s.find_first_of('-',1);
-        if (hyphen == std::string::npos)
+        this->clear();
+        std::string s;
+        while(in>>s)
         {
-            t = getUnsignedInteger(s, errmsg, errcnt) ;
-            this->push_back(t);
-        }
-        else
-        {
-            unsigned int t1,t2;
-            int tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getUnsignedInteger(s1, errmsg, errcnt) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
-            if (hyphen2 == std::string::npos)
+            std::string::size_type hyphen = s.find_first_of('-',1);
+            if (hyphen == std::string::npos)
             {
-                std::string s2(s,hyphen+1);
-                t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = (t1<=t2) ? 1 : -1;
+                t = getUnsignedInteger(s, errmsg, errcnt) ;
+                this->push_back(t);
             }
             else
             {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
-                t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = getInteger(s3, errmsg, errcnt);
-                if (tinc == 0)
+                unsigned int t1,t2;
+                int tinc;
+                std::string s1(s,0,hyphen);
+                t1 = getUnsignedInteger(s1, errmsg, errcnt) ;
+                std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
+                if (hyphen2 == std::string::npos)
                 {
+                    std::string s2(s,hyphen+1);
+                    t2 = getUnsignedInteger(s2, errmsg, errcnt);
                     tinc = (t1<=t2) ? 1 : -1;
-                    errmsg << "- problem while parsing '"<<s<<"': increment is 0. Use " << tinc << " instead." ;
                 }
-                if (((int)(t2-t1))*tinc < 0)
+                else
                 {
-                    /// increment not of the same sign as t2-t1 : swap t1<->t2
-                    t = t1;
-                    t1 = t2;
-                    t2 = t;
+                    std::string s2(s,hyphen+1,hyphen2-hyphen-1);
+                    std::string s3(s,hyphen2+1);
+                    t2 = getUnsignedInteger(s2, errmsg, errcnt);
+                    tinc = getInteger(s3, errmsg, errcnt);
+                    if (tinc == 0)
+                    {
+                        tinc = (t1<=t2) ? 1 : -1;
+                        errmsg << "- problem while parsing '"<<s<<"': increment is 0. Use " << tinc << " instead." ;
+                    }
+                    if (((int)(t2-t1))*tinc < 0)
+                    {
+                        /// increment not of the same sign as t2-t1 : swap t1<->t2
+                        t = t1;
+                        t1 = t2;
+                        t2 = t;
+                    }
                 }
-            }
-            if (tinc < 0){
-                for (t=t1; t>t2; t=t+tinc)
-                    this->push_back(t);
-                this->push_back(t2);
-            } else {
-                for (t=t1; t<=t2; t=t+tinc)
-                    this->push_back(t);
+                if (tinc < 0){
+                    for (t=t1; t>t2; t=t+tinc)
+                        this->push_back(t);
+                    this->push_back(t2);
+                } else {
+                    for (t=t1; t<=t2; t=t+tinc)
+                        this->push_back(t);
+                }
             }
         }
-    }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(errcnt!=0)
-    {
-        msg_warning("vector<unsigned int>") << "Unable to parse values" << msgendl
-                                            << errmsg.str() ;
-    }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        if(errcnt!=0)
+        {
+            msg_warning("vector<unsigned int>") << "Unable to parse values" << msgendl
+                                                << errmsg.str() ;
+        }
 
-    return in;
+        return in;
+    }
 }
+
 
 /// Output stream
 /// Specialization for writing vectors of unsigned char
 template<> inline
-std::ostream& vector<unsigned char>::write(std::ostream& os) const
+std::ostream& vector<unsigned char>::writeDelimiter(std::ostream& os) const
 {
-    if( this->size()>0 )
+    if ( !this->empty() )
     {
-        for( size_type i=0; i<this->size()-1; ++i )
-            os<<(int)(*this)[i]<<" ";
-        os<<(int)(*this)[this->size()-1];
+        typename vector<unsigned char>::const_iterator i = this->begin();
+        os << "[" << (int)*i;
+        ++i;
+        for ( ; i!=this->end(); ++i )
+            os << ", " << (int)*i;
+        os << "]";
+
     }
+    else os << "[]"; // empty vector
     return os;
 }
 
@@ -365,15 +458,85 @@ std::ostream& vector<unsigned char>::write(std::ostream& os) const
 template<> inline
 std::istream& vector<unsigned char>::read(std::istream& in)
 {
-    int t;
-    this->clear();
-    while(in>>t)
-    {
-        this->push_back((unsigned char)t);
+    char c;
+    std::streampos pos = in.tellg();
+    in >> c;
+    if( in.eof() ) return in; // empty stream
+    in.seekg( pos ); // coming-back to the previous position
+    if ( c == '[' ) {
+        this->clear();
+
+        char c;
+        in >> c;
+        if( in.eof() ) // empty stream
+            return in;
+        if ( c != '[' )
+        {
+            msg_error("(S)Vector") << "read : Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::failbit);
+            return in;
+        }
+        std::streampos pos = in.tellg();
+        in >> c;
+        if( c == ']' ) // empty vector
+        {
+            return in;
+        }
+        else
+        {
+            int t;
+            in.seekg( pos ); // coming-back to previous character
+            c = ' ';
+            while( (in >> t) && (in >> c))
+            {
+                if (t>255) {
+                    msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+                    in.setstate(std::ios::failbit);
+                    return in;
+                }
+                this->push_back ( (unsigned char) t );
+                if (c!=',')
+                    break;
+            }
+            if ( c != ']' ) {
+                msg_error("(S)Vector") << "read : Bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::failbit);
+                return in;
+            }
+            if (in.eof())
+                in.clear(std::ios::eofbit);
+            if (in.fail())
+                msg_error("(S)Vector") << "Error reading [,] separated values";
+            return in;
+        }
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    return in;
+    else {
+        int t;
+        this->clear();
+        while(in>>t)
+        {
+            if (t>255) {
+                msg_error("(S)Vector") << "Too big value for an unsigned char: " << t;
+                in.setstate(std::ios::failbit);
+                return in;
+            }
+            this->push_back((unsigned char)t);
+        }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
 }
+
+/// reading specialization for std::string
+/// SVector begins by [, ends by ] and separates elements with ,
+/// string elements must be delimited by ' or " (like a list of strings in python).
+/// example: ['string1' ,  "string 2 ",'etc...' ]
+///
+/// Note this is a quick&dirty implementation and it could be improved
+template<>
+std::istream& vector<std::string>::readDelimiter( std::istream& in );
+template<>
+std::ostream& vector<std::string>::writeDelimiter( std::ostream& os ) const;
 
 
 // ======================  operations on standard vectors

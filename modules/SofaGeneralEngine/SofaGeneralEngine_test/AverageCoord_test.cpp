@@ -103,7 +103,7 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
         m_thisObject->init();
         m_thisObject->update();
 
-        EXPECT_TRUE(m_thisObject->findData("average")->getValueString()=="1.5 1 0");
+        EXPECT_TRUE(m_thisObject->findData("average")->getValueString()=="[1.5, 1, 0]");
     }
 
 };

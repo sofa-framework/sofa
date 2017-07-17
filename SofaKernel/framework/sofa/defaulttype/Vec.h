@@ -796,25 +796,6 @@ public:
     }
 };
 
-/// Read from an input stream
-template<int N,typename Real>
-std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
-{
-    for( int i=0; i<N; ++i )
-        in>>v[i];
-    return in;
-}
-
-/// Write to an output stream
-template<int N,typename Real>
-std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
-{
-    for( int i=0; i<N-1; ++i )
-        out<<v[i]<<" ";
-    out<<v[N-1];
-    return out;
-}
-
 /// Cross product for 3-elements vectors.
 template<typename real1, typename real2 >
 inline Vec<3,real1> cross(const Vec<3,real1>& a, const Vec<3,real2>& b)
