@@ -3,11 +3,13 @@ project(PSL)
 
 set(HEADER_FILES
     config.h
+    SceneLoaderPSL.h
     Undefined.h
 )
 
 set(SOURCE_FILES
     initPSL.cpp
+    SceneLoaderPSL.cpp
     Undefined.cpp
 )
 
@@ -30,7 +32,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 #set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGINEXAMPLE")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph SofaPython)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
