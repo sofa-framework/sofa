@@ -22,6 +22,7 @@
 #include <PSL/config.h>
 
 #include <PSL/Undefined.h>
+#include "SceneLoaderPSL.h"
 
 extern "C" {
     SOFA_PSL_API void initExternalModule();
@@ -72,3 +73,6 @@ const char* getModuleComponentList()
 SOFA_LINK_CLASS(Undefined)
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+
+/// register the loader in the factory
+const sofa::simulation::SceneLoader* loaderPSL = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPSL());

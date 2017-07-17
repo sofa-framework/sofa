@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "PythonMacros.h"
-#include "PythonEnvironment.h"
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonEnvironment.h>
 #include "SceneLoaderPSL.h"
 
 
@@ -30,9 +30,8 @@
 
 #include <sstream>
 
-#include "PythonMainScriptController.h"
-#include "PythonEnvironment.h"
-#include "PythonFactory.h"
+//#include "PythonMainScriptController.h"
+#include <SofaPython/PythonFactory.h>
 
 using namespace sofa::core::objectmodel;
 

@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderPY.h"
-#include "SceneLoaderPSL.h"
 #include <SofaPython/config.h>
 #include "PythonEnvironment.h"
 
@@ -72,5 +71,3 @@ SOFA_LINK_CLASS(PythonScriptController)
 /// register the loader in the factory
 const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
 
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPYSON = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPSL());
