@@ -1,0 +1,40 @@
+Node : {
+        name : "myScene"
+
+        Node : {name : "test"}
+        Node : {name : "one"
+            MechanicalObject: {}
+        }
+        Node : {name : "two"
+            MechanicalObject: {
+                name: "mstate"
+                position : p"srange(0,100)"
+            }
+            OglModel : {
+                filename : "HiTec3.obj"
+            }
+            Python : '''
+                    Sofa.msg_error("--------========== I CAN DO THAT '"+str(two.name)+"' ==============-----")
+                    for i in range(0, 10):
+                        self.createChild("number "+str(i))
+                '''
+
+        }
+        Node : {name : "three"}
+}
+
+//Node : {
+//         Node : {
+// name : p"'two'+str(range(0,10))"
+// MechanicalObject: {
+//    name: "mstate"
+//    position : p"srange(0,30)"
+//
+//}
+//Python : '''
+//        Sofa.msg_error("--------========== I CAN DO PYTHON '"+str(self.name)+"' ==============-----")
+//        for i in range(0, 2):
+//            self.createChild("number "+str(i))
+//    '''
+//
+//}

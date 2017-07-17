@@ -4,28 +4,38 @@ Node : {
         APIVersion : "v17.06"
         RequiredPlugin : "SofaPython"
 
+        ////////////////////// SHAPE TEMPLATE ///////////////////////////////////////
         Template : {
-            name : "Shape"
-            properties : { numstep : 3 }
+            name : "MyShape"
+
+            properties : {
+                numchild : 3
+                childname : "ZUT"
+            }
+
             Node : {
+                OglModel : {}
+                MechanicalObject : {
+                    position : "1 2 3 4 5 6"
+                }
                 Python : '''
-                    print("NumStep: "+str(numstep))
-                '''
-                MechanicalObject : {}
+                        for i in range(0,numchild):
+                            c = self.createChild(childname+str(i))
+                            Sofa.msg_info(self, "What is your name? "+str(c.name) )
+                        '''
             }
         }
 
-        Shape : {
-            numstep : 5        
-		}
-
-        Shape : {
-            numstep : 4
+        ////////////////////// INSTANCES ///////////////////////////////////////////
+        MyShape : {
+            numchild : 30
+            childname : "TooMuch"
         }
 
-		Python : '''
-				print("Hello world NNN "+str(dir(root)))
-			'''
+        Shape : {
+            numchild : 10
+            childname : "LaPlaya"
+        }
 }
 
 

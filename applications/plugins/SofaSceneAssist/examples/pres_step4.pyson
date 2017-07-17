@@ -1,0 +1,75 @@
+scene = {
+        "Node" : "node1",
+        "Node" : "node2"
+        "Python": "print('Blahblah')"
+}
+
+
+<Node name="">
+    <NOde>
+    </Node>
+    <NOde>
+    </Node>
+    <Python>
+        print("Bhabha")
+    </Python>
+</Node>
+
+def createScenet(root, scene):
+    for i in scene:
+        if i == "Node":
+            root.createChild(i)
+        else:
+            root.createObject(i)
+
+
+
+
+
+
+
+
+
+
+
+
+Node : {
+        name : "root"
+        Import : softroboticstoolbox
+
+        softroboticstoolbox.PulleyMotor : {
+            model : "HiTec5b"
+        }
+
+        Using : softroboticstoolbox.PulleyMotor-PulleyMotor
+
+        PulleyMotor :
+        {
+            model : "HiTec3"
+        }
+
+}
+
+
+// Now we instantiate the MotorPulley using the long "." syntax
+// softroboticstoolbox.PulleyMotor :
+// {
+//        aname : "myMotor3"
+//        model : "HiTec5b"
+//}
+
+//Using : softroboticstoolbox.PulleyMotor-PulleyMotor
+
+// Now we instantiate the MotorPulley using the short "." syntax
+//PulleyMotor :
+//{
+//    aname : "God Name1?"
+//    model : "HiTec3"
+//}
+
+//Node : {
+//    MM : {}
+//    Sphere : {}
+//}
+
+

@@ -1,5 +1,3 @@
-/// This file is a test to insure that the import function is still functionning.
-/// In case of failure a "msg_error" message is reported.
 Node : {
         name : "root"
 
@@ -7,21 +5,30 @@ Node : {
         RequiredPlugin : "SofaPython"
 
         Import : softroboticstoolbox
+        Using : TSphereModel-Sphere
+        Using : MechanicalObject-MM
+
+        # Now we instantiate the MotorPulley using the long "." syntax
+        softroboticstoolbox.PulleyMotor :
+        {
+                aname : "myMotor3"
+                model : "HiTec5b"
+        }
+
         Using : softroboticstoolbox.PulleyMotor-PulleyMotor
 
-                # Now we instantiate the MotorPulley using the long "." syntax
-                softroboticstoolbox.PulleyMotor :
-                {
-                        aname : "myMotor1"
-                        model : "HiTec5b"
-                }
 
-                # Now we instantiate the MotorPulley using the short "." syntax
-                PulleyMotor :
-                {
-                        aname : "MonMoteur2"
-                        model : "HiTec3"
-                }
+        // Now we instantiate the MotorPulley using the short "." syntax
+        PulleyMotor :
+        {
+            aname : "God Name1?"
+            model : "HiTec3"
+        }
+
+        Node : {
+            MM : {}
+            Sphere : {}
+        }
 }
 
 

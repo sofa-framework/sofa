@@ -40,7 +40,12 @@ sofaRoot = None
 	
 imports = {}
 
-
+def srange(b, e):
+	s=""
+	for i in range(b,e):
+		s+=str(i)+" "
+	return s
+	
 class MyObjectHook(object):
 	def __call__(self, s):
 		return s
@@ -145,7 +150,7 @@ def processParameter(parent, name, value, stack, frame):
 			frame["name"] = value
 		
 def createObject(parentNode, name, stack , frame, kv):
-	print("CREATE OBJECT {"+name+"} WITH: "+str(kv)+ "in context "+parentNode.name) 
+	#print("CREATE OBJECT {"+name+"} WITH: "+str(kv)+ "in "+parentNode.name+" stack is:"+str(stack)) 
 	if name in sofaComponents:
 		n=None
 		if "name" in frame:
@@ -236,11 +241,11 @@ def processImport(parent, key, kv, stack, frame):
 	f = open(filename).read()
 	loadedcontent = hjson.loads(f, object_pairs_hook=MyObjectHook())
 	imports[filename] = importTemplates(loadedcontent)
-	print("IMPORTED TEMPLATE: " + str(imports[filename].keys())) 
+	#print("IMPORTED TEMPLATE: " + str(imports[filename].keys())) 
 
 	for tname in imports[filename].keys():
 		templates[kv+"."+tname] = imports[filename][tname]	
-	print("TEMPLATES: "+str(templates))
+	#print("TEMPLATES: "+str(templates))
 
 def processTemplate(parent, key, kv, stack, frame):
 	global templates 
@@ -256,7 +261,7 @@ def processTemplate(parent, key, kv, stack, frame):
 			pattern.append( (key, value) ) 
 	o = parent.createObject("Template", name=str(name))
 	o.listening = True 
-	o.setTemplate(value)
+	o.setTemplate(kv)
 	frame[str(name)] = o
 	templates[str(name)] = o  
 	return o
@@ -271,10 +276,13 @@ def reinstanciateTemplate(templateInstance):
 	global templates
 
 	key = templateInstance.name 
+	frame = {}
+	frame["parent"]=templateInstance	
+	frame["self"]=templateInstance	
+	nframe = {}
 	instanceProperties = eval(templateInstance.src)
-	print("RE-Instanciate template: "+ templateInstance.name )
-	print("             properties: "+ str(instanceProperties) )
-	
+	#print("RE-Instanciate template: "+ templateInstance.name )
+	#print("             properties: "+ str(instanceProperties) )
 	
 	#print("TODO: "+str(dir(templateInstance)))
 	for c in templateInstance.getChildren():
@@ -287,74 +295,97 @@ def reinstanciateTemplate(templateInstance):
 	# Is there a template with this name, if this is the case 
 	# Retrieve the associated templates .
 	if isinstance(templates[key], Sofa.Template):
+		#print("SOFA TEMPLATE")
 		n = templates[key].getTemplate()
-		print("L0 ? ") 
+		for k,v in n:
+			if k == 'name':
+				None
+			elif k == 'properties':
+				for kk,vv in v:
+					if not kk in frame:
+						nframe[kk] = vv
+			else:
+				source = v		
 	else: 
-		print("LA")
-		n = templates[key]["content"] 
+		source = templates[key]["content"] 
 		for k,v in templates[key]["properties"]:
 			if not k in frame:
-				frame[k] = str(v)
-	print("?? "+str(templates))		
-	print("Template: "+str(n))
-	frame = {}
-	frame["parent"]=templateInstance
+				nframe[k] = str(v)
+	#print("Template: "+str(source))
+	#print("Instance properties: "+str(instanceProperties))
+
 	for k,v in instanceProperties:
-		frame[k] = v
-	stack = [frame]
-	n = processNode(templateInstance, "Node", n, stack, frame, doCreate=True)
+		nframe[k] = templateInstance.findData(str(k)).getValue(0)
+
+	stack = [globals(), frame]
+	n = processNode(templateInstance, "Node", source, stack, nframe, doCreate=False)
 	#n.name = key
 	
 
 def instanciateTemplate(parent, key, kv, stack, frame):
 	global templates
 	print("Instanciate template: "+key + "-> "+str(kv))
-	for k,v in kv:
-		frame[k] = v
-	n=None
+	stack.append(frame) 
+	nframe={}
+	source = None
 	if isinstance(templates[key], Sofa.Template):
 		n = templates[key].getTemplate()
+		for k,v in n:
+			if k == 'name':
+				None
+			elif k == 'properties':
+				for kk,vv in v:
+					if not kk in frame:
+						nframe[kk] = vv
+			else:
+				source = v		
 	else: 
-		n = templates[key]["content"] 
+		source = templates[key]["content"] 
 		for k,v in templates[key]["properties"]:
 			if not k in frame:
-				frame[k] = str(v)
-	print("Template: "+str(n))
-	n = processNode(parent, "Node", n, stack, frame, doCreate=True)
-	n.name = key
-	
+				nframe[k] = str(v)
+	#print("Template: "+str(source))
+
 
 	for k,v in kv:
-		if not hasattr(n, k):
-			print("ADDING NEW ATTRIBUTE "+str(n))
-			if isinstance(v, int):
-				n.addData(k, key+".Properties", "Help", "d", v)
-			elif isinstance(v, str):
-				n.addData(k, key+".Properties", "Help", "s", v)
-			elif isinstance(v, float):
-				n.addData(k, key+".Properties", "Help", "f", v)
-			data = n.findData(k) 
-			templates[key].trackData(data) 
-
-	n.addData("src", key+".Properties", "No help", "s", repr(kv))
+		nframe[k] = v
+	#print("STACK FRAME IS : " +str(nframe))
+	n = processNode(parent, "Node", source, stack, nframe, doCreate=True)
+	n.name = key
 	
+	if isinstance(templates[key], Sofa.Template):
+
+		for k,v in kv:
+			if not hasattr(n, k):
+				#print("ADDING NEW ATTRIBUTE "+str(k)+" -> "+str(n))
+				if isinstance(v, int):
+					n.addData(k, key+".Properties", "Help", "d", v)
+				elif isinstance(v, str) or isinstance(v,unicode):
+					n.addData(k, key+".Properties", "Help", "s", str(v))
+				elif isinstance(v, float):
+					n.addData(k, key+".Properties", "Help", "f", v)
+				data = n.findData(k) 
+				templates[key].trackData(data) 
+	
+		n.addData("src", key+".Properties", "No help", "s", repr(kv))
+	stack.pop(-1)	
 	
 def processNode(parent, key, kv, stack, frame, doCreate=True):
 	global templates, aliases
-	#print("PN:"+ parent.name + " : " + key + " stack frame is: "+str(stack))
+	#print("PN:"+ parent.name + " : " + key )
 	stack.append(frame)
 	populateFrame(key, frame, stack)
 	if doCreate:
 		tself = frame["self"] = parent.createChild("undefined")
 	else:
-		tself = parent	
+		tself = frame["self"] = parent	
 	if isinstance(kv, list):
 		for key,value in kv:
 			if isinstance(key, unicode):
 				key = str(key)
 
 			if key in aliases:
-				print("Alias resolution to: "+aliases[key])
+				#print("Alias resolution to: "+aliases[key])
 				key = aliases[key]
 
 			if key == "Import":
@@ -386,7 +417,7 @@ def processTree(parent, key, kv):
 	frame = {}
 	if isinstance(kv, list):
 		for key,value in kv:
-			print("PROCESSING:" + str(key))
+			#print("PROCESSING:" + str(key))
 			if key == "Import":
 				print("Importing: "+value+".pyjson")
 			elif key == "Node":
