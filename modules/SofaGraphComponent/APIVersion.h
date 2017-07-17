@@ -43,11 +43,12 @@ public:
     SOFA_CLASS(APIVersion, BaseObject);
 
     const std::string& getApiLevel() ;
+    virtual void init() override ;
 
 protected:
     APIVersion() ;
     virtual ~APIVersion() ;
-
+    void checkInputData() ;
 private:
     Data<std::string>  d_level ;
 };

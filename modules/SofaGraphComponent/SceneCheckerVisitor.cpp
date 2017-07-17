@@ -21,9 +21,11 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/version.h>
 
 #include "SceneCheckerVisitor.h"
 #include "RequiredPlugin.h"
+
 
 #include "APIVersion.h"
 using sofa::component::APIVersion ;
@@ -73,7 +75,9 @@ void SceneCheckerVisitor::installChangeSets()
 
 void SceneCheckerVisitor::validate(Node* node)
 {
-    enableValidationAPIVersion(node, "17.12") ;
+    std::stringstream version;
+    version << SOFA_VERSION / 10000 << "." << SOFA_VERSION / 100;
+    enableValidationAPIVersion(node, version.str().c_str()) ;
     enableValidationRequiredPlugins(node) ;
 
     msg_info("SceneChecker") << "Validating a scene: " << msgendl

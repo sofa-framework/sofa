@@ -11,8 +11,31 @@ using sofa::helper::system::PluginManager ;
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 
-using sofa::core::ExecParams;
+/////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
+/// This component is only for testing the APIVersion system.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::Base ;
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::ExecParams;
+class ComponentDeprecated : public BaseObject
+{
+public:
+    SOFA_CLASS(ComponentDeprecated, BaseObject) ;
+public:
+
+};
+
+SOFA_DECL_CLASS(ComponentDeprecated)
+int ComponentDeprecatedClassId = sofa::core::RegisterObject("")
+        .add< ComponentDeprecated >() ;
+
+
+////////////////////////////////////// TEST ////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SceneChecker_test : public Sofa_test<>
 {
     void checkRequiredPlugin(bool missing)
@@ -48,6 +71,47 @@ struct SceneChecker_test : public Sofa_test<>
             checker.validate(root.get()) ;
         }
     }
+
+    void checkAPIVersion(bool shouldWarn)
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_MSG_NOEMIT(Warning);
+
+        std::string lvl = (shouldWarn)?"17.06":"17.12" ;
+
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
+              << "      <APIVersion level='"<< lvl <<"'/>                                              \n"
+              << "      <ComponentDeprecated />                                                  \n"
+              << "</Node>                                                                        \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        if(shouldWarn){
+            /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
+            EXPECT_MSG_EMIT(Warning) ;
+            checker.addHookInChangeSet("17.06", [](Base* o){
+                if(o->getClassName() == "ComponentDeprecated")
+                    msg_warning(o) << "ComponentDeprecated have changed since 17.06." ;
+            }) ;
+            checker.validate(root.get()) ;
+        }
+        else {
+            /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
+            checker.addHookInChangeSet("17.06", [](Base* o){
+                if(o->getClassName() == "ComponentDeprecated")
+                    msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06." ;
+            }) ;
+            checker.validate(root.get()) ;
+        }
+    }
 };
 
 TEST_F(SceneChecker_test, checkMissingRequiredPlugin )
@@ -58,4 +122,19 @@ TEST_F(SceneChecker_test, checkMissingRequiredPlugin )
 TEST_F(SceneChecker_test, checkPresentRequiredPlugin )
 {
     checkRequiredPlugin(false) ;
+}
+
+TEST_F(SceneChecker_test, checkAPIVersion )
+{
+    checkAPIVersion(false) ;
+}
+
+TEST_F(SceneChecker_test, checkAPIVersionCurrent )
+{
+    checkAPIVersion(false) ;
+}
+
+TEST_F(SceneChecker_test, checkAPIVersionDeprecated )
+{
+    checkAPIVersion(true) ;
 }

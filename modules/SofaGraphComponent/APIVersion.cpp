@@ -53,12 +53,34 @@ namespace _apiversion_
 {
 
 APIVersion::APIVersion() :
-     d_level ( initData(&d_level, 0, "level", "The API Level of the scene ('17.06', '17.12', '18.06')"))
+     d_level ( initData(&d_level, std::string("17.06"), "level", "The API Level of the scene ('17.06', '17.12', '18.06', ...)"))
 {
 }
 
 APIVersion::~APIVersion()
 {
+}
+
+void APIVersion::init()
+{
+    Inherit1::init();
+    checkInputData() ;
+}
+
+void APIVersion::checkInputData()
+{
+    if(!d_level.isSet() && !name.isSet() ){
+        msg_warning() << "The level is not set. Using 17.06 as default value. " ;
+        return ;
+    }
+    if( !d_level.isSet() && name.isSet() ){
+        d_level.setValue(getName());
+    }
+    std::vector<std::string> allowedVersion = { "17.06", "17.12", "18.06", "18.12" } ;
+    if( std::find( allowedVersion.begin(), allowedVersion.end(), d_level.getValue()) == allowedVersion.end() )
+    {
+        msg_warning() << "The provided level '"<< d_level.getValue() <<"' is now valid. " ;
+    }
 }
 
 const std::string& APIVersion::getApiLevel()
