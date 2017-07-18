@@ -12,7 +12,7 @@ PSL features:
 
 To give you a taste of the language in its JSON flavor here is a small scene in which we import the SoftRobotActuator library. This library contains templates, on of them is the PneuNets actuator. Once imported, the template is then instanciated in the scene.  
 ```css
-Node {
+Node : {
 	name : "myNameIsRoot"
 
 	Import : SoftRobotActuators
@@ -73,9 +73,9 @@ Let's start with a simple scene example in XML
 
 The equivalent scene PSL(HJSON) is the following 
 ```hjson
-Node {
+Node : {
 	name : "root"
-	Node {
+	Node : {
 		name : "child1"
 		MechanicalObject: { name : "mstate" }
 		OglModel : { filename : "anObj.obj" }
@@ -96,9 +96,9 @@ for i in range(0,10):
 
 The equivalent scene PSL(HJSON) is the following 
 ```hjson
-Node {
+Node : {
 	name : "root"
-	Node {
+	Node : {
 		name : "child1"
 		MechanicalObject: { name : "mstate" }
 		OglModel : { filename : "anObj.obj" }
@@ -177,9 +177,9 @@ Node : {
 To allow template re-usability it is possible to store them in file or directories that can be imported with the Import directive. 
 In a file named mylibrary.pyjson" define  a template 
 ```hjson
-	Template { name : "MotorA" ... }
-	Template { name : "MotorB" ... }
-	Template { name : "MotorC" .... }
+	Template : { name : "MotorA" ... }
+	Template : { name : "MotorB" ... }
+	Template : { name : "MotorC" .... }
 ```
 
 Then in your scene file you load and use the template in the following way:
