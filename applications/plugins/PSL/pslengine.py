@@ -45,41 +45,6 @@ def srange(b, e):
 		s+=str(i)+" "
 	return s
 
-#@deprecated 
-def instantiate(o, kvparams):
-	"""Instanciate a template.
-	   All the properties provided in kvparams are added the a new frame. 
-	   This Frame is added at the end of the stack frame. 
-	   The o parameter is holding the template classname and its corresponding code. 
-	   The template is then executed in the context provided by the stackframe.  		
-	"""
-	# Build the new frame and add it t the stack
-	frame = {}
-	for key in kvparams:
-		frame[key] = kvparams[key]	
-	o.stack.append(frame)
-	
-	# Get the template 
-	n, a= o.template[0]
-	n=processNode(None, n, a, o.stack, frame)
-	o.stack.pop(-1)
-	return n
-
-#@deprecated 
-def dumpSofa(s, prefix=""):
-	res = ""
-	if isinstance(s, Node):
-		res += prefix+"<Node name='"+str(s.name)+">'"+ "\n"
-		for c in s.objects:
-			res += dumpSofa(c, prefix+"    ") + "\n"		
-		for c in s.children:
-			res += dumpSofa(c, prefix+"    ") + "\n"
-		res += prefix+"</Node>" + "\n"
-	else:
-		res += prefix+str(s) + "\n"
-	return res
-	
-
 def flattenStackFrame(sf):
 	"""Return the stack frame content into a single "flat" dictionnary.
 	   The most recent entries are overriden the oldest.
@@ -101,6 +66,7 @@ def getFromStack(name, stack):
 	return None
 
 def populateFrame(cname, frame, stack):
+
 	"""Initialize a frame from the current attributes of the 'self' object 
 	   This is needed to expose the data as first class object. 
 	""" 
@@ -113,17 +79,18 @@ def populateFrame(cname, frame, stack):
 
 def processPython(parent, key, kv, stack, frame):
 	"""Process a python fragment of code with context provided by the content of the stack."""
-	try:
-		r = flattenStackFrame(stack)
-		exec(kv, r)
-	except Exception, e:
-		Sofa.msg_error(parent, "Unable to process Python "+str(e)+str("\n")+kv)
-
+	r = flattenStackFrame(stack)
+	l = {}
+	exec(kv, r, l)
+	## Apply the local change in the global context
+	for k in l:
+		stack[-1][k] = l[k]
+	
 def evalPython(key, kv, stack, frame):
 	"""Process a python fragment of code with context provided by the content of the stack."""
 	r = flattenStackFrame(stack)
-	return eval(kv, r)
-
+	retval = eval(kv, r)
+	return retval
 
 def processParameter(parent, name, value, stack, frame):
 	if isinstance(value, list):
@@ -430,17 +397,4 @@ def processTree(parent, key, kv):
 	else:
 		print("LEAF: "+kv)
 
-
-def saveTree(rootNode, space):
-	print(space+"Node : {")
-	nspace=space+"    "
-	for child in rootNode.getChildren():
-		saveTree(child, nspace)
-		
-	for obj in rootNode.getObjects():
-		print(nspace+obj.getClassName() + " : { " )
-		print(nspace+"    name : "+str(obj.name)) 
-		print(nspace+" } ")	
-		
-	print(space+"}")
 
