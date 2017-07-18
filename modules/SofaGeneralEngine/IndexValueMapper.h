@@ -31,7 +31,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
-
 namespace sofa
 {
 
@@ -40,7 +39,6 @@ namespace component
 
 namespace engine
 {
-
 
 template <class DataTypes>
 class IndexValueMapper : public sofa::core::DataEngine
@@ -58,9 +56,9 @@ protected:
     IndexValueMapper();
     ~IndexValueMapper() {}
 public:
-    void init();
-    void reinit();
-    void update();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void update() override;
 
     virtual std::string getTemplateName() const
     {
@@ -73,15 +71,15 @@ public:
     }
 
     //Input
-    Data<sofa::helper::vector<Real> > f_inputValues;
-    Data<sofa::helper::vector<Index> > f_indices;
-    Data<Real> f_value;
+    Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty)
+    Data<sofa::helper::vector<Index> > f_indices; ///< Indices to map value on
+    Data<Real> f_value; ///< Value to map indices on
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New map between indices and values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices without any value
 
 };
 
@@ -93,7 +91,6 @@ extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype
 extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
-
 
 } // namespace engine
 

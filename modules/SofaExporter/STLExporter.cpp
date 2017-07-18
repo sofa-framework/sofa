@@ -54,7 +54,7 @@ STLExporter::STLExporter()
     : stepCounter(0)
     , maxStep(0)
     , stlFilename( initData(&stlFilename, "filename", "output STL file name"))
-    , m_fileFormat( initData(&m_fileFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
+    , d_binaryFormat( initData(&d_binaryFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
     , m_position( initData(&m_position, "position", "points coordinates"))
     , m_triangle( initData(&m_triangle, "triangle", "triangles indices"))
     , m_quad( initData(&m_quad, "quad", "quads indices"))
@@ -331,7 +331,7 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         case 'E':
         case 'e':
-            if(m_fileFormat.getValue())
+            if(d_binaryFormat.getValue())
                 writeSTLBinary();
             else
                 writeSTL();
@@ -352,7 +352,7 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
         stepCounter++;
         if(stepCounter % maxStep == 0)
         {
-            if(m_fileFormat.getValue())
+            if(d_binaryFormat.getValue())
                 writeSTLBinary();
             else
                 writeSTL();
@@ -368,7 +368,7 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         if (guiEvent->getValueName().compare("STLExport") == 0)
         {
-            if(m_fileFormat.getValue())
+            if(d_binaryFormat.getValue())
                 writeSTLBinary();
             else
                 writeSTL();
@@ -379,14 +379,14 @@ void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
 void STLExporter::cleanup()
 {
     if (exportAtEnd.getValue())
-        (m_fileFormat.getValue()) ? writeSTLBinary() : writeSTL();
+        (d_binaryFormat.getValue()) ? writeSTLBinary() : writeSTL();
 
 }
 
 void STLExporter::bwdInit()
 {
     if (exportAtBegin.getValue())
-        (m_fileFormat.getValue()) ? writeSTLBinary() : writeSTL();
+        (d_binaryFormat.getValue()) ? writeSTLBinary() : writeSTL();
 }
 
 } // namespace misc

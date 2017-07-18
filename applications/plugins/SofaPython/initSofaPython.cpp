@@ -53,7 +53,7 @@ SOFA_SOFAPYTHON_API const char* getModuleLicense()
 
 SOFA_SOFAPYTHON_API const char* getModuleDescription()
 {
-    return "Imbeds Python scripts in Sofa";
+    return "Python Environment and modules for scripting in Sofa";
 }
 
 SOFA_SOFAPYTHON_API const char* getModuleComponentList()

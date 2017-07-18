@@ -27,9 +27,15 @@
 
 
 
+/// getting a SubsetMultiMapping3_to_3* from a PyObject*
+static inline SubsetMultiMapping3_to_3* get_SubsetMultiMapping3_to_3(PyObject* obj) {
+    return down_cast<SubsetMultiMapping3_to_3>( get_basemapping(obj) );
+}
+
+
 extern "C" PyObject * SubsetMultiMapping3_to_3_addPoint(PyObject *self, PyObject * args)
 {
-    SubsetMultiMapping3_to_3* obj=down_cast<SubsetMultiMapping3_to_3>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object->toBaseMapping());
+    SubsetMultiMapping3_to_3* obj = get_SubsetMultiMapping3_to_3( self );
     PyObject* pyState;
     int index;
     if (!PyArg_ParseTuple(args, "Oi",&pyState,&index))
@@ -37,7 +43,7 @@ extern "C" PyObject * SubsetMultiMapping3_to_3_addPoint(PyObject *self, PyObject
         PyErr_BadArgument();
         return NULL;
     }
-    sofa::core::BaseState* state=((PySPtr<sofa::core::objectmodel::Base>*)pyState)->object->toBaseState();
+    sofa::core::BaseState* state = get_basestate(pyState);
 
     obj->addPoint(state,index);
     Py_RETURN_NONE;

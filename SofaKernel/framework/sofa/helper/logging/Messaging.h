@@ -135,6 +135,8 @@
 #define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
 #define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
 
+#define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)
+
 /// THESE MACRO BEASTS ARE FOR AUTOMATIC DETECTION OF MACRO NO or ONE ARGUMENTS
 #define TWO_FUNC_CHOOSER(_f1, _f2 ,...) _f2
 #define TWO_FUNC_RECOMPOSER(argsWithParentheses) TWO_FUNC_CHOOSER argsWithParentheses

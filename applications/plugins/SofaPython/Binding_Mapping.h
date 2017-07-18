@@ -24,6 +24,4 @@
 
 #include "PythonMacros.h"
 
-//SP_DECLARE_CLASS_TYPE(Mapping)
-
 #endif // BINDING_MAPPING_H

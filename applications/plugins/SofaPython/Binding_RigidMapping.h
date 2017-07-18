@@ -24,6 +24,4 @@
 
 #include "PythonMacros.h"
 
-//SP_DECLARE_CLASS_TYPE(RigidMapping3_to_3)
-
 #endif // BINDING_RIGIDMAPPING_H

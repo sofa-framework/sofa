@@ -39,51 +39,50 @@ namespace objectmodel
 class SOFA_SOFAPYTHON_API PythonScriptFunctionParameter : public ScriptFunctionParameter
 {
 public:
-	PythonScriptFunctionParameter();
-	explicit PythonScriptFunctionParameter(PyObject* data, bool own);
-	virtual ~PythonScriptFunctionParameter();
+    PythonScriptFunctionParameter();
+    explicit PythonScriptFunctionParameter(PyObject* data, bool own);
+    virtual ~PythonScriptFunctionParameter();
 
-	PyObject* data() const					{return m_pyData;}
-	void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
+    PyObject* data() const					{return m_pyData;}
+    void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
 
 private:
-	bool		m_own;
-	PyObject*	m_pyData;
+    bool		m_own {false} ;
+    PyObject*	m_pyData {nullptr} ;
 
 };
 
 class SOFA_SOFAPYTHON_API PythonScriptFunctionResult : public ScriptFunctionResult
 {
 public:
-	PythonScriptFunctionResult();
-	explicit PythonScriptFunctionResult(PyObject* data, bool own);
-	virtual ~PythonScriptFunctionResult();
+    PythonScriptFunctionResult();
+    explicit PythonScriptFunctionResult(PyObject* data, bool own);
+    virtual ~PythonScriptFunctionResult();
 
-	PyObject* data() const					{return m_pyData;}
-	void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
+    PyObject* data() const					{return m_pyData;}
+    void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
 
 private:
-	bool		m_own;
-	PyObject*	m_pyData;
+    bool		m_own {false} ;
+    PyObject*	m_pyData {nullptr} ;
 
 };
 
 class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
 public:
-	explicit PythonScriptFunction(PyObject* pyCallableObject, bool own);
-	virtual ~PythonScriptFunction();
+    explicit PythonScriptFunction(PyObject* pyCallableObject=nullptr, bool own=false);
+    virtual ~PythonScriptFunction();
 
-	PyObject* callableObject() const					{return m_pyCallableObject;}
-	void setCallableObject(PyObject* callableObject)	{m_pyCallableObject = callableObject;}
-
-private:
-	virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
+    PyObject* callableObject() const					{return m_pyCallableObject;}
+    void setCallableObject(PyObject* callableObject, bool own);
 
 private:
-	bool		m_own;
-	PyObject*	m_pyCallableObject;
+    virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
 
+private:
+    bool		m_own {false} ;
+    PyObject*	m_pyCallableObject {nullptr} ;
 };
 
 
