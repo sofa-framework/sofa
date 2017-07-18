@@ -15,72 +15,73 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <PSL/config.h>
 
-#include <PSL/Undefined.h>
-#include "SceneLoaderPSL.h"
+/******************************************************************************
+ * Contributors:                                                              *
+ *    - damien.marchal@univ-lille1.fr                                         *
+ *****************************************************************************/
+#include <SofaTest/Sofa_test.h>
+using sofa::Sofa_test ;
+
+#include <SofaTest/TestMessageHandler.h>
+
+#include <SofaSimulationGraph/DAGSimulation.h>
+using sofa::simulation::Simulation ;
+using sofa::simulation::Node ;
+using sofa::simulation::setSimulation ;
+using sofa::core::objectmodel::New ;
+using sofa::core::objectmodel::BaseData ;
+using sofa::simulation::graph::DAGSimulation;
+
+#include <SofaGeneralEngine/SphereROI.h>
+using sofa::component::engine::SphereROI ;
+
+#include <sofa/core/visual/VisualParams.h>
+using sofa::core::visual::VisualParams;
+
+#include "../SceneLoaderPSL.h"
+using sofa::simulation::SceneLoaderPSL ;
+using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#include <SofaPython/PythonEnvironment.h>
-using sofa::simulation::PythonEnvironment ;
+using std::vector;
+using std::string;
 
-extern "C" {
-    SOFA_PSL_API void initExternalModule();
-    SOFA_PSL_API const char* getModuleName();
-    SOFA_PSL_API const char* getModuleVersion();
-    SOFA_PSL_API const char* getModuleLicense();
-    SOFA_PSL_API const char* getModuleDescription();
-    SOFA_PSL_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace
 {
-    static bool first = true;
-    if (first)
-    {
-        /// There is dependency with SofaPython
+
+class PSL_test : public Sofa_test<>
+{
+public:
+    void SetUp(){
+        PluginManager::getInstance().loadPlugin("PSL") ;
         PluginManager::getInstance().loadPlugin("SofaPython") ;
-        first = false;
+
+        if( !sofa::simulation::getSimulation() )
+            sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+
     }
-}
 
-const char* getModuleName()
+    void checkTestFiles(const std::string& filename)
+    {
+
+        static const std::string scenePath = std::string(PSL_TESTFILES_DIR)+filename;
+
+        Node::SPtr root = sofa::simulation::getSimulation()->load(scenePath.c_str());
+
+        sofa::simulation::getSimulation()->unload( root ) ;
+    }
+
+};
+
+TEST_F(PSL_test, checkTestFiles)
 {
-    return "SofaSceneAssist";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
+    checkTestFiles("test_pythonlocals.psl") ;
 }
 
 
-const char* getModuleDescription()
-{
-    return "This plugin contains a set of function to assist in the making of scenes by providing"
-            " prefabs and other tools.";
 }
-
-const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "";
-}
-
-SOFA_LINK_CLASS(Undefined)
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPSL = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPSL());

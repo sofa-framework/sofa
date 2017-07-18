@@ -20,49 +20,52 @@
 #*******************************************************************************
 #*                              SOFA :: Framework                              *
 #*                                                                             *
-#* Contributors: damien.marchal@univ-lille1.fr Copyright (C) CNRS              *
-#*                                                                             *
 #* Contact information: contact@sofa-framework.org                             *
+#******************************************************************************/
+#*******************************************************************************
+#* Contributors:                                                               *
+#*    - damien.marchal@univ-lille1.fr Copyright (C) CNRS                       *
+#*                                                                             *
 #******************************************************************************/
 import hjson
 import os
 import pslengine
 
 class MyObjectHook(object):
-	def __call__(self, s):
-		return s
+        def __call__(self, s):
+                return s
 
 def saveTree(rootNode, space):
-	print(space+"Node : {")
-	nspace=space+"    "
-	for child in rootNode.getChildren():
-		saveTree(child, nspace)
-		
-	for obj in rootNode.getObjects():
-		print(nspace+obj.getClassName() + " : { " )
-		print(nspace+"    name : "+str(obj.name)) 
-		print(nspace+" } ")	
-		
-	print(space+"}")
-	
+        print(space+"Node : {")
+        nspace=space+"    "
+        for child in rootNode.getChildren():
+                saveTree(child, nspace)
+
+        for obj in rootNode.getObjects():
+                print(nspace+obj.getClassName() + " : { " )
+                print(nspace+"    name : "+str(obj.name))
+                print(nspace+" } ")
+
+        print(space+"}")
+
 def save(rootNode, filename):
-	print("PYSCIN SAVE: "+str(filename))
-	saveTree(rootNode,"")
+        print("PYSCIN SAVE: "+str(filename))
+        saveTree(rootNode,"")
 
 def load(rootNode, filename):
-	global sofaRoot
-	sofaRoot = rootNode
-	filename = os.path.abspath(filename)
-	dirname = os.path.dirname(filename) 
+        global sofaRoot
+        sofaRoot = rootNode
+        filename = os.path.abspath(filename)
+        dirname = os.path.dirname(filename)
 
-	print("PYSCIN LOAD: "+str(filename))
-	print("PYSCIN ROOT: "+str(dirname))
+        print("PYSCIN LOAD: "+str(filename))
+        print("PYSCIN ROOT: "+str(dirname))
 
-	olddirname = os.getcwd()
-	os.chdir(dirname)	
+        olddirname = os.getcwd()
+        os.chdir(dirname)
 
-	f = open(filename).read()
-	r = pslengine.processTree(sofaRoot, "", hjson.loads(f, object_pairs_hook=MyObjectHook()))
+        f = open(filename).read()
+        r = pslengine.processTree(sofaRoot, "", hjson.loads(f, object_pairs_hook=MyObjectHook()))
 
-	os.chdir(olddirname)	
-	return r
+        os.chdir(olddirname)
+        return r

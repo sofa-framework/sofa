@@ -14,24 +14,23 @@ set(SOURCE_FILES
 )
 
 find_package(SofaFramework REQUIRED)
+find_package(SofaPython REQUIRED)
 
-find_package(SofaPython QUIET)
-if( SofaPython_FOUND )
-    list(APPEND HEADER_FILES
-        python/Binding_BasePrefab.h
-        )
+set(PYTHON_FILES
+    python/pslloader.py
+    python/pslengine.py
+    )
 
-    list(APPEND SOURCE_FILES
-        python/Binding_BasePrefab.cpp
-        )
+# Config files and install rules for pythons scripts
+sofa_set_python_directory(${PROJECT_NAME} "python")
 
-    # Config files and install rules for pythons scripts
-    sofa_set_python_directory(${PROJECT_NAME} "python")
+## Add test project
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    add_subdirectory(PSL_test)
 endif()
 
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-#set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PLUGINEXAMPLE")
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph SofaPython)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
