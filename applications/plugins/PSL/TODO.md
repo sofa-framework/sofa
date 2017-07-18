@@ -2,7 +2,10 @@ PSL is in heavy development phase. It is the good moment to have an impact on th
 
 #### Task to do
 - move all the code into the PSL plugin (this means making python modules in pluging) 
-- add PSL::Python, PSL::Alias, 
+  - Python/Template to PSL/Template 
+  - Python/PythonComponent to PSL/PythonComponent
+- py the pslloader & pslengine in the default python path.  
+- add PSL/AliasComponent, PSL/ImportComponent 
 - unify PSL::templates and imported templates. 
 - add saving
 - add XML syntax
