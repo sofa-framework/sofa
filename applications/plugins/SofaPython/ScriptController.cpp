@@ -169,10 +169,11 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     {
         script_onScriptEvent(static_cast<core::objectmodel::ScriptEvent *> (event));
     }
-    else if (dynamic_cast<IdleEvent *>(event))
+    else if (sofa::core::objectmodel::IdleEvent::checkEventType(event))
     {
         script_onIdleEvent(static_cast<IdleEvent *> (event));
-    }else
+    }
+    else
         Controller::handleEvent(event);
 }
 

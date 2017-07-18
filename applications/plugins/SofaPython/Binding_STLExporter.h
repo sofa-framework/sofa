@@ -19,45 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define INDEXVALUEMAPPER_CPP_
+#ifndef BINDING_STLEXPORTER_H
+#define BINDING_STLEXPORTER_H
 
-#include "IndexValueMapper.inl"
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/ObjectFactory.h>
+#include "PythonMacros.h"
 
-namespace sofa
-{
+#include <SofaExporter/STLExporter.h>
 
-namespace component
-{
+SP_DECLARE_CLASS_TYPE(STLExporter)
 
-namespace engine
-{
-
-using namespace sofa;
-using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(IndexValueMapper)
-
-int IndexValueMapperClass = core::RegisterObject("Input values to output values mapper. Includes indices rules, such as replacement, resize")
-#ifndef SOFA_FLOAT
-        .add< IndexValueMapper<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< IndexValueMapper<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3fTypes>;
-#endif //SOFA_DOUBLE
-
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+#endif

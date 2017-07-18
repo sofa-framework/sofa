@@ -22,28 +22,43 @@
 
 #include "Binding_BaseState.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core;
+using sofa::core::BaseState;
+
+static BaseState* get_basestate(PyObject* self) {
+    return sofa::py::unwrap<BaseState>(self);
+}
 
 
-
-extern "C" PyObject * BaseState_resize(PyObject *self, PyObject * args)
+static PyObject * BaseState_resize(PyObject *self, PyObject * args)
 {
-    BaseState* obj=((PySPtr<Base>*)self)->object->toBaseState();
+    BaseState* obj = get_basestate( self );
     int newSize;
-    if (!PyArg_ParseTuple(args, "i",&newSize))
-        Py_RETURN_NONE;
+    if (!PyArg_ParseTuple(args, "i", &newSize)) {
+        return NULL;
+    }
+
     obj->resize(newSize);
     Py_RETURN_NONE;
 }
 
 
+static PyObject * BaseState_getSize(PyObject *self, PyObject * args)
+{
+    BaseState* obj = get_basestate( self );
+
+    if (!PyArg_ParseTuple(args, "")) {
+        return NULL;
+    }
+
+    return PyInt_FromSize_t(obj->getSize());
+}
 
 
 SP_CLASS_METHODS_BEGIN(BaseState)
-SP_CLASS_METHOD(BaseState,resize)
+SP_CLASS_METHOD(BaseState, resize)
+SP_CLASS_METHOD(BaseState, getSize)
 SP_CLASS_METHODS_END
 
-
-SP_CLASS_TYPE_SPTR(BaseState,BaseState,BaseObject)
+SP_CLASS_TYPE_SPTR(BaseState, BaseState, BaseObject)

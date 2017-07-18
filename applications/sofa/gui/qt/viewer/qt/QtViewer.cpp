@@ -1061,7 +1061,7 @@ void QtViewer::calcProjection(int width, int height)
     GLdouble projectionMatrix[16];
     currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width * this->devicePixelRatio(), height * this->devicePixelRatio()); // to handle retina displays
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixd(projectionMatrix);

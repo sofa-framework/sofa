@@ -19,45 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define INDEXVALUEMAPPER_CPP_
 
-#include "IndexValueMapper.inl"
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/ObjectFactory.h>
 
-namespace sofa
+#include "Binding_STLExporter.h"
+#include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
+
+using namespace sofa::component::misc;
+using namespace sofa::core::objectmodel;
+
+/// getting a STLExporter* from a PyObject*
+static inline STLExporter* get_STLExporter(PyObject* obj) {
+    return sofa::py::unwrap<STLExporter>(obj);
+}
+
+static PyObject * STLExporter_writeSTL(PyObject *self, PyObject * /*args*/)
 {
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTL();
+    Py_RETURN_NONE;
+}
 
-namespace component
+static PyObject * STLExporter_writeSTLBinary(PyObject *self, PyObject * /*args*/)
 {
-
-namespace engine
-{
-
-using namespace sofa;
-using namespace sofa::defaulttype;
-
-SOFA_DECL_CLASS(IndexValueMapper)
-
-int IndexValueMapperClass = core::RegisterObject("Input values to output values mapper. Includes indices rules, such as replacement, resize")
-#ifndef SOFA_FLOAT
-        .add< IndexValueMapper<Vec3dTypes> >(true)
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< IndexValueMapper<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_GENERAL_ENGINE_API IndexValueMapper<Vec3fTypes>;
-#endif //SOFA_DOUBLE
+    STLExporter* obj = get_STLExporter( self );
+    obj->writeSTLBinary();
+    Py_RETURN_NONE;
+}
 
 
-} // namespace engine
+SP_CLASS_METHODS_BEGIN(STLExporter)
+SP_CLASS_METHOD(STLExporter,writeSTL)
+SP_CLASS_METHOD(STLExporter,writeSTLBinary)
+SP_CLASS_METHODS_END
 
-} // namespace component
 
-} // namespace sofa
+SP_CLASS_TYPE_SPTR(STLExporter,STLExporter,BaseObject)
+
+

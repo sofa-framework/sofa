@@ -23,11 +23,10 @@
 #include "Binding_MeshTopology.h"
 #include "Binding_BaseMeshTopology.h"
 
-using namespace sofa::component::topology;
+using sofa::component::topology::MeshTopology ;
 
 SP_CLASS_METHODS_BEGIN(MeshTopology)
 SP_CLASS_METHODS_END
-
 
 SP_CLASS_TYPE_SPTR(MeshTopology,MeshTopology,BaseMeshTopology)
 

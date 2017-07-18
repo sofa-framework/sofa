@@ -127,12 +127,11 @@ bool Message::empty() const
 }
 
 template<>
-Message& Message::operator<<(const FileInfo &fi)
+SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
 {
-    (*m_fileInfo.get()) = fi;
+    m_fileInfo = fi;
     return *this;
 }
-
 
 
 } // logging

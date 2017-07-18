@@ -54,7 +54,9 @@ def rotate(q, x):
 
 
 def exp(v):
-    """exponential"""
+    """exponential
+        Return the quaternion corresponding to the given rotation vector
+    """
     theta = numpy.linalg.norm(v)
 
     if math.fabs(theta) < sys.float_info.epsilon:
@@ -68,6 +70,13 @@ def exp(v):
              v[2] / theta * s,
              c ]
 
+
+def rotVecToQuat(v):
+    """ same as exp(v)    """
+    return exp(v)
+
+
+
 def flip(q):
     """Flip a quaternion to the real positive hemisphere if needed."""
     
@@ -78,20 +87,16 @@ def flip(q):
 
     
 def log(q):
-
     """(principal) logarithm. 
-
-    You might want to flip q first to ensure theta is in the [-0, pi]
-    range, yielding the equivalent rotation (principal) logarithm.
-
+        Return rotation vector corresponding to unit quaternion q
     """
+    [ axis, angle ] = quatToAxis(q)
+    return angle * axis
 
-    half_theta = math.acos( sign * re(q) )
 
-    if math.fabs( half_theta ) < sys.float_info.epsilon:
-        return [0, 0, 0]
-
-    return (2 * half_theta / math.sin(half_theta)) * im(q)
+def quatToRotVec(q):
+    """ same as log(q)    """
+    return log(q)
 
 def normalized(q):
     ## returning the normalized quaternion (without checking for a null norm...)
@@ -227,30 +232,27 @@ def axisToQuat(axis, phi):
 def quatToAxis(q):
     """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
     """
-    sine  = math.sin( math.acos(q[3]) )
+    q2 = flip(q)  # flip q first to ensure that angle is in the [-0, pi] range
 
-    if (math.fabs(sine) < sys.float_info.epsilon) :
-        axis = [0.0,1.0,0.0]
-    else :
-        axis = numpy.asarray(q)[0:3]/sine
-    phi =  angle(q)
-    return [axis, phi]
+    half_angle = math.acos( min(re(q2), 1.0) )
 
-def quatToRotVec(q):
-    """ Return rotation vector corresponding to unit quaternion q
+    if half_angle > sys.float_info.epsilon:
+        return [ im(q2) / math.sin(half_angle), 2 * half_angle ]
+
+    norm = numpy.linalg.norm( im(q2) )
+    if norm > sys.float_info.epsilon:
+        sign = 1.0 if half_angle > 0 else -1.0
+        return [ im(q2) * (sign / norm), 2 * half_angle ]
+
+    return [ numpy.zeros(3), 2 * half_angle ]
+
+def slerp(q1,q2,t):
+    """ Return spherical linear interpolation between q1 qnd q2
     """
-    [axis, angle] = quatToAxis(q)
-    return numpy.asarray(axis) * angle
+    return prod( q1, exp( t*log(prod(conj(q1),q2)) ) )
 
-def rotVecToQuat(v):
-    """ return the quaternion corresponding to the given rotation vector
-    """
-    angle = numpy.linalg.norm(numpy.asarray(v))
-    if angle < sys.float_info.epsilon:
-        return [0.0,0.0,0.0,1.0]
-    else:
-        axis = numpy.asarray(v) / angle
-        return axisToQuat(axis,angle)
+
+
 
 def quatToRodrigues(q):
     """ Return rotation vector corresponding to unit quaternion q in the form of angle*axis
