@@ -4,6 +4,7 @@ PSL is in heavy development phase. It is the good moment to have an impact on th
 - move all the code into the PSL plugin (this means making python modules in pluging) 
   - Python/Template to PSL/Template 
   - Python/PythonComponent to PSL/PythonComponent
+- add a test framework. 
 - py the pslloader & pslengine in the default python path.  
 - add PSL/AliasComponent, PSL/ImportComponent 
 - unify PSL::templates and imported templates. 
