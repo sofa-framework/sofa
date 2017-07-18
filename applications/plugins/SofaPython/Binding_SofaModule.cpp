@@ -381,7 +381,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
             return NULL;
         }
 
-        action(s_emitter, message, SOFA_FILE_INFO2(filename, lineno));
+        action(s_emitter, message, SOFA_FILE_COPIED_FROM(filename, lineno));
     }
     Py_RETURN_NONE;
 }
