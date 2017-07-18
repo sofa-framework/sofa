@@ -2,6 +2,7 @@ The Python Scene Language for Sofa
 ===========
 The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. 
 
+#### A small Introduction
 PSL features:
 - descriptive scenes (as XML)
 - programable fragments (with embeded Python)
@@ -10,7 +11,7 @@ PSL features:
 - explicit aliasing (to simplify scene writing).
 - preserve scene structure when it is loaded & saved.
 
-To give you a taste of the language in its JSON flavor here is a small scene in which we import the SoftRobotActuator library. This library contains templates, on of them is the PneuNets actuator. Once imported, the template is then instanciated in the scene.  
+To give you a taste of the language in its JSON flavor here is a small scene composed of two *psl* files. One of the *psl* is a library of Template as the PneuNet actuator, it is called SoftRobotActuator, the other is the scene loaded in Sofa. Once imported, the template is then instanciated in the scene. Here is how look the resulting scene: 
 ```css
 Node : {
 	name : "myNameIsRoot"
@@ -36,8 +37,9 @@ Node : {
 
 We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
 
-#### Installation
-The language is defined as a sofa Plugin named PSL. 
+#### Installation & requirement. 
+The language is defined as a sofa Plugin named PSL which is currently it is only available in the PSL development branch. 
+
 It makes use of the H-JSON parser available at: http://hjson.org/
 
 Hjson installation :
