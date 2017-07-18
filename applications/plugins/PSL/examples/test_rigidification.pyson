@@ -46,41 +46,41 @@ Node : {
             }
         }
     }
+        Python : '''
+                 import xml
+                 a="Test"
+                 '''
+
+        Python : '''
+                 print("Hello world is"+str(dir(xml)))
+                 print("Value of a="+a)
+                 '''
+
         Template : {
             name : "Rigidification"
             properties : {
-                rigidsname : []
-                content : {}
+                rigids : {}
             }
 
+
             Node : {
-                Node : {
-                    name : "Rigid"
-                    MechanicalObject : {}
-                    Python : '''
-                            for name in rigidsname:
-                                c = Rigid.createChild("RigidMappedNode["+name+"]")
+                name : "Rigid"
+                MechanicalObject : {}
+                Python : '''for name,points in rigids:
+                                c= Rigid.createChild("RigidMappedNode["+name+"]")
                                 c.createObject("MechanicalObject", template="Vec3d")
-                            '''
-                    Python : '''self.parse(conte)'''
-                }
+                                '''
+                #Python : '''self.parse(conte)'''
             }
         }
 
         Rigidification : {
-            rigidsname : ["rigid1", "rigid2", "rigid3"]
-            points : [[1,2,3], [2, 3, 4], [4, 5, 6]]
-            content : {
-                Node : {
-                    name : "FreeNode"
-                    MechanicalObject : {
-                        template : "Vec3d"
-                        position : "1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 7 7 7"
-                    }
-                }
-            }
-        }
+            rigids : {
+                      "rigid1":[1,2,3],
+                      "rigid2":[4,5,6]
+                     }
 
+        }
 }
 
 
