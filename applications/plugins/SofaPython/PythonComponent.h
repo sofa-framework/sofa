@@ -22,8 +22,8 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
-#ifndef SOFA_PYTHON_H
-#define SOFA_PYTHON_H
+#ifndef SOFA_PYTHONCOMPONENT_H
+#define SOFA_PYTHONCOMPONENT_H
 #include <sofa/core/objectmodel/BaseContext.h>
 using sofa::core::objectmodel::BaseObject ;
 
@@ -48,20 +48,20 @@ namespace sofa
 namespace component
 {
 
-namespace _python_
+namespace _pythoncomponent_
 {
 using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::Event;
 using sofa::core::DataTracker;
 using sofa::helper::vector ;
 
-class Python : public BaseObject
+class PythonComponent : public BaseObject
 {
 public:
-    SOFA_CLASS(Python, BaseObject);
+    SOFA_CLASS(PythonComponent, BaseObject);
 
-    Python() ;
-    virtual ~Python() ;
+    PythonComponent() ;
+    virtual ~PythonComponent() ;
 
     PyObject* m_rawPython { nullptr };
     Data<std::string> m_source  ;
@@ -70,13 +70,15 @@ public:
 };
 
 
-} // namespace _template_
+} // namespace _pythoncomponent_
 
-using _python_::Python ;
+namespace python {
+    using _pythoncomponent_::PythonComponent ;
+}
 
 } // namespace component
 
 } // namespace sofa
 
-#endif /// SOFA_PYTHON_H
+#endif /// SOFA_PYTHONCOMPONENT_H
 

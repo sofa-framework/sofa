@@ -42,7 +42,7 @@ using sofa::core::RegisterObject ;
 #include "PythonFactory.h"
 using sofa::PythonFactory ;
 
-#include "Python.h"
+#include "PythonComponent.h"
 
 
 namespace sofa
@@ -51,37 +51,37 @@ namespace sofa
 namespace component
 {
 
-namespace _python_
+namespace _pythoncomponent_
 {
 using sofa::core::objectmodel::BaseNode ;
 using sofa::simulation::Node ;
 
-Python::Python() : BaseObject(),
+PythonComponent::PythonComponent() : BaseObject(),
     m_source(initData(&m_source, std::string(""), "template", "Current template source" , true, false))
 {
     m_source.setGroup("Python.properties");
 }
 
-Python::~Python(){}
+PythonComponent::~PythonComponent(){}
 
 
-SOFA_DECL_CLASS(Python)
-int PythonClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
-        .add< Python >();
+SOFA_DECL_CLASS(PythonComponent)
+int PythonComponentClass = core::RegisterObject("An object template encoded as parsed hson-py object.")
+        .add< PythonComponent >();
 
 
-} // namespace _baseprefab_
+} // namespace __pythoncomponent_
 
 } // namespace component
 
 } // namespace sofa
 
 using sofa::core::objectmodel::BaseData ;
-using sofa::component::_python_::Python ;
+using sofa::component::python::PythonComponent ;
 
-static PyObject * Python_setSource(PyObject *self, PyObject * args)
+static PyObject * PythonComponent_setSource(PyObject *self, PyObject * args)
 {
-    Python* obj= dynamic_cast<Python*>(((PySPtr<Base>*)self)->object.get()) ;
+    PythonComponent* obj= dynamic_cast<PythonComponent*>(((PySPtr<Base>*)self)->object.get()) ;
     if(obj->m_rawPython)
         Py_DECREF(obj->m_rawPython);
 
@@ -101,9 +101,10 @@ static PyObject * Python_setSource(PyObject *self, PyObject * args)
     return obj->m_rawPython ;
 }
 
-static PyObject * Python_getSource(PyObject *self, PyObject * args)
+static PyObject * PythonComponent_getSource(PyObject *self, PyObject * args)
 {
-    Python* obj= dynamic_cast<Python*>(((PySPtr<Base>*)self)->object.get()) ;
+    SOFA_UNUSED(args);
+    PythonComponent* obj= dynamic_cast<PythonComponent*>(((PySPtr<Base>*)self)->object.get()) ;
     if(obj->m_rawPython){
         Py_INCREF(obj->m_rawPython);
         return obj->m_rawPython ;
@@ -112,11 +113,11 @@ static PyObject * Python_getSource(PyObject *self, PyObject * args)
 }
 
 
-SP_CLASS_METHODS_BEGIN(Python)
-SP_CLASS_METHOD(Python, setSource)
-SP_CLASS_METHOD(Python, getSource)
+SP_CLASS_METHODS_BEGIN(PythonComponent)
+SP_CLASS_METHOD(PythonComponent, setSource)
+SP_CLASS_METHOD(PythonComponent, getSource)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(Python,Python,BaseObject)
+SP_CLASS_TYPE_SPTR(PythonComponent,PythonComponent,BaseObject)
 
 

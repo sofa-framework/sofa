@@ -68,7 +68,7 @@ set(HEADER_FILES
     ScriptEvent.h
     ScriptFunction.h
     Template.h
-    Python.h
+    PythonComponent.h
 )
 
 set(SOURCE_FILES
@@ -126,7 +126,7 @@ set(SOURCE_FILES
     ScriptEvent.cpp
     ScriptFunction.cpp
     Template.cpp
-    Python.cpp
+    PythonComponent.cpp
     initSofaPython.cpp
 )
 
