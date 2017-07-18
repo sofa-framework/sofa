@@ -41,6 +41,22 @@ We hope this example gave you some envy to learn more about it. Let's start with
 The language is defined as a sofa Plugin named PSL. 
 It makes use of the H-JSON parser available at: http://hjson.org/
 
+Hjson installation :
+```shell
+git clone https://github.com/hjson/hjson-py.git
+cd hjson-py
+sudo python setup.py install
+```
+
+#### How to run examples
+
+Running examples require to launch sofa from the PSL directory.
+
+```shell
+cd sofa/applications/plugins/PSL
+yourBuildDirBin/runSofa examples/press_step1.pyson
+```
+
 
 #### Introduction. 
 The language itself is defined either in term of abstract syntax or through a given concrete syntax. For the simplicity of the following we will employ the H-JSON concrete syntax as it provides both readbility, compactness and clarity. This H-JSON flavor of the language is currently implemented in Sofa but keep in mind that other alternatives are possible based on XML or YAML instead of H-JSON. 
