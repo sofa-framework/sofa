@@ -20,10 +20,9 @@ Node : {
 
 	Node : {
 		Python : ''''
-			Sofa.msg_info(root, "PSL offer scene direct scene element access to python code with scoping !!!")
+			Sofa.msg_info(myNameIsRoot, "PSL offer scene direct scene element access to python code with scoping !!!")
 			for i in range(0,10):
 				self.addChild("one")
-				parent.addChild("two")
 				myNameIsRoot.addChild("three")
 		'''
 	}
