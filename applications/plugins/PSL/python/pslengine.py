@@ -32,16 +32,18 @@ import Sofa
 import difflib
 import os
 
+# TODO(dmarchal 2017-06-17) Get rid of these ugly globals.
 templates = {}
 sofaComponents = []
-for (name, desc) in Sofa.getAvailableComponents():
-        sofaComponents.append(name)
-
 SofaStackFrame = []
-
 sofaRoot = None
-
 imports = {}
+
+def refreshComponentListFromFactory():
+    global sofaComponents
+    sofaComponents = []
+    for (name, desc) in Sofa.getAvailableComponents():
+            sofaComponents.append(name)
 
 def srange(b, e):
         s=""
@@ -156,12 +158,13 @@ def processObject(parent, key, kv, stack, frame):
 
         stack.append(frame)
         frame["self"] = obj = createObject(parent, key, stack, frame, kwargs)
+        if not "name" in kwargs:
+            obj.findData("name").unset()
+
         stack.pop(-1)
 
         if key == "RequiredPlugin" :
-                sofaComponents = []
-                for (name, desc) in Sofa.getAvailableComponents():
-                        sofaComponents.append(name)
+                refreshComponentListFromFactory()
 
         return obj
     except Exception:
@@ -375,6 +378,14 @@ def processNode(parent, key, kv, stack, frame, doCreate=True):
                         elif key in templates:
                                 instanciateTemplate(tself, key,value, stack, frame)
                         else:
+                                # we are on a cache hit...so we refresh the list.
+                                refreshComponentListFromFactory()
+
+                                if key in sofaComponents:
+                                        o = processObject(tself, key, value, stack, {})
+                                        if o != None:
+                                                tself.addObject(o)
+
                                 processParameter(tself, key, value, stack, frame)
         else:
                 print("LEAF: "+kv)

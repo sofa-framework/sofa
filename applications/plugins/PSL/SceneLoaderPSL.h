@@ -22,7 +22,7 @@
 #ifndef SCENELOADERPYSON_H
 #define SCENELOADERPYSON_H
 
-#include <SofaPython/config.h>
+#include <PSL/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 
@@ -44,7 +44,7 @@ namespace _sceneloaderpyson_
 {
 
 /// The scene loader/exporter for python scene files
-class SOFA_SOFAPYTHON_API SceneLoaderPSL : public SceneLoader
+class SOFA_PSL_API SceneLoaderPSL : public SceneLoader
 {
 public:
     /// Pre-loading check

@@ -30,7 +30,8 @@ Node : {
              if not 'xml' in globals():
                 Sofa.msg_error(root, "Unable to get xml 'from' the 'brother context")
              '''
-
+	
+    TestResult : "Success"
 }
 
 

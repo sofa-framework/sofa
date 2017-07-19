@@ -10,7 +10,7 @@ set(SOURCE_FILES
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest PSL)
 add_definitions("-DPSL_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/pslfiles/\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

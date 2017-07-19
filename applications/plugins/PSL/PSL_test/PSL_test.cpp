@@ -22,6 +22,8 @@
  * Contributors:                                                              *
  *    - damien.marchal@univ-lille1.fr                                         *
  *****************************************************************************/
+
+#include <vector>
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
@@ -33,6 +35,7 @@ using sofa::simulation::Node ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::Data ;
 using sofa::simulation::graph::DAGSimulation;
 
 #include <SofaGeneralEngine/SphereROI.h>
@@ -48,40 +51,89 @@ using sofa::core::objectmodel::BaseObject ;
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::RegisterObject ;
+
+#include <PSL/components/TestResult.h>
+using sofa::component::TestResult ;
+
+
 using std::vector;
 using std::string;
 
 namespace
 {
 
-class PSL_test : public Sofa_test<>
-{
-public:
-    void SetUp(){
+void anInit(){
+    static bool _inited_ = false;
+    if(!_inited_){
         PluginManager::getInstance().loadPlugin("PSL") ;
         PluginManager::getInstance().loadPlugin("SofaPython") ;
+    }
+}
 
+
+class PSL_test : public Sofa_test<>,
+                 public ::testing::WithParamInterface<std::vector<std::string>>
+{
+public:
+    Node::SPtr m_root ;
+
+    void SetUp(){
+        anInit() ;
         if( !sofa::simulation::getSimulation() )
             sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
-
     }
 
-    void checkTestFiles(const std::string& filename)
+    void TearDown(){
+         sofa::simulation::getSimulation()->unload( m_root ) ;
+    }
+
+    void checkTestFiles(const std::vector<std::string>& params)
     {
+        std::string sresult = params[1];
+        std::string scenePath = std::string(PSL_TESTFILES_DIR)+params[0];
 
-        static const std::string scenePath = std::string(PSL_TESTFILES_DIR)+filename;
+        m_root = sofa::simulation::getSimulation()->load(scenePath.c_str());
+        m_root->init(sofa::core::ExecParams::defaultInstance()) ;
 
-        Node::SPtr root = sofa::simulation::getSimulation()->load(scenePath.c_str());
+        ASSERT_NE(m_root.get(), nullptr) << "Missing root node";
+        TestResult* result = nullptr ;
 
-        sofa::simulation::getSimulation()->unload( root ) ;
+        /// The scene must contains a TestResult object initialized to Success to indicate
+        /// a failure
+        m_root->getTreeObject(result) ;
+        ASSERT_NE(result, nullptr) << "Missing component TestResult";
+
+        ASSERT_EQ(result->m_result.getValueString(), sresult) ;
     }
 
 };
 
-TEST_F(PSL_test, checkTestFiles)
+
+std::vector<std::vector<std::string>> testvalues = {
+    {"test_node.psl", "Success", "NoError"},
+    {"test_node_fail.psl", "Fail", "NoError"},
+    {"test_node_fail2.psl", "Fail", "NoError"},
+
+    {"test_pythonlocals.psl", "Success", "NoError"},
+
+//    {"test_object.psl", "true", "NoError"},
+//    {"test_python.psl", "true", "NoError"},
+//    {"test_import.psl", "true", "NoError"},
+//    {"test_alias.psl", "true", "NoError"},
+//s    {"test_template.psl", "true", "NoError"}
+};
+
+TEST_P(PSL_test, checkTestFiles)
 {
-    checkTestFiles("test_pythonlocals.psl") ;
+    checkTestFiles(GetParam()) ;
 }
+
+INSTANTIATE_TEST_CASE_P(BaseTestSet,
+                        PSL_test,
+                        ::testing::ValuesIn(testvalues));
 
 
 }

@@ -4,13 +4,15 @@ project(PSL)
 set(HEADER_FILES
     config.h
     SceneLoaderPSL.h
-    Undefined.h
+    components/Undefined.h
+    components/TestResult.h
 )
 
 set(SOURCE_FILES
     initPSL.cpp
     SceneLoaderPSL.cpp
-    Undefined.cpp
+    components/Undefined.cpp
+    components/TestResult.cpp
 )
 
 find_package(SofaFramework REQUIRED)
