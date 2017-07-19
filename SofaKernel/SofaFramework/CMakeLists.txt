@@ -170,10 +170,10 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "17.06.00")
+set(SOFAFRAMEWORK_VERSION "17.06.01")
 
 ## sofa/version.h
-set(SOFA_VERSION "170600")
+set(SOFA_VERSION "170601")
 set(SOFA_VERSION_STR "\"devel\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
