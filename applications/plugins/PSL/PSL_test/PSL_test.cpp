@@ -92,6 +92,7 @@ public:
 
     void checkTestFiles(const std::vector<std::string>& params)
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         std::string sresult = params[1];
         std::string scenePath = std::string(PSL_TESTFILES_DIR)+params[0];
 
@@ -108,7 +109,6 @@ public:
 
         ASSERT_EQ(result->m_result.getValueString(), sresult) ;
     }
-
 };
 
 
@@ -116,14 +116,10 @@ std::vector<std::vector<std::string>> testvalues = {
     {"test_node.psl", "Success", "NoError"},
     {"test_node_fail.psl", "Fail", "NoError"},
     {"test_node_fail2.psl", "Fail", "NoError"},
-
+    {"test_object.psl", "Success", "NoError"},
+    {"test_python.psl", "Success", "NoError"},
     {"test_pythonlocals.psl", "Success", "NoError"},
-
-//    {"test_object.psl", "true", "NoError"},
-//    {"test_python.psl", "true", "NoError"},
-//    {"test_import.psl", "true", "NoError"},
-//    {"test_alias.psl", "true", "NoError"},
-//s    {"test_template.psl", "true", "NoError"}
+    {"test_template.psl", "Success", "NoError"}
 };
 
 TEST_P(PSL_test, checkTestFiles)
