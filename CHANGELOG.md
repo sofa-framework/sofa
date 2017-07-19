@@ -134,8 +134,6 @@ ____________________________________________________________
     - TestMessageHandler : new and robust implementation to connect msg_* message to test failure  (#213)
     - update to use the new TestMessageHandler where msg_error generates test failures (#213)
     - add tests for TestMessageHandler (#213)
-- [SofaCUDA] 
-    - FIX NVCC flags for debug build on Windows (#300)
 
 
 ### Bug Fixes
@@ -181,9 +179,13 @@ ____________________________________________________________
     - Fix minor consistency issues related to the readOnly flag (#115)
 - [SofaTest]
     - repair the minor API breaks introduced by PR #213 (#269)
+- [SofaCUDA] 
+    - FIX NVCC flags for debug build on Windows (#300)
+    - Fix compilation error due to the replacement of `&ptr[0]` by `.data()` in helper::vector (#320)
 
 **Scenes**
 - Components/engine/GenerateGrid.scn was fixed (#303)
+- Scenes with bad RegularGrid position are fixed (#324)
 
 
 ### Cleaning
