@@ -59,6 +59,9 @@ The XML flavor is fully compatible with our classical XML scenes.
 We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
 
 #### Installation & requirement. 
+The language is under heavy developement so don't trust the code, the examples or the documentation. 
+It I want it to be finished join the developement effort. 
+
 The language is defined as a sofa Plugin named PSL which is currently it is only available in the PSL development branch. 
 
 It makes use of the H-JSON parser available at: http://hjson.org/
