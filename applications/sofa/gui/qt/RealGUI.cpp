@@ -172,7 +172,7 @@ public:
 
     virtual void fileHasChanged(const std::string& filename) override
     {
-        m_realgui->fileReOpen(filename) ;
+        m_realgui->fileOpen(filename, false, true);
     }
     RealGUI* m_realgui ;
 };
@@ -234,10 +234,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 
 void RealGUI::InitApplication( RealGUI* _gui)
 {
-    //application->setMainWidget ( _gui );
-
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
-
     application->setWindowIcon(QIcon(pathIcon));
 
     // show the gui
@@ -305,7 +302,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 {
     setupUi(this);
 
-//    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
     parseOptions(options);
 
     createPluginManager();
@@ -432,6 +428,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
 
+    m_filelistener = new RealGUIFileListener(this) ;
 }
 
 //------------------------------------
@@ -460,6 +457,9 @@ RealGUI::~RealGUI()
 #endif
 
     removeViewer();
+
+    FileMonitor::removeListener(m_filelistener) ;
+    delete m_filelistener ;
 }
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= }
 
@@ -711,51 +711,8 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 //------------------------------------
 
-void RealGUI::fileReOpen( std::string filename, bool temporaryFile)
-{
-    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
-    if (extension == "simu")
-    {
-        return fileOpenSimu(filename);
-    }
 
-    startButton->setChecked(false);
-    descriptionScene->hide();
-    htmlPage->clear();
-    startDumpVisitor();
-    update();
-    //Hide all the dialogs to modify the graph
-    emit ( newScene() );
-
-    if ( sofa::helper::system::DataRepository.findFile (filename) )
-        filename = sofa::helper::system::DataRepository.getFile ( filename );
-    else
-        return;
-
-    sofa::simulation::xml::numDefault = 0;
-
-    if( currentSimulation() ) this->unloadScene();
-    mSimulation = simulation::getSimulation()->load ( filename.c_str() );
-    simulation::getSimulation()->init ( mSimulation.get() );
-    if ( mSimulation == NULL )
-    {
-        msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
-        return;
-    }
-    setScene ( mSimulation, filename.c_str(), temporaryFile );
-    configureGUI(mSimulation.get());
-
-    this->setWindowFilePath(filename.c_str());
-    setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
-    stopDumpVisitor();
-
-    /// We want to warn user that there is component that are implemented in specific plugin
-    /// and that there is no RequiredPlugin in their scene.
-    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-    checker.validate(mSimulation.get()) ;
-}
-
-void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
+void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
     if (extension == "simu")
@@ -779,14 +736,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
     sofa::simulation::xml::numDefault = 0;
 
-    if(m_filelistener){
-        FileMonitor::removeListener(m_filelistener) ;
-        delete m_filelistener;
-    }
-    m_filelistener = new RealGUIFileListener(this) ;
-    FileMonitor::addFile(filename, m_filelistener ) ;
-
-    if( currentSimulation() ) this->unloadScene();
+       if( currentSimulation() ) this->unloadScene();
     mSimulation = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( mSimulation.get() );
     if ( mSimulation == NULL )
@@ -794,7 +744,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         msg_warning("RealGUI")<<"Failed to load "<<filename.c_str();
         return;
     }
-    setScene ( mSimulation, filename.c_str(), temporaryFile );
+    if(reload)
+        setSceneWithoutMonitor(mSimulation, filename.c_str(), temporaryFile);
+    else
+        setScene(mSimulation, filename.c_str(), temporaryFile);
+
     configureGUI(mSimulation.get());
 
     this->setWindowFilePath(filename.c_str());
@@ -821,9 +775,8 @@ void RealGUI::emitIdle()
         getQtViewer()->getQWidget()->update();;
 }
 
-//------------------------------------
-
-void RealGUI::fileOpen()
+/// This open popup the file selection windows.
+void RealGUI::popupOpenFileSelector()
 {
     std::string filename(this->windowFilePath().toStdString());
 
@@ -926,10 +879,11 @@ void RealGUI::fileOpenSimu ( std::string s )
 
 //------------------------------------
 
-void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFile )
+void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, bool temporaryFile)
 {
     if (filename)
     {
+
         if (!temporaryFile)
             recentlyOpenedFilesManager.openFile(filename);
         saveReloadFile=temporaryFile;
@@ -967,6 +921,15 @@ void RealGUI::setScene ( Node::SPtr root, const char* filename, bool temporaryFi
 
         resetScene();
     }
+}
+
+void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile)
+{
+    if(m_enableInteraction &&  filename){
+        FileMonitor::removeListener(m_filelistener) ;
+        FileMonitor::addFile(filename, m_filelistener) ;
+    }
+    setSceneWithoutMonitor(root, filename, temporaryFile) ;
 }
 
 //------------------------------------

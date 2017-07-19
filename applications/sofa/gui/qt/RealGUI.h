@@ -246,12 +246,13 @@ public:
     virtual int mainLoop();
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
-    virtual void fileOpen(std::string filename, bool temporaryFile=false);
-    virtual void fileReOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileOpen(std::string filename, bool temporaryFile=false, bool reload=false);
 
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
@@ -393,7 +394,7 @@ public slots:
     virtual void currentTabChanged(int index);
 
     virtual void fileNew();
-    virtual void fileOpen();
+    virtual void popupOpenFileSelector();
     virtual void fileReload();
     virtual void fileSave();
     virtual void fileExit();
