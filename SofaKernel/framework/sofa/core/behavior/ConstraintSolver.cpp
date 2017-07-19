@@ -33,8 +33,6 @@ namespace behavior
 {
 
 ConstraintSolver::ConstraintSolver()
-    : m_fId(VecDerivId::externalForce())
-    , m_dxId(VecDerivId::dx())
 {}
 
 ConstraintSolver::~ConstraintSolver()
