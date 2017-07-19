@@ -92,7 +92,9 @@ public:
 
     void checkTestFiles(const std::vector<std::string>& params)
     {
-        EXPECT_MSG_NOEMIT(Error) ;
+
+        ASSERT_EQ(params.size(), (unsigned int)3) ;
+
         std::string sresult = params[1];
         std::string scenePath = std::string(PSL_TESTFILES_DIR)+params[0];
 
@@ -102,12 +104,14 @@ public:
         ASSERT_NE(m_root.get(), nullptr) << "Missing root node";
         TestResult* result = nullptr ;
 
-        /// The scene must contains a TestResult object initialized to Success to indicate
-        /// a failure
-        m_root->getTreeObject(result) ;
-        ASSERT_NE(result, nullptr) << "Missing component TestResult";
+        if(params[2] == "NoError" ){
+            /// The scene must contains a TestResult object initialized to Success to indicate
+            /// a failure
+            m_root->getTreeObject(result) ;
+            ASSERT_NE(result, nullptr) << "Missing component TestResult";
 
-        ASSERT_EQ(result->m_result.getValueString(), sresult) ;
+            ASSERT_EQ(result->m_result.getValueString(), sresult) ;
+        }
     }
 };
 
@@ -121,10 +125,11 @@ std::vector<std::vector<std::string>> testvalues = {
     {"test_pythonlocals.psl", "Success", "NoError"},
     {"test_pythonglobals.psl", "Success", "NoError"},
     {"test_pythonobject.psl", "Success", "NoError"},
+    {"test_pythonexcept.psl", "Success", "Error"},
     {"test_template.psl", "Success", "NoError"},
     {"test_properties.psl", "Success", "NoError"},
     {"test_pslversion.psl", "Success", "NoError"},
-    {"test_pslversion_invalid.psl", "Fail", "NoError"}
+    {"test_pslversion_invalid.psl", "Fail", "Error"}
 };
 
 TEST_P(PSL_test, checkTestFiles)
