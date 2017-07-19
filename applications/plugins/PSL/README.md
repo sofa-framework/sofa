@@ -1,6 +1,6 @@
 The Python Scene Language for Sofa 
 ===========
-The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. It is also a language defined through an Abstract Semantics and it can then have multiple Concrete Semantics (JSON, H-SON, XML, ...)
+The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. It is also a language defined through an Abstract Semantics and it can then have multiple Concrete Semantics (JSON, H-JSON, XML, ...)
 
 #### A small Introduction
 PSL features:
