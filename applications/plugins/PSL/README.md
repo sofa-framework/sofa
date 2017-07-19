@@ -11,8 +11,24 @@ PSL features:
 - explicit aliasing (to simplify scene writing).
 - preserve scene structure when it is loaded & saved.
 
-To give you a taste of the language in its H-JSON flavor here is a small scene composed of two *psl* files. One of the *psl* is a library of Template as the PneuNet actuator, it is called SoftRobotActuator, the other is the scene loaded in Sofa. Once imported, the template is then instanciated in the scene. Here is how look the resulting scene: 
+To give you a taste of the language in its H-JSON flavor here is a small scene composed of two *psl* files. One os called SoftRobotActuator.psl and is a library of reusable component Template (as the PneuNet actuator). The other is the scene loaded in Sofa. Once imported, the template from the library can be instanciated in the scene. 
 ```css
+/// The library file named SoftRobotActuators.psl
+Template : {
+	name : "PneuNets"
+	properties : {
+		numSection : 10
+	}
+	Node : {
+		MechanicalObject : {
+			name : "mstate"
+			position : p"srange(0, numSection*3)"
+		}
+	}
+}
+
+
+/// The real scene.psl
 Node : {
 	name : "myNameIsRoot"
 
