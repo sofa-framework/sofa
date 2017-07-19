@@ -21,9 +21,10 @@
 ******************************************************************************/
 #include <PSL/config.h>
 
+#include <PSL/components/PSLVersion.h>
 #include <PSL/components/Undefined.h>
 #include <PSL/components/TestResult.h>
-#include "SceneLoaderPSL.h"
+#include <PSL/SceneLoaderPSL.h>
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
@@ -81,6 +82,7 @@ const char* getModuleComponentList()
 
 SOFA_LINK_CLASS(Undefined)
 SOFA_LINK_CLASS(TestResult)
+SOFA_LINK_CLASS(PSLVersion)
 
 /// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
 

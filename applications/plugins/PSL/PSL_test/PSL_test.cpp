@@ -119,7 +119,12 @@ std::vector<std::vector<std::string>> testvalues = {
     {"test_object.psl", "Success", "NoError"},
     {"test_python.psl", "Success", "NoError"},
     {"test_pythonlocals.psl", "Success", "NoError"},
-    {"test_template.psl", "Success", "NoError"}
+    {"test_pythonglobals.psl", "Success", "NoError"},
+    {"test_pythonobject.psl", "Success", "NoError"},
+    {"test_template.psl", "Success", "NoError"},
+    {"test_properties.psl", "Success", "NoError"},
+    {"test_pslversion.psl", "Success", "NoError"},
+    {"test_pslversion_invalid.psl", "Fail", "NoError"}
 };
 
 TEST_P(PSL_test, checkTestFiles)

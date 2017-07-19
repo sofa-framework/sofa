@@ -392,24 +392,26 @@ def processNode(parent, key, kv, stack, frame, doCreate=True):
         stack.pop(-1)
         return tself
 
+def processTreePSL1(parent, key, kv):
+    stack = []
+    frame = {}
+    if isinstance(kv, list):
+            for key,value in kv:
+                    if key == "Import":
+                            print("Importing: "+value+".pyjson")
+                    elif key == "Node":
+                            processNode(parent, key, value, stack, globals())
+                    elif key == "Python":
+                            processPython(parent, key, value, stack, globals())
+                    elif key in sofaComponents:
+                            processObject(parent, key, value, stack, globals())
+                    else:
+                            processParameter(parent, key, value, stack, frame)
+    else:
+            print("LEAF: "+kv)
 
-def processTree(parent, key, kv):
-        stack = []
-        frame = {}
-        if isinstance(kv, list):
-                for key,value in kv:
-                        #print("PROCESSING:" + str(key))
-                        if key == "Import":
-                                print("Importing: "+value+".pyjson")
-                        elif key == "Node":
-                                processNode(parent, key, value, stack, globals())
-                        elif key == "Python":
-                                processPython(parent, key, value, stack, globals())
-                        elif key in sofaComponents:
-                                processObject(parent, key, value, stack, globals())
-                        else:
-                                processParameter(parent, key, value, stack, frame)
-        else:
-                print("LEAF: "+kv)
-
+def processTree(parent, key, kv, directives):
+        if directives["version"] == "1.0":
+            return processTreePSL1(parent, key, kv)
+        # Add here the future version of the language
 

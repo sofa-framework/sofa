@@ -28,6 +28,7 @@
 #*                                                                             *
 #******************************************************************************/
 import hjson
+import Sofa
 import os
 import pslengine
 
@@ -52,20 +53,42 @@ def save(rootNode, filename):
         print("PYSCIN SAVE: "+str(filename))
         saveTree(rootNode,"")
 
+def preProcess(ast):
+    version = None
+    # Check in the ast for specific directives.
+    for cmd, value in ast:
+        if cmd == "PSLVersion":
+            if version == None:
+                if isinstance(value, str) or isinstance(value, unicode):
+                    version = str(value)
+                else:
+                    raise Exception("PSLVersion must be a string in format '1.0'")
+            else:
+                raise Exception("There is two PSLVersion directive in the same file.")
+
+    if version == None:
+        version = "1.0"
+
+    return {"version": version}
+
 def load(rootNode, filename):
         global sofaRoot
         sofaRoot = rootNode
         filename = os.path.abspath(filename)
         dirname = os.path.dirname(filename)
 
-        print("PYSCIN LOAD: "+str(filename))
-        print("PYSCIN ROOT: "+str(dirname))
-
         olddirname = os.getcwd()
         os.chdir(dirname)
 
         f = open(filename).read()
-        r = pslengine.processTree(sofaRoot, "", hjson.loads(f, object_pairs_hook=MyObjectHook()))
+        ast = hjson.loads(f, object_pairs_hook=MyObjectHook())
+        directives = preProcess(ast[0][1])
+
+        if not directives["version"] in ["1.0"]:
+            Sofa.msg_error(rootNode, "Unsupported PSLVersion"+str(directives["version"]))
+            r=rootNode
+        else:
+            r = pslengine.processTree(sofaRoot, "", ast, directives)
 
         os.chdir(olddirname)
         return r

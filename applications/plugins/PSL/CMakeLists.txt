@@ -6,6 +6,7 @@ set(HEADER_FILES
     SceneLoaderPSL.h
     components/Undefined.h
     components/TestResult.h
+    components/PSLVersion.h
 )
 
 set(SOURCE_FILES
@@ -13,6 +14,7 @@ set(SOURCE_FILES
     SceneLoaderPSL.cpp
     components/Undefined.cpp
     components/TestResult.cpp
+    components/PSLVersion.cpp
 )
 
 find_package(SofaFramework REQUIRED)
@@ -21,7 +23,7 @@ find_package(SofaPython REQUIRED)
 set(PYTHON_FILES
     python/pslloader.py
     python/pslengine.py
-    )
+)
 
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
