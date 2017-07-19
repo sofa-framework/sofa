@@ -1,6 +1,6 @@
 The Python Scene Language for Sofa 
 ===========
-The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. 
+The Python Scene Language (PSL) mixes the advantages of *XML* and *pyscn* in an unified and powerfull framework. It is also a language defined through an Abstract Semantics and it can then have multiple Concrete Semantics (JSON, H-SON, XML, ...)
 
 #### A small Introduction
 PSL features:
@@ -11,13 +11,13 @@ PSL features:
 - explicit aliasing (to simplify scene writing).
 - preserve scene structure when it is loaded & saved.
 
-To give you a taste of the language in its JSON flavor here is a small scene composed of two *psl* files. One of the *psl* is a library of Template as the PneuNet actuator, it is called SoftRobotActuator, the other is the scene loaded in Sofa. Once imported, the template is then instanciated in the scene. Here is how look the resulting scene: 
+To give you a taste of the language in its H-JSON flavor here is a small scene composed of two *psl* files. One of the *psl* is a library of Template as the PneuNet actuator, it is called SoftRobotActuator, the other is the scene loaded in Sofa. Once imported, the template is then instanciated in the scene. Here is how look the resulting scene: 
 ```css
 Node : {
 	name : "myNameIsRoot"
 
 	Import : SoftRobotActuators
-	Alias : SoftRobotActuators.PneuNets-PneuNets
+	Using : SoftRobotActuators.PneuNets-PneuNets
 
 	Node : {
 		Python : ''''
@@ -34,6 +34,27 @@ Node : {
 	}
 }
 ```
+
+The same scene can also be described using the XML flavor thus look like the following. 
+```xml
+<Node name : "myNameIsRoot">
+	<Import library="SoftRobotActuators"/>
+	<Using alias="SoftRobotActuators.PneuNets-PneuNets"/>
+
+	<Node>
+		<Python>
+			Sofa.msg_info(myNameIsRoot, "PSL offer scene direct scene element access to python code with scoping !!!")
+			for i in range(0,10):
+				self.addChild("one")
+				myNameIsRoot.addChild("three")
+		</Python>
+	</Node>
+
+	<PneuNets name:"myPneuNet" numSections : "10"/>
+</node>
+```
+The XML flavor is fully compatible with our classical XML scenes. 
+
 
 We hope this example gave you some envy to learn more about it. Let's start with a big longer description. 
 
