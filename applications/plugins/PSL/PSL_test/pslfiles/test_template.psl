@@ -18,7 +18,6 @@ Node : {
     Python : '''
              cp=0
              for child in root.getChildren():
-                print("CHILD: "+child.name)
                 if child.name == "MyTemplate":
                     cp+=1
              if cp != 2:
