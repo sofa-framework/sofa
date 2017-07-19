@@ -42,6 +42,12 @@ namespace io
 
 using namespace sofa::defaulttype;
 
+// static void skipToEOL(FILE* f)
+// {
+// 	int	ch;
+// 	while ((ch = fgetc(f)) != EOF && ch != '\n');
+// }
+
 bool TriangleLoader::load(const char *filename)
 {
     std::string fname = filename;
@@ -80,7 +86,7 @@ void TriangleLoader::loadTriangles(FILE *file)
     float x, y, z;
 //	/* make a default group */
 //
-
+    
     std::ostringstream bufScanFormat;
     bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
 
@@ -274,19 +280,19 @@ void TriangleLoader::loadTriangles(FILE *file)
     {
         // compute the normal for the triangles
         /*		std::vector<CollisionElement*>::iterator it = elems.begin()
-                std::vector<CollisionElement*>::iterator itEnd = elems.end();
+        		std::vector<CollisionElement*>::iterator itEnd = elems.end();
 
-                for (; it != itEnd; it++)
-                {
-                    Triangle *t = static_cast<Triangle*> (*it);
-                    Vector3 u,v;
-                    u = *(t->p2) - *(t->p1);
-                    v = *(t->p3) - *(t->p1);
+        		for (; it != itEnd; it++)
+        		{
+        			Triangle *t = static_cast<Triangle*> (*it);
+        			Vector3 u,v;
+        			u = *(t->p2) - *(t->p1);
+        			v = *(t->p3) - *(t->p1);
 
-                    Vector3 uCrossV = u.Cross(v);
+        			Vector3 uCrossV = u.Cross(v);
 
-                    t->normal = uCrossV;
-                }*/
+        			t->normal = uCrossV;
+        		}*/
     }
 }
 

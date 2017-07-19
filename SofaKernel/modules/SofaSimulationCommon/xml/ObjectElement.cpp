@@ -84,19 +84,26 @@ bool ObjectElement::initNode()
         return false;
     }
     setObject(obj);
-    /// display any unused attributes
+    // display any unused attributes
+    //std::string unused;
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
         if (!it->second.isAccessed())
         {
             std::string name = it->first;
-
-            /// ignore some prefix that are used to quickly disable parameters in XML files
+            // ignore some prefix that are used to quickly disable parameters in XML files
             if (name.substr(0,1) == "_" || name.substr(0,2) == "NO") continue;
+            //unused += ' ';
+            //unused += name;
 
-            msg_warning(obj.get()) << SOFA_FILE_INFO2(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;
+            obj->serr <<"Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" << obj->sendl;
         }
     }
+//     if (!unused.empty())
+//     {
+//         msg_warning("XML") << "Unused attribute(s) in "<<getFullName()<<" :"<<unused";
+//     }
+
     return true;
 }
 

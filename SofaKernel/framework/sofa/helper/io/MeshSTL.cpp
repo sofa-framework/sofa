@@ -168,6 +168,11 @@ void MeshSTL::readSTL(std::ifstream &file)
         }
         else if (token == "endsolid" || token == "end")
             break;
+
+        else
+        {
+            // std::cerr << "readSTL : Unknown token for line " << line << std::endl;
+        }
     }
 
     file.close();

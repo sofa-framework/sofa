@@ -63,6 +63,7 @@ bool NodeElement::initNode()
         core::objectmodel::BaseNode* baseNode;
         if (getTypedObject()!=NULL && getParentElement()!=NULL && (baseNode = getParentElement()->getObject()->toBaseNode()))
         {
+            // 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
             baseNode->addChild(getTypedObject());
         }
         return true;
@@ -76,11 +77,16 @@ bool NodeElement::initNode()
 bool NodeElement::init()
 {
     bool res = Element<core::objectmodel::BaseNode>::init();
-
-    /// send the errors created by the object in this node in the node's log
+    //Store the warnings created by the objects
     for (unsigned int i=0; i<errors.size(); ++i)
     {
-        msg_error(getObject()) << errors[i];
+        //TODO(dmarchal): This way of getting the name of a component should be replaced
+        // with the use of the ComponentInfo from message.h.
+
+        const std::string name = getObject()->getClassName() + " \"" + getObject()->getName() + "\"";
+        //MAINLOGGER( Error, errors[i], name );
+        //msg_error(this) << errors[i];
+        msg_error(name) << errors[i];
     }
 
     return res;

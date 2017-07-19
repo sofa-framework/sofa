@@ -29,19 +29,6 @@
 #include <string>
 #include <sstream>
 
-/// This allow MeshTrian to interact with the messaging system.
-namespace sofa {
-namespace helper {
-namespace logging {
-    inline bool notMuted(const sofa::helper::io::SphereLoader* ){ return true; }
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::SphereLoader*)
-    {
-        return ComponentInfo::SPtr(new ComponentInfo("SphereLoader")) ;
-    }
-} /// logging
-} /// helper
-} /// sofa
-
 namespace sofa
 {
 
@@ -59,7 +46,7 @@ static void skipToEOL(FILE* f)
 
 bool SphereLoader::load(const char *filename)
 {
-    /// Make sure that fscanf() uses a dot '.' as the decimal separator.
+    // Make sure that fscanf() uses a dot '.' as the decimal separator.
     helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
 
     std::string fname = filename;
@@ -72,13 +59,17 @@ bool SphereLoader::load(const char *filename)
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        msg_error() << "ERROR: cannot read file '" << filename << "'. (Aborting)";
+        std::cerr << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
 
+#ifndef NDEBUG
+    std::cout << "Loading model'" << filename << "'" << std::endl;
+#endif
+
     int totalNumSpheres=0;
 
-    /// Check first line
+    // Check first line
     if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,SPH_FORMAT))
     {
         fclose(file);
@@ -94,7 +85,7 @@ bool SphereLoader::load(const char *filename)
         if (!strcmp(cmd,"nums"))
         {
             if (fscanf(file, "%d", &totalNumSpheres) == EOF)
-                msg_error() << "fscanf function has encountered an error." ;
+                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
             setNumSpheres(totalNumSpheres);
         }
         else if (!strcmp(cmd,"sphe"))
@@ -103,7 +94,7 @@ bool SphereLoader::load(const char *filename)
             double cx=0,cy=0,cz=0,r=1;
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
-                msg_error() << "fscanf function has encountered an error." ;
+                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
             addSphere((SReal)cx,(SReal)cy,(SReal)cz,(SReal)r);
             ++totalNumSpheres;
         }
@@ -113,10 +104,11 @@ bool SphereLoader::load(const char *filename)
         }
         else			// it's an unknown keyword
         {
-            msg_info() << "'"<< filename << "' unknown Sphere keyword: " << cmd ;
+            printf("%s: Unknown Sphere keyword: %s\n", filename, cmd);
             skipToEOL(file);
         }
     }
+// 	printf("Model contains %d spheres\n", totalNumSpheres);
 
     (void) fclose(file);
 
