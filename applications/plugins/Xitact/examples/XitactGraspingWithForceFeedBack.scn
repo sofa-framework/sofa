@@ -80,7 +80,7 @@
     <UniformMass totalMass="0.01"/>
 
 
-    <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000" external_rest_shape="toto"/>
+    <RestShapeSpringsForceField points="0" stiffness="10000" angularStiffness="1000000000" external_rest_shape="@toto"/>
     <UncoupledConstraintCorrection compliance="0.0001  0.000000001 0 0 0.000000001 0 0.000000001"/>
     
 
