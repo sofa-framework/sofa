@@ -1,20 +1,17 @@
 #include <SofaTest/Sofa_test.h>
 
 #include <SofaPython/PythonFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <SofaPython/Binding_BaseObject.h>
-
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 using sofa::Data ;
 
-#include <sofa/core/ObjectFactory.h>
-
 #include "../SceneLoaderPY.h"
 using sofa::simulation::SceneLoaderPY ;
 using sofa::core::objectmodel::BaseObject ;
-
 
 ///////////////////////////////////// TESTS ////////////////////////////////////////////////////////
 struct SofaModule_test : public sofa::Sofa_test<>,

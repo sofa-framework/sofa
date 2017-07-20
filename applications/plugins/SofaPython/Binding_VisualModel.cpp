@@ -19,28 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 #include "Binding_VisualModel.h"
 #include "Binding_BaseState.h"
 #include <fstream>
+#include "PythonToSofa.inl"
 
-using namespace sofa::component::visualmodel;
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::visual;
+using sofa::core::visual::VisualModel ;
+using sofa::component::visualmodel::VisualModelImpl ;
 
-extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
+static inline VisualModel* get_visualmodel(PyObject* obj) {
+    return sofa::py::unwrap<VisualModel>(obj);
+}
+
+
+/// getting a VisualModelImpl* from a PyObject*
+static inline VisualModelImpl* get_VisualModelImpl(PyObject* obj) {
+    return sofa::py::unwrap<VisualModelImpl>(obj);
+}
+
+static PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
 {
-    VisualModelImpl* obj=down_cast<VisualModelImpl>(((PySPtr<Base>*)self)->object->toVisualModel());
+    VisualModelImpl* obj = get_VisualModelImpl( self );
     double r,g,b,a;
     if (!PyArg_ParseTuple(args, "dddd",&r,&g,&b,&a))
     {
         int ir,ig,ib,ia; // helper: you can set integer values
         if (!PyArg_ParseTuple(args, "iiii",&ir,&ig,&ib,&ia))
         {
-            PyErr_BadArgument();
             return NULL;
         }
+
+        PyErr_Clear();
         r = (double)ir;
         g = (double)ig;
         b = (double)ib;
@@ -50,14 +59,15 @@ extern "C" PyObject * VisualModelImpl_setColor(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
+
+
+static PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
 {
-    VisualModel* obj=((PySPtr<Base>*)self)->object->toVisualModel();
+    VisualModel* obj = get_visualmodel( self );
 
     char* filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        PyErr_BadArgument();
         return NULL;
     }
 
@@ -69,14 +79,30 @@ extern "C" PyObject * VisualModel_exportOBJ(PyObject *self, PyObject * args)
     int count = 0;
 
     obj->exportOBJ(obj->getName(),&outfile,NULL,vindex,nindex,tindex,count);
-
     outfile.close();
 
     Py_RETURN_NONE;
 }
 
+
+static PyObject * VisualModel_updateVisual(PyObject *self, PyObject * /*args*/)
+{
+    VisualModel* obj = get_visualmodel( self );
+    obj->updateVisual();
+    Py_RETURN_NONE;
+}
+
+static PyObject * VisualModel_initVisual(PyObject *self, PyObject * /*args*/)
+{
+    VisualModel* obj = get_visualmodel( self );
+    obj->initVisual();
+    Py_RETURN_NONE;
+}
+
 SP_CLASS_METHODS_BEGIN(VisualModel)
 SP_CLASS_METHOD(VisualModel,exportOBJ)
+SP_CLASS_METHOD(VisualModel,updateVisual)
+SP_CLASS_METHOD(VisualModel,initVisual)
 SP_CLASS_METHODS_END
 
 SP_CLASS_METHODS_BEGIN(VisualModelImpl)
