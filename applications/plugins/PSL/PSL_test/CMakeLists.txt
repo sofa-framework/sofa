@@ -10,6 +10,7 @@ set(SOURCE_FILES
         )
 
 set(PSL_FILES
+        pslfiles/test_emptyfile.psl
         pslfiles/test_node.psl
         pslfiles/test_node_fail2.psl
         pslfiles/test_node.psl

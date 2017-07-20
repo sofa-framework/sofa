@@ -90,11 +90,20 @@ public:
          sofa::simulation::getSimulation()->unload( m_root ) ;
     }
 
+    void checkTestFilesMsg(const std::vector<std::string>& params)
+    {
+        ASSERT_EQ(params.size(), (unsigned int)3) ;
+        if(params[2] == "Error"){
+            EXPECT_MSG_EMIT(Error) ;
+            checkTestFiles(params) ;
+        }else{
+            EXPECT_MSG_NOEMIT(Error) ;
+            checkTestFiles(params) ;
+        }
+    }
+
     void checkTestFiles(const std::vector<std::string>& params)
     {
-
-        ASSERT_EQ(params.size(), (unsigned int)3) ;
-
         std::string sresult = params[1];
         std::string scenePath = std::string(PSL_TESTFILES_DIR)+params[0];
 
@@ -117,6 +126,7 @@ public:
 
 
 std::vector<std::vector<std::string>> testvalues = {
+    {"test_emptyfile.psl", "Fail", "Error"},
     {"test_node.psl", "Success", "NoError"},
     {"test_node_fail.psl", "Fail", "NoError"},
     {"test_node_fail2.psl", "Fail", "NoError"},
@@ -134,7 +144,7 @@ std::vector<std::vector<std::string>> testvalues = {
 
 TEST_P(PSL_test, checkTestFiles)
 {
-    checkTestFiles(GetParam()) ;
+    checkTestFilesMsg(GetParam()) ;
 }
 
 INSTANTIATE_TEST_CASE_P(BaseTestSet,

@@ -73,6 +73,7 @@ def preProcess(ast):
 
 def load(rootNode, filename):
         global sofaRoot
+
         sofaRoot = rootNode
         filename = os.path.abspath(filename)
         dirname = os.path.dirname(filename)
@@ -82,6 +83,11 @@ def load(rootNode, filename):
 
         f = open(filename).read()
         ast = hjson.loads(f, object_pairs_hook=MyObjectHook())
+
+        if len(ast) == 0:
+            Sofa.msg_error(rootNode, "The file '"+filename+"' does not contains PSL content")
+            return rootNode
+
         directives = preProcess(ast[0][1])
 
         if not directives["version"] in ["1.0"]:

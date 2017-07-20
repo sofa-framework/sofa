@@ -393,6 +393,7 @@ def processNode(parent, key, kv, stack, frame, doCreate=True):
         return tself
 
 def processTreePSL1(parent, key, kv):
+    print("???")
     try:
         stack = []
         frame = {}
@@ -411,6 +412,7 @@ def processTreePSL1(parent, key, kv):
         else:
             print("LEAF: "+kv)
     except Exception,e:
+        print("HANDLING ERROR")
         Sofa.msg_error(parent, str(e))
 
 def processTree(parent, key, kv, directives):

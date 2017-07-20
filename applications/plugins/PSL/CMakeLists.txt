@@ -25,9 +25,9 @@ set(PYTHON_FILES
     python/pslengine.py
 )
 
-#set(EXTRA_FILES
-#    examples/pres_part1.psl
-#)
+set(EXTRA_FILES
+    examples/starthere.psl
+)
 
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
@@ -38,7 +38,7 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(PSL_test)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationGraph SofaPython)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
