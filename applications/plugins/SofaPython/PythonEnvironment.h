@@ -108,6 +108,7 @@ public:
 
 };
 
+struct system_exit : std::exception { };
 
 } // namespace simulation
 
