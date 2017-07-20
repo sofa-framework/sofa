@@ -1,0 +1,30 @@
+Node : {
+        name : "myScene"
+        Node : {
+            name : "New Node"
+        }
+        Node : {
+            name : "New Node1"
+            MechanicalObject : {}
+            OglModel : {}
+        }
+        Node : {
+            name : "New Node2"
+        }
+
+}
+
+// HiTec3.obj
+//Node : {
+//        name : "myScene"
+//
+//        Node : {name : "test"}
+//        Node : {name : "one"
+//            MechanicalObject: {}
+//        }
+//        Node : {name : "two"
+//            MechanicalObject: { name: "mstate"}
+//        }
+//        Node : {name : "three"}
+//
+//}

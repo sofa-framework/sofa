@@ -1,0 +1,64 @@
+Node : {
+        name : "root"
+
+        Template : {
+         name : "MyTemplate"
+         properties : {
+            numchild : 3
+            childname : "undefined"
+         }
+         Node : {
+            name : "two"
+            MechanicalObject: { name: "mstate"}
+            OglModel : {
+                filename : "HiTec3.obj"
+            }
+            Python : '''
+                    Sofa.msg_error("--------========== I CAN DO PYTHON '"+str(self.name)+"' ==============-----")
+                    for i in range(0, numchild):
+                        self.createChild(childname+str(i))
+                '''
+            }
+        }
+
+        MyTemplate : {
+            numchild : 10
+            childname :"Test"
+        }
+        MyTemplate : {}
+        MyTemplate : {}
+}
+
+
+////////////////////// INSTANCES ///////////////////////////////////////////
+//Template : {
+//  name : "MyShapeTemplate"
+//  properties : {
+//        numchild : 3
+//        childname : "undefined"
+//    }
+//  Node : {
+//    name : "two"
+//    MechanicalObject: { name: "mstate"}
+//    OglModel : {
+//        filename : "HiTec3.obj"
+//    }
+//    Python : '''
+//            Sofa.msg_error("--------========== I CAN DO PYTHON '"+str(self.name)+"' ==============-----")
+//            for i in range(0, numchild):
+//                self.createChild(childname+str(i))
+//        '''
+//    }
+//}
+
+//MyShapeTemplate : {
+//    numchild : 10
+//    childname : "SpecificName"
+//}
+
+//MyShapeTemplate : {
+//    numchild : 3
+//    childname : "Other"
+//}
+
+

@@ -89,11 +89,11 @@ public:
 protected:
     BaseContext();
     virtual ~BaseContext();
-	
-private:	
-	BaseContext(const BaseContext&);
+
+private:
+    BaseContext(const BaseContext&);
     BaseContext& operator=(const BaseContext& );
-    
+
 public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
@@ -114,11 +114,11 @@ public:
     /// State of the context
     virtual void setActive(bool) {}
 
-	/// Sleeping state of the context
-	virtual bool isSleeping() const;
+    /// Sleeping state of the context
+    virtual bool isSleeping() const;
 
-	/// Whether the context can change its sleeping state or not
-	virtual bool canChangeSleepingState() const;
+    /// Whether the context can change its sleeping state or not
+    virtual bool canChangeSleepingState() const;
 
     /// Simulation time
     virtual SReal getTime() const;
@@ -240,6 +240,12 @@ public:
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
 
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container=std::vector<sofa::core::objectmodel::BaseObject*>>
+    Container& getNodeObjects(Container& result=Container(), SearchDirection dir = SearchUp){
+        this->get<Container::value_type, Container>(result, dir);
+        return result ;
+    }
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
@@ -376,13 +382,13 @@ public:
     virtual void setAnimate(bool /*val*/)
     { }
 
-	/// Sleeping state of the context
-	virtual void setSleeping(bool /*val*/) 
-	{ }
+    /// Sleeping state of the context
+    virtual void setSleeping(bool /*val*/)
+    { }
 
-	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool /*val*/)
-	{ }
+    /// Sleeping state change of the context
+    virtual void setChangeSleepingState(bool /*val*/)
+    { }
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel

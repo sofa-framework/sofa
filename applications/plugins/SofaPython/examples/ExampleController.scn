@@ -2,5 +2,5 @@
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"   >
     <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
 	<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-	<PythonScriptController filename="ExampleController.py" classname="ExampleController" printLog="true"/>
+	<BasePrefab name='test1' numberEdges='3'/>
 </Node>

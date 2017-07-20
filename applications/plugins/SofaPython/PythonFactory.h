@@ -94,7 +94,7 @@ protected:
     /// a list of Abstract classes that can be cheaply deduced from Base* (by static_cast)
     /// this limits checking the right cast on a limited number of types
     /// Note this list is built from actual needs, but can be easily extended to any types that Base* can be statically casted from.
-    enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,BaseTopologyObject,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,NB_LISTS};
+    enum{Base=0,BaseObject,BaseLoader,Topology,BaseMeshTopology,BaseTopologyObject,VisualModel,BaseState,BaseMechanicalState,BaseMapping,DataEngine,BaseContext,Template,NB_LISTS};
     typedef std::list< BasePythonBoundType* > PythonBoundTypes;
     /// a list of types for each sub-classes (prefiltering types not to have to check casting with any of them)
     static PythonBoundTypes s_boundComponents[NB_LISTS];
@@ -163,7 +163,6 @@ public:
     /// to convert a BaseObject-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::objectmodel::BaseObject* obj) ;
 
-    /// to convert a BaseContext-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::objectmodel::BaseContext* obj) ;
 
     /// to convert a BaseLoader-inherited object to its corresponding pyObject

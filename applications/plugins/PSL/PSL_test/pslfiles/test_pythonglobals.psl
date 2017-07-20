@@ -1,0 +1,14 @@
+Node : {
+    name : "root"
+
+    Python : '''aGlobal="Fail"'''
+
+    Node : {
+        /// This should modify the global value
+        Python : '''aGlobal="Success"'''
+    }
+
+    TestResult : p"aGlobal"
+}
+
+

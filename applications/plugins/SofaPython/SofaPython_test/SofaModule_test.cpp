@@ -10,11 +10,11 @@ using sofa::Sofa_test;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
+using sofa::Data ;
 
 #include <sofa/core/ObjectFactory.h>
 #include <SofaPython/PythonToSofa.inl>
-
-using sofa::simulation::Node;
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -53,6 +53,18 @@ protected:
     {
     }
 
+    void testMsgInfo()
+    {
+        sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+
+        static const std::string scenePath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_SofaModule.py");
+
+        {
+            EXPECT_MSG_EMIT(Info, Error) ;
+            sofa::simulation::getSimulation()->load(scenePath.c_str());
+        }
+    }
+
     void checkGetComponentList()
     {
         std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_AutoGen.py");
@@ -83,3 +95,7 @@ TEST_F(SofaModule_test, getAvailableComponents)
     checkGetComponentList();
 }
 
+TEST_F(SofaModule_test,  testMsgInfo)
+{
+    this->testMsgInfo();
+}

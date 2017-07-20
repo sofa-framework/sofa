@@ -1,0 +1,112 @@
+Node : {
+        name : "root"
+
+        APIVersion : "v17.06"
+        RequiredPlugin : "SofaPython"
+
+        Python : '''
+                print("The name of this Node is: {"+name+"}")
+                print("The name of this Node is: {"+self.name+"}")
+                print("The name of this Node is: {"+root.name+"}")
+        '''
+
+        Node : {
+                name : "node2"
+
+                Python : '''
+                    print("The name of this Node is: {"+self.name+"}")
+                    '''
+        }
+
+        Node : {
+                name : "A Simple Node"
+                Python : '''
+                        print("The name of this Node is: {"+self.name+"}")
+                        '''
+
+                MechanicalObject : {
+                        name : "mstate"
+                }
+
+                OglModel : {
+                        name : "visual1"
+                        filename : p"os.getcwd()+'/yolo.txt'"
+                }
+        }
+
+        OglModal : {}
+
+        Node : {
+            name : "aNode"
+            Python : '''for i in range(0, 2):
+                             aNode.createChild('anEmptyNode'+str(i))  # ICI SELF != PARENT
+                     '''
+        }
+
+        Template : {
+            name : "MyTemplate"
+            properties : {
+                        numfils : 3,
+                        nodename : "default" }
+
+            Node : {
+                name : p"nodename"
+
+                MechanicalObject : {
+                    name : "mstate"
+                }
+
+                VisualModelImpl : {
+                    name : p"nodename"
+                    filename : p"os.getcwd()+'/'+nodename+'.txt'"
+                }
+
+                VisualModelImpl : {
+                    name : p"nodename"
+                    filename : p"os.getcwd()+'/'+nodename+'.txt'"
+                }
+
+                Python : '''
+                        for i in range(0, numfils):
+                                 self.createChild('aChild'+str(i))'''
+            }
+        }
+
+        Node : {
+            name : "templateInstance"
+            MyTemplate : { name : "test1"
+                           nodename : "zerro"
+                           numfils : 1
+                }
+        }
+
+        Node : {
+            name : "templateInstance"
+            MyTemplate : { name : "test1"
+                           nodename : "two"
+                           numfils : 2
+            }
+        }
+
+    Node : {
+        name : "templateInstance"
+        MyTemplate : { name : "eulalieOlivier"
+                   nodename : "threeEulalie"
+                   numfils : 10
+        }
+    }
+
+
+        Node : {
+            Python : '''
+                    template=MyTemplate
+                    for i in range(0, 5):
+                        self.addChild( instantiate(template, {'nodename':'HelloWorld'+str(i)}) )
+                    '''
+            }
+
+        Python : '''
+                print("=================== The Pure Syntax FIN ================")
+                '''
+}
+

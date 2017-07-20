@@ -87,7 +87,7 @@ public:
 
     GraphListenerQListView* getListener() const { return  graphListener_; }
 
-	void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
+    void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
     void addInPropertyWidget(QTreeWidgetItem *item, bool clear);
 
     void Clear(sofa::simulation::Node* rootNode);
@@ -95,7 +95,7 @@ public:
     void Unfreeze();
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
-	void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
@@ -106,7 +106,7 @@ Q_SIGNALS:
     void RequestSaving(sofa::simulation::Node*);
     void RequestExportOBJ(sofa::simulation::Node* node, bool exportMTL);
     void RequestActivation(sofa::simulation::Node*,bool);
-	void RequestSleeping(sofa::simulation::Node*, bool);
+    void RequestSleeping(sofa::simulation::Node*, bool);
     void RootNodeChanged(sofa::simulation::Node* newroot, const char* newpath);
     void NodeRemoved();
     void Updated();
@@ -126,9 +126,11 @@ protected Q_SLOTS:
     void Modify();
     void HideDatas();
     void ShowDatas();
+    void openInEditor();
+    void copyFilePathToClipBoard();
     void DeactivateNode();
     void ActivateNode();
-	void PutNodeToSleep();
+    void PutNodeToSleep();
     void WakeUpNode();
     void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
 
@@ -155,7 +157,7 @@ protected:
     AddObject* AddObjectDialog_;
     ObjectModel object_;
     SofaListViewAttribute attribute_;
-	QDisplayPropertyWidget* propertyWidget;
+    QDisplayPropertyWidget* propertyWidget;
 
 };
 

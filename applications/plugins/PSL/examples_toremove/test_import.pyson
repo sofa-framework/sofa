@@ -1,0 +1,34 @@
+Node : {
+        name : "root"
+
+        APIVersion : "v17.06"
+        RequiredPlugin : "SofaPython"
+
+        Import : softroboticstoolbox
+        Using : TSphereModel-Sphere
+        Using : MechanicalObject-MM
+
+        # Now we instantiate the MotorPulley using the long "." syntax
+        softroboticstoolbox.PulleyMotor :
+        {
+                aname : "myMotor3"
+                model : "HiTec5b"
+        }
+
+        Using : softroboticstoolbox.PulleyMotor-PulleyMotor
+
+
+        // Now we instantiate the MotorPulley using the short "." syntax
+        PulleyMotor :
+        {
+            aname : "God Name1?"
+            model : "HiTec3"
+        }
+
+        Node : {
+            MM : {}
+            Sphere : {}
+        }
+}
+
+
