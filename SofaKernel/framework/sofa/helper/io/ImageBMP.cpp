@@ -166,7 +166,7 @@ bool ImageBMP::load(std::string filename)
         channels = Image::L;
         break;
     default:
-        fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
+        msg_error("ImageBMP") << "Unsupported number of bits per pixel: " << nc*8;
         fclose(file);
         return false;
     }

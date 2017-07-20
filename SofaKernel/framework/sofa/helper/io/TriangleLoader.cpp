@@ -31,6 +31,7 @@
 #include <sstream>
 #include <string.h>
 
+/// This register the TriangleLoader object to the logging system so that we can use msg_*(this)
 MSG_REGISTER_CLASS(sofa::helper::io::TriangleLoader, "TriangleLoader")
 
 namespace sofa
@@ -54,13 +55,12 @@ bool TriangleLoader::load(const char *filename)
     file = fopen(fname.c_str(), "r");
     if (!file)
     {
-        fprintf(stderr, "readOBJ() failed: can't open data file \"%s\".\n",
-                filename);
+        msg_error() << "readOBJ() failed: can't open data file '"<<filename<<"'.";
         return false;
     }
 
     /* announce the model name */
-    printf("Loading Triangle model: %s\n", filename);
+    msg_info("TriangleLoader") << "Loading Triangle model: '"<<filename<<"'";
 
     loadTriangles (file);
     fclose(file);
@@ -95,9 +95,9 @@ void TriangleLoader::loadTriangles(FILE *file)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) ){
-                    msg_error()() << "fgets function has encountered end of file." ;
+                    msg_error() << "fgets function has encountered end of file." ;
                 }else{
-                    msg_error()() << "fgets function has encountered an error." ;
+                    msg_error() << "fgets function has encountered an error." ;
                 }
             }
             break;
@@ -111,7 +111,7 @@ void TriangleLoader::loadTriangles(FILE *file)
                     addVertices(x, y, z);
 
                 else{
-                    msg_error()() << "Error: TriangleLoader: fscanf function has encountered an error." ;
+                    msg_error() << "Error: TriangleLoader: fscanf function has encountered an error." ;
                 }break;
             case 'n':
                 /* normal */
@@ -119,9 +119,9 @@ void TriangleLoader::loadTriangles(FILE *file)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) ){
-                        msg_error()() << "fgets function has encountered end of file." ;
+                        msg_error() << "fgets function has encountered end of file." ;
                     }else{
-                        msg_error()() << "fgets function has encountered an error." ;
+                        msg_error() << "fgets function has encountered an error." ;
                     }
                 }
                 break;
@@ -131,9 +131,9 @@ void TriangleLoader::loadTriangles(FILE *file)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) ){
-                        msg_error()() << "fgets function has encountered end of file." ;
+                        msg_error() << "fgets function has encountered end of file." ;
                     }else{
-                        msg_error()() << "fgets function has encountered an error." ;
+                        msg_error() << "fgets function has encountered an error." ;
                     }
                 }
                 break;
@@ -148,9 +148,9 @@ void TriangleLoader::loadTriangles(FILE *file)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) ){
-                    msg_error()() << "fgets function has encountered end of file."  ;
+                    msg_error() << "fgets function has encountered end of file."  ;
                 }else{
-                    msg_error()() <<  "fgets function has encountered an error." ;
+                    msg_error() <<  "fgets function has encountered an error." ;
                 }
             }
             break;
@@ -159,9 +159,9 @@ void TriangleLoader::loadTriangles(FILE *file)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file)){
-                    msg_error()() << "fgets function has encountered end of file." ;
+                    msg_error() << "fgets function has encountered end of file." ;
                 }else{
-                    msg_error()() << "fgets function has encountered an error." ;
+                    msg_error() << "fgets function has encountered an error." ;
                 }
             }
             break;
@@ -170,9 +170,9 @@ void TriangleLoader::loadTriangles(FILE *file)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) ){
-                    msg_error()() << "fgets function has encountered end of file." ;
+                    msg_error() << "fgets function has encountered end of file." ;
                 }else {
-                    msg_error()() << "fgets function has encountered an error." ;
+                    msg_error() << "fgets function has encountered an error." ;
                 }
             }
             break;
