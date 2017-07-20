@@ -106,9 +106,9 @@ public:
         ~no_gil();
     };
 
+    struct system_exit : std::exception { };
 };
 
-struct system_exit : std::exception { };
 
 } // namespace simulation
 
