@@ -66,6 +66,8 @@ ____________________________________________________________
 - Adds a new orientedBox dataField in BoxROI so that we can use it to either defined AABoxes or OrientedBox
 - Minor improvement on the way warning/error message are presented to the users in runSofa. A single panel is now used instead of of two, it is always displayed, the Panel name also contains the number of message eg: "Messages(5)" 
 - The Graph view is now displaying the type of message they contains. 
+- [runSofa]
+    - Autoload plugins, described in the user-custom file 'plugin_list.conf' if present; else 'plugin_list.conf.default' containing all compiled plugins and generated automatically by CMake.
 
 **For developpers**
 - Add a Logger component that stores the history of messages into each sofa component. 

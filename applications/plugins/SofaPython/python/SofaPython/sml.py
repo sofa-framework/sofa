@@ -60,6 +60,8 @@ class Model:
                 self.index=list()
                 self.data=dict()
                 self.tags=set()
+            def __len__(self):
+                return len(self.index)
 
         def __init__(self, meshXml=None):
             self.id=None
@@ -130,6 +132,7 @@ class Model:
             self.name = None
             self.tags = set()
             self.position = None
+            self.keyPositions = {} # optional animated keyframed positions {name(string):position(6 floats)}, note 'name' can represent a time (that would need to be casted as a float in your sml moulinette)
             self.mesh = list() # list of meshes
             self.meshAttributes = dict() # attributes associated with each mesh
             self.image = list() # list of images
@@ -181,6 +184,9 @@ class Model:
                 self.inertia_rotation = Tools.strToListFloat(objXml.find("inertia_rotation").text)
             for o in objXml.findall("offset"):
                 self.offsets.append( Model.Offset(o) )
+            for o in objXml.findall("keyPosition"):
+                assert( o.attrib["name"] )
+                self.keyPositions[o.attrib["name"]] = Tools.strToListFloat(o.text)
 
     class Offset:
         def __init__(self, offsetXml=None):
@@ -244,7 +250,7 @@ class Model:
         """ Skinning definition, vertices index influenced by bone with weight
         """
         def __init__(self):
-            self.solid = None    # id of the parent bone
+            self.solid = None    # id of the parent bone # WARNING it rather seems to be directly a pointer to the Solid
             self.mesh = None     # the target mesh
             self.index = list()  # indices of target mesh
             self.weight = list() # weights for these vertices with respect with this bone
@@ -253,7 +259,7 @@ class Model:
         def __init__(self):
             self.solid = None # a Model.Solid object
             self.mesh = None  # a Model.Mesh object
-            self.group = None # the vertex indices of the group
+            self.group = None # the name of the group defined in the mesh
 
     class SurfaceLink:
         def __init__(self,objXml=None):
@@ -308,7 +314,7 @@ class Model:
                     sourceFullPath = os.path.join(self.modelDir,mesh.source)
                     if os.path.exists(sourceFullPath):
                         mesh.source=sourceFullPath
-                    else:
+                    elif printLog:
                         Sofa.msg_warning("SofaPython.sml","Model: mesh not found: "+mesh.source )
                     self.meshes[m.attrib["id"]] = mesh
 
@@ -321,7 +327,7 @@ class Model:
                     sourceFullPath = os.path.join(self.modelDir,image.source)
                     if os.path.exists(sourceFullPath):
                         image.source=sourceFullPath
-                    else:
+                    elif printLog:
                         Sofa.msg_warning("SofaPython.sml","Model: image not found: "+image.source )
                     self.images[m.attrib["id"]] = image
 
@@ -371,7 +377,11 @@ class Model:
                 surfaceLink = Model.SurfaceLink(c)
                 surfaces=c.findall("surface")
                 for i,s in enumerate(surfaces):
-                    surfaceLink.surfaces[i] = Model.Surface()
+                    # a surfaceLink has at least two surfaces (initialized to None)
+                    if i>= 2:
+                        surfaceLink.surfaces.append( Model.Surface() )
+                    else:
+                        surfaceLink.surfaces[i] = Model.Surface()
                     if s.attrib["solid"] in self.solids:
                         surfaceLink.surfaces[i].solid = self.solids[s.attrib["solid"]]
                     else:
@@ -478,6 +488,7 @@ class BaseScene:
         self.material = Tools.Material() # a default material set
         self.solidMaterial = dict() # assign a material to a solid
         self.nodes = dict() # to store special nodes
+        self.meshExporters = list() # optional components to exports meshes
         n=name
         if n is None:
             n=self.model.name
@@ -548,6 +559,11 @@ class BaseScene:
                     mesh = self.visuals[solidId][meshId]
         return mesh
 
+
+    def exportMeshes(self):
+        for e in self.meshExporters:
+            e.writeOBJ()
+
     def dagValidation(self):
         err = DAGValidation.test( self.root, True )
         if not len(err) is 0:
@@ -587,5 +603,5 @@ class SceneDisplay(BaseScene):
         for solid in model.solids.values():
             if printLog:
                 Sofa.msg_info("SofaPython.sml","SceneDisplay: Display solid:" + solid.name)
-            color = getValueByTag(self.param.colorByTag, solid.tags)
+            color = solid.getValueByTag(self.param.colorByTag)
             insertVisual(self.node, solid, color)

@@ -42,8 +42,8 @@ def createScene(node):
     
     num = node.createObject('SequentialSolver',
                             name = 'num',
-                            iterations = 1000,
-                            precision = 1e-20)
+                            iterations = 50,
+                            precision = 0)
     node.createObject('LDLTResponse')
     
     proximity = node.getObject('proximity')
@@ -114,7 +114,7 @@ class Controller(SofaTest.Controller):
 
             #print shared.box.position[0], shared.box.velocity[0][:3]
 
-            #print vel, currentMu, shared.mu
+            # print vel, currentMu, shared.mu
             
             
             testVel = (vel > 1e-1)            

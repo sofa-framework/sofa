@@ -2,8 +2,6 @@ from __future__ import print_function
 
 import Sofa
 import sys
-from SofaPython import script
-
 
 ############################################################################################
 # this is a PythonScriptController example script
@@ -30,7 +28,7 @@ class MyControllerClass(Sofa.PythonScriptController):
 
    ### Overloaded PythonScriptController callbacks
     def __init__(self, node, name, *args, **kwargs):
-       print("createGraph: myText ==", self.myText)
+       print("createGraph: myText ==", self.myText); sys.stdout.flush()
 
        # note: this member aliases the sofa component `name` data, so you can't
        # put anything in here (in this case, strings only)
@@ -42,17 +40,17 @@ class MyControllerClass(Sofa.PythonScriptController):
        
        # here, you can notice how a controller can create another controller
        # during its own creation
-       sub = RecursiveFibonacciControllerClass(node, "recursiveFibonacciController 0", f_1 = 0, f_2 = 1)
+       sub = RecursiveFibonacciControllerClass(node, "recursiveFibonacciController 0 -> 0")
        
     def initGraph(self,node):
-        print("initGraph: myText ==", self.myText)
+        print("initGraph: myText ==", self.myText); sys.stdout.flush()
 
 
     ### class variables / functions
     myText = "nothing to say"
     
     def helloWorld(self):
-        print("helloWorld() function")
+        print("helloWorld() function"); sys.stdout.flush()
 
 
 
@@ -61,25 +59,20 @@ class RecursiveFibonacciControllerClass(Sofa.PythonScriptController):
 
     nbInstances = 0
 
-    def __init__(self, node, name, *args, **kwargs):
+    def __init__(self, node, name, f_2=1, f_1=0):
 
         RecursiveFibonacciControllerClass.nbInstances += 1
 
         self.name = name
         
-        self.f_1 = kwargs['f_1']
-        self.f_2 = kwargs['f_2']
-        
-        f = self.f_1 + self.f_2
+        f = f_1 + f_2
 
-        # lolwat
-        print("Guys, I am crazy, I am creating myself recursively!")
-        
         if RecursiveFibonacciControllerClass.nbInstances < 20:
             # here, you can notice how a controller can create another
             # controller of the same class during its own creation, just
             # awesome!
-            self.recursive = RecursiveFibonacciControllerClass(node, "recursiveFibonacciController " + str(f),
-                                                               f_2 = self.f_1, f_1 = f)
+            self.recursive = RecursiveFibonacciControllerClass(node,
+                                                               "recursiveFibonacciController " + str(RecursiveFibonacciControllerClass.nbInstances) + " -> "+str(f),
+                                                               f_2 = f_1, f_1 = f)
             
 
