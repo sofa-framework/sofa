@@ -7,6 +7,7 @@ set(HEADER_FILES
     components/Undefined.h
     components/TestResult.h
     components/PSLVersion.h
+    components/Template.h
 )
 
 set(SOURCE_FILES
@@ -15,6 +16,7 @@ set(SOURCE_FILES
     components/Undefined.cpp
     components/TestResult.cpp
     components/PSLVersion.cpp
+    components/Template.cpp
 )
 
 find_package(SofaFramework REQUIRED)

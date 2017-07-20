@@ -60,8 +60,6 @@
 #include "Binding_DataEngine.h"
 #include "PythonFactory.h"
 
-SP_DECLARE_CLASS_TYPE(Template)
-
 using sofa::PythonFactory;
 
 
@@ -97,7 +95,6 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_SOFAMODULE(BaseLoader)
     SP_ADD_CLASS_IN_SOFAMODULE(Topology)
     SP_ADD_CLASS_IN_SOFAMODULE(BaseMeshTopology)
-    SP_ADD_CLASS_IN_SOFAMODULE(Template)
 
     /// regular component bindings
     SP_ADD_CLASS_IN_FACTORY(Context,sofa::core::objectmodel::Context)

@@ -36,10 +36,10 @@ using sofa::core::ObjectFactory ;
 using sofa::core::RegisterObject ;
 
 
-#include "PythonMacros.h"
-#include "Binding_BaseObject.h"
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/Binding_BaseObject.h>
 
-#include "PythonFactory.h"
+#include <SofaPython/PythonFactory.h>
 using sofa::PythonFactory ;
 
 #include "Template.h"

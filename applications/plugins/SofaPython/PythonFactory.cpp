@@ -77,12 +77,6 @@ PyObject* PythonFactory::toPython(sofa::core::objectmodel::Base* obj)
     return toPython( s_boundComponents[Base], obj, &SP_SOFAPYTYPEOBJECT(Base) );
 }
 
-PyObject* PythonFactory::toPython(sofa::component::_template_::Template* obj)
-{
-    return toPython( s_boundComponents[Template], obj, &SP_SOFAPYTYPEOBJECT(Template) );
-}
-
-
 PyObject* PythonFactory::toPython(sofa::core::objectmodel::BaseObject* obj)
 {
     if( obj->toBaseLoader() ) return toPython( obj->toBaseLoader() );
@@ -107,9 +101,6 @@ PyObject* PythonFactory::toPython(sofa::core::objectmodel::BaseObject* obj)
     if (obj->toBaseMapping()) return toPython( obj->toBaseMapping() );
 
     if (obj->toDataEngine()) return toPython( obj->toDataEngine() );
-
-    sofa::component::_template_::Template* t = dynamic_cast<sofa::component::_template_::Template*>(obj) ;
-    if( t ) return toPython( t );
 
     return toPython( s_boundComponents[BaseObject], obj, &SP_SOFAPYTYPEOBJECT(BaseObject) );
 }

@@ -42,7 +42,6 @@
 #include <SofaPython/Binding_TriangleSetTopologyModifier.h>
 #include <SofaPython/Binding_Data.h>
 
-#include <SofaPython/Template.h>
 #include <type_traits>
 
 
@@ -147,9 +146,6 @@ public:
             if( std::is_base_of<sofa::core::DataEngine, T>::value )
                 return s_boundComponents[DataEngine].push_back( t );
 
-            if( std::is_base_of<sofa::component::Template, T>::value )
-                return s_boundComponents[Template].push_back( t );
-
             return s_boundComponents[BaseObject].push_back( t );
         }
         else if( std::is_base_of<sofa::core::objectmodel::BaseContext, T>::value )
@@ -166,9 +162,6 @@ public:
 
     /// to convert a BaseObject-inherited object to its corresponding pyObject
     static PyObject* toPython(sofa::core::objectmodel::BaseObject* obj) ;
-
-    /// to convert a BaseContext-inherited object to its corresponding pyObject
-    static PyObject* toPython(sofa::component::_template_::Template* obj) ;
 
     static PyObject* toPython(sofa::core::objectmodel::BaseContext* obj) ;
 

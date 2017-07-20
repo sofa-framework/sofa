@@ -24,6 +24,7 @@
 #include <PSL/components/PSLVersion.h>
 #include <PSL/components/Undefined.h>
 #include <PSL/components/TestResult.h>
+#include <PSL/components/Template.h>
 #include <PSL/SceneLoaderPSL.h>
 
 #include <sofa/helper/system/PluginManager.h>
@@ -31,6 +32,14 @@ using sofa::helper::system::PluginManager ;
 
 #include <SofaPython/PythonEnvironment.h>
 using sofa::simulation::PythonEnvironment ;
+
+#include <SofaPython/PythonFactory.h>
+using sofa::PythonFactory ;
+
+
+SP_DECLARE_CLASS_TYPE(Template)
+
+
 
 extern "C" {
     SOFA_PSL_API void initExternalModule();
@@ -50,6 +59,9 @@ void initExternalModule()
         PluginManager::getInstance().loadPlugin("SofaPython") ;
         first = false;
     }
+
+    // Add the python classes in the Python Factory
+    SP_ADD_CLASS_IN_FACTORY(Template,sofa::component::Template)
 }
 
 const char* getModuleName()
