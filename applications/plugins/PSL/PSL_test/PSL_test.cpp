@@ -108,9 +108,9 @@ public:
         std::string scenePath = std::string(PSL_TESTFILES_DIR)+params[0];
 
         m_root = sofa::simulation::getSimulation()->load(scenePath.c_str());
-        m_root->init(sofa::core::ExecParams::defaultInstance()) ;
-
         ASSERT_NE(m_root.get(), nullptr) << "Missing root node";
+
+        m_root->init(sofa::core::ExecParams::defaultInstance()) ;
         TestResult* result = nullptr ;
 
         if(params[2] == "NoError" ){

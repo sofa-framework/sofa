@@ -23,6 +23,7 @@ find_package(SofaPython REQUIRED)
 set(PYTHON_FILES
     python/pslloader.py
     python/pslengine.py
+    python/pslparserxml.py
 )
 
 set(EXTRA_FILES

@@ -27,10 +27,15 @@
 #*    - damien.marchal@univ-lille1.fr Copyright (C) CNRS                       *
 #*                                                                             *
 #******************************************************************************/
+from __future__ import with_statement
+import contextlib
+
 import hjson
 import Sofa
 import os
+import pslparserxml
 import pslengine
+
 
 class MyObjectHook(object):
         def __call__(self, s):
@@ -71,6 +76,14 @@ def preProcess(ast):
 
     return {"version": version}
 
+
+@contextlib.contextmanager
+def SetPath(newpath):
+    curdir= os.getcwd()
+    try: yield
+    finally: os.chdir(curdir)
+
+
 def load(rootNode, filename):
         global sofaRoot
 
@@ -78,23 +91,24 @@ def load(rootNode, filename):
         filename = os.path.abspath(filename)
         dirname = os.path.dirname(filename)
 
-        olddirname = os.getcwd()
-        os.chdir(dirname)
+        with SetPath(dirname):
+            os.chdir(dirname)
+            f = open(filename).read()
+            if filename.endswith(".psl") or filename.endswith(".pyson"):
+                ast = hjson.loads(f, object_pairs_hook=MyObjectHook())
+            elif filename.endswith(".pslx"):
+                ast = pslparserxml.parse(f)
 
-        f = open(filename).read()
-        ast = hjson.loads(f, object_pairs_hook=MyObjectHook())
+            if len(ast) == 0:
+                Sofa.msg_error(rootNode, "The file '"+filename+"' does not contains PSL content")
+                return rootNode
 
-        if len(ast) == 0:
-            Sofa.msg_error(rootNode, "The file '"+filename+"' does not contains PSL content")
-            return rootNode
+            directives = preProcess(ast[0][1])
 
-        directives = preProcess(ast[0][1])
+            if not directives["version"] in ["1.0"]:
+                Sofa.msg_error(rootNode, "Unsupported PSLVersion"+str(directives["version"]))
+                r=rootNode
+            else:
+                r = pslengine.processTree(sofaRoot, "", ast, directives)
 
-        if not directives["version"] in ["1.0"]:
-            Sofa.msg_error(rootNode, "Unsupported PSLVersion"+str(directives["version"]))
-            r=rootNode
-        else:
-            r = pslengine.processTree(sofaRoot, "", ast, directives)
-
-        os.chdir(olddirname)
         return r
