@@ -23,8 +23,7 @@
 #include "Binding_Context.h"
 #include "Binding_BaseContext.h"
 
-using namespace sofa::core::objectmodel;
-
+using sofa::core::objectmodel::Context;
 
 SP_CLASS_METHODS_BEGIN(Context)
 SP_CLASS_METHODS_END

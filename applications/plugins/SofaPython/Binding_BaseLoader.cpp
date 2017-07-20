@@ -22,47 +22,52 @@
 
 #include "Binding_BaseLoader.h"
 #include "Binding_BaseObject.h"
+#include "PythonToSofa.inl"
 
 using namespace sofa::core::loader;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
 
+static BaseLoader* get_baseloader(PyObject* self) {
+    return sofa::py::unwrap<BaseLoader>(self);
+}
 
-extern "C" PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseLoader_load(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
+    BaseLoader* obj = get_baseloader( self );
     bool result = obj->load();
     return PyBool_FromLong(result);
 }
 
-extern "C" PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
+
+static PyObject * BaseLoader_canLoad(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
+    BaseLoader* obj = get_baseloader( self );
     bool result = obj->canLoad();
     return PyBool_FromLong(result);
 }
 
-extern "C" PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
+
+static PyObject * BaseLoader_setFilename(PyObject *self, PyObject * args)
 {
-    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
+    BaseLoader* obj = get_baseloader( self );
     char *filename;
     if (!PyArg_ParseTuple(args, "s",&filename))
     {
-        PyErr_BadArgument();
         return NULL;
     }
     obj->setFilename(filename);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
+
+static PyObject * BaseLoader_getFilename(PyObject *self, PyObject * /*args*/)
 {
-    BaseLoader* obj=((PySPtr<Base>*)self)->object->toBaseLoader();
+    BaseLoader* obj = get_baseloader( self );
     std::string filename = obj->getFilename();
     return PyString_FromString(filename.c_str());
 }
-
 
 
 SP_CLASS_METHODS_BEGIN(BaseLoader)
@@ -70,8 +75,6 @@ SP_CLASS_METHOD(BaseLoader,load)
 SP_CLASS_METHOD(BaseLoader,canLoad)
 SP_CLASS_METHOD(BaseLoader,setFilename)
 SP_CLASS_METHOD(BaseLoader,getFilename)
-//SP_CLASS_METHOD(BaseLoader,skipToEOL)
-//SP_CLASS_METHOD(BaseLoader,readLine)
 SP_CLASS_METHODS_END
 
 

@@ -23,98 +23,104 @@
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
 #include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::core::objectmodel;
+using sofa::core::objectmodel::BaseObject;
 
-extern "C" PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
+static BaseObject* get_baseobject(PyObject* self) {
+    return sofa::py::unwrap<BaseObject>(self);
+}
+
+
+static PyObject * BaseObject_init(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->init();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_bwdInit(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->bwdInit();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_reinit(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->reinit();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_storeResetState(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->storeResetState();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_reset(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->reset();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_cleanup(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     obj->cleanup();
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_getContext(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     return sofa::PythonFactory::toPython(obj->getContext());
 }
 
-extern "C" PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
+static PyObject * BaseObject_getMaster(PyObject *self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     return sofa::PythonFactory::toPython(obj->getMaster());
 }
 
 
-extern "C" PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
+static PyObject * BaseObject_setSrc(PyObject *self, PyObject * args)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
     char *valueString;
     PyObject *pyLoader;
     if (!PyArg_ParseTuple(args, "sO",&valueString,&pyLoader)) {
         return NULL;
     }
-    BaseObject* loader=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* loader = get_baseobject( self );
     obj->setSrc(valueString,loader);
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getPathName(PyObject * self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
 
     return PyString_FromString(obj->getPathName().c_str());
 }
 
 // the same as 'getPathName' with a extra prefix '@'
-extern "C" PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
-    BaseObject* obj=((PySPtr<Base>*)self)->object->toBaseObject();
+    BaseObject* obj = get_baseobject( self );
 
     return PyString_FromString(("@"+obj->getPathName()).c_str());
 }
 
 
-extern "C" PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
 {
-    BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj = get_baseobject( self );
 
-    const BaseObject::VecSlaves& slaves = node->getSlaves();
+    const BaseObject::VecSlaves& slaves = obj->getSlaves();
 
     PyObject *list = PyList_New(slaves.size());
 
@@ -124,12 +130,11 @@ extern "C" PyObject * BaseObject_getSlaves(PyObject * self, PyObject * /*args*/)
     return list;
 }
 
-extern "C" PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
+static PyObject * BaseObject_getName(PyObject * self, PyObject * /*args*/)
 {
-    // BaseNode is not binded in SofaPython, so getChildNode is binded in Node instead of BaseNode
-    BaseObject* node=dynamic_cast<BaseObject*>(((PySPtr<Base>*)self)->object.get());
+    BaseObject* obj = get_baseobject( self );
 
-    return PyString_FromString((node->getName()).c_str());
+    return PyString_FromString((obj->getName()).c_str());
 }
 
 extern "C" PyObject * BaseObject_getAsACreateObjectParameter(PyObject * self, PyObject *args)

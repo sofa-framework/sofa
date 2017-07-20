@@ -68,13 +68,13 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" color="yellow" />
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="7.5" />
+                <MechanicalObject src="@loader" />
                 <Triangle />
                 <Line />
                 <Point />
@@ -317,13 +317,13 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="2.5" dz="18" color="yellow" />
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="2.5" dz="18" />
+                <MechanicalObject src="@loader" />
                 <Triangle />
                 <Line />
                 <Point />
@@ -338,13 +338,13 @@
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" dz="18" color="yellow" />
+                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="5" dz="18" />
+                <MechanicalObject src="@loader" />
                 <Triangle />
                 <Line />
                 <Point />
@@ -359,13 +359,13 @@
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" dz="18" color="yellow" />
+                <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                 <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="7.5" dz="18" />
+                <MechanicalObject src="@loader" />
                 <Triangle />
                 <Line />
                 <Point />
@@ -380,13 +380,13 @@
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
-                <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="10" dz="18" color="yellow" />
+                <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="yellow" />
                 <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
                 <Mesh src="@loader" />
-                <MechanicalObject src="@loader" dx="10" dz="18" />
+                <MechanicalObject src="@loader" />
                 <Triangle />
                 <Line />
                 <Point />

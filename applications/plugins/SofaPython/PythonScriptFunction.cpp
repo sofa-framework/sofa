@@ -92,6 +92,14 @@ PythonScriptFunction::~PythonScriptFunction()
     }
 }
 
+void PythonScriptFunction::setCallableObject(PyObject* callableObject, bool own)
+{
+    if(m_pyCallableObject && m_own ) Py_DECREF(m_pyCallableObject);
+
+    m_pyCallableObject = callableObject;
+    m_own=own;
+}
+
 void PythonScriptFunction::onCall(const ScriptFunctionParameter* parameter, ScriptFunctionResult* result) const
 {
 	if(!m_pyCallableObject) {

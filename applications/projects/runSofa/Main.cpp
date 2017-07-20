@@ -320,7 +320,7 @@ int main(int argc, char** argv)
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
     }
     else{
-        msg_warning("") << "Invalid argument ‘" << messageHandler << "‘ for ‘--formatting‘";
+        msg_warning("") << "Invalid argument '" << messageHandler << "' for '--formatting'";
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 

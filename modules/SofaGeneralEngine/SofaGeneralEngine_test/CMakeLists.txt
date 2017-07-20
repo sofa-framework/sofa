@@ -19,6 +19,7 @@ set(SOURCE_FILES
         TransformEngine_test.cpp
         IndicesFromValues_test.cpp
         MergePoints_test.cpp
+        IndexValueMapper_test.cpp
 
         )
 
