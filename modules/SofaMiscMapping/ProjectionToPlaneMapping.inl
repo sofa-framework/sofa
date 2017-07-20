@@ -141,7 +141,6 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::MechanicalPa
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT is not implemented " << endl;
 }
 
 

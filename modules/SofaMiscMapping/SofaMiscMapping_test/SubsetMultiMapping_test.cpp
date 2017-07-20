@@ -70,15 +70,6 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     typedef typename OutMechanicalObject::ReadVecCoord ReadOutVecCoord;
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
-
-
-//    SubsetMultiMappingTest()
-//    {
-//        //smm = static_cast<SubsetMultiMapping*>( this->mapping );
-//        cerr<<"SubsetMultiMappingTest created " << endl;
-//    }
-
-
     /** @name Test_Cases
       For each of these cases, we can test if the mapping work
       */

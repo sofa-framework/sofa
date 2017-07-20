@@ -229,7 +229,6 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 

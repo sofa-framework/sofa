@@ -118,15 +118,10 @@ AspectRef AspectPool::allocate()
 {
     AspectRef ref;
     AtomicInt aspectID;
-    // std::cout << "AspectPool"<<this<<": allocate" << std::endl;
-    // std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
     if(freeAspects.pop(aspectID))
     {
-        // std::cout << "AspectPool"<<this<<": aspect " << aspectID << " allocated" << std::endl;
         ref = aspects[aspectID];
     }
-    // else
-        // std::cout << "AspectPool"<<this<<": no aspect available" << std::endl;
     return ref;
 }
 
@@ -137,7 +132,6 @@ AspectRef AspectPool::allocate()
  */
 void AspectPool::release(int id)
 {
-    // std::cout << "AspectPool"<<this<<": release aspect " << id << std::endl;
     if(releaseCallback)
     {
         releaseCallback(id);

@@ -166,18 +166,18 @@ public:
 protected:
     BarycentricMapper() {}
     virtual ~BarycentricMapper() {}
-	
+
 private:
-	BarycentricMapper(const BarycentricMapper& n) ;
-	BarycentricMapper& operator=(const BarycentricMapper& n) ;
-	
+    BarycentricMapper(const BarycentricMapper& n) ;
+    BarycentricMapper& operator=(const BarycentricMapper& n) ;
+
 public:
     using core::objectmodel::BaseObject::init;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int /*outSize*/, int /*inSize*/)
     {
-        std::cerr << "BarycentricMapper::getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+        dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) ;
         return NULL;
     }
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
@@ -340,7 +340,7 @@ public:
     void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
     virtual void resize( core::State<Out>* toModel );
 
-	sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
+    sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {

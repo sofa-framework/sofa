@@ -33,8 +33,6 @@
 #include <sofa/helper/logging/Messaging.h>
 
 
-using std::cerr;
-using std::endl;
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 

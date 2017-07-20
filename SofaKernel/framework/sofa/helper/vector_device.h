@@ -184,7 +184,6 @@ public:
     {
         if (&v == this)
         {
-            //COMM : std::cerr << "ERROR: self-assignment of CudaVector< " << core::objectmodel::Base::decodeTypeName(typeid(T)) << ">"<<std::endl;
             return;
         }
         DEBUG_OUT_V(SPACEP << "operator=, id is " << v.id << "(" << v.hostIsValid << "," << (v.deviceIsValid&1) << ") " << std::endl);
