@@ -280,7 +280,7 @@ static PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args) {
     double density;
     double sx = 1, sy = 1, sz = 1;
     double rx = 0, ry = 0, rz = 0;
-    
+
     if (!PyArg_ParseTuple(args, "sd|dddddd", &meshFilename, &density,
                           &sx, &sy, &sz,
                           &rx, &ry, &rz)) {
@@ -338,18 +338,13 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
     Node* node = down_cast<Node>(basenode);
     Simulation* simulation = getSimulation();
 
-    //    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-//    node->execute<UpdateBoundingBoxVisitor>(params);
-//    simulation->updateVisualContext(node);
     simulation->updateVisual(node);
-
 
     Py_RETURN_NONE;
 }
 
 
 static const std::string s_emitter = "PythonScript";
-
 
 template<class Action>
 static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
@@ -358,7 +353,15 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
 
     const size_t argSize = PyTuple_Size(args);
 
-    if( argSize == 2 ) {
+    if( argSize == 1 ) {
+            // no emitter
+            char* message;
+            if( !PyArg_ParseTuple(args, "s", &message) ) {
+                return NULL;
+            }
+
+            action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, PythonEnvironment::getPythonCallingPointAsFileInfo());
+    } else if( argSize == 2 ) {
         if( !PyArg_ParseTuple(args, "OO", &py_emitter, &py_message) ){
             return NULL;
         }
@@ -368,26 +371,77 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
         }
 
         if( PyString_Check(py_emitter) ){
-            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message) );
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
         }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
             Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
-            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message) );
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
         }else{
             PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
             return NULL;
         }
-    } else {
-        // no emitter
+    } else if( argSize == 3 ){
         char* message;
-        if( !PyArg_ParseTuple(args, "s", &message) ) {
+        char* filename;
+        int   lineno;
+        if( !PyArg_ParseTuple(args, "ssi", &message, &filename, &lineno) ) {
             return NULL;
         }
-
-        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message);
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, SOFA_FILE_INFO2(filename, lineno));
+    } else if (argSize == 4 ){
+        char* filename;
+        int   lineno;
+        if( !PyArg_ParseTuple(args, "OOOO", &py_emitter, &py_message, &filename, &lineno) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
+            return NULL;
+        }
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO2(filename, lineno));
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO2(filename, lineno));
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
     }
-    
     Py_RETURN_NONE;
 }
+
+static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_info(emitter) << message << fileinfo;
+    });
+}
+
+static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_deprecated(emitter) << message << fileinfo;
+     });
+}
+
+static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_warning(emitter) << message << fileinfo;
+        });
+}
+
+static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_error(emitter) << message; << fileinfo;
+    });
+}
+
+static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+            msg_fatal(emitter) << message;message << fileinfo;
+    });
+}
+
 
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
@@ -408,14 +462,14 @@ static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_warning(emitter) << message;
         });
-    
+
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
     return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message) {
             msg_error(emitter) << message;
         });
-    
+
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
