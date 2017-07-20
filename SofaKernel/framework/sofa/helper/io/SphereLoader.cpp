@@ -30,17 +30,7 @@
 #include <sstream>
 
 /// This allow MeshTrian to interact with the messaging system.
-namespace sofa {
-namespace helper {
-namespace logging {
-    inline bool notMuted(const sofa::helper::io::SphereLoader* ){ return true; }
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::SphereLoader*)
-    {
-        return ComponentInfo::SPtr(new ComponentInfo("SphereLoader")) ;
-    }
-} /// logging
-} /// helper
-} /// sofa
+MSG_REGISTER_CLASS(sofa::helper::io::SphereLoader, "SphereLoader")
 
 namespace sofa
 {

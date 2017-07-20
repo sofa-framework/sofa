@@ -28,19 +28,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-/// This allow MeshTrian to interact with the messaging system.
-namespace sofa {
-namespace helper {
-namespace logging {
-    inline bool notMuted(const sofa::helper::io::MeshVTK* ){ return true; }
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::MeshVTK*)
-    {
-        return ComponentInfo::SPtr(new ComponentInfo("MeshVTK")) ;
-    }
-} /// logging
-} /// helper
-} /// sofa
-
+/// This allow MeshVTK to interact with the messaging system.
+MSG_REGISTER_CLASS(sofa::helper::io::MeshVTK, "MeshVTK")
 
 namespace sofa
 {

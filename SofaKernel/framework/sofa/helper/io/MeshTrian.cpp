@@ -29,18 +29,7 @@
 #include <cstdio>
 
 /// This allow MeshTrian to interact with the messaging system.
-namespace sofa {
-namespace helper {
-namespace logging {
-    inline bool notMuted(const sofa::helper::io::MeshTrian* ){ return true; }
-    inline ComponentInfo::SPtr getComponentInfo(const sofa::helper::io::MeshTrian*)
-    {
-        return ComponentInfo::SPtr(new ComponentInfo("MeshTrian")) ;
-    }
-} /// logging
-} /// helper
-} /// sofa
-
+MSG_REGISTER_CLASS(sofa::helper::io::MeshTrian, "MeshTrian")
 
 namespace sofa
 {
