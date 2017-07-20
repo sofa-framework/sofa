@@ -25,6 +25,10 @@ set(PYTHON_FILES
     python/pslengine.py
 )
 
+#set(EXTRA_FILES
+#    examples/pres_part1.psl
+#)
+
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
 

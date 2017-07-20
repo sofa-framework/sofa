@@ -19,19 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaPython/PythonMacros.h>
-#include <SofaPython/PythonEnvironment.h>
-#include "SceneLoaderPSL.h"
-
+#include <sstream>
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
-#include <sstream>
-
-//#include "PythonMainScriptController.h"
 #include <SofaPython/PythonFactory.h>
+#include <SofaPython/PythonMacros.h>
+#include <SofaPython/PythonEnvironment.h>
+#include "SceneLoaderPSL.h"
 
 using namespace sofa::core::objectmodel;
 
