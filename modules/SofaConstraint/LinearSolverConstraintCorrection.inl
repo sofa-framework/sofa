@@ -222,6 +222,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
     }
 }
 
+
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::rebuildSystem(double massFactor, double forceFactor)
 {
@@ -278,46 +279,29 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
 #endif
 }
 
-
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeDx(sofa::core::MultiVecDerivId fId)
+void LinearSolverConstraintCorrection< DataTypes >::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
     if (this->mstate)
     {
-        Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
-        VecDeriv& dx = *dx_d.beginEdit();
-
-        const unsigned int numDOFs = this->mstate->getSize();
-
-        dx.clear();
-        dx.resize(numDOFs);
-        for (unsigned int i=0; i< numDOFs; i++)
-            dx[i] = Deriv();
-
-        linearsolvers[0]->setSystemRHVector(fId);
-        linearsolvers[0]->setSystemLHVector(core::VecDerivId::dx());
+        linearsolvers[0]->setSystemRHVector(f);
+        linearsolvers[0]->setSystemLHVector(dx);
         linearsolvers[0]->solveSystem();
-
-        dx_d.endEdit();
     }
 }
 
-
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &dx_d, const Data< VecDeriv > &correction_d)
 {
-    this->setConstraintForceInMotionSpace(fId, lambda);
-
-    computeDx(fId);
-
     if (this->mstate)
     {
         const unsigned int numDOFs = this->mstate->getSize();
 
-        VecCoord& x = *(xId[this->mstate].write()->beginEdit());
-        VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
+        auto x = sofa::helper::write(x_d, cparams);
+        auto v = sofa::helper::write(v_d, cparams);
+        auto dx = sofa::helper::write(dx_d, cparams);
 
-        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
+        const VecDeriv& correction = correction_d.getValue(cparams);
         const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
         const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
@@ -326,78 +310,60 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrect
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
-            Deriv dxi = dx[i] * positionFactor;
-            Deriv dvi = dx[i] * velocityFactor;
+            const Deriv dxi = correction[i] * positionFactor;
+            const Deriv dvi = correction[i] * velocityFactor;
             x[i] = x_free[i] + dxi;
             v[i] = v_free[i] + dvi;
             dx[i] = dxi;
         }
-
-        xId[this->mstate].write()->endEdit();
-        vId[this->mstate].write()->endEdit();
-        this->mstate->write(core::VecDerivId::dx())->endEdit();
     }
 }
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId fId, const sofa::defaulttype::BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord >& x_d, Data< VecDeriv>& dx_d, const Data< VecDeriv >& correction_d)
 {
-    this->setConstraintForceInMotionSpace(fId, lambda);
-
-    computeDx(fId);
-
     if (this->mstate)
     {
         const unsigned int numDOFs = this->mstate->getSize();
+        auto x  = sofa::helper::write(x_d, cparams);
+        auto dx = sofa::helper::write(dx_d, cparams);
 
-        VecCoord& x = *(xId[this->mstate].write()->beginEdit());
-
-        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
+        const VecDeriv& correction = correction_d.getValue(cparams);
         const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
         const double positionFactor = odesolver->getPositionIntegrationFactor();
-
         for (unsigned int i = 0; i < numDOFs; i++)
         {
-            Deriv dxi = dx[i] * positionFactor;
+            const Deriv dxi = correction[i] * positionFactor;
             x[i] = x_free[i] + dxi;
             dx[i] = dxi;
         }
-
-        xId[this->mstate].write()->endEdit();
-        this->mstate->write(core::VecDerivId::dx())->endEdit();
     }
 }
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId vId, sofa::core::MultiVecDerivId fId, const sofa::defaulttype::BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v_d, Data< VecDeriv>& dv_d, const Data< VecDeriv >& correction_d)
 {
-    this->setConstraintForceInMotionSpace(fId, lambda);
-
-    computeDx(fId);
-
     if (this->mstate)
     {
         const unsigned int numDOFs = this->mstate->getSize();
 
-        VecDeriv& v = *(vId[this->mstate].write()->beginEdit());
+        auto v  = sofa::helper::write(v_d,cparams);
+        auto dv = sofa::helper::write(dv_d, cparams); 
 
-        VecDeriv& dx = *(this->mstate->write(core::VecDerivId::dx())->beginEdit());
+        const VecDeriv& correction = correction_d.getValue(cparams);
         const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
         const double velocityFactor = odesolver->getVelocityIntegrationFactor();
 
         for (unsigned int i = 0; i < numDOFs; i++)
         {
-            Deriv dvi = dx[i] * velocityFactor;
+            Deriv dvi = correction[i] * velocityFactor;
             v[i] = v_free[i] + dvi;
-            dx[i] = dvi;
+            dv[i] = dvi;
         }
-
-        vId[this->mstate].write()->endEdit();
-        this->mstate->write(core::VecDerivId::dx())->endEdit();
     }
 }
 
@@ -518,13 +484,6 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     /// Maybe the call to vAlloc at the beginning of this method should be enabled...
     /// -- JeremieA, 2011-02-16
     this->mstate->vFree(core::ExecParams::defaultInstance(), forceID);
-}
-
-
-template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
-{
-    this->setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 

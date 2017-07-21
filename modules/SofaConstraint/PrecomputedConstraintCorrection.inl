@@ -464,7 +464,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    m_activeDofs.clear();
+
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     double factor = 1.0;
 
@@ -512,6 +514,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
             unsigned int dof = colIt.index();
+            m_activeDofs.push_back(dof);
 
             if (_indexNodeSparseCompliance[dof] != 0)
             {
@@ -522,6 +525,9 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
         nbConstraints++;
     }
+
+    m_activeDofs.sort();
+    m_activeDofs.unique();
 
     // Commented by PJ
     /*
@@ -619,19 +625,22 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 }
 
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
+{
+    computeDx(*dx[this->getMState()].write(), *f[this->getMState()].read(), m_activeDofs);
+}
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, std::list< int > &activeDofs)
+void PrecomputedConstraintCorrection<DataTypes>::computeDx(Data<VecDeriv>& dx_d , const Data< VecDeriv > &f_d, const std::list< int > &activeDofs)
 {
     const VecDeriv& force = f_d.getValue();
-
-    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = *dx_d.beginEdit();
 
     dx.clear();
     dx.resize(force.size());
 
-    std::list<int>::iterator IterateurListe;
+    std::list<int>::const_iterator IterateurListe;
     unsigned int i, offset, offset2;
 
     for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); ++IterateurListe)
@@ -666,19 +675,15 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams
-        , sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sofa::core::ConstraintParams *cparams
+        , sofa::Data< VecCoord > &x_d, sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > & dx_d, const sofa::Data< VecDeriv > & correction_d )
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& correction = correction_d.getValue();
+
+    auto dx = sofa::helper::write(dx_d, cparams);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
@@ -693,8 +698,9 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
         x[i] = x_free[i];
         v[i] = v_free[i];
 
-        x[i] += dx[i];
-        v[i] += dx[i] * invDt;
+        x[i] += correction[i];
+        v[i] += correction[i] * invDt;
+        dx[i] = correction[i];
     }
 
     x_d.endEdit();
@@ -703,17 +709,14 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const sofa::core::ConstraintParams *cparams, 
+    sofa::Data< VecCoord > &x_d, sofa::Data< VecDeriv > &dx_d, const sofa::Data< VecDeriv > & correction_d)
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
     VecCoord& x = *x_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& correction = correction_d.getValue();
+
+    auto dx = sofa::helper::write(dx_d,cparams);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
@@ -722,7 +725,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        x[i] = x_free[i] + dx[i];
+        x[i]  = x_free[i] + correction[i];
+        dx[i] = correction[i];
     }
 
     x_d.endEdit();
@@ -730,14 +734,11 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, 
+    sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
+    const VecDeriv& correction = correction_d.getValue(cparams);
+    auto dv = sofa::helper::write(dv_d, cparams);
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
@@ -750,7 +751,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrecti
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i] * invDt;
+        dv[i] = correction[i] * invDt;
+        v[i] = v_free[i] + dv[i];
     }
 
     v_d.endEdit();
@@ -863,13 +865,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
             m->set(l, c, appCompliance[l * dimensionAppCompliance + c]);
         }
     }
-}
-
-
-template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
-{
-    this->setConstraintForceInMotionSpace(f_d, lambda);
 }
 
 
