@@ -95,30 +95,38 @@ public:
     virtual void removeConstraintSolver(ConstraintSolver *s) = 0;
 
 
+    /// Compute the corrective motion from the constraint space lambda
+    ///
+    /// @param cparams the ConstraintParams relative to the constraint solver
+    /// @param dx the VecId where to store the corrective motion
+    /// @param lambda is the constraint space force vector
+    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) = 0;
+
+
     /// Compute motion correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams
     /// @param x is the position result VecId
     /// @param v is the velocity result VecId
-    /// @param f is the motion space force vector
-    /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
+    /// @param dx if the corrective motion result VecId
+    virtual void applyMotionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
 
     /// Compute position correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams
     /// @param x is the position result VecId
-    /// @param f is the motion space force vector
-    /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
+    /// @param v is the velocity result VecId
+    /// @param dx if the corrective position result VecId
+    virtual void applyPositionCorrection(const ConstraintParams * cparams, MultiVecCoordId x, MultiVecDerivId dx, ConstMultiVecDerivId correction) = 0;
 
     /// Compute velocity correction from the constraint resolution (LCP) calculated force
     ///
     /// @param cparams
+    /// @param x is the position result VecId
     /// @param v is the velocity result VecId
-    /// @param f is the motion space force vector
-    /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId f, const defaulttype::BaseVector * lambda) = 0;
+    /// @param dv if the corrective velocity result VecId
+    /// @param correction is the corrective motion computed from the constraint lambda
+    virtual void applyVelocityCorrection(const ConstraintParams * cparams, MultiVecDerivId v, MultiVecDerivId dv, ConstMultiVecDerivId correction) = 0;
 
     /// Apply predictive constraint force
     ///

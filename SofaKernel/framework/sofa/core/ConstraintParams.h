@@ -33,6 +33,8 @@ namespace core
 {
 
 /// Class gathering parameters use by constraint components methods, and transmitted by visitors
+/// read the velocity and position
+/// and where the 
 class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
@@ -84,28 +86,74 @@ public:
     /// @name Access to vectors from a given state container (i.e. State or MechanicalState)
     /// @{
 
-    /// Read access to current position vector
+    /// Read access to the free (unconstrained) position vector
     template<class S>
     const Data<typename S::VecCoord>* readX(const S* state) const
     {   return m_x[state].read();    }
 
-    /// Read access to current velocity vector
+    /// Read access to the free (unconstrained) velocity vector
     template<class S>
     const Data<typename S::VecDeriv>* readV(const S* state) const
     {   return m_v[state].read();    }
 
+    /// Read access to the constraint jacobian matrix
+    template<class S>
+    const Data<typename S::MatrixDeriv>* readJ(const S* state) const
+    {
+        return m_j[state].read();
+    }
+
+    /// Read access to the constraint force vector
+    template<class S>
+    const Data<typename S::VecDeriv>* readLambda(S* state) const
+    {
+        return m_lambda[state].read();
+    }
+
+    /// Read access to the constraint corrective motion vector
+    template<class S>
+    const Data<typename S::VecDeriv>* readDx(S* state) const
+    {
+        return m_dx[state].read();
+    }
+
+
+
+
     /// @name Access to vectors from a given SingleLink to a state container (i.e. State or MechanicalState)
     /// @{
 
-    /// Read access to current position vector
+    /// Read access to the free (unconstrained) position
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecCoord>* readX(const SingleLink<Owner,S,flags>& state) const
     {   return m_x[state.get(this)].read();    }
 
-    /// Read access to current velocity vector
+    /// Read access to the free (unconstrained) velocity vector
     template<class Owner, class S, unsigned int flags>
     const Data<typename S::VecDeriv>* readV(const SingleLink<Owner,S,flags>& state) const
     {   return m_v[state.get(this)].read();    }
+
+    /// Read access to the constraint jacobian matrix
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::MatrixDeriv>* readJ(const SingleLink<Owner, S, flags>& state) const
+    {
+        return m_j[state.get(this)].read();
+    }
+
+    /// Read access to the constraint force vector
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readLambda(SingleLink<Owner, S, flags>& state) const
+    {
+        return m_lambda[state.get(this)].read();
+    }
+
+    /// Read access to the constraint corrective motion vector
+    template<class Owner, class S, unsigned int flags>
+    const Data<typename S::VecDeriv>* readDx(SingleLink<Owner, S, flags>& state) const
+    {
+        return m_dx[state.get(this)].read();
+    }
+
 
     /// @}
 
@@ -124,26 +172,56 @@ public:
     const ConstMultiVecDerivId& v() const { return m_v; }
     ConstMultiVecDerivId& v()       { return m_v; }
 
-    /// Set the IDs of position vector
+    const ConstMultiMatrixDerivId&  j() const { return m_j; }
+    ConstMultiMatrixDerivId& j()              { return m_j; }
+
+    const MultiVecDerivId& dx() const { return m_dx;  }
+    MultiVecDerivId&  dx()            { return m_dx;  }
+
+    const MultiVecDerivId& lambda() const { return m_lambda; }
+    MultiVecDerivId&  lambda()            { return m_lambda; }
+
+    /// Set the IDs where to read the free position vector
     ConstraintParams& setX(                   ConstVecCoordId v) { m_x.assign(v);   return *this; }
     ConstraintParams& setX(                   ConstMultiVecCoordId v) { m_x = v;   return *this; }
     template<class StateSet>
     ConstraintParams& setX(const StateSet& g, ConstVecCoordId v) { m_x.setId(g, v); return *this; }
 
-    /// Set the IDs of velocity vector
+    /// Set the IDs where to read the free velocity vector
     ConstraintParams& setV(                   ConstVecDerivId v) { m_v.assign(v);   return *this; }
     ConstraintParams& setV(                   ConstMultiVecDerivId v) { m_v = v;   return *this; }
     template<class StateSet>
     ConstraintParams& setV(const StateSet& g, ConstVecDerivId v) { m_v.setId(g, v); return *this; }
 
+    /// Set the IDs where to read the constraint jacobian matrix
+    ConstraintParams& setJ(ConstMatrixDerivId j) { m_j.assign(j); return *this; }
+    ConstraintParams& setJ(ConstMultiMatrixDerivId j) { m_j = j; return *this; }
+    template<class StateSet>
+    ConstraintParams& setJ(const StateSet& g, ConstMatrixDerivId j) { m_j.setId(g, j); return *this; }
+
+    /// Set the IDs where to write corrective displacement vector
+    ConstraintParams& setDx(VecDerivId dx)      { m_dx.assign(dx); return *this; }
+    ConstraintParams& setDx(MultiVecDerivId dx) { m_dx = dx;   return *this; }
+    template<class StateSet>
+    ConstraintParams& setDx(const StateSet& g, MultiVecDerivId v) { m_dx.setId(g, dx); return *this; }
+
+    /// Set the IDs where to write the constraint force vector
+    ConstraintParams& setLambda(VecDerivId lambda) { m_lambda.assign(lambda); return *this; }
+    ConstraintParams& setLambda(MultiVecDerivId lambda) { m_lambda = lambda;   return *this; }
+    template<class StateSet>
+    ConstraintParams& setLambda(const StateSet& g, MultiVecDerivId v) { m_lambda.setId(g, dx); return *this; }
+
     /// @}
 
 
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
-    ConstraintParams(const sofa::core::ExecParams& p = sofa::core::ExecParams() )
+    ConstraintParams(const sofa::core::ExecParams& p = sofa::core::ExecParams())
         : sofa::core::ExecParams(p)
-        , m_x (ConstVecCoordId::position())
-        , m_v (ConstVecDerivId::velocity())
+        , m_x(ConstVecCoordId::position())
+        , m_v(ConstVecDerivId::velocity())
+        , m_j(ConstMatrixDerivId::holonomicC())
+        , m_dx(VecDerivId::dx())
+        , m_lambda(VecDerivId::externalForce())
         , m_constOrder (POS_AND_VEL)
 		, m_smoothFactor (1)
     {
@@ -164,6 +242,15 @@ protected:
 
     /// Ids of velocity vector
     ConstMultiVecDerivId m_v;
+
+    /// Ids of the constraint jacobian matrix
+    ConstMultiMatrixDerivId m_j;
+
+    /// Ids of contraint correction vector
+    MultiVecDerivId      m_dx;
+
+    /// Ids of constraint lambda vector
+    MultiVecDerivId      m_lambda;
 
     /// Description of the order of the constraint
     ConstOrder m_constOrder;
