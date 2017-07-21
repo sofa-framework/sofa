@@ -85,6 +85,27 @@ public:
         SceneLoaderListerner(){}
     };
 
+    /// use this RAII-class to ensure the gil is properly acquired and released
+    /// in a scope. these should be surrounding any python code called from c++,
+    /// i.e. in all the methods in PythonEnvironment and all the methods in
+    /// PythonScriptController.
+    class SOFA_SOFAPYTHON_API gil {
+        const PyGILState_STATE state;
+        const char* const trace;
+    public:
+        gil(const char* trace = nullptr);
+        ~gil();
+    };
+
+
+    class SOFA_SOFAPYTHON_API no_gil {
+        PyThreadState* const state;
+        const char* const trace;
+    public:
+        no_gil(const char* trace = nullptr);
+        ~no_gil();
+    };
+
     struct system_exit : std::exception { };
 };
 
