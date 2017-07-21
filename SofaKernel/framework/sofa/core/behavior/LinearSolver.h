@@ -24,10 +24,13 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/core/ConstraintParams.h>
+
 
 namespace sofa
 {
@@ -145,16 +148,16 @@ public:
         return false;
     }
 
-    /// Apply the contactforce dx = Minv * J * f and store the resut in VecId
-    virtual void applyContactForce(const defaulttype::BaseVector* /*f*/,SReal /*positionFactor*/,SReal /*velocityFactor*/) {
-        serr << "Error applyContactForce has not been implemented" << sendl;
+    /// Apply the contactforce dx = Minv * J^t * f and store the resut in dx VecId
+    virtual void applyConstraintForce(const sofa::core::ConstraintParams* /*cparams*/,sofa::core::MultiVecDerivId /*dx*/, const defaulttype::BaseVector* /*f*/) {
+        serr << "Error applyConstraintForce has not been implemented" << sendl;
     }
 
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute mparams->dF() = J^t lambda
     /// the result is written in mparams->dF()
     virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector* /*f*/) {
-        serr << "Error applyContactForce has not been implemented" << sendl;
+        serr << "Error computeResidual has not been implemented" << sendl;
     }
 
 
@@ -174,6 +177,9 @@ public:
 
     /// Get the linear system matrix, or NULL if this solver does not build it
     virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return NULL; }
+
+    /// Get the MultiMatrix view of the linear system, or NULL if this solved does not build it
+    virtual const behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return NULL; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
     virtual defaulttype::BaseVector* getSystemRHBaseVector() { return NULL; }
