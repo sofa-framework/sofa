@@ -121,43 +121,65 @@ public:
     virtual const char* getClassName() const { return "MechanicalGetConstraintJacobianVisitor"; }
 };
 
-/** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
+/** Apply the motion correction computed from constraint force influence  */
 class SOFA_SIMULATION_CORE_API MechanicalIntegrateConstraintsVisitor : public BaseMechanicalVisitor
 {
 public:
 
-
-    const sofa::defaulttype::BaseVector *src;
+    const sofa::core::ConstraintParams* cparams;
     const double positionFactor;// use the OdeSolver to get the position integration factor
     const double velocityFactor;// use the OdeSolver to get the position integration factor
+    sofa::core::ConstMultiVecDerivId correctionId;
+    sofa::core::MultiVecDerivId dxId;
+    sofa::core::MultiVecCoordId xId;
+    sofa::core::MultiVecDerivId vId;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalIntegrateConstraintsVisitor(
-        const core::ExecParams* params, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
-        : BaseMechanicalVisitor(params) , src(_src), positionFactor(pf), velocityFactor(vf), matrix(_matrix), offset(0)
+        const core::ConstraintParams* cparams,
+        double pf, double vf, 
+        sofa::core::ConstMultiVecDerivId correction,
+        sofa::core::MultiVecDerivId dx = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::dx()),
+        sofa::core::MultiVecCoordId x  = sofa::core::MultiVecCoordId(sofa::core::VecCoordId::position()),
+        sofa::core::MultiVecDerivId v  = sofa::core::MultiVecDerivId(sofa::core::VecDerivId::velocity()),
+        const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        :BaseMechanicalVisitor(cparams) 
+        ,cparams(cparams)
+        ,positionFactor(pf)
+        ,velocityFactor(vf)
+        ,correctionId(correction)
+        ,dxId(dx)
+        ,xId(x)
+        ,vId(v)
+        ,matrix(_matrix)
+        ,offset(0)
     {}
 
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* ms)
     {
         if (matrix) offset = matrix->getGlobalOffset(ms);
-        if (src!= NULL && offset >= 0)
+        if (offset >= 0)
         {
             unsigned int o = (unsigned int)offset;
-            ms->copyFromBaseVector(core::VecDerivId::dx(), src, o);
             offset = (int)o;
 
-            //x = x_free + dx * positionFactor;
-            ms->vOp(params,core::VecCoordId::position(),core::ConstVecCoordId::freePosition(),core::VecDerivId::dx(),positionFactor);
+            if (positionFactor != 0)
+            {
+                //x = x_free + correction * positionFactor;
+                ms->vOp(params, xId.getId(ms), cparams->x().getId(ms), correctionId.getId(ms), positionFactor);
+            }
 
-            //v = v_free + dx * velocityFactor;
-            ms->vOp(params,core::VecDerivId::velocity(),core::ConstVecDerivId::freeVelocity(),core::VecDerivId::dx(),velocityFactor);
+            if (velocityFactor != 0)
+            {
+                //v = v_free + correction * velocityFactor;
+                ms->vOp(params, vId.getId(ms), cparams->v().getId(ms), correctionId.getId(ms), velocityFactor);
+            }
 
-            //dx *= positionFactor;
-            ms->vOp(params,core::VecDerivId::dx(),core::VecDerivId::null(),core::ConstVecDerivId::dx(),positionFactor);
-
-            //force = 0
-//            ms->vOp(params,core::VecDerivId::force(),core::ConstVecDerivId::null(),core::VecDerivId::null(),0.0);
+            const double correctionFactor = cparams->constOrder() == sofa::core::ConstraintParams::ConstOrder::VEL ? velocityFactor : positionFactor;
+            
+            //dx *= correctionFactor;
+            ms->vOp(params,dxId.getId(ms),core::VecDerivId::null(), correctionId.getId(ms), correctionFactor);
         }
 
         return RESULT_CONTINUE;
