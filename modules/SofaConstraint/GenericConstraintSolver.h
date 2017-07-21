@@ -107,6 +107,9 @@ public:
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
+    ConstraintProblem* getConstraintProblem();
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0);
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
 
 	Data<bool> displayTime;
 	Data<int> maxIt;
@@ -122,12 +125,20 @@ public:
 	Data<double> currentError;
     Data<bool> reverseAccumulateOrder;
 
-	ConstraintProblem* getConstraintProblem() override;
-	void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=0) override;
+    virtual sofa::core::MultiVecDerivId getLambda() const override
+    {
+        return m_lambdaId;
+    }
 
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
+    virtual sofa::core::MultiVecDerivId getDx() const override
+    {
+        return m_dxId;
+    }
 
 protected:
+
+    void clearConstraintProblemLocks();
+
     enum { CP_BUFFER_SIZE = 10 };
     sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
     sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
@@ -135,9 +146,11 @@ protected:
 	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
-    void clearConstraintProblemLocks();
 
 	simulation::Node *context;
+
+    sofa::core::MultiVecDerivId m_lambdaId;
+    sofa::core::MultiVecDerivId m_dxId;
 
     sofa::helper::system::thread::CTime timer;
     sofa::helper::system::thread::CTime timerTotal;

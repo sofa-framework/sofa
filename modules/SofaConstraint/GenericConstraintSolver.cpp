@@ -118,6 +118,18 @@ void GenericConstraintSolver::init()
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
         constraintCorrections[i]->addConstraintSolver(this);
     context = (simulation::Node*) getContext();
+
+    simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
+    {
+        sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
+        lambda.realloc(&vop,false,true);
+        m_lambdaId = lambda.id();
+    }
+    {
+        sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
+        dx.realloc(&vop,false,true);
+        m_dxId = dx.id();
+    }
 }
 
 void GenericConstraintSolver::cleanup()
@@ -128,7 +140,9 @@ void GenericConstraintSolver::cleanup()
             constraintCorrections[i]->removeConstraintSolver(this);
         constraintCorrections.clear();
     }
-
+    simulation::common::VectorOperations vop(sofa::core::ExecParams::defaultInstance(), this->getContext());
+    vop.v_free(m_lambdaId, false, true);
+    vop.v_free(m_dxId, false, true);
     core::behavior::ConstraintSolver::cleanup();
 }
 
@@ -150,8 +164,22 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
     simulation::common::VectorOperations vop(cParams, this->getContext());
+    
 	vop.v_clear(this->getLambda() );
 	vop.v_clear(this->getDx() );
+    
+    {
+        sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
+        lambda.realloc(&vop,false,true);
+        lambda.clear();
+        m_lambdaId = lambda.id();
+    }
+    {
+        sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
+        dx.realloc(&vop,false,true);
+        dx.clear();
+        m_dxId = dx.id();
+    }
 
     if ( displayTime.getValue() )
     {
@@ -389,7 +417,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     msg_info() << "KeepContactForces done" ;
 
     AdvancedTimer::stepBegin("Compute And Apply Motion Correction");
-
+    
     if (cParams->constOrder() == core::ConstraintParams::POS_AND_VEL)
     {
         core::MultiVecCoordId xId(res1);
@@ -399,7 +427,13 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			if (!cc->isActive()) continue;
-			cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->getLambda(), &current_cp->f);
+
+            sofa::helper::AdvancedTimer::stepBegin("ComputeCorrection on: " + cc->getName());
+            cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+            sofa::helper::AdvancedTimer::stepEnd("ComputeCorrection on: " + cc->getName());
+
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
+			cc->applyMotionCorrection(cParams, xId, vId, cParams->dx(), this->getDx() );
 			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
@@ -411,7 +445,13 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			if (!cc->isActive()) continue;
-			cc->computeAndApplyPositionCorrection(cParams, xId, this->getLambda(), &current_cp->f);
+
+            sofa::helper::AdvancedTimer::stepBegin("ComputeCorrection on: " + cc->getName());
+            cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+            sofa::helper::AdvancedTimer::stepEnd("ComputeCorrection on: " + cc->getName());
+
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
+			cc->applyPositionCorrection(cParams, xId, cParams->dx(), this->getDx());
 			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
@@ -423,7 +463,13 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			if (!cc->isActive()) continue;
-			cc->computeAndApplyVelocityCorrection(cParams, vId, this->getLambda(), &current_cp->f);
+
+            sofa::helper::AdvancedTimer::stepBegin("ComputeCorrection on: " + cc->getName());
+            cc->computeMotionCorrectionFromLambda(cParams, this->getDx(), &current_cp->f);
+            sofa::helper::AdvancedTimer::stepEnd("ComputeCorrection on: " + cc->getName());
+
+			sofa::helper::AdvancedTimer::stepBegin("ApplyCorrection on: " + cc->getName());
+			cc->applyVelocityCorrection(cParams, vId, cParams->dx(), this->getDx() );
 			sofa::helper::AdvancedTimer::stepEnd("ApplyCorrection on: " + cc->getName());
 		}
 	}
