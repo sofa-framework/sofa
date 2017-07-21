@@ -418,16 +418,17 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f, double positionFactor, double velocityFactor)
-{    
+void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const defaulttype::BaseVector* f)
+{
     currentGroup->systemRHVector->clear();
     currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
-
+    /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(currentGroup->systemRHVector,f);
-
+    /// lhs = M^-1 * rhs  
     this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
 
-    executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),currentGroup->systemLHVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, dx, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) ); 
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, cparams->lambda(), currentGroup->systemRHVector, &(currentGroup->matrixAccessor)));
 }
 
 template<class Matrix, class Vector>
