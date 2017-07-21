@@ -222,12 +222,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         AdvancedTimer::stepBegin("ConstraintSolver");
 
+        core::ConstraintParams cparams(*params);
+        cparams.setX(freePos);
+        cparams.setV(freeVel);
+        cparams.setDx(constraintSolver->getDx());
+        cparams.setLambda(constraintSolver->getLambda());
+
         if (m_solveVelocityConstraintFirst.getValue())
         {
-            core::ConstraintParams cparams(*params);
-            cparams.setX(freePos);
-            cparams.setV(freeVel);
-
             cparams.setOrder(core::ConstraintParams::VEL);
             constraintSolver->solveConstraint(&cparams, vel);
 
@@ -254,10 +256,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
         }
         else
         {
-            core::ConstraintParams cparams(*params);
-            cparams.setX(freePos);
-            cparams.setV(freeVel);
-
+            cparams.setOrder(core::ConstraintParams::POS_AND_VEL);
             constraintSolver->solveConstraint(&cparams, pos, vel);
             mop.projectVelocity(vel); // apply projective constraints
             mop.propagateV(vel);
