@@ -113,8 +113,8 @@ void bindSofaPythonModule()
 
     /// Custom Exception to embed
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(
-                "Sofa.SofaException", /* char *name */
-                "Base exception class for the SofaPython module.",
+                (char*) "Sofa.SofaException", /* char *name */
+                (char*) "Base exception class for the SofaPython module.",
                 /* char *doc */
                 NULL, /* PyObject *base */
                 NULL /* PyObject *dict */);
