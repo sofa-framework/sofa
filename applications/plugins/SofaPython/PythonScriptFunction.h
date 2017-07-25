@@ -36,8 +36,6 @@ namespace core
 namespace objectmodel
 {
 
-// mtournier: wtf is this supposed to do?
-// mtournier: wtf is this doing in sofa::core?
 class SOFA_SOFAPYTHON_API PythonScriptFunctionParameter : public ScriptFunctionParameter
 {
 public:
