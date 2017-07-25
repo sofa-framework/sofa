@@ -127,9 +127,15 @@ bool Message::empty() const
 }
 
 template<>
+<<<<<<< HEAD
 Message& Message::operator<<(const FileInfo &fi)
 {
     (*m_fileInfo.get()) = fi;
+=======
+SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
+{
+    m_fileInfo = fi;
+>>>>>>> 0253fd1534dd666181b4145d3dfd0d7bf4d20fcd
     return *this;
 }
 

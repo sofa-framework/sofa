@@ -32,3 +32,12 @@ void printPythonExceptions()
 
     // TODO improve the error message by using ptraceback
 }
+
+
+void handle_python_error(const char* message) {
+    if(PyErr_ExceptionMatches(PyExc_SystemExit))  {
+        PyErr_Clear();
+        throw sofa::simulation::PythonEnvironment::system_exit();
+    }
+    PyErr_Print();
+}
