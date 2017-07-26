@@ -89,6 +89,29 @@ void PairInteractionConstraint<DataTypes>::buildConstraintMatrix(const Constrain
 }
 
 template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda)
+{
+    if (cParams)
+    {
+        storeLambda(cParams, *res[mstate1.get(cParams)].write(), *res[mstate2.get(cParams)].write(), *cParams->readJ(mstate1), *cParams->readJ(mstate2), lambda);
+    }
+}
+
+
+template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& result1, Data<VecDeriv>& result2,
+    const Data<MatrixDeriv>& jacobian1, const Data<MatrixDeriv>& jacobian2, const sofa::defaulttype::BaseVector* lambda)
+{
+    auto res1 = sofa::helper::write(result1, cParams);
+    auto res2 = sofa::helper::write(result2, cParams);
+    const MatrixDeriv& j1 = jacobian1.getValue(cParams);
+    const MatrixDeriv& j2 = jacobian2.getValue(cParams);
+
+    j1.multTransposeBaseVector(res1, lambda );
+    j2.multTransposeBaseVector(res2, lambda );
+}
+
+template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::updateForceMask()
 {
     // the default implementation adds every dofs to the mask
