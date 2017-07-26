@@ -399,7 +399,7 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
         /// SOURCE, "Message", "FILENAME", LINENO
         char* filename;
         int   lineno;
-        if( !PyArg_ParseTuple(args, "OOOO", &py_emitter, &py_message, &filename, &lineno) ){
+        if( !PyArg_ParseTuple(args, "OOsi", &py_emitter, &py_message, &filename, &lineno) ){
             return NULL;
         }
         if( !PyString_Check(py_message) ){
