@@ -389,9 +389,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
-    /** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
-
-    //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
@@ -754,6 +751,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     stopDumpVisitor();
+
+    /// We want to warn user that there is component that are implemented in specific plugin
+    /// and that there is no RequiredPlugin in their scene.
+    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+    checker.validate(mSimulation.get()) ;
 }
 
 
@@ -834,11 +836,6 @@ void RealGUI::popupOpenFileSelector()
             else
                 fileOpen (s.toStdString());
     }
-
-    /// We want to warn user that there is component that are implemented in specific plugin
-    /// and that there is no RequiredPlugin in their scene.
-    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-    checker.validate(mSimulation.get()) ;
 }
 
 //------------------------------------
@@ -893,10 +890,13 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 
     if (root)
     {
+        /// We want to warn user that there is component that are implemented in specific plugin
+        /// and that there is no RequiredPlugin in their scene.
+        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.validate(root.get()) ;
+
         mSimulation = root;
-
         eventNewTime();
-
         startButton->setChecked(root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
         simulationGraph->Clear(root.get());

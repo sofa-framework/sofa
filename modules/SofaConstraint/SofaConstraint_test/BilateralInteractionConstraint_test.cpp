@@ -101,7 +101,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -133,7 +133,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' />     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -158,7 +158,7 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
              "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
              "</Node>                                                     \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     root->init(ExecParams::defaultInstance()) ;
