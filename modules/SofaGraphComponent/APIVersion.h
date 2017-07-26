@@ -15,53 +15,48 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
-#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
 #include "config.h"
 
-#include <functional>
-#include <map>
-
-#include <sofa/simulation/Visitor.h>
-
 namespace sofa
 {
-namespace simulation
-{
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
 
-class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
+namespace component
 {
+
+namespace _apiversion_
+{
+
+class SOFA_GRAPH_COMPONENT_API APIVersion : public BaseObject
+{
+
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    virtual ~SceneCheckerVisitor() ;
+    SOFA_CLASS(APIVersion, BaseObject);
 
-    void validate(Node* node) ;
+    const std::string& getApiLevel() ;
+    virtual void init() override ;
 
-    void enableValidationAPIVersion(Node *node) ;
-    void enableValidationRequiredPlugins(Node* node) ;
-
-    virtual Result processNodeTopDown(Node* node) override ;
-
-    void installChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
+protected:
+    APIVersion() ;
+    virtual ~APIVersion() ;
+    void checkInputData() ;
 private:
-    std::map<std::string,bool> m_requiredPlugins ;
-    bool m_isRequiredPluginValidationEnabled {true} ;
-    bool m_isAPIVersionValidationEnabled {true} ;
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+    Data<std::string>  d_level ;
 };
 
-} // namespace simulation
+} // namespace _apiversion_
+
+using _apiversion_::APIVersion ;
+
+} // namespace component
 
 } // namespace sofa
-
-#endif

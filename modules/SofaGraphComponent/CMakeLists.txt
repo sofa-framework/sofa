@@ -17,6 +17,7 @@ set(HEADER_FILES
     StatsSetting.h
     ViewerSetting.h
     SceneCheckerVisitor.h
+    APIVersion.h
     config.h
     initGraphComponent.h
 )
@@ -36,6 +37,7 @@ set(SOURCE_FILES
     StatsSetting.cpp
     ViewerSetting.cpp
     SceneCheckerVisitor.cpp
+    APIVersion.cpp
     initGraphComponent.cpp
 )
 
