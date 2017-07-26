@@ -90,6 +90,10 @@ if [ -e "$build_dir/full-build" ]; then
 fi
 
 ## Test scenes
+echo "Preventing SofaCUDA from being loaded in VMs."
+plugin_conf="$(find "$build_dir" -name "plugin_list.conf.default")"
+grep -v "SofaCUDA NO_VERSION" "$plugin_conf" > "${plugin_conf}.tmp" && mv "${plugin_conf}.tmp" "$plugin_conf"
+cat $plugin_conf
 
 if [[ -n "$CI_TEST_SCENES" ]]; then
     "$src_dir/scripts/ci/scene-tests.sh" run "$build_dir" "$src_dir"
