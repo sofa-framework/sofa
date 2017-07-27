@@ -47,6 +47,10 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
 {
     auto xfree = sofa::helper::read(x, cParams);
     auto vfree = sofa::helper::read(v, cParams);
+    const SReal dt = this->getContext()->getDt();
+    const SReal invDt = 1.0 / dt;
+
+    auto pos = this->getMState()->readPositions();
 
     if (cParams->constOrder() == sofa::core::ConstraintParams::VEL)
     {
@@ -56,7 +60,7 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
         {
             for (std::size_t j = 0; j < N; ++j)
             {
-                resV->set(m_constraintIndex + i*N + j, vfree[i][j]);
+                resV->set(m_constraintIndex + i*N + j, vfree[i][j] + invDt * pos[i][j] );
             }
         }
     }
