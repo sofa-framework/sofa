@@ -18,6 +18,9 @@ set(HEADER_FILES
     FFDDistanceGridDiscreteIntersection.inl
     RigidDistanceGridDiscreteIntersection.h
     RigidDistanceGridDiscreteIntersection.inl
+    DistanceGridComponent.h
+    ImplicitSphere.h
+    ImplicitShape.h
 )
 
 set(SOURCE_FILES
@@ -32,6 +35,8 @@ set(SOURCE_FILES
     FFDDistanceGridDiscreteIntersection.cpp
     RayDistanceGridContact.cpp
     RigidDistanceGridDiscreteIntersection.cpp
+    DistanceGridComponent.cpp
+    ImplicitSphere.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
