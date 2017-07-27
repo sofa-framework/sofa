@@ -17,7 +17,7 @@
         </Node>
     </Node>
     <Node name="SquareCloth1">
-        <EulerImplicit rayleighMass="0.05" />
+        <EulerImplicit rayleighMass="0.05"  rayleighStiffness="0.1" />
         <CGLinearSolver iterations="10" threshold="0.000001" tolerance="1e-5"/>
         <RegularGrid nx="100" ny="1" nz="100" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />

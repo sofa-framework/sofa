@@ -7,7 +7,7 @@
     <DiscreteIntersection />
     <Node name="DragonCoarse">
         <SparseGrid n="2 2 2" fileTopology="mesh/dragon.obj" />
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <MatrixMass defaultValue="3" />

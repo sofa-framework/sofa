@@ -4,7 +4,7 @@
         <TetrahedronSetTopologyContainer name="Container1" tetrahedra="@[-1].tetrahedra" position="@[-1].output_position" createTriangleArray="1"/>
         <TetrahedronSetGeometryAlgorithms  drawEdges="1"/>
 		<CGLinearSolver iterations="3000" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" /> 
-		<EulerImplicitSolver name="default12" rayleighStiffness="0.01" />
+		<EulerImplicitSolver name="default12" rayleighStiffness="0.01"  rayleighMass="0.1" />
         <MechanicalObject name="dofs" rest_position="@[-5].output_position"/>
 		<MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
 		<BoxROI box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" name="fixedPoint"  />

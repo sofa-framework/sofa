@@ -14,7 +14,7 @@
 <!--  <ImageViewer template="ImageB" name="viewer" src="@image"  /> -->
   <ImageSampler template="ImageB" name="sampler" src="@image" param="1" showEdges="false" printLog="true"/>
 
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver  />
 
   <Node name="FEM"  >

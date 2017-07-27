@@ -4,7 +4,7 @@
     <VisualStyle displayFlags="showVisualModels showBehaviorModels hideMechanicalMappings showForceFields" />
 
     <Node 	name="GreenLagrange" >
-        <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+        <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->
         <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="1" rotation="0 0 0 " scale="1 1 0" />

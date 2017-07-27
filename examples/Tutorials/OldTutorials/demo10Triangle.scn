@@ -6,7 +6,7 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
         <MechanicalObject dx="0" dy="-10.5" dz="0" />
         <UniformMass mass="0.05" />

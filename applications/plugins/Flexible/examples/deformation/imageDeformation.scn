@@ -19,7 +19,7 @@
 
 
   <Node name="Flexible"  >
-    <EulerImplicitSolver /> <CGLinearSolver  />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />
 	<MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05" />

@@ -9,7 +9,7 @@
 	<MechanicalObject template="Vec3d" name="fixed points"  position="0 0 3 1 0 3"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 	<FixedConstraint template="Vec3d" name="fixedConstraint1"  indices="0 1" />
 	<Node 	 name="Flexible"  >
-		<EulerImplicitSolver name="eulerImplicitSolver1" />
+		<EulerImplicitSolver name="eulerImplicitSolver1"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="200"  tolerance="1e-15"  threshold="1e-15" />
 		<ImageContainer template="ImageUC" name="image"  listening="1"  filename="beam.raw"  drawBB="0" />
 		<ImageSampler template="ImageUC" name="sampler"  printLog="0"  listening="1"  image="@image.image"  transform="@image.transform"  method="1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"  param="1" />
