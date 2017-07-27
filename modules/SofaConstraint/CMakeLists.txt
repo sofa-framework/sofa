@@ -32,6 +32,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         ConstraintAttachBodyPerformer.h
         ConstraintAttachBodyPerformer.inl
         ConstraintSolverImpl.h
+        ConstraintStoreLambdaVisitor.h
         ContactDescription.h
         ContactIdentifier.h
         FreeMotionAnimationLoop.h
@@ -80,6 +81,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         ConstraintAnimationLoop.cpp
         ConstraintAttachBodyPerformer.cpp
         ConstraintSolverImpl.cpp
+        ConstraintStoreLambdaVisitor.cpp
         ContactIdentifier.cpp
         FreeMotionAnimationLoop.cpp
         FrictionContact.cpp

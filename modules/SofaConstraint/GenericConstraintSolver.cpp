@@ -39,6 +39,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include "ConstraintStoreLambdaVisitor.h"
+
 namespace sofa
 {
 
@@ -47,6 +49,19 @@ namespace component
 
 namespace constraintset
 {
+
+namespace
+{
+
+template< typename TMultiVecId >
+void clearMultiVecId(sofa::core::objectmodel::BaseContext* ctx, const sofa::core::ConstraintParams* cParams, const TMultiVecId& vid)
+{
+    simulation::MechanicalVOpVisitor clearVisitor(cParams, vid, core::ConstMultiVecDerivId::null(), core::ConstMultiVecDerivId::null(), 1.0);
+    clearVisitor.setMapped(true);
+    ctx->executeVisitor(&clearVisitor);
+}
+
+}
 
 GenericConstraintSolver::GenericConstraintSolver()
 : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of GenericConstraintSolver."))
@@ -170,17 +185,17 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
         lambda.realloc(&vop,false,true);
         m_lambdaId = lambda.id();
-        simulation::MechanicalVOpVisitor clearLambdaVisitor(cParams, m_lambdaId, core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
-        clearLambdaVisitor.setMapped(true);
-        getContext()->executeVisitor(&clearLambdaVisitor);
+
+        clearMultiVecId(getContext(), cParams, m_lambdaId);
     }
+
     {
         sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
         dx.realloc(&vop,false,true);
         m_dxId = dx.id();
-        simulation::MechanicalVOpVisitor clearDxVisitor(cParams, m_dxId, core::ConstMultiVecDerivId::null(), core::ConstMultiVecDerivId::null(), 1.0);
-        clearDxVisitor.setMapped(true);
-        getContext()->executeVisitor(&clearDxVisitor);
+
+        clearMultiVecId(getContext(), cParams, m_dxId);
+        
     }
 
     if ( displayTime.getValue() )
@@ -350,7 +365,7 @@ void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, b
     file << "      ];" << msgendl << msgendl;
 }
 
-bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     current_cp->tolerance = tolerance.getValue();
     current_cp->maxIterations = maxIt.getValue();
@@ -400,6 +415,7 @@ bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cPara
         msg_info() << tmp.str() ;
     }
 
+	
     return true;
 }
 
@@ -481,6 +497,21 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
     msg_info() << "Compute And Apply Motion Correction in constraintCorrection done" ;
 
     msg_info_when(displayTime.getValue()) << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" ;
+    AdvancedTimer::stepBegin("Store Constraint Lambdas");
+
+    /// Some constraint correction schemes may have written the constraint motion space lambda in the lambdaId VecId.
+    /// In order to be sure that we are not accumulating things twice, we need to clear.
+    clearMultiVecId(getContext(), cParams, m_lambdaId);
+
+    /// Store lambda and accumulate.
+    sofa::simulation::ConstraintStoreLambdaVisitor v(cParams, &current_cp->f);
+    this->getContext()->executeVisitor(&v);
+    AdvancedTimer::stepEnd("Store Constraint Lambdas");
+
+	if (displayTime.getValue())
+    {
+        sout << " TotalTime " << ((double) timerTotal.getTime() - timeTotal) * timeScale << " ms" << sendl;
+    }
 
     return true;
 }
@@ -667,7 +698,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
-
+            
             std::vector<double> errF(nb, 0);
 
             for(l=0; l<nb; l++)
