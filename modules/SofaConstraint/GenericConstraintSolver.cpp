@@ -601,7 +601,6 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
     int i, j, k, l, nb;
 
-    double errF[6] = {0,0,0,0,0,0};
     double error=0.0;
 
     bool convergence = false;
@@ -663,12 +662,13 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         error=0.0;
         for(j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
-            //1. nbLines provide the dimension of the constraint  (max=6)
+			//1. nbLines provide the dimension of the constraint
 			nb = constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
 
+            std::vector<double> errF(nb, 0);
 
             for(l=0; l<nb; l++)
             {
