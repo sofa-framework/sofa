@@ -134,7 +134,6 @@ void ProjectionToTargetLineMapping<TIn, TOut>::applyJT(const core::MechanicalPar
 template <class TIn, class TOut>
 void ProjectionToTargetLineMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"ProjectionToTargetLineMapping<TIn, TOut>::applyJT is not implemented " << endl;
 }
 
 

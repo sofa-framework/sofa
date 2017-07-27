@@ -68,18 +68,17 @@ bool GLSLShader::InitGLSL()
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if( !CanUseGlExtension("GL_ARB_shading_language_100") )
     {
-        fprintf(stderr, "Error: GL_ARB_shader_objects extension not supported!\n");
+        msg_error("GLSLShader") << "GL_ARB_shader_objects extension not supported !" ;
         return false;
     }
 
     // Make sure we support the GLSL shading language 1.0
     if( !CanUseGlExtension("GL_ARB_shading_language_100") )
     {
-        fprintf(stderr, "Error: GL_ARB_shading_language_100 extension not supported!\n");
+        msg_error("GLSLShader") << "GL_ARB_shading_language_100 extension not supported! ";
         return false;
     }
     GLSLIsSupported = true;
-    // Return a success!
     return true;
 #endif
 }
@@ -138,7 +137,7 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
             FileMonitor::removeFileListener(m_hShaderContents[target].filename, m_filelistener.get()) ;
         m_hShaderContents.erase(target);
     }else{
-        ShaderContents sc; 
+        ShaderContents sc;
         sc.filename = filename;
         sc.text = LoadTextFile(filename);
         m_hShaderContents[target] = sc;
@@ -263,7 +262,7 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
             source = LoadTextFile(shaderContent.filename);
         else
         {
-            msg_error("GLSLShader") << "No content has been given.";
+            msg_error() << "No content has been given.";
             return false;
         }
     }
@@ -283,22 +282,22 @@ bool GLSLShader::CompileShader(GLint target, const ShaderContents& shaderContent
     GLint compiled = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
     if (!compiled)
-        msg_error("GLSLShader") << "ERROR: Compilation of " << shaderStage << " shader failed:";
+        msg_error() << "ERROR: Compilation of " << shaderStage << " shader failed:";
 
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
         if(!shaderContent.filename.empty())
-            msg_error("GLSLShader") << "From File: " << shaderContent.filename;
+            msg_error() << "From File: " << shaderContent.filename;
         else
-            msg_error("GLSLShader") << "From Source code (no filename given).";
+            msg_error() << "From Source code (no filename given).";
 
-        if (!header.empty()) 
-            msg_error("GLSLShader") << "Header:\n" << header;
+        if (!header.empty())
+            msg_error() << "Header:\n" << header;
 
         GLcharARB *logString = (GLcharARB *)malloc((length + 1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
-        msg_error("GLSLShader") << logString;
+        msg_error() << logString;
         free(logString);
     }
     if (compiled)
@@ -318,7 +317,7 @@ void GLSLShader::InitShaders()
         if(m_hShaderContents.find(GL_VERTEX_SHADER_ARB) == m_hShaderContents.end()
             || m_hShaderContents.find(GL_FRAGMENT_SHADER_ARB) == m_hShaderContents.end())
         {
-            msg_error("GLSLShader") << "GLSLShader requires setting a VertexShader and a FragmentShader";
+            msg_error() << "GLSLShader requires setting a VertexShader and a FragmentShader";
             return;
         }
     }
@@ -336,7 +335,7 @@ void GLSLShader::InitShaders()
 
     if (!ready)
     {
-        msg_error("GLSLShader") << "SHADER compilation failed.";
+        msg_error() << "SHADER compilation failed.";
         return;
     }
 
@@ -363,21 +362,21 @@ void GLSLShader::InitShaders()
 
     GLint linked = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_LINK_STATUS_ARB, &linked);
-    if (!linked) 
-        msg_error("GLSLShader") << "ERROR: Link of program shader failed:";
+    if (!linked)
+        msg_error() << "ERROR: Link of program shader failed:";
 
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
         GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
         glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
-        msg_error("GLSLShader") << logString;
+        msg_error() << logString;
         free(logString);
         for (std::map<GLint,ShaderContents>::const_iterator it = m_hShaderContents.begin(), itend = m_hShaderContents.end(); it != itend; ++it)
             if(!it->second.filename.empty())
-                msg_error("GLSLShader") << GetShaderStageName(it->first) << " shader file: " << it->second.filename ;
+                msg_error() << GetShaderStageName(it->first) << " shader file: " << it->second.filename ;
             else
-                msg_error("GLSLShader") << GetShaderStageName(it->first) << " , check your source file (not an external shader file)" ;
+                msg_error() << GetShaderStageName(it->first) << " , check your source file (not an external shader file)" ;
 
     }
 
