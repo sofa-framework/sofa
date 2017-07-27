@@ -110,237 +110,242 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
-	: _topology(0)
-	, _initialPoints(0)
-	, updateMatrix(true)
-	, _meshSaved( false)
-	, f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
-	, f_materialName(initData(&f_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
-	, f_parameterSet(initData(&f_parameterSet,"ParameterSet","The global parameters specifying the material"))
-	, f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
-	, f_parameterFileName(initData(&f_parameterFileName,std::string("myFile.param"),"ParameterFile","the name of the file describing the material parameters for all tetrahedra"))
+    : _topology(0)
+    , _initialPoints(0)
+    , updateMatrix(true)
+    , _meshSaved( false)
+    , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
+    , f_materialName(initData(&f_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
+    , f_parameterSet(initData(&f_parameterSet,"ParameterSet","The global parameters specifying the material"))
+    , f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
     , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
     , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
     , tetrahedronHandler(NULL)
 {
-  tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
+    tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~TetrahedronHyperelasticityFEMForceField()
 {
-  if(tetrahedronHandler) delete tetrahedronHandler;
+    if(tetrahedronHandler) delete tetrahedronHandler;
 }
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
-	if (this->f_printLog.getValue())
-		sout << "initializing TetrahedronHyperelasticityFEMForceField" << sendl;
+    if (this->f_printLog.getValue())
+            sout << "initializing TetrahedronHyperelasticityFEMForceField" << sendl;
 
-	this->Inherited::init();
+    this->Inherited::init();
 
-	/** parse the parameter set */
-	SetParameterArray paramSet=f_parameterSet.getValue();
-	if (paramSet.size()>0) {
-		globalParameters.parameterArray.resize(paramSet.size());
-		copy(paramSet.begin(), paramSet.end(),globalParameters.parameterArray.begin());
-	}
-	/** parse the anisotropy Direction set */
-	SetAnisotropyDirectionArray anisotropySet=f_anisotropySet.getValue();
-	if (anisotropySet.size()>0) {
-		globalParameters.anisotropyDirection.resize(anisotropySet.size());
-		copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
-	}
+    /** parse the parameter set */
+    SetParameterArray paramSet=f_parameterSet.getValue();
+    if (paramSet.size()>0) {
+            globalParameters.parameterArray.resize(paramSet.size());
+            copy(paramSet.begin(), paramSet.end(),globalParameters.parameterArray.begin());
+    }
+    /** parse the anisotropy Direction set */
+    SetAnisotropyDirectionArray anisotropySet=f_anisotropySet.getValue();
+    if (anisotropySet.size()>0) {
+            globalParameters.anisotropyDirection.resize(anisotropySet.size());
+            copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
+    }
 
-	_topology = this->getContext()->getMeshTopology();
-
-
-	//	vector<HyperelasticMaterialTerm *> materialTermArray;
-	/** parse the input material name */
-	string material = f_materialName.getValue();
-	if (material=="ArrudaBoyce") {
-		fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
-		myMaterial = BoyceAndArrudaMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	} 
-	else if (material=="StVenantKirchhoff"){
-		fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
-		myMaterial = STVenantKirchhoffMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-	else if (material=="NeoHookean"){
-		fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
-		myMaterial = NeoHookeanMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-	else if (material=="MooneyRivlin"){
-		fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
-		myMaterial = MooneyRivlinMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-	else if (material=="VerondaWestman"){
-		fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
-		myMaterial = VerondaWestmanMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-
-	else if (material=="Costa"){
-		fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
-		myMaterial =CostaMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-	else if (material=="Ogden"){
-		fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
-		myMaterial =OgdenMaterial;
-		if (this->f_printLog.getValue()) sout<<"The model is "<<material<<endl;
-		//	materialTermArray =  myMaterial->getMaterialTermArray();
-	}
-	else {
-		serr << "material name " << material << " is not valid"<< sendl;
-	}
+    _topology = this->getContext()->getMeshTopology();
 
 
-	if (!_topology->getNbTetrahedra())
-	{
+    /** parse the input material name */
+    string material = f_materialName.getValue();
+    if (material=="ArrudaBoyce")
+    {
+        fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
+        myMaterial = BoyceAndArrudaMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else if (material=="StVenantKirchhoff")
+    {
+        fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
+        myMaterial = STVenantKirchhoffMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else if (material=="NeoHookean")
+    {
+        fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
+        myMaterial = NeoHookeanMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else if (material=="MooneyRivlin")
+    {
+        fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
+        myMaterial = MooneyRivlinMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else if (material=="VerondaWestman")
+    {
+        fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
+        myMaterial = VerondaWestmanMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+
+    else if (material=="Costa")
+    {
+        fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
+        myMaterial = CostaMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else if (material=="Ogden")
+    {
+        fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
+        myMaterial = OgdenMaterial;
+        if (this->f_printLog.getValue())
+            sout<<"The model is "<<material<<endl;
+    }
+    else
+    {
+        serr << "material name " << material << " is not valid (should be ArrudaBoyce, StVenantKirchhoff, MooneyRivlin, VerondaWestman, Costa or Ogden)"<< sendl;
+    }
+
+
+    if (!_topology->getNbTetrahedra())
+    {
         serr << "ERROR(TetrahedronHyperelasticityFEMForceField): object must have a Tetrahedral Set Topology.\n"<<sendl;
-		return;
-	}
+        return;
+    }
 
-	helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-	/// prepare to store info in the triangle array
-	tetrahedronInf.resize(_topology->getNbTetrahedra());
+    /// prepare to store info in the triangle array
+    tetrahedronInf.resize(_topology->getNbTetrahedra());
 
-	helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-	edgeInf.resize(_topology->getNbEdges());
-        edgeInfo.createTopologicalEngine(_topology);
+    edgeInf.resize(_topology->getNbEdges());
+    edgeInfo.createTopologicalEngine(_topology);
 
-        edgeInfo.registerTopologicalData();
+    edgeInfo.registerTopologicalData();
 
-	edgeInfo.endEdit();
+    edgeInfo.endEdit();
 
-	// get restPosition
-	if (_initialPoints.size() == 0)
-	{
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-		_initialPoints=p;
-	}
-	int i;
+    // get restPosition
+    if (_initialPoints.size() == 0)
+    {
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+            _initialPoints=p;
+    }
+    int i;
 
-	/// initialize the data structure associated with each tetrahedron
-	for (i=0;i<_topology->getNbTetrahedra();++i) {
-            tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-			_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
-			(const vector< double >)0);
-	}
-	/// set the call back function upon creation of a tetrahedron
-        tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
-        tetrahedronInfo.registerTopologicalData();
+    /// initialize the data structure associated with each tetrahedron
+    for (i=0;i<_topology->getNbTetrahedra();++i)
+    {
+        tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
+                                                _topology->getTetrahedron(i),  (const vector< unsigned int > )0,
+                                                (const vector< double >)0);
+    }
 
-	tetrahedronInfo.endEdit();
-	//testDerivatives();
+    /// set the call back function upon creation of a tetrahedron
+    tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
+    tetrahedronInfo.registerTopologicalData();
+
+    tetrahedronInfo.endEdit();
+    //testDerivatives();
 
 }
 
 template <class DataTypes> 
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
-	VecDeriv& f = *d_f.beginEdit();
-	const VecCoord& x = d_x.getValue();
+    VecDeriv& f = *d_f.beginEdit();
+    const VecCoord& x = d_x.getValue();
 
 
-	const bool printLog = this->f_printLog.getValue();
-	if (printLog && !_meshSaved) {
-		saveMesh( "D:/Steph/sofa-result.stl" );
-		printf( "Mesh saved.\n" );
-		_meshSaved = true;
-	}
-	unsigned int i=0,j=0,k=0,l=0;
-	unsigned int nbTetrahedra=_topology->getNbTetrahedra();
+    const bool printLog = this->f_printLog.getValue();
+    if (printLog && !_meshSaved)
+    {
+        saveMesh( "D:/Steph/sofa-result.stl" );
+        printf( "Mesh saved.\n" );
+        _meshSaved = true;
+    }
+    unsigned int i=0,j=0,k=0,l=0;
+    unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
-	helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-
-
-	TetrahedronRestInformation *tetInfo;
-
-	assert(this->mstate);
-	//myposition=x;
-
-	Coord dp[3],x0,sv;
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
 
-	for(i=0; i<nbTetrahedra; i++ )
-	{
-		tetInfo=&tetrahedronInf[i];
-		const Tetrahedron &ta= _topology->getTetrahedron(i);
+    TetrahedronRestInformation *tetInfo;
 
-		x0=x[ta[0]];
+    assert(this->mstate);
+    //myposition=x;
 
-		// compute the deformation gradient
-		// deformation gradient = sum of tensor product between vertex position and shape vector
-		// optimize by using displacement with first vertex
-		dp[0]=x[ta[1]]-x0;
-		sv=tetInfo->shapeVector[1];
-		for (k=0;k<3;++k) {
-			for (l=0;l<3;++l) {
-				tetInfo->deformationGradient[k][l]=dp[0][k]*sv[l];
-			}
-		}
-		for (j=1;j<3;++j) {
-			dp[j]=x[ta[j+1]]-x0;
-			sv=tetInfo->shapeVector[j+1];
-			for (k=0;k<3;++k) {
-				for (l=0;l<3;++l) {
-					tetInfo->deformationGradient[k][l]+=dp[j][k]*sv[l];
-				}
-			}
-		}
-
-		/// compute the right Cauchy-Green deformation matrix
-		for (k=0;k<3;++k) {
-			for (l=k;l<3;++l) {
-				//	if (l>=k) {
-				tetInfo->deformationTensor(k,l)=(tetInfo->deformationGradient(0,k)*tetInfo->deformationGradient(0,l)+
-					tetInfo->deformationGradient(1,k)*tetInfo->deformationGradient(1,l)+
-					tetInfo->deformationGradient(2,k)*tetInfo->deformationGradient(2,l));
-				//	}
-				//	else 
-				//		tetInfo->deformationTensor[k][l]=tetInfo->deformationTensor[l][k];
-			}
-		}
-
-		if(globalParameters.anisotropyDirection.size()>0){
-			tetInfo->fiberDirection=globalParameters.anisotropyDirection[0];
-			Coord vectCa=tetInfo->deformationTensor*tetInfo->fiberDirection;
-			Real aDotCDota=dot(tetInfo->fiberDirection,vectCa);
-			tetInfo->lambda=(Real)sqrt(aDotCDota);}
-		Coord areaVec = cross( dp[1], dp[2] );
-
-		tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->volScale;
-		tetInfo->trC = (Real)( tetInfo->deformationTensor(0,0) + tetInfo->deformationTensor(1,1) + tetInfo->deformationTensor(2,2));
-		//tetInfo->strainEnergy=myMaterial->getStrainEnergy(tetInfo,globalParameters);
-		tetInfo->SPKTensorGeneral.clear();
-		myMaterial->deriveSPKTensor(tetInfo,globalParameters,tetInfo->SPKTensorGeneral);
-		for(l=0;l<4;++l){
-			f[ta[l]]-=tetInfo->deformationGradient*(tetInfo->SPKTensorGeneral*tetInfo->shapeVector[l])*tetInfo->restVolume;
-		}
-	}
+    Coord dp[3],x0,sv;
 
 
-	/// indicates that the next call to addDForce will need to update the stiffness matrix
-	updateMatrix=true;
-	tetrahedronInfo.endEdit();
+    for(i=0; i<nbTetrahedra; i++ )
+    {
+        tetInfo=&tetrahedronInf[i];
+        const Tetrahedron &ta= _topology->getTetrahedron(i);
 
-	d_f.endEdit();
+        x0=x[ta[0]];
+
+        // compute the deformation gradient
+        // deformation gradient = sum of tensor product between vertex position and shape vector
+        // optimize by using displacement with first vertex
+        dp[0]=x[ta[1]]-x0;
+        sv=tetInfo->shapeVector[1];
+        for (k=0;k<3;++k) {
+                for (l=0;l<3;++l) {
+                        tetInfo->deformationGradient[k][l]=dp[0][k]*sv[l];
+                }
+        }
+        for (j=1;j<3;++j) {
+                dp[j]=x[ta[j+1]]-x0;
+                sv=tetInfo->shapeVector[j+1];
+                for (k=0;k<3;++k) {
+                        for (l=0;l<3;++l) {
+                                tetInfo->deformationGradient[k][l]+=dp[j][k]*sv[l];
+                        }
+                }
+        }
+
+        /// compute the right Cauchy-Green deformation matrix
+        for (k=0;k<3;++k) {
+            for (l=k;l<3;++l) {
+                tetInfo->deformationTensor(k,l)=(tetInfo->deformationGradient(0,k)*tetInfo->deformationGradient(0,l)+
+                tetInfo->deformationGradient(1,k)*tetInfo->deformationGradient(1,l)+
+                tetInfo->deformationGradient(2,k)*tetInfo->deformationGradient(2,l));
+            }
+        }
+
+        if(globalParameters.anisotropyDirection.size()>0)
+        {
+            tetInfo->fiberDirection=globalParameters.anisotropyDirection[0];
+            Coord vectCa=tetInfo->deformationTensor*tetInfo->fiberDirection;
+            Real aDotCDota=dot(tetInfo->fiberDirection,vectCa);
+            tetInfo->lambda=(Real)sqrt(aDotCDota);
+        }
+        Coord areaVec = cross( dp[1], dp[2] );
+
+        tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->volScale;
+        tetInfo->trC = (Real)( tetInfo->deformationTensor(0,0) + tetInfo->deformationTensor(1,1) + tetInfo->deformationTensor(2,2));
+        //tetInfo->strainEnergy=myMaterial->getStrainEnergy(tetInfo,globalParameters);
+        tetInfo->SPKTensorGeneral.clear();
+        myMaterial->deriveSPKTensor(tetInfo,globalParameters,tetInfo->SPKTensorGeneral);
+        for(l=0;l<4;++l)
+        {
+            f[ta[l]]-=tetInfo->deformationGradient*(tetInfo->SPKTensorGeneral*tetInfo->shapeVector[l])*tetInfo->restVolume;
+        }
+    }
 
 
+    /// indicates that the next call to addDForce will need to update the stiffness matrix
+    updateMatrix=true;
+    tetrahedronInfo.endEdit();
 
+    d_f.endEdit();
 }
 
 template <class DataTypes>
@@ -431,51 +436,49 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 template <class DataTypes> 
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
-	VecDeriv& df = *d_df.beginEdit();
-	const VecDeriv& dx = d_dx.getValue();
+    VecDeriv& df = *d_df.beginEdit();
+    const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int l=0;
-	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=_topology->getNbEdges();
+    const vector< Edge> &edgeArray=_topology->getEdges() ;
 
-	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
-	EdgeInformation *einfo;
-
-
-	/// if the  matrix needs to be updated
-	if (updateMatrix) {
-        this->updateTangentMatrix();
-	}// end of if
+    EdgeInformation *einfo;
 
 
-	/// performs matrix vector computation
-	unsigned int v0,v1;
-	Deriv deltax;	Deriv dv0,dv1;
+    /// if the  matrix needs to be updated
+    if (updateMatrix) {
+    this->updateTangentMatrix();
+    }// end of if
 
-	for(l=0; l<nbEdges; l++ )
-	{
-		einfo=&edgeInf[l];
-		v0=edgeArray[l][0];
-		v1=edgeArray[l][1];
 
-		deltax= dx[v0] - dx[v1];
-		dv0 = einfo->DfDx * deltax;
-		// do the transpose multiply:
-		dv1[0] = (Real)(deltax[0]*einfo->DfDx[0][0] + deltax[1]*einfo->DfDx[1][0] + deltax[2]*einfo->DfDx[2][0]);
-		dv1[1] = (Real)(deltax[0]*einfo->DfDx[0][1] + deltax[1]*einfo->DfDx[1][1] + deltax[2]*einfo->DfDx[2][1]);
-		dv1[2] = (Real)(deltax[0]*einfo->DfDx[0][2] + deltax[1]*einfo->DfDx[1][2] + deltax[2]*einfo->DfDx[2][2]);
-		// add forces
-		df[v0] += dv1 * kFactor;
-		df[v1] -= dv0 * kFactor;
+    /// performs matrix vector computation
+    unsigned int v0,v1;
+    Deriv deltax;	Deriv dv0,dv1;
 
-	}
-	edgeInfo.endEdit();
-	tetrahedronInfo.endEdit();
+    for(l=0; l<nbEdges; l++ )
+    {
+        einfo=&edgeInf[l];
+        v0=edgeArray[l][0];
+        v1=edgeArray[l][1];
 
-	d_df.endEdit();
+        deltax= dx[v0] - dx[v1];
+        dv0 = einfo->DfDx * deltax;
+        // do the transpose multiply:
+        dv1[0] = (Real)(deltax[0]*einfo->DfDx[0][0] + deltax[1]*einfo->DfDx[1][0] + deltax[2]*einfo->DfDx[2][0]);
+        dv1[1] = (Real)(deltax[0]*einfo->DfDx[0][1] + deltax[1]*einfo->DfDx[1][1] + deltax[2]*einfo->DfDx[2][1]);
+        dv1[2] = (Real)(deltax[0]*einfo->DfDx[0][2] + deltax[1]*einfo->DfDx[1][2] + deltax[2]*einfo->DfDx[2][2]);
+        // add forces
+        df[v0] += dv1 * kFactor;
+        df[v1] -= dv0 * kFactor;
+    }
+    edgeInfo.endEdit();
+    tetrahedronInfo.endEdit();
 
+    d_df.endEdit();
 }
 
 template<class DataTypes>
@@ -490,9 +493,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
 {
 
     /// if the  matrix needs to be updated
-    if (updateMatrix) {
+    if (updateMatrix)
+    {
         this->updateTangentMatrix();
-    }// end of if
+    }
 
     unsigned int nbEdges=_topology->getNbEdges();
     const vector< Edge> &edgeArray=_topology->getEdges() ;
@@ -503,7 +507,6 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
 
     for(l=0; l<nbEdges; l++ )
     {
-
         einfo=&edgeInf[l];
         noeud0=edgeArray[l][0];
         noeud1=edgeArray[l][1];
@@ -514,18 +517,14 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
         {
             for(j=0; j<3; j++)
             {
-
                 mat->add(N0+i, N0+j,  einfo->DfDx[j][i]*k);
                 mat->add(N0+i, N1+j, - einfo->DfDx[j][i]*k);
                 mat->add(N1+i, N0+j, - einfo->DfDx[i][j]*k);
                 mat->add(N1+i, N1+j, + einfo->DfDx[i][j]*k);
-
             }
         }
-
     }
     edgeInfo.endEdit();
-
 }
 
 
@@ -542,135 +541,141 @@ Mat<3,3,double> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int T
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
 {
-	DataVecCoord d_pos;
-	VecCoord &pos = *d_pos.beginEdit();
+    DataVecCoord d_pos;
+    VecCoord &pos = *d_pos.beginEdit();
     pos =  this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-	// perturbate original state:
-	srand( 0 );
-	for (unsigned int idx=0; idx<pos.size(); idx++) {
-		for (unsigned int d=0; d<3; d++) pos[idx][d] += (Real)0.01 * ((Real)rand()/(Real)(RAND_MAX - 0.5));
-	}
+    // perturbate original state:
+    srand( 0 );
+    for (unsigned int idx=0; idx<pos.size(); idx++) {
+            for (unsigned int d=0; d<3; d++) pos[idx][d] += (Real)0.01 * ((Real)rand()/(Real)(RAND_MAX - 0.5));
+    }
 
-	DataVecDeriv d_force1;
-	VecDeriv &force1 = *d_force1.beginEdit();
-	force1.resize( pos.size() );
+    DataVecDeriv d_force1;
+    VecDeriv &force1 = *d_force1.beginEdit();
+    force1.resize( pos.size() );
 
-	DataVecDeriv d_deltaPos;
-	VecDeriv &deltaPos = *d_deltaPos.beginEdit();
-	deltaPos.resize( pos.size() );
+    DataVecDeriv d_deltaPos;
+    VecDeriv &deltaPos = *d_deltaPos.beginEdit();
+    deltaPos.resize( pos.size() );
 
-	DataVecDeriv d_deltaForceCalculated;
-	VecDeriv &deltaForceCalculated = *d_deltaForceCalculated.beginEdit();
-	deltaForceCalculated.resize( pos.size() );
+    DataVecDeriv d_deltaForceCalculated;
+    VecDeriv &deltaForceCalculated = *d_deltaForceCalculated.beginEdit();
+    deltaForceCalculated.resize( pos.size() );
 
-	DataVecDeriv d_force2;
-	VecDeriv &force2 = *d_force2.beginEdit();
-	force2.resize( pos.size() );
+    DataVecDeriv d_force2;
+    VecDeriv &force2 = *d_force2.beginEdit();
+    force2.resize( pos.size() );
 
-	Coord epsilon, zero;
-	Real cs = (Real)0.00001;
-	Real errorThresh = (Real)200.0*cs*cs;
-	Real errorNorm;
-	Real avgError=0.0;
-	int count=0;
+    Coord epsilon, zero;
+    Real cs = (Real)0.00001;
+    Real errorThresh = (Real)200.0*cs*cs;
+    Real errorNorm;
+    Real avgError=0.0;
+    int count=0;
 
-	helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-	for (unsigned int moveIdx=0; moveIdx<pos.size(); moveIdx++)
-	{
-		for (unsigned int i=0; i<pos.size(); i++) {
-			deltaForceCalculated[i] = zero;
-			force1[i] = zero;
-			force2[i] = zero;
-		}
+    for (unsigned int moveIdx=0; moveIdx<pos.size(); moveIdx++)
+    {
+        for (unsigned int i=0; i<pos.size(); i++)
+        {
+                deltaForceCalculated[i] = zero;
+                force1[i] = zero;
+                force2[i] = zero;
+        }
 
-		d_force1.setValue(force1);
-		d_pos.setValue(pos);
+        d_force1.setValue(force1);
+        d_pos.setValue(pos);
 
-		//this->addForce( force1, pos, force1 );
-		this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
+        //this->addForce( force1, pos, force1 );
+        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
 
-		// get current energy around
-		Real energy1 = 0;
-		BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
-		for(unsigned int i = 0; i < vTetras.size(); ++i)
-		{
-			energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
-		}
-		// generate random delta
-		epsilon[0]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
-		epsilon[1]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
-		epsilon[2]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
-		deltaPos[moveIdx] = epsilon;
-		// calc derivative
-		this->addDForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
-		deltaPos[moveIdx] = zero;
-		// calc factual change
-		pos[moveIdx] = pos[moveIdx] + epsilon;
+        // get current energy around
+        Real energy1 = 0;
+        BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
+        for(unsigned int i = 0; i < vTetras.size(); ++i)
+        {
+            energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
+        }
+        // generate random delta
+        epsilon[0]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
+        epsilon[1]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
+        epsilon[2]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
+        deltaPos[moveIdx] = epsilon;
+        // calc derivative
+        this->addDForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
+        deltaPos[moveIdx] = zero;
+        // calc factual change
+        pos[moveIdx] = pos[moveIdx] + epsilon;
 
-		DataVecCoord d_force2;
-		d_force2.setValue(force2);
-		//this->addForce( force2, pos, force2 );
-		this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
+        DataVecCoord d_force2;
+        d_force2.setValue(force2);
+        //this->addForce( force2, pos, force2 );
+        this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
 
-		pos[moveIdx] = pos[moveIdx] - epsilon;
-		// check first derivative:
-		Real energy2 = 0;
-		for(unsigned int i = 0; i < vTetras.size(); ++i)
-		{
-			energy2 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
-		}
-		Coord forceAtMI = force1[moveIdx];
-		Real deltaEnergyPredicted = -dot( forceAtMI, epsilon );
-		Real deltaEnergyFactual = (energy2 - energy1);
-		Real energyError = fabs( deltaEnergyPredicted - deltaEnergyFactual );
-		if (energyError > 0.05*fabs(deltaEnergyFactual)) { // allow up to 5% error
-			printf("Error energy %i = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
-		}
+        pos[moveIdx] = pos[moveIdx] - epsilon;
+        // check first derivative:
+        Real energy2 = 0;
+        for(unsigned int i = 0; i < vTetras.size(); ++i)
+        {
+                energy2 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
+        }
+        Coord forceAtMI = force1[moveIdx];
+        Real deltaEnergyPredicted = -dot( forceAtMI, epsilon );
+        Real deltaEnergyFactual = (energy2 - energy1);
+        Real energyError = fabs( deltaEnergyPredicted - deltaEnergyFactual );
+        if (energyError > 0.05*fabs(deltaEnergyFactual))
+        { // allow up to 5% error
+            printf("Error energy %i = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
+        }
 
-		// check 2nd derivative for off-diagonal elements:
-		BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx ); 
-		for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
-		{
-			BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
-			unsigned int testIdx = edge[0];
-			if (testIdx==moveIdx) testIdx = edge[1];
-			Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
-			Coord deltaForcePredicted = deltaForceCalculated[testIdx];
-			Coord error = deltaForcePredicted - deltaForceFactual;
-			errorNorm = error.norm();
-			errorThresh = (Real) 0.05 * deltaForceFactual.norm(); // allow up to 5% error
-			if (deltaForceFactual.norm() > 0.0) {
-				avgError += (Real)100.0*errorNorm/deltaForceFactual.norm();
-				count++;
-			}
-			if (errorNorm > errorThresh) {
-				printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
-			}
-		}
-		// check 2nd derivative for diagonal elements:
-		unsigned int testIdx = moveIdx;
-		Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
-		Coord deltaForcePredicted = deltaForceCalculated[testIdx];
-		Coord error = deltaForcePredicted - deltaForceFactual;
-		errorNorm = error.norm();
-		errorThresh = (Real)0.05 * deltaForceFactual.norm(); // allow up to 5% error
-		if (errorNorm > errorThresh) {
-			printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
-		}
-	}
+        // check 2nd derivative for off-diagonal elements:
+        BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx );
+        for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
+        {
+            BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
+            unsigned int testIdx = edge[0];
+            if (testIdx==moveIdx) testIdx = edge[1];
+            Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
+            Coord deltaForcePredicted = deltaForceCalculated[testIdx];
+            Coord error = deltaForcePredicted - deltaForceFactual;
+            errorNorm = error.norm();
+            errorThresh = (Real) 0.05 * deltaForceFactual.norm(); // allow up to 5% error
 
-	tetrahedronInfo.endEdit();
-	printf( "testDerivatives passed!\n" );
-	avgError /= (Real)count;
-	printf( "Average error = %.2f%%\n", avgError );
+            if (deltaForceFactual.norm() > 0.0)
+            {
+                    avgError += (Real)100.0*errorNorm/deltaForceFactual.norm();
+                    count++;
+            }
+            if (errorNorm > errorThresh)
+            {
+                    printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+            }
+        }
+        // check 2nd derivative for diagonal elements:
+        unsigned int testIdx = moveIdx;
+        Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
+        Coord deltaForcePredicted = deltaForceCalculated[testIdx];
+        Coord error = deltaForcePredicted - deltaForceFactual;
+        errorNorm = error.norm();
+        errorThresh = (Real)0.05 * deltaForceFactual.norm(); // allow up to 5% error
+        if (errorNorm > errorThresh)
+        {
+                printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+        }
+    }
 
-	d_pos.endEdit();
-	d_force1.endEdit();
-	d_force2.endEdit();
-	d_deltaPos.endEdit();
-	d_deltaForceCalculated.endEdit();
+    tetrahedronInfo.endEdit();
+    printf( "testDerivatives passed!\n" );
+    avgError /= (Real)count;
+    printf( "Average error = %.2f%%\n", avgError );
+
+    d_pos.endEdit();
+    d_force1.endEdit();
+    d_force2.endEdit();
+    d_deltaPos.endEdit();
+    d_deltaForceCalculated.endEdit();
 }
 
 
@@ -678,37 +683,42 @@ template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *filename )
 {
     VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue());
-	core::topology::BaseMeshTopology::SeqTriangles triangles = _topology->getTriangles();
-	FILE *file = fopen( filename, "wb" );
-	if (!file) return;
-	// write header
-	char header[81];
-	//	strcpy( header, "STL generated by SOFA." );
-    size_t errResult;
-        errResult = fwrite( (void*)&(header[0]),1, 80, file );
-	unsigned int numTriangles = triangles.size();
-        errResult = fwrite( &numTriangles, 4, 1, file );
-	// write poly data
-	float vertex[3][3];
-	float normal[3] = { 1,0,0 };
-	short stlSeperator = 0;
+    core::topology::BaseMeshTopology::SeqTriangles triangles = _topology->getTriangles();
+    FILE *file = fopen( filename, "wb" );
 
-	for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++) {
-		if (_topology->getTetrahedraAroundTriangle( triangleId ).size()==1) {
-			// surface triangle, save it
-			unsigned int p0 = _topology->getTriangle( triangleId )[0];
-			unsigned int p1 = _topology->getTriangle( triangleId )[1];
-			unsigned int p2 = _topology->getTriangle( triangleId )[2];
-			for (int d=0; d<3; d++) {
-				vertex[0][d] = (float)pos[p0][d];
-				vertex[1][d] = (float)pos[p1][d];
-				vertex[2][d] = (float)pos[p2][d];
-			}
-                        errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
-                        errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
-                        errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
-		}
-	}
+    if (!file) return;
+
+    // write header
+    char header[81];
+
+    size_t errResult;
+    errResult = fwrite( (void*)&(header[0]),1, 80, file );
+    unsigned int numTriangles = triangles.size();
+    errResult = fwrite( &numTriangles, 4, 1, file );
+    // write poly data
+    float vertex[3][3];
+    float normal[3] = { 1,0,0 };
+    short stlSeperator = 0;
+
+    for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++)
+    {
+        if (_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
+        {
+            // surface triangle, save it
+            unsigned int p0 = _topology->getTriangle( triangleId )[0];
+            unsigned int p1 = _topology->getTriangle( triangleId )[1];
+            unsigned int p2 = _topology->getTriangle( triangleId )[2];
+            for (int d=0; d<3; d++)
+            {
+                    vertex[0][d] = (float)pos[p0][d];
+                    vertex[1][d] = (float)pos[p1][d];
+                    vertex[2][d] = (float)pos[p2][d];
+            }
+            errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
+            errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
+            errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
+        }
+    }
     errResult -= errResult; // ugly trick to avoid warnings
 
 	fclose( file );
@@ -717,11 +727,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *f
 template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-	//	unsigned int i;
-	if (!vparams->displayFlags().getShowForceFields()) return;
-	if (!this->mstate) return;
-
-
+    //	unsigned int i;
+    if (!vparams->displayFlags().getShowForceFields()) return;
+    if (!this->mstate) return;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -767,60 +775,60 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     Vec<4,float> color4;
 
     std::string material = f_materialName.getValue();
-	if (material=="ArrudaBoyce") {
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
-	}
-	else if (material=="StVenantKirchhoff"){
-		color1 = Vec<4,float>(1.0,0.0,0.0,1.0);
-		color2 = Vec<4,float>(1.0,0.0,0.5,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
-	}
-	else if (material=="NeoHookean"){
-		color1 = Vec<4,float>(0.0,1.0,1.0,1.0);
-		color2 = Vec<4,float>(0.5,0.0,1.0,1.0);
-		color3 = Vec<4,float>(1.0,0.0,1.0,1.0);
-		color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
-	}
-	else if (material=="MooneyRivlin"){
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.0,1.0,0.5,1.0);
-		color3 = Vec<4,float>(0.0,1.0,1.0,1.0);
-		color4 = Vec<4,float>(0.5,1.0,1.0,1.0);
-	}
-	else if (material=="VerondaWestman"){
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
-	}
-	else if (material=="Costa"){
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
-	}
-	else if (material=="Ogden"){
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
-	}
-	else {
-		color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
-		color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
-		color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
-		color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
-	}
+    if (material=="ArrudaBoyce") {
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+    }
+    else if (material=="StVenantKirchhoff"){
+        color1 = Vec<4,float>(1.0,0.0,0.0,1.0);
+        color2 = Vec<4,float>(1.0,0.0,0.5,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
+    }
+    else if (material=="NeoHookean"){
+        color1 = Vec<4,float>(0.0,1.0,1.0,1.0);
+        color2 = Vec<4,float>(0.5,0.0,1.0,1.0);
+        color3 = Vec<4,float>(1.0,0.0,1.0,1.0);
+        color4 = Vec<4,float>(1.0,0.5,1.0,1.0);
+    }
+    else if (material=="MooneyRivlin"){
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.0,1.0,0.5,1.0);
+        color3 = Vec<4,float>(0.0,1.0,1.0,1.0);
+        color4 = Vec<4,float>(0.5,1.0,1.0,1.0);
+    }
+    else if (material=="VerondaWestman"){
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+    }
+    else if (material=="Costa"){
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+    }
+    else if (material=="Ogden"){
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+    }
+    else {
+        color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
+        color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
+        color3 = Vec<4,float>(1.0,1.0,0.0,1.0);
+        color4 = Vec<4,float>(1.0,1.0,0.5,1.0);
+    }
 
 
-	vparams->drawTool()->drawTriangles(points[0], color1);
-	vparams->drawTool()->drawTriangles(points[1], color2);
-	vparams->drawTool()->drawTriangles(points[2], color3);
-	vparams->drawTool()->drawTriangles(points[3], color4);
+    vparams->drawTool()->drawTriangles(points[0], color1);
+    vparams->drawTool()->drawTriangles(points[1], color2);
+    vparams->drawTool()->drawTriangles(points[2], color3);
+    vparams->drawTool()->drawTriangles(points[3], color4);
 
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);

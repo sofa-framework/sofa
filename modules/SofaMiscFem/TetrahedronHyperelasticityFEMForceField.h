@@ -177,7 +177,6 @@ public :
     Data<string> f_materialName; /// the name of the material
     Data<SetParameterArray> f_parameterSet;
     Data<SetAnisotropyDirectionArray> f_anisotropySet;
-    Data<string> f_parameterFileName;
 
     TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
     EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
