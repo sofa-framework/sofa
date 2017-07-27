@@ -165,20 +165,22 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 
     simulation::common::VectorOperations vop(cParams, this->getContext());
     
-	vop.v_clear(this->getLambda() );
-	vop.v_clear(this->getDx() );
     
     {
         sofa::core::behavior::MultiVecDeriv lambda(&vop, m_lambdaId);
         lambda.realloc(&vop,false,true);
-        lambda.clear();
         m_lambdaId = lambda.id();
+        simulation::MechanicalVOpVisitor clearLambdaVisitor(cParams, m_lambdaId, core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0);
+        clearLambdaVisitor.setMapped(true);
+        getContext()->executeVisitor(&clearLambdaVisitor);
     }
     {
         sofa::core::behavior::MultiVecDeriv dx(&vop, m_dxId);
         dx.realloc(&vop,false,true);
-        dx.clear();
         m_dxId = dx.id();
+        simulation::MechanicalVOpVisitor clearDxVisitor(cParams, m_dxId, core::ConstMultiVecDerivId::null(), core::ConstMultiVecDerivId::null(), 1.0);
+        clearDxVisitor.setMapped(true);
+        getContext()->executeVisitor(&clearDxVisitor);
     }
 
     if ( displayTime.getValue() )
