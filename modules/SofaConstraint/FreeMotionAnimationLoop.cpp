@@ -40,10 +40,106 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/MechanicalVisitor.h>
 
 
 namespace sofa
 {
+
+namespace simulation
+{
+
+///// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
+//class MechanicalAddComplianceForce : public MechanicalVisitor
+//{
+//    core::MultiVecDerivId res, lambdas;
+//    SReal invdt;
+//
+//
+//public:
+//    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt)
+//        : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0 / dt)
+//    {
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//        setReadWriteVectors();
+//#endif
+//    }
+//
+//    // reset lambda where there is no compliant FF
+//    // these reseted lambdas were previously propagated, but were not computed from the last solve
+//    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+//    {
+//        // a compliant FF must be alone, so if there is one, it is the first one of the list.
+//        const core::behavior::BaseForceField* ff = NULL;
+//
+//        if (!node->forceField.empty()) ff = *node->forceField.begin();
+//        else if (!node->interactionForceField.empty()) ff = *node->interactionForceField.begin();
+//
+//        if (!ff || !ff->isCompliance.getValue())
+//        {
+//            const core::VecDerivId& lambdasid = lambdas.getId(mm);
+//            if (!lambdasid.isNull()) // previously allocated
+//            {
+//                mm->resetForce(this->params, lambdasid);
+//            }
+//        }
+//        return RESULT_CONTINUE;
+//    }
+//
+//    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+//    {
+//        return fwdMechanicalState(node, mm);
+//    }
+//
+//    // pop-up lamdas without modifying f
+//    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+//    {
+//        map->applyJT(this->mparams, lambdas, lambdas);
+//    }
+//
+//    // for all dofs, f += lambda / dt
+//    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+//    {
+//        const core::VecDerivId& lambdasid = lambdas.getId(mm);
+//        if (!lambdasid.isNull()) // previously allocated
+//        {
+//            const core::VecDerivId& resid = res.getId(mm);
+//
+//            mm->vOp(this->params, resid, resid, lambdasid ); // f += lambda / dt
+//        }
+//    }
+//
+//    virtual void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+//    {
+//        bwdMechanicalState(node, mm);
+//    }
+//
+//
+//    /// Return a class name for this visitor
+//    /// Only used for debugging / profiling purposes
+//    virtual const char* getClassName() const { return "MechanicalAddComplianceForce"; }
+//    virtual std::string getInfos() const
+//    {
+//        std::string name = std::string("[") + res.getName() + "," + lambdas.getName() + std::string("]");
+//        return name;
+//    }
+//
+//    /// Specify whether this action can be parallelized.
+//    virtual bool isThreadSafe() const
+//    {
+//        return true;
+//    }
+//
+//#ifdef SOFA_DUMP_VISITOR_INFO
+//    void setReadWriteVectors()
+//    {
+//        addWriteVector(res);
+//        addWriteVector(lambdas);
+//    }
+//#endif
+//};
+
+}
 
 namespace component
 {
@@ -112,7 +208,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (dt == 0)
         dt = this->gnode->getDt();
 
-
     double startTime = this->gnode->getTime();
 
     simulation::common::VectorOperations vop(params, this->getContext());
@@ -122,6 +217,13 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
+
+    core::ConstraintParams cparams(*params);
+    cparams.setX(freePos);
+    cparams.setV(freeVel);
+    cparams.setJ(sofa::core::ConstMatrixDerivId::holonomicC());
+    cparams.setDx(constraintSolver->getDx());
+    cparams.setLambda(constraintSolver->getLambda());
 
     {
         MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
@@ -179,15 +281,26 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
+    // Mapping geometric stiffness coming from previous lambda.
+    {
+        simulation::MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
+        lambdaMultInvDt.setMapped(true);
+        this->getContext()->executeVisitor(&lambdaMultInvDt);
+        simulation::MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
+        this->getContext()->executeVisitor(&geometricStiffnessVisitor);
+    }
+
+
     // Free Motion
     AdvancedTimer::stepBegin("FreeMotion");
     simulation::SolveVisitor freeMotion(params, dt, true);
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    mop.projectPositionAndVelocity(freePos, freeVel); // apply projective constraints
-    mop.propagateXAndV(freePos, freeVel);
-
+    {
+        mop.projectResponse(freeVel);
+        mop.propagateDx(freeVel, true);
+    }
     dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
     if (displayTime.getValue())
@@ -222,12 +335,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         AdvancedTimer::stepBegin("ConstraintSolver");
 
-        core::ConstraintParams cparams(*params);
-        cparams.setX(freePos);
-        cparams.setV(freeVel);
-        cparams.setDx(constraintSolver->getDx());
-        cparams.setLambda(constraintSolver->getLambda());
-
         if (m_solveVelocityConstraintFirst.getValue())
         {
             cparams.setOrder(core::ConstraintParams::VEL);
@@ -235,39 +342,12 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
             MultiVecDeriv dv(&vop, constraintSolver->getDx());
             mop.projectResponse(dv);
-            mop.propagateDx(dv);
+            mop.propagateDx(dv,true);
 
-            // xfree += dv * dt
-            freePos.eq(freePos, dv, dt);
-            mop.propagateX(freePos);
-
-            cparams.setOrder(core::ConstraintParams::POS);
-            constraintSolver->solveConstraint(&cparams, pos);
-
-            MultiVecDeriv dx(&vop, constraintSolver->getDx());
-
-            mop.projectVelocity(vel); // apply projective constraints
-            mop.propagateV(vel);
-            mop.projectResponse(dx);
-            mop.propagateDx(dx, true);
-
-            // "mapped" x = xfree + dx
-            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
+            // x = xfree + dv * dt
+            pos.eq(pos, vel, dt);
         }
-        else
-        {
-            cparams.setOrder(core::ConstraintParams::POS_AND_VEL);
-            constraintSolver->solveConstraint(&cparams, pos, vel);
-            mop.projectVelocity(vel); // apply projective constraints
-            mop.propagateV(vel);
 
-            MultiVecDeriv dx(&vop, constraintSolver->getDx());
-            mop.projectResponse(dx);
-            mop.propagateDx(dx, true);
-
-            // "mapped" x = xfree + dx
-            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
-        }
         AdvancedTimer::stepEnd("ConstraintSolver");
 
     }
@@ -280,6 +360,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
+
+    mop.projectPositionAndVelocity(pos, vel);
+    mop.propagateXAndV(pos, vel);
 
     this->gnode->setTime ( startTime + dt );
     this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
