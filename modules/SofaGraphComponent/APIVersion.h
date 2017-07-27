@@ -15,37 +15,48 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#define CGAL_MESH_3_VERBOSE
+#include "config.h"
 
-#include <CGALPlugin/config.h>
-#include "MeshGenerationFromImage.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+namespace sofa
+{
 
-SOFA_DECL_CLASS(MeshGenerationFromImage)
+namespace component
+{
 
-using namespace sofa::defaulttype;
-using namespace cgal;
+namespace _apiversion_
+{
 
-int MeshGenerationFromImageClass = sofa::core::RegisterObject("Generate tetrahedral mesh from image")
-#ifndef SOFA_FLOAT
-        .add< MeshGenerationFromImage<Vec3dTypes,ImageUC> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< MeshGenerationFromImage<Vec3fTypes, ImageUC> >()
-#endif //SOFA_DOUBLE
-        ;
+class SOFA_GRAPH_COMPONENT_API APIVersion : public BaseObject
+{
 
-#ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3dTypes, ImageUC>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API cgal::MeshGenerationFromImage<Vec3fTypes, ImageUC>;
-#endif //SOFA_DOUBLE
+public:
+    SOFA_CLASS(APIVersion, BaseObject);
+
+    const std::string& getApiLevel() ;
+    virtual void init() override ;
+
+protected:
+    APIVersion() ;
+    virtual ~APIVersion() ;
+    void checkInputData() ;
+private:
+    Data<std::string>  d_level ;
+};
+
+} // namespace _apiversion_
+
+using _apiversion_::APIVersion ;
+
+} // namespace component
+
+} // namespace sofa
