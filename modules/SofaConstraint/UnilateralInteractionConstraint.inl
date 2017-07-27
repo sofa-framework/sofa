@@ -320,7 +320,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const c
         {
 //			bool& temp = contactsStatus.at(i);
             UnilateralConstraintResolutionWithFriction* ucrwf = new UnilateralConstraintResolutionWithFriction(c.mu, NULL, &contactsStatus[i]);
-            ucrwf->tolerance = customTolerance;
+            ucrwf->setTolerance(customTolerance);
             resTab[offset] = ucrwf;
 
             // TODO : cette méthode de stockage des forces peu mal fonctionner avec 2 threads quand on utilise l'haptique

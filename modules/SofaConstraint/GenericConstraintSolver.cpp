@@ -250,7 +250,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
         {
             bool foundCC = false;
             nbObjects++;
-            unsigned int l = current_cp->constraintsResolutions[c_id]->nbLines;
+			unsigned int l = current_cp->constraintsResolutions[c_id]->getNbLines();
 
             for (unsigned int j = 0; j < constraintCorrections.size(); j++)
             {
@@ -554,7 +554,7 @@ int GenericConstraintProblem::getNumConstraintGroups()
             break;
         }
         ++n;
-        i += constraintsResolutions[i]->nbLines;
+        i += constraintsResolutions[i]->getNbLines();
     }
     return n;
 }
@@ -621,7 +621,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                 break;
             }
             constraintsResolutions[i]->init(i, w, force);
-            i += constraintsResolutions[i]->nbLines;
+			i += constraintsResolutions[i]->getNbLines();
         }
     }
 
@@ -662,10 +662,12 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         for(j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
-            nb = constraintsResolutions[j]->nbLines;
+			nb = constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
+
+
             for(l=0; l<nb; l++)
             {
                 errF[l] = force[j+l];
@@ -705,11 +707,11 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
                     constraintsAreVerified = false;
             }
 
-            if(constraintsResolutions[j]->tolerance)
+			if(constraintsResolutions[j]->getTolerance())
             {
-                if(contraintError > constraintsResolutions[j]->tolerance)
+				if(contraintError > constraintsResolutions[j]->getTolerance())
                     constraintsAreVerified = false;
-                contraintError *= tol / constraintsResolutions[j]->tolerance;
+				contraintError *= tol / constraintsResolutions[j]->getTolerance();
             }
 
             error += contraintError;
@@ -782,7 +784,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         }
         else msg_info_when(solver->displayTime.getValue(), solver) << " Convergence after " << i+1 << " iterations " ;
 
-        for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
+		for(i=0; i<dim; i += constraintsResolutions[i]->getNbLines())
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
@@ -805,12 +807,12 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 
         for(j=0; j<dimension; )
         {
-            nb = constraintsResolutions[j]->nbLines;
+			const unsigned int nb = constraintsResolutions[j]->getNbLines();
 
             if(tabErrors[j])
                 graph_constraints.push_back(tabErrors[j]);
-            else if(constraintsResolutions[j]->tolerance)
-                graph_constraints.push_back(constraintsResolutions[j]->tolerance);
+			else if(constraintsResolutions[j]->getTolerance())
+				graph_constraints.push_back(constraintsResolutions[j]->getTolerance());
             else
                 graph_constraints.push_back(tol);
 
@@ -865,7 +867,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                 break;
             }
             constraintsResolutions[i]->init(i, w, force);
-            i += constraintsResolutions[i]->nbLines;
+			i += constraintsResolutions[i]->getNbLines();
         }
         memset(force, 0, dimension * sizeof(double));	// Erase previous forces for the time being
     }
@@ -907,7 +909,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         for(j=0; j<dimension; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
-            nb = constraintsResolutions[j]->nbLines;
+			nb = constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
@@ -953,11 +955,11 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
                     constraintsAreVerified = false;
             }
 
-            if(constraintsResolutions[j]->tolerance)
+			if(constraintsResolutions[j]->getTolerance())
             {
-                if(contraintError > constraintsResolutions[j]->tolerance)
+				if(contraintError > constraintsResolutions[j]->getTolerance())
                     constraintsAreVerified = false;
-                contraintError *= tol / constraintsResolutions[j]->tolerance;
+				contraintError *= tol / constraintsResolutions[j]->getTolerance();
             }
 
             error += contraintError;
@@ -1053,7 +1055,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         }
         else msg_info_when(solver->displayTime.getValue(),solver) <<" Convergence after " << i+1 << " iterations ";
 
-        for(i=0; i<dimension; i += constraintsResolutions[i]->nbLines)
+		for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
@@ -1066,12 +1068,12 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 
         for(j=0; j<dimension; )
         {
-            nb = constraintsResolutions[j]->nbLines;
+			nb = constraintsResolutions[j]->getNbLines();
 
             if(tabErrors[j])
                 graph_constraints.push_back(tabErrors[j]);
-            else if(constraintsResolutions[j]->tolerance)
-                graph_constraints.push_back(constraintsResolutions[j]->tolerance);
+			else if(constraintsResolutions[j]->getTolerance())
+				graph_constraints.push_back(constraintsResolutions[j]->getTolerance());
             else
                 graph_constraints.push_back(tol);
 

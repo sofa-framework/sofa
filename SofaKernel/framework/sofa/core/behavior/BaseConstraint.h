@@ -44,19 +44,18 @@ namespace behavior
  *  \brief Object computing a constraint resolution within a Gauss-Seidel algorithm
  */
 
-class ConstraintResolution
+class SOFA_CORE_API ConstraintResolution
 {
 public:
-    ConstraintResolution()
-        : nbLines(1), tolerance(0.0) {}
+    ConstraintResolution(unsigned int nbLines, double tolerance = 0.0);
 
     virtual ~ConstraintResolution() {}
 
     /// The resolution object can do precomputation with the compliance matrix, and give an initial guess.
-    virtual void init(int /*line*/, double** /*w*/, double* /*force*/) {}
+    virtual void init(int /*line*/, double** /*w*/, double* /*force*/);
 
     /// The resolution object can provide an initial guess
-    virtual void initForce(int /*line*/, double* /*force*/) {}
+    virtual void initForce(int /*line*/, double* /*force*/);
 
     /// Resolution of the constraint for one Gauss-Seidel iteration
     virtual void resolution(int line, double** w, double* d, double* force, double * dFree)
@@ -73,11 +72,32 @@ public:
     /// Called after Gauss-Seidel last iteration, in order to store last computed forces for the inital guess
     virtual void store(int /*line*/, double* /*force*/, bool /*convergence*/) {}
 
+    inline void setNbLines(unsigned int nbLines)
+    {
+        m_nbLines = nbLines;
+    }
+
+    inline unsigned int getNbLines() const
+    {
+        return m_nbLines;
+    }
+
+    inline void setTolerance(double tolerance)
+    {
+        m_tolerance = tolerance;
+    }
+
+    inline double getTolerance() const
+    {
+        return m_tolerance;
+    }
+
+private:
     /// Number of dof used by this particular constraint. To be modified in the object's constructor.
-    unsigned int nbLines;
+    unsigned int m_nbLines;
 
     /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
-    double tolerance;
+    double m_tolerance;
 };
 
 /**

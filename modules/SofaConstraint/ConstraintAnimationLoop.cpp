@@ -142,7 +142,7 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
         error=0.0;
         for(j=0; j<_dim; ) // increment of j realized at the end of the loop
         {
-            nb = _constraintsResolutions[j]->nbLines;
+            nb = _constraintsResolutions[j]->getNbLines();
 
             //2. for each line we compute the actual value of d
             //   (a)d is set to dfree
@@ -710,7 +710,7 @@ void ConstraintAnimationLoop::computePredictiveForce(int dim, double* force, std
     for(int i=0; i<dim; )
     {
         res[i]->initForce(i, force);
-        i += res[i]->nbLines;
+        i += res[i]->getNbLines();
     }
 }
 
@@ -738,7 +738,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     for(i=0; i<dim; )
     {
         res[i]->init(i, w, force);
-        i += res[i]->nbLines;
+        i += res[i]->getNbLines();
     }
 
     std::map < std::string, sofa::helper::vector<double> >* graphs = _graphForces.beginEdit();
@@ -781,7 +781,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
         for(j=0; j<dim; ) // increment of j realized at the end of the loop
         {
             //1. nbLines provide the dimension of the constraint  (max=6)
-            nb = res[j]->nbLines;
+            nb = res[j]->getNbLines();
 
             bool check = true;
             for (int b=0; b<nb; b++)
@@ -833,11 +833,11 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
                         constraintsAreVerified = false;
                 }
 
-                if(res[j]->tolerance)
+                if(res[j]->getTolerance())
                 {
-                    if(contraintError > res[j]->tolerance)
+                    if(contraintError > res[j]->getTolerance())
                         constraintsAreVerified = false;
-                    contraintError *= tolerance / res[j]->tolerance;
+                    contraintError *= tolerance / res[j]->getTolerance();
                 }
 
                 error += contraintError;
@@ -906,7 +906,7 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
     for(i=0; i<dim; )
     {
         res[i]->store(i, force, convergence);
-        int t = res[i]->nbLines;
+        int t = res[i]->getNbLines();
         i += t;
     }
 
@@ -928,12 +928,12 @@ void ConstraintAnimationLoop::gaussSeidelConstraint(int dim, double* dfree, doub
 
     for(j=0; j<dim; )
     {
-        nb = res[j]->nbLines;
+        nb = res[j]->getNbLines();
 
         if(tabErrors[j])
             graph_constraints.push_back(tabErrors[j]);
-        else if(res[j]->tolerance)
-            graph_constraints.push_back(res[j]->tolerance);
+        else if(res[j]->getTolerance())
+            graph_constraints.push_back(res[j]->getTolerance());
         else
             graph_constraints.push_back(tolerance);
 
