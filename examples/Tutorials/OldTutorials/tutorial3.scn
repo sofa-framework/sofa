@@ -13,13 +13,13 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="200" damping="1" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/smCube125.obj" color="green" dx="18" dy="17" dz="29" />
+            <OglModel name="Visual" filename="mesh/smCube125.obj" color="green"/>
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="18" dy="17" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />
@@ -34,13 +34,13 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan" dx="0" dy="17" dz="29" />
+            <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan"/>
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="0" dy="17" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />

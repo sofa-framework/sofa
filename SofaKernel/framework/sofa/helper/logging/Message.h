@@ -101,11 +101,7 @@ protected:
 };
 
 
-<<<<<<< HEAD
-template<> Message& Message::operator<<(const FileInfo &fi) ;
-=======
 template<> SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi) ;
->>>>>>> 0253fd1534dd666181b4145d3dfd0d7bf4d20fcd
 
 SOFA_HELPER_API std::ostream& operator<< (std::ostream&, const Message&) ;
 SOFA_HELPER_API const std::string toString(const Message::Type type) ;

@@ -1,29 +1,30 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
+* This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This program is distributed in the hope that it will be useful, but WITHOUT *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
 #include "config.h"
-
-#include <sofa/defaulttype/RGBAColor.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/objectmodel/Data.h>
@@ -59,10 +60,10 @@ namespace forcefield
 * An external MechanicalState reference can also be passed to the ForceField as rest shape position.
 */
 template<class DataTypes>
-class RestShapeSpringsForceField : public core::behavior::ForceField<DataTypes>
+class AngularSpringForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(RestShapeSpringsForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(AngularSpringForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
     typedef core::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -77,33 +78,24 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > points;
-    Data< VecReal > stiffness;
+    Data< helper::vector< unsigned int > > indices;
     Data< VecReal > angularStiffness;
-    Data< helper::vector< CPos > > pivotPoints;
-    Data< std::string > external_rest_shape;
-    Data< helper::vector< unsigned int > > external_points;
-    Data< bool > recompute_indices;
+    Data<VecReal> angularLimit;
     Data< bool > drawSpring;
-    Data< defaulttype::RGBAColor > springColor;
+    Data< sofa::defaulttype::Vec4f > springColor;
 
-    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
-    //VecDeriv Springs_dir;
 protected:
-    RestShapeSpringsForceField();
+    AngularSpringForceField();
 public:
     /// BaseObject initialization method.
     void bwdInit();
-
     virtual void reinit();
 
     /// Add the forces.
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
@@ -112,51 +104,23 @@ public:
 
     /// Brings ForceField contribution to the global system stiffness matrix.
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
-
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex );
-
     virtual void draw(const core::visual::VisualParams* vparams);
-
-
-    const DataVecCoord* getExtPosition() const;
-    const VecIndex& getIndices() const { return m_indices; }
-    const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
-
-    virtual void updateForceMask();
 
 protected :
 
-    void recomputeIndices();
-
-    VecIndex m_indices;
+    core::behavior::MechanicalState<DataTypes> *mState;
     VecReal k;
-    VecIndex m_ext_indices;
-    helper::vector<CPos> m_pivots;
-
-    SReal lastUpdatedStep;
-
-private :
-
-    bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_AngularSpringForceField_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6dTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2dTypes>;
+extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3dTypes>;
+//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6fTypes>;
-extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
+extern template class SOFA_DEFORMABLE_API AngularSpringForceField<sofa::defaulttype::Rigid3fTypes>;
+//extern template class SOFA_DEFORMABLE_API AngularSpringForceField<Rigid2fTypes>;
 #endif
 
 #endif
@@ -167,4 +131,4 @@ extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defau
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_H
+#endif // SOFA_COMPONENT_FORCEFIELD_ANGULARSPRINGFORCEFIELD_H
