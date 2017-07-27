@@ -74,7 +74,7 @@ FixedConstraint<DataTypes>::FixedConstraint()
     , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , d_showObject(initData(&d_showObject,true,"showObject","draw or not the fixed constraints"))
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity and free velocity to zero") )
+    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
@@ -251,7 +251,6 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     if(!d_projectVelocity.getValue()) return;
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
-    helper::WriteAccessor<DataVecDeriv> resFree ( mparams, vData );
 
     if( this->d_fixAll.getValue()==true )    // fix everyting
     {

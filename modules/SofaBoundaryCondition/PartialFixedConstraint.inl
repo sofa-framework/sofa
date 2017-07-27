@@ -68,6 +68,7 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
     , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , fixedDirections( initData(&fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
+    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
 {
     // default to indice 0
     d_indices.beginEdit()->push_back(0);
@@ -172,7 +173,7 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
             }
         }
     }
-//    cerr<<"PartialFixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
+    //    cerr<<"PartialFixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -187,12 +188,13 @@ void PartialFixedConstraint<DataTypes>::projectResponse(const core::MechanicalPa
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-#if 0 /// @TODO ADD A FLAG FOR THIS
-    helper::WriteAccessor<DataVecDeriv> res = vData;
+    if(!d_projectVelocity.getValue()) return;
+    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
+
     //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )
+    if( d_fixAll.getValue()==true )
     {
         // fix everyting
         for( unsigned i=0; i<res.size(); i++ )
@@ -202,14 +204,13 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
     }
     else
     {
-        const SetIndexArray & indices = f_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         unsigned i=0;
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end() && i<res.size(); ++it, ++i)
         {
             res[*it] = Deriv();
         }
     }
-#endif
 }
 
 template <class DataTypes>
