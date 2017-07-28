@@ -138,6 +138,33 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
                                  int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     double absscale=fabs(scale);
+
+    if(filename.length()>4 && filename.substr(filename.length()-4) == ".tmg") {
+
+            DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+            std::ifstream inf(filename.c_str(), std::ios::in);
+            std::string content;
+            std::string::size_type sz;
+            double convert=0;
+            int i=0;
+
+            //loading in data structure
+            if(!inf) {
+                std::cout << "Unable to open .tmg file" << std::endl;
+                return nullptr;
+            }
+            else {
+                while(getline(inf,content)) {
+                    convert = std::stod(content,&sz);
+                    (*grid)[i] = convert;
+                    i++;
+                }
+            }
+
+            inf.close();
+            return grid;
+        }
+
     if (filename == "#cube")
     {
         float dim = (float)scale;
