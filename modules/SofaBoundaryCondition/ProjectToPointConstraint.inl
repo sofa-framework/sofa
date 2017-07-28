@@ -146,9 +146,6 @@ void ProjectToPointConstraint<DataTypes>::init()
     }
 
     reinit();
-
-    //  cerr<<"ProjectToPointConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 template <class DataTypes>
@@ -190,7 +187,6 @@ void  ProjectToPointConstraint<DataTypes>::reinit()
 //    {
 //        for( unsigned j=0; j<blockSize; j++ )
 //        {
-//            //            cerr<<"ProjectToPointConstraint<DataTypes>::reinit , insert at: " << blockSize*i+j << endl;
 //            jacobian.beginRow( blockSize*i+j );
 //            jacobian.set( blockSize*i+j, blockSize*i+j, 1);
 //        }
@@ -224,12 +220,8 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    //    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse is called "<<endl;
-    //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-//    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse  input  = "<<endl<<res<<endl;
-//    serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
@@ -246,10 +238,8 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
                 ++it)
         {
             res[*it] = Deriv();
-//            cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse fix particle  "<<*it<<endl;
         }
     }
-//    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse  output = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -283,7 +273,6 @@ void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
             ++rowIt;
         }
     }
-    //cerr<<"ProjectToPointConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 template <class DataTypes>
@@ -297,7 +286,6 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-    //serr<<"ProjectToPointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue(mparams) )
     {
         // fix everything
@@ -314,7 +302,6 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
                 ++it)
         {
             res[*it] = f_point.getValue();
-//            cerr<<"ProjectToPointConstraint<DataTypes>::projectPosition fix particle  "<<*it<<endl;
         }
     }
 }
@@ -323,8 +310,6 @@ void ProjectToPointConstraint<DataTypes>::projectPosition(const core::Mechanical
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<"ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -342,8 +327,6 @@ void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 template <class DataTypes>
 void ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //cerr<<"ProjectToPointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue();
@@ -364,18 +347,12 @@ void ProjectToPointConstraint<DataTypes>::draw(const core::visual::VisualParams*
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"ProjectToPointConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
-
-
-
     const SetIndexArray & indices = f_indices.getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"ProjectToPointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if( f_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
