@@ -19,6 +19,7 @@ set(SOURCE_FILES
     helper/Quater_test.cpp
     helper/SVector_test.cpp
     helper/vector_test.cpp
+    helper/pair_test.cpp
     helper/gl/GLSLShader_test.cpp
     helper/io/MeshOBJ_test.cpp
     helper/io/MeshSTL_test.cpp
