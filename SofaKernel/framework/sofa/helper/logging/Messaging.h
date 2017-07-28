@@ -287,5 +287,17 @@
 #define dmsg_advice(...) DMSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define dmsg_advice_when(cond, ...) if((cond)) dmsg_advice(__VA_ARGS__)
 
+#define MSG_REGISTER_CLASS(classType, nameName) \
+    namespace sofa {         \
+    namespace helper {       \
+    namespace logging {      \
+        inline bool notMuted(const classType* ){ return true; }         \
+        inline ComponentInfo::SPtr getComponentInfo(const classType* )  \
+        {                                                               \
+            return ComponentInfo::SPtr(new ComponentInfo(nameName)) ;   \
+        }                                                               \
+    } \
+    } \
+    }
 
 #endif // MESSAGING_H

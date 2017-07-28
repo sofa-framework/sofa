@@ -64,8 +64,8 @@ TriangleFEMForceField()
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
-	f_poisson.setRequired(true);
-	f_young.setRequired(true);
+    f_poisson.setRequired(true);
+    f_young.setRequired(true);
 }
 
 
@@ -394,20 +394,12 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * KJtD[2];
 
     F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * KJtD[1] /* + J[5][2] * KJtD[2] */ ;
-
-
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, displacement = " << Depl << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, strain = " << JtD << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, stress = " << KJtD << endl;
-//    cerr<<"TriangleFEMForceField<DataTypes>::computeForce, Force = " << F << endl;
 }
 
 
 /*
 ** SMALL DEFORMATION METHODS
 */
-
-
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::initSmall()
 {
@@ -468,18 +460,6 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
     f[b] += Coord( F[2], F[3], 0);
     f[c] += Coord( F[4], F[5], 0);
 }
-
-
-//template <class DataTypes>
-//void TriangleFEMForceField<DataTypes>::accumulateDampingSmall(VecCoord&, Index )
-//{
-
-//#ifdef DEBUG_TRIANGLEFEM
-//    sout << "TriangleFEMForceField::accumulateDampingSmall"<<sendl;
-//#endif
-
-//}
-
 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
@@ -786,30 +766,18 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
 
     S = RR*Ke;
     SR = S*RRt;
-
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, strain-displacement  = " << endl << J << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotation  = " << endl << Rot << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, material stiffness = " << endl << K << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, in-plane stiffness = " << endl << JKJt << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, expanded stiffness = " << endl << Ke << endl;
-    //    cerr<<"TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix, rotated stiffness = " << endl << SR << endl;
-
 }
 
 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
-    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, " << _indexedElements->size() << " elements" << endl<< endl;
-
     for(unsigned i=0; i< _indexedElements->size() ; i++)
     {
         StiffnessMatrix JKJt,RJKJtRt;
         computeElementStiffnessMatrix(JKJt, RJKJtRt, _materialsStiffnesses[i], _strainDisplacements[i], _rotations[i]);
         this->addToMatrix(mat,offset,(*_indexedElements)[i],RJKJtRt,-k);
     }
-
-    //    cerr<<"TriangleFEMForceField<DataTypes>::addKToMatrix, final matrix = " << endl << *mat << endl;
 }
 
 

@@ -94,8 +94,7 @@ bool ObjectElement::initNode()
             /// ignore some prefix that are used to quickly disable parameters in XML files
             if (name.substr(0,1) == "_" || name.substr(0,2) == "NO") continue;
 
-            msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;
-        }
+            msg_warning(obj.get()) << SOFA_FILE_INFO_COPIED_FROM(getSrcFile(), getSrcLine()) << "Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" ;        }
     }
     return true;
 }

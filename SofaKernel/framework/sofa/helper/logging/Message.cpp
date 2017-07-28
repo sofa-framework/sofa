@@ -134,7 +134,6 @@ SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
 }
 
 
-
 } // logging
 } // helper
 } // sofa

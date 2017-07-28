@@ -72,8 +72,6 @@ public:
         if(!multi && this->registry.find(key) != this->registry.end())
             return false; // key used
         logFactoryRegister(gettypename(typeid(Object)), gettypename(creator->type()), key, multi);
-        //std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
-        //          << gettypename(creator->type()) << " registered as " << key << std::endl;
         this->registry.insert(std::pair<Key, Creator*>(key, creator));
         return true;
     }
@@ -147,11 +145,11 @@ public:
         return typeid(RealObject);
     }
 
-	// Dummy function to avoid dead stripping symbol
-	void registerInFactory()
-	{
-		printf("[SOFA]Registration of class : %s\n", type().name());
-	}
+    // Dummy function to avoid dead stripping symbol
+    void registerInFactory()
+    {
+        printf("[SOFA]Registration of class : %s\n", type().name());
+    }
 
 };
 /*
@@ -159,7 +157,7 @@ public:
 template<class Object, class Argument>
 Object create(Object* obj, Argument arg)
 {
-	return new Object(arg);
+    return new Object(arg);
 }
 */
 template <class Factory, class RealObject>

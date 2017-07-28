@@ -47,63 +47,20 @@ struct distanceHitSort{
 core::objectmodel::BaseObject* RayTriangleVisitor::embeddingModel()
 {
     std::sort(hits.begin(),hits.end(),distanceHitSort());
-
-//    //================================================================
-//    // Version 1: we assume that objects are nested and we use a stack
-//    std::size_t i=0;
-//    while( i<hits.size() )
-//    {
-//        // remove duplicates
-//        while( i+1<hits.size() && hits[i].hitObject == hits[i+1].hitObject && hits[i].internal == hits[i+1].internal )
-//        {
-//            hits.erase(hits.begin()+i+1);
-////            cerr << "RayTriangleVisitor::cleanHits double entry at distance " << hits[i].distance << endl;
-//        }
-//        i++;
-//    }
-
-//    std::stack<Hit> stackIn;
-//    i=0;
-//    while( i<hits.size() && !hits[i].internal )
-//    {
-//        stackIn.push(hits[i]);
-//        i++; assert(i<hits.size());
-//        while( i<hits.size() && !stackIn.empty() )
-//        {
-//            if(hits[i].internal) // exiting
-//            {
-//                assert( stackIn.top().hitObject == hits[i].hitObject );
-//                stackIn.pop();
-//            }
-//            else // entering
-//            {
-//                stackIn.push(hits[i]);
-//            }
-//            i++;
-//        }
-//    }
-//    if (i<hits.size()) {
-//        return hits[i].hitObject;
-//    }
-//    else {
-//        return NULL;
-//    }
-
     //================================================================
     // Version 2: we assume that objects are not nested, there can be intersections
     // We look for the first exit from an object not previously entered in
-//    cerr<<"RayTriangleVisitor::embeddingModel" << endl;
     std::set<BaseObject*> entered;
     for( std::size_t i= 0; i<hits.size(); i++ )
     {
-        if( !hits[i].internal ) { // entering an object
+        if( !hits[i].internal ) {
+            // entering an object
             entered.insert(hits[i].hitObject);
-//            cerr<<"  entering " << hits[i].hitObject->getName() << endl;
         }
-        else {  // leaving an object
-//            cerr<<"  leaving " << hits[i].hitObject->getName() << endl;
-            if( entered.find(hits[i].hitObject )==entered.end() ){ // not previously entered
-//                cerr<<"  found ! " << endl;
+        else {
+            // leaving an object
+            if( entered.find(hits[i].hitObject )==entered.end() ){
+                // not previously entered
                 return hits[i].hitObject;
             }
         }
@@ -119,7 +76,6 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
     const DataTypes::VecCoord& x = tm->getMechanicalState()->read(sofa::core::ConstVecCoordId::position())->getValue();
     for( core::topology::BaseMeshTopology::SeqTriangles::const_iterator it=tm->getTriangles().begin(), iend=tm->getTriangles().end() ; it!=iend; it++)
     {
-        //cerr<<"RayTriangleVisitor::processTriangleModel, triangle " << *it << ", coordinates: " << x[(*it)[0]] << endl;
         const Vec3& v0 = x[(*it)[0]];
         const Vec3& v1 = x[(*it)[1]];
         const Vec3& v2 = x[(*it)[2]];
@@ -139,31 +95,26 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
         Vec3 P = origin + t * direction;
 
         // inside-outside test, edge 01
-//        cerr<<"testing e01 "<< endl;
         Vec3 VP0 = P-v0;
         Vec3 C = e01.cross(VP0);
         if( N*C<0 ) continue; // point on the right side of the edge
 
         // inside-outside test, edge 12
-//        cerr<<"  e12" << endl;
         Vec3 VP1 = P-v1;
         Vec3 e12 = v2-v1;
         C = e12.cross(VP1);
         if( N*C<0 ) continue; // point on the right side of the edge
 
         // inside-outside test, edge 20
-//        cerr<<"  e02" << endl;
         Vec3 VP2 = P-v2;
         C = e02.cross(VP2);
         if( N*C>0 ) continue; // point on the left side of the edge
 
-//        cerr<<"collision at point " << P << endl;
         Hit hit;
         hit.hitObject = tm;
         hit.distance = (P-origin).norm();
         hit.internal = (N*direction)<0;
         hits.push_back( hit );
-
     }
 }
 
@@ -173,10 +124,8 @@ void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::
     typedef defaulttype::ExtVec3fTypes DataTypes;
 
     const DataTypes::VecCoord& x = om->getVertices();
-//    for( core::topology::BaseMeshTopology::SeqTriangles::const_iterator it=om->getTriangles().begin(), iend=om->getTriangles().end() ; it!=iend; it++)
     for( std::size_t i=0; i<om->getTriangles().size(); i++ )
     {
-        //cerr<<"RayTriangleVisitor::processTriangleModel, triangle " << *it << ", coordinates: " << x[(*it)[0]] << endl;
         const Vec3& v0 = x[om->getTriangles()[i][0]];
         const Vec3& v1 = x[om->getTriangles()[i][1]];
         const Vec3& v2 = x[om->getTriangles()[i][2]];
@@ -196,25 +145,21 @@ void RayTriangleVisitor::processOglModel(simulation::Node* /*node*/, component::
         Vec3 P = origin + t * direction;
 
         // inside-outside test, edge 01
-//        cerr<<"testing e01 "<< endl;
         Vec3 VP0 = P-v0;
         Vec3 C = e01.cross(VP0);
         if( N*C<0 ) continue; // point on the right side of the edge
 
         // inside-outside test, edge 12
-//        cerr<<"  e12" << endl;
         Vec3 VP1 = P-v1;
         Vec3 e12 = v2-v1;
         C = e12.cross(VP1);
         if( N*C<0 ) continue; // point on the right side of the edge
 
         // inside-outside test, edge 20
-//        cerr<<"  e02" << endl;
         Vec3 VP2 = P-v2;
         C = e02.cross(VP2);
         if( N*C>0 ) continue; // point on the left side of the edge
 
-//        cerr<<"collision at point " << P << endl;
         Hit hit;
         hit.hitObject = om;
         hit.distance = (P-origin).norm();
@@ -232,7 +177,6 @@ simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::N
     typedef simulation::Node::Sequence<VisualModel> VisualModels;
     using component::collision::TriangleModel;
 
-//    cerr<<"RayTriangleVisitor::processNodeTopDown " << endl;
     for( CollisionModels::const_iterator it=node->collisionModel.begin(), iend=node->collisionModel.end(); it!=iend; it++ )
     {
         if( TriangleModel* tmodel = dynamic_cast<TriangleModel*>(*it) ) {
