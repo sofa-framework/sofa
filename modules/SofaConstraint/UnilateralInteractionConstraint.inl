@@ -221,6 +221,12 @@ void UnilateralInteractionConstraint<DataTypes>::getPositionViolation(defaulttyp
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype::BaseVector *v)
 {
+    auto P = this->getMState2()->readPositions();
+    auto Q = this->getMState1()->readPositions();
+
+    const SReal dt = this->getContext()->getDt();
+    const SReal invDt = SReal(1.0) / dt;
+
     const VecDeriv &PvfreeVec = this->getMState2()->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecDeriv &QvfreeVec = this->getMState1()->read(core::ConstVecDerivId::freeVelocity())->getValue();
 
@@ -230,9 +236,11 @@ void UnilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttyp
     {
         const Contact& c = contacts[i];
 
-        const Deriv QP_vfree = PvfreeVec[c.m2] - QvfreeVec[c.m1];
+        const Deriv QP_invDt = (P[c.m2] - Q[c.m1])*invDt;
+        const Deriv QP_vfree  = PvfreeVec[c.m2] - QvfreeVec[c.m1];
+        const Deriv dFreeVec = QP_vfree + QP_invDt;
 
-        v->set(c.id, dot(QP_vfree, c.norm)); // dfree
+        v->set(c.id, dot(dFreeVec, c.norm) - c.contactDistance*invDt ); // dvfree = 1/dt *  [ dot ( P - Q, n) - contactDist ] + dot(v_P - v_Q , n ) ]  
 
         if (c.mu > 0.0)
         {
