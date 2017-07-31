@@ -40,106 +40,10 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/MechanicalVisitor.h>
 
 
 namespace sofa
 {
-
-namespace simulation
-{
-
-///// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
-//class MechanicalAddComplianceForce : public MechanicalVisitor
-//{
-//    core::MultiVecDerivId res, lambdas;
-//    SReal invdt;
-//
-//
-//public:
-//    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt)
-//        : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0 / dt)
-//    {
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//        setReadWriteVectors();
-//#endif
-//    }
-//
-//    // reset lambda where there is no compliant FF
-//    // these reseted lambdas were previously propagated, but were not computed from the last solve
-//    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-//    {
-//        // a compliant FF must be alone, so if there is one, it is the first one of the list.
-//        const core::behavior::BaseForceField* ff = NULL;
-//
-//        if (!node->forceField.empty()) ff = *node->forceField.begin();
-//        else if (!node->interactionForceField.empty()) ff = *node->interactionForceField.begin();
-//
-//        if (!ff || !ff->isCompliance.getValue())
-//        {
-//            const core::VecDerivId& lambdasid = lambdas.getId(mm);
-//            if (!lambdasid.isNull()) // previously allocated
-//            {
-//                mm->resetForce(this->params, lambdasid);
-//            }
-//        }
-//        return RESULT_CONTINUE;
-//    }
-//
-//    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-//    {
-//        return fwdMechanicalState(node, mm);
-//    }
-//
-//    // pop-up lamdas without modifying f
-//    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-//    {
-//        map->applyJT(this->mparams, lambdas, lambdas);
-//    }
-//
-//    // for all dofs, f += lambda / dt
-//    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-//    {
-//        const core::VecDerivId& lambdasid = lambdas.getId(mm);
-//        if (!lambdasid.isNull()) // previously allocated
-//        {
-//            const core::VecDerivId& resid = res.getId(mm);
-//
-//            mm->vOp(this->params, resid, resid, lambdasid ); // f += lambda / dt
-//        }
-//    }
-//
-//    virtual void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
-//    {
-//        bwdMechanicalState(node, mm);
-//    }
-//
-//
-//    /// Return a class name for this visitor
-//    /// Only used for debugging / profiling purposes
-//    virtual const char* getClassName() const { return "MechanicalAddComplianceForce"; }
-//    virtual std::string getInfos() const
-//    {
-//        std::string name = std::string("[") + res.getName() + "," + lambdas.getName() + std::string("]");
-//        return name;
-//    }
-//
-//    /// Specify whether this action can be parallelized.
-//    virtual bool isThreadSafe() const
-//    {
-//        return true;
-//    }
-//
-//#ifdef SOFA_DUMP_VISITOR_INFO
-//    void setReadWriteVectors()
-//    {
-//        addWriteVector(res);
-//        addWriteVector(lambdas);
-//    }
-//#endif
-//};
-
-}
 
 namespace component
 {
