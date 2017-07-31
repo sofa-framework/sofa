@@ -103,9 +103,11 @@ public:
         if (mapping!=NULL)
         {
             mapping->apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());
+            mapping->applyJ(core::MechanicalParams::defaultInstance(), core::VecDerivId::freeVelocity(), core::ConstVecDerivId::freeVelocity());
+
         }
     }
-
+    
     void updateX0()
     {
         if(mapping!=NULL)
