@@ -150,7 +150,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
 
             //loading in data structure
             if(!inf) {
-                std::cout << "Unable to open .tmg file" << std::endl;
+                msg_error("DistanceGrid") << "Unable to open .tmg file";
                 return nullptr;
             }
             else {
