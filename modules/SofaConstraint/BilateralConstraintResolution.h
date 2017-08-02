@@ -27,6 +27,8 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
 
 namespace sofa
 {
@@ -138,61 +140,34 @@ protected:
     sofa::defaulttype::Vec3d* _f;
 };
 
-template <int N>
 class BilateralConstraintResolutionNDof : public ConstraintResolution
 {
 public:
-    BilateralConstraintResolutionNDof(sofa::defaulttype::Vec<N, double>* vec=NULL) 
-        : ConstraintResolution(N)
-        , _f(vec) 
-    { 
-    }
-    virtual void init(int line, double** w, double *force)
+    BilateralConstraintResolutionNDof(unsigned blockSize ) 
+    : ConstraintResolution(blockSize)
+    , wBlock(Eigen::MatrixXd(blockSize, blockSize))
     {
-        sofa::defaulttype::Mat<N,N,double> temp;
-        for(int i=0; i<N; i++)
-            for(int j=0; j<N; j++)
-                temp[i][j] = w[line+i][line+j];
-
-        invertMatrix(invW, temp);
-
-        if(_f)
+    }
+    virtual void init(int line, double** w, double * /*force*/)
+    {
+        for (auto i = 0; i < wBlock.rows(); ++i)   
         {
-            for(int i=0; i<N; i++)
-                force[line+i] = (*_f)[i];
+            wBlock.row(i) = Eigen::VectorXd::Map(&w[line + i][line], wBlock.cols());
         }
+        wBlockInv.compute(wBlock);
     }
 
-    virtual void initForce(int line, double* force)
+    virtual void resolution(int line, double** /*w*/, double* displacement, double* force, double* /*dFree*/)
     {
-        if(_f)
-        {
-            for(int i=0; i<N; i++)
-                force[line+i] = (*_f)[i];
-        }
-    }
-
-    virtual void resolution(int line, double** /*w*/, double* d, double* force, double* /*dFree*/)
-    {
-        for(int i=0; i<N; i++)
-        {
-            for(int j=0; j<N; j++)
-                force[line+i] -= d[line+j] * invW[i][j];
-        }
-    }
-
-    void store(int line, double* force, bool /*convergence*/)
-    {
-        if(_f)
-        {
-            for(int i=0; i<N; i++)
-                (*_f)[i] = force[line+i];
-        }
+        Eigen::Map< Eigen::VectorXd > f(&force[line], wBlock.cols());
+        Eigen::Map< Eigen::VectorXd > d(&displacement[line], wBlock.cols());
+        Eigen::VectorXd f_local = wBlockInv.solve(d);
+        f -= f_local;
     }
 
 protected:
-    sofa::defaulttype::Mat<N,N,double> invW;
-    sofa::defaulttype::Vec<N, double>* _f;
+    Eigen::MatrixXd  wBlock;
+    Eigen::LDLT< Eigen::MatrixXd > wBlockInv;
 };
 
 } // namespace bilateralconstraintresolution
