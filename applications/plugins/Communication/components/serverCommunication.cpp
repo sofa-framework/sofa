@@ -19,10 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Communication/config.h>
 #include <Communication/components/serverCommunication.h>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/BaseMapping.h>
 
 #define BENCHMARK 1;
 
@@ -37,81 +34,16 @@ namespace component
 namespace communication
 {
 
-
-/******************************************************************************************************************* OSCMESSAGELISTENER
-***************************************************************************************************************************************
-***************************************************************************************************************************************
-***************************************************************************************************************************************/
-
-template <class DataTypes>
-OSCMessageListener<DataTypes>::OSCMessageListener() : osc::OscPacketListener()
-{
-    gettimeofday(&t2, NULL);
-    gettimeofday(&t1, NULL);
-    m_vector = vectorData<DataTypes>();
-    m_vector.resize(1);
-}
-
-template <class DataTypes>
-OSCMessageListener<DataTypes>::OSCMessageListener(unsigned int size) : osc::OscPacketListener()
-{
-    m_size = size;
-    m_vector.resize(m_size);
-}
-
-template <class DataTypes>
-void OSCMessageListener<DataTypes>::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
-{
-    if(m_size != m.ArgumentCount())
-    {
-        std::cout << "Error : received " << m.ArgumentCount() << " argument(s) but defined size is " << m_size << std::endl;
-        return;
-    }
-
-    try{
-        //        gettimeofday(&t1, NULL);
-        //        std::cout << "Delta thread server OSC : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
-        //        gettimeofday(&t2, NULL);
-
-        mutex.lock();
-        osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-
-//        for (unsigned int i= 0; i<m_vector.size(); i++)
-//        {
-//            WriteAccessorVector<Data<DataTypes>> data = d_data[i];
-//            (*stream) >> data;
-//        }
-        mutex.unlock();
-
-    }catch( osc::Exception& e ){
-        std::cout << "error while parsing message: " << m.AddressPattern() << ": " << e.what() << "\n";
-    }
-}
-
-template <class DataTypes>
-vectorData<DataTypes> OSCMessageListener<DataTypes>::getDataVector()
-{
-    mutex.lock();
-    vectorData<DataTypes> tmp = m_vector;
-    mutex.unlock();
-    return tmp;
-}
-
-/******************************************************************************************************************* SERVERCOMMUNICATION
-***************************************************************************************************************************************
-***************************************************************************************************************************************
-***************************************************************************************************************************************/
-
 template <class DataTypes>
 ServerCommunication<DataTypes>::ServerCommunication()
-    : d_adress(initData(&d_adress, "127.0.0.1", "adress", "Scale for object display. (default=localhost)"))
+    : osc::OscPacketListener()
+    , d_adress(initData(&d_adress, "127.0.0.1", "adress", "Scale for object display. (default=localhost)"))
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
     , d_nbDataField(initData(&d_nbDataField, (unsigned int)3, "nbDataField",
                              "Number of field 'data' the user want to send or receive.\n"
                              "Default value is 1."))
     , d_data(this, "data", "Data to send or receive.")
 {
-    d_listener = OSCMessageListener<DataTypes>(d_nbDataField.getValue());
     d_data.resize(d_nbDataField.getValue());
     gettimeofday(&t2, NULL);
     gettimeofday(&t1, NULL);
@@ -128,7 +60,7 @@ ServerCommunication<DataTypes>::~ServerCommunication()
 template <class DataTypes>
 void ServerCommunication<DataTypes>::openCommunication()
 {
-    d_socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, d_port.getValue()), &d_listener);
+    d_socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, d_port.getValue()), this);
     d_socket->Run();
 }
 
@@ -155,12 +87,43 @@ void ServerCommunication<DataTypes>::handleEvent(Event* event)
         //        gettimeofday(&t1, NULL);
         //        std::cout << "Delta mainloop ANIMATION : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
         //        gettimeofday(&t2, NULL);
-        vectorData<DataTypes> vector = d_listener.getDataVector();
-        for (int i = 0; i < vector.size(); i++)
-        {
-            std::cout << vector.at(i) << std::endl;
-        }
+        //        vectorData<DataTypes> vector = d_listener.getDataVector();
+        //        for (int i = 0; i < vector.size(); i++)
+        //        {
+        //            std::cout << vector.at(i) << std::endl;
+        //        }
 
+    }
+}
+
+template <class DataTypes>
+void ServerCommunication<DataTypes>::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
+{
+    if(d_nbDataField.getValue() != m.ArgumentCount())
+    {
+        std::cout << "Error : received " << m.ArgumentCount() << " argument(s) but defined size is " << d_nbDataField.getValue() << std::endl;
+        return;
+    }
+
+    try{
+        ///       Max speed : up to 14khz
+        //        gettimeofday(&t1, NULL);
+        //        std::cout << "Delta thread server OSC : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
+        //        gettimeofday(&t2, NULL);
+
+        mutex.lock();
+        osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
+
+        for (unsigned int i= 0; i<m_vecData.size(); i++)
+        {
+            ///            Error HERE :(
+            //            WriteAccessorVector<Data<DataTypes>> data = *m_vecData[i];
+            //            (*args) >> data;
+        }
+        mutex.unlock();
+
+    }catch( osc::Exception& e ){
+        std::cout << "error while parsing message: " << m.AddressPattern() << ": " << e.what() << "\n";
     }
 }
 

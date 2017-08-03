@@ -22,6 +22,9 @@
 #ifndef SOFA_SERVERCOMMUNICATION_H
 #define SOFA_SERVERCOMMUNICATION_H
 
+#include <Communication/config.h>
+#include <sofa/core/ObjectFactory.h>
+
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
@@ -30,6 +33,7 @@ using sofa::core::objectmodel::Data;
 
 #include <sofa/helper/vectorData.h>
 using sofa::helper::vectorData;
+using sofa::helper::WriteAccessorVector;
 
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
@@ -40,7 +44,6 @@ using sofa::core::objectmodel::Event;
 #include <oscpack/osc/OscPrintReceivedElements.h>
 #include "oscpack/osc/OscPacketListener.h"
 #include <oscpack/ip/UdpSocket.h>
-
 
 #include <pthread.h>
 #include <sys/time.h>
@@ -61,22 +64,7 @@ namespace communication
 std::mutex mutex;
 
 template <class DataTypes>
-class OSCMessageListener : public osc::OscPacketListener {
-public:
-    OSCMessageListener();
-    OSCMessageListener(unsigned int);
-
-    vectorData<DataTypes> getDataVector();
-    timeval t1, t2;
-protected:
-    vectorData<DataTypes> m_vector;
-    unsigned int m_size;
-
-    virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
-};
-
-template <class DataTypes>
-class ServerCommunication : public BaseObject
+class ServerCommunication : public BaseObject, public osc::OscPacketListener
 {
 
 public:
@@ -95,13 +83,13 @@ public:
     virtual void handleEvent(Event *);
     virtual std::string getTemplateName() const {return templateName(this);}
     static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
+    virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
     void openCommunication();
 
     static void* thread_launcher(void*);
 
 protected:
-    OSCMessageListener<DataTypes> d_listener;
     UdpListeningReceiveSocket* d_socket;
     pthread_t m_thread;
 
