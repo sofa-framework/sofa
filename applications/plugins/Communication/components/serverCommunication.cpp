@@ -28,11 +28,6 @@
 
 using sofa::core::RegisterObject ;
 
-#include <iostream>
-struct timeval start, end;
-
-long mtime, seconds, useconds;
-
 namespace sofa
 {
 
@@ -53,6 +48,7 @@ OSCMessageListener<DataTypes>::OSCMessageListener() : osc::OscPacketListener()
 {
     gettimeofday(&t2, NULL);
     gettimeofday(&t1, NULL);
+    m_vector = vectorData<DataTypes>();
     m_vector.resize(1);
 }
 
@@ -93,10 +89,10 @@ void OSCMessageListener<DataTypes>::ProcessMessage( const osc::ReceivedMessage& 
 }
 
 template <class DataTypes>
-std::vector<DataTypes> OSCMessageListener<DataTypes>::getDataVector()
+vectorData<DataTypes> OSCMessageListener<DataTypes>::getDataVector()
 {
     mutex.lock();
-    std::vector<DataTypes> tmp = m_vector;
+    vectorData<DataTypes> tmp = m_vector;
     mutex.unlock();
     return tmp;
 }
@@ -159,7 +155,7 @@ void ServerCommunication<DataTypes>::handleEvent(Event* event)
         //        gettimeofday(&t1, NULL);
         //        std::cout << "Delta mainloop ANIMATION : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
         //        gettimeofday(&t2, NULL);
-        std::vector<DataTypes> vector = d_listener.getDataVector();
+        vectorData<DataTypes> vector = d_listener.getDataVector();
         for (int i = 0; i < vector.size(); i++)
         {
             std::cout << vector.at(i) << std::endl;

@@ -47,7 +47,6 @@ using sofa::core::objectmodel::Event;
 #include <stdio.h>
 #include <unistd.h>
 #include <mutex>
-#include <list>
 
 
 namespace sofa
@@ -67,10 +66,10 @@ public:
     OSCMessageListener();
     OSCMessageListener(unsigned int);
 
-    std::vector<DataTypes> getDataVector();
+    vectorData<DataTypes> getDataVector();
     timeval t1, t2;
 protected:
-    std::vector<DataTypes> m_vector;
+    vectorData<DataTypes> m_vector;
     unsigned int m_size;
 
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
@@ -86,7 +85,7 @@ public:
     Data<std::string>           d_adress;
     Data<int>                   d_port;
     Data<unsigned int>          d_nbDataField;
-    vectorData<DataTypes>           d_data;
+    vectorData<DataTypes>       d_data;
     timeval t1, t2;
 
 
