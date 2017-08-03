@@ -75,6 +75,7 @@ void * ServerCommunication<DataTypes>::thread_launcher(void *voidArgs)
 template <class DataTypes>
 void ServerCommunication<DataTypes>::init()
 {
+    d_data.resize(d_nbDataField.getValue());
     f_listening = true;
     pthread_create(&m_thread, NULL, &ServerCommunication::thread_launcher, this);
 }
@@ -84,15 +85,15 @@ void ServerCommunication<DataTypes>::handleEvent(Event* event)
 {
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
-        //        std::cout << "Begin ANIMATION" << std::endl;
-        //        gettimeofday(&t1, NULL);
-        //        std::cout << "Delta mainloop ANIMATION : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
-        //        gettimeofday(&t2, NULL);
-        //        vectorData<DataTypes> vector = d_listener.getDataVector();
-        //        for (int i = 0; i < vector.size(); i++)
-        //        {
-        //            std::cout << vector.at(i) << std::endl;
-        //        }
+        gettimeofday(&t1, NULL);
+        std::cout << "Delta mainloop ANIMATION : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
+        gettimeofday(&t2, NULL);
+        mutex.lock();
+        for(unsigned int i=0; i<d_data.size(); i++)
+        {
+            ReadAccessor<Data<DataTypes>> data = d_data[i];
+        }
+        mutex.unlock();
 
     }
 }
@@ -100,7 +101,7 @@ void ServerCommunication<DataTypes>::handleEvent(Event* event)
 template <class DataTypes>
 void ServerCommunication<DataTypes>::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-    if(d_nbDataField.getValue() != m.ArgumentCount())
+    if(d_data.size() != m.ArgumentCount())
     {
         std::cout << "Error : received " << m.ArgumentCount() << " argument(s) but defined size is " << d_nbDataField.getValue() << std::endl;
         return;
@@ -112,17 +113,22 @@ void ServerCommunication<DataTypes>::ProcessMessage( const osc::ReceivedMessage&
         std::cout << "Delta thread server OSC : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
         gettimeofday(&t2, NULL);
 
-        //        mutex.lock();
         osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
-
-        for (unsigned int i= 0; i<m_vecData.size(); i++)
+        int i = 0;
+        mutex.lock();
+        for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
         {
-            ///            Error HERE :(
-            WriteAccessorVector<Data<float>> data = *m_vecData[i];
-//            (*args) >> data;
+            std::stringstream stream;
+            stream << (*it);
+            std::string s = stream.str();
+            size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
+            s.erase(0, pos+1);
+            stream.str(s);
+            WriteAccessor<Data<DataTypes>> data = d_data[i];
+            stream >> data;
+            i++;
         }
-        //        mutex.unlock();
-
+        mutex.unlock();
     }catch( osc::Exception& e ){
         std::cout << "error while parsing message: " << m.AddressPattern() << ": " << e.what() << "\n";
     }

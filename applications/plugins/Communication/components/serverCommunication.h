@@ -34,6 +34,8 @@ using sofa::core::objectmodel::Data;
 #include <sofa/helper/vectorData.h>
 using sofa::helper::vectorData;
 using sofa::helper::WriteAccessorVector;
+using sofa::helper::WriteAccessor;
+using sofa::helper::ReadAccessor;
 
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
@@ -74,7 +76,7 @@ public:
     Data<int>                   d_port;
     Data<int>                   d_refreshRate;
     Data<unsigned int>          d_nbDataField;
-    vectorData<float>       d_data;
+    vectorData<DataTypes>       d_data;
     timeval t1, t2;
 
     ServerCommunication() ;
