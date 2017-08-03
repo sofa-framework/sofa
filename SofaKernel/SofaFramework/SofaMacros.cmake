@@ -178,8 +178,11 @@ macro(sofa_add_generic directory name type)
         if(${option})
             message("Adding ${type} ${name}")
             add_subdirectory(${directory} ${name})
-            set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
-            set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+            #Check if the target has been successfully added
+            if(TARGET ${name})
+                set_target_properties(${name} PROPERTIES FOLDER ${type}s) # IDE folder
+                set_target_properties(${name} PROPERTIES DEBUG_POSTFIX "_d")
+            endif()
         endif()
 
         set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
