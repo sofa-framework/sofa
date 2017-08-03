@@ -72,10 +72,10 @@ public:
 
     Data<std::string>           d_adress;
     Data<int>                   d_port;
+    Data<int>                   d_refreshRate;
     Data<unsigned int>          d_nbDataField;
-    vectorData<DataTypes>       d_data;
+    vectorData<float>       d_data;
     timeval t1, t2;
-
 
     ServerCommunication() ;
     virtual ~ServerCommunication() ;

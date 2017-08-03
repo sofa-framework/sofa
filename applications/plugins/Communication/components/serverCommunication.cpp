@@ -39,7 +39,8 @@ ServerCommunication<DataTypes>::ServerCommunication()
     : osc::OscPacketListener()
     , d_adress(initData(&d_adress, "127.0.0.1", "adress", "Scale for object display. (default=localhost)"))
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
-    , d_nbDataField(initData(&d_nbDataField, (unsigned int)3, "nbDataField",
+    , d_refreshRate(initData(&d_refreshRate, (int)(30), "refreshRate", "Refresh rate aka frequency (default=30)"))
+    , d_nbDataField(initData(&d_nbDataField, (unsigned int)1, "nbData",
                              "Number of field 'data' the user want to send or receive.\n"
                              "Default value is 1."))
     , d_data(this, "data", "Data to send or receive.")
@@ -107,24 +108,25 @@ void ServerCommunication<DataTypes>::ProcessMessage( const osc::ReceivedMessage&
 
     try{
         ///       Max speed : up to 14khz
-        //        gettimeofday(&t1, NULL);
-        //        std::cout << "Delta thread server OSC : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
-        //        gettimeofday(&t2, NULL);
+        gettimeofday(&t1, NULL);
+        std::cout << "Delta thread server OSC : " << (t1.tv_usec - t2.tv_usec) / 1000.0 << " ms or " << 1000000.0 / ((t1.tv_usec - t2.tv_usec)) << " hz"<< std::endl;
+        gettimeofday(&t2, NULL);
 
-        mutex.lock();
+        //        mutex.lock();
         osc::ReceivedMessageArgumentStream args = m.ArgumentStream();
 
         for (unsigned int i= 0; i<m_vecData.size(); i++)
         {
             ///            Error HERE :(
-            //            WriteAccessorVector<Data<DataTypes>> data = *m_vecData[i];
-            //            (*args) >> data;
+            WriteAccessorVector<Data<float>> data = *m_vecData[i];
+//            (*args) >> data;
         }
-        mutex.unlock();
+        //        mutex.unlock();
 
     }catch( osc::Exception& e ){
         std::cout << "error while parsing message: " << m.AddressPattern() << ": " << e.what() << "\n";
     }
+    usleep(1000000.0/(double)d_refreshRate.getValue());
 }
 
 
