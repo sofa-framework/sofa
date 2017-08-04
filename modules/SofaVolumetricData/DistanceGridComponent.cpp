@@ -11,7 +11,6 @@ typedef sofa::component::container::DistanceGrid DistanceGrid;
 //factory register
 int DistanceGridComponentClass = sofa::core::RegisterObject("Use to store grid").add< DistanceGridComponent >();
 
-
 //fil the grid
 void DistanceGridComponent::loadGrid(double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax) {
 
@@ -20,9 +19,14 @@ void DistanceGridComponent::loadGrid(double scale, double sampling, int nx, int 
         m_componentstate = ComponentState::Invalid;
         msg_error() << "uninitialized grid";
     }
+    return;
 
 }
 
+
+void DistanceGridComponent::setFilename(const std::string& name) {
+    this->in_filename.setValue(name);
+}
 
 //eval the grid
 double DistanceGridComponent::eval(Coord p) {
@@ -45,7 +49,8 @@ void DistanceGridComponent::init() {
     else {
         pmin.set(0,0,-5.0);
         pmax.set(27,27,5.0);
-        loadGrid(0,0,in_nx.getValue(),in_ny.getValue(),in_nz.getValue(),pmin,pmax);
+        std::cout << "chingoutliot" << std::endl;
+        loadGrid(in_scale.getValue(),in_sampling.getValue(),in_nx.getValue(),in_ny.getValue(),in_nz.getValue(),pmin,pmax);
     }
 
 }

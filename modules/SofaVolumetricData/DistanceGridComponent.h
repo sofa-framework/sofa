@@ -30,10 +30,13 @@ public:
         , in_nx(initData(&in_nx,0,"nx","in_nx"))
         , in_ny(initData(&in_ny,0,"ny","in_ny"))
         , in_nz(initData(&in_nz,0,"nz","in_nz"))
+        , in_scale(initData(&in_scale,0.0,"scale","in_scale"))
+        , in_sampling(initData(&in_sampling,0.0,"sampling","in_sampling"))
     {
     }
     virtual ~DistanceGridComponent()  { }
     DistanceGrid* grid {nullptr};
+    void setFilename(const std::__cxx11::string &name);
     void loadGrid(double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax);
     virtual void init();
     virtual double eval(Coord p);
@@ -44,6 +47,8 @@ private:
     Data<int> in_nx;
     Data<int> in_ny;
     Data<int> in_nz;
+    Data<double> in_scale;
+    Data<double> in_sampling;
 
 };
 
