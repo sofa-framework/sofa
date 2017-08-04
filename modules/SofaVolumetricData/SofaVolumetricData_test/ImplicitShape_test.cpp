@@ -26,7 +26,7 @@ bool ImplicitShape_test::ImplicitSphereTest() {
 bool ImplicitShape_test::DistanceGridComponentTest() {
     sofa::core::DistanceGridComponent dgc_test;
     //need to put any file that DistanceGrid can handle
-    dgc_test.setFilename("/home/tgosse/Bureau/monkey.obj");
+    dgc_test.setFilename("/path/shape.obj");
     Coord pmin(0,0,0), pmax(243,243,243);
     dgc_test.loadGrid(0,0,243,243,243,pmin,pmax);
     EXPECT_NE(dgc_test.grid,nullptr);
