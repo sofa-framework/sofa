@@ -38,12 +38,12 @@ using namespace sofa::core::objectmodel;
 
 namespace cgal {
 
-class MeshGenerationFromDG : public BaseObject {
+class MeshGenerationFromImplicitShape : public BaseObject {
 
 public:
-    SOFA_CLASS(MeshGenerationFromDG, BaseObject);
+    SOFA_CLASS(MeshGenerationFromImplicitShape, BaseObject);
     void draw(const VisualParams* vparams);
-    MeshGenerationFromDG()
+    MeshGenerationFromImplicitShape()
         : in_facetsize(initData(&in_facetsize,"facet_size","size of facet"))
         , in_approximation(initData(&in_approximation,"approximation","approximation"))
         , in_cellsize(initData(&in_cellsize,"cell_size","size of cell"))
@@ -60,7 +60,7 @@ public:
         , in_function(initLink("function", "Function"))
     {
     }
-    virtual ~MeshGenerationFromDG() { }
+    virtual ~MeshGenerationFromImplicitShape() { }
     int volumeMeshGeneration(float facet_size, float approximation, float cell_size);
     virtual void init();
 
@@ -77,9 +77,9 @@ private:
     Data<VecCoord> out_Points;
     Data<SeqTetrahedra> out_tetrahedra;
     //Link
-    typedef SingleLink< MeshGenerationFromDG, DistanceGridComponent, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkGrid;
+    typedef SingleLink< MeshGenerationFromImplicitShape, DistanceGridComponent, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkGrid;
     LinkGrid in_grid;
-    typedef SingleLink< MeshGenerationFromDG, ImplicitSphere, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFunction;
+    typedef SingleLink< MeshGenerationFromImplicitShape, ImplicitSphere, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkFunction;
     LinkFunction in_function;
 
 };

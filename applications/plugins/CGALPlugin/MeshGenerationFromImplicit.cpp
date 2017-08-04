@@ -10,7 +10,7 @@ using namespace sofa::core::objectmodel;
 // Domain
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
 
-class ImplicitFunctionDG : public std::unary_function<K::Point_3, K::FT> {
+class ImplicitFunction : public std::unary_function<K::Point_3, K::FT> {
 
 private:
     ImplicitShape* m_shape;
@@ -18,7 +18,7 @@ private:
 public:
     typedef result_type return_type;
     typedef K::Point_3 Point;
-    ImplicitFunctionDG(ImplicitShape* shape) {m_shape=shape;}
+    ImplicitFunction(ImplicitShape* shape) {m_shape=shape;}
     K::FT operator()(Point p) const {
         Coord p2(p.x(),p.y(),p.z());
         return (m_shape->eval(p2));
@@ -26,7 +26,7 @@ public:
 
 };
 
-typedef CGAL::Implicit_multi_domain_to_labeling_function_wrapper<ImplicitFunctionDG> Function_wrapper;
+typedef CGAL::Implicit_multi_domain_to_labeling_function_wrapper<ImplicitFunction> Function_wrapper;
 typedef Function_wrapper::Function_vector Function_vector;
 typedef CGAL::Labeled_mesh_domain_3<Function_wrapper, K> Mesh_domain;
 //Triangulation
@@ -43,10 +43,10 @@ typedef Mesh_criteria::Cell_criteria Cell_criteria;
 
 
 //factory register
-int MeshGenerationFromDGClass = RegisterObject("This component mesh a domain with a distance grid").add< MeshGenerationFromDG >();
+int MeshGenerationFromImplicitShapeClass = RegisterObject("This component mesh a domain with a distance grid").add< MeshGenerationFromImplicitShape >();
 
 //create a bbox 3 for meshing in volume
-CGAL::Bbox_3 MeshGenerationFromDG::BoundingBox(double x_min, double y_min, double z_min, double x_max, double y_max, double z_max) {
+CGAL::Bbox_3 MeshGenerationFromImplicitShape::BoundingBox(double x_min, double y_min, double z_min, double x_max, double y_max, double z_max) {
 
     CGAL::Bbox_3 bbox(x_min,y_min,z_min,x_max,y_max,z_max);
     return bbox;
@@ -55,7 +55,7 @@ CGAL::Bbox_3 MeshGenerationFromDG::BoundingBox(double x_min, double y_min, doubl
 
 
 //mesh the implicit domain and export it to vtu file
-int MeshGenerationFromDG::volumeMeshGeneration(float facet_size, float approximation, float cell_size) {
+int MeshGenerationFromImplicitShape::volumeMeshGeneration(float facet_size, float approximation, float cell_size) {
 
     if(m_componentstate == ComponentState::Invalid)
         return 0;
@@ -63,13 +63,13 @@ int MeshGenerationFromDG::volumeMeshGeneration(float facet_size, float approxima
     //Domain
     Mesh_domain *domain = NULL;
     if(in_function.empty() == false) {
-        ImplicitFunctionDG function(in_function);
+        ImplicitFunction function(in_function);
         Function_vector v;
         v.push_back(function);
         domain = new Mesh_domain(v, K::Sphere_3(CGAL::ORIGIN, 5. *5.), 1e-3);
     }
     else if(in_grid.empty() == false) {
-        ImplicitFunctionDG function(in_grid);
+        ImplicitFunction function(in_grid);
         Function_vector v;
         v.push_back(function);
         CGAL::Bbox_3 bbox = BoundingBox(xmin_box.getValue(),ymin_box.getValue(),zmin_box.getValue(),xmax_box.getValue(),ymax_box.getValue(),zmax_box.getValue());
@@ -137,7 +137,7 @@ int MeshGenerationFromDG::volumeMeshGeneration(float facet_size, float approxima
 
 
 //visualisation of the shape before mesh
-void MeshGenerationFromDG::draw(const sofa::core::visual::VisualParams* vparams) {
+void MeshGenerationFromImplicitShape::draw(const sofa::core::visual::VisualParams* vparams) {
 
     if(m_componentstate == ComponentState::Invalid)
         return;
@@ -185,7 +185,7 @@ void MeshGenerationFromDG::draw(const sofa::core::visual::VisualParams* vparams)
 }
 
 
-void MeshGenerationFromDG::init() {
+void MeshGenerationFromImplicitShape::init() {
 
     if(in_grid.empty() == false) {
         if(in_grid->isComponentStateValid() == false) {
