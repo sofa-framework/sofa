@@ -49,7 +49,6 @@ void DistanceGridComponent::init() {
     else {
         pmin.set(0,0,-5.0);
         pmax.set(27,27,5.0);
-        std::cout << "chingoutliot" << std::endl;
         loadGrid(in_scale.getValue(),in_sampling.getValue(),in_nx.getValue(),in_ny.getValue(),in_nz.getValue(),pmin,pmax);
     }
 
