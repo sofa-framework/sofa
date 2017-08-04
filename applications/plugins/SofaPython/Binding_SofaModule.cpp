@@ -45,6 +45,9 @@
 
 #include <sofa/helper/system/PluginManager.h>
 
+#include "Binding_AdvancedTimer.h"
+using namespace sofa::helper;
+
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
@@ -64,6 +67,8 @@ using sofa::gui::GUIManager ;
 using sofa::gui::BaseViewer ;
 
 using sofa::PythonFactory ;
+
+
 
 /// set the viewer resolution
 static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
@@ -549,6 +554,290 @@ static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * ar
     return pyList;
 }
 
+// -----------------
+
+
+/**
+ * Method : Sofa_clear
+ * Desc   : Wrapper for python usage. Clear the timer.
+ * Param  : PyObject*, self - Object of the python script
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerClear(PyObject* /*self*/, PyObject * /*args*/)
+{
+    AdvancedTimer::clear();  // Method call
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_isEnabled
+ * Desc   : Wrapper for python usage. Return if the timer is enable or not.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerIsEnabled(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    bool answer = false;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    answer = AdvancedTimer::isEnabled(id);  // Method call
+
+    if(answer)
+    {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
+}
+
+
+/**
+ * Method : Sofa_setEnabled
+ * Desc   : Wrapper for python usage. /!\ Need to pass an int in arguments insteed of a bool in the python script.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerSetEnabled(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    int tempBool = 0;
+    bool val = false;
+
+    if(!PyArg_ParseTuple(args, "si", &id, &tempBool))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    if(tempBool == 1)
+    {
+        val = true;
+    }
+
+    AdvancedTimer::setEnabled(id, val);  // Method call
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_getInterval
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerGetInterval(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    int answer = 0;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    answer = AdvancedTimer::getInterval(id);  // Method call
+
+    return PyInt_FromLong(static_cast<long int>(answer));
+}
+
+
+/**
+ * Method : Sofa_setInterval
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerSetInterval(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    int newValue = 0;
+
+    if(!PyArg_ParseTuple(args, "si", &id, &newValue))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::setInterval(id, newValue);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_begin
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerBegin(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::begin(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_end
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::end(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+static PyObject * Sofa_timerStepBegin(PyObject*, PyObject* args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::stepBegin(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+static PyObject * Sofa_timerStepEnd(PyObject*, PyObject* args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::stepEnd(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_timerGetTimeAnalysis
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_timerGetTimeAnalysis(PyObject* /*self*/, PyObject *args)
+{
+    char* id = NULL;
+    void* tempNode = NULL;
+    Node* node = NULL;
+    std::string result;
+
+    if(!PyArg_ParseTuple(args, "sO", &id, &tempNode))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
+
+    result = AdvancedTimer::getTimeAnalysis(id, node);
+
+    if(std::string("null").compare(result) == 0)
+        Py_RETURN_NONE;
+
+    return PyString_FromString(result.c_str());  // Method call
+}
+
+
+/**
+ * Method : Sofa_end
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_end(PyObject* /*self*/, PyObject *args)
+{
+    char* id = NULL;
+    void* tempNode = NULL;
+    Node* node = NULL;
+    std::string result;
+
+    if(!PyArg_ParseTuple(args, "sO", &id, &tempNode))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
+
+    result = AdvancedTimer::end(id, node);
+
+    if(std::string("null").compare(result) == 0)
+        Py_RETURN_NONE;
+
+    return PyString_FromString(result.c_str());  // Method call
+}
+
+
+/**
+ * Method : Sofa_end
+ * Desc   : Wrapper for python usage. Used to change output type of the given timer
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : Py_RETURN_NONE
+ */
+static PyObject * Sofa_setOutPutType(PyObject* /*self*/, PyObject *args)
+{
+    char* id = NULL;
+    char* newOutputType = NULL;
+
+    if(!PyArg_ParseTuple(args, "ss", &id, &newOutputType))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::setOutputType(id, newOutputType);
+
+    Py_RETURN_NONE;
+}
+
 
 
 /// Methods of the module
@@ -578,4 +867,16 @@ SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
 SP_MODULE_METHOD(Sofa,getAvailableComponents)
+SP_MODULE_METHOD(Sofa, timerClear)
+SP_MODULE_METHOD(Sofa, timerIsEnabled)
+SP_MODULE_METHOD(Sofa, timerSetEnabled)
+SP_MODULE_METHOD(Sofa, timerGetInterval)
+SP_MODULE_METHOD(Sofa, timerSetInterval)
+SP_MODULE_METHOD(Sofa, timerBegin)
+SP_MODULE_METHOD(Sofa, timerEnd)
+SP_MODULE_METHOD(Sofa, timerStepBegin)
+SP_MODULE_METHOD(Sofa, timerStepEnd)
+SP_MODULE_METHOD(Sofa, timerGetTimeAnalysis)
+SP_MODULE_METHOD(Sofa, setOutPutType)
+SP_MODULE_METHOD(Sofa, end)
 SP_MODULE_METHODS_END
