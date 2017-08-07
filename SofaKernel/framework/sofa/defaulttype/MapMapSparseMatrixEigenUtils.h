@@ -3,6 +3,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <cassert>
+#include <type_traits>
+#include <cstdlib>
 
 namespace sofa
 {
@@ -145,6 +147,87 @@ class EigenSparseToMapMapSparseMatrix< sofa::defaulttype::RigidDeriv<N, Real> > 
 };
 
 
+
+/// Computes lhs += jacobian^T * rhs
+template< typename LhsDeriv, typename RhsDeriv, typename Real >
+void addMultTransposeEigen(MapMapSparseMatrix<LhsDeriv>& lhs, const Eigen::SparseMatrix<Real, Eigen::RowMajor>& jacobian, const MapMapSparseMatrix<RhsDeriv>& rhs)
+{
+    auto rhsRowIt    = rhs.begin();
+    auto rhsRowItEnd = rhs.end();
+
+    typedef Eigen::SparseMatrix<Real, Eigen::RowMajor> EigenSparseMatrix;
+    const EigenSparseMatrix jacobianT = jacobian.transpose();
+
+    typedef Eigen::Matrix<typename RhsDeriv::value_type, RhsDeriv::total_size, 1> EigenRhsVector;
+    typedef Eigen::Matrix<typename LhsDeriv::value_type, LhsDeriv::total_size, 1> EigenLhsVector;
+
+    // must be passed a valid iterator
+    auto isEigenSparseIteratorInsideBlock = [](const typename EigenSparseMatrix::InnerIterator& it,
+                                               int bBegin, int bEnd) -> bool
+    {
+        assert(it);
+        return (it.col() >= bBegin && it.col() < bEnd);
+    };
+
+
+    while (rhsRowIt != rhsRowItEnd)
+    {
+        auto rhsColIt = rhsRowIt.begin();
+        auto rhsColItEnd = rhsRowIt.end();
+
+        if (rhsColIt != rhsColItEnd)
+        {
+            auto lhsRowIt = lhs.writeLine(rhsRowIt.index());
+            while (rhsColIt != rhsColItEnd)
+            {
+                const int bColBegin = rhsColIt.index() * RhsDeriv::total_size;
+                const int bColEnd   = bColBegin + RhsDeriv::total_size;
+
+                // read jacobianT rows, block by block
+                for (int k = 0; k < jacobianT.outerSize(); k+= LhsDeriv::total_size)
+                {
+                    // check the next LhsDeriv::total_size rows for potential non zero values
+                    // inside the block [k, bCol, k+LhsDeriv::total_size, bCol+RhsDeriv::total_size]
+                    bool blockEmpty = true;
+                    for (int j = 0; j < LhsDeriv::total_size; ++j)
+                    {
+                        typename EigenSparseMatrix::InnerIterator it(jacobianT, k+j);
+                        // advance until we are either invalid or inside the block
+                        while (it && 
+                               !isEigenSparseIteratorInsideBlock(it,bColBegin, bColEnd) )
+                        {
+                            ++it;
+                        }
+
+                        if (it)
+                        {
+                            blockEmpty = false;
+                            break;
+                        }
+                    }
+
+                    if(!blockEmpty)
+                    {
+                        auto b = jacobianT.block(k, bColBegin, LhsDeriv::total_size, RhsDeriv::total_size);
+
+                        LhsDeriv lhsToInsert;
+                        Eigen::Map< EigenLhsVector >       lhs(lhsToInsert.ptr());
+                        Eigen::Map<const EigenRhsVector >  rhs(rhsColIt.val().ptr());
+                        lhs = b * rhs;
+
+                        lhsRowIt.addCol( k / LhsDeriv::total_size, lhsToInsert);
+                        
+                    }
+
+                }
+
+                ++rhsColIt;
+            }
+        }
+
+        ++rhsRowIt;
+    }
+}
 
 }
 

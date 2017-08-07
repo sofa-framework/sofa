@@ -2,6 +2,7 @@
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 #include <Eigen/Sparse>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace
 {
@@ -234,6 +235,71 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
     }
 
     EXPECT_EQ(matEntries.size(), eigenMat.nonZeros());
+}
+
+
+TEST(MapMapSparseMatrixEigenUtilsTest, checkAddMultTransposeEigenForCumulativeWrite)
+{
+    typedef Eigen::SparseMatrix<double, Eigen::RowMajor> EigenSparseMatrix;
+
+    EigenSparseMatrix jacobian(3, 6); // as in rigid mapping block
+
+    std::vector< Eigen::Triplet<double> > matEntries =
+    {
+        { 0,0,1 }, { 1,1,1 }, {2,2,1}, // identity block
+
+        { 0,4,2 }, {0, 5, -1}, // skew symmetric block
+        { 1,3,-2}, {1, 5, -4},
+        { 2,3,1},  {2,4,4}
+    };
+
+    jacobian.setFromTriplets(matEntries.begin(), matEntries.end());
+    jacobian.makeCompressed();
+
+
+    //std::cout << jacobian << std::endl;
+
+    typedef sofa::defaulttype::Rigid3Types::Deriv RigidDeriv;
+    typedef sofa::defaulttype::Vec3Types::Deriv  Deriv;
+    typedef sofa::defaulttype::MapMapSparseMatrix<Deriv> RhsType;
+    typedef sofa::defaulttype::MapMapSparseMatrix<RigidDeriv> LhsType;
+
+    LhsType lhs;
+
+    {
+        RhsType rhs;
+        auto col = rhs.writeLine(0);
+        col.addCol(0, sofa::defaulttype::Vec3d(1, 0, 0));
+        sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
+    }
+
+    {
+        RhsType rhs;
+        auto col = rhs.writeLine(1);
+        col.addCol(0, sofa::defaulttype::Vec3d(0, 1, 0));
+        sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
+    }
+
+    {
+        RhsType rhs;
+        auto col = rhs.writeLine(2);
+        col.addCol(0, sofa::defaulttype::Vec3d(0, 0, 1));
+        sofa::defaulttype::addMultTransposeEigen(lhs, jacobian, rhs);
+    }
+
+    std::cout << lhs << std::endl;
+
+    for (auto row = lhs.begin(), rowEnd = lhs.end(); row != rowEnd; ++row)
+    {
+        for (auto col = row.begin(), colEnd = row.end(); col != colEnd; ++col)
+        {
+            for (std::size_t i = 0; i < RigidDeriv::total_size; ++i)
+            {
+                EXPECT_EQ(col.val()[i], jacobian.coeff(row.index(), col.index()*RigidDeriv::total_size + i ));
+            }
+        }
+
+    }
 }
 
 
