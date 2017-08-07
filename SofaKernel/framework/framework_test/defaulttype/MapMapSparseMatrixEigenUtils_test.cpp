@@ -179,7 +179,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec1dEigenSpar
         {
             for (std::size_t i = 0; i < TVec::size(); ++i)
             {
-                EXPECT_EQ(col.val()[0], eigenMat.coeff(row.index(), col.index()));
+                EXPECT_EQ(col.val()[i], eigenMat.coeff(row.index(), col.index()+i));
             }
         }
     }
@@ -228,7 +228,7 @@ TEST(MapMapSparseMatrixEigenUtilsTest, checkConversionMapMapSparseVec3dEigenSpar
         {
             for (std::size_t i = 0; i < TVec::size(); ++i)
             {
-                EXPECT_EQ(col.val()[0], eigenMat.coeff(row.index(), col.index()));
+                EXPECT_EQ(col.val()[i], eigenMat.coeff(row.index(), col.index()+i));
             }
         }
     }
