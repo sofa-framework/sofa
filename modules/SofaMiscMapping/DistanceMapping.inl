@@ -261,16 +261,9 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
 {
-    const std::size_t childDofsSize  = jacobian.compressedMatrix.rows() / OutDeriv::size();
-    const std::size_t parentDofsSize = jacobian.compressedMatrix.cols() / InDeriv::size();
-    sofa::defaulttype::MapMapSparseMatrixToEigenSparse< OutDeriv > convToEigen;
-    sofa::defaulttype::EigenSparseToMapMapSparseMatrix< InDeriv  > convToMapMapSparse;
-
     const OutMatrixDeriv& childMat  = sofa::helper::read(out, cparams).ref();
     InMatrixDeriv&        parentMat = sofa::helper::write(in, cparams).wref();
-
-    SparseMatrixEigen::CompressedMatrix childEigenMat = convToEigen(childMat, childDofsSize);
-    parentMat = convToMapMapSparse(childEigenMat * jacobian.compressedMatrix);
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 
