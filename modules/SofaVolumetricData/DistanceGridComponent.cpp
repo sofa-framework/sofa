@@ -9,7 +9,7 @@ namespace core
 typedef sofa::component::container::DistanceGrid DistanceGrid;
 
 //factory register
-int DistanceGridComponentClass = sofa::core::RegisterObject("Use to store grid").add< DistanceGridComponent >();
+int DistanceGridComponentClass = sofa::core::RegisterObject("Use to store grid").add< DistanceGridComponent >().addAlias("DistGrid");
 
 //fil the grid
 void DistanceGridComponent::loadGrid(double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax) {
@@ -24,6 +24,7 @@ void DistanceGridComponent::loadGrid(double scale, double sampling, int nx, int 
 }
 
 
+//used to set a name in tests
 void DistanceGridComponent::setFilename(const std::string& name) {
     this->in_filename.setValue(name);
 }
