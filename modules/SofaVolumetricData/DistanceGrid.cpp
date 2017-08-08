@@ -141,29 +141,48 @@ DistanceGrid* DistanceGrid::load(const std::string& filename,
 
     if(filename.length()>4 && filename.substr(filename.length()-4) == ".tmg") {
 
-            DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-            std::ifstream inf(filename.c_str(), std::ios::in);
-            std::string content;
-            std::string::size_type sz;
-            double convert=0;
-            int i=0;
+        std::ifstream inf(filename.c_str(), std::ios::in);
 
-            //loading in data structure
-            if(!inf) {
-                msg_error("DistanceGrid") << "Unable to open .tmg file";
-                return nullptr;
-            }
-            else {
-                while(getline(inf,content)) {
-                    convert = std::stod(content,&sz);
-                    (*grid)[i] = convert;
-                    i++;
-                }
-            }
-
-            inf.close();
-            return grid;
+        if(!inf) {
+            msg_error("DistanceGrid") << "Unable to open .tmg file";
+            return nullptr;
         }
+
+        std::string content;
+        std::string::size_type sz;
+        double convert=0;
+        int i=0;
+
+        //get the size of the grid
+        for(int j=0; j<3; j++) {
+            getline(inf,content);
+            convert = std::stoi(content,&sz);
+            if (j==0) {
+                nx=convert;
+            }
+            else if (j==1) {
+                ny=convert;
+
+            }
+            else if (j==2) {
+                nz=convert;
+            }
+        }
+
+        pmax.set(nx,ny,nz);
+
+        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+
+        //loading in data structure
+        while(getline(inf,content)) {
+            convert = std::stod(content,&sz);
+            (*grid)[i] = convert;
+            i++;
+        }
+
+        inf.close();
+        return grid;
+    }
 
     if (filename == "#cube")
     {
