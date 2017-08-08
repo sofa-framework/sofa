@@ -68,8 +68,8 @@ class TetrahedronHyperelasticityFEMForceField : public core::behavior::ForceFiel
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv; 
-    typedef core::objectmodel::Data<VecCoord>    DataVecCoord; 
+    typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
+    typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
     typedef Mat<3,3,Real> Matrix3;
     typedef MatSym<3,Real> MatrixSym;
@@ -79,7 +79,7 @@ class TetrahedronHyperelasticityFEMForceField : public core::behavior::ForceFiel
 
     typedef helper::vector<Real> SetParameterArray;
     typedef helper::vector<Coord> SetAnisotropyDirectionArray;
-	
+
 
     typedef core::topology::BaseMeshTopology::index_type Index;
     typedef core::topology::BaseMeshTopology::Tetra Element;
@@ -109,88 +109,69 @@ public :
 	class TetrahedronRestInformation : public fem::StrainInformation<DataTypes>
     {
     public:
-		//typedef double MatrixList[4][4];
-	  typedef std::map< int, MatrixList > MatrixListMap;
-      /// shape vector at the rest configuration
-	  Coord shapeVector[4];
-	  Matrix3 DicrossDj[6];
-	  MatrixListMap Lij_k;
-	  /// fiber direction in rest configuration
-      Coord fiberDirection;
-      /// rest volume
-	  Real restVolume;
-      /// current tetrahedron volume
-      Real volScale;
-	  Real volume;
-	  /// volume/ restVolume
-	  MatrixSym SPKTensorGeneral;
+        /// shape vector at the rest configuration
+        Coord m_shapeVector[4];
+        /// fiber direction in rest configuration
+        Coord m_fiberDirection;
+        /// rest volume
+        Real m_restVolume;
+        /// current tetrahedron volume
+        Real m_volScale;
+        Real m_volume;
+        /// volume/ restVolume
+        MatrixSym m_SPKTensorGeneral;
+        /// deformation gradient = gradPhi
+        Matrix3 m_deformationGradient;
+        /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi)
+        Real m_strainEnergy;
 
-	  /// derivatives of J
-	  Coord dJ[4];
-	  /// deformation gradient = gradPhi
-	  Matrix3 deformationGradient;
-	  /// right Cauchy-Green deformation tensor C (gradPhi^T gradPhi) 
-	  Real strainEnergy;
-      /// Trace of C
-      //Real trC;	  
-	  /// Trace of C^2
-      //Real trCsquare;
-	  /// material parameters that are specific to this tetrahedron
-	//  MaterialParameters localParameters;
-	  /// use this array to store temporary values between addForce and addDForce
-	  std::vector<Real> temporaryValues;
-	  MatrixSym sumfS;
-	 // Matrix3 sumDfS;
-	  Real sumDfg;
-	  //Real sumD2fg;
-	  Real functionf;
-      /// Output stream
-      inline friend ostream& operator<< ( ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
-      /// Input stream
-      inline friend istream& operator>> ( istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
+        /// Output stream
+        inline friend ostream& operator<< ( ostream& os, const TetrahedronRestInformation& /*eri*/ ) {  return os;  }
+        /// Input stream
+        inline friend istream& operator>> ( istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
-      TetrahedronRestInformation() {}  
+        TetrahedronRestInformation() {}
     };
 	
     /// data structure stored for each edge
     class EdgeInformation
     {
     public:
-      /// store the stiffness edge matrix 
-      Matrix3 DfDx;
+        /// store the stiffness edge matrix
+        Matrix3 DfDx;
 
-      /// Output stream
-      inline friend ostream& operator<< ( ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
-      /// Input stream
-      inline friend istream& operator>> ( istream& in, EdgeInformation& /*eri*/ ) { return in; }
+        /// Output stream
+        inline friend ostream& operator<< ( ostream& os, const EdgeInformation& /*eri*/ ) {  return os;  }
+        /// Input stream
+        inline friend istream& operator>> ( istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
-      EdgeInformation() {}
+        EdgeInformation() {}
     };
 
  protected :
-    core::topology::BaseMeshTopology* _topology;
-    VecCoord  _initialPoints;	/// the intial positions of the points
-    bool updateMatrix;
-    bool  _meshSaved ;
+    core::topology::BaseMeshTopology* m_topology;
+    VecCoord  m_initialPoints;	/// the intial positions of the points
+    bool m_updateMatrix;
+    bool  m_meshSaved ;
 
-    Data<bool> f_stiffnessMatrixRegularizationWeight;
-    Data<string> f_materialName; /// the name of the material
-    Data<SetParameterArray> f_parameterSet;
-    Data<SetAnisotropyDirectionArray> f_anisotropySet;
+    Data<bool> d_stiffnessMatrixRegularizationWeight;
+    Data<string> d_materialName; /// the name of the material
+    Data<SetParameterArray> d_parameterSet;
+    Data<SetAnisotropyDirectionArray> d_anisotropySet;
 
-    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
-    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo;
+    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo;
    
 public:
 
     void setMaterialName(const string name) {
-    	f_materialName.setValue(name);
+        d_materialName.setValue(name);
     }
     void setparameter(const vector<Real> param) {
-    	f_parameterSet.setValue(param);
+        d_parameterSet.setValue(param);
     }
     void setdirection(const vector<Coord> direction) {
-    	f_anisotropySet.setValue(direction);
+        d_anisotropySet.setValue(direction);
     }
 
     class TetrahedronHandler : public TopologyDataHandler<Tetrahedron,sofa::helper::vector<TetrahedronRestInformation> >
@@ -236,15 +217,13 @@ public:
 
     /// the array that describes the complete material energy and its derivatives
 
-    fem::HyperelasticMaterial<DataTypes> *myMaterial;
-    TetrahedronHandler* tetrahedronHandler;
+    fem::HyperelasticMaterial<DataTypes> *m_myMaterial;
+    TetrahedronHandler* m_tetrahedronHandler;
 
     void testDerivatives();
     void saveMesh( const char *filename );
 
     void updateTangentMatrix();
-	
-    VecCoord myposition;
 };
 
 using sofa::defaulttype::Vec3dTypes;

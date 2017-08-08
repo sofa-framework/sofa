@@ -64,8 +64,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 {
 
   if (ff) {
-      const vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
-      const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
+      const vector< Tetrahedron > &tetrahedronArray=ff->m_topology->getTetrahedra() ;
+      const std::vector< Edge> &edgeArray=ff->m_topology->getEdges() ;
       unsigned int j;
 //      int k;
       typename DataTypes::Real volume;
@@ -74,7 +74,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 
       ///describe the indices of the 4 tetrahedron vertices
       const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-      BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
+      BaseMeshTopology::EdgesInTetrahedron te=ff->m_topology->getEdgesInTetrahedron(tetrahedronIndex);
 
       // store the point position
 
@@ -83,19 +83,19 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
       /// compute 6 times the rest volume
       volume=dot(cross(point[2]-point[0],point[3]-point[0]),point[1]-point[0]);
       /// store the rest volume
-      tinfo.volScale =(Real)(1.0/volume);
-      tinfo.restVolume = fabs(volume/6);
+      tinfo.m_volScale =(Real)(1.0/volume);
+      tinfo.m_restVolume = fabs(volume/6);
       // store shape vectors at the rest configuration
       for(j=0;j<4;++j) {
           if (!(j%2))
-              tinfo.shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
+              tinfo.m_shapeVector[j]=-cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;
           else
-              tinfo.shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;;
+              tinfo.m_shapeVector[j]=cross(point[(j+2)%4] - point[(j+1)%4],point[(j+3)%4] - point[(j+1)%4])/ volume;;
       }
 
 
       for(j=0;j<6;++j) {
-          Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+          Edge e=ff->m_topology->getLocalEdgesInTetrahedron(j);
           int k=e[0];
           //int l=e[1];
           if (edgeArray[te[j]][0]!=t[k]) {
@@ -110,24 +110,24 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHandler::app
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronHyperelasticityFEMForceField() 
-    : _topology(0)
-    , _initialPoints(0)
-    , updateMatrix(true)
-    , _meshSaved( false)
-    , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
-    , f_materialName(initData(&f_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
-    , f_parameterSet(initData(&f_parameterSet,"ParameterSet","The global parameters specifying the material"))
-    , f_anisotropySet(initData(&f_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
-    , tetrahedronInfo(initData(&tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
-    , edgeInfo(initData(&edgeInfo, "edgeInfo", "Internal edge data"))
-    , tetrahedronHandler(NULL)
+    : m_topology(0)
+    , m_initialPoints(0)
+    , m_updateMatrix(true)
+    , m_meshSaved( false)
+    , d_stiffnessMatrixRegularizationWeight(initData(&d_stiffnessMatrixRegularizationWeight, (bool)false,"matrixRegularization","Regularization of the Stiffness Matrix (between true or false)"))
+    , d_materialName(initData(&d_materialName,std::string("ArrudaBoyce"),"materialName","the name of the material to be used"))
+    , d_parameterSet(initData(&d_parameterSet,"ParameterSet","The global parameters specifying the material"))
+    , d_anisotropySet(initData(&d_anisotropySet,"AnisotropyDirections","The global directions of anisotropy of the material"))
+    , m_tetrahedronInfo(initData(&m_tetrahedronInfo, "tetrahedronInfo", "Internal tetrahedron data"))
+    , m_edgeInfo(initData(&m_edgeInfo, "edgeInfo", "Internal edge data"))
+    , m_tetrahedronHandler(NULL)
 {
-    tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
+    m_tetrahedronHandler = new TetrahedronHandler(this,&m_tetrahedronInfo);
 }
 
 template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~TetrahedronHyperelasticityFEMForceField()
 {
-    if(tetrahedronHandler) delete tetrahedronHandler;
+    if(m_tetrahedronHandler) delete m_tetrahedronHandler;
 }
 
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
@@ -138,55 +138,55 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     this->Inherited::init();
 
     /** parse the parameter set */
-    SetParameterArray paramSet=f_parameterSet.getValue();
+    SetParameterArray paramSet=d_parameterSet.getValue();
     if (paramSet.size()>0) {
             globalParameters.parameterArray.resize(paramSet.size());
             copy(paramSet.begin(), paramSet.end(),globalParameters.parameterArray.begin());
     }
     /** parse the anisotropy Direction set */
-    SetAnisotropyDirectionArray anisotropySet=f_anisotropySet.getValue();
+    SetAnisotropyDirectionArray anisotropySet=d_anisotropySet.getValue();
     if (anisotropySet.size()>0) {
             globalParameters.anisotropyDirection.resize(anisotropySet.size());
             copy(anisotropySet.begin(), anisotropySet.end(),globalParameters.anisotropyDirection.begin());
     }
 
-    _topology = this->getContext()->getMeshTopology();
+    m_topology = this->getContext()->getMeshTopology();
 
 
     /** parse the input material name */
-    string material = f_materialName.getValue();
+    string material = d_materialName.getValue();
     if (material=="ArrudaBoyce")
     {
         fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
-        myMaterial = BoyceAndArrudaMaterial;
+        m_myMaterial = BoyceAndArrudaMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
     else if (material=="StVenantKirchhoff")
     {
         fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
-        myMaterial = STVenantKirchhoffMaterial;
+        m_myMaterial = STVenantKirchhoffMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
     else if (material=="NeoHookean")
     {
         fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
-        myMaterial = NeoHookeanMaterial;
+        m_myMaterial = NeoHookeanMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
     else if (material=="MooneyRivlin")
     {
         fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
-        myMaterial = MooneyRivlinMaterial;
+        m_myMaterial = MooneyRivlinMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
     else if (material=="VerondaWestman")
     {
         fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
-        myMaterial = VerondaWestmanMaterial;
+        m_myMaterial = VerondaWestmanMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
@@ -194,14 +194,14 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     else if (material=="Costa")
     {
         fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
-        myMaterial = CostaMaterial;
+        m_myMaterial = CostaMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
     else if (material=="Ogden")
     {
         fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
-        myMaterial = OgdenMaterial;
+        m_myMaterial = OgdenMaterial;
         if (this->f_printLog.getValue())
             sout<<"The model is "<<material<<endl;
     }
@@ -211,47 +211,47 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
     }
 
 
-    if (!_topology->getNbTetrahedra())
+    if (!m_topology->getNbTetrahedra())
     {
         serr << "ERROR(TetrahedronHyperelasticityFEMForceField): object must have a Tetrahedral Set Topology.\n"<<sendl;
         return;
     }
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     /// prepare to store info in the triangle array
-    tetrahedronInf.resize(_topology->getNbTetrahedra());
+    tetrahedronInf.resize(m_topology->getNbTetrahedra());
 
-    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<typename TetrahedronHyperelasticityFEMForceField<DataTypes>::EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
-    edgeInf.resize(_topology->getNbEdges());
-    edgeInfo.createTopologicalEngine(_topology);
+    edgeInf.resize(m_topology->getNbEdges());
+    m_edgeInfo.createTopologicalEngine(m_topology);
 
-    edgeInfo.registerTopologicalData();
+    m_edgeInfo.registerTopologicalData();
 
-    edgeInfo.endEdit();
+    m_edgeInfo.endEdit();
 
     // get restPosition
-    if (_initialPoints.size() == 0)
+    if (m_initialPoints.size() == 0)
     {
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-            _initialPoints=p;
+            m_initialPoints=p;
     }
     int i;
 
     /// initialize the data structure associated with each tetrahedron
-    for (i=0;i<_topology->getNbTetrahedra();++i)
+    for (i=0;i<m_topology->getNbTetrahedra();++i)
     {
-        tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
-                                                _topology->getTetrahedron(i),  (const vector< unsigned int > )0,
+        m_tetrahedronHandler->applyCreateFunction(i, tetrahedronInf[i],
+                                                m_topology->getTetrahedron(i),  (const vector< unsigned int > )0,
                                                 (const vector< double >)0);
     }
 
     /// set the call back function upon creation of a tetrahedron
-    tetrahedronInfo.createTopologicalEngine(_topology,tetrahedronHandler);
-    tetrahedronInfo.registerTopologicalData();
+    m_tetrahedronInfo.createTopologicalEngine(m_topology,m_tetrahedronHandler);
+    m_tetrahedronInfo.registerTopologicalData();
 
-    tetrahedronInfo.endEdit();
+    m_tetrahedronInfo.endEdit();
     //testDerivatives();
 
 }
@@ -264,22 +264,21 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
 
 
     const bool printLog = this->f_printLog.getValue();
-    if (printLog && !_meshSaved)
+    if (printLog && !m_meshSaved)
     {
         saveMesh( "D:/Steph/sofa-result.stl" );
         printf( "Mesh saved.\n" );
-        _meshSaved = true;
+        m_meshSaved = true;
     }
     unsigned int i=0,j=0,k=0,l=0;
-    unsigned int nbTetrahedra=_topology->getNbTetrahedra();
+    unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
 
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
 
     TetrahedronRestInformation *tetInfo;
 
     assert(this->mstate);
-    //myposition=x;
 
     Coord dp[3],x0,sv;
 
@@ -287,7 +286,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
     for(i=0; i<nbTetrahedra; i++ )
     {
         tetInfo=&tetrahedronInf[i];
-        const Tetrahedron &ta= _topology->getTetrahedron(i);
+        const Tetrahedron &ta= m_topology->getTetrahedron(i);
 
         x0=x[ta[0]];
 
@@ -295,18 +294,18 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
         // deformation gradient = sum of tensor product between vertex position and shape vector
         // optimize by using displacement with first vertex
         dp[0]=x[ta[1]]-x0;
-        sv=tetInfo->shapeVector[1];
+        sv=tetInfo->m_shapeVector[1];
         for (k=0;k<3;++k) {
                 for (l=0;l<3;++l) {
-                        tetInfo->deformationGradient[k][l]=dp[0][k]*sv[l];
+                        tetInfo->m_deformationGradient[k][l]=dp[0][k]*sv[l];
                 }
         }
         for (j=1;j<3;++j) {
                 dp[j]=x[ta[j+1]]-x0;
-                sv=tetInfo->shapeVector[j+1];
+                sv=tetInfo->m_shapeVector[j+1];
                 for (k=0;k<3;++k) {
                         for (l=0;l<3;++l) {
-                                tetInfo->deformationGradient[k][l]+=dp[j][k]*sv[l];
+                                tetInfo->m_deformationGradient[k][l]+=dp[j][k]*sv[l];
                         }
                 }
         }
@@ -314,36 +313,35 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addForce(const core::Me
         /// compute the right Cauchy-Green deformation matrix
         for (k=0;k<3;++k) {
             for (l=k;l<3;++l) {
-                tetInfo->deformationTensor(k,l)=(tetInfo->deformationGradient(0,k)*tetInfo->deformationGradient(0,l)+
-                tetInfo->deformationGradient(1,k)*tetInfo->deformationGradient(1,l)+
-                tetInfo->deformationGradient(2,k)*tetInfo->deformationGradient(2,l));
+                tetInfo->deformationTensor(k,l)=(tetInfo->m_deformationGradient(0,k)*tetInfo->m_deformationGradient(0,l)+
+                tetInfo->m_deformationGradient(1,k)*tetInfo->m_deformationGradient(1,l)+
+                tetInfo->m_deformationGradient(2,k)*tetInfo->m_deformationGradient(2,l));
             }
         }
 
         if(globalParameters.anisotropyDirection.size()>0)
         {
-            tetInfo->fiberDirection=globalParameters.anisotropyDirection[0];
-            Coord vectCa=tetInfo->deformationTensor*tetInfo->fiberDirection;
-            Real aDotCDota=dot(tetInfo->fiberDirection,vectCa);
+            tetInfo->m_fiberDirection=globalParameters.anisotropyDirection[0];
+            Coord vectCa=tetInfo->deformationTensor*tetInfo->m_fiberDirection;
+            Real aDotCDota=dot(tetInfo->m_fiberDirection,vectCa);
             tetInfo->lambda=(Real)sqrt(aDotCDota);
         }
         Coord areaVec = cross( dp[1], dp[2] );
 
-        tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->volScale;
+        tetInfo->J = dot( areaVec, dp[0] ) * tetInfo->m_volScale;
         tetInfo->trC = (Real)( tetInfo->deformationTensor(0,0) + tetInfo->deformationTensor(1,1) + tetInfo->deformationTensor(2,2));
-        //tetInfo->strainEnergy=myMaterial->getStrainEnergy(tetInfo,globalParameters);
-        tetInfo->SPKTensorGeneral.clear();
-        myMaterial->deriveSPKTensor(tetInfo,globalParameters,tetInfo->SPKTensorGeneral);
+        tetInfo->m_SPKTensorGeneral.clear();
+        m_myMaterial->deriveSPKTensor(tetInfo,globalParameters,tetInfo->m_SPKTensorGeneral);
         for(l=0;l<4;++l)
         {
-            f[ta[l]]-=tetInfo->deformationGradient*(tetInfo->SPKTensorGeneral*tetInfo->shapeVector[l])*tetInfo->restVolume;
+            f[ta[l]]-=tetInfo->m_deformationGradient*(tetInfo->m_SPKTensorGeneral*tetInfo->m_shapeVector[l])*tetInfo->m_restVolume;
         }
     }
 
 
     /// indicates that the next call to addDForce will need to update the stiffness matrix
-    updateMatrix=true;
-    tetrahedronInfo.endEdit();
+    m_updateMatrix=true;
+    m_tetrahedronInfo.endEdit();
 
     d_f.endEdit();
 }
@@ -352,30 +350,30 @@ template <class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 {
     unsigned int i=0,j=0,k=0,l=0;
-    unsigned int nbEdges=_topology->getNbEdges();
-    const vector< Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
-    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     EdgeInformation *einfo;
     TetrahedronRestInformation *tetInfo;
-    unsigned int nbTetrahedra=_topology->getNbTetrahedra();
-    const std::vector< Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
+    unsigned int nbTetrahedra=m_topology->getNbTetrahedra();
+    const std::vector< Tetrahedron> &tetrahedronArray=m_topology->getTetrahedra() ;
 
     for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
     for(i=0; i<nbTetrahedra; i++ )
     {
         tetInfo=&tetrahedronInf[i];
-        Matrix3 &df=tetInfo->deformationGradient;
+        Matrix3 &df=tetInfo->m_deformationGradient;
 //			Matrix3 Tdf=df.transposed();
-        BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+        BaseMeshTopology::EdgesInTetrahedron te=m_topology->getEdgesInTetrahedron(i);
 
         /// describe the jth vertex index of triangle no i
         const Tetrahedron &ta= tetrahedronArray[i];
         for(j=0;j<6;j++) {
             einfo= &edgeInf[te[j]];
-            Edge e=_topology->getLocalEdgesInTetrahedron(j);
+            Edge e=m_topology->getLocalEdgesInTetrahedron(j);
 
             k=e[0];
             l=e[1];
@@ -386,8 +384,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             Matrix3 &edgeDfDx = einfo->DfDx;
 
 
-            Coord svl=tetInfo->shapeVector[l];
-            Coord svk=tetInfo->shapeVector[k];
+            Coord svl=tetInfo->m_shapeVector[l];
+            Coord svk=tetInfo->m_shapeVector[k];
 
             Matrix3  M, N;
             MatrixSym outputTensor;
@@ -405,7 +403,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
 
             for(int m=0; m<3; m++){
 
-                myMaterial->applyElasticityTensor(tetInfo,globalParameters,inputTensor[m],outputTensor);
+                m_myMaterial->applyElasticityTensor(tetInfo,globalParameters,inputTensor[m],outputTensor);
                 Coord vectortemp=df*(outputTensor*svk);
                 Matrix3 Nv;
                 //Nv.clear();
@@ -419,17 +417,17 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::updateTangentMatrix()
             //Now M
             Real productSD=0;
 
-            Coord vectSD=tetInfo->SPKTensorGeneral*svk;
+            Coord vectSD=tetInfo->m_SPKTensorGeneral*svk;
             productSD=dot(vectSD,svl);
             M[0][1]=M[0][2]=M[1][0]=M[1][2]=M[2][0]=M[2][1]=0;
             M[0][0]=M[1][1]=M[2][2]=(Real)productSD;
 
-            edgeDfDx += (M+N)*tetInfo->restVolume;
+            edgeDfDx += (M+N)*tetInfo->m_restVolume;
 
 
         }// end of for j
     }//end of for i
-    updateMatrix=false;
+    m_updateMatrix=false;
 }
 
 
@@ -441,16 +439,16 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int l=0;
-    unsigned int nbEdges=_topology->getNbEdges();
-    const vector< Edge> &edgeArray=_topology->getEdges() ;
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const vector< Edge> &edgeArray=m_topology->getEdges() ;
 
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
 
     EdgeInformation *einfo;
 
 
     /// if the  matrix needs to be updated
-    if (updateMatrix) {
+    if (m_updateMatrix) {
     this->updateTangentMatrix();
     }// end of if
 
@@ -475,8 +473,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
         df[v0] += dv1 * kFactor;
         df[v1] -= dv0 * kFactor;
     }
-    edgeInfo.endEdit();
-    tetrahedronInfo.endEdit();
+    m_edgeInfo.endEdit();
+    m_tetrahedronInfo.endEdit();
 
     d_df.endEdit();
 }
@@ -493,14 +491,14 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
 {
 
     /// if the  matrix needs to be updated
-    if (updateMatrix)
+    if (m_updateMatrix)
     {
         this->updateTangentMatrix();
     }
 
-    unsigned int nbEdges=_topology->getNbEdges();
-    const vector< Edge> &edgeArray=_topology->getEdges() ;
-    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
+    unsigned int nbEdges=m_topology->getNbEdges();
+    const vector< Edge> &edgeArray=m_topology->getEdges() ;
+    helper::vector<EdgeInformation>& edgeInf = *(m_edgeInfo.beginEdit());
     EdgeInformation *einfo;
     unsigned int i,j,N0, N1, l;
         Index noeud0, noeud1;
@@ -524,17 +522,17 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addKToMatrix(sofa::defa
             }
         }
     }
-    edgeInfo.endEdit();
+    m_edgeInfo.endEdit();
 }
 
 
 template<class DataTypes>
 Mat<3,3,double> TetrahedronHyperelasticityFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
-	helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;
 	tetInfo=&tetrahedronInf[TetrahedronIndex];
-	return tetInfo->deformationGradient;
+    return tetInfo->m_deformationGradient;
 
 }
 
@@ -574,7 +572,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
     Real avgError=0.0;
     int count=0;
 
-    helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    helper::vector<TetrahedronRestInformation> &tetrahedronInf = *(m_tetrahedronInfo.beginEdit());
 
     for (unsigned int moveIdx=0; moveIdx<pos.size(); moveIdx++)
     {
@@ -593,10 +591,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
 
         // get current energy around
         Real energy1 = 0;
-        BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
+        BaseMeshTopology::TetrahedraAroundVertex vTetras = m_topology->getTetrahedraAroundVertex( moveIdx );
         for(unsigned int i = 0; i < vTetras.size(); ++i)
         {
-            energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
+            energy1 += tetrahedronInf[vTetras[i]].m_strainEnergy * tetrahedronInf[vTetras[i]].m_restVolume;
         }
         // generate random delta
         epsilon[0]= cs * ((Real)rand()/(Real)(RAND_MAX - 0.5));
@@ -619,7 +617,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         Real energy2 = 0;
         for(unsigned int i = 0; i < vTetras.size(); ++i)
         {
-                energy2 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
+                energy2 += tetrahedronInf[vTetras[i]].m_strainEnergy * tetrahedronInf[vTetras[i]].m_restVolume;
         }
         Coord forceAtMI = force1[moveIdx];
         Real deltaEnergyPredicted = -dot( forceAtMI, epsilon );
@@ -631,10 +629,10 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         }
 
         // check 2nd derivative for off-diagonal elements:
-        BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx );
+        BaseMeshTopology::EdgesAroundVertex vEdges = m_topology->getEdgesAroundVertex( moveIdx );
         for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
         {
-            BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
+            BaseMeshTopology::Edge edge = m_topology->getEdge( vEdges[eIdx] );
             unsigned int testIdx = edge[0];
             if (testIdx==moveIdx) testIdx = edge[1];
             Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
@@ -666,7 +664,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::testDerivatives()
         }
     }
 
-    tetrahedronInfo.endEdit();
+    m_tetrahedronInfo.endEdit();
     printf( "testDerivatives passed!\n" );
     avgError /= (Real)count;
     printf( "Average error = %.2f%%\n", avgError );
@@ -683,7 +681,7 @@ template<class DataTypes>
 void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *filename )
 {
     VecCoord pos( this->mstate->read(core::ConstVecCoordId::position())->getValue());
-    core::topology::BaseMeshTopology::SeqTriangles triangles = _topology->getTriangles();
+    core::topology::BaseMeshTopology::SeqTriangles triangles = m_topology->getTriangles();
     FILE *file = fopen( filename, "wb" );
 
     if (!file) return;
@@ -702,12 +700,12 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::saveMesh( const char *f
 
     for (unsigned int triangleId=0; triangleId<triangles.size(); triangleId++)
     {
-        if (_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
+        if (m_topology->getTetrahedraAroundTriangle( triangleId ).size()==1)
         {
             // surface triangle, save it
-            unsigned int p0 = _topology->getTriangle( triangleId )[0];
-            unsigned int p1 = _topology->getTriangle( triangleId )[1];
-            unsigned int p2 = _topology->getTriangle( triangleId )[2];
+            unsigned int p0 = m_topology->getTriangle( triangleId )[0];
+            unsigned int p1 = m_topology->getTriangle( triangleId )[1];
+            unsigned int p2 = m_topology->getTriangle( triangleId )[2];
             for (int d=0; d<3; d++)
             {
                     vertex[0][d] = (float)pos[p0][d];
@@ -738,9 +736,9 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
 
 
     std::vector< Vector3 > points[4];
-    for(int i = 0 ; i<_topology->getNbTetrahedra();++i)
+    for(int i = 0 ; i<m_topology->getNbTetrahedra();++i)
     {
-        const Tetrahedron t=_topology->getTetrahedron(i);
+        const Tetrahedron t=m_topology->getTetrahedron(i);
 
         Index a = t[0];
         Index b = t[1];
@@ -774,7 +772,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     Vec<4,float> color3;
     Vec<4,float> color4;
 
-    std::string material = f_materialName.getValue();
+    std::string material = d_materialName.getValue();
     if (material=="ArrudaBoyce") {
         color1 = Vec<4,float>(0.0,1.0,0.0,1.0);
         color2 = Vec<4,float>(0.5,1.0,0.0,1.0);
