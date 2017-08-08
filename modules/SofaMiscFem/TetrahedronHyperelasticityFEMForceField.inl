@@ -133,7 +133,7 @@ template <class DataTypes> TetrahedronHyperelasticityFEMForceField<DataTypes>::~
 template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataTypes>::init()
 {
     if (this->f_printLog.getValue())
-            sout << "initializing TetrahedronHyperelasticityFEMForceField" << sendl;
+        msg_info() << "initializing TetrahedronHyperelasticityFEMForceField";
 
     this->Inherited::init();
 
@@ -160,35 +160,35 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
         fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
         m_myMaterial = BoyceAndArrudaMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else if (material=="StVenantKirchhoff")
     {
         fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
         m_myMaterial = STVenantKirchhoffMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else if (material=="NeoHookean")
     {
         fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
         m_myMaterial = NeoHookeanMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else if (material=="MooneyRivlin")
     {
         fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
         m_myMaterial = MooneyRivlinMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else if (material=="VerondaWestman")
     {
         fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
         m_myMaterial = VerondaWestmanMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
 
     else if (material=="Costa")
@@ -196,24 +196,24 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
         fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
         m_myMaterial = CostaMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material<<endl;
     }
     else if (material=="Ogden")
     {
         fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
         m_myMaterial = OgdenMaterial;
         if (this->f_printLog.getValue())
-            sout<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material<<endl;
     }
     else
     {
-        serr << "material name " << material << " is not valid (should be ArrudaBoyce, StVenantKirchhoff, MooneyRivlin, VerondaWestman, Costa or Ogden)"<< sendl;
+        msg_error() << "material name " << material << " is not valid (should be ArrudaBoyce, StVenantKirchhoff, MooneyRivlin, VerondaWestman, Costa or Ogden)";
     }
 
 
     if (!m_topology->getNbTetrahedra())
     {
-        serr << "ERROR(TetrahedronHyperelasticityFEMForceField): object must have a Tetrahedral Set Topology.\n"<<sendl;
+        msg_error() << "ERROR(TetrahedronHyperelasticityFEMForceField): object must have a Tetrahedral Set Topology.\n";
         return;
     }
 
@@ -482,7 +482,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::addDForce(const core::M
 template<class DataTypes>
 SReal TetrahedronHyperelasticityFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
-    serr << "ERROR("<<this->getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
+    msg_error() << "ERROR("<<this->getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented.";
     return 0.0;
 }
 
