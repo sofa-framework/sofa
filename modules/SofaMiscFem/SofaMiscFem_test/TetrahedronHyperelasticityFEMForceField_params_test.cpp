@@ -111,9 +111,10 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
         typename sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes>::SPtr FF = sofa::core::objectmodel::New< sofa::component::forcefield::TetrahedronHyperelasticityFEMForceField<DataTypes> >();
         sofa::helper::vector<Real> param_vector;
         param_vector.resize(3);
-        param_vector[0] = 151065.460;   //C01
-        param_vector[1] = 101709.668;   //C10
-        param_vector[2] = 1e07;         //K0
+        // Experimental data gave a deflexion of y=-0.11625 with the following parameters (C01 = 151065.460 ; C10 = 101709.668 1e07 ; D0 = 1e07)
+        param_vector[0] = 151065.460;   // Monney parameter C01
+        param_vector[1] = 101709.668;   // Monney parameter C10
+        param_vector[2] = 1e07;         // Monney parameter K0
 
         hyperelasticNode->addObject(FF);
         FF->setName("FEM");
