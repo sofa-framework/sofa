@@ -196,14 +196,14 @@ template <class DataTypes> void TetrahedronHyperelasticityFEMForceField<DataType
         fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>;
         m_myMaterial = CostaMaterial;
         if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else if (material=="Ogden")
     {
         fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>;
         m_myMaterial = OgdenMaterial;
         if (this->f_printLog.getValue())
-            msg_info()<<"The model is "<<material<<endl;
+            msg_info()<<"The model is "<<material;
     }
     else
     {
