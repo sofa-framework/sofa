@@ -30,6 +30,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::Data;
+using sofa::core::objectmodel::BaseData;
 
 #include <sofa/helper/vectorData.h>
 using sofa::helper::vectorData;
@@ -37,14 +38,20 @@ using sofa::helper::WriteAccessorVector;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 
+#include <sofa/helper/OptionsGroup.h>
+using sofa::helper::OptionsGroup;
+
+
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
 
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 #include <oscpack/osc/OscReceivedElements.h>
 #include <oscpack/osc/OscPrintReceivedElements.h>
-#include "oscpack/osc/OscPacketListener.h"
+#include <oscpack/osc/OscPacketListener.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/UdpSocket.h>
 
 #include <pthread.h>
@@ -52,7 +59,10 @@ using sofa::core::objectmodel::Event;
 #include <stdio.h>
 #include <unistd.h>
 #include <mutex>
+#include <cmath>
 
+#define OUTPUT_BUFFER_SIZE 1024
+#define BENCHMARK false
 
 namespace sofa
 {
@@ -72,28 +82,35 @@ class ServerCommunication : public BaseObject, public osc::OscPacketListener
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), BaseObject);
 
+    Data<helper::OptionsGroup>  d_job;
     Data<std::string>           d_adress;
     Data<int>                   d_port;
-    Data<int>                   d_refreshRate;
+    Data<double>                d_refreshRate;
     Data<unsigned int>          d_nbDataField;
     vectorData<DataTypes>       d_data;
+#if BENCHMARK
     timeval t1, t2;
+#endif
 
     ServerCommunication() ;
     virtual ~ServerCommunication() ;
     virtual void init();
     virtual void handleEvent(Event *);
+    virtual void sendData();
+    virtual void receiveData();
+
     virtual std::string getTemplateName() const {return templateName(this);}
     static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
+
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+    static void* thread_launcher(void*);
 
     void openCommunication();
-
-    static void* thread_launcher(void*);
 
 protected:
     UdpListeningReceiveSocket* d_socket;
     pthread_t m_thread;
+    bool m_senderRunning = true;
 
 };
 
