@@ -33,80 +33,42 @@ namespace communication
 {
 
 
-/******************************************************************************************************************* TEMPLATEDEFINITION
-***************************************************************************************************************************************
-***************************************************************************************************************************************
-***************************************************************************************************************************************/
-
-template <>
-void ServerCommunication<std::string>::sendData()
-{
-    UdpTransmitSocket transmitSocket( IpEndpointName(d_adress.getValue().c_str(), d_port.getValue()));
-#if BENCHMARK
-    // Uncorrect results if frequency == 1hz, due to tv_usec precision
-    gettimeofday(&t1, NULL);
-    if(d_refreshRate.getValue() <= 1.0)
-        std::cout << "Thread Sender OSC : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-    else
-        std::cout << "Thread Sender OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-    gettimeofday(&t2, NULL);
-#endif
-    char buffer[OUTPUT_BUFFER_SIZE];
-    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
-
-    p << osc::BeginBundleImmediate;
-    std::string messageName = "/" + this->getName();
-    p << osc::BeginMessage(messageName.c_str());
-
-    mutex.lock();
-    for(unsigned int i=0; i<d_data.size(); i++)
-    {
-        std::ostringstream messageStream;
-        ReadAccessor<Data<std::string>> data = d_data[i];
-        messageStream << data;
-        p << messageStream.str().c_str();
-
-    }
-    mutex.unlock();
-    p << osc::EndMessage; //  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look to EndBundle
-    transmitSocket.Send( p.Data(), p.Size() );
-    usleep(1000000.0/(double)d_refreshRate.getValue());
-}
-
 template<>
-std::string ServerCommunication<double>::templateName(const ServerCommunication<double>* object){
+std::string ServerCommunication<double>::templateName(const ServerCommunication<double>* object)
+{
     SOFA_UNUSED(object);
     return "double";
 }
 
 template<>
-std::string ServerCommunication<float>::templateName(const ServerCommunication<float>* object){
+std::string ServerCommunication<float>::templateName(const ServerCommunication<float>* object)
+{
     SOFA_UNUSED(object);
     return "float";
 }
 
 template<>
-std::string ServerCommunication<int>::templateName(const ServerCommunication<int>* object){
+std::string ServerCommunication<int>::templateName(const ServerCommunication<int>* object)
+{
     SOFA_UNUSED(object);
     return "int";
 }
 
 template<>
-std::string ServerCommunication<std::string>::templateName(const ServerCommunication<std::string>* object){
+std::string ServerCommunication<std::string>::templateName(const ServerCommunication<std::string>* object)
+{
     SOFA_UNUSED(object);
     return "string";
 }
 
-int ServerCommunicationClass = RegisterObject("OSC Communication Server.")
-        #ifndef SOFA_FLOAT
-        .add< ServerCommunication<float> >()
-        #endif
-        #ifndef SOFA_DOUBLE
-        .add< ServerCommunication<double> >()
-        #endif
-        .add< ServerCommunication<int> >()
-        .add< ServerCommunication<std::string> >(true)
-        ;
+#ifndef SOFA_FLOAT
+template class SOFA_CORE_API ServerCommunication<float>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_CORE_API ServerCommunication<double>;
+#endif
+template class SOFA_CORE_API ServerCommunication<int>;
+template class SOFA_CORE_API ServerCommunication<std::string>;
 
 } /// communication
 

@@ -6,12 +6,15 @@ set(HEADER_FILES
     components/communicationBinder.h
     components/serverCommunication.h
     components/serverCommunication.inl
+    components/serverCommunicationOSC.h
+    components/serverCommunicationOSC.inl
 )
 
 set(SOURCE_FILES
     initCommunication.cpp
     components/communicationBinder.cpp
     components/serverCommunication.cpp
+    components/serverCommunicationOSC.cpp
 )
 
 set(EXTRA_FILES

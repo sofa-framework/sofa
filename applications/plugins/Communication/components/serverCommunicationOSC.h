@@ -19,43 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SERVERCOMMUNICATION_H
-#define SOFA_SERVERCOMMUNICATION_H
+#ifndef SOFA_SERVERCOMMUNICATIONOSC_H
+#define SOFA_SERVERCOMMUNICATIONOSC_H
 
-#include <Communication/config.h>
-#include <sofa/core/ObjectFactory.h>
+#include "serverCommunication.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#include <oscpack/osc/OscReceivedElements.h>
+#include <oscpack/osc/OscPrintReceivedElements.h>
+#include <oscpack/osc/OscPacketListener.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
+#include <oscpack/ip/UdpSocket.h>
 
-#include <sofa/core/objectmodel/Data.h>
-using sofa::core::objectmodel::Data;
-using sofa::core::objectmodel::BaseData;
-
-#include <sofa/helper/vectorData.h>
-using sofa::helper::vectorData;
-using sofa::helper::WriteAccessorVector;
-using sofa::helper::WriteAccessor;
-using sofa::helper::ReadAccessor;
-
-#include <sofa/helper/OptionsGroup.h>
-using sofa::helper::OptionsGroup;
-
-#include <sofa/core/objectmodel/Event.h>
-using sofa::core::objectmodel::Event;
-
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-
-#include <pthread.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <mutex>
-#include <cmath>
-
-#define BENCHMARK false
-
+#define OUTPUT_BUFFER_SIZE 1024
 
 namespace sofa
 {
@@ -67,36 +42,26 @@ namespace communication
 {
 
 template <class DataTypes>
-class ServerCommunication : public BaseObject
+class ServerCommunicationOSC : public ServerCommunication<DataTypes>, public osc::OscPacketListener
 {
 
     std::mutex mutex;
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), BaseObject);
-    Data<helper::OptionsGroup>  d_job;
-    Data<std::string>           d_adress;
-    Data<int>                   d_port;
-    Data<double>                d_refreshRate;
-    Data<unsigned int>          d_nbDataField;
-    vectorData<DataTypes>       d_data;
-    pthread_t m_thread;
-    bool m_senderRunning = true;
-#if BENCHMARK
-    timeval t1, t2;
-#endif
 
-    ServerCommunication() ;
-    virtual ~ServerCommunication() ;
-    virtual void init();
-    virtual void handleEvent(Event *);
-    virtual void sendData() =0;
-    virtual void receiveData() =0;
-    virtual void openCommunication();
+    SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationOSC, DataTypes), SOFA_TEMPLATE(ServerCommunication, DataTypes));
+
+    ServerCommunicationOSC() ;
+    virtual ~ServerCommunicationOSC();
+    virtual void sendData();
+    virtual void receiveData();
 
     virtual std::string getTemplateName() const {return templateName(this);}
-    static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
+    static std::string templateName(const ServerCommunicationOSC<DataTypes>* = NULL);
 
-    static void* thread_launcher(void*);
+    virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+
+protected:
+    UdpListeningReceiveSocket* d_socket;
 
 };
 
@@ -104,4 +69,4 @@ public:
 } /// component
 } /// sofa
 
-#endif // SOFA_SERVERCOMMUNICATION_H
+#endif // SOFA_SERVERCOMMUNICATIONOSC_H
