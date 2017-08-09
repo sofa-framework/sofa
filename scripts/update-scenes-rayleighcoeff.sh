@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: licenseUpdater.sh <src-dir>"
+    echo "Usage: update-scenes-rayleighcoeff.sh <src-dir>"
     echo "  src-dir: all scenes in this folder will be affected"
 }
 
@@ -21,12 +21,6 @@ fi
 
 files_to_update() {
     /usr/bin/find "$SRC_DIR" -regex ".*\.\(scn\|xml\)$"
-}
-
-prepare_header() {
-    if [ ! -e "$1" ]; then
-        echo "$1: file not found."; exit 1
-    fi
 }
 
 get_rayleigh() {
