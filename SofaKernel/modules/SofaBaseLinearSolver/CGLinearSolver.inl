@@ -201,7 +201,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             sout<<"p : "<<p<<sendl;
         }
 
-        /// Compute the matrix-vector product
+        /// Compute the matrix-vector product : M p
         q = M*p;
 
         if( verbose )
@@ -209,7 +209,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             sout<<"q = M p : "<<q<<sendl;
         }
 
-        /// Compute the denominator
+        /// Compute the denominator : p M p
         double den = p.dot(q);
 
 
@@ -276,15 +276,19 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 template<class TMatrix, class TVector>
 inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, SReal beta)
 {
+    // p = p*beta + r
     p *= beta;
-    p += r; //z;
+    p += r;
 }
 
 template<class TMatrix, class TVector>
 inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha)
 {
-    x.peq(p,alpha);                 // x = x + alpha p
-    r.peq(q,-alpha);                // r = r - alpha q
+    // x = x + alpha p
+    x.peq(p,alpha);
+
+    // r = r - alpha q
+    r.peq(q,-alpha);
 }
 
 } // namespace linearsolver
