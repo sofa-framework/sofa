@@ -36,7 +36,7 @@ public:
     }
     virtual ~DistanceGridComponent()  { }
     DistanceGrid* grid {nullptr};
-    void setFilename(const std::__cxx11::string &name);
+    void setFilename(const std::string& name);
     void loadGrid(double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax);
     virtual void init();
     virtual double eval(Coord p);
