@@ -2,7 +2,6 @@
 #define DISTANCE_GRID_COMPONENT_H
 
 #include <iostream>
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <SofaVolumetricData/ImplicitShape.h>
 #include <SofaVolumetricData/DistanceGrid.h>
 #include <sofa/defaulttype/Vec3Types.h>
