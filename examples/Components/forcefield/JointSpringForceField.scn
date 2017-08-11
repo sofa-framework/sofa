@@ -6,7 +6,7 @@
     <DefaultPipeline name="default42" />
     <MinProximityIntersection name="default43" alarmDistance="1" contactDistance="0.5"/>
     <Node name="default44" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-009" threshold="1e-009" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" restScale="1" />
         <UniformMass template="Rigid" name="mass" mass="1 1 [1 0 0,0 1 0,0 0 1]" />

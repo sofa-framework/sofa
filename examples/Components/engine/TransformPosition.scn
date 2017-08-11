@@ -5,7 +5,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
     <DefaultContactManager name="Response" response="default" />
     <Node name="Object" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="Implicit Euler Solver" />
+        <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver  name="Conjugate Gradient" tolerance="1e-05" threshold="1e-05" iterations="5"/>
         <SparseGridTopology name="grid" fileTopology="mesh/dragon.obj" n="7 6 5" />
         <TransformPosition name="transfo" method="fromFile" filename="transfo.tfm" input_position="@grid.position"/>

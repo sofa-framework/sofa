@@ -6,7 +6,7 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <!-- 		<SparseLUSolver printLog="1" verbose="0" /> -->
         <!-- 		<SparseLDLSolver printLog="1" verbose="0" /> -->
         <SparseCholeskySolver printLog="0" verbose="0" />

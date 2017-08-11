@@ -1,6 +1,6 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1" >
 	<VisualStyle displayFlags="showBehavior" />
-  <EulerImplicitSolver />
+  <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
   <Node>
     <MeshObjLoader name="frog" filename="mesh/frog.obj" />
