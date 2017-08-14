@@ -127,6 +127,16 @@ if(NOT SOFA_NO_OPENGL)
                 set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
 
+            ## Qt native menu
+            set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
+            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
+            endif()
+
+            option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
+            if(SOFAGUI_ENABLE_NATIVE_MENU)
+                set(SOFA_GUI_NATIVE_MENU 1)
+            endif()
 
             set(SOFA_GUI_QT 1) # cmakedefine
             list(APPEND SOFAGUI_TARGETS SofaGuiQt)
