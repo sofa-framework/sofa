@@ -954,8 +954,10 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 /// all parameters as input
 /// output=> change value of F in fineLevel
 
-void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool /*verbose*/)
+void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 {
+    SOFA_UNUSED(verbose) ;
+
     int numContactsFine = fineLevel.getDim()/3;
 
     if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
