@@ -30,7 +30,8 @@
 #include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/UdpSocket.h>
 
-#define OUTPUT_BUFFER_SIZE 1024
+#define OUTPUT_BUFFER_SIZE 65536
+
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ template <class DataTypes>
 class ServerCommunicationOSC : public ServerCommunication<DataTypes>, public osc::OscPacketListener
 {
 
-    std::mutex mutex;
+
 public:
 
     SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationOSC, DataTypes), SOFA_TEMPLATE(ServerCommunication, DataTypes));
@@ -62,6 +63,8 @@ public:
 
 protected:
     UdpListeningReceiveSocket* d_socket;
+
+    osc::OutboundPacketStream createOSCMessage();
 
 };
 

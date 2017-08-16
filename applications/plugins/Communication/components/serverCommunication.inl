@@ -42,8 +42,12 @@ ServerCommunication<DataTypes>::ServerCommunication()
                              "Number of field 'data' the user want to send or receive.\n"
                              "Default value is 1."))
     , d_data(this, "data", "Data to send or receive.")
+    , d_data_copy(this, "datac", "Data to send or receive.")
 {
     d_data.resize(d_nbDataField.getValue());
+    d_data_copy.resize(d_nbDataField.getValue());
+    pthread_mutex_init(&mutex, NULL);
+
 #if BENCHMARK
     gettimeofday(&t2, NULL);
     gettimeofday(&t1, NULL);
@@ -69,6 +73,7 @@ template <class DataTypes>
 void ServerCommunication<DataTypes>::init()
 {
     d_data.resize(d_nbDataField.getValue());
+    d_data_copy.resize(d_nbDataField.getValue());
     f_listening = true;
     pthread_create(&m_thread, NULL, &ServerCommunication::thread_launcher, this);
 }
@@ -76,6 +81,7 @@ void ServerCommunication<DataTypes>::init()
 template <class DataTypes>
 void ServerCommunication<DataTypes>::handleEvent(Event* event)
 {
+    std::cout << "Event  " << std::endl;
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
 #if BENCHMARK

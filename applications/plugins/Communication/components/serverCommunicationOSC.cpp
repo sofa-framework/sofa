@@ -32,25 +32,9 @@ namespace component
 namespace communication
 {
 
-
-/******************************************************************************************************************* TEMPLATEDEFINITION
-***************************************************************************************************************************************
-***************************************************************************************************************************************
-***************************************************************************************************************************************/
-
 template <>
-void ServerCommunicationOSC<std::string>::sendData()
+osc::OutboundPacketStream ServerCommunicationOSC<std::string>::createOSCMessage()
 {
-    UdpTransmitSocket transmitSocket( IpEndpointName(d_adress.getValue().c_str(), d_port.getValue()));
-#if BENCHMARK
-    // Uncorrect results if frequency == 1hz, due to tv_usec precision
-    gettimeofday(&t1, NULL);
-    if(d_refreshRate.getValue() <= 1.0)
-        std::cout << "Thread Sender OSC : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-    else
-        std::cout << "Thread Sender OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-    gettimeofday(&t2, NULL);
-#endif
     char buffer[OUTPUT_BUFFER_SIZE];
     osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
 
@@ -58,19 +42,69 @@ void ServerCommunicationOSC<std::string>::sendData()
     std::string messageName = "/" + this->getName();
     p << osc::BeginMessage(messageName.c_str());
 
-    mutex.lock();
-    for(unsigned int i=0; i<d_data.size(); i++)
+//    mutex.lock();
+    for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
         std::ostringstream messageStream;
-        ReadAccessor<Data<std::string>> data = d_data[i];
+        ReadAccessor<Data<std::string>> data = d_data_copy[i];
         messageStream << data;
         p << messageStream.str().c_str();
 
     }
-    mutex.unlock();
-    p << osc::EndMessage; //  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look to EndBundle
-    transmitSocket.Send( p.Data(), p.Size() );
-    usleep(1000000.0/(double)d_refreshRate.getValue());
+//    mutex.unlock();
+    p << osc::EndMessage;
+    return p;
+}
+
+template <>
+osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3d>>::createOSCMessage()
+{
+    char buffer[OUTPUT_BUFFER_SIZE];
+    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
+
+    p << osc::BeginBundleImmediate;
+    std::string messageName = "/" + this->getName();
+    p << osc::BeginMessage(messageName.c_str());
+
+    pthread_mutex_lock(&mutex);
+    for(unsigned int i=0; i<d_data_copy.size(); i++)
+    {
+
+        ReadAccessor<Data<vector<Vec3d>>> data = *d_data[i];
+        std::cout << "data size : " << data.size() << std::endl;
+        for(unsigned int j=0; j<data.size()/2; j++)
+        {
+            for(int k=0; k<3; k++)
+                p << data[j][k];
+        }
+
+    }
+    pthread_mutex_unlock(&mutex);
+    p << osc::EndMessage;
+    return p;
+}
+
+template <>
+osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3f>>::createOSCMessage()
+{
+    char buffer[OUTPUT_BUFFER_SIZE];
+    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
+
+    p << osc::BeginBundleImmediate;
+    std::string messageName = "/" + this->getName();
+    p << osc::BeginMessage(messageName.c_str());
+
+//    mutex.lock();
+    for(unsigned int i=0; i<d_data_copy.size(); i++)
+    {
+        ReadAccessor<Data<vector<Vec3f>>> data = d_data_copy[i];
+        for(unsigned int j=0; j<data.size(); j++)
+            for(int k=0; k<3; k++)
+                p << data[j][k];
+    }
+//    mutex.unlock();
+    p << osc::EndMessage << osc::EndBundle;
+    return p;
 }
 
 template<>
@@ -101,15 +135,32 @@ std::string ServerCommunicationOSC<std::string>::templateName(const ServerCommun
     return "string";
 }
 
+template<>
+std::string ServerCommunicationOSC<vector<Vec3d>>::templateName(const ServerCommunicationOSC<vector<Vec3d>>* object){
+    SOFA_UNUSED(object);
+    return "Vec3d";
+}
+
+
+template<>
+std::string ServerCommunicationOSC<vector<Vec3f>>::templateName(const ServerCommunicationOSC<vector<Vec3f>>* object){
+    SOFA_UNUSED(object);
+    return "Vec3f";
+}
+
 int ServerCommunicationOSCClass = RegisterObject("OSC Communication Server.")
         #ifndef SOFA_FLOAT
         .add< ServerCommunicationOSC<float> >()
-        #endif
-        #ifndef SOFA_DOUBLE
-        .add< ServerCommunicationOSC<double> >()
-        #endif
-        .add< ServerCommunicationOSC<int> >()
-        .add< ServerCommunicationOSC<std::string> >(true);
+        .add< ServerCommunicationOSC<vector<Vec3f>> >()
+
+                                                    #endif
+                                                    #ifndef SOFA_DOUBLE
+                                                    .add< ServerCommunicationOSC<double> >()
+                                                    .add< ServerCommunicationOSC<vector<Vec3d>> >()
+
+                                                    #endif
+                                                    .add< ServerCommunicationOSC<int> >()
+                                                    .add< ServerCommunicationOSC<std::string> >(true);
 
 } /// communication
 

@@ -44,6 +44,20 @@ using sofa::helper::OptionsGroup;
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
 
+
+using sofa::defaulttype::Vec3d;
+using sofa::defaulttype::Vec3f;
+using sofa::defaulttype::Vec1d;
+using sofa::defaulttype::Vec1f;
+using sofa::defaulttype::Vec;
+using sofa::helper::vector;
+
+#include <sofa/defaulttype/RigidTypes.h>
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+
+
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
@@ -55,7 +69,6 @@ using sofa::core::objectmodel::Event;
 #include <cmath>
 
 #define BENCHMARK false
-
 
 namespace sofa
 {
@@ -70,7 +83,6 @@ template <class DataTypes>
 class ServerCommunication : public BaseObject
 {
 
-    std::mutex mutex;
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), BaseObject);
     Data<helper::OptionsGroup>  d_job;
@@ -79,6 +91,7 @@ public:
     Data<double>                d_refreshRate;
     Data<unsigned int>          d_nbDataField;
     vectorData<DataTypes>       d_data;
+    vectorData<DataTypes>       d_data_copy;
     pthread_t m_thread;
     bool m_senderRunning = true;
 #if BENCHMARK
@@ -97,6 +110,10 @@ public:
     static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
 
     static void* thread_launcher(void*);
+
+protected:
+    pthread_mutex_t mutex;
+
 
 };
 

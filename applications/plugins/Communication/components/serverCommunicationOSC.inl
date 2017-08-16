@@ -58,23 +58,30 @@ void ServerCommunicationOSC<DataTypes>::sendData()
         std::cout << "Thread Sender OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
     gettimeofday(&t2, NULL);
 #endif
+
+    osc::OutboundPacketStream p = createOSCMessage();
+    transmitSocket.Send( p.Data(), p.Size() );
+    usleep(1000000.0/(double) this->d_refreshRate.getValue());
+}
+
+template <class DataTypes>
+osc::OutboundPacketStream ServerCommunicationOSC<DataTypes>::createOSCMessage()
+{
     char buffer[OUTPUT_BUFFER_SIZE];
     osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
 
     p << osc::BeginBundleImmediate;
     std::string messageName = "/" + this->getName();
     p << osc::BeginMessage(messageName.c_str());
-
-    mutex.lock();
-    for(unsigned int i=0; i<this->d_data.size(); i++)
+//    mutex.lock();
+    for(unsigned int i=0; i<this->d_data_copy.size(); i++)
     {
-        ReadAccessor<Data<DataTypes>> data = this->d_data[i];
+        ReadAccessor<Data<DataTypes>> data = this->d_data_copy[i];
         p << data;
     }
-    mutex.unlock();
+//    mutex.unlock();
     p << osc::EndMessage; //  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look
-    transmitSocket.Send( p.Data(), p.Size() );
-    usleep(1000000.0/(double) this->d_refreshRate.getValue());
+    return p;
 }
 
 template <class DataTypes>
@@ -104,7 +111,7 @@ void ServerCommunicationOSC<DataTypes>::ProcessMessage( const osc::ReceivedMessa
 #endif
 
     int i = 0;
-    mutex.lock();
+//    mutex.lock();
     for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
     {
         std::stringstream stream;
@@ -115,9 +122,10 @@ void ServerCommunicationOSC<DataTypes>::ProcessMessage( const osc::ReceivedMessa
         stream.str(s);
         WriteAccessor<Data<DataTypes>> data = this->d_data[i];
         stream >> data;
+        std::cout << stream.str() << std::endl;
         i++;
     }
-    mutex.unlock();
+//    mutex.unlock();
 }
 
 } /// communication
