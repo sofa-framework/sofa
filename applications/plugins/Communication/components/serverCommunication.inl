@@ -79,11 +79,18 @@ void ServerCommunication<DataTypes>::init()
 }
 
 template <class DataTypes>
-void ServerCommunication<DataTypes>::handleEvent(Event* event)
+void ServerCommunication<DataTypes>::handleEvent(Event * event)
 {
-    std::cout << "Event  " << std::endl;
     if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
     {
+        pthread_mutex_lock(&mutex);
+        for( size_t i=0 ; i < this->d_data.size(); ++i )
+        {
+            this->d_data_copy[i] = this->d_data[i];
+        }
+        pthread_mutex_unlock(&mutex);
+
+
 #if BENCHMARK
         // Uncorrect results if frequency == 1hz, due to tv_usec precision
         gettimeofday(&t1, NULL);

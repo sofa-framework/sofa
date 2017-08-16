@@ -33,6 +33,68 @@ namespace communication
 {
 
 
+template <>
+void ServerCommunication<vector<Vec3d>>::handleEvent(Event * event)
+{
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        pthread_mutex_lock(&mutex);
+        for( size_t i=0 ; i < this->d_data.size(); ++i )
+        {
+            ReadAccessor<Data<vector<Vec3d>>> in = this->d_data[i];
+            WriteAccessor<Data<vector<Vec3d>>> data = this->d_data_copy[i];
+            data.resize(in.size());
+            for(unsigned int j = 0; j < in.size()/2; j++)
+            {
+                for(int k=0; k<3; k++)
+                    data[j][k] = in[j][k];
+            }
+        }
+        pthread_mutex_unlock(&mutex);
+
+#if BENCHMARK
+        // Uncorrect results if frequency == 1hz, due to tv_usec precision
+        gettimeofday(&t1, NULL);
+        if(d_refreshRate.getValue() <= 1.0)
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
+        else
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
+        gettimeofday(&t2, NULL);
+#endif
+    }
+}
+template <>
+void ServerCommunication<vector<Vec3f>>::handleEvent(Event * event)
+{
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        pthread_mutex_lock(&mutex);
+        for( size_t i=0 ; i < this->d_data.size(); ++i )
+        {
+            ReadAccessor<Data<vector<Vec3f>>> in = this->d_data[i];
+            WriteAccessor<Data<vector<Vec3f>>> data = this->d_data_copy[i];
+            data.resize(in.size());
+            for(unsigned int j = 0; j < in.size()/2; j++)
+            {
+                for(int k=0; k<3; k++)
+                    data[j][k] = in[j][k];
+            }
+        }
+        pthread_mutex_unlock(&mutex);
+
+
+#if BENCHMARK
+        // Uncorrect results if frequency == 1hz, due to tv_usec precision
+        gettimeofday(&t1, NULL);
+        if(d_refreshRate.getValue() <= 1.0)
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
+        else
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
+        gettimeofday(&t2, NULL);
+#endif
+    }
+}
+
 template<>
 std::string ServerCommunication<double>::templateName(const ServerCommunication<double>* object)
 {
@@ -61,13 +123,11 @@ std::string ServerCommunication<std::string>::templateName(const ServerCommunica
     return "string";
 }
 
-
 template<>
 std::string ServerCommunication<vector<Vec3d>>::templateName(const ServerCommunication<vector<Vec3d>>* object){
     SOFA_UNUSED(object);
     return "Vec3d";
 }
-
 
 template<>
 std::string ServerCommunication<vector<Vec3f>>::templateName(const ServerCommunication<vector<Vec3f>>* object){
@@ -75,55 +135,13 @@ std::string ServerCommunication<vector<Vec3f>>::templateName(const ServerCommuni
     return "Vec3f";
 }
 
-template<>
-std::string ServerCommunication<vector<Vec1d>>::templateName(const ServerCommunication<vector<Vec1d>>* object){
-    SOFA_UNUSED(object);
-    return "Vec1d";
-}
-
-
-template<>
-std::string ServerCommunication<vector<Vec1f>>::templateName(const ServerCommunication<vector<Vec1f>>* object){
-    SOFA_UNUSED(object);
-    return "Vec1f";
-}
-
-template<>
-std::string ServerCommunication<vector<Vec<2,int>>>::templateName(const ServerCommunication<vector<Vec<2,int>>>* object){
-    SOFA_UNUSED(object);
-    return "Vec2i";
-}
-
-template<>
-std::string ServerCommunication<vector<Vec<2,unsigned int>>>::templateName(const ServerCommunication<vector<Vec<2,unsigned int>>>* object){
-    SOFA_UNUSED(object);
-    return "Vec2ui";
-}
-
-template<>
-std::string ServerCommunication<vector<Rigid3dTypes::Coord>>::templateName(const ServerCommunication<vector<Rigid3dTypes::Coord>>* object){
-    SOFA_UNUSED(object);
-    return "Rigid3d";
-}
-
-
-template<>
-std::string ServerCommunication<vector<Rigid3fTypes::Coord>>::templateName(const ServerCommunication<vector<Rigid3fTypes::Coord>>* object){
-    SOFA_UNUSED(object);
-    return "Rigid3f";
-}
-
 #ifndef SOFA_FLOAT
 template class SOFA_CORE_API ServerCommunication<float>;
 template class SOFA_CORE_API ServerCommunication<vector<Vec3f>>;
-template class SOFA_CORE_API ServerCommunication<vector<Vec1f>>;
-template class SOFA_CORE_API ServerCommunication<vector<Rigid3fTypes::Coord>>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_CORE_API ServerCommunication<double>;
 template class SOFA_CORE_API ServerCommunication<vector<Vec3d>>;
-template class SOFA_CORE_API ServerCommunication<vector<Vec1d>>;
-template class SOFA_CORE_API ServerCommunication<vector<Rigid3dTypes::Coord>>;
 #endif
 template class SOFA_CORE_API ServerCommunication<int>;
 template class SOFA_CORE_API ServerCommunication<std::string>;

@@ -70,14 +70,12 @@ osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3d>>::createOSCMessag
     for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
 
-        ReadAccessor<Data<vector<Vec3d>>> data = *d_data[i];
-        std::cout << "data size : " << data.size() << std::endl;
-        for(unsigned int j=0; j<data.size()/2; j++)
+        ReadAccessor<Data<vector<Vec3d>>> data = *d_data_copy[i];
+        for(unsigned int j=0; j<data.size(); j++)
         {
             for(int k=0; k<3; k++)
                 p << data[j][k];
         }
-
     }
     pthread_mutex_unlock(&mutex);
     p << osc::EndMessage;
@@ -94,16 +92,19 @@ osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3f>>::createOSCMessag
     std::string messageName = "/" + this->getName();
     p << osc::BeginMessage(messageName.c_str());
 
-//    mutex.lock();
+    pthread_mutex_lock(&mutex);
     for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
-        ReadAccessor<Data<vector<Vec3f>>> data = d_data_copy[i];
+
+        ReadAccessor<Data<vector<Vec3f>>> data = *d_data_copy[i];
         for(unsigned int j=0; j<data.size(); j++)
+        {
             for(int k=0; k<3; k++)
                 p << data[j][k];
+        }
     }
-//    mutex.unlock();
-    p << osc::EndMessage << osc::EndBundle;
+    pthread_mutex_unlock(&mutex);
+    p << osc::EndMessage;
     return p;
 }
 
@@ -152,15 +153,15 @@ int ServerCommunicationOSCClass = RegisterObject("OSC Communication Server.")
         #ifndef SOFA_FLOAT
         .add< ServerCommunicationOSC<float> >()
         .add< ServerCommunicationOSC<vector<Vec3f>> >()
+        #endif
 
-                                                    #endif
-                                                    #ifndef SOFA_DOUBLE
-                                                    .add< ServerCommunicationOSC<double> >()
-                                                    .add< ServerCommunicationOSC<vector<Vec3d>> >()
+        #ifndef SOFA_DOUBLE
+        .add< ServerCommunicationOSC<double> >()
+        .add< ServerCommunicationOSC<vector<Vec3d>> >()
+        #endif
 
-                                                    #endif
-                                                    .add< ServerCommunicationOSC<int> >()
-                                                    .add< ServerCommunicationOSC<std::string> >(true);
+        .add< ServerCommunicationOSC<int> >()
+        .add< ServerCommunicationOSC<std::string> >(true);
 
 } /// communication
 
