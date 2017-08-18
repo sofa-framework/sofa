@@ -32,81 +32,103 @@ namespace component
 namespace communication
 {
 
+///// STD::STRING
+
 template <>
 osc::OutboundPacketStream ServerCommunicationOSC<std::string>::createOSCMessage()
 {
     char buffer[OUTPUT_BUFFER_SIZE];
     osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
 
-    p << osc::BeginBundleImmediate;
-    std::string messageName = "/" + this->getName();
-    p << osc::BeginMessage(messageName.c_str());
-
-//    mutex.lock();
+    pthread_mutex_lock(&mutex);
     for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
+        std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
+        p << osc::BeginMessage(messageName.c_str());
         std::ostringstream messageStream;
         ReadAccessor<Data<std::string>> data = d_data_copy[i];
         messageStream << data;
         p << messageStream.str().c_str();
-
+        p << osc::EndMessage;
     }
-//    mutex.unlock();
-    p << osc::EndMessage;
+    pthread_mutex_unlock(&mutex);
     return p;
 }
+
+///// VEC3D
 
 template <>
 osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3d>>::createOSCMessage()
 {
     char buffer[OUTPUT_BUFFER_SIZE];
     osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
-
-    p << osc::BeginBundleImmediate;
-    std::string messageName = "/" + this->getName();
-    p << osc::BeginMessage(messageName.c_str());
-
+    p << osc::BeginBundle();
     pthread_mutex_lock(&mutex);
     for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
-
         ReadAccessor<Data<vector<Vec3d>>> data = *d_data_copy[i];
+
+        if (data.size() == 0)
+        {
+            std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
+            p << osc::BeginMessage(messageName.c_str());
+            p << "empty";
+            p << osc::EndMessage;
+        }
         for(unsigned int j=0; j<data.size(); j++)
         {
+            std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName() + "/" + std::to_string(j);
+            p << osc::BeginMessage(messageName.c_str());
             for(int k=0; k<3; k++)
-                p << data[j][k];
+            {
+                p << (double)data[j][k];
+            }
+            p << osc::EndMessage;
         }
     }
     pthread_mutex_unlock(&mutex);
-    p << osc::EndMessage;
-    return p;
+    p << osc::EndBundle;
 }
+
+///// VEC3F
 
 template <>
 osc::OutboundPacketStream ServerCommunicationOSC<vector<Vec3f>>::createOSCMessage()
 {
     char buffer[OUTPUT_BUFFER_SIZE];
     osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
-
-    p << osc::BeginBundleImmediate;
-    std::string messageName = "/" + this->getName();
-    p << osc::BeginMessage(messageName.c_str());
-
     pthread_mutex_lock(&mutex);
     for(unsigned int i=0; i<d_data_copy.size(); i++)
     {
-
         ReadAccessor<Data<vector<Vec3f>>> data = *d_data_copy[i];
+
+        if (data.size() == 0)
+        {
+            std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
+            p << osc::BeginMessage(messageName.c_str());
+            p << "empty";
+            p << osc::EndMessage;
+        }
         for(unsigned int j=0; j<data.size(); j++)
         {
+            std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName() + "/" + std::to_string(j);
+            p << osc::BeginMessage(messageName.c_str());
             for(int k=0; k<3; k++)
+            {
                 p << data[j][k];
+            }
+            p << osc::EndMessage;
         }
     }
     pthread_mutex_unlock(&mutex);
-    p << osc::EndMessage;
+    std::cout << osc::ReceivedPacket(p.Data(), p.Size()) << std:: endl;
+    std::cout << p.Size() << " " << 0x7FFFFFFF << " " << osc::IsMultipleOf4(p.Size()) << std::endl;
+    std::cout << osc::IsValidElementSizeValue(p.Size()) <<  std::endl;
+    std::cout << p.Data() << std::endl;
     return p;
 }
+
+//////////////////////////////// Template name definition
 
 template<>
 std::string ServerCommunicationOSC<double>::templateName(const ServerCommunicationOSC<double>* object)
@@ -142,26 +164,49 @@ std::string ServerCommunicationOSC<vector<Vec3d>>::templateName(const ServerComm
     return "Vec3d";
 }
 
-
 template<>
 std::string ServerCommunicationOSC<vector<Vec3f>>::templateName(const ServerCommunicationOSC<vector<Vec3f>>* object){
     SOFA_UNUSED(object);
     return "Vec3f";
 }
 
-int ServerCommunicationOSCClass = RegisterObject("OSC Communication Server.")
-        #ifndef SOFA_FLOAT
-        .add< ServerCommunicationOSC<float> >()
-        .add< ServerCommunicationOSC<vector<Vec3f>> >()
-        #endif
 
-        #ifndef SOFA_DOUBLE
-        .add< ServerCommunicationOSC<double> >()
-        .add< ServerCommunicationOSC<vector<Vec3d>> >()
-        #endif
+////////////////////////////////////////////    FACTORY    ////////////////////////////////////////////
 
-        .add< ServerCommunicationOSC<int> >()
-        .add< ServerCommunicationOSC<std::string> >(true);
+// Registering the component
+// see: http://wiki.sofa-framework.org/wiki/ObjectFactory
+// 1-SOFA_DECL_CLASS(componentName) : Set the class name of the component
+// 2-RegisterObject("description") + .add<> : Register the component
+// 3-.add<>(true) : Set default template
+SOFA_DECL_CLASS(ServerCommunicationOSC)
+int ServerCommunicationOSCClass = RegisterObject("This component is used to build a communication between two simulations using OSC protocol")
+#ifdef SOFA_WITH_DOUBLE
+.add< ServerCommunicationOSC<float> >()
+.add< ServerCommunicationOSC<vector<Vec3f>> >()
+#endif
+#ifdef SOFA_WITH_DOUBLE
+.add< ServerCommunicationOSC<double> >()
+.add< ServerCommunicationOSC<vector<Vec3d>> >()
+#endif
+.add< ServerCommunicationOSC<int> >()
+.add< ServerCommunicationOSC<std::string> >(true);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Force template specialization for the most common sofa floating point related type.
+// This goes with the extern template declaration in the .h. Declaring extern template
+// avoid the code generation of the template for each compilation unit.
+// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<double>;
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<vector<Vec3d>>;
+#endif
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<float>;
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<vector<Vec3f>>;
+#endif
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<int>;
+template class SOFA_COMMUNICATION_API ServerCommunicationOSC<std::string>;
 
 } /// communication
 

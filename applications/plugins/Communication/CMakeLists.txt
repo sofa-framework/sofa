@@ -8,6 +8,8 @@ set(HEADER_FILES
     components/serverCommunication.inl
     components/serverCommunicationOSC.h
     components/serverCommunicationOSC.inl
+    components/serverCommunicationZMQ.h
+    components/serverCommunicationZMQ.inl
 )
 
 set(SOURCE_FILES
@@ -15,6 +17,7 @@ set(SOURCE_FILES
     components/communicationBinder.cpp
     components/serverCommunication.cpp
     components/serverCommunicationOSC.cpp
+    components/serverCommunicationZMQ.cpp
 )
 
 set(EXTRA_FILES
@@ -24,7 +27,7 @@ set(EXTRA_FILES
 find_package(SofaFramework REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} -loscpack -lpthread ${}SofaCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} -lpthread -loscpack -lzmq ${}SofaCore SofaSimulationGraph)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 

@@ -42,6 +42,8 @@ using sofa::helper::ReadAccessor;
 using sofa::helper::OptionsGroup;
 
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 using sofa::core::objectmodel::Event;
 
 
@@ -56,10 +58,6 @@ using sofa::helper::vector;
 using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-
-
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 
 #include <pthread.h>
 #include <sys/time.h>
@@ -80,11 +78,27 @@ namespace communication
 {
 
 template <class DataTypes>
-class ServerCommunication : public BaseObject
+class SOFA_COMMUNICATION_API ServerCommunication : public BaseObject
 {
 
 public:
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), BaseObject);
+
+    typedef BaseObject Inherited;
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), Inherited);
+
+    ServerCommunication() ;
+    virtual ~ServerCommunication() ;
+
+    ////////////////////////// Inherited from BaseObject ////////////////////
+    virtual void init() override;
+    virtual void handleEvent(Event *) override;
+    /////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////// Inherited from Base /////////////////////////////////
+    virtual std::string getTemplateName() const {return templateName(this);}
+    static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
+    /////////////////////////////////////////////////////////////////////////////////
+
     Data<helper::OptionsGroup>  d_job;
     Data<std::string>           d_adress;
     Data<int>                   d_port;
@@ -93,32 +107,24 @@ public:
     vectorData<DataTypes>       d_data;
     vectorData<DataTypes>       d_data_copy;
     pthread_t m_thread;
-    bool m_senderRunning = true;
+    bool m_running = true;
 #if BENCHMARK
     timeval t1, t2;
 #endif
 
-    ServerCommunication() ;
-    virtual ~ServerCommunication() ;
-    virtual void init();
-    virtual void handleEvent(Event *);
-    virtual void sendData() =0;
-    virtual void receiveData() =0;
-    virtual void openCommunication();
-
-    virtual std::string getTemplateName() const {return templateName(this);}
-    static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
-
-    static void* thread_launcher(void*);
-
 protected:
     pthread_mutex_t mutex;
 
+    virtual void openCommunication();
+    virtual void closeCommunication();
+    static void* thread_launcher(void*);
+    virtual void sendData() =0;
+    virtual void receiveData() =0;
 
 };
 
-} /// communication
-} /// component
-} /// sofa
+} /// namespace communication
+} /// namespace component
+} /// namespace sofa
 
 #endif // SOFA_SERVERCOMMUNICATION_H

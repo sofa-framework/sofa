@@ -30,7 +30,7 @@
 #include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/UdpSocket.h>
 
-#define OUTPUT_BUFFER_SIZE 65536
+#define OUTPUT_BUFFER_SIZE 655360
 
 
 namespace sofa
@@ -43,33 +43,40 @@ namespace communication
 {
 
 template <class DataTypes>
-class ServerCommunicationOSC : public ServerCommunication<DataTypes>, public osc::OscPacketListener
+class SOFA_COMMUNICATION_API ServerCommunicationOSC : public ServerCommunication<DataTypes>, public osc::OscPacketListener
 {
-
 
 public:
 
-    SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationOSC, DataTypes), SOFA_TEMPLATE(ServerCommunication, DataTypes));
+    typedef ServerCommunication<DataTypes> Inherited;
+    SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationOSC, DataTypes), Inherited);
 
     ServerCommunicationOSC() ;
     virtual ~ServerCommunicationOSC();
-    virtual void sendData();
-    virtual void receiveData();
 
+    //////////////////////////////// Inherited from Base /////////////////////////////////
     virtual std::string getTemplateName() const {return templateName(this);}
     static std::string templateName(const ServerCommunicationOSC<DataTypes>* = NULL);
+    /////////////////////////////////////////////////////////////////////////////////
 
+    //////////////////////////////// Inherited from OscPacketListener /////////////////////////////////
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+    /////////////////////////////////////////////////////////////////////////////////
 
 protected:
-    UdpListeningReceiveSocket* d_socket;
 
+    UdpListeningReceiveSocket* d_socket;
     osc::OutboundPacketStream createOSCMessage();
+
+    //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
+    virtual void sendData();
+    virtual void receiveData();
+    /////////////////////////////////////////////////////////////////////////////////
 
 };
 
-} /// communication
-} /// component
-} /// sofa
+} /// namespace communication
+} /// namespace component
+} /// namespace sofa
 
 #endif // SOFA_SERVERCOMMUNICATIONOSC_H

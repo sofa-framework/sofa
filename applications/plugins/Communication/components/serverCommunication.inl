@@ -57,16 +57,7 @@ ServerCommunication<DataTypes>::ServerCommunication()
 template <class DataTypes>
 ServerCommunication<DataTypes>::~ServerCommunication()
 {
-    m_senderRunning = false;
-    pthread_join(m_thread, NULL);
-}
-
-template <class DataTypes>
-void * ServerCommunication<DataTypes>::thread_launcher(void *voidArgs)
-{
-    ServerCommunication *args = (ServerCommunication*)voidArgs;
-    args->openCommunication();
-    return NULL;
+    closeCommunication();
 }
 
 template <class DataTypes>
@@ -90,7 +81,6 @@ void ServerCommunication<DataTypes>::handleEvent(Event * event)
         }
         pthread_mutex_unlock(&mutex);
 
-
 #if BENCHMARK
         // Uncorrect results if frequency == 1hz, due to tv_usec precision
         gettimeofday(&t1, NULL);
@@ -112,10 +102,25 @@ void ServerCommunication<DataTypes>::openCommunication()
     }
     else if (d_job.getValueString().compare("sender") == 0)
     {
-        while (m_senderRunning)
-            sendData();
+        sendData();
     }
 }
+
+template <class DataTypes>
+void ServerCommunication<DataTypes>::closeCommunication()
+{
+    m_running = false;
+    pthread_join(m_thread, NULL);
+}
+
+template <class DataTypes>
+void * ServerCommunication<DataTypes>::thread_launcher(void *voidArgs)
+{
+    ServerCommunication *args = (ServerCommunication*)voidArgs;
+    args->openCommunication();
+    return NULL;
+}
+
 
 } /// communication
 

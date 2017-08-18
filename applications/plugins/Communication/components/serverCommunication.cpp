@@ -32,6 +32,39 @@ namespace component
 namespace communication
 {
 
+///// STD::STRING
+
+template <>
+void ServerCommunication<std::string>::handleEvent(Event * event)
+{
+    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
+    {
+        pthread_mutex_lock(&mutex);
+        for( size_t i=0 ; i < this->d_data.size(); ++i )
+        {
+            ReadAccessor<Data<std::string> > in = this->d_data[i];
+            WriteAccessor<Data<std::string> > data = this->d_data_copy[i];
+            std::stringstream stream;
+            stream.str(in);
+            stream >> data;
+//            messageStream.str() >> data;
+
+        }
+        pthread_mutex_unlock(&mutex);
+
+#if BENCHMARK
+        // Uncorrect results if frequency == 1hz, due to tv_usec precision
+        gettimeofday(&t1, NULL);
+        if(d_refreshRate.getValue() <= 1.0)
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
+        else
+            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
+        gettimeofday(&t2, NULL);
+#endif
+    }
+}
+
+///// VEC3D
 
 template <>
 void ServerCommunication<vector<Vec3d>>::handleEvent(Event * event)
@@ -63,6 +96,9 @@ void ServerCommunication<vector<Vec3d>>::handleEvent(Event * event)
 #endif
     }
 }
+
+///// VEC3F
+
 template <>
 void ServerCommunication<vector<Vec3f>>::handleEvent(Event * event)
 {
@@ -94,6 +130,8 @@ void ServerCommunication<vector<Vec3f>>::handleEvent(Event * event)
 #endif
     }
 }
+
+//////////////////////////////// Template name definition
 
 template<>
 std::string ServerCommunication<double>::templateName(const ServerCommunication<double>* object)
@@ -135,6 +173,13 @@ std::string ServerCommunication<vector<Vec3f>>::templateName(const ServerCommuni
     return "Vec3f";
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Force template specialization for the most common sofa floating point related type.
+// This goes with the extern template declaration in the .h. Declaring extern template
+// avoid the code generation of the template for each compilation unit.
+// see: http://www.stroustrup.com/C++11FAQ.html#extern-templates
 #ifndef SOFA_FLOAT
 template class SOFA_CORE_API ServerCommunication<float>;
 template class SOFA_CORE_API ServerCommunication<vector<Vec3f>>;
