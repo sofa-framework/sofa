@@ -27,6 +27,13 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <fstream>
 
+#ifdef NDEBUG
+#define DO_EXTRADEBUG_MESSAGES false
+#else
+#define DO_EXTRADEBUG_MESSAGES true
+#endif //
+
+
 namespace sofa
 {
 
@@ -170,7 +177,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
         v[i]=b;
         qpa.push_back(QuadraturePoint(v,c1));
     }
-    
+
     aa[0]=(Real)0.3128654960049;
     aa[1]=(Real)0.6384441885698;
     aa[2]=(Real)(1.0-aa[0]-aa[1]);
@@ -208,7 +215,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints
         v=BarycentricCoordinatesType(a,a,a);
         v[i]=b;
         qpa.push_back(QuadraturePoint(v,c1));
-    }   
+    }
     aa[0]=(Real)0.2631128296346381134217857862846436;
     aa[1]=(Real)0.0083947774099576053372138345392944;
     aa[2]=(Real)(1.0-aa[0]-aa[1]);
@@ -1697,26 +1704,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if (ind_ta == ind_tb)
     {
-#ifndef NDEBUG
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." << std::endl;
-#endif
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
+        }
         return false;
     }
 
 
-#ifndef NDEBUG
-    std::cout << "*********************************" << std::endl;
-    std::cout << "ind_t_current: " << ind_t_current << std::endl;
-    std::cout << "p_current: " << p_current << std::endl;
-    std::cout << "coord_t: " << coord_t << std::endl;
-    std::cout << "coord_k: " << coord_k << std::endl;
-    std::cout << "indices: " << indices << std::endl;
-    std::cout << "last_point: " << last_point << std::endl;
-    std::cout << "a: " << a << std::endl;
-    std::cout << "b: " << b << std::endl;
-    std::cout << "is_intersected: "<< is_intersected << std::endl;
-    std::cout << "*********************************" << std::endl;
-#endif
+    if(DO_EXTRADEBUG_MESSAGES){
+        dmsg_info() << "*********************************" << msgendl
+                    << "ind_t_current: " << ind_t_current << msgendl
+                    << "p_current: " << p_current << msgendl
+                    << "coord_t: " << coord_t << msgendl
+                    << "coord_k: " << coord_k << msgendl
+                    << "indices: " << indices << msgendl
+                    << "last_point: " << last_point << msgendl
+                    << "a: " << a << msgendl
+                    << "b: " << b << msgendl
+                    << "is_intersected: "<< is_intersected << msgendl
+                    << "*********************************" ;
+    }
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1750,7 +1757,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
             if(coord_t==0.0)
             {
                 ind_index=indices[0];
@@ -1765,7 +1771,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                 sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTrianglesAroundVertex(ind_index));
                 ind_triangle=shell[0];
                 unsigned int i=0;
-                //bool is_in_next_triangle=false;
                 bool is_test_init=false;
 
                 unsigned int ind_from = ind_t_current;
@@ -1919,11 +1924,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 }
                             }
                         }
-
                         i=i+1;
                     }
-
-
                     is_intersected=is_test_init;
                 }
                 else
@@ -1944,31 +1946,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
-#ifndef NDEBUG
-    if(is_reached)
-    {
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is reached" << std::endl;
+    if(DO_EXTRADEBUG_MESSAGES){
+        if(is_reached)
+        {
+            dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
+        }
+
+        if(is_on_boundary)
+        {
+            dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
+        }
     }
-
-    if(is_on_boundary)
-    {
-
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut meets a mesh boundary" << std::endl;
-    }
-#endif
-
 
     if(!is_reached && !is_on_boundary)
     {
-#ifndef NDEBUG
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached" << std::endl;
-#endif
-//      ind_tb=ind_triangle;
-//      return true;
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
+        }
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
-
 }
 
 
@@ -1996,16 +1993,16 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     // using old function:
     pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
 
-#ifndef NDEBUG
-    std::cout << "*********************************" << std::endl;
-    std::cout << "last_point: " << last_point << std::endl;
-    std::cout << "a: " << a << std::endl;
-    std::cout << "b: " << b << std::endl;
-    std::cout << "triangles_list: "<< triangles_list << std::endl;
-    std::cout << "edges_list: "<< edges_list << std::endl;
-    std::cout << "coordsEdge_list: "<< coordsEdge_list << std::endl;
-    std::cout << "*********************************" << std::endl;
-#endif
+    if(DO_EXTRADEBUG_MESSAGES){
+        dmsg_info() << "*********************************" << msgendl
+                    << "last_point: " << last_point << msgendl
+                    << "a: " << a << msgendl
+                    << "b: " << b << msgendl
+                    << "triangles_list: "<< triangles_list << msgendl
+                    << "edges_list: "<< edges_list << msgendl
+                    << "coordsEdge_list: "<< coordsEdge_list << msgendl
+                    << "*********************************" ;
+    }
 
     if (pathOK)
     {
@@ -2071,9 +2068,6 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
     return pathOK;
 }
-
-
-
 
 
 /// Get the triangle in a given direction from a point.
@@ -2189,9 +2183,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
         {
             unsigned int triId = _neighTri[i];
             triNormal = this->computeTriangleNormal(triId);
-            //std::cout << "triNormal: "<< triNormal << std::endl;
             double prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
-            //std::cout << "prod: "<< prod << std::endl;
             if (prod < 0.15) //change orientation
                 this->m_topology->reOrientateTriangle(triId);
         }
@@ -2241,18 +2233,17 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             }
         }
 
-#ifndef NDEBUG
-        std::cout << "_neighTri: "<< _neighTri << std::endl;
-        std::cout << "_neighTri2: "<< _neighTri2 << std::endl;
-        std::cout << "buffk: "<< buffK << std::endl;
-        std::cout << "buffkk: "<< buffKK << std::endl;
-#endif
-        //_neighTri = _neighTri2;
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "_neighTri: "<< _neighTri << msgendl
+                        << "_neighTri2: "<< _neighTri2 <<msgendl
+                        << "buffk: "<< buffK <<msgendl
+                        << "buffkk: "<< buffKK <<msgendl ;
+        }
         cpt_secu++;
     }
 
     if(cpt_secu == max)
-        std::cerr << "WARNING: TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." << std::endl;
+        msg_warning() << "TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." ;
 
     return;
 }
@@ -2286,14 +2277,12 @@ bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p, const sofa::d
         }
         else // p is not in the plane defined by the triangle (p0,p1,p2)
         {
-            //sout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << sendl;
             return false;
         }
 
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -2318,8 +2307,6 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
 
     if(norm_v_normal != 0.0)
     {
-        //v_normal/=norm_v_normal;
-
         if(ind_p0==e0 || ind_p0==e1)
         {
             sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
@@ -2348,7 +2335,6 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -2528,9 +2514,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     }
 
 }
-
-
-
 
 
 } // namespace topology

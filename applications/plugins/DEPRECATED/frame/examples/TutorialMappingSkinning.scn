@@ -2,7 +2,7 @@
     <VisualStyle displayFlags="showAll" />
     <Node name="FrameBasedModel" gravity="0 -9.81 0">
         <VisualStyle displayFlags="hideBehavior hideBoundingCollisionModels hideMapping hideOptions" />
-        <EulerImplicitSolver name="default2" />
+        <EulerImplicitSolver name="default2"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1 0 0 2 0 0 0 1" />
         <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />

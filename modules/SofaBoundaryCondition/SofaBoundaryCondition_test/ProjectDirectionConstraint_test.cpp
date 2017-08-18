@@ -206,7 +206,6 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;

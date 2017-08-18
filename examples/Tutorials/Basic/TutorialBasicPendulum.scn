@@ -3,7 +3,7 @@
 <Node name="root" dt="0.1" gravity="0 0 0">
   <VisualStyle displayFlags="showBehavior" />
  <!-- Try to test with different solver -->
-  <EulerImplicitSolver name="Euler Implicit" />
+  <EulerImplicitSolver name="Euler Implicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
  
   <MechanicalObject name="Particles" template="Vec3d"

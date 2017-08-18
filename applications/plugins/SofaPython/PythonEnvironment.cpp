@@ -283,10 +283,10 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
             std::string tmp=PyString_AsString(filename);
             auto lineno = PyInt_AsLong(number);
             Py_DECREF(res) ;
-            return SOFA_FILE_INFO2(tmp, lineno);
+            return SOFA_FILE_INFO_COPIED_FROM(tmp, lineno);
         }
     }
-    return SOFA_FILE_INFO2("undefined", -1);
+    return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
 
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)

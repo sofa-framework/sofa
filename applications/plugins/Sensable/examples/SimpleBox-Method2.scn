@@ -29,7 +29,7 @@
     </Node>
 
     <Node name="Tool">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver />
 
         <MechanicalObject name="ms" template="Rigid"/>

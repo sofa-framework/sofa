@@ -1,5 +1,5 @@
 <Node name="MeshSpring">
-	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001" />	 
 	<MeshObjLoader name="loader" filename="file"/>
 	<Mesh src="@loader"/> 

@@ -4,7 +4,7 @@
         <OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="20" dy="17" dz="0" color="green" />
     </Node>
     <Node name="CylinderFEMTetra">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="-10" />
         <UniformMass totalmass="15" />

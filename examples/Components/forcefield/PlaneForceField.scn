@@ -5,7 +5,7 @@
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <CollisionResponse name="Response" response="default" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass totalmass="10" />

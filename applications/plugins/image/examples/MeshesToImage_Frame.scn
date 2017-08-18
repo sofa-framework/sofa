@@ -22,7 +22,7 @@
     <!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
 
     <Node name="flexible" >
-      <EulerImplicitSolver />
+      <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
       <CGLinearSolver iterations="25" tolerance="1E-5" threshold="1E-5"/>
 
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />

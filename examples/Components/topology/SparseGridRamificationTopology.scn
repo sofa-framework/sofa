@@ -8,7 +8,7 @@
     <CollisionGroup name="Group" />
     <Node name="NonUniformC">
         <SparseGridRamification n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="3" youngModulus="6400000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />

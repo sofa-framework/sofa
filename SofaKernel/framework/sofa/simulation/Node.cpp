@@ -49,16 +49,15 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
 
-//#define DEBUG_VISITOR
-//#define DEBUG_LINK
+/// If you want to activate/deactivate that please set them to true/false
+#define DEBUG_VISITOR false
+#define DEBUG_LINK false
 
 namespace sofa
 {
 
 namespace simulation
 {
-using std::cerr;
-using std::endl;
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
@@ -154,8 +153,8 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
     }
     if (!oldFlags.empty())
     {
-        serr << helper::logging::Message::Deprecated << "Deprecated visual flags attributes used. Instead, add the following object within the Node:\n";
-        serr << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" << sendl;
+        msg_deprecated() << "Deprecated visual flags attributes used. Instead, add the following object within the Node: " << msgendl
+                         << "<VisualStyle displayFlags=\"" << oldFlags << "\" />" ;
 
         sofa::core::objectmodel::BaseObjectDescription objDesc("displayFlags","VisualStyle");
         objDesc.setAttribute("displayFlags", oldFlags.c_str());
@@ -166,10 +165,7 @@ void Node::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 /// Initialize the components of this node and all the nodes which depend on it.
 void Node::init(const core::ExecParams* params)
 {
-    //     cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::InitVisitor>(params);
-
-    //     cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// ReInitialize the components of this node and all the nodes which depend on it.
@@ -178,15 +174,6 @@ void Node::reinit(const core::ExecParams* params)
     sofa::simulation::DeactivationVisitor deactivate(params, isActive());
     deactivate.execute( this );
 }
-
-/// Do one step forward in time
-//void Node::animate(const core::ExecParams* params, SReal dt)
-//{
-//    simulation::AnimateVisitor vis(params, dt);
-//    //cerr<<"Node::animate, start execute"<<endl;
-//    execute(vis);
-//    //cerr<<"Node::animate, end execute"<<endl;
-//}
 
 void Node::draw(core::visual::VisualParams* vparams)
 {
@@ -337,16 +324,17 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         if (!BaseLink::ParseString(path,&pathStr,NULL,this))
             return NULL;
     }
-#ifdef DEBUG_LINK
-    std::cout << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() << std::endl;
-#endif
+
+    if(DEBUG_LINK)
+        dmsg_info() << "LINK: Looking for " << destType->className << "<" << destType->templateName << "> " << pathStr << " from Node " << getName() ;
+
     std::size_t ppos = 0;
     std::size_t psize = pathStr.size();
     if (ppos == psize || (ppos == psize-2 && pathStr[ppos] == '[' && pathStr[ppos+1] == ']')) // self-reference
     {
-#ifdef DEBUG_LINK
-        std::cout << "  self-reference link." << std::endl;
-#endif
+        if(DEBUG_LINK)
+            dmsg_info() << "  self-reference link." ;
+
         if (!link || !link->getOwnerBase()) return destType->dynamicCast(this);
         return destType->dynamicCast(link->getOwnerBase());
     }
@@ -361,9 +349,10 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             return NULL;
         }
         int index = atoi(pathStr.c_str()+ppos+1);
-#ifdef DEBUG_LINK
-        std::cout << "  index-based path to " << index << std::endl;
-#endif
+
+        if(DEBUG_LINK)
+           dmsg_info() << "  index-based path to " << index ;
+
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
         if (link && link->getOwnerBase())
@@ -380,16 +369,16 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         }
         if (it == itend)
             return NULL;
-#ifdef DEBUG_LINK
-        std::cout << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." << std::endl;
-#endif
+
+        if(DEBUG_LINK)
+            dmsg_info() << "  found " << it->get()->getTypeName() << " " << it->get()->getName() << "." ;
+
         return destType->dynamicCast(it->get());
     }
     else if (ppos < psize && pathStr[ppos] == '/') // absolute path
     {
-#ifdef DEBUG_LINK
-        std::cout << "  absolute path" << std::endl;
-#endif
+        if(DEBUG_LINK)
+            dmsg_info() << "  absolute path" ;
         BaseNode* basenode = this->getRoot();
         if (!basenode) return NULL;
         node = down_cast<Node>(basenode);
@@ -402,9 +391,9 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             || pathStr.substr(ppos) == ".")
         {
             // this must be this node
-#ifdef DEBUG_LINK
-            std::cout << "  to current node" << std::endl;
-#endif
+            if(DEBUG_LINK)
+                dmsg_info() << "  to current node" ;
+
             ppos += 2;
             based = true;
         }
@@ -415,27 +404,24 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             if (master)
             {
                 master = master->getMaster();
-#ifdef DEBUG_LINK
-                std::cout << "  to master object " << master->getName() << std::endl;
-#endif
+                if(DEBUG_LINK)
+                    dmsg_info() << "  to master object " << master->getName() ;
             }
             else
             {
                 core::objectmodel::BaseNode* firstParent = node->getFirstParent();
                 if (!firstParent) return NULL;
                 node = static_cast<Node*>(firstParent); // TODO: explore other parents
-#ifdef DEBUG_LINK
-                std::cout << "  to parent node " << node->getName() << std::endl;
-#endif
+                if(DEBUG_LINK)
+                    dmsg_info() << "  to parent node " << node->getName() ;
             }
             based = true;
         }
         else if (pathStr[ppos] == '/')
         {
             // extra /
-#ifdef DEBUG_LINK
-            std::cout << "  extra '/'" << std::endl;
-#endif
+            if(DEBUG_LINK)
+                dmsg_info() << "  extra '/'" ;
             ppos += 1;
         }
         else
@@ -446,9 +432,8 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             ppos = p2pos+1;
             if (master)
             {
-#ifdef DEBUG_LINK
-                std::cout << "  to slave object " << name << std::endl;
-#endif
+                if(DEBUG_LINK)
+                    dmsg_info() << "  to slave object " << name ;
                 master = master->getSlave(name);
                 if (!master) return NULL;
             }
@@ -461,17 +446,15 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                     if (child)
                     {
                         node = child;
-#ifdef DEBUG_LINK
-                        std::cout << "  to child node " << name << std::endl;
-#endif
+                        if(DEBUG_LINK)
+                            dmsg_info() << "  to child node " << name ;
                         break;
                     }
                     else if (obj)
                     {
                         master = obj;
-#ifdef DEBUG_LINK
-                        std::cout << "  to object " << name << std::endl;
-#endif
+                        if(DEBUG_LINK)
+                            dmsg_info()  << "  to object " << name ;
                         break;
                     }
                     if (based) return NULL;
@@ -479,9 +462,8 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
                     core::objectmodel::BaseNode* firstParent = node->getFirstParent();
                     if (!firstParent) return NULL;
                     node = static_cast<Node*>(firstParent); // TODO: explore other parents
-#ifdef DEBUG_LINK
-                    std::cout << "  looking in ancestor node " << node->getName() << std::endl;
-#endif
+                    if(DEBUG_LINK)
+                        dmsg_info()  << "  looking in ancestor node " << node->getName() ;
                 }
             }
             based = true;
@@ -489,9 +471,8 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     }
     if (master)
     {
-#ifdef DEBUG_LINK
-        std::cout << "  found " << master->getTypeName() << " " << master->getName() << "." << std::endl;
-#endif
+        if(DEBUG_LINK)
+            dmsg_info()  << "  found " << master->getTypeName() << " " << master->getName() << "." ;
         return destType->dynamicCast(master);
     }
     else
@@ -499,9 +480,8 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         void* r = destType->dynamicCast(node);
         if (r)
         {
-#ifdef DEBUG_LINK
-            std::cout << "  found node " << node->getName() << "." << std::endl;
-#endif
+            if(DEBUG_LINK)
+                dmsg_info()  << "  found node " << node->getName() << "." ;
             return r;
         }
         for (ObjectIterator it = node->object.begin(), itend = node->object.end(); it != itend; ++it)
@@ -509,9 +489,8 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             BaseObject* obj = it->get();
             void *o = destType->dynamicCast(obj);
             if (!o) continue;
-#ifdef DEBUG_LINK
-            std::cout << "  found " << obj->getTypeName() << " " << obj->getName() << "." << std::endl;
-#endif
+            if(DEBUG_LINK)
+                dmsg_info()  << "  found " << obj->getTypeName() << " " << obj->getName() << "." ;
             if (!r) r = o;
             else return NULL; // several objects are possible, this is an ambiguous path
         }
@@ -541,14 +520,12 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 void Node::doAddObject(BaseObject::SPtr sobj)
 {
-    //sobj->setContext(this);
     this->setObjectContext(sobj);
     object.add(sobj);
     BaseObject* obj = sobj.get();
 
     if( !obj->insertInNode( this ) )
     {
-        //cerr<<"Node::doAddObject, object "<<obj->getName()<<" is unsorted"<<endl;
         unsorted.add(obj);
     }
 
@@ -557,10 +534,6 @@ void Node::doAddObject(BaseObject::SPtr sobj)
 /// Remove an object
 void Node::doRemoveObject(BaseObject::SPtr sobj)
 {
-    //if (sobj->getContext()==this)
-    //{
-    //    sobj->setContext(NULL);
-    //}
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
@@ -573,7 +546,6 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
 /// Topology
 core::topology::Topology* Node::getTopology() const
 {
-    // return this->topology;
     if (this->topology)
         return this->topology;
     else
@@ -592,7 +564,6 @@ core::topology::BaseMeshTopology* Node::getMeshTopology() const
 /// Degrees-of-Freedom
 core::BaseState* Node::getState() const
 {
-    // return this->state;
     if (this->state)
         return this->state;
     else
@@ -602,7 +573,6 @@ core::BaseState* Node::getState() const
 /// Mechanical Degrees-of-Freedom
 core::behavior::BaseMechanicalState* Node::getMechanicalState() const
 {
-    // return this->mechanicalModel;
     if (this->mechanicalState)
         return this->mechanicalState;
     else
@@ -667,10 +637,8 @@ core::visual::VisualLoop* Node::getVisualLoop() const
 /// Find a child node given its name
 Node* Node::getChild(const std::string& name) const
 {
-//    cerr<<"Node::getChild, in "<< getName() << ", looking for " << name ;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
     {
-//        cerr<<"Node::getChild, see " << (*it)->getName() ;
         if ((*it)->getName() == name)
             return it->get();
     }
@@ -708,9 +676,6 @@ bool Node::getDebug() const
     return debug_;
 }
 
-
-
-
 void Node::removeControllers()
 {
     removeObject(*animationManager.begin());
@@ -719,7 +684,6 @@ void Node::removeControllers()
     for ( Solvers::iterator i=solverRemove.begin(), iend=solverRemove.end(); i!=iend; ++i )
         removeObject( *i );
 }
-
 
 core::objectmodel::BaseContext* Node::getContext()
 {
@@ -730,16 +694,10 @@ const core::objectmodel::BaseContext* Node::getContext() const
     return _context;
 }
 
-// void Node::setContext( core::objectmodel::BaseContext* c )
-// {
-//     _context=c;
-// 	for( ObjectIterator i=object.begin(), iend=object.end(); i!=iend; i++ )
-// 		(*i)->setContext(c);
-// }
-
 
 void Node::setDefaultVisualContextValue()
 {
+    //TODO(dmarchal 2017-07-20) please say who have to do that and when it will be done.
     /// @todo: This method is now broken because getShow*() methods never return -1
     /*
     if (getShowVisualModels() == -1)            setShowVisualModels(true);
@@ -767,49 +725,23 @@ void Node::bwdInit()
         mapping.add(bmap);
         mechanicalMapping.remove(bmap);
     }
-    //printComponents();
 }
 
 void Node::initialize()
 {
     initialized = true;  // flag telling is the node is initialized
-    //cerr<<"Node::initialize()"<<endl;
 
     initVisualContext();
     sortComponents();
-    //     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
-    //     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
-    //     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
-    //     for ( ; i!=iend && i->toOdeSolver()==NULL; i++ ) // find the OdeSolver
-    //         {}
-    //     if ( i!=iend && !object.empty() ) // found
-    //     {
-    //         // put it first
-    //         // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
-    //         // object.swap( i, object.begin() );
-    //         while (i!=object.begin())
-    //         {
-    //             Sequence<BaseObject>::iterator i2 = i;
-    //             --i;
-    //             object.swap(i, i2);
-    //         }
-    //     }
-
-    //
     updateSimulationContext();
-
-    // this is now done by the InitVisitor
-    //for (Sequence<Node>::iterator it = child.begin(); it != child.end(); it++) {
-    //    (*it)->init();
-    //}
-
 }
 
 void Node::updateContext()
 {
     updateSimulationContext();
     updateVisualContext();
-    if ( debug_ ) msg_info()<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+    if ( debug_ )
+        msg_info()<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 void Node::updateSimulationContext()
@@ -818,7 +750,6 @@ void Node::updateSimulationContext()
     {
         contextObject[i]->init();
         contextObject[i]->apply();
-        //       cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
     }
 }
 
@@ -831,7 +762,8 @@ void Node::updateVisualContext()
         contextObject[i]->apply();
     }
 
-    if ( debug_ ) msg_info()<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
+    if ( debug_ )
+        msg_info()<<"Node::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) ;
 }
 
 /// Execute a recursive action starting from this node
@@ -843,29 +775,34 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 
     if (!action->execParams()->checkValidStorage())
     {
-        std::cerr << "IN " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " at " << this->getPathName() << std::endl;
+        dmsg_info() << "IN " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " at " << this->getPathName() ;
     }
 
-#ifdef DEBUG_VISITOR
+
     static int level = 0;
-    for (int i=0; i<level; ++i) std::cerr << ' ';
-    std::cerr << ">" << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " on " << this->getPathName();
-    //     if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
-    if (!action->getInfos().empty())
-        std::cerr << "  : " << action->getInfos();
-    std::cerr << std::endl;
-    ++level;
-#endif
+    if(DEBUG_VISITOR)
+    {
+        std::stringstream tmp;
+        for (int i=0; i<level; ++i)
+            tmp << ' ';
+        tmp << ">" << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " on " << this->getPathName();
+        if (!action->getInfos().empty())
+            tmp << "  : " << action->getInfos();
+        dmsg_info () << tmp.str() ;
+        ++level;
+    }
 
     doExecuteVisitor(action, precomputedOrder);
 
-#ifdef DEBUG_VISITOR
-    --level;
-    for (int i=0; i<level; ++i) std::cerr << ' ';
-    std::cerr << "<" << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " on " << this->getPathName();
-    std::cerr << std::endl;
-#endif
-
+    if(DEBUG_VISITOR)
+    {
+        --level;
+        std::stringstream tmp;
+        for (int i=0; i<level; ++i)
+            tmp << ' ';
+        tmp  << "<" << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*action)) << " on " << this->getPathName();
+        dmsg_info() << tmp.str() ;
+    }
 }
 
 /// Propagate an event
@@ -998,12 +935,13 @@ void Node::sortComponents()
     {
         BaseObject* o1 = getObject( depend.getValue()[i] );
         BaseObject* o2 = getObject( depend.getValue()[i+1] );
-        if ( o1==NULL ) cerr<<"Node::sortComponent, could not find object called "<<depend.getValue()[i]<<endl;
-        else if ( o2==NULL ) cerr<<"Node::sortComponent, could not find object called "<<depend.getValue()[i+1]<<endl;
-        else
+        if ( o1==NULL ) {
+            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i];
+        }else if ( o2==NULL ) {
+            msg_warning() <<" Node::sortComponent, could not find object called "<<depend.getValue()[i+1];
+        }else
         {
             boost::add_edge( vertex_from_component[o1], vertex_from_component[o2], dependencyGraph );
-            //cerr<<"Node::sortComponents, added edge "<<o1->getName()<<" -> "<<o2->getName()<<endl;
         }
     }
 
@@ -1019,14 +957,10 @@ void Node::sortComponents()
     }
 
     // put the components in the right order
-    //cerr << "Node::sortComponents, New component order: ";
     for ( container::reverse_iterator ii=c.rbegin(); ii!=c.rend(); ++ii)
     {
         addObject(component_from_vertex[*ii]);
-        //cerr << component_from_vertex[*ii]->getName() << " ";
     }
-    //cerr ;
-
 }
 
 #ifdef SOFA_SMP

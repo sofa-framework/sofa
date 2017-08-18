@@ -101,14 +101,13 @@ void ArgumentParser::operator () ( std::list<std::string> str )
     {
         name = str.front();
         str.pop_front();
-//		std::cout << "name = " << name << std::endl;
-//		std::cout << "lgHelp = " << lgHelp << std::endl;
-//		std::cout << "shHelp = " << shHelp << std::endl;
 
         // display help
         if( name == shHelp || name == lgHelp )
         {
-            if( globalHelp.size()>0 ) std::cout<< globalHelp <<std::endl;
+            if( globalHelp.size()>0 )
+                std::cout<< globalHelp <<std::endl;
+
             std::cout << "(short name, long name, description, default value)\n-h,\t--help: this help" << std::endl;
             std::cout << std::boolalpha;
             for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )

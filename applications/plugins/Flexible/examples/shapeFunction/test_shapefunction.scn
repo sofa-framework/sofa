@@ -12,7 +12,7 @@
     <MechanicalObject src="@loader" name="parent" />
     <BarycentricShapeFunction position="@parent.rest_position" />
 
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver  />
     <UniformMass mass="1" />
 

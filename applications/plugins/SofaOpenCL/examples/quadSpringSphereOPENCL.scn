@@ -14,7 +14,7 @@
 	</Node>
 	
 	<Node name="SquareCloth1">
-		<EulerImplicit rayleighMass="0.05"/>
+		<EulerImplicit rayleighMass="0.05" rayleighStiffness="0.1" />
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 <!--		<Euler/> -->
 

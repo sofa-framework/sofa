@@ -29,9 +29,6 @@ namespace sofa
 namespace simulation
 {
 
-using std::cerr;
-using std::endl;
-
 UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params)
     :Visitor(params)
 {

@@ -22,8 +22,6 @@
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

@@ -1,6 +1,6 @@
 <Node name="Root" gravity="0 0 0" dt="0.001">
     <VisualStyle displayFlags="showForceFields showBoundingCollisionModels" />
-    <EulerImplicitSolver name="default26" printLog="0" />
+    <EulerImplicitSolver name="default26" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <LMConstraintSolver name="ConstraintSolver" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
     <CGLinearSolver template="GraphScattered" iterations="25" name="default31" tolerance="1e-07" threshold="1e-07" />
     <Node name="CubeFree" gravity="0 -9.81 0">

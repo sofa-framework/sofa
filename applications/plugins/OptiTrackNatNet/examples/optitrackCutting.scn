@@ -53,7 +53,7 @@
     <OptiTrackNatNetDevice name="PhacoDevice" trackableName="Phaco" inGlobalFrame="@../Head/HeadDevice.frame" inMarkersMeshFile="./data/optitrack-markers-Phaco.obj" simMarkersMeshFile="./data/markers-Phaco.obj" drawMarkersColor="0 1 1 1" drawAxisSize="10 10 10" drawMarkersSize="2" />
   </Node>
     <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" createSubelements="true"/>
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />

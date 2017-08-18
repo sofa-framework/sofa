@@ -7,7 +7,7 @@
     <DefaultContactManager name="collision response" response="default" />
     <DiscreteIntersection />
     <Node name="LiverHexaFEM" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="default19" rayleighStiffness="0.01" />
+        <EulerImplicitSolver name="default19" rayleighStiffness="0.01"  rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default20" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <SparseGridTopology name="topology" fileTopology="mesh/liver-smooth.obj" n="8 6 6" />
         <MechanicalObject template="Vec3d" name="dofs" translation="0 0 0" rotation="0 0 0" scale="1" />

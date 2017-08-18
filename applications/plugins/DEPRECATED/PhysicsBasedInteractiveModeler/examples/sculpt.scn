@@ -4,7 +4,7 @@
 	<BruteForceDetection name="N2" />
 	<CollisionResponse response="default" name="collision response"/>
 	<MinProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.16" />
-	<EulerImplicit name="cg_odesolver" printLog="false"  />
+	<EulerImplicit name="cg_odesolver" printLog="false"   rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
 
 	<Node name="Body" >	
