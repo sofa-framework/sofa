@@ -227,13 +227,16 @@ DefaultMultiMatrixAccessor::InteractionMatrixRef DefaultMultiMatrixAccessor::get
         if( MULTIMATRIX_VERBOSE)///////////////////////////////////////////
         {
             if (r2.matrix != NULL)
+            {
                 msg_info() << "Giving Interaction Stiffness Matrix ["
                         << r2.matrix->rowSize() << "." << r2.matrix->colSize()
                         <<"] at offset ("<<r2.offRow <<","<< r2.offCol<<") for self-interaction : "
                         <<mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
-            else
+            }else
+            {
                 msg_warning() << "Giving NULL matrix for self-interaction "<<
                         mstate1->getName()<<"["<<mstate1->getMatrixSize()<<"] --- "<<mstate2->getName()<<"["<<mstate2->getMatrixSize()<<"]" ;
+            }
         }
     }
     else// case where state1 # state2
@@ -358,8 +361,9 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
         //for toModel -----------------------------------------------------------
         if(mappedMatrices.find(outstate) == mappedMatrices.end())
         {
-            if( MULTIMATRIX_VERBOSE){
-                msg_info() << "	[Propa.Stiff] WARNING toModel : "<< outstate->getName()<< " dont have stiffness matrix"<<std::endl;
+            if( MULTIMATRIX_VERBOSE)
+            {
+                msg_info() << "	[Propa.Stiff] WARNING toModel : "<< outstate->getName()<< " dont have stiffness matrix" ;
             }
         }
 
@@ -566,7 +570,7 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
-            msg_info() << "			++ Creating matrix["<< m->rowSize() <<"."<< m->colSize() <<"]   for mapped state " << mstate1->getName() << "[" << mstate1->getMatrixSize()<<"]" ;
+            msg_info("DefaultMultiMatrixAccessor") << "			++ Creating matrix["<< m->rowSize() <<"."<< m->colSize() <<"]   for mapped state " << mstate1->getName() << "[" << mstate1->getMatrixSize()<<"]" ;
         }
     }
     else
@@ -575,7 +579,7 @@ defaulttype::BaseMatrix* DefaultMultiMatrixAccessor::createMatrix(const sofa::co
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
-            msg_info() << "			++ Creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
+            msg_info("DefaultMultiMatrixAccessor") << "			++ Creating interraction matrix["<< m->rowSize() <<"x"<< m->colSize()
                       << "] for interaction " << mstate1->getName() << "[" << mstate1->getMatrixSize()
                       << "] --- "             << mstate2->getName() << "[" << mstate2->getMatrixSize()<<"]" ;
         }

@@ -309,7 +309,7 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 
             cpt_engine++;
         }
-        tmpmsg << tmpmsg ;
+        tmpmsg << msgendl ;
         msg_info() << tmpmsg.str() ;
     }
 }

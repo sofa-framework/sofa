@@ -63,19 +63,19 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
     parent->setContentsMargins(0,0,0,0);
 
     /*
-	const std::string label_text = link_->getHelp();
+    const std::string label_text = link_->getHelp();
 
     if (label_text != "TODO")
     {
         linkinfowidget_ = new QDisplayLinkInfoWidget(this,label_text,link_,flags.LINKPATH_MODIFIABLE_FLAG);
-		linkinfowidget_->setContentsMargins(0, 0, 0, 0);
-		linkinfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        
-		numWidgets_ += linkinfowidget_->getNumLines()/3;
-    }
-	*/
+        linkinfowidget_->setContentsMargins(0, 0, 0, 0);
+        linkinfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-	setToolTip(link->getHelp());
+        numWidgets_ += linkinfowidget_->getNumLines()/3;
+    }
+    */
+
+    setToolTip(link->getHelp());
 
     LinkWidget::CreatorArgument dwarg;
     dwarg.name =  link_->getName();
@@ -93,46 +93,45 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         assert(linkwidget_ != NULL);
     }
 
-	if(linkwidget_->layout())
-	{
-		linkwidget_->layout()->setAlignment(Qt::AlignCenter);
-		linkwidget_->layout()->setContentsMargins(2, 2, 2, 2);
-	}
+    if(linkwidget_->layout())
+    {
+        linkwidget_->layout()->setAlignment(Qt::AlignCenter);
+        linkwidget_->layout()->setContentsMargins(2, 2, 2, 2);
+    }
 
     linkwidget_->setContentsMargins(0, 10, 0, 0);
-	linkwidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    linkwidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-	const std::string valuetype = link_->getValueTypeString();
+    const std::string valuetype = link_->getValueTypeString();
     if (!valuetype.empty())
         linkwidget_->setToolTip(valuetype.c_str());
 
-	//std::cout << "WIDGET created for link " << dwarg.link << " : " << dwarg.name << " : " << dwarg.link->getValueTypeString() << std::endl;
-	numWidgets_ += linkwidget_->sizeWidget();
-	connect(linkwidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
-	connect(this, SIGNAL( WidgetUpdate() ), linkwidget_, SLOT( updateWidgetValue() ) );
-	connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(setWidgetDirty() ) );
-	connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(updateLinkValue() ) );
-	connect(linkwidget_,SIGNAL(LinkOwnerDirty(bool)),this,SIGNAL(LinkOwnerDirty(bool)) );
+    numWidgets_ += linkwidget_->sizeWidget();
+    connect(linkwidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
+    connect(this, SIGNAL( WidgetUpdate() ), linkwidget_, SLOT( updateWidgetValue() ) );
+    connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(setWidgetDirty() ) );
+    connect(this, SIGNAL( LinkUpdate() ), linkwidget_, SLOT(updateLinkValue() ) );
+    connect(linkwidget_,SIGNAL(LinkOwnerDirty(bool)),this,SIGNAL(LinkOwnerDirty(bool)) );
 
-	if(flags.PROPERTY_WIDGET_FLAG)
+    if(flags.PROPERTY_WIDGET_FLAG)
     {
-		if(!dwarg.readOnly)
-		{
-			QWidget* refreshWidget = new QWidget(this);
-			refreshWidget->setFixedSize(QSize(16, 16));
-			QPushButton *refresh = new QPushButton(RefreshIcon(), "", refreshWidget);
-			refresh->setHidden(true);
-			refresh->setFixedSize(QSize(16, 16));
-			refresh->setContentsMargins(0, 0, 0, 0);
+        if(!dwarg.readOnly)
+        {
+            QWidget* refreshWidget = new QWidget(this);
+            refreshWidget->setFixedSize(QSize(16, 16));
+            QPushButton *refresh = new QPushButton(RefreshIcon(), "", refreshWidget);
+            refresh->setHidden(true);
+            refresh->setFixedSize(QSize(16, 16));
+            refresh->setContentsMargins(0, 0, 0, 0);
 
-			++numWidgets_;
+            ++numWidgets_;
 
-			connect(linkwidget_,SIGNAL(LinkBeingChanged()), refresh, SLOT ( show() ) );
-			connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateLink()));
-			connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
-		}
+            connect(linkwidget_,SIGNAL(LinkBeingChanged()), refresh, SLOT ( show() ) );
+            connect(refresh, SIGNAL(clicked()), this, SLOT(UpdateLink()));
+            connect(refresh, SIGNAL(clicked(bool)), refresh, SLOT(setVisible(bool)));
+        }
 
-		setStyleSheet("QGroupBox{border:0;}");
+        setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
         //setInsideMargin(0);
         //setInsideSpacing(0);
@@ -140,14 +139,14 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         //setColumns(numWidgets_);
     }
     else
-	{
-		setTitle(link_->getName().c_str());
+    {
+        setTitle(link_->getName().c_str());
         setContentsMargins(2,2,4,4);
         //setInsideMargin(4);
         //setInsideSpacing(2);
 
         //setColumns(numWidgets_); //linkwidget_->numColumnWidget()
-	}
+    }
     gridLayout_->addWidget(linkwidget_);
 }
 
@@ -174,27 +173,27 @@ bool QLinkSimpleEdit::createWidgets()
     {
         innerWidget_.type = TEXTEDIT;
         innerWidget_.widget.textEdit = new QTextEdit(this);
-		innerWidget_.widget.textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		innerWidget_.widget.textEdit->setContentsMargins(0, 0, 0, 0);
-		innerWidget_.widget.textEdit->setText(str);
-		innerWidget_.widget.textEdit->setFixedHeight(60);
-		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SIGNAL(LinkBeingChanged()));
-		connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT(update()));
+        innerWidget_.widget.textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        innerWidget_.widget.textEdit->setContentsMargins(0, 0, 0, 0);
+        innerWidget_.widget.textEdit->setText(str);
+        innerWidget_.widget.textEdit->setFixedHeight(60);
+        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SIGNAL(LinkBeingChanged()));
+        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT(update()));
         layout->addWidget(innerWidget_.widget.textEdit);
     }
     else
     {
         innerWidget_.type = LINEEDIT;
         innerWidget_.widget.lineEdit  = new QLineEdit(this);
-		innerWidget_.widget.lineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-		innerWidget_.widget.lineEdit->setContentsMargins(0, 0, 0, 0);
+        innerWidget_.widget.lineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        innerWidget_.widget.lineEdit->setContentsMargins(0, 0, 0, 0);
         innerWidget_.widget.lineEdit->setText(str);
-		connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SIGNAL(LinkBeingChanged()));
-		connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(update()));
+        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SIGNAL(LinkBeingChanged()));
+        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(update()));
         layout->addWidget(innerWidget_.widget.lineEdit);
     }
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
 
     return true;
 }

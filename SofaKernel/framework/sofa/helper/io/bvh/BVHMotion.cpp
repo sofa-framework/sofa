@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/io/bvh/BVHMotion.h>
+#include <sofa/helper/logging/Messaging.h>
+
 #include <iostream>
 
 namespace sofa

@@ -29,11 +29,6 @@
 #include "FullVector.h"
 #include <algorithm>
 
-/// This line register the CompressedRowSparseMatrix to the messaging system
-/// this allow to write msg_info() instead of msg_info("CompressedRowSparseMatrix")
-/// which is nicer
-MSG_REGISTER_CLASS(sofa::component::linearsolver::CompressedRowSparseMatrix, "CompressedRowSparseMatrix")
-
 namespace sofa
 {
 
@@ -52,7 +47,7 @@ namespace linearsolver
 #define EMIT_EXTRA_MESSAGE true
 #else
 #define EMIT_EXTRA_MESSAGE false
-#else
+#endif
 
 template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<int> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
@@ -1768,7 +1763,7 @@ public:
         // check ap, size m beecause ther is at least the diagonal value wich is different of 0
         if (a_p[0]!=0)
         {
-            msg_error() << "First value of row indices (a_p) should be 0" ;
+            msg_error("CompressedRowSparseMatrix") << "First value of row indices (a_p) should be 0" ;
             return false;
         }
 
@@ -1776,7 +1771,7 @@ public:
         {
             if (a_p[i]<=a_p[i-1])
             {
-                msg_error() << "Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] ;
+                msg_error("CompressedRowSparseMatrix") << "Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] ;
                 return false;
             }
         }
@@ -1786,7 +1781,7 @@ public:
         }
         else if (a_p[m]!=nzmax)
         {
-            msg_error() << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] ;
+            msg_error("CompressedRowSparseMatrix") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] ;
             return false;
         }
 
@@ -1799,12 +1794,12 @@ public:
             {
                 if (a_i[i] <= a_i[i-1])
                 {
-                    msg_error() << "Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] ;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] ;
                     return false;
                 }
                 if (a_i[i]<0 || a_i[i]>=n)
                 {
-                    msg_error() << "Column (a_i) indices are not correct " << i << " : " << a_i[i] ;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not correct " << i << " : " << a_i[i] ;
                     return false;
                 }
             }
@@ -1815,18 +1810,18 @@ public:
         {
             if (a_x[i]==0)
             {
-                msg_warning() << "Matrix contains 0 , index " << i ;
+                msg_warning("CompressedRowSparseMatrix") << "Matrix contains 0 , index " << i ;
                 return false;
             }
         }
 
         if (n!=m)
         {
-            msg_error() << "The matrix is not square" ;
+            msg_error("CompressedRowSparseMatrix") << "The matrix is not square" ;
             return false;
         }
 
-        msg_info() << "Check_matrix passed successfully" ;
+        msg_info("CompressedRowSparseMatrix") << "Check_matrix passed successfully" ;
         return true;
     }
 };

@@ -76,20 +76,20 @@ void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmo
 
 void VisualDrawVisitor::fwdVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
 {
-    msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::fwdVisualModel()" ;
+    msg_info_when(DO_DEBUG_DRAW, vm) << " entering VisualVisitor::fwdVisualModel()" ;
 
     vm->fwdDraw(vparams);
 
-    msg_info_when(DO_DEBUG_DRAW, o) << " leaving VisualVisitor::fwdVisualModel()" ;
+    msg_info_when(DO_DEBUG_DRAW, vm) << " leaving VisualVisitor::fwdVisualModel()" ;
 }
 
 void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::VisualModel* vm)
 {
-    msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::bwdVisualModel()" ;
+    msg_info_when(DO_DEBUG_DRAW, vm) << " entering VisualVisitor::bwdVisualModel()" ;
 
     vm->bwdDraw(vparams);
 
-    msg_info_when(DO_DEBUG_DRAW, o) << " leaving VisualVisitor::bwdVisualModel()" ;
+    msg_info_when(DO_DEBUG_DRAW, vm) << " leaving VisualVisitor::bwdVisualModel()" ;
 }
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
@@ -105,11 +105,11 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
         if (shader && shader->isActive())
             shader->start();
 
-        msg_info_when(DO_DEBUG_DRAW, o) << " before calling drawVisual" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
 
         vm->drawVisual(vparams);
 
-        msg_info_when(DO_DEBUG_DRAW, o) << " after calling drawVisual" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
 
         if (shader && shader->isActive())
             shader->stop();
@@ -120,19 +120,19 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
         if (shader && shader->isActive())
             shader->start();
 
-        msg_info_when(DO_DEBUG_DRAW, o) << " before calling drawTransparent" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
 
         vm->drawTransparent(vparams);
 
-        msg_info_when(DO_DEBUG_DRAW, o) << " after calling drawTransparent" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
         if (shader && shader->isActive())
             shader->stop();
         break;
     }
     case core::visual::VisualParams::Shadow:
-        msg_info_when(DO_DEBUG_DRAW, o) << " before calling drawShadow" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
         vm->drawShadow(vparams);
-        msg_info_when(DO_DEBUG_DRAW, o) << " after calling drawVisual" ;
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
         break;
     }
 }

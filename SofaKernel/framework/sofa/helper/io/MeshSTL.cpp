@@ -66,10 +66,8 @@ void MeshSTL::init (std::string filename)
        return;
     }
 
-#ifndef NDEBUG
-std::size_t namepos = filename.find_last_of("/");
-std::string name = filename.substr(namepos+1);
-#endif
+    std::size_t namepos = filename.find_last_of("/");
+    std::string name = filename.substr(namepos+1);
 
     std::string token;
     file >> token;

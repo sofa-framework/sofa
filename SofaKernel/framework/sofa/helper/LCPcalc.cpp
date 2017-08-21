@@ -957,7 +957,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 
 {
-
+    SOFA_UNUSED(verbose) ;
     int numContactsFine = fineLevel.getDim()/3;
 
     if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
@@ -1628,7 +1628,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
                 if(it==0){
                     std::stringstream tmpmsg;
                     tmpmsg << "Compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed ;
-                    dmsg_warning("LCPcalc") << tmp.str() ;
+                    dmsg_warning("LCPcalc") << tmpmsg.str() ;
                 }
 
                 fn=0; ft=0; fs=0;

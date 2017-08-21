@@ -22,11 +22,13 @@
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
+#include <sstream>
 #include <iostream>
 
 namespace sofa
@@ -375,13 +377,13 @@ void BVHJoint::debug(int tab)
     for (int i=0; i<tab; i++)
         tmpmsg << "\t";
 
-    tmpmsg << name << msginfo;
+    tmpmsg << name << msgendl ;
 
     if (offset != NULL)
     {
         for (int i=0; i<tab; i++)
             tmpmsg << "\t";
-        tmpmsg << "offset " << offset->x << " " << offset->y << " " << offset->z << msginfo;
+        tmpmsg << "offset " << offset->x << " " << offset->y << " " << offset->z << msgendl;
     }
 
     if (channels != NULL)
