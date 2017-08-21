@@ -294,27 +294,19 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 
-    if(!arguments.empty())
     {
-        char**argv = new char*[arguments.size()+1];
-        argv[0] = new char[bareFilename.size()+1];
-        strcpy( argv[0], bareFilename.c_str() );
-        for( size_t i=0 ; i<arguments.size() ; ++i )
-        {
-            argv[i+1] = new char[arguments[i].size()+1];
-            strcpy( argv[i+1], arguments[i].c_str() );
+        // setup sys.argv
+        std::vector<const char*> argv;
+        argv.push_back(bareFilename.c_str());
+        
+        for(const std::string& arg : arguments) {
+            argv.push_back(arg.c_str());
         }
-
-        Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
-        PySys_SetArgv(arguments.size()+1, argv);
-
-        for( size_t i=0 ; i<arguments.size()+1 ; ++i )
-        {
-            delete [] argv[i];
-        }
-        delete [] argv;
+        
+        Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
+        PySys_SetArgv(argv.size(), (char**)argv.data());
     }
-
+    
     // Load the scene script
     char* pythonFilename = strdup(filename);
     PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
