@@ -39,6 +39,9 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem ;
+
 namespace sofa
 {
 
@@ -50,19 +53,20 @@ namespace misc
 
 SOFA_DECL_CLASS(OBJExporter)
 
-int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
+int OBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
+                                            "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
         .add< OBJExporter >()
         .addAlias("ObjExporter");
 
 OBJExporter::OBJExporter()
     : stepCounter(0)
-    , objFilename( initData(&objFilename, "filename", "output OBJ file name"))
-    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-    , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
-    , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
+    , objFilename( initData(&objFilename, "filename", "output OBJ file name. If missing the name of the component is used."))
+    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable, default=0)"))
+    , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization (default=false)"))
+    , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished (default=false)"))
     , activateExport(false)
 {
-    this->f_listening.setValue(true);
+    f_listening.setValue(true) ;
 }
 
 OBJExporter::~OBJExporter()
@@ -73,35 +77,78 @@ void OBJExporter::init()
 {
     context = this->getContext();
     maxStep = exportEveryNbSteps.getValue();
+
+    /// We need to set a default filename... So which one ?
+    if(!objFilename.isSet() || objFilename.getValue().empty())
+    {
+        objFilename.setValue(getName());
+    }
 }
 
-void OBJExporter::writeOBJ()
+std::string findOrCreateAValidPath(const std::string path)
 {
-    std::string filename = objFilename.getFullPath();
+    if( FileSystem::exists(path) )
+        return path ;
+
+    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    std::string currentFile = FileSystem::stripDirectory(path) ;
+    FileSystem::createDirectory(findOrCreateAValidPath( parentPath )+"/"+currentFile) ;
+    return path ;
+}
+
+bool OBJExporter::writeOBJ()
+{
+    std::string path = FileSystem::cleanPath(objFilename.getFullPath()) ;
+    if( FileSystem::exists(path) && FileSystem::isDirectory(path) ){
+        path += "/" + getName() ;
+    }
+    /// If path does not exists...we create It
+    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    if( !FileSystem::exists(parentPath) ){
+        findOrCreateAValidPath(parentPath) ;
+    }
+
+    std::string objfilename = path ;
+    std::string mtlfilename = path;
+
     if (maxStep)
     {
         std::ostringstream oss;
         oss.width(5);
         oss.fill('0');
         oss << stepCounter / maxStep;
-        filename += oss.str();
+        objfilename += oss.str();
     }
-    if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
-        filename += ".obj";
-    std::ofstream outfile(filename.c_str());
+    if ( !(objfilename.size() > 3 && objfilename.substr(objfilename.size()-4)==".obj"))
+        objfilename += ".obj";
+    std::ofstream outfile(objfilename.c_str());
 
-    std::string mtlfilename = objFilename.getFullPath();
-    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
+    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(objfilename.size()-4)==".obj"))
         mtlfilename += ".mtl";
     else
         mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
     std::ofstream mtlfile(mtlfilename.c_str());
+
+    if(!outfile.is_open())
+    {
+        msg_warning() << "Unable to export OBJ...the file '"<< objfilename <<"' cannot be opened" ;
+        return false ;
+    }
+
+    if(!mtlfile.is_open())
+    {
+        msg_warning() << "Unable to export OBJ...the file '"<< objfilename <<"' cannot be opened" ;
+        return false ;
+    }
+
     sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
     context->executeVisitor(&exportOBJ);
+
     outfile.close();
     mtlfile.close();
 
-    msg_info() << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() ;
+    msg_info() << "Exporting OBJ in: " << objfilename.c_str() << " with MTL in: " << mtlfilename.c_str() ;
+    return true ;
 }
 
 void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
@@ -116,6 +163,10 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'E':
         case 'e':
         {
+            //todo(18.06) remove the behavior
+            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
+                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
+                                "Please update your scene because this behavior will be removed in Sofa 18.06";
             writeOBJ();
             break;
         }
@@ -123,6 +174,11 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'P':
         case 'p':
         {
+            //todo(18.06)
+            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
+                                "Scene specific interaction should be implement using an external controller or pythonScriptController"
+                                "Please update your scene because this behavior will be removed in Sofa 18.06";
+
             if (!activateExport){
                 msg_info() << "Starting OBJ sequence export..." ;
             }else{
@@ -150,7 +206,6 @@ void OBJExporter::cleanup()
 {
     if (exportAtEnd.getValue())
         writeOBJ();
-
 }
 
 void OBJExporter::bwdInit()

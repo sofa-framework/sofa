@@ -50,7 +50,7 @@ namespace misc
 class SOFA_EXPORTER_API OBJExporter : public core::objectmodel::BaseObject
 {
 public:
-	SOFA_CLASS(OBJExporter, core::objectmodel::BaseObject);
+    SOFA_CLASS(OBJExporter, core::objectmodel::BaseObject);
 
 private:
     unsigned int stepCounter;
@@ -70,8 +70,8 @@ public:
     void init();
     void cleanup();
     void bwdInit();
-	void handleEvent(sofa::core::objectmodel::Event *);
-	void writeOBJ(); 
+    void handleEvent(sofa::core::objectmodel::Event *);
+    bool writeOBJ();
 };
 
 }
