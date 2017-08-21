@@ -23,6 +23,8 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Utils.h>
 
+#include <boost/filesystem.hpp>
+
 #include <fstream>
 #include <iostream>
 #ifdef WIN32
@@ -76,8 +78,8 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-	strcpy_s(szDir, MAX_PATH, path.c_str());
-	strcat_s(szDir, MAX_PATH, "\\*");
+    strcpy_s(szDir, MAX_PATH, path.c_str());
+    strcat_s(szDir, MAX_PATH, "\\*");
 
     // Find the first file in the directory.
     hFind = FindFirstFile(szDir, ffd);
@@ -102,12 +104,12 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     // Iterate over files and push them in the output vector
     do {
 # if defined (_XBOX)
-		std::string filename = ffd.cFileName;
+        std::string filename = ffd.cFileName;
 # else
-		std::string filename = Utils::narrowString(ffd.cFileName);
+        std::string filename = Utils::narrowString(ffd.cFileName);
 # endif
         if (filename != "." && filename != "..")
-			outputFilenames.push_back(filename);
+            outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
 
     // Check for errors
@@ -182,7 +184,7 @@ bool FileSystem::removeDirectory(const std::string& path)
 bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
-	::SetLastError(0);
+    ::SetLastError(0);
     if (PathFileExists(Utils::widenString(path).c_str()) != 0)
         return true;
     else
@@ -194,7 +196,7 @@ bool FileSystem::exists(const std::string& path)
     }
 
 #elif defined (_XBOX)
-	DWORD fileAttrib = GetFileAttributes(path.c_str());
+    DWORD fileAttrib = GetFileAttributes(path.c_str());
     return fileAttrib != -1;
 #else
     struct stat st_buf;
@@ -262,8 +264,8 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
 
 static bool pathHasDrive(const std::string& path) {
     return path.length() >=3
-        && ((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z'))
-        && path[1] == ':';
+            && ((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z'))
+            && path[1] == ':';
 }
 
 static std::string pathWithoutDrive(const std::string& path) {
@@ -277,8 +279,8 @@ static std::string pathDrive(const std::string& path) {
 bool FileSystem::isAbsolute(const std::string& path)
 {
     return !path.empty()
-        && (pathHasDrive(path)
-            || path[0] == '/');
+            && (pathHasDrive(path)
+                || path[0] == '/');
 }
 
 std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
@@ -291,6 +293,13 @@ std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
         backSlashPos = str.find("\\");
     }
     return str;
+}
+
+bool FileSystem::removeAll(const std::string& path){
+    try{
+        boost::filesystem::remove_all(path) ;
+    }catch(boost::filesystem::filesystem_error const & e){ return false ; }
+    return true ;
 }
 
 std::string FileSystem::removeExtraSlashes(const std::string& path)
