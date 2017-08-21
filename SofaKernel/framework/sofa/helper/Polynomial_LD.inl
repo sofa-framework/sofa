@@ -115,8 +115,7 @@ Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator+=(const Monomial_LD<Real,N> 
     }
     else
     {
-        std::cout<<"WARNING : "<<(*this)<<" + "<<b
-            <<"   Not permissed with different powers"<<std::endl;
+        dmsg_warning("Monomial_LD") <<(*this)<<" + "<<b <<"   Not permissed with different powers" ;
     }
     return *this;
 }
@@ -130,37 +129,28 @@ Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator-=(const Monomial_LD<Real,N> 
     }
     else
     {
-        std::cout<<"WARNING : "<<(*this)<<" - "<<b
-            <<"   Not permissed with different powers"<<std::endl;
+        dmsg_warning("Monomial_LD") <<(*this)<<" - "<<b <<"   Not permissed with different powers" ;
     }
     return *this;
 }
+
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator*=(const Monomial_LD<Real,N> & b)
 {
-    //std::std::cout<<"Monomial_LD<Real,N>::operator*=(const Monomial_LD<Real,N> & b)"
-    //		<<"===========================befor mulstip" <<*this <<std::endl;
     ///////////////////////////////////////////////////////
-
-
     coef*=b.coef;
     for(unsigned int i=0; i<N; i++)
         powers[i] += b.powers[i];
 
-
-    ///////////////////////////////////////////////////////
-    //std::cout<<"===========================Multiple with   "<< b<<std::endl;
-
-    //std::cout<<"===========================after mulstip" <<*this<<  "   "<< std::endl;
-    ////////////////////////////////////////////////////////
     return *this;
 }
+
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Real Monomial_LD<Real,N>::operator()(const RNpoint & x) const
 {
-    if (x.size()!= N) std::cout<<"WARNING : value assigned to the monome has not the good number of variable"<<std::endl;
+    dmsg_warning_when(x.size()!= N, "Monomial_LD") << "Value assigned to the monome has not the good number of variable." ;
     Real value= coef;
     for( unsigned int i=0; i<N; i++)
     {
@@ -173,16 +163,15 @@ Real Monomial_LD<Real,N>::operator()(const RNpoint & x) const
 template<typename Real, unsigned int N>
 Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int idvar) const
 {
-    //assert( (x.size()==N) && (idvar < N) );
-    if (x.size()!= N) std::cout<<"WARNING : value assigned to the monome has not the good number of variable"<<std::endl;
+    dmsg_warning_when(x.size()!= N, "Monomial_LD") <<"Value assigned to the monome has not the good number of variable" ;
 
     Real value= coef;
 
     if (idvar >= N)
     {
-        std::cout<<"WARNING : "<<idvar<<"-th partial derivative couldn't take place for the monomial of:"<<N<<"-variables"<<std::endl
-            <<(*this)<<std::endl
-            <<"CONDITION: id_variable = { 0,1... (NbVariable-1) }"<<std::endl<<std::endl;
+        dmsg_warning("Monomial_LD") <<idvar<<"-th partial derivative couldn't take place for the monomial of:"<<N<<"-variables"<<msgendl
+                                    <<(*this)<< msgendl
+                                    <<"CONDITION: id_variable = { 0,1... (NbVariable-1) }";
     }
     else
     {
@@ -196,8 +185,6 @@ Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int idvar) const
             {
                 value*=(Real) powers[i];//derivate
                 value*=(Real) pow(x[i],(powers[i]-1));
-                //std::std::cout<<"Monomial_LD<Real,N>::operator() ================="<<std::endl
-                //		<<"Monomial "<<(*this)<< "  point "<<x<<"   derivvar"<<idvar<< "value"<<value<<std::endl;
             }
             else
             {
@@ -215,9 +202,9 @@ Monomial_LD<Real,N> Monomial_LD<Real,N>::d(const unsigned int & idvar) const
     Monomial_LD<Real,N> r(*this);
     if (idvar >= N)
     {
-        std::cout<<"WARNING : "<<idvar<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<std::endl
-            <<r<<std::endl
-            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<std::endl<<std::endl;
+        msg_warning("Monomial_LD") << idvar<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<msgendl
+                                   <<r<<msgendl
+                                  <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }" ;
     }
     else
     {
@@ -248,7 +235,6 @@ void Monomial_LD<Real,N>::readFromStream(std::istream & stream)
     {
         if (stream >> t_power) powers[i]=t_power;
     }
-    //std::cout<<"Monomial : "<<*this<<std::endl;/////////////////////////////////////////////
 }
 
 template< typename FReal, unsigned int FN > //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
@@ -265,8 +251,6 @@ Monomial_LD< FReal, FN > & operator*(const FReal & alpha,Monomial_LD< FReal, FN 
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD()
 {
-    //Monomial_LD<Real,N> monomialnull;
-    //listOfMonoMial.push_back(monomialnull);
     nbOfMonomial=0;
 }
 ////////////////////////////////
@@ -314,7 +298,6 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned  int nbofTerm,...)
     for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
     {
         Monomial_LD<Real,N> mi;
-        //Real coefi=va_arg(vl, Real );
         double coefindouble=va_arg(vl, double );
         Real coefi=(Real)coefindouble;
         mi.SetCoef(coefi);
@@ -345,7 +328,6 @@ void Polynomial_LD<Real,N>::Set(const unsigned int nbofTerm,...)
     {
 
         Monomial_LD<Real,N> mi;
-        //Real coefi=va_arg(vl,Real);
         double coefindouble=va_arg(vl, double );
         Real coefi=(Real)coefindouble;
         mi.SetCoef(coefi); mi.SetCoef(coefi);
@@ -476,37 +458,18 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)
 {
-
-
     Polynomial_LD<Real,N> old=(*this);
-
-    ///////////////////////////////////////////////////////
-    //std::cout<<"Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)"
-    //		<<"Polynomial_LD befor mulstip" <<old <<std::endl;
-    ///////////////////////////////////////////////////////
-
     listOfMonoMial.resize(listOfMonoMial.size()*(b.listOfMonoMial.size()));
-
-    //std::cout<<"Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)"
-    //		<<"Polynomial_LD befor mulstip" <<(*this) <<std::endl;
 
     unsigned int m_counter=0;
     for(unsigned int ita=0; ita<old.listOfMonoMial.size(); ita++)
     {
         for(unsigned int itb=0; itb<b.listOfMonoMial.size(); itb++)
         {
-            //std::cout<<"m_counter = "<<m_counter<<"  ita="<<ita<<" itb="<<itb;
             listOfMonoMial[m_counter]=old.listOfMonoMial[ita]*b.listOfMonoMial[itb];
-            //std::cout<<" Monomial_LD " <<old.listOfMonoMial[ita] <<" * "<<b.listOfMonoMial[itb] << "  = "<<listOfMonoMial[m_counter]<<std::endl;
             m_counter++;
         }
     }
-
-    ///////////////////////////////////////////////////////
-    //std::cout<<"Polynomial_LD Multiple with   "<< b <<std::endl;
-
-    //std::cout<<"Polynomial_LD after mulstip" <<(*this)<<  "   "<< std::endl;
-    ////////////////////////////////////////////////////////
 
     this->sort();
     return *this;
@@ -541,23 +504,17 @@ Real Polynomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int iderive) c
     Real result=(Real) 0.;
     if (iderive >= N)
     {
-        std::cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<std::endl
-            <<(*this)<<std::endl
-            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<std::endl<<std::endl;
+        dmsg_warning("Polynomial_LD") <<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<msgendl
+            <<(*this)<<msgendl
+            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }" ;
     }
     else
     {
         for(MonomialConstIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
         {
             result += it->operator()(x,iderive);
-            //std::cout<<"Polynomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int iderive) "<<std::endl
-            //		<<"monome "<<(*it)  <<"   point  "<< x << "  iderive"<<iderive  <<"   result  "<<it->operator()(x,iderive)<<std::endl;
-
-
         }
     }
-
-    //std::cout<<"Polynomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int iderive) "<<std::endl<<"polynome "<<(*this)  <<"   point  "<< x << "  iderive"<<iderive  <<"   result  "<<result<<std::endl;
 
     return result;
 }
@@ -568,9 +525,9 @@ Polynomial_LD<Real,N> Polynomial_LD<Real,N>::d(const unsigned int & iderive) con
     Polynomial_LD<Real,N> result(*this);
     if (iderive >=N)
     {
-        std::cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<"-variables"<<std::endl
-            <<result<<std::endl
-            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<std::endl<<std::endl;
+        dmsg_warning("Polynomial_LD") <<iderive<<"-th derivative couldn't take place for the polynomial of:"<<"-variables" << msgendl
+            <<result<<msgendl
+            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }" ;
     }
     else
     {
@@ -610,7 +567,6 @@ void Polynomial_LD<Real,N>::writeToStream(std::ostream & stream) const
         stream << "  +  "<<*it;
         ++it;
     }
-    //stream<<std::endl;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
@@ -629,7 +585,6 @@ void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
         ++it;
     }
     sort();
-    //std::cout<<"     Polynomial :"<<*this<<std::endl;/////////////////////////////////////////////
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>

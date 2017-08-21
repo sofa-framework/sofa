@@ -131,7 +131,6 @@ bool ImagePNG::load(std::string filename)
         return false;
     }
 
-    //png_init_io(PNG_reader, file);
     png_set_read_fn(PNG_reader, file, png_my_read_data);
 
     png_read_info(PNG_reader, PNG_info);
@@ -145,9 +144,7 @@ bool ImagePNG::load(std::string filename)
     channels = png_get_channels(PNG_reader, PNG_info);
     color_type = png_get_color_type(PNG_reader, PNG_info);
 
-#ifndef NDEBUG
-    msg_info("ImagePNG") << " "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
-#endif
+
     bool changed = false;
     if (color_type == PNG_COLOR_TYPE_PALETTE)
     {
@@ -175,7 +172,6 @@ bool ImagePNG::load(std::string filename)
         png_read_update_info(PNG_reader, PNG_info);
         bit_depth = png_get_bit_depth(PNG_reader, PNG_info);
         channels = png_get_channels(PNG_reader, PNG_info);
-//        color_type = png_get_color_type(PNG_reader, PNG_info);
 
 #ifndef NDEBUG
         msg_info("ImagePNG") << "Converted PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
@@ -262,9 +258,7 @@ bool ImagePNG::save(std::string filename, int compression_level)
 {
 
     FILE *file;
-#ifndef NDEBUG
-    std::cout << "Writing PNG file " << filename << std::endl;
-#endif
+
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "wb")) == NULL)
     {
@@ -324,9 +318,11 @@ bool ImagePNG::save(std::string filename, int compression_level)
         fclose(file);
         return false;
     }
+
 #ifndef NDEBUG
     msg_info("ImagePNG") << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
 #endif
+
     png_set_IHDR(PNG_writer, PNG_info, width, height,
             bit_depth, color_type, PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);

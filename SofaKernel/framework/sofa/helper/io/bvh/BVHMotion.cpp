@@ -49,9 +49,10 @@ void BVHMotion::debug(void)
 {
     for (unsigned int i=0; i<frames.size(); i++)
     {
+        std::stringstream tmpmsg;
         for (unsigned int j=0; j<frames[i].size(); j++)
-            std::cout << frames[i][j] << " ";
-        std::cout << "\n";
+            tmpmsg << frames[i][j] << " ";
+        msg_info("BVHMotion") ;
     }
 }
 
