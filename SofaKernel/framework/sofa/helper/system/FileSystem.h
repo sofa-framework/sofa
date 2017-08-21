@@ -76,6 +76,12 @@ static bool createDirectory(const std::string& path);
 /// @return true on error
 static bool removeDirectory(const std::string& path);
 
+/// @brief Remove a non-empty directory. (This function accepts relative paths)
+///
+/// @return true on error
+static bool removeAll(const std::string& path) ;
+
+
 /// @brief Return true if and only if the given file exists.
 static bool exists(const std::string& path);
 
