@@ -111,6 +111,8 @@ public:
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
     bool hasAncestor(const BaseContext* context) const;
 
+    /// Import the getObject function into the current namespace.
+    using simulation::Node::getObject ;
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
