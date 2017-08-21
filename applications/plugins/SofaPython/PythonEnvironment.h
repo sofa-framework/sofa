@@ -64,6 +64,12 @@ public:
     /// returns the file information associated with the current frame.
     static std::string getStackAsString() ;
 
+    /// returns the last entry in the stack so that we can provide information to user.
+    static std::string getPythonCallingPointString() ;
+
+    /// returns the calling point as a file info structure to be used with the message api.
+    static sofa::helper::logging::FileInfo::SPtr getPythonCallingPointAsFileInfo() ;
+
     /// should the future scene loadings reload python modules?
     static void setAutomaticModuleReload( bool );
 
@@ -78,6 +84,8 @@ public:
     private:
         SceneLoaderListerner(){}
     };
+
+    struct system_exit : std::exception { };
 };
 
 

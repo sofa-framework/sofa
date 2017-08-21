@@ -1666,7 +1666,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -1683,7 +1683,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         //_initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
@@ -1703,7 +1703,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;

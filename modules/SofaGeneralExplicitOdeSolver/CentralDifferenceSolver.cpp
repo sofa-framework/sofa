@@ -43,7 +43,7 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
-    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
 {
 }
 

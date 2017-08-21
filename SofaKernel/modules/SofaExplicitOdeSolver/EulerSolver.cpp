@@ -30,8 +30,6 @@
 #include <math.h>
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
-using std::cerr;
-using std::endl;
 
 //#define SOFA_NO_VMULTIOP
 
@@ -39,7 +37,7 @@ namespace sofa
 {
 
 namespace component
-{ 
+{
 
 namespace odesolver
 {

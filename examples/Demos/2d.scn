@@ -1,6 +1,6 @@
 <Node dt="0.004" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
     <Node name="Cube1">
         <MechanicalObject template="Rigid2d" position="0 10 0" velocity="0.1 1 -200" />

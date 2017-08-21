@@ -6,7 +6,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
     <Node name="SquareGravity">
-        <EulerImplicitSolver name="cg_odesolver" />
+        <EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" />
         <SubsetTopology template="Vec3d" box="0.3 0 -0.1 0.6 1 0.1" drawROI="1" src="@meshLoader" rest_position="@meshLoader.position" name="Subset" localIndices="1" />

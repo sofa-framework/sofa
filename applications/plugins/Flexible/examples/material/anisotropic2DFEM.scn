@@ -5,7 +5,7 @@
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
 
     <Node 	name="Tri" >
-        <EulerImplicitSolver /> 
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> 
 	<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
         <!--parametrizable mesh-->

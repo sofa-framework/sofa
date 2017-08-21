@@ -56,15 +56,16 @@ private:
     unsigned int maxStep;
 
     std::ofstream* outfile;
-
-    void writeSTL();
-    void writeSTLBinary();
     
     int nbFiles;
 
 public:
+
+    void writeSTL();
+    void writeSTLBinary();
+
     sofa::core::objectmodel::DataFileName stlFilename;
-    Data<bool> m_fileFormat;      //0 for Ascii Formats, 1 for Binary File Format
+    Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
     Data<defaulttype::Vec3Types::VecCoord> m_position;
     Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > m_triangle;
     Data< helper::vector< core::topology::BaseMeshTopology::Quad > > m_quad;

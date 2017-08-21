@@ -5,7 +5,7 @@
     <MeshObjLoader name="surface" filename="mesh/raptor_8kp.obj" triangulate="1" />
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" triangulate="1" />-->
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor_35kp.obj" triangulate="1" />-->
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
     <MeshTopology src="@surface" />
 	<MechanicalObject template="Vec3d" />

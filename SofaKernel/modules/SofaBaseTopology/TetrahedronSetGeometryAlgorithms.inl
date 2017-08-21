@@ -290,7 +290,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     }
     tetrahedronNumericalIntegration.addQuadratureMethod(m,8,qpa);
     /// integration with  accuracy of order 10 with 81 points
-    // This rule is originally from 
+    // This rule is originally from
     // A SET OF SYMMETRIC QUADRATURE RULES
     // ON TRIANGLES AND TETRAHEDRA*
     // Linbo Zhang, Tao Cui and Hui Liu:

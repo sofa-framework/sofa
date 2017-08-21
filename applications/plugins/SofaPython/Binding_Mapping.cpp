@@ -20,25 +20,5 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
 #include "Binding_Mapping.h"
 #include "Binding_BaseMapping.h"
-/*
-#include <sofa/core/topology/Topology.h>
-using namespace sofa::core::topology;
-using namespace sofa::core;
-
-SP_CLASS_METHODS_BEGIN(Topology)
-SP_CLASS_METHOD(Topology,hasPos)
-SP_CLASS_METHOD(Topology,getNbPoints)
-SP_CLASS_METHOD(Topology,setNbPoints)
-SP_CLASS_METHOD(Topology,getPX)
-SP_CLASS_METHOD(Topology,getPY)
-SP_CLASS_METHOD(Topology,getPZ)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(Topology,Topology,BaseObject)
-
-*/
-

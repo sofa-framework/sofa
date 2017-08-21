@@ -48,8 +48,8 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* o
     : StiffSpringForceField<DataTypes>(object1, object2, ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
       box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
-      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
-
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
+	  forceOldBehavior(initData(&forceOldBehavior, true, "forceOldBehavior", "Keep using the old behavior"))
 {
 }
 
@@ -58,8 +58,20 @@ BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(double ks, double 
     : StiffSpringForceField<DataTypes>(ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
       box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
-      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated")),
+	  forceOldBehavior(initData(&forceOldBehavior, true, "forceOldBehavior", "Keep using the old behavior"))
 {
+}
+
+template <class DataTypes>
+void BoxStiffSpringForceField<DataTypes>::init()
+{
+	if(forceOldBehavior.getValue())
+	{
+		 msg_warning("BoxStiffSpringForceField") << "The behavior of the component has changed."
+												 << " If you want to use the old behavior you should add the parameter \"forceOldBehavior=true\" to your scene."
+												 << " If you want to remove this warning and use the new behavior you need to add \"forceOldBehavior=false\"." << "\n";
+	}
 }
 
 template <class DataTypes>
@@ -113,7 +125,10 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					if(forceOldBehavior.getValue())
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					else
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
@@ -141,7 +156,10 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					if(forceOldBehavior.getValue())
+						this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
+					else
+						this->addSpring( indices1[it->second], indices2[i], this->getStiffness(), this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }

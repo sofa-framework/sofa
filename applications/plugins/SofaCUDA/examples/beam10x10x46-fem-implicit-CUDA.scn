@@ -19,7 +19,7 @@
 	</Node>
 	<Node name="M1">
 		<!--<CGImplicit iterations="10" />-->
-		<EulerImplicit />
+		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="10"/>
 		<RegularGrid
 			nx="10" ny="10" nz="46"

@@ -198,17 +198,12 @@ public:
 
         void operator +=(const Coord& a)
         {
-// 			std::cout << "+="<<std::endl;
             translation += a.getTranslation();
-            //orientation += a.getOrientation();
-            //orientation.normalize();
         }
 
         void operator*=(Real a)
         {
-// 			std::cout << "*="<<std::endl;
             translation *= a;
-            //orientation *= a;
         }
 
         Coord operator*(Real a) const

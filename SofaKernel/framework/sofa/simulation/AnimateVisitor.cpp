@@ -92,7 +92,7 @@ void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::coll
     sofa::helper::AdvancedTimer::stepEnd("begin collision",obj);
 
     CollisionVisitor act(this->params);
-    node->execute(&act);    
+    node->execute(&act);
 
     sofa::helper::AdvancedTimer::stepBegin("end collision",obj);
     {
@@ -117,21 +117,11 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
 
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 {
-
-    //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->isActive()) return Visitor::RESULT_PRUNE;
     if (node->isSleeping()) return Visitor::RESULT_PRUNE;
     if (!firstNodeVisited)
     {
         firstNodeVisited=true;
-
-//        core::behavior::BaseAnimationLoop* presenceAnimationManager;
-//        node->get(presenceAnimationManager, core::objectmodel::BaseContext::SearchDown);
-//        if (!presenceAnimationManager)
-//        {
-//          std::cerr << "AnimateVisitor::processNodeTopDown, ERROR: no BaseAnimationLoop found while searching down from node: " << node->getName() << std::endl;
-
-//        }
         sofa::core::MechanicalParams mparams(*this->params);
         mparams.setDt(dt);
         MechanicalResetConstraintVisitor resetConstraint(&mparams);
@@ -143,26 +133,14 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
     if (node->collisionPipeline != NULL)
     {
-
-        //ctime_t t0 = begin(node, node->collisionPipeline);
 #ifndef SOFA_SMP
         processCollisionPipeline(node, node->collisionPipeline);
 #endif
-        //end(node, node->collisionPipeline, t0);
     }
-    /*	if (node->solver != NULL)
-        {
-            ctime_t t0 = begin(node, node->solver);
-            processOdeSolver(node, node->solver);
-            end(node, node->solver, t0);
-            return RESULT_PRUNE;
-            }*/
     if (!node->solver.empty() )
     {
         sofa::helper::AdvancedTimer::StepVar timer("Mechanical",node);
         SReal nextTime = node->getTime() + dt;
-
-
         {
             IntegrateBeginEvent evBegin;
             PropagateEventVisitor eventPropagation( this->params, &evBegin);
@@ -178,14 +156,12 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
-            //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
             simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::constraintJacobian(),constraintId).execute(node);
         }
 
         for( unsigned i=0; i<node->solver.size(); i++ )
         {
             ctime_t t0 = begin(node, node->solver[i]);
-            //cerr<<"AnimateVisitor::processNodeTpDown  solver  "<<node->solver[i]->getName()<<endl;
             node->solver[i]->solve(params, getDt());
             end(node, node->solver[i], t0);
         }
@@ -210,25 +186,12 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
         return RESULT_PRUNE;
     }
-    /*
-    if (node->mechanicalModel != NULL)
-    {
-    	std::cerr << "Graph Error: MechanicalState without solver." << std::endl;
-    	return RESULT_PRUNE;
-    }
-    */
     {
         // process InteractionForceFields
         for_each(this, node, node->interactionForceField, &AnimateVisitor::fwdInteractionForceField);
         return RESULT_CONTINUE;
     }
 }
-
-// void AnimateVisitor::processNodeBottomUp(simulation::Node* node)
-// {
-//     node->setTime( node->getTime() + node->getDt() );
-// }
-
 
 } // namespace simulation
 

@@ -30,9 +30,6 @@ namespace sofa
 namespace simulation
 {
 
-using std::cerr;
-using std::endl;
-
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {
     if (node->interactionForceField.getSize() != 0)
