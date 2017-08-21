@@ -104,7 +104,6 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
     {
         indices.clear();
         indices.push_back(0);
-//        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
         projection->f_indices.setValue(indices);
 
         /// Init
