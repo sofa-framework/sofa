@@ -56,7 +56,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         return;
     }
 
-    gridLayout_ = new QHBoxLayout();
+    gridLayout_ = new QGridLayout();
     this->setLayout(gridLayout_);
 
     parent->layout()->addWidget(this);
@@ -137,17 +137,30 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         //setInsideSpacing(0);
 
         //setColumns(numWidgets_);
+        gridLayout_->addWidget(linkwidget_, 0, 1);
     }
     else
     {
-        setTitle(link_->getName().c_str());
+        //setTitle(link_->getName().c_str());
         setContentsMargins(2,2,4,4);
         //setInsideMargin(4);
         //setInsideSpacing(2);
 
         //setColumns(numWidgets_); //linkwidget_->numColumnWidget()
+
+        QLabel* linkName = new QLabel(link_->getName().c_str(), this);
+        linkName->setAlignment(Qt::AlignLeft);
+        linkName->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        linkName->setContentsMargins(10,10,10,10);
+        gridLayout_->setVerticalSpacing(0);
+        gridLayout_->addWidget(linkName, 0, 1);
+        gridLayout_->setAlignment(linkName, Qt::AlignVCenter);
+        linkwidget_->setContentsMargins(0, 0, 0, 0);
+        gridLayout_->setContentsMargins(10,10,10,10);
+        gridLayout_->addWidget(linkwidget_, 1, 1);
+
     }
-    gridLayout_->addWidget(linkwidget_);
+    gridLayout_->setAlignment(linkwidget_, Qt::AlignVCenter);
 }
 
 void QDisplayLinkWidget::UpdateLink()

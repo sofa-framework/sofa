@@ -154,18 +154,30 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         //setInsideSpacing(0);
 
         //setColumns(numWidgets_);
+
+        gridLayout_->setContentsMargins(10,10,10,10);
+        gridLayout_->addWidget(datawidget_, 0, 1);
+
     }
     else
     {
-        setTitle(data_->getName().c_str());
+        //setTitle(data_->getName().c_str());
         setContentsMargins(0,0,0,0);
         //setInsideMargin(4);
         //setInsideSpacing(2);
+        QLabel* propertyName = new QLabel(data_->getName().c_str(), this);
+        propertyName->setAlignment(Qt::AlignLeft);
+        propertyName->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        propertyName->setContentsMargins(10,10,10,10);
+        gridLayout_->setVerticalSpacing(0);
+        gridLayout_->addWidget(propertyName, 0, 1);
+        gridLayout_->setAlignment(propertyName, Qt::AlignVCenter);
+        datawidget_->setContentsMargins(0, 0, 0, 0);
+        gridLayout_->setContentsMargins(10,10,10,10);
+        gridLayout_->addWidget(datawidget_, 1, 1);
 
         //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
-    gridLayout_->setContentsMargins(10,10,10,10);
-    gridLayout_->addWidget(datawidget_, 0, 1);
     gridLayout_->setAlignment(datawidget_, Qt::AlignVCenter);
 }
 
