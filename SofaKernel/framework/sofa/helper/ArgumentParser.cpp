@@ -97,6 +97,9 @@ void ArgumentParser::operator () ( std::list<std::string> str )
     string shHelp("-");  shHelp.push_back( helpShortName );
     string lgHelp("--"); lgHelp.append( helpLongName );
     string name;
+
+    static const std::string extra_opt = "--argv";
+    
     while( !str.empty() )
     {
         name = str.front();
@@ -131,6 +134,14 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             str.pop_front();
         }
 
+        // extra args
+        else if( name == extra_opt ) {
+            if( _extra ) {
+                std::copy(str.begin(), str.end(), std::back_inserter(*_extra));
+            }
+            return;
+        }
+        
         // long name
         else if( name.length() > 1 && name[0]=='-' && name[1]=='-' )
         {

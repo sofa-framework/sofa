@@ -251,6 +251,10 @@ class SOFA_HELPER_API ArgumentParser
     /// Set of remaining file
     std::vector<std::string>* files;
 
+    /// extra args appearing after --argv
+    using extra_type = std::vector<std::string>*;
+    extra_type _extra = nullptr;
+    
     // help stuff
     string globalHelp;    ///< Overall presentation
     char helpShortName;   ///< short name for help
@@ -349,6 +353,13 @@ public:
         return (*this);
     }
 
+
+    /** specify output vector for extra args */
+    ArgumentParser& extra(extra_type e) {
+        _extra = e;
+        return *this;
+    }
+    
     /** Parse a command line
     \param argc number of arguments + 1, as usual in C
     \param argv arguments
