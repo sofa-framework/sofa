@@ -155,6 +155,7 @@ protected Q_SLOTS:
     void focusObject();
     void focusNode();
 protected:
+    core::objectmodel::Base* findBaseFromItem(QTreeWidgetItem* item) ;
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
     void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );

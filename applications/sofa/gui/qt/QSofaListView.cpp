@@ -220,6 +220,16 @@ void QSofaListView::expandNode(QTreeWidgetItem* item)
     emit Lock(false);
 }
 
+Base* QSofaListView::findBaseFromItem(QTreeWidgetItem* item)
+{
+    Base* base=NULL ;
+    if(item == NULL)
+        return NULL ;
+
+    base = graphListener_->findObject(item) ;
+    return base ;
+}
+
 void QSofaListView::updateMatchingObjectmodel(QTreeWidgetItem* item, int)
 {
     updateMatchingObjectmodel(item);
@@ -777,6 +787,8 @@ void QSofaListView::mouseMoveEvent(QMouseEvent *event)
     }
 
 }
+
+
 
 void QSofaListView::mousePressEvent(QMouseEvent * event){
     if (event->button() == Qt::LeftButton) {
