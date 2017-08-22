@@ -22,8 +22,6 @@ set(HEADER_FILES
     MultiMapping.inl
     MultiVecId.h
     ObjectFactory.h
-    # Plugin.h
-    # PluginManager.h
     SofaLibrary.h
     State.h
     State.inl
