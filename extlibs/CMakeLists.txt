@@ -4,6 +4,7 @@ set(EXTLIBS_TARGETS
     csparse
     newmat
     tinyxml
+    json
 )
 
 ## Necessary ones
@@ -12,6 +13,7 @@ add_subdirectory(csparse)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/eigen-3.2.7 eigen)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/newmat newmat)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/tinyxml tinyxml)
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/extlibs/json json)
 
 
 ## Optional ones

@@ -27,7 +27,7 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
-#include <sofa/helper/json.hpp>
+#include <../extlibs/json/json.h>
 
 
 #include <cmath>
@@ -37,7 +37,7 @@
 #define DEFAULT_INTERVAL 100
 
 using namespace sofa::core::objectmodel;
-using json = nlohmann::json;
+using json = sofa::helper::json;
 
 
 namespace sofa
@@ -1251,7 +1251,7 @@ json TimerData::getJson(std::string stepNumber)
 
                     ComposantId << steps[s];
                     deepthTree.push_back(ComposantId.str());
-                    temp[ComposantId.str()]["values"] = createJSONArray(s, temp[ComposantId.str()]["values"], data);;
+                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);;
                     *jsonPointer = temp;
                     jsonPointer = &jsonPointer->at(ComposantId.str());
 
@@ -1341,7 +1341,7 @@ json TimerData::getLightJson(std::string stepNumber)
                     ComposantId << steps[s];
                     deepthTree.push_back(ComposantId.str());
                     jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
-                    jsonOutput[jsonObjectName][ComposantId.str()]["values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["values"], data);;
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);;
 
                 }
                 // If the level decrement
@@ -1352,7 +1352,7 @@ json TimerData::getLightJson(std::string stepNumber)
                     ComposantId << steps[s];
 
                     jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
-                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["values"], data);
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
 
                 }
 
@@ -1362,7 +1362,7 @@ json TimerData::getLightJson(std::string stepNumber)
                     ComposantId << steps[s];
 
                     jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
-                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["values"], data);
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
                 }
 
             }

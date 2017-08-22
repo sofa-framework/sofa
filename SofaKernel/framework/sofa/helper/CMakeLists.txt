@@ -68,7 +68,6 @@ set(HEADER_FILES
     io/bvh/BVHLoader.h
     io/bvh/BVHMotion.h
     io/bvh/BVHOffset.h
-    json.hpp
     kdTree.h
     kdTree.inl
     list.h
