@@ -27,6 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/types/RGBAColor.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -41,7 +42,7 @@ template <class DataTypes>
 class Monitor: public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Monitor,DataTypes), core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(Monitor, DataTypes), core::objectmodel::BaseObject);
 
     typedef sofa::helper::types::RGBAColor RGBAColor;
     typedef typename DataTypes::VecReal VecReal;
@@ -55,29 +56,29 @@ protected:
     Monitor ();
     ~Monitor ();
 public:
-    //init data
+    /// init data
     virtual void init ();
 
-    //reset Monitored values
+    /// reset Monitored values
     virtual void reset ();
 
-    /**initialize gnuplot files
-    *called when ExportGnuplot box is checked
+    /** initialize gnuplot files
+        * called when ExportGnuplot box is checked
     */
     virtual void reinit();
 
-    /**function called at every step of simulation;
-    *store mechanical state vectors (forces, positions, velocities) into
-    *the MonitorData nested class. The filter (which position(s), velocity(ies) or *force(s) are displayed) is made in the gui
+    /** function called at every step of simulation;
+        * store mechanical state vectors (forces, positions, velocities) into
+        * the MonitorData nested class. The filter (which position(s), velocity(ies) or *force(s) are displayed) is made in the gui
     */
     virtual void handleEvent( core::objectmodel::Event* ev );
 
     virtual void draw (const core::visual::VisualParams* vparams);
 
-    ///create gnuplot files
+    /// create gnuplot files
     virtual void initGnuplot ( const std::string path );
 
-    ///write in gnuplot files the Monitored desired data (velocities,positions,forces)
+    /// write in gnuplot files the Monitored desired data (velocities,positions,forces)
     virtual void exportGnuplot ( Real time );
 
     virtual std::string getTemplateName() const
@@ -91,48 +92,44 @@ public:
     }
 
     /// Editable Data
-    Data < helper::vector<unsigned int> > indices;
+    Data< helper::vector<unsigned int> > d_indices;
 
-    Data < bool > saveXToGnuplot;
-    Data < bool > saveVToGnuplot;
-    Data < bool > saveFToGnuplot;
+    Data< bool > d_saveXToGnuplot;
+    Data< bool > d_saveVToGnuplot;
+    Data< bool > d_saveFToGnuplot;
 
-    Data < bool > showPositions;
-    Data <RGBAColor > positionsColor;
+    Data< bool > d_showPositions;
+    Data<RGBAColor > d_positionsColor;
 
-    Data < bool > showVelocities;
-    Data< RGBAColor > velocitiesColor;
+    Data< bool > d_showVelocities;
+    Data< RGBAColor > d_velocitiesColor;
 
-    Data < bool > showForces;
-    Data< RGBAColor > forcesColor;
+    Data< bool > d_showForces;
+    Data< RGBAColor > d_forcesColor;
 
-    Data < double > showMinThreshold;
+    Data< double > d_showMinThreshold;
 
-    Data < bool > showTrajectories;
-    Data < double > trajectoriesPrecision;
-    Data< RGBAColor > trajectoriesColor;
+    Data< bool > d_showTrajectories;
+    Data< double > d_trajectoriesPrecision;
+    Data< RGBAColor > d_trajectoriesColor;
 
-    Data< double > showSizeFactor;
-
+    Data< double > d_showSizeFactor;
+    core::objectmodel::DataFileName  d_fileName;
 
 protected:
 
-    std::ofstream* saveGnuplotX;
-    std::ofstream* saveGnuplotV;
-    std::ofstream* saveGnuplotF;
+    std::ofstream* m_saveGnuplotX;
+    std::ofstream* m_saveGnuplotV;
+    std::ofstream* m_saveGnuplotF;
 
-    //position, velocity and force of the mechanical object monitored;
-    const VecCoord * X;
-    const VecDeriv * V;
-    const VecDeriv * F;
+    const VecCoord * m_X; ///< positions of the mechanical object monitored;
+    const VecDeriv * m_V; ///< velocities of the mechanical object monitored;
+    const VecDeriv * m_F; ///< forces of the mechanical object monitored;
 
 
-    ///use for trajectoriesPrecision (save value only if trajectoriesPrecision <= internalDt)
-    double internalDt;
+    double m_internalDt; ///< use for trajectoriesPrecision (save value only if trajectoriesPrecision <= internalDt)
 
-    //store all the monitored positions, for trajectories display
-    sofa::helper::vector < sofa::helper::vector<Coord> > savedPos;
-
+    sofa::helper::vector < sofa::helper::vector<Coord> > m_savedPos; ///< store all the monitored positions, for trajectories display
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_MONITOR_CPP)
