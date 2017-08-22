@@ -262,6 +262,7 @@ bool FileSystem::listDirectory(const std::string& directoryPath,
     return false;
 }
 
+
 static bool pathHasDrive(const std::string& path) {
     return path.length() >=3
             && ((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z'))
@@ -312,6 +313,20 @@ std::string FileSystem::removeExtraSlashes(const std::string& path)
     }
     return str;
 }
+
+
+std::string FileSystem::findOrCreateAValidPath(const std::string path)
+{
+    if( FileSystem::exists(path) )
+        return path ;
+
+    std::string parentPath = FileSystem::getParentDirectory(path) ;
+    std::string currentFile = FileSystem::stripDirectory(path) ;
+    FileSystem::createDirectory(findOrCreateAValidPath( parentPath )+"/"+currentFile) ;
+    return path ;
+}
+
+
 
 std::string FileSystem::cleanPath(const std::string& path)
 {
