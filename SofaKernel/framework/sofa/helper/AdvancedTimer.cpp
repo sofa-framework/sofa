@@ -129,6 +129,7 @@ public:
         else
             interval = 0;
         defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;
+        this->timerOutputType = AdvancedTimer::outputType::STDOUT;
     }
     void clear();
     void process();
@@ -951,7 +952,10 @@ void AdvancedTimer::setOutputType(IdTimer id, std::string type)
     else if(type.compare("stdout") == 0)
         data.timerOutputType = STDOUT;
     else // Add your own outputTypes before the else
+    {
+        msg_warning("AdvancedTimer") << "Unable to set output type to " << type << " for timer " << id << ". Switching to the default 'stdout' output. Valid types are [stdout, json, ljson].";
         data.timerOutputType = STDOUT;
+    }
 }
 
 // -------------------------------
