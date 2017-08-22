@@ -98,9 +98,9 @@ public:
 
     void contextMenuEvent(QContextMenuEvent *event);
 
-    Node* getNode(QTreeWidgetItem *item) const ;
-    Base* getComponent(QTreeWidgetItem *item) const ;
-    BaseObject* getObject(QTreeWidgetItem *item) const ;
+    sofa::simulation::Node* getNode(QTreeWidgetItem *item) const ;
+    sofa::core::objectmodel::Base* getComponent(QTreeWidgetItem *item) const ;
+    sofa::core::objectmodel::BaseObject* getObject(QTreeWidgetItem *item) const ;
 
     // From QTreeWidget
     virtual void mousePressEvent(QMouseEvent* event) ;
