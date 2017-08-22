@@ -49,7 +49,7 @@ namespace misc
 
 SOFA_DECL_CLASS(VTKExporter)
 
-int VTKExporterClass = core::RegisterObject("Read State vectors from file at each timestep")
+int VTKExporterClass = core::RegisterObject("Save State vectors from file at each timestep")
         .add< VTKExporter >();
 
 VTKExporter::VTKExporter()

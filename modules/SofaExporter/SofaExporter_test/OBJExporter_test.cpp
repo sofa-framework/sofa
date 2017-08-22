@@ -69,7 +69,7 @@ public:
                 "<?xml version='1.0'?> \n"
                 "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                 "   <DefaultAnimationLoop/>                                        \n"
-                "   <OBJExporter name='exporter1' filename='"<< filename << "' exportAtBegin='true' /> \n"
+                "   <OBJExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
@@ -80,6 +80,37 @@ public:
         root->init(ExecParams::defaultInstance()) ;
 
         sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+
+        for(auto& pathToCheck : pathes)
+        {
+            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'";
+        }
+    }
+
+
+    void checkSimulationWriteEachNbStep(const std::string& filename, std::vector<std::string> pathes, unsigned int numstep){
+        dataPath = pathes ;
+
+        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        std::stringstream scene1;
+        scene1 <<
+                "<?xml version='1.0'?> \n"
+                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
+                "   <DefaultAnimationLoop/>                                        \n"
+                "   <OBJExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
+                "</Node>                                                           \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene1.str().c_str(),
+                                                          scene1.str().size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        for(unsigned int i=0;i<numstep;i++)
+        {
+            sofa::simulation::getSimulation()->animate(root.get(), 0.5);
+        }
 
         for(auto& pathToCheck : pathes)
         {
@@ -117,3 +148,9 @@ TEST_F( OBJExporter_test, checkBasicBehaviorInValidDir) {
    this->checkBasicBehavior("/tmp", {"/tmp/exporter1.obj", "/tmp/exporter1.mtl"})  ;
 }
 
+TEST_F( OBJExporter_test, checkSimulationWriteEachNbStep) {
+   this->checkSimulationWriteEachNbStep("/tmp", {"/tmp/exporterA00001.obj", "/tmp/exporterA00001.mtl",
+                                                 "/tmp/exporterA00002.obj", "/tmp/exporterA00002.mtl",
+                                                 "/tmp/exporterA00003.obj", "/tmp/exporterA00003.mtl",
+                                                 "/tmp/exporterA00004.obj", "/tmp/exporterA00004.mtl"}, 20)  ;
+}
