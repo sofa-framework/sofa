@@ -39,6 +39,8 @@ using sofa::defaulttype::Vector3 ;
 
 struct DistanceGrid_test : public Sofa_test<SReal>
 {
+    bool tmgFile();
+
     void chekcValidConstructorsCube(){
         EXPECT_MSG_NOEMIT(Warning, Error) ;
 
@@ -96,6 +98,15 @@ TEST_F(DistanceGrid_test, chekcInvalidConstructorsCube) {
                                 v[6],      v[7],      v[8])) ;
     }
 }
+
+bool DistanceGrid_test::tmgFile() {
+    DistanceGrid* grid = NULL;
+    Coord pmin(0,0,0), pmax(0,0,0);
+    EXPECT_NE(grid = grid->load("/path/shape.tmg",0,0,0,0,0,pmin,pmax),nullptr);
+    return true;
+}
+
+TEST_F(DistanceGrid_test, tmgFile) { ASSERT_TRUE(tmgFile()); }
 
 
 } // __distance_grid__
