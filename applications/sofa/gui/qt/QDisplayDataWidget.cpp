@@ -168,7 +168,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         QLabel* propertyName = new QLabel(data_->getName().c_str(), this);
         propertyName->setAlignment(Qt::AlignLeft);
         propertyName->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        propertyName->setContentsMargins(10,10,10,10);
         gridLayout_->setVerticalSpacing(0);
         gridLayout_->addWidget(propertyName, 0, 1);
         gridLayout_->setAlignment(propertyName, Qt::AlignVCenter);

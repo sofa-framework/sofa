@@ -151,7 +151,6 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         QLabel* linkName = new QLabel(link_->getName().c_str(), this);
         linkName->setAlignment(Qt::AlignLeft);
         linkName->setTextInteractionFlags(Qt::TextSelectableByMouse);
-        linkName->setContentsMargins(10,10,10,10);
         gridLayout_->setVerticalSpacing(0);
         gridLayout_->addWidget(linkName, 0, 1);
         gridLayout_->setAlignment(linkName, Qt::AlignVCenter);
