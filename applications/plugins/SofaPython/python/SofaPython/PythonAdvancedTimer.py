@@ -9,6 +9,7 @@ import json
 # argument parser: usage via the command line
 import argparse
 
+
 def measureAnimationTime(node, timerName, timerInterval, timerOutputType, resultFileName, simulationDeltaTime, iterations):
 
     # timer
@@ -23,7 +24,7 @@ def measureAnimationTime(node, timerName, timerInterval, timerOutputType, result
         Sofa.timerSetOutPutType(timerName, timerOutputType)
         while i < iterations:
             Sofa.timerBegin(timerName)
-            rootNode.simulationStep(0.1)
+            rootNode.simulationStep(simulationDeltaTime)
             result = Sofa.timerEnd(timerName, rootNode)
             if result != None :
                 outputFile.write(result + ",")
