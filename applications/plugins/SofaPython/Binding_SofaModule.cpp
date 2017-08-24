@@ -736,37 +736,6 @@ static PyObject * Sofa_timerStepEnd(PyObject*, PyObject* args)
 
 
 /**
- * Method : Sofa_timerGetTimeAnalysis
- * Desc   : Wrapper for python usage.
- * Param  : PyObject*, self - Object of the python script
- * Param  : PyObject*, args - given arguments to apply to the method
- * Return : string
- */
-static PyObject * Sofa_timerGetTimeAnalysis(PyObject* /*self*/, PyObject *args)
-{
-    char* id = NULL;
-    void* tempNode = NULL;
-    Node* node = NULL;
-    std::string result;
-
-    if(!PyArg_ParseTuple(args, "sO", &id, &tempNode))
-    {
-        PyErr_BadArgument();
-        return NULL;
-    }
-
-    node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
-
-    result = AdvancedTimer::getTimeAnalysis(id, node);
-
-    if(std::string("null").compare(result) == 0)
-        Py_RETURN_NONE;
-
-    return PyString_FromString(result.c_str());  // Method call
-}
-
-
-/**
  * Method : Sofa_timerEnd
  * Desc   : Wrapper for python usage.
  * Param  : PyObject*, self - Object of the python script
@@ -857,7 +826,6 @@ SP_MODULE_METHOD_DOC(Sofa, timerSetInterval, "Method : Sofa_setInterval \nDesc  
 SP_MODULE_METHOD_DOC(Sofa, timerBegin, "Method : Sofa_begin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return NULL")
 SP_MODULE_METHOD_DOC(Sofa, timerStepBegin, "Method : Sofa_timerStepBegin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : NULL")
 SP_MODULE_METHOD_DOC(Sofa, timerStepEnd, "Method : Sofa_timerStepEnd \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : NULL")
-SP_MODULE_METHOD_DOC(Sofa, timerGetTimeAnalysis, "Method : Sofa_timerGetTimeAnalysis \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : NULL")
 SP_MODULE_METHOD_DOC(Sofa, timerSetOutPutType, "Method : Sofa_timerSetOutPutType \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : NULL")
 SP_MODULE_METHOD_DOC(Sofa, timerEnd, "Method : Sofa_timerEnd \nDesc   : Wrapper for python usage. Used to change output type of the given timer \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return NULL")
 SP_MODULE_METHODS_END
