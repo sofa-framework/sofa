@@ -4,20 +4,20 @@ project(Communication)
 set(HEADER_FILES
     config.h
     components/communicationBinder.h
+    components/CommunicationSubscriber.h
+    components/CommunicationSubscriber.inl
     components/serverCommunication.h
     components/serverCommunication.inl
     components/serverCommunicationOSC.h
     components/serverCommunicationOSC.inl
-    components/serverCommunicationZMQ.h
-    components/serverCommunicationZMQ.inl
 )
 
 set(SOURCE_FILES
     initCommunication.cpp
     components/communicationBinder.cpp
+    components/CommunicationSubscriber.cpp
     components/serverCommunication.cpp
     components/serverCommunicationOSC.cpp
-    components/serverCommunicationZMQ.cpp
 )
 
 set(EXTRA_FILES

@@ -42,21 +42,29 @@ namespace component
 namespace communication
 {
 
-template <class DataTypes>
-class SOFA_COMMUNICATION_API ServerCommunicationOSC : public ServerCommunication<DataTypes>, public osc::OscPacketListener
+template<typename DataType>
+class DataCreator : public sofa::helper::BaseCreator<BaseData>
+{
+public:
+    virtual BaseData* createInstance(sofa::helper::NoArgument) override { std::cout << "test " << std::endl; return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(BaseData);}
+};
+
+class SOFA_COMMUNICATION_API ServerCommunicationOSC : public ServerCommunication, public osc::OscPacketListener
 {
 
 public:
 
-    typedef ServerCommunication<DataTypes> Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationOSC, DataTypes), Inherited);
+    typedef ServerCommunication Inherited;
+    SOFA_CLASS(ServerCommunicationOSC, Inherited);
 
     ServerCommunicationOSC() ;
     virtual ~ServerCommunicationOSC();
 
-    //////////////////////////////// Inherited from Base /////////////////////////////////
-    virtual std::string getTemplateName() const {return templateName(this);}
-    static std::string templateName(const ServerCommunicationOSC<DataTypes>* = NULL);
+    //////////////////////////////// Factory OSC type /////////////////////////////////
+    typedef sofa::helper::Factory< std::string, BaseData> OSCDataFactory;
+    OSCDataFactory* getFactoryInstance();
+    virtual void initTypeFactory() override;
     /////////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////// Inherited from OscPacketListener /////////////////////////////////
@@ -65,12 +73,12 @@ public:
 
 protected:
 
-    UdpListeningReceiveSocket* d_socket;
+    UdpListeningReceiveSocket* m_socket;
     osc::OutboundPacketStream createOSCMessage();
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
-    virtual void sendData();
-    virtual void receiveData();
+    virtual void sendData() override;
+    virtual void receiveData() override;
     /////////////////////////////////////////////////////////////////////////////////
 
 };

@@ -22,7 +22,9 @@
 #ifndef SOFA_SERVERCOMMUNICATION_H
 #define SOFA_SERVERCOMMUNICATION_H
 
+
 #include <Communication/config.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -54,10 +56,9 @@ using sofa::defaulttype::Vec1f;
 using sofa::defaulttype::Vec;
 using sofa::helper::vector;
 
-#include <sofa/defaulttype/RigidTypes.h>
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::Rigid3fTypes;
-
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/Factory.inl>
+using sofa::helper::Factory;
 
 #include <pthread.h>
 #include <sys/time.h>
@@ -77,43 +78,47 @@ namespace component
 namespace communication
 {
 
-template <class DataTypes>
+//forward declaration
+class CommunicationSubscriber;
+
 class SOFA_COMMUNICATION_API ServerCommunication : public BaseObject
 {
 
 public:
 
     typedef BaseObject Inherited;
-    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(ServerCommunication, DataTypes), Inherited);
+    SOFA_ABSTRACT_CLASS(ServerCommunication, Inherited);
 
     ServerCommunication() ;
     virtual ~ServerCommunication() ;
+
+    bool isSubscribedTo(std::string, unsigned int);
+    void addSubscriber(CommunicationSubscriber*);
+    CommunicationSubscriber* getSubscriberFor(std::string);
+
+    //////////////////////////////// Factory type /////////////////////////////////
+    virtual void initTypeFactory() =0;
+    /////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     virtual void init() override;
     virtual void handleEvent(Event *) override;
     /////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////// Inherited from Base /////////////////////////////////
-    virtual std::string getTemplateName() const {return templateName(this);}
-    static std::string templateName(const ServerCommunication<DataTypes>* = NULL);
-    /////////////////////////////////////////////////////////////////////////////////
-
     Data<helper::OptionsGroup>  d_job;
-    Data<std::string>           d_adress;
+    Data<std::string>           d_address;
     Data<int>                   d_port;
     Data<double>                d_refreshRate;
-    Data<unsigned int>          d_nbDataField;
-    vectorData<DataTypes>       d_data;
-    vectorData<DataTypes>       d_data_copy;
-    pthread_t m_thread;
-    bool m_running = true;
 #if BENCHMARK
     timeval t1, t2;
 #endif
 
 protected:
-    pthread_mutex_t mutex;
+
+    std::map<std::string, CommunicationSubscriber*> m_map;
+    pthread_mutex_t                                 mutex;
+    pthread_t                                       m_thread;
+    bool                                            m_running = true;
 
     virtual void openCommunication();
     virtual void closeCommunication();

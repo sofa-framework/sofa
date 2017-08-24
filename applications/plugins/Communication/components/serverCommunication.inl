@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <Communication/components/serverCommunication.h>
+#include <Communication/components/CommunicationSubscriber.h>
 
 using sofa::core::RegisterObject ;
 
@@ -32,21 +33,13 @@ namespace component
 namespace communication
 {
 
-template <class DataTypes>
-ServerCommunication<DataTypes>::ServerCommunication()
+ServerCommunication::ServerCommunication()
     : d_job(initData(&d_job, OptionsGroup(2,"receiver","sender"), "job", "If unspecified, the default value is receiver"))
-    , d_adress(initData(&d_adress, (std::string)"127.0.0.1", "adress", "Scale for object display. (default=localhost)"))
+    , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
     , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refres rate aka frequency (default=30), only used by sender"))
-    , d_nbDataField(initData(&d_nbDataField, (unsigned int)1, "nbData",
-                             "Number of field 'data' the user want to send or receive.\n"
-                             "Default value is 1."))
-    , d_data(this, "data", "Data to send or receive.")
-    , d_data_copy(this, "datac", "Data to send or receive.")
 {
-    d_data.resize(d_nbDataField.getValue());
-    d_data_copy.resize(d_nbDataField.getValue());
-    pthread_mutex_init(&mutex, NULL);
+    //    pthread_mutex_init(&mutex, NULL);
 
 #if BENCHMARK
     gettimeofday(&t2, NULL);
@@ -54,47 +47,61 @@ ServerCommunication<DataTypes>::ServerCommunication()
 #endif
 }
 
-template <class DataTypes>
-ServerCommunication<DataTypes>::~ServerCommunication()
+ServerCommunication::~ServerCommunication()
 {
     closeCommunication();
 }
 
-template <class DataTypes>
-void ServerCommunication<DataTypes>::init()
+void ServerCommunication::init()
 {
-    d_data.resize(d_nbDataField.getValue());
-    d_data_copy.resize(d_nbDataField.getValue());
     f_listening = true;
+    initTypeFactory();
     pthread_create(&m_thread, NULL, &ServerCommunication::thread_launcher, this);
 }
 
-template <class DataTypes>
-void ServerCommunication<DataTypes>::handleEvent(Event * event)
+void ServerCommunication::handleEvent(Event * event)
 {
-    if (sofa::simulation::AnimateBeginEvent::checkEventType(event))
-    {
-        pthread_mutex_lock(&mutex);
-        for( size_t i=0 ; i < this->d_data.size(); ++i )
-        {
-            this->d_data_copy[i] = this->d_data[i];
-        }
-        pthread_mutex_unlock(&mutex);
+    //    if (sofa::simulation::AnimateBeginEvent::checkEventType(event) && d_job.getValueString().compare("sender") == 0)
+    //    {
+    //        pthread_mutex_lock(&mutex);
+    //        for( size_t i=0 ; i < this->d_data.size(); ++i )
+    //        {
+    //            this->d_data_copy[i] = this->d_data[i];
+    //        }
+    //        pthread_mutex_unlock(&mutex);
 
-#if BENCHMARK
-        // Uncorrect results if frequency == 1hz, due to tv_usec precision
-        gettimeofday(&t1, NULL);
-        if(d_refreshRate.getValue() <= 1.0)
-            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-        else
-            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-        gettimeofday(&t2, NULL);
-#endif
-    }
+    //#if BENCHMARK
+    //        // Uncorrect results if frequency == 1hz, due to tv_usec precision
+    //        gettimeofday(&t1, NULL);
+    //        if(d_refreshRate.getValue() <= 1.0)
+    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
+    //        else
+    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
+    //        gettimeofday(&t2, NULL);
+    //#endif
+    //    }
+    //    else if (sofa::simulation::AnimateEndEvent::checkEventType(event) && d_job.getValueString().compare("receiver") == 0)
+    //    {
+    //        pthread_mutex_lock(&mutex);
+    //        for( size_t i=0 ; i < this->d_data_copy.size(); ++i )
+    //        {
+    //            this->d_data[i] = this->d_data_copy[i];
+    //        }
+    //        pthread_mutex_unlock(&mutex);
+
+    //#if BENCHMARK
+    //        // Uncorrect results if frequency == 1hz, due to tv_usec precision
+    //        gettimeofday(&t1, NULL);
+    //        if(d_refreshRate.getValue() <= 1.0)
+    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
+    //        else
+    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
+    //        gettimeofday(&t2, NULL);
+    //#endif
+    //    }
 }
 
-template <class DataTypes>
-void ServerCommunication<DataTypes>::openCommunication()
+void ServerCommunication::openCommunication()
 {
     if (d_job.getValueString().compare("receiver") == 0)
     {
@@ -106,19 +113,50 @@ void ServerCommunication<DataTypes>::openCommunication()
     }
 }
 
-template <class DataTypes>
-void ServerCommunication<DataTypes>::closeCommunication()
+void ServerCommunication::closeCommunication()
 {
     m_running = false;
     pthread_join(m_thread, NULL);
 }
 
-template <class DataTypes>
-void * ServerCommunication<DataTypes>::thread_launcher(void *voidArgs)
+void * ServerCommunication::thread_launcher(void *voidArgs)
 {
     ServerCommunication *args = (ServerCommunication*)voidArgs;
     args->openCommunication();
     return NULL;
+}
+
+bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argumentSize)
+{
+    try
+    {
+        CommunicationSubscriber* subscriber = m_map.at(subject);
+        if (subscriber->getArgumentSize() == argumentSize)
+            return true;
+        else
+        {
+            msg_warning(this->getClassName()) << " is subscrided to " << subject << "but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
+        }
+    } catch (const std::out_of_range& oor) {
+        msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
+    }
+    return false;
+}
+
+CommunicationSubscriber * ServerCommunication::getSubscriberFor(std::string subject)
+{
+    try
+    {
+        return m_map.at(subject);
+    } catch (const std::out_of_range& oor) {
+        msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
+    }
+    return nullptr;
+}
+
+void ServerCommunication::addSubscriber(CommunicationSubscriber * subscriber)
+{
+    m_map.insert(std::pair<std::string, CommunicationSubscriber*>(subscriber->getSubject(), subscriber));
 }
 
 

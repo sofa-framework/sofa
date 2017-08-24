@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "serverCommunicationOSC.h"
+#include <Communication/components/CommunicationSubscriber.h>
 
 using sofa::core::RegisterObject ;
 
@@ -32,22 +33,36 @@ namespace component
 namespace communication
 {
 
-template <class DataTypes>
-ServerCommunicationOSC<DataTypes>::ServerCommunicationOSC()
-    : osc::OscPacketListener(), Inherited()
+ServerCommunicationOSC::ServerCommunicationOSC()
+    : Inherited(), osc::OscPacketListener()
 {
 }
 
-template <class DataTypes>
-ServerCommunicationOSC<DataTypes>::~ServerCommunicationOSC()
+ServerCommunicationOSC::OSCDataFactory* ServerCommunicationOSC::getFactoryInstance(){
+    static OSCDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+        s_localfactory = new ServerCommunicationOSC::OSCDataFactory() ;
+    return s_localfactory ;
+}
+
+ServerCommunicationOSC::~ServerCommunicationOSC()
 {
-    d_socket->Break();
-    free(d_socket);
+    m_socket->Break();
+    free(m_socket);
     Inherited::closeCommunication();
 }
 
-template <class DataTypes>
-void ServerCommunicationOSC<DataTypes>::sendData()
+void ServerCommunicationOSC::initTypeFactory()
+{
+    getFactoryInstance()->registerCreator("f", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("d", new DataCreator<double>());
+    getFactoryInstance()->registerCreator("i", new DataCreator<int>());
+    getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
+    // TODO have a look at blobs
+    // TODO have a look at time tag
+}
+
+void ServerCommunicationOSC::sendData()
 {
     while (this->m_running)
     {
@@ -60,45 +75,38 @@ void ServerCommunicationOSC<DataTypes>::sendData()
             std::cout << "Thread Sender OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
         gettimeofday(&t2, NULL);
 #endif
-        UdpTransmitSocket transmitSocket( IpEndpointName(this->d_adress.getValue().c_str(), this->d_port.getValue()));
+        std::cout << "sernder" << std::endl;
+        UdpTransmitSocket transmitSocket( IpEndpointName(this->d_address.getValue().c_str(), this->d_port.getValue()));
         osc::OutboundPacketStream p = createOSCMessage();
         transmitSocket.Send( p.Data(), p.Size() );
         usleep(1000000.0/(double) this->d_refreshRate.getValue());
     }
 }
 
-template <class DataTypes>
-void ServerCommunicationOSC<DataTypes>::receiveData()
+void ServerCommunicationOSC::receiveData()
 {
-    d_socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, this->d_port.getValue()), this);
-    d_socket->Run();
+    m_socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, this->d_port.getValue()), this);
+    m_socket->Run();
 }
 
-template <class DataTypes>
-osc::OutboundPacketStream ServerCommunicationOSC<DataTypes>::createOSCMessage()
+osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 {
-    char buffer[OUTPUT_BUFFER_SIZE];
-    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
+    //    char buffer[OUTPUT_BUFFER_SIZE];
+    //    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
 
-    for(unsigned int i=0; i<this->d_data_copy.size(); i++)
-    {
-        std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
-        p << osc::BeginMessage(messageName.c_str());
-        ReadAccessor<Data<DataTypes>> data = this->d_data_copy[i];
-        p << data;
-        p << osc::EndMessage;
-    }//  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look
-    return p;
+    //    for(unsigned int i=0; i<this->d_data_copy.size(); i++)
+    //    {
+    //        std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
+    //        p << osc::BeginMessage(messageName.c_str());
+    //        ReadAccessor<Data<DataTypes>> data = this->d_data_copy[i];
+    //        p << data;
+    //        p << osc::EndMessage;
+    //    }//  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look
+    //    return p;
 }
 
-template <class DataTypes>
-void ServerCommunicationOSC<DataTypes>::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
+void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-    if(this->d_data.size() != m.ArgumentCount())
-    {
-        msg_warning("") << "Warning: received " << m.ArgumentCount() << " argument(s) from OSC but defined size is " << this->d_nbDataField.getValue();
-        return;
-    }
 
 #if BENCHMARK
     // Uncorrect results if frequency == 1hz, due to tv_usec precision
@@ -110,21 +118,50 @@ void ServerCommunicationOSC<DataTypes>::ProcessMessage( const osc::ReceivedMessa
     gettimeofday(&t2, NULL);
 #endif
 
+    const char* address = m.AddressPattern();
+    if (!isSubscribedTo(m.AddressPattern(), m.ArgumentCount()))
+        return;
+
+    CommunicationSubscriber * subscriber = getSubscriberFor(address);
+
     int i = 0;
     for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
     {
-        std::stringstream stream;
-        stream << (*it);
-        std::string s = stream.str();
-        size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
-        s.erase(0, pos+1);
-        stream.str(s);
-        WriteAccessor<Data<DataTypes>> data = this->d_data[i];
-        stream >> data;
-        std::cout << stream.str() << std::endl;
+        std::string keyTypeMessage = std::string(1, it->TypeTag());
+        sofa::helper::NoArgument noArg;
+        std::string argumentName = subscriber->getArgumentName(i);
+        MapData dataMap = getDataAliases();
+
+        std::cout << "DATA =---------------" << std::endl;
+        for (MapData::const_iterator itDrawData = dataMap.begin(); itDrawData != dataMap.end(); itDrawData++)
+        {
+            BaseData * data = itDrawData->second;
+            std::cout << itDrawData->first << " : " << data->getValueString() << " type: " << data->getValueTypeString()  << std::endl;
+        }
+
+        MapData::const_iterator itData = dataMap.find(argumentName);
+        if (itData == dataMap.end())
+        {
+            BaseData* data = getFactoryInstance()->createObject(keyTypeMessage, noArg);
+            if (data == nullptr)
+                msg_warning() << keyTypeMessage << " is not a known type";
+            else
+                addData(data, argumentName);
+        } else
+        {
+            BaseData* data = itData->second;
+            std::stringstream stream;
+            stream << (*it);
+            std::string s = stream.str();
+            size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
+            s.erase(0, pos+1);
+            stream.str(s);
+            data->read(stream.str());
+        }
         i++;
     }
 }
+
 
 } /// communication
 
