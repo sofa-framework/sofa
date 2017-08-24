@@ -34,7 +34,7 @@ There are three types of output that you can use with *AdvancedTimer*. You can c
 
 * *STDOUT*: the old output used by the *AdvancedTimer* before its enhancement. You can see an example of this output in figure 1. This output is returned in the standard output.
 * *JSON*: this one return a *JSON* object with the representation of the entire componants graph. It can be usefull if you want to create graphics of a componant and all its sub-level componants (cf figure 2). 
-* *LJSON*: for *light json* return a *JSON* object, but insteed of representing all the sub-level componants, this one only give the father of each componant. It is less precise but esier and faster to parse it (cf figure 2).
+* *LJSON*: for *light json* return a *JSON* object, but insteed of representing all the sub-level componants, this one only give the father of each componant. It is less precise but easier and faster to parse it (cf figure 2).
 
 ![STDOUT output type example. You can see that this output is built as a 2D table where columns are values and lines are componant.](Images/AdvancedTimer_stdout.png "")
 
@@ -84,14 +84,14 @@ Given scripts for data plotting
 
 Two plotting scripts are allready implemented in *SOFA* : *TimerLJSONPlot.py* and *timerLjsonManyFilesPlot.py*. The first one create a plot from one *light JSON* file with the given componant(s) and the second one create a plot with the given files (at least two) and the given componant(s). The difference between the two scripts is that the first one was made to create a graph for precise analysis of a simulation and the second one for performance comparisons. 
 
-With the *TimerLJSONPlot.py*, you can choose the deepness of the analysis (if you want a deep analysis, it will create a graph with the componant(s) and it(their) children). The script can be call in command line with the terminal as follow : 
+With the *TimerLJSONPlot.py*, you can choose the deepness of the analysis (if you want a deep analysis, it will create a graph with the componant(s) and its(their) children). The script can be call in command line with the terminal as follow : 
 
 ~~~~
 python timerLjsonPlot.py [LJSONFileName] -d [deepness] -v [Value] 
   -c [Componant1] [Componant2] ...
 ~~~~
 
-where *LJSONFileName* is the file to plot, *-d deepness* is used to specify the deepness of the analysis (0 is for an analysis with componants on the same level and 1 with the children of hte componant. Default value is 0), *-v [ValueToSearch]* is used to specify the value to search in the *Values* key in LJSON file (the *Values* key store the data of the time measure of the componant. Available values are : Dev, Level, Max, Mean, Min, Num, Percent, Start, Total) and *-c [Componant1] [Componant2] ...* is used to give the componant(s) to analyse (you can give one or more componant(s)).
+where *LJSONFileName* is the file to plot, *-d deepness* is used to specify the deepness of the analysis (0 is for an analysis with componants on the same level and 1 with the children of the componant. Default value is 0), *-v [ValueToSearch]* is used to specify the value to search in the *Values* key in LJSON file (the *Values* key store the data of the time measure of the componant. Available values are : Dev, Level, Max, Mean, Min, Num, Percent, Start, Total) and *-c [Componant1] [Componant2] ...* is used to give the componant(s) to analyse (you can give one or more componant(s)).
 
 With the *timerLjsonManyFilesPlot.py*, you can plot multiple *light JSON* files for one componant. It's usefull to make performance comparison between two or more simulations. You can also use it in command line with the terminal as follow : 
 
