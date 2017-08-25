@@ -294,7 +294,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
     std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 
-    {
+    if(!arguments.empty() ) {
         // setup sys.argv
         std::vector<const char*> argv;
         argv.push_back(bareFilename.c_str());
