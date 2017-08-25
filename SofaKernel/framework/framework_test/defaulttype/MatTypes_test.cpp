@@ -72,9 +72,6 @@ TEST(MatTypesTest, isTransform)
     EXPECT_TRUE(M.isTransform());
 }
 
-/// Following input and result matrices were generated
-///  using matlab's 'magic' function
-
 TEST(MatTypesTest, transpose)
 {
     Matrix4 M(Matrix4::Line(16, 2, 3, 13), Matrix4::Line(5, 11, 10, 8), Matrix4::Line(9, 7, 6, 12),
@@ -124,17 +121,13 @@ TEST(MatTypesTest, invert)
     Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
                   Matrix2::Line(-0.2,0.4));
 
-    // Test direct call to invertMatrix()
     EXPECT_EQ(Minv, Mtest);
 
-    // Test call to inverted() (Why is inverted()
     EXPECT_EQ(M.inverted(), Mtest);
 
-    // Test call to invert() in standard use case
     Minv.invert(M);
     EXPECT_EQ(Minv, Mtest);
 
-    // Test call to invert() in self-inversion case
     M.invert(M);
     EXPECT_EQ(M, Mtest);
 }
