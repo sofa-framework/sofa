@@ -44,6 +44,7 @@ BaseNode::~BaseNode()
 BaseNode* BaseNode::getRoot() const
 {
     BaseNode* firstParent = getFirstParent();
+    assert(firstParent != this) ;
     if (!firstParent) return const_cast<BaseNode*>(this);
     else return firstParent->getRoot();
 }
