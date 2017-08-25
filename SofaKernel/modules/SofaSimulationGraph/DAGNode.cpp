@@ -39,6 +39,7 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
     : simulation::Node(name)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
+    assert(parent != this) ;
     if( parent )
         parent->addChild((Node*)this);
 }
@@ -63,7 +64,6 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 /// Add a child node
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
-//    printf("DAGNode::doAddChild this=%X(%s) child=%X(%s)\n",this,getName().c_str(),node.get(),node->getName().c_str());
     child.add(node);
     node->l_parents.add(this);
     node->l_parents.updateLinks(); // to fix load-time unresolved links
@@ -80,7 +80,6 @@ void DAGNode::doRemoveChild(DAGNode::SPtr node)
 /// Add a child node
 void DAGNode::addChild(core::objectmodel::BaseNode::SPtr node)
 {
-//    printf("DAGNode::addChild this=%s child=%s\n",getName().c_str(),node->getName().c_str());
     DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(node);
     notifyAddChild(dagnode);
     doAddChild(dagnode);
@@ -281,7 +280,6 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         }
         else if (pend < path.length())
         {
-            //dmsg_error("DAGNode") << "Child node "<<name<<" not found in "<<getPathName();
             return NULL;
         }
         else
@@ -289,7 +287,6 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
             if (obj == NULL)
             {
-                //dmsg_error("DAGNode") << "ERROR: object "<<name<<" not found in "<<getPathName();
                 return NULL;
             }
             else
@@ -473,13 +470,8 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
     }
     else
     {
-//        msg_info()<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
-
-
         // WARNING: do not store the traversal infos in the DAGNode, as several visitors could traversed the graph simultaneously
         // These infos are stored in a StatusMap per visitor.
-
-
         updateDescendancy();
 
         Visitor::TreeTraversalRepetition repeat;
@@ -510,7 +502,6 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
             // Note that a newly 'pruned' node is still traversed (w/o execution) to be sure to execute its child nodes,
             // that can have ancestors in another branch that is not pruned...
             // An already pruned node is ignored.
-
             NodeList executedNodes;
             {
                 StatusMap statusMap;

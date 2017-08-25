@@ -99,7 +99,6 @@ std::string BaseLink::getValueTypeString() const
 void BaseLink::copyAspect(int destAspect, int srcAspect)
 {
     m_counters[destAspect] = m_counters[srcAspect];
-    //m_isSets[destAspect] = m_isSets[srcAspect];
 }
 
 /// Release memory allocated for the specified aspect.
@@ -175,6 +174,8 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
 {
     std::string result = "@";
     if (!path.empty()) result += path;
+    else result = "@/" ;
+
     if (!data.empty())
     {
         if (result[result.size()-1] == '.')
@@ -192,6 +193,8 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
     BaseObject* f = from->toBaseObject();
     BaseContext* ctx = from->toBaseContext();
     if (!ctx && f) ctx = f->getContext();
+
+    /// dest is a BaseObject
     if (o)
     {
         std::string objectPath = o->getName();
@@ -206,17 +209,19 @@ std::string BaseLink::CreateStringPath(Base* dest, Base* from)
             return objectPath;
         else if (n)
             return n->getPathName() + std::string("/") + objectPath; // TODO: compute relative path
-        else
-            return objectPath; // we could not determine destination path, specifying simply its name might be enough to find it back
+
+        return objectPath; // we could not determine destination path, specifying simply its name might be enough to find it back
     }
-    else // dest is a context
-    {
-        if (f && ctx == dest)
-            return std::string("./");
-        BaseNode* n = dest->toBaseNode();
-        if (n) return n->getPathName(); // TODO: compute relative path
-        else return dest->getName(); // we could not determine destination path, specifying simply its name might be enough to find it back
-    }
+
+    /// dest is a Context
+    if (f && ctx == dest)
+        return std::string("./");
+
+    BaseNode* n = dest->toBaseNode();
+    if (n)
+        return n->getPathName(); // TODO: compute relative path
+
+    return dest->getName(); // we could not determine destination path, specifying simply its name might be enough to find it back
 }
 
 std::string BaseLink::CreateStringData(BaseData* data)
