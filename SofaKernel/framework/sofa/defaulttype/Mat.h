@@ -627,22 +627,14 @@ public:
         return *this;
     }
 
-    /// assert when trying to invert a non-square matrix
-    bool invert(const Mat<L,C,real>& /*m*/)
+    /// Invert square matrix m
+    bool invert(const Mat<L,C,real>& m)
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
-        return false;
-    }
-
-    /// Invert square matrix m
-    template<int S>
-    bool invert(const Mat<S,S,real>& m)
-    {
         if (&m == this)
         {
-            Mat<S,S,real> mat = m;
-            bool res = invertMatrix(mat, m);
-            this->operator =(mat);
+            Mat<L,C,real> mat = m;
+            bool res = invertMatrix(*this, mat);
             return res;
         }
         return invertMatrix(*this, m);
