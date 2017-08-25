@@ -289,15 +289,16 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
 
-bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
-{
-    std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
-    std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
+bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments) {
+    const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
 
+    // pro-tip: FileNameWithoutExtension == basename
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
+
+    // setup sys.argv if needed
     if(!arguments.empty() ) {
-        // setup sys.argv
         std::vector<const char*> argv;
-        argv.push_back(bareFilename.c_str());
+        argv.push_back(basename.c_str());
         
         for(const std::string& arg : arguments) {
             argv.push_back(arg.c_str());
@@ -308,35 +309,39 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     }
     
     // Load the scene script
-    char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-    free(pythonFilename);
-
-    if( !scriptPyFile )
-    {
+    PyObject* script = PyFile_FromString((char*)filename, (char*)("r"));
+    
+    if( !script ) {
         SP_MESSAGE_ERROR("cannot open file:" << filename)
         PyErr_Print();
         return false;
     }
+    
+    PyObject* __main__ = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
+    // save/restore __main__.__file__
+    PyObject* __file__ = PyDict_GetItemString(__main__, "__file__");
+    Py_XINCREF(__file__);
+    
+    // temporarily set __main__.__file__ = filename during file loading
+    PyObject* __tmpfile__ = PyString_FromString(filename);
+    PyDict_SetItemString(__main__, "__file__", __tmpfile__);
 
-    std::string backupFileName;
-    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    if(backupFileObject)
-        backupFileName = PyString_AsString(backupFileObject);
+    // note: we don't closeit here on purpose
+    const int error = PyRun_SimpleFile(PyFile_AsFile(script), filename);
 
-    PyObject* newFileObject = PyString_FromString(filename);
-    PyDict_SetItemString(pDict, "__file__", newFileObject);
+    Py_XDECREF(__tmpfile__);
 
-    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
-
-    backupFileObject = PyString_FromString(backupFileName.c_str());
-    PyDict_SetItemString(pDict, "__file__", backupFileObject);
-
-    if(0 != error)
-    {
-        SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
+    // don't wait for gc to close the file
+    PyObject_CallMethod(script, "close", NULL);    
+    Py_XDECREF(script);
+    
+    // restore backup
+    PyDict_SetItemString(__main__, "__file__", __file__);
+    Py_XDECREF(__file__);
+    
+    if(error) {
+        SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
         PyErr_Print();
         return false;
     }
