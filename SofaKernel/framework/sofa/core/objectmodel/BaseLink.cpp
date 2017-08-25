@@ -175,6 +175,8 @@ std::string BaseLink::CreateString(const std::string& path, const std::string& d
 {
     std::string result = "@";
     if (!path.empty()) result += path;
+    else result = "@/" ;
+
     if (!data.empty())
     {
         if (result[result.size()-1] == '.')
