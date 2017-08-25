@@ -93,7 +93,6 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
     if (!valuetype.empty())
         linkwidget_->setToolTip(valuetype.c_str());
 
-    std::cout << "WIDGET created for link " << dwarg.link << " : " << dwarg.name << " : " << dwarg.link->getValueTypeString() << " " << dwarg.link->getValueString() << std::endl;
     numWidgets_ += linkwidget_->sizeWidget();
     connect(linkwidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
     connect(this, SIGNAL( WidgetUpdate() ), linkwidget_, SLOT( updateWidgetValue() ) );
