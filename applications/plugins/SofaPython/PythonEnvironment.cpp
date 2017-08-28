@@ -327,14 +327,15 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* __tmpfile__ = PyString_FromString(filename);
     PyDict_SetItemString(__main__, "__file__", __tmpfile__);
 
-    // note: we don't closeit here on purpose
-    const int error = PyRun_SimpleFile(PyFile_AsFile(script), filename);
+    const int error = PyRun_SimpleFile(PyFile_AsFile(script), filename, 0);
 
     Py_XDECREF(__tmpfile__);
 
     // don't wait for gc to close the file
-    PyObject_CallMethod(script, "close", NULL);    
-    Py_XDECREF(script);
+    PyObject_CallMethod(script, "close", NULL);
+
+    // segfault :-/
+    // Py_XDECREF(script);
     
     // restore backup
     PyDict_SetItemString(__main__, "__file__", __file__);
