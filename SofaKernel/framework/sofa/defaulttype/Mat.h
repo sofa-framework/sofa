@@ -619,7 +619,7 @@ public:
 
 
     /// invert this
-    Mat<L,C,real>& inverted() const
+    Mat<L,C,real> inverted() const
     {
         static_assert(L == C, "Cannot invert a non-square matrix");
         Mat<L,C,real> m = *this;
