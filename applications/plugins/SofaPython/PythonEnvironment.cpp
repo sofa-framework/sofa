@@ -327,7 +327,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     PyObject* __tmpfile__ = PyString_FromString(filename);
     PyDict_SetItemString(__main__, "__file__", __tmpfile__);
 
-    const int error = PyRun_SimpleFile(PyFile_AsFile(script), filename, 0);
+    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
 
     Py_XDECREF(__tmpfile__);
 
