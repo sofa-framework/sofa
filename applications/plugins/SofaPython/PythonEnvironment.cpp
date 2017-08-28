@@ -324,22 +324,27 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     Py_XINCREF(__file__);
     
     // temporarily set __main__.__file__ = filename during file loading
-    PyObject* __tmpfile__ = PyString_FromString(filename);
-    PyDict_SetItemString(__main__, "__file__", __tmpfile__);
-
-    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
-
-    Py_XDECREF(__tmpfile__);
-
-    // don't wait for gc to close the file
-    PyObject_CallMethod(script, "close", NULL);
-
-    // segfault :-/
-    // Py_XDECREF(script);
+    {
+        PyObject* __tmpfile__ = PyString_FromString(filename);
+        PyDict_SetItemString(__main__, "__file__", __tmpfile__);
+        Py_XDECREF(__tmpfile__);
+    }
     
-    // restore backup
-    PyDict_SetItemString(__main__, "__file__", __file__);
-    Py_XDECREF(__file__);
+    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
+    
+    // don't wait for gc to close the file
+    PyObject_CallMethod(script, (char*) "close", NULL);
+    Py_XDECREF(script);
+    
+    // restore backup if needed
+    if(__file__) {
+        PyDict_SetItemString(__main__, "__file__", __file__);
+    } else {
+        const int err = PyDict_DelItemString(__main__, "__file__");
+        assert(!err); (void) err;
+    }
+
+    Py_XDECREF(__file__);  
     
     if(error) {
         SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
