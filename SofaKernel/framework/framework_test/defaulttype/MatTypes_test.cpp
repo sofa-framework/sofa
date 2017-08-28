@@ -117,10 +117,10 @@ TEST(MatTypesTest, invert)
 {
     Matrix2 M(Matrix2::Line(4.0, 7.0), Matrix2::Line(2.0, 6.0));
     Matrix2 Minv;
-    invertMatrix(Minv, M);
     Matrix2 Mtest(Matrix2::Line(0.6,-0.7),
                   Matrix2::Line(-0.2,0.4));
 
+    invertMatrix(Minv, M);
     EXPECT_EQ(Minv, Mtest);
 
     EXPECT_EQ(M.inverted(), Mtest);
