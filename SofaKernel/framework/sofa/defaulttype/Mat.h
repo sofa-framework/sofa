@@ -341,7 +341,17 @@ public:
     void transpose(const Mat<C,L,real> &m)
     {
         if (canSelfTranspose(*this, m))
-            *this = transposed();
+        {
+            for (int i=0; i<L; i++)
+            {
+                for (int j=i+1; j<C; j++)
+                {
+                    real t = this->elems[i][j];
+                    this->elems[i][j] = this->elems[j][i];
+                    this->elems[j][i] = t;
+                }
+            }
+        }
         else
         {
             for (int i=0; i<L; i++)
@@ -365,12 +375,14 @@ public:
     {
         static_assert(L == C, "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (int i=0; i<L; i++)
+        {
             for (int j=i+1; j<C; j++)
             {
                 real t = this->elems[i][j];
                 this->elems[i][j] = this->elems[j][i];
                 this->elems[j][i] = t;
             }
+        }
     }
 
     /// @name Tests operators
