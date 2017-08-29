@@ -60,14 +60,16 @@ public:
     std::string getArgumentName(unsigned int);
     std::vector<std::string> getArgumentList();
     std::string getSubject();
+    BaseObject* getSource();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     virtual void init() override;
     /////////////////////////////////////////////////////////////////////////
 
-    Data<std::string>                                                               d_subject;
-    Data<std::string>                                                               d_argumentsName;
-    SingleLink<CommunicationSubscriber,  ServerCommunication, BaseLink::FLAG_DOUBLELINK>   l_communication;
+    Data<std::string>                                                                       d_subject;
+    Data<std::string>                                                                       d_argumentsName;
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK>             l_source;
+    SingleLink<CommunicationSubscriber,  ServerCommunication, BaseLink::FLAG_DOUBLELINK>    l_communication;
 
 protected:
     std::vector<std::string> m_argumentsNameList;

@@ -34,6 +34,7 @@ CommunicationSubscriber::CommunicationSubscriber()
     : d_subject(initData(&d_subject, (std::string)"", "subject", "ServerCommunication will parse and analyse only subscribed subject (default="")"))
     , d_argumentsName(initData(&d_argumentsName, (std::string)"x", "arguments", "Arguments name will be used to store data(default=x)"))
     , l_communication(initLink("communication","Required link, subscriber will define which kind of subject the communication have to listen"))
+    , l_source(initLink("source","Required link, subscriber will define which BaseObject will be used for read/write data"))
 {
 }
 
@@ -51,7 +52,7 @@ void CommunicationSubscriber::init()
     if (l_communication)
         l_communication->addSubscriber(this);
     else
-        msg_warning() << "Communication link has not been set for " << this->getName() << ", this subscriber is useless until a link has been provide";
+        msg_error() << "Communication link has not been set for " << this->getName() << ", this subscriber is useless until a link has been provide";
 }
 
 std::vector<std::string> CommunicationSubscriber::getArgumentList()
@@ -72,6 +73,11 @@ std::string CommunicationSubscriber::getArgumentName(unsigned int index)
 std::string CommunicationSubscriber::getSubject()
 {
     return d_subject.getValueString();
+}
+
+BaseObject * CommunicationSubscriber::getSource()
+{
+    return l_source;
 }
 
 } /// communication

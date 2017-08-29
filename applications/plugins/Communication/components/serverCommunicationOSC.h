@@ -30,9 +30,6 @@
 #include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/UdpSocket.h>
 
-#define OUTPUT_BUFFER_SIZE 655360
-
-
 namespace sofa
 {
 
@@ -71,10 +68,13 @@ public:
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
     /////////////////////////////////////////////////////////////////////////////////
 
+    Data<int> d_packetSize;
+
 protected:
 
     UdpListeningReceiveSocket* m_socket;
     osc::OutboundPacketStream createOSCMessage();
+    std::string convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator);
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;

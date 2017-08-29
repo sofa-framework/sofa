@@ -48,12 +48,9 @@ using sofa::helper::OptionsGroup;
 #include <sofa/simulation/AnimateEndEvent.h>
 using sofa::core::objectmodel::Event;
 
+#include <sofa/defaulttype/DataTypeInfo.h>
+using sofa::defaulttype::AbstractTypeInfo ;
 
-using sofa::defaulttype::Vec3d;
-using sofa::defaulttype::Vec3f;
-using sofa::defaulttype::Vec1d;
-using sofa::defaulttype::Vec1f;
-using sofa::defaulttype::Vec;
 using sofa::helper::vector;
 
 #include <sofa/helper/Factory.h>
@@ -66,8 +63,6 @@ using sofa::helper::Factory;
 #include <unistd.h>
 #include <mutex>
 #include <cmath>
-
-#define BENCHMARK false
 
 namespace sofa
 {
@@ -94,6 +89,7 @@ public:
 
     bool isSubscribedTo(std::string, unsigned int);
     void addSubscriber(CommunicationSubscriber*);
+    std::map<std::string, CommunicationSubscriber*> getSubscribers();
     CommunicationSubscriber* getSubscriberFor(std::string);
 
     //////////////////////////////// Factory type /////////////////////////////////
@@ -109,13 +105,10 @@ public:
     Data<std::string>           d_address;
     Data<int>                   d_port;
     Data<double>                d_refreshRate;
-#if BENCHMARK
-    timeval t1, t2;
-#endif
 
 protected:
 
-    std::map<std::string, CommunicationSubscriber*> m_map;
+    std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
     pthread_mutex_t                                 mutex;
     pthread_t                                       m_thread;
     bool                                            m_running = true;

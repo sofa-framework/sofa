@@ -40,11 +40,6 @@ ServerCommunication::ServerCommunication()
     , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refres rate aka frequency (default=30), only used by sender"))
 {
     //    pthread_mutex_init(&mutex, NULL);
-
-#if BENCHMARK
-    gettimeofday(&t2, NULL);
-    gettimeofday(&t1, NULL);
-#endif
 }
 
 ServerCommunication::~ServerCommunication()
@@ -130,15 +125,15 @@ bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argum
 {
     try
     {
-        CommunicationSubscriber* subscriber = m_map.at(subject);
+        CommunicationSubscriber* subscriber = m_subscriberMap.at(subject);
         if (subscriber->getArgumentSize() == argumentSize)
             return true;
         else
         {
-            msg_warning(this->getClassName()) << " is subscrided to " << subject << "but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
+            msg_warning(this->getName()) << " is subscrided to " << subject << " but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
         }
     } catch (const std::out_of_range& oor) {
-        msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
+        msg_warning(this->getName()) << " is not subscrided to " << subject << '\n';
     }
     return false;
 }
@@ -147,7 +142,7 @@ CommunicationSubscriber * ServerCommunication::getSubscriberFor(std::string subj
 {
     try
     {
-        return m_map.at(subject);
+        return m_subscriberMap.at(subject);
     } catch (const std::out_of_range& oor) {
         msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
     }
@@ -156,7 +151,12 @@ CommunicationSubscriber * ServerCommunication::getSubscriberFor(std::string subj
 
 void ServerCommunication::addSubscriber(CommunicationSubscriber * subscriber)
 {
-    m_map.insert(std::pair<std::string, CommunicationSubscriber*>(subscriber->getSubject(), subscriber));
+    m_subscriberMap.insert(std::pair<std::string, CommunicationSubscriber*>(subscriber->getSubject(), subscriber));
+}
+
+std::map<std::string, CommunicationSubscriber*> ServerCommunication::getSubscribers()
+{
+    return m_subscriberMap;
 }
 
 

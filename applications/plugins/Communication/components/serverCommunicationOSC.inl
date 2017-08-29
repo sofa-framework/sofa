@@ -35,6 +35,7 @@ namespace communication
 
 ServerCommunicationOSC::ServerCommunicationOSC()
     : Inherited(), osc::OscPacketListener()
+    , d_packetSize(initData(&d_packetSize, (int)(1024), "packetSize", "OSC packet size (default=1024)"))
 {
 }
 
@@ -66,17 +67,11 @@ void ServerCommunicationOSC::sendData()
 {
     while (this->m_running)
     {
-#if BENCHMARK
-        // Uncorrect results if frequency == 1hz, due to tv_usec precision
-        gettimeofday(&t1, NULL);
-        if(d_refreshRate.getValue() <= 1.0)
-            std::cout << "Thread Sender OSC : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-        else
-            std::cout << "Thread Sender OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-        gettimeofday(&t2, NULL);
-#endif
-        std::cout << "sernder" << std::endl;
         UdpTransmitSocket transmitSocket( IpEndpointName(this->d_address.getValue().c_str(), this->d_port.getValue()));
+
+        std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
+        if (subscribersMap.size() == 0)
+            continue;
         osc::OutboundPacketStream p = createOSCMessage();
         transmitSocket.Send( p.Data(), p.Size() );
         usleep(1000000.0/(double) this->d_refreshRate.getValue());
@@ -91,75 +86,152 @@ void ServerCommunicationOSC::receiveData()
 
 osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 {
-    //    char buffer[OUTPUT_BUFFER_SIZE];
-    //    osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE );
+    int bufferSize = d_packetSize.getValue();
+    char buffer[bufferSize];
+    osc::OutboundPacketStream p(buffer, bufferSize);
+    std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
+    std::string messageName;
 
-    //    for(unsigned int i=0; i<this->d_data_copy.size(); i++)
-    //    {
-    //        std::string messageName = "/" + this->getName() + "/" + this->d_data_copy[i]->getName();
-    //        p << osc::BeginMessage(messageName.c_str());
-    //        ReadAccessor<Data<DataTypes>> data = this->d_data_copy[i];
-    //        p << data;
-    //        p << osc::EndMessage;
-    //    }//  << osc::EndBundle; Don't know why but osc::EndBundle made it crash, anyway it's working ... TODO have a look
-    //    return p;
+    MapData dataMap = getDataAliases();
+    for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+    {
+        CommunicationSubscriber* subscriber = it->second;
+        BaseObject * source = subscriber->getSource();
+
+        std::vector<std::string> argumentList = subscriber->getArgumentList();
+        for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+        {
+            MapData::const_iterator itData = source->getDataAliases().find(*itArgument);
+            // handle no argument
+            if (itData == dataMap.end())
+            {
+                messageName = subscriber->getSubject();
+                p << osc::BeginMessage(messageName.c_str());
+                p << osc::EndMessage;
+            } else
+            {
+                BaseData* data = itData->second;
+                const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+                const void* valueVoidPtr = data->getValueVoidPtr();
+
+                messageName = subscriber->getSubject();
+                p << osc::BeginMessage(messageName.c_str());
+
+                if (typeinfo->Container())
+                {
+                    int rowWidth = typeinfo->size();
+                    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+                    p << rowWidth << nbRows;
+                    /// this is a vector; return a python list of the corresponding type (ints, scalars or strings)
+                    if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+                    {
+                        msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                        p <<  (data->getValueString().c_str());
+                    }
+
+                    for (int i=0; i<nbRows; i++)
+                    {
+                        for (int j=0; j<rowWidth; j++)
+                        {
+                            if (typeinfo->Text())
+                            {
+                                p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
+                            }
+                            else if (typeinfo->Scalar())
+                            {
+                                p << (typeinfo->getScalarValue(valueVoidPtr,0));
+                            }
+                            else if (typeinfo->Integer())
+                            {
+                                p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
+                            }
+                            else {
+                                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                                p <<  (data->getValueString().c_str());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (typeinfo->Text())
+                    {
+                        p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
+                    }
+                    else if (typeinfo->Scalar())
+                    {
+                        p << (typeinfo->getScalarValue(valueVoidPtr,0));
+                    }
+                    else if (typeinfo->Integer())
+                    {
+                        p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
+                    }
+                    else {
+                        msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                        p <<  (data->getValueString().c_str());
+                    }
+                }
+                p << osc::EndMessage;
+            }
+        }
+    }
+
+    return p;
 }
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-
-#if BENCHMARK
-    // Uncorrect results if frequency == 1hz, due to tv_usec precision
-    gettimeofday(&t1, NULL);
-    if(d_refreshRate.getValue() <= 1.0)
-        std::cout << "Thread Receiver OSC : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-    else
-        std::cout << "Thread Receiver OSC : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-    gettimeofday(&t2, NULL);
-#endif
-
     const char* address = m.AddressPattern();
     if (!isSubscribedTo(m.AddressPattern(), m.ArgumentCount()))
         return;
 
     CommunicationSubscriber * subscriber = getSubscriberFor(address);
+    BaseObject * source = subscriber->getSource();
 
     int i = 0;
     for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
     {
         std::string keyTypeMessage = std::string(1, it->TypeTag());
-        sofa::helper::NoArgument noArg;
         std::string argumentName = subscriber->getArgumentName(i);
-        MapData dataMap = getDataAliases();
-
-        std::cout << "DATA =---------------" << std::endl;
-        for (MapData::const_iterator itDrawData = dataMap.begin(); itDrawData != dataMap.end(); itDrawData++)
-        {
-            BaseData * data = itDrawData->second;
-            std::cout << itDrawData->first << " : " << data->getValueString() << " type: " << data->getValueTypeString()  << std::endl;
-        }
+        MapData dataMap = source->getDataAliases();
 
         MapData::const_iterator itData = dataMap.find(argumentName);
         if (itData == dataMap.end())
         {
-            BaseData* data = getFactoryInstance()->createObject(keyTypeMessage, noArg);
+            BaseData* data = getFactoryInstance()->createObject(keyTypeMessage, sofa::helper::NoArgument());
             if (data == nullptr)
                 msg_warning() << keyTypeMessage << " is not a known type";
             else
-                addData(data, argumentName);
+            {
+                source->addData(data, argumentName);
+                msg_info(source->getName()) << "data field named : " << argumentName << " has been created";
+            }
         } else
         {
             BaseData* data = itData->second;
-            std::stringstream stream;
-            stream << (*it);
-            std::string s = stream.str();
-            size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
-            s.erase(0, pos+1);
-            stream.str(s);
-            data->read(stream.str());
+            data->read(convertArgumentToStringValue(it));
         }
         i++;
     }
+}
+
+std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
+{
+    std::string stringData;
+    try
+    {
+        stringData = it->AsString();
+    } catch (osc::WrongArgumentTypeException e)
+    {
+        std::stringstream stream;
+        stream << (*it);
+        std::string s = stream.str();
+        size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
+        s.erase(0, pos+1);
+        stream.str(s);
+        stringData = stream.str();
+    }
+    return stringData;
 }
 
 

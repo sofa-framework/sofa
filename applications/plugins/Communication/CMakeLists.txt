@@ -3,7 +3,6 @@ project(Communication)
 
 set(HEADER_FILES
     config.h
-    components/communicationBinder.h
     components/CommunicationSubscriber.h
     components/CommunicationSubscriber.inl
     components/serverCommunication.h
@@ -14,7 +13,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     initCommunication.cpp
-    components/communicationBinder.cpp
     components/CommunicationSubscriber.cpp
     components/serverCommunication.cpp
     components/serverCommunicationOSC.cpp
