@@ -19,20 +19,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MESHDISCRETEINTERSECTION_H
-#include "config.h"
+#ifndef SOFA_COMPONENT_COLLISION_FFDDISTANCEGRIDDISCRETEINTERSECTION_H
+#define SOFA_COMPONENT_COLLISION_FFDDISTANCEGRIDDISCRETEINTERSECTION_H
+#include <SofaVolumetricData/config.h>
 
-#include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
+#include <sofa/core/collision/Intersection.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/CubeModel.h>
+#include <SofaUserInteraction/RayModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
-#include <SofaMeshCollision/MeshIntTool.h>
+
+#include <SofaVolumetricData/components/collision/DistanceGridCollisionModel.h>
 
 namespace sofa
 {
@@ -42,27 +43,27 @@ namespace component
 
 namespace collision
 {
-class SOFA_GENERAL_MESH_COLLISION_API MeshDiscreteIntersection : public core::collision::BaseIntersector
+class SOFA_VOLUMETRICDATA_API FFDDistanceGridDiscreteIntersection : public core::collision::BaseIntersector
 {
 
     typedef DiscreteIntersection::OutputVector OutputVector;
 
 public:
-    MeshDiscreteIntersection(DiscreteIntersection* object, bool addSelf=true);
+    FFDDistanceGridDiscreteIntersection(DiscreteIntersection* object);
 
-    bool testIntersection(Triangle&, Line&);
-    template<class T> bool testIntersection(TSphere<T>&, Triangle&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, Point&);
+    template<class T> bool testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, Triangle&);
+    bool testIntersection(Ray&, FFDDistanceGridCollisionElement&);
 
-    int computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts);
-    template<class T> int computeIntersection(TSphere<T>&, Triangle&, OutputVector*);
-
-    int computeIntersection(Triangle & e1,Capsule & e2, OutputVector* contacts);
-
-    inline int computeIntersection(Capsule & cap,Triangle & tri,OutputVector* contacts);
-    inline int computeIntersection(Capsule & cap,Line & lin,OutputVector* contacts);
-
-    bool testIntersection(Capsule&,Triangle&);
-    bool testIntersection(Capsule&,Line&);
+    int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Point&, OutputVector*);
+    template<class T> int computeIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
+    int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
 
 protected:
 

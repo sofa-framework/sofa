@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaEulerianFluid/initEulerianFluid.h>
-#include <SofaSphFluid/initSPHFluid.h>
-#include <SofaNonUniformFem/initNonUniformFEM.h>
+#include <SofaMeshCollision/BarycentricPenalityContact.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
+
+#include "DistanceGridCollisionModel.h"
 
 namespace sofa
 {
@@ -31,21 +31,25 @@ namespace sofa
 namespace component
 {
 
-
-void initComponentAdvanced()
+namespace collision
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 
-    initEulerianFluid();
-    initSPHFluid();
-    initNonUniformFEM();
-}
+using namespace sofa::core::collision;
 
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleContactClass("default", true);
+
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleContactClass("default", true);
+
+} // namespace collision
 
 } // namespace component
 
 } // namespace sofa
+

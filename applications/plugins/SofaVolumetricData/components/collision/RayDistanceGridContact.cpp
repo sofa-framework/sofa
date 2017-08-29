@@ -19,39 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_CONFIG_H
-#define SOFAADVANCED_CONFIG_H
+#include <sofa/core/visual/VisualParams.h>
+#include <SofaUserInteraction/RayModel.h>
+#include <SofaUserInteraction/RayContact.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include "DistanceGridCollisionModel.h"
 
-#include <SofaCommon/config.h>
+namespace sofa
+{
 
-#cmakedefine SOFA_HAVE_FLOWVR
+namespace component
+{
 
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace collision
+{
 
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+using namespace sofa::defaulttype;
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+SOFA_DECL_CLASS(RayDistanceGridContact)
 
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_TARGET SofaComponentAdvanced
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+Creator<core::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("ray",true);
+Creator<core::collision::Contact::Factory, RayContact<FFDDistanceGridCollisionModel> > RayFFDDistanceGridContactClass("ray",true);
 
-#endif
+} // namespace collision
+
+} // namespace component
+
+} // namespace sofa

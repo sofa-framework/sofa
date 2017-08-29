@@ -50,7 +50,7 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 if(NOT SOFA_NO_OPENGL)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)

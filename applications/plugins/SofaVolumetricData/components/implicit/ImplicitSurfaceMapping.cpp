@@ -19,39 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_CONFIG_H
-#define SOFAADVANCED_CONFIG_H
+#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaCommon/config.h>
+#include "ImplicitSurfaceMapping.inl"
 
-#cmakedefine SOFA_HAVE_FLOWVR
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace component
+{
+
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
+
+SOFA_DECL_CLASS(ImplicitSurfaceMapping)
+
+// Register in the Factory
+int ImplicitSurfaceMappingClass = core::RegisterObject("Compute an iso-surface from a set of particles")
+#ifndef SOFA_FLOAT
+        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes > >()
 #endif
 
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes > >()
+        .add< ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes > >()
+#endif
+#endif
+        ;
+
+
+#ifndef SOFA_FLOAT
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
 #endif
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
+template class SOFA_VOLUMETRICDATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+#endif
 #endif
 
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_TARGET SofaComponentAdvanced
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
-#endif
+} // namespace mapping
+
+} // namespace component
+
+} // namespace sofa
+

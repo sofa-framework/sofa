@@ -19,39 +19,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_CONFIG_H
-#define SOFAADVANCED_CONFIG_H
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_CPP
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
+#include "DistanceGridForceField.inl"
 
-#include <SofaCommon/config.h>
+namespace sofa
+{
 
-#cmakedefine SOFA_HAVE_FLOWVR
+namespace component
+{
 
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
+
+
+SOFA_DECL_CLASS(DistanceGridForceField)
+
+int DistanceGridForceFieldClass = core::RegisterObject("Force applied by a distancegrid toward the exterior, the interior, or the surface")
+#ifndef SOFA_FLOAT
+        .add< DistanceGridForceField<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< DistanceGridForceField<Vec3fTypes> >()
+#endif
+        ;
+#ifndef SOFA_FLOAT
+template class SOFA_VOLUMETRICDATA_API DistanceGridForceField<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_VOLUMETRICDATA_API DistanceGridForceField<Vec3fTypes>;
 #endif
 
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+} // namespace forcefield
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+} // namespace component
 
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_TARGET SofaComponentAdvanced
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#endif
+} // namespace sofa

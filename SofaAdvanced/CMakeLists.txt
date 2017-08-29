@@ -22,7 +22,6 @@ set(SOFAADVANCED_TARGETS
     SofaEulerianFluid
     SofaNonUniformFem
     SofaSphFluid
-    SofaVolumetricData
 )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})

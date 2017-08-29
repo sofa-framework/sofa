@@ -19,39 +19,69 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAADVANCED_CONFIG_H
-#define SOFAADVANCED_CONFIG_H
+#include <sofa/helper/system/config.h>
+#include "initVolumetricData.h"
+#include "components/collision/DistanceGridCollisionModel.h"
+#include "components/forcefield/DistanceGridForceField.h"
+#include "components/implicit/ImplicitSurfaceContainer.h"
+#include "components/implicit/ImplicitSurfaceMapping.h"
+#include "components/implicit/InterpolatedImplicitSurface.h"
+#include "components/implicit/ScalarField.h"
+#include "components/implicit/SphericalField.h"
+#include "components/implicit/DiscreteGridField.h"
 
-#include <SofaCommon/config.h>
+namespace sofa
+{
 
-#cmakedefine SOFA_HAVE_FLOWVR
+namespace component
+{
+extern "C" {
+SOFA_VOLUMETRICDATA_API void initExternalModule();
+SOFA_VOLUMETRICDATA_API const char* getModuleName();
+SOFA_VOLUMETRICDATA_API const char* getModuleVersion();
+SOFA_VOLUMETRICDATA_API const char* getModuleLicense();
+SOFA_VOLUMETRICDATA_API const char* getModuleDescription();
+SOFA_VOLUMETRICDATA_API const char* getModuleComponentList();
+}
 
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+const char* getModuleName()
+{
+    return "TestPlugin";
+}
 
-#ifdef SOFA_BUILD_NON_UNIFORM_FEM
-#  define SOFA_TARGET SofaNonUniformFem
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_NON_UNIFORM_FEM_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-#ifdef SOFA_BUILD_COMPONENT_ADVANCED
-#  define SOFA_TARGET SofaComponentAdvanced
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_COMPONENT_ADVANCED_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-#endif
+
+const char* getModuleDescription()
+{
+    return "TODO: replace this with the description of your plugin";
+}
+
+const char* getModuleComponentList()
+{
+    return "";
+    //return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
+}
+
+
+} /// component
+
+} /// sofa
+
