@@ -1,31 +1,38 @@
-//This file contain tests related to the implicit shapes
-
 #include <SofaTest/Sofa_test.h>
-#include <SofaVolumetricData/ImplicitShape.h>
-#include <SofaVolumetricData/ImplicitSphere.h>
-#include <SofaVolumetricData/DistanceGridComponent.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-
 typedef sofa::defaulttype::Vector3 Coord;
+
+#include <SofaVolumetricData/components/implicit/ScalarField.h>
+using sofa::component::implicit::ScalarField ;
+
+#include <SofaVolumetricData/components/implicit/SphericalField.h>
+using sofa::component::implicit::SphericalField ;
+
+#include <SofaVolumetricData/components/implicit/DiscreteGridField.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::component::implicit::DiscreteGridField ;
+
+namespace
+{
 
 struct ImplicitShape_test : public sofa::Sofa_test<>
 {
-    bool ImplicitSphereTest();
-    bool DistanceGridComponentTest();
+    bool SphericalFieldTest();
+    bool DiscreteGridFieldTest();
 };
 
 
-bool ImplicitShape_test::ImplicitSphereTest() {
-    sofa::core::ImplicitSphere sphere_test;
+bool ImplicitShape_test::SphericalFieldTest()
+{
+    SphericalField sphere_test;
     Coord p(1,1,2);
     EXPECT_EQ(sphere_test.eval(p),19);
     return true;
 }
 
 
-bool ImplicitShape_test::DistanceGridComponentTest() {
-    sofa::core::DistanceGridComponent dgc_test;
-    //need to put any file that DistanceGrid can handle
+bool ImplicitShape_test::DiscreteGridFieldTest()
+{
+    DiscreteGridField dgc_test;
     dgc_test.setFilename("/path/shape.obj");
     Coord pmin(0,0,0), pmax(243,243,243);
     dgc_test.loadGrid(0,0,243,243,243,pmin,pmax);
@@ -33,5 +40,7 @@ bool ImplicitShape_test::DistanceGridComponentTest() {
     return true;
 }
 
-TEST_F(ImplicitShape_test, ImplicitSphereTest) { ASSERT_TRUE( ImplicitSphereTest()); }
-TEST_F(ImplicitShape_test, DistanceGridComponentTest) { ASSERT_TRUE( DistanceGridComponentTest()); }
+TEST_F(ImplicitShape_test, SphericalFieldTest) { ASSERT_TRUE( SphericalFieldTest() ); }
+TEST_F(ImplicitShape_test, DiscreteGridFieldTest) { ASSERT_TRUE( DiscreteGridFieldTest() ); }
+
+}
