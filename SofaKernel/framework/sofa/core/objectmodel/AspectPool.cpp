@@ -80,7 +80,6 @@ void intrusive_ptr_release(Aspect* a)
 AspectPool::AspectPool()
 {
     // Create all aspects and fill the list of free aspects.
-    // std::cout << "AspectPool"<<this<<": filling " << SOFA_DATA_MAX_ASPECTS << " aspects" << std::endl;
     aspects.resize(SOFA_DATA_MAX_ASPECTS);
     for(int i = 0; i < SOFA_DATA_MAX_ASPECTS; ++i)
     {
@@ -88,7 +87,6 @@ AspectPool::AspectPool()
         AtomicInt aspectID(i);
         freeAspects.push(aspectID);
     }
-    //std::cout << "AspectPool"<<this<<": " << freeAspects.size() << " aspects available" << std::endl;
 }
 
 /**

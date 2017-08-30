@@ -66,17 +66,14 @@ helper::vector<unsigned> sortedPermutation( const Container& values )
 }
 
 ////Example:
-//    helper::vector<double> values;
-//     values.push_back(24);
-//     values.push_back(55);
-//     values.push_back(22);
-//     values.push_back(1);
-
-//     vector<unsigned> permutation = sortedPermutation(values);
-
-//    //The following prints: 3 2 0 1
-
-//     std::cout << permutation << "\n";
+///    helper::vector<double> values;
+///     values.push_back(24);
+///     values.push_back(55);
+///     values.push_back(22);
+///     values.push_back(1);
+///     vector<unsigned> permutation = sortedPermutation(values);
+///    //The following prints: 3 2 0 1
+///     std::cout << permutation << "\n";
 
 
 

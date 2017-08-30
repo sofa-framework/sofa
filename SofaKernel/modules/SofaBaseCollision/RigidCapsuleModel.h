@@ -83,7 +83,7 @@ public:
     const Coord & v()const;
 
     void displayIndex()const{
-        std::cout<<"index "<<this->index<<std::endl;
+        msg_info("TCapsule") << "index "<< this->index ;
     }
 
     bool shareSameVertex(const TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> > & other)const;

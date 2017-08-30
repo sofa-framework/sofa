@@ -22,11 +22,13 @@
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
+#include <sstream>
 #include <iostream>
 
 namespace sofa
@@ -83,7 +85,7 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
 void BVHJoint::display(int frameNum)
 {
 #ifndef SOFA_NO_OPENGL
-	glPushMatrix();
+    glPushMatrix();
     glDisable(GL_LIGHTING);
     glColor3f(0.0, 0.0, 0.0);
     glBegin(GL_LINES);
@@ -126,7 +128,7 @@ void BVHJoint::display(int frameNum)
 
     glColor3f(1.0,0.0,0.0);
 
-	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
+    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
     helper::gl::drawSphere(center, 0.01f);
 
     for (unsigned int i=0; i<children.size(); i++)
@@ -148,7 +150,7 @@ void BVHJoint::displayInGlobalFrame(void)
     glDisable(GL_LIGHTING);
     glColor3f(1.0, 0.0, 0.0);
 
-	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
+    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
     helper::gl::drawSphere(center, 0.005f);
 
     glPopMatrix();
@@ -371,26 +373,27 @@ void BVHJoint::dumpRotationStiffness(FILE *f, int &cpt)
 
 void BVHJoint::debug(int tab)
 {
+    std::stringstream tmpmsg ;
     for (int i=0; i<tab; i++)
-        std::cout << "\t";
+        tmpmsg << "\t";
 
-    std::cout << name << std::endl;
+    tmpmsg << name << msgendl ;
 
     if (offset != NULL)
     {
         for (int i=0; i<tab; i++)
-            std::cout << "\t";
-        std::cout << "offset " << offset->x << " " << offset->y << " " << offset->z << std::endl;
+            tmpmsg << "\t";
+        tmpmsg << "offset " << offset->x << " " << offset->y << " " << offset->z << msgendl;
     }
 
     if (channels != NULL)
     {
         for (int i=0; i<tab; i++)
-            std::cout << "\t";
-        std::cout << "channels ";
+            tmpmsg << "\t";
+        tmpmsg << "channels ";
         for (unsigned int i=0; i<channels->channels.size(); i++)
-            std::cout << channels->channels[i] << " ";
-        std::cout << std::endl;
+            tmpmsg << channels->channels[i] << " ";
+        msg_info("BVHJoint") << tmpmsg.str() ;
     }
 
     for (unsigned int i=0; i<children.size(); i++)

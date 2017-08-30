@@ -74,9 +74,6 @@ struct PluginManager_test: public ::testing::Test
         for (PluginManager::PluginMap::const_iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
         {
             toDelete.push_back((*it).first);
-            //std::cout << pm.getPluginMap().size() << std::endl;
-            //std::cout << "Try to unload Plugin :" << (*it).first << std::endl;
-            //ASSERT_TRUE(pm.unloadPlugin((*it).first));
         }
 
         for(std::string p : toDelete)
