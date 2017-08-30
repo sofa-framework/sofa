@@ -346,9 +346,7 @@ public:
             {
                 for (int j=i+1; j<C; j++)
                 {
-                    real t = this->elems[i][j];
-                    this->elems[i][j] = this->elems[j][i];
-                    this->elems[j][i] = t;
+                    std::swap(this->elems[i][j], this->elems[j][i]);
                 }
             }
         }
@@ -378,9 +376,7 @@ public:
         {
             for (int j=i+1; j<C; j++)
             {
-                real t = this->elems[i][j];
-                this->elems[i][j] = this->elems[j][i];
-                this->elems[j][i] = t;
+                std::swap(this->elems[i][j], this->elems[j][i]);
             }
         }
     }
