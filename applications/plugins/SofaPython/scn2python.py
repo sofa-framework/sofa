@@ -162,11 +162,14 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
     pythonFile_str = "\"\"\"\n"
     pythonFile_str += info_str
     pythonFile_str += "\"\"\"\n\n"
+    pythonFile_str += "import sys\n"
     pythonFile_str += "import Sofa\n\n"
     
     pythonFile_str += "class " + classNamePythonFile + " (Sofa.PythonScriptController):\n\n"
     if not produceSceneAndPythonFile :
-        pythonFile_str += "    def __init__(self, node) : \n"
+        pythonFile_str += "    def __init__(self, node, commandLineArguments) : \n"
+        pythonFile_str += tabs+"self.commandLineArguments = commandLineArguments\n"
+        pythonFile_str += tabs+'print "Command line arguments for python : "+str(commandLineArguments)\n'
         pythonFile_str += tabs+"self.createGraph(node)\n"
         pythonFile_str += tabs+"return None;\n\n"
     pythonFile_str += "    def createGraph(self,rootNode):\n\n"
@@ -183,7 +186,7 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
         tabs = "    "
         pythonFile_str += "\n\ndef createScene(rootNode):\n"
         pythonFile_str += rootAttributesToStringPython(node,tabs)
-        pythonFile_str += tabs+"my"+classNamePythonFile+" = "+classNamePythonFile+"(rootNode)"
+        pythonFile_str += tabs+"my"+classNamePythonFile+" = "+classNamePythonFile+"(rootNode,sys.argv)"
         pythonFile_str += "\n"+tabs+"return 0;"
 
     # write python file
@@ -213,8 +216,9 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
     if produceSceneAndPythonFile :
         info_str += ".scn"
     else :
-        info_str += ".py"
-        info_str += "\nThe sofa python plugin has to be added in the sofa plugin manager, \ni.e. add the sofa python plugin in runSofa->Edit->PluginManager."
+        info_str += ".py --argv 123"
+        info_str += "\nThe sofa python plugin might have to be added in the sofa plugin manager, \ni.e. add the sofa python plugin in runSofa->Edit->PluginManager."
+        info_str += "\nThe arguments given after --argv can be used by accessing self.commandLineArguments, e.g. combined with ast.literal_eval to convert a string to a number."
     info_str += "\n\n"
     info_str += "The current file has been written by the python script\n"
     info_str += pythonFilename + "\n"
