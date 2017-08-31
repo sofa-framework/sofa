@@ -34,6 +34,9 @@ namespace sofa
 namespace helper
 {
 
+/// Allow us to use BaseCreator and Factory without using any Arguments
+class NoArgument {} ;
+
 /// Decode the type's name to a more readable form if possible
 std::string SOFA_HELPER_API gettypename(const std::type_info& t);
 
@@ -43,7 +46,7 @@ void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string class
 /// Print factory log
 void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
 
-template <class Object, class Argument, class ObjectPtr = Object*>
+template <class Object, class Argument = NoArgument, class ObjectPtr = Object*>
 class BaseCreator
 {
 public:
@@ -52,7 +55,7 @@ public:
     virtual const std::type_info& type() = 0;
 };
 
-template <typename TKey, class TObject, typename TArgument, typename TPtr = TObject* >
+template <typename TKey, class TObject, typename TArgument = NoArgument, typename TPtr = TObject* >
 class Factory
 {
 public:
