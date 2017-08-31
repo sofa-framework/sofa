@@ -28,6 +28,7 @@
 #include <oscpack/osc/OscPrintReceivedElements.h>
 #include <oscpack/osc/OscPacketListener.h>
 #include <oscpack/osc/OscOutboundPacketStream.h>
+
 #include <oscpack/ip/UdpSocket.h>
 
 namespace sofa
@@ -43,7 +44,7 @@ template<typename DataType>
 class DataCreator : public sofa::helper::BaseCreator<BaseData>
 {
 public:
-    virtual BaseData* createInstance(sofa::helper::NoArgument) override { std::cout << "test " << std::endl; return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
     virtual const std::type_info& type() override { return typeid(BaseData);}
 };
 

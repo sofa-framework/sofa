@@ -60,7 +60,7 @@ public:
     std::string getArgumentName(unsigned int);
     std::vector<std::string> getArgumentList();
     std::string getSubject();
-    BaseObject* getSource();
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> getSource();
 
     ////////////////////////// Inherited from BaseObject ////////////////////
     virtual void init() override;

@@ -9,6 +9,8 @@ set(HEADER_FILES
     components/serverCommunication.inl
     components/serverCommunicationOSC.h
     components/serverCommunicationOSC.inl
+    components/serverCommunicationZMQ.h
+    components/serverCommunicationZMQ.inl
 )
 
 set(SOURCE_FILES
@@ -16,6 +18,7 @@ set(SOURCE_FILES
     components/CommunicationSubscriber.cpp
     components/serverCommunication.cpp
     components/serverCommunicationOSC.cpp
+    components/serverCommunicationZMQ.cpp
 )
 
 set(EXTRA_FILES

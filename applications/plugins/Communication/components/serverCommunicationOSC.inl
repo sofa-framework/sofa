@@ -65,16 +65,16 @@ void ServerCommunicationOSC::initTypeFactory()
 
 void ServerCommunicationOSC::sendData()
 {
+    UdpTransmitSocket transmitSocket( IpEndpointName(this->d_address.getValue().c_str(), this->d_port.getValue()));
+
     while (this->m_running)
     {
-        UdpTransmitSocket transmitSocket( IpEndpointName(this->d_address.getValue().c_str(), this->d_port.getValue()));
-
         std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
         if (subscribersMap.size() == 0)
             continue;
         osc::OutboundPacketStream p = createOSCMessage();
         transmitSocket.Send( p.Data(), p.Size() );
-        usleep(1000000.0/(double) this->d_refreshRate.getValue());
+        std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
     }
 }
 
@@ -96,7 +96,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
     for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
     {
         CommunicationSubscriber* subscriber = it->second;
-        BaseObject * source = subscriber->getSource();
+        SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
 
         std::vector<std::string> argumentList = subscriber->getArgumentList();
         for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
@@ -115,6 +115,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
                 const void* valueVoidPtr = data->getValueVoidPtr();
 
                 messageName = subscriber->getSubject();
+
                 p << osc::BeginMessage(messageName.c_str());
 
                 if (typeinfo->Container())
@@ -129,7 +130,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
                         p <<  (data->getValueString().c_str());
                     }
 
-                    for (int i=0; i<nbRows; i++)
+                    for (int i=0; i < nbRows; i++)
                     {
                         for (int j=0; j<rowWidth; j++)
                         {
@@ -175,7 +176,6 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
             }
         }
     }
-
     return p;
 }
 
@@ -186,7 +186,7 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
         return;
 
     CommunicationSubscriber * subscriber = getSubscriberFor(address);
-    BaseObject * source = subscriber->getSource();
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
 
     int i = 0;
     for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
@@ -203,7 +203,10 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
                 msg_warning() << keyTypeMessage << " is not a known type";
             else
             {
+                data->setName(argumentName);
+                data->setHelp("Auto generated help from OSC communication");
                 source->addData(data, argumentName);
+                data->read(convertArgumentToStringValue(it));
                 msg_info(source->getName()) << "data field named : " << argumentName << " has been created";
             }
         } else

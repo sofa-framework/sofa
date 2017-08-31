@@ -75,7 +75,7 @@ std::string CommunicationSubscriber::getSubject()
     return d_subject.getValueString();
 }
 
-BaseObject * CommunicationSubscriber::getSource()
+SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> CommunicationSubscriber::getSource()
 {
     return l_source;
 }

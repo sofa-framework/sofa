@@ -58,9 +58,10 @@ using sofa::helper::vector;
 using sofa::helper::Factory;
 
 #include <pthread.h>
-#include <sys/time.h>
+#include <iostream>
+#include <chrono>
+#include <thread>
 #include <stdio.h>
-#include <unistd.h>
 #include <mutex>
 #include <cmath>
 
