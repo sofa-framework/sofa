@@ -440,8 +440,8 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
-    dmsg_info() << std::cout << "points is dirty" << std::endl;
-                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
+    dmsg_info() << "points is dirty" << msgendl
+                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
 #endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
