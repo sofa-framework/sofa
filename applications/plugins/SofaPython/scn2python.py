@@ -85,10 +85,9 @@ def getNodeName(node,numberOfUnnamedNodes) :
         numberOfUnnamedNodes += 1
     return nodeName,numberOfUnnamedNodes
 
-def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', nodeIsRootNode=0) :
-    parentName = parent.get('name')
-    if nodeIsRootNode :
-        parentName = 'rootNode'
+def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', nodeIsRootNode=0, parentName='rootNode') :
+    if not nodeIsRootNode :
+        parentName = parent.get('name')
     parentVariableName = stringToVariableName(parentName)
     myChildren = str()
     for child in parent :
@@ -101,7 +100,19 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
             myChildren += childAttributesToStringPython(child,childName,tabs)
             myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
-            myChildren += tabs+parentVariableName+"."+createObject(child)+"\n"
+            if not child.tag == "include" :
+                myChildren += tabs+parentVariableName+"."+createObject(child)+"\n"
+            else :
+                href = ""
+                for item in child.items() :
+                    if item[0] == "href" :
+                        href = item[1]
+                inputFilename = check_output(["locate",href])[:-1]
+                tree = ET.parse(inputFilename)
+                root = tree.getroot()
+                fromExternalFile = printChildren(root,tabs,numberOfUnnamedNodes,scenePath=scenePath,nodeIsRootNode=1,parentName=parentVariableName)
+                myChildren += fromExternalFile
+                print "WARNING: Included external file, please check the links starting from \n"+fromExternalFile[:100]+"\n... until ...\n"+fromExternalFile[-100:]
     return myChildren;
 
 def getElement (node,name) :
