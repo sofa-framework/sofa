@@ -97,6 +97,7 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
             currentScenePath = scenePath+"/"+childName
             myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
             myChildren += tabs+stringToVariableName(childName)+" = "+parentVariableName+"."+createChild(childName)+"\n"
+            myChildren += tabs+"self."+stringToVariableName(childName)+" = "+stringToVariableName(childName)+"\n"
             myChildren += childAttributesToStringPython(child,childName,tabs)
             myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
@@ -139,25 +140,20 @@ def parseInput() :
     parser.add_argument('inputScenes', metavar='I', type=str, nargs='+',help='filename(s) of the standard scene(s)')
     parser.add_argument('-n', nargs='?', help='node to replace by python script, if N the complete scene is replaced by a python script')
     parser.add_argument('-o', nargs='*', help='filename(s) of the transformed scene(s)')
-    parser.add_argument('-p', dest='onlyOutputPythonScript', action='store_const', default=0, const=1, help='output only a .py file')
+    parser.add_argument('-p', dest='onlyOutputPythonScript', action='store_const', default=0, const=1, help='Output .scn and .py file')
     args = parser.parse_args()
     return parser,args;
 
-def pythonScriptControllerFunctions(produceSceneAndPythonFile) :
+def pythonScriptControllerFunctions() :
     allScriptControllerFunctions = ['onKeyPressed(self, c)','onKeyReleased(self, c)','onLoaded(self, node)','onMouseButtonLeft(self, mouseX,mouseY,isPressed)','onMouseButtonRight(self, mouseX,mouseY,isPressed)','onMouseButtonMiddle(self, mouseX,mouseY,isPressed)','onMouseWheel(self, mouseX,mouseY,wheelDelta)','onGUIEvent(self, strControlID,valueName,strValue)','onBeginAnimationStep(self, deltaTime)','onEndAnimationStep(self, deltaTime)','onScriptEvent(self, senderNode, eventName,data)','initGraph(self, node)','bwdInitGraph(self, node)','storeResetState(self)','reset(self)','cleanup(self)']
     result = '\n'
-    tabs = ""
-    if produceSceneAndPythonFile :
-        tabs = "    "
+    tabs = "    "
     for curFct in allScriptControllerFunctions :
         result += '\n'+tabs+'def ' + curFct + ':\n'+tabs+'    return 0;\n'
     return result
 
 def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produceSceneAndPythonFile=1,nodeIsRootNode=1) :
-    # get correct number of tabs
-    tabs = "    "
-    if produceSceneAndPythonFile :
-        tabs = "        "
+    tabs = "        "
 
     # introduce parameter that counts the number of unnamed nodes
     numberOfUnnamedNodes = 0
@@ -167,12 +163,13 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
     pythonFile_str += info_str
     pythonFile_str += "\"\"\"\n\n"
     pythonFile_str += "import Sofa\n\n"
-    if produceSceneAndPythonFile :
-        pythonFile_str += "class " + classNamePythonFile + " (Sofa.PythonScriptController):\n\n"
-        pythonFile_str += "    def createGraph(self,rootNode):\n\n"
-    else :
-        pythonFile_str += "def createScene(rootNode):\n\n"
-        pythonFile_str += rootAttributesToStringPython(node,tabs)
+    
+    pythonFile_str += "class " + classNamePythonFile + " (Sofa.PythonScriptController):\n\n"
+    if not produceSceneAndPythonFile :
+        pythonFile_str += "    def __init__(self, node) : \n"
+        pythonFile_str += tabs+"self.createGraph(node)\n"
+        pythonFile_str += tabs+"return None;\n\n"
+    pythonFile_str += "    def createGraph(self,rootNode):\n\n"
     if nodeIsRootNode :
         pythonFile_str += tabs+"# rootNode\n"
         pythonFile_str += printChildren(node,tabs,numberOfUnnamedNodes,nodeIsRootNode=1)
@@ -180,7 +177,14 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
         pythonFile_str += tabs+"# "+classNamePythonFile+"\n"
         pythonFile_str += printChildren(node,tabs,numberOfUnnamedNodes,classNamePythonFile,nodeIsRootNode=1)
     pythonFile_str += "\n"+tabs+"return 0;"
-    pythonFile_str += pythonScriptControllerFunctions(produceSceneAndPythonFile)
+    pythonFile_str += pythonScriptControllerFunctions()
+
+    if not produceSceneAndPythonFile :
+        tabs = "    "
+        pythonFile_str += "\n\ndef createScene(rootNode):\n"
+        pythonFile_str += rootAttributesToStringPython(node,tabs)
+        pythonFile_str += tabs+"my"+classNamePythonFile+" = "+classNamePythonFile+"(rootNode)"
+        pythonFile_str += "\n"+tabs+"return 0;"
 
     # write python file
     f_py = open(outputFilenamePython,'w')
@@ -204,7 +208,7 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
     info_str += "but it uses the SofaPython plugin. \n"
     info_str += "Further informations on the usage of the plugin can be found in \n"
     info_str += "sofa/applications/plugins/SofaPython/doc/SofaPython.pdf\n"
-    info_str += "To lance the scene, type \n"
+    info_str += "To launch the scene, type \n"
     info_str += "runSofa "+outputFilenameWithAbsPath
     if produceSceneAndPythonFile :
         info_str += ".scn"
@@ -260,7 +264,7 @@ def main() :
     # parse the console input
     parser,args = parseInput()
     pythonFilename = sys.argv[0]
-    produceSceneAndPythonFile = not args.onlyOutputPythonScript
+    produceSceneAndPythonFile = args.onlyOutputPythonScript
 
     # transform each standard scene to a python scene
     for i in range(len(args.inputScenes)) :
