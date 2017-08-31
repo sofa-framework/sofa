@@ -173,7 +173,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         gridLayout_->setAlignment(propertyName, Qt::AlignVCenter);
         datawidget_->setContentsMargins(0, 0, 0, 0);
         gridLayout_->setContentsMargins(10,10,10,10);
-        gridLayout_->addWidget(datawidget_, 1, 1);
+        gridLayout_->addWidget(datawidget_, 0, 2);
 
         //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }

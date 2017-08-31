@@ -156,8 +156,7 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
         gridLayout_->setAlignment(linkName, Qt::AlignVCenter);
         linkwidget_->setContentsMargins(0, 0, 0, 0);
         gridLayout_->setContentsMargins(10,10,10,10);
-        gridLayout_->addWidget(linkwidget_, 1, 1);
-
+        gridLayout_->addWidget(linkwidget_, 0, 2);
     }
     gridLayout_->setAlignment(linkwidget_, Qt::AlignVCenter);
 }
