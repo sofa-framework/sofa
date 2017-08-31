@@ -33,6 +33,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <stack>
+#include <algorithm>
 
 #define DEFAULT_INTERVAL 100
 
@@ -944,8 +945,11 @@ void AdvancedTimer::setOutputType(IdTimer id, std::string type)
         data.init(id);
     }
 
+	std::for_each(type.begin(), type.end(),  [](char & c) {
+		c = std::tolower(static_cast<unsigned char>(c)); } );
+
     // Set the output type
-    if(type.compare("json") == 0)
+	if(type.compare("json") == 0)
         data.timerOutputType = JSON;
     else if(type.compare("ljson") == 0)
         data.timerOutputType = LJSON;
@@ -956,6 +960,12 @@ void AdvancedTimer::setOutputType(IdTimer id, std::string type)
         msg_warning("AdvancedTimer") << "Unable to set output type to " << type << " for timer " << id << ". Switching to the default 'stdout' output. Valid types are [stdout, json, ljson].";
         data.timerOutputType = STDOUT;
     }
+}
+
+AdvancedTimer::outputType AdvancedTimer::getOutputType(IdTimer id)
+{
+	TimerData& data = timers[id];
+	return data.timerOutputType;
 }
 
 // -------------------------------

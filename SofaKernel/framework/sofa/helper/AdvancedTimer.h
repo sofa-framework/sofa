@@ -277,6 +277,13 @@ public:
      **/
     static void setOutputType(IdTimer id, std::string type);
 
+	/**
+	 * @brief getOutputType Get the outputType for the given AdvancedTimer.
+	 * @param id idTimer, id of the timer
+	 * @return the output type
+	 */
+	static AdvancedTimer::outputType getOutputType(IdTimer id);
+
 
     /**
      * @brief getTimeAnalysis Return the result of the AdvancedTimer

@@ -76,10 +76,45 @@ def createScene(rootNode):
             sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
         }
     }
+
+	void checkTimerSetOutputType()
+	{
+		std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_AutoGen.py");
+
+		std::ofstream f(pythonControllerPath);
+		std::string pytmp = R"(
+import Sofa
+
+def createScene(rootNode):
+	Sofa.timerSetOutPutType("validID", "JSON")
+	Sofa.timerSetOutPutType("", "JSON")
+	Sofa.timerSetOutPutType("invalid", "JSON")
+	Sofa.timerSetOutPutType("validID", "LJSON")
+	Sofa.timerSetOutPutType("validID", "STDOUT")
+	Sofa.timerSetOutPutType("validID", "")
+	Sofa.timerSetOutPutType("validID", "invalidType")
+)";
+
+		f << pytmp ;
+		f.close();
+
+		{
+			// sofa init
+			sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
+
+			// load scene
+			sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
+		}
+	}
 };
 
 TEST_F(SofaModule_test, getAvailableComponents)
 {
     checkGetComponentList();
+}
+
+TEST_F(SofaModule_test, timerSetOutPutType)
+{
+	checkTimerSetOutputType();
 }
 
