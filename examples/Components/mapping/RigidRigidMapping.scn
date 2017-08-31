@@ -1,7 +1,7 @@
 <Node animate="0" dt="0.01" gravity="0 -9.81 0" multiThreadSimulation="0" name="root" time="0">
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollisionModels showMechanicalMappings" />
     <Node animate="0" dt="0.01" gravity="0 -9.81 0" multiThreadSimulation="0" name="pendulum" time="0">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1 9 0 0 0 0 0 1 11 0 0 0 0 0 1 13 0 0 0 0 0 1 15 0 0 0 0 0 1 17 0 0 0 0 0 1 19 0 0 0 0 0 1" velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
         <UniformMass template="Rigid" totalmass="10" name="mass" />

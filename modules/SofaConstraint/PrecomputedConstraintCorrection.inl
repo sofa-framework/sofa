@@ -1134,8 +1134,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
 #ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
         double fC = f[rowIt.index()];
-        // debug
-        //std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
 
         if (fC != 0.0)
         {

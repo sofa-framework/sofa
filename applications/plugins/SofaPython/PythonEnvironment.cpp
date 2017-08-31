@@ -289,62 +289,65 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
 
-bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments)
-{
-    std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
-    std::string bareFilename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
+bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments) {
+    const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
 
-    if(!arguments.empty())
-    {
-        char**argv = new char*[arguments.size()+1];
-        argv[0] = new char[bareFilename.size()+1];
-        strcpy( argv[0], bareFilename.c_str() );
-        for( size_t i=0 ; i<arguments.size() ; ++i )
-        {
-            argv[i+1] = new char[arguments[i].size()+1];
-            strcpy( argv[i+1], arguments[i].c_str() );
+    // pro-tip: FileNameWithoutExtension == basename
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
+
+    // setup sys.argv if needed
+    if(!arguments.empty() ) {
+        std::vector<const char*> argv;
+        argv.push_back(basename.c_str());
+        
+        for(const std::string& arg : arguments) {
+            argv.push_back(arg.c_str());
         }
-
-        Py_SetProgramName(argv[0]); // TODO check what it is doing exactly
-        PySys_SetArgv(arguments.size()+1, argv);
-
-        for( size_t i=0 ; i<arguments.size()+1 ; ++i )
-        {
-            delete [] argv[i];
-        }
-        delete [] argv;
+        
+        Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
+        PySys_SetArgv(argv.size(), (char**)argv.data());
     }
-
+    
     // Load the scene script
-    char* pythonFilename = strdup(filename);
-    PyObject* scriptPyFile = PyFile_FromString(pythonFilename, (char*)("r"));
-    free(pythonFilename);
-
-    if( !scriptPyFile )
-    {
+    PyObject* script = PyFile_FromString((char*)filename, (char*)("r"));
+    
+    if( !script ) {
         SP_MESSAGE_ERROR("cannot open file:" << filename)
         PyErr_Print();
         return false;
     }
+    
+    PyObject* __main__ = PyModule_GetDict(PyImport_AddModule("__main__"));
 
-    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-    std::string backupFileName;
-    PyObject* backupFileObject = PyDict_GetItemString(pDict, "__file__");
-    if(backupFileObject)
-        backupFileName = PyString_AsString(backupFileObject);
-
-    PyObject* newFileObject = PyString_FromString(filename);
-    PyDict_SetItemString(pDict, "__file__", newFileObject);
-
-    int error = PyRun_SimpleFileEx(PyFile_AsFile(scriptPyFile), filename, 1);
-
-    backupFileObject = PyString_FromString(backupFileName.c_str());
-    PyDict_SetItemString(pDict, "__file__", backupFileObject);
-
-    if(0 != error)
+    // save/restore __main__.__file__
+    PyObject* __file__ = PyDict_GetItemString(__main__, "__file__");
+    Py_XINCREF(__file__);
+    
+    // temporarily set __main__.__file__ = filename during file loading
     {
-        SP_MESSAGE_ERROR("Script (file:" << bareFilename << ") import error")
+        PyObject* __tmpfile__ = PyString_FromString(filename);
+        PyDict_SetItemString(__main__, "__file__", __tmpfile__);
+        Py_XDECREF(__tmpfile__);
+    }
+    
+    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
+    
+    // don't wait for gc to close the file
+    PyObject_CallMethod(script, (char*) "close", NULL);
+    Py_XDECREF(script);
+    
+    // restore backup if needed
+    if(__file__) {
+        PyDict_SetItemString(__main__, "__file__", __file__);
+    } else {
+        const int err = PyDict_DelItemString(__main__, "__file__");
+        assert(!err); (void) err;
+    }
+
+    Py_XDECREF(__file__);  
+    
+    if(error) {
+        SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
         PyErr_Print();
         return false;
     }

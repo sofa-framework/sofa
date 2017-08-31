@@ -47,9 +47,9 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
-    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )

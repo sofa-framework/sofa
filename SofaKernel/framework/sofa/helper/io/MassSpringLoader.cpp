@@ -195,8 +195,9 @@ bool MassSpringLoader::load(const char *filename)
                     initpos = (masses[m1]-masses[m2]).norm();
                     ks/=initpos;
                     kd/=initpos;
+
 #ifndef NDEBUG
-                    std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
+                    dmsg_info("MassSpringLoader") << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos ;
 #endif
                 }
 
@@ -223,7 +224,6 @@ bool MassSpringLoader::load(const char *filename)
         }
         else if (!strcmp(cmd,"step"))
         {
-            //fscanf(file, "%lf\n", &(MSparams.default_dt));
             skipToEOL(file);
         }
         else if (!strcmp(cmd,"frce"))

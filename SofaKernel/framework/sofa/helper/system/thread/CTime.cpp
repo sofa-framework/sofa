@@ -86,8 +86,8 @@ ctime_t CTime::getRefTime()
     gettimeofday(&tv,0);
     return ((ctime_t)tv.tv_sec)*1000000 + ((ctime_t)tv.tv_usec);
 #else
-	system_time_t time = sys_time_get_system_time();
-	return (ctime_t)time;
+    system_time_t time = sys_time_get_system_time();
+    return (ctime_t)time;
 #endif
 }
 
@@ -179,7 +179,6 @@ ctime_t CTime::computeTicksPerSec()
 
     double cpu_frequency_min =(tick3-tick2) * ((double)reffreq) / (time2 - time1);
     double cpu_frequency_max =(tick4-tick1) * ((double)reffreq) / (time2 - time1);
-    std::cout << " CPU Frequency in [" << ((int)(cpu_frequency_min/1000000))*0.001 << " .. " << ((ctime_t)(cpu_frequency_max/1000000))*0.001 << "] GHz" << std::endl;
     return (ctime_t)((cpu_frequency_min + cpu_frequency_max)/2);
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node name="Root"  dt="0.1" >
     <Node name="Spoon1">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" dx="0" dy="0" dz="0" name="default118" position="0 1.41421 0 0 0 0.382683 0.92388" rest_position="0 1.41421 0 0 0 0.382683 0.92388" />
         <LinearMovementConstraint template="Rigid" keyTimes="0 2 10 40 50" movements="0 0 0   0 0 0

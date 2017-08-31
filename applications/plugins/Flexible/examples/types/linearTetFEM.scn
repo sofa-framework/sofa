@@ -7,7 +7,7 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
-<!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
+<!--     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver  /> -->
 
      <Node 	name="FEM"   >
     <EulerImplicitSolver /> <CGLinearSolver  />

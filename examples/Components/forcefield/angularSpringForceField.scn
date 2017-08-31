@@ -4,7 +4,7 @@
     <VisualStyle displayFlags="showCollisionModels hideBehaviorModels hideForceFields" />
 
     <Node activated="true" name="ArticulatedSoftBeam">
-	    <EulerImplicit />
+	    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject name="Articulations" position="0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0  0 0" template="Vec1d" />
 		<Node name="TranslPoint">

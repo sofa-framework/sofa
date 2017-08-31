@@ -55,7 +55,6 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
     , springColor(initData(&springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
     , restMState(initLink("external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
-//	, pp_0(NULL)
 {
 }
 
@@ -78,14 +77,11 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     {
       useRestMState = false;
 
-      msg_error(this)<< "external_rest_shape in node " << this-> getContext()->getName() << " not found";
-      //getContext()->removeObject(this);
+      msg_error()<< "external_rest_shape in node " << this-> getContext()->getName() << " not found";
       return;
     }else
     {
       useRestMState = true;
-
-      // sout << "RestShapeSpringsForceField : Mechanical state named " << restMState->getName() << " found for RestShapeSpringFF named " << this->getName() << sendl;
     }
 
 
@@ -104,7 +100,7 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
 {
     if (stiffness.getValue().empty())
     {
-        std::cout << "RestShapeSpringsForceField : No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << std::endl;
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -129,8 +125,6 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size()==0)
     {
-       // sout << "in RestShapeSpringsForceField no point are defined, default case: points = all points " << sendl;
-
         for (unsigned int i = 0; i < (unsigned)this->mstate->getSize(); i++)
         {
             m_indices.push_back(i);
@@ -139,8 +133,6 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_ext_indices.size()==0)
     {
-        // std::cout << "in RestShapeSpringsForceField no external_points are defined, default case: points = all points " << std::endl;
-
         if (useRestMState)
         {
             for (unsigned int i = 0; i < (unsigned)restMState->getSize(); i++)
@@ -188,7 +180,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
     //Springs_dir.resize(m_indices.size() );
     if ( k.size()!= m_indices.size() )
     {
-        //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
         const Real k0 = k[0];
 
         for (unsigned int i=0; i<m_indices.size(); i++)
@@ -200,15 +191,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
                 ext_index= m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            //Springs_dir[i] = p1[index] - p0[ext_index];
-            //Springs_dir[i].normalize();
             f1[index] -=  dx * k0 ;
-
-            //	if (dx.norm()>0.00000001)
-            //		std::cout<<"force on point "<<index<<std::endl;
-
-            //	Deriv dx = p[i] - p_0[i];
-            //	f[ indices[i] ] -=  dx * k[0] ;
         }
     }
     else
@@ -221,15 +204,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
                 ext_index= m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            //Springs_dir[i] = p1[index] - p0[ext_index];
-            //Springs_dir[i].normalize();
             f1[index] -=  dx * k[i];
-
-            //	if (dx.norm()>0.00000001)
-            //		std::cout<<"force on point "<<index<<std::endl;
-
-            //	Deriv dx = p[i] - p_0[i];
-            //	f[ indices[i] ] -=  dx * k[i] ;
         }
     }
 }
@@ -248,7 +223,6 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
 
     if (k.size()!= m_indices.size() )
     {
-        //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
         const Real k0 = k[0];
 
         for (unsigned int i=0; i<m_indices.size(); i++)
@@ -309,7 +283,6 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
     vparams->drawTool()->drawLines(vertices,5,sofa::defaulttype::Vec4f(springColor.getValue()));
-
     vparams->drawTool()->restoreLastState();
 }
 
@@ -337,12 +310,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
@@ -355,12 +322,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
         }
@@ -395,12 +356,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
@@ -417,12 +372,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::Mechanic
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
         }

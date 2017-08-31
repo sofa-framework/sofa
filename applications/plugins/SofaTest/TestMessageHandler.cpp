@@ -169,6 +169,7 @@ GtestMessageFrameIgnore::GtestMessageFrameIgnore(Message::Type type)
 
 GtestMessageHandler::GtestMessageHandler(Message::Class mclass)
 {
+    SOFA_UNUSED(mclass) ;
     for(unsigned int i=0; i < Message::TypeCount ; ++i)
     {
         m_gtestframes.push_back( std::vector<GtestMessageFrame*>({new GtestMessageFrame()}) ) ;
