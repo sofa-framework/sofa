@@ -81,7 +81,6 @@ public:
     Data< VecReal > stiffness;
     Data< VecReal > angularStiffness;
     Data< helper::vector< CPos > > pivotPoints;
-    Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
     Data< bool > drawSpring;
@@ -90,9 +89,9 @@ public:
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
-    //VecDeriv Springs_dir;
 protected:
     RestShapeSpringsForceField();
+
 public:
     /// BaseObject initialization method.
     void bwdInit();
@@ -104,9 +103,12 @@ public:
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(x);
+
+        msg_error() << "Get potentialEnergy not implemented";
         return 0.0;
     }
 

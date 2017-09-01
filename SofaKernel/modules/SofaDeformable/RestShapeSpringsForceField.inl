@@ -44,6 +44,19 @@ namespace component
 namespace forcefield
 {
 
+using helper::WriteAccessor;
+using helper::ReadAccessor;
+using core::behavior::BaseMechanicalState;
+using core::behavior::MultiMatrixAccessor;
+using core::behavior::ForceField;
+using defaulttype::BaseMatrix;
+using core::VecCoordId;
+using core::MechanicalParams;
+using defaulttype::Vector3;
+using defaulttype::Vec4f;
+using helper::vector;
+using core::visual::VisualParams;
+
 template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     : points(initData(&points, "points", "points controlled by the rest shape springs"))
@@ -62,11 +75,11 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::bwdInit()
 {
-    core::behavior::ForceField<DataTypes>::init();
+    ForceField<DataTypes>::init();
 
     if (stiffness.getValue().empty())
     {
-        sout << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " << sendl;
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -75,21 +88,21 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     if (restMState.get() == NULL)
     {
-      useRestMState = false;
-
-      msg_error()<< "external_rest_shape in node " << this-> getContext()->getName() << " not found";
-      return;
-    }else
+        useRestMState = false;
+      
+        if(!restMState.empty())
+            msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
+    }
+    else
     {
-      useRestMState = true;
+        useRestMState = true;
     }
 
-
-    this->k = stiffness.getValue();
+    k = stiffness.getValue();
 
     recomputeIndices();
 
-    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
     matS.resize(state->getMatrixSize(),state->getMatrixSize());
     lastUpdatedStep = -1.0;
@@ -106,7 +119,7 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
         stiffs.push_back(100.0);
         stiffness.setValue(stiffs);
     }
-    this->k = stiffness.getValue();
+    k = stiffness.getValue();
 }
 
 template<class DataTypes>
@@ -151,7 +164,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size() > m_ext_indices.size())
     {
-        serr << "The dimention of the source and the targeted points are different " << sendl;
+        msg_error() << "The dimention of the source and the targeted points are different ";
         m_indices.clear();
     }
 }
@@ -160,15 +173,18 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 template<class DataTypes>
 const typename RestShapeSpringsForceField<DataTypes>::DataVecCoord* RestShapeSpringsForceField<DataTypes>::getExtPosition() const
 {
-    return (useRestMState ? restMState->read(core::VecCoordId::position()) : this->mstate->read(core::VecCoordId::restPosition()));
+    return (useRestMState ? restMState->read(VecCoordId::position()) : this->mstate->read(VecCoordId::restPosition()));
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mparams , DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv&  v )
 {
-    sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
-    sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    SOFA_UNUSED(mparams);
+    SOFA_UNUSED(v);
+
+    WriteAccessor< DataVecDeriv > f1 = f;
+    ReadAccessor< DataVecCoord > p1 = x;
+    ReadAccessor< DataVecCoord > p0 = *getExtPosition();
 
     f1.resize(p1.size());
 
@@ -211,14 +227,14 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const core::MechanicalParam
 
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     //  remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
     // 	const VecReal& k = stiffness.getValue();
 
-    sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
-    sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
+    WriteAccessor< DataVecDeriv > df1 = df;
+    ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     if (k.size()!= m_indices.size() )
@@ -241,36 +257,35 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const core::MechanicalPara
 
 // draw for standard types (i.e Vec<1,2,3>)
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParams *vparams)
+void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 {
     if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     if(DataTypes::spatial_dimensions > 3)
     {
-        serr << "Draw function not implemented for this DataType" << sendl;
+        msg_error() << "Draw function not implemented for this DataType";
         return;
     }
 
     vparams->drawTool()->saveLastState();
     vparams->drawTool()->setLightingEnabled(false);
 
-    sofa::helper::ReadAccessor< DataVecCoord > p0 = *getExtPosition();
-
-    sofa::helper::ReadAccessor< DataVecCoord > p = this->mstate->read(core::VecCoordId::position());
+    ReadAccessor< DataVecCoord > p0 = *getExtPosition();
+    ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
 
     const VecIndex& indices = m_indices;
     const VecIndex& ext_indices = (useRestMState ? m_ext_indices : m_indices);
 
-    sofa::helper::vector<sofa::defaulttype::Vector3> vertices;
+    vector<Vector3> vertices;
 
     for (unsigned int i=0; i<indices.size(); i++)
     {
         const unsigned int index = indices[i];
         const unsigned int ext_index = ext_indices[i];
 
-        sofa::defaulttype::Vector3 v0(0.0, 0.0, 0.0);
-        sofa::defaulttype::Vector3 v1(0.0, 0.0, 0.0);
+        Vector3 v0(0.0, 0.0, 0.0);
+        Vector3 v1(0.0, 0.0, 0.0);
         for(unsigned int j=0 ; j<DataTypes::spatial_dimensions ; j++)
         {
             v0[j] = p[index][j];
@@ -282,18 +297,18 @@ void RestShapeSpringsForceField<DataTypes>::draw(const core::visual::VisualParam
     }
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
-    vparams->drawTool()->drawLines(vertices,5,sofa::defaulttype::Vec4f(springColor.getValue()));
+    vparams->drawTool()->drawLines(vertices,5,Vec4f(springColor.getValue()));
     vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
     // 	const VecReal& k = stiffness.getValue();
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
@@ -329,13 +344,13 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const core::MechanicalP
 }
 
 template<class DataTypes>
-void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex )
+void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
 {
     //      remove to be able to build in parallel
     // 	const VecIndex& indices = points.getValue();
     // 	const VecReal& k = stiffness.getValue();
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
