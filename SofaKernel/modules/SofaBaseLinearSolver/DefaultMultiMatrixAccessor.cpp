@@ -425,7 +425,6 @@ void DefaultMultiMatrixAccessor::computeGlobalMatrix()
             {
                 interactionList.push_back(it->first);
             }
-            ++it;
         }
 
 
