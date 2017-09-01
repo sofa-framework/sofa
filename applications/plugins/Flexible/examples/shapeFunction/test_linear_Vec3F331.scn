@@ -3,7 +3,7 @@
     <RequiredPlugin pluginName="Flexible"/>
     <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
 
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver  />
 
     <MechanicalObject  template="Vec3d" position="0 0 1   0 1 0   1 0 0   -1 -1 0 "  name="parent"  />

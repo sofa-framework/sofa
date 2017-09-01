@@ -39,8 +39,9 @@
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::ComponentInfo ;
+using sofa::helper::logging::SofaComponentInfo ;
 #include <sofa/helper/Utils.h>
-
 #include "SceneLoaderPY.h"
 
 #include <sofa/helper/system/PluginManager.h>
@@ -353,69 +354,101 @@ static const std::string s_emitter = "PythonScript";
 
 template<class Action>
 static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
+    PyObject* py_emitter {nullptr};
+    PyObject* py_message {nullptr};
+
     const size_t argSize = PyTuple_Size(args);
-    char* message;
 
-    /// the logic would be to have the optional arg in last position :-/
-    if( argSize == 2 ) {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) ) {
-            return NULL;
-        }
-
-        action(emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
-    }
-    else if ( argSize == 1 )
-    {
+    if( argSize == 1 ) {
+        /// no emitter
+        char* message;
         if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
         }
 
-        action(s_emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
-    }
-    else if (argSize == 3)
-    {
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, PythonEnvironment::getPythonCallingPointAsFileInfo());
+    } else if( argSize == 2 ) {
+        /// SOURCE, "Message"
+        if( !PyArg_ParseTuple(args, "OO", &py_emitter, &py_message) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
+            return NULL;
+        }
+
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
+    } else if( argSize == 3 ){
+        /// "Message", "FILENAME", LINENO
+        char* message;
         char* filename;
         int   lineno;
         if( !PyArg_ParseTuple(args, "ssi", &message, &filename, &lineno) ) {
             return NULL;
         }
-
-        action(s_emitter, message, SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+    } else if (argSize == 4 ){
+        /// SOURCE, "Message", "FILENAME", LINENO
+        char* filename;
+        int   lineno;
+        if( !PyArg_ParseTuple(args, "OOsi", &py_emitter, &py_message, &filename, &lineno) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
+            return NULL;
+        }
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
     }
     Py_RETURN_NONE;
 }
 
-/// also, we'd probably would be better off having 'error', 'fatal', 'info' as
-/// argument
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_info(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_info(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_deprecated(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_deprecated(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_warning(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_warning(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_error(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_error(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_fatal(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_fatal(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)

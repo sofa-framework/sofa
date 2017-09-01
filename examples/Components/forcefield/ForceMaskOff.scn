@@ -10,7 +10,7 @@ w/o mask = 230-330 fps
     
     <VisualStyle displayFlags="showVisual" />
     
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" iterations="50" tolerance="1e-5" threshold="1e-12" />
     
     

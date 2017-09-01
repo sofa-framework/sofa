@@ -7,7 +7,7 @@
     <DiscreteIntersection />
     <!--<CollisionGroup />-->
     <Node name="Liver">
-        <EulerImplicit name="cg_odesolver" printLog="false" rayleighMass="0" />
+        <EulerImplicit name="cg_odesolver" printLog="false" rayleighMass="0"  rayleighStiffness="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />

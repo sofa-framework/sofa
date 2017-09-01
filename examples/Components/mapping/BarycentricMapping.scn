@@ -17,7 +17,7 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <Node name="TorusFEM">
-            <EulerImplicit rayleighStiffness="0.01" />
+            <EulerImplicit rayleighStiffness="0.01"  rayleighMass="0.1" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />

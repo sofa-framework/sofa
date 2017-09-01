@@ -759,7 +759,8 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
         return false;
     }
 
-    std::cout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << std::endl;
+    msg_info() << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header ;
+
     BaseVTKDataIO* inputPoints = NULL;
     VTKDataIO<int>* inputPolygons = NULL;
     VTKDataIO<int>* inputCells = NULL;
@@ -796,7 +797,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " cells" << std::endl;
+            msg_info() << "Found " << n << " cells" ;
             inputCells = new VTKDataIO<int>;
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
             nbf = n;

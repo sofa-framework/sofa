@@ -727,7 +727,6 @@ public:
                              const sofa::helper::vector< double > &coefs)
     {
         const VecCoord& x = this->m_topologyData->getValue();
-        //std::cout << "VisualModelPointHandler: new point " << pointIndex << "/" << x.size() << " on " << this->m_topologyData->getName() << " : ancestors = " << ancestors << " , coefs = " << coefs << std::endl;
         if (!ancestors.empty())
         {
             if (algo == 1 && ancestors.size() > 1) //fixMergedUVSeams
@@ -1344,17 +1343,12 @@ void VisualModelImpl::computeMesh()
 void VisualModelImpl::handleTopologyChange()
 {
     if (!m_topology) return;
-    //if (!m_vertPosIdx.getValue().empty()) return;
-
-    //    std::cout << "> " << m_vtexcoords.getValue().size() << std::endl;
 
     bool debug_mode = false;
 
     ResizableExtVector<Triangle>& triangles = *(m_triangles.beginEdit());
     ResizableExtVector<Quad>& quads = *(m_quads.beginEdit());
-    //VecCoord& positions = *
     m_positions.beginEdit();
-
 
     std::list<const TopologyChange *>::const_iterator itBegin=m_topology->beginChange();
     std::list<const TopologyChange *>::const_iterator itEnd=m_topology->endChange();
@@ -1766,16 +1760,10 @@ void VisualModelImpl::handleTopologyChange()
     m_triangles.endEdit();
     m_quads.endEdit();
     m_positions.endEdit();
-
-    //    std::cout << "< " << m_vtexcoords.getValue().size() << std::endl;
 }
 
 void VisualModelImpl::initVisual()
 {
-    //if (tex)
-    //{
-    //    tex->init();
-    //}
 }
 
 void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count)

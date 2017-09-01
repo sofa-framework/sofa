@@ -438,15 +438,12 @@ inline void TOBB<DataTypes>::showVertices()const{
     std::vector<Coord> vs;
     vertices(vs);
 
-    std::cout<<"vertices==============="<<std::endl;
+    std::stringstream tmpmsg ;
+    tmpmsg << "vertices:"<< msgendl;
     for(unsigned int i = 0 ; i < vs.size() ; ++i)
-        std::cout<<"\t"<<vs[i]<<std::endl;
+        tmpmsg<<"-"<<vs[i]<<msgendl;
+    dmsg_info("TOBB<DataTypes") << tmpmsg.str() ;
 }
-
-//template <class DataTypes>
-//bool TOBBModel<DataTypes>::bidon()const{return false;}
-
-
 
 template <class DataTypes>
 void TOBBModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)

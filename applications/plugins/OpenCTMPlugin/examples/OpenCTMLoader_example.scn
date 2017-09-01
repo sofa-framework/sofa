@@ -8,7 +8,7 @@
     <DefaultContactManager name="Response" response="default" />
     <TreeCollisionGroupManager name="Group" />
     <Node name="OpenCTM file">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <OpenCTMLoader name="loader" filename="./data/bunny.ctm"/>                
         <MechanicalObject name="dofs"/>

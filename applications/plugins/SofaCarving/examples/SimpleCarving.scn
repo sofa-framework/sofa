@@ -12,7 +12,7 @@
   <CarvingManager active="true"/>
 
   <Node name="TT">
-    <EulerImplicit name="cg_odesolver" printLog="false" />
+    <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
     <MeshGmshLoader filename="data/mesh/cylinder.msh" name="loader" />
     <MechanicalObject src="@loader" name="Volume" />

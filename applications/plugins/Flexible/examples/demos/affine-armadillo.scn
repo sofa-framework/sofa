@@ -14,7 +14,7 @@
     <VoronoiShapeFunction name="SF" position="@sampler.position" src="@image" useDijkstra="true" method="0" nbRef="5" />
     
     <Node name="Affine" >
-        <EulerImplicitSolver />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="20" tolerance="1e-15" threshold="1e-15"/>
         
         <MechanicalObject template="Affine" name="dof"  showObject="true" showObjectScale="1" position="@../sampler.position" />

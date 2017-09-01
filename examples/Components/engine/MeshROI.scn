@@ -6,7 +6,7 @@
   <MinProximityIntersection  alarmDistance="0.8" contactDistance="0.5" />
   <TreeCollisionGroupManager  />
   <Node >
-    <EulerImplicit  />
+    <EulerImplicit   rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05" />
     <MeshVTKLoader name="loader" filename="mesh/Ossicles.vtu" />
     <MechanicalObject src="@loader"  name="mecaObj" scale3d="1 1 1" restScale="1" />

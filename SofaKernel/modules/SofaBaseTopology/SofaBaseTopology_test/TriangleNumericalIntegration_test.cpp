@@ -38,9 +38,6 @@
 
 namespace sofa {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 /**  Patch test in 2D and 3D.
@@ -73,7 +70,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
 
         root = simulation::getSimulation()->createNewGraph("root");
     }
-    // create the TriangleSetGeometryAlgorithms object 
+    // create the TriangleSetGeometryAlgorithms object
     void createScene()
     {
         geo = sofa::modeling::addNew<TriangleSetGeometryAlgorithms>(root);
@@ -117,7 +114,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
 
                 }
                 /// real integral value
-                /// use the classical integration formula on the tetrahedron with barycentric coordinates i.e. 
+                /// use the classical integration formula on the tetrahedron with barycentric coordinates i.e.
                 /// int_{\tetrahedron} L_1^a  L_2^b  L_3^c   dV= (a! b! c!) *2V / (a+b+c+2)!
                 /// where L1 , L2 , L3  are the 3 barycentric coordinates.
                 Real realIntegral = (Real)sofa::component::topology::lfactorial(randomPolynomial[0])*

@@ -7,7 +7,7 @@
         <CollisionGroup name="Group" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.04" contactDistance="0.002" />
 
-        <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false"/>
+        <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 	<Node name="tracking">
 		<VRPNImager name="imageData" template="Rigid" listening="true" serverName="134.206.18.181" serverPort="3883" deviceName="TestImage" />

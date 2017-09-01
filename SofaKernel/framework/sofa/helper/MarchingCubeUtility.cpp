@@ -27,6 +27,7 @@
 ****/
 
 #include <sofa/helper/MarchingCubeUtility.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <stack>
 
 #define PRECISION 16384.0
@@ -34,6 +35,7 @@
 #include <string.h>
 #include <set>
 
+MSG_REGISTER_CLASS(sofa::helper::MarchingCubeUtility, "MarchingCubeUtility")
 
 namespace sofa
 {
@@ -735,7 +737,7 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
     using sofa::helper::vector;
     using sofa::defaulttype::Vector3;
 
-    std::cout << "Creating Mesh using Marching Cubes\n";
+    msg_info() << "Creating Mesh using Marching Cubes\n";
     vector<Vector3> &vertices                 = m.getVertices();
     vector< vector < vector <int> > > &facets = m.getFacets();
 
@@ -762,8 +764,8 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
 // A priori, il n'y a pas de données sur les bords (tout du moins sur le premier voxel)
 void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue, unsigned char *_data )
 {
-    std::cout << "MarchingCubeUtility::findSeeds(). Begining." << std::endl;
-    //vector< unsigned char > data ( dataResolution[0]*dataResolution[1]*dataResolution[2] );
+    msg_info() << "findSeeds(). Begining." ;
+
     std::set<unsigned int> parsedVoxels;
     size_t datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
@@ -806,7 +808,8 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
             }
     if (smooth)
         delete [] data;
-    std::cout << "MarchingCubeUtility::findSeeds(). Ending. Seeds: " << seeds << std::endl;
+    msg_info() << "findSeeds(). Ending. Seeds: " << seeds  ;
+
 }
 
 
@@ -905,7 +908,7 @@ void MarchingCubeUtility::findConnectedVoxels ( std::set<unsigned int>& connecte
 
 void MarchingCubeUtility::smoothData ( unsigned char *data ) const
 {
-    std::cout << "Smoothing Data using " << convolutionSize << "x"<< convolutionSize << "x"<< convolutionSize << " as gaussian convolution kernel\n";
+    msg_info() << "Smoothing Data using " << convolutionSize << "x"<< convolutionSize << "x"<< convolutionSize << " as gaussian convolution kernel\n";
     vector< float > convolutionKernel;
     createGaussianConvolutionKernel ( convolutionKernel );
 
