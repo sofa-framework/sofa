@@ -79,7 +79,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     if (stiffness.getValue().empty())
     {
-        msg_warning() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -91,7 +91,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
         useRestMState = false;
       
         if(!restMState.empty())
-            msg_error() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
+            msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
     }
     else
     {
