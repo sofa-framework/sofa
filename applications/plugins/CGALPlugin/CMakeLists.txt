@@ -12,12 +12,14 @@ set(HEADER_FILES
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
+    MeshGenerationFromImplicit.h
 )
 
 set(SOURCE_FILES
     DecimateMesh.cpp
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
+    MeshGenerationFromImplicit.cpp
     initCGALPlugin.cpp
 )
 
@@ -86,7 +88,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CGALPLUGIN_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CGALPLUGIN")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon SofaVolumetricData ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} image)
 endif()

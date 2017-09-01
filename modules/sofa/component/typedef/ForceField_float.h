@@ -41,7 +41,6 @@
 #include <SofaBoundaryCondition/BuoyantForceField.h>
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
-#include <SofaVolumetricData/DistanceGridForceField.h>
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
@@ -122,10 +121,6 @@ typedef sofa::component::forcefield::ConstantForceField<sofa::defaulttype::StdVe
 typedef sofa::component::forcefield::ConstantForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > ConstantForceField6f;
 
 
-
-//---------------------------------------------------------------------------------------------
-//Typedef for DistanceGridForceField
-typedef sofa::component::forcefield::DistanceGridForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > DistanceGridForceField3f;
 
 
 
