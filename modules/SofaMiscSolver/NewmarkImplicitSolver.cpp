@@ -45,9 +45,9 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
-    : f_rayleighStiffness(initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    : f_rayleighStiffness(initData(&f_rayleighStiffness,0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
+    , f_rayleighMass( initData(&f_rayleighMass,0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , f_velocityDamping( initData(&f_velocityDamping,0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_gamma( initData(&f_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient"))
     , f_beta( initData(&f_beta, 0.25, "beta", "Newmark scheme beta coefficient") )

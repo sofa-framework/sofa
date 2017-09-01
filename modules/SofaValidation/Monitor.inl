@@ -49,31 +49,32 @@ namespace misc
 ///////////////////////////// Monitor /////////////////////////////////////
 template <class DataTypes>
 Monitor<DataTypes>::Monitor()
-    : indices ( initData ( &indices, "indices", "MechanicalObject points indices to monitor" ) )
-    , saveXToGnuplot ( initData ( &saveXToGnuplot, false, "ExportPositions", "export Monitored positions as gnuplot file" ) )
-    , saveVToGnuplot ( initData ( &saveVToGnuplot, false, "ExportVelocities", "export Monitored velocities as gnuplot file" ) )
-    , saveFToGnuplot ( initData ( &saveFToGnuplot, false, "ExportForces", "export Monitored forces as gnuplot file" ) )
-    ,showPositions (initData (&showPositions, false, "showPositions", "see the Monitored positions"))
-    ,positionsColor (initData (&positionsColor, "PositionsColor", "define the color of positions"))
-    ,showVelocities (initData (&showVelocities, false, "showVelocities", "see the Monitored velocities"))
-    ,velocitiesColor(initData (&velocitiesColor, "VelocitiesColor", "define the color of velocities"))
-    ,showForces (initData (&showForces, false, "showForces", "see the Monitored forces"))
-    ,forcesColor (initData (&forcesColor, "ForcesColor", "define the color of forces"))
-    ,showMinThreshold (initData (&showMinThreshold, 0.01 ,"showMinThreshold", "under this value, vectors are not represented"))
-    ,showTrajectories (initData (&showTrajectories, false ,"showTrajectories", "print the trajectory of Monitored particles"))
-    ,trajectoriesPrecision (initData (&trajectoriesPrecision, 0.1,"TrajectoriesPrecision", "set the dt between to save of positions"))
-    ,trajectoriesColor(initData (&trajectoriesColor, "TrajectoriesColor", "define the color of the trajectories"))
-    ,showSizeFactor(initData (&showSizeFactor, 1.0, "sizeFactor", "factor to multiply to arrows"))
-    ,saveGnuplotX ( NULL ), saveGnuplotV ( NULL ), saveGnuplotF ( NULL )
-    ,X (NULL), V(NULL), F(NULL)
-    ,internalDt(0.0)
+    : d_indices ( initData ( &d_indices, "indices", "MechanicalObject points indices to monitor" ) )
+    , d_saveXToGnuplot ( initData ( &d_saveXToGnuplot, false, "ExportPositions", "export Monitored positions as gnuplot file" ) )
+    , d_saveVToGnuplot ( initData ( &d_saveVToGnuplot, false, "ExportVelocities", "export Monitored velocities as gnuplot file" ) )
+    , d_saveFToGnuplot ( initData ( &d_saveFToGnuplot, false, "ExportForces", "export Monitored forces as gnuplot file" ) )
+    ,d_showPositions (initData (&d_showPositions, false, "showPositions", "see the Monitored positions"))
+    ,d_positionsColor (initData (&d_positionsColor, "PositionsColor", "define the color of positions"))
+    ,d_showVelocities (initData (&d_showVelocities, false, "showVelocities", "see the Monitored velocities"))
+    ,d_velocitiesColor(initData (&d_velocitiesColor, "VelocitiesColor", "define the color of velocities"))
+    ,d_showForces (initData (&d_showForces, false, "showForces", "see the Monitored forces"))
+    ,d_forcesColor (initData (&d_forcesColor, "ForcesColor", "define the color of forces"))
+    ,d_showMinThreshold (initData (&d_showMinThreshold, 0.01 ,"showMinThreshold", "under this value, vectors are not represented"))
+    ,d_showTrajectories (initData (&d_showTrajectories, false ,"showTrajectories", "print the trajectory of Monitored particles"))
+    ,d_trajectoriesPrecision (initData (&d_trajectoriesPrecision, 0.1,"TrajectoriesPrecision", "set the dt between to save of positions"))
+    ,d_trajectoriesColor(initData (&d_trajectoriesColor, "TrajectoriesColor", "define the color of the trajectories"))
+    ,d_showSizeFactor(initData (&d_showSizeFactor, 1.0, "sizeFactor", "factor to multiply to arrows"))
+    ,d_fileName(initData (&d_fileName, std::string("./") + getName(), "fileName", "name of the plot files to be generated"))
+    ,m_saveGnuplotX ( NULL ), m_saveGnuplotV ( NULL ), m_saveGnuplotF ( NULL )
+    ,m_X (NULL), m_V(NULL), m_F(NULL)
+    ,m_internalDt(0.0)
 {
     if (!f_listening.isSet()) f_listening.setValue(true);
 
-    positionsColor=RGBAColor::yellow();
-    velocitiesColor=RGBAColor::yellow();
-    forcesColor=RGBAColor::yellow();
-    trajectoriesColor=RGBAColor::yellow();
+    d_positionsColor=RGBAColor::yellow();
+    d_velocitiesColor=RGBAColor::yellow();
+    d_forcesColor=RGBAColor::yellow();
+    d_trajectoriesColor=RGBAColor::yellow();
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 
@@ -83,9 +84,9 @@ Monitor<DataTypes>::Monitor()
 template <class DataTypes>
 Monitor<DataTypes>::~Monitor()
 {
-    if (saveGnuplotX) delete ( saveGnuplotX );
-    if (saveGnuplotV) delete ( saveGnuplotV );
-    if (saveGnuplotF) delete ( saveGnuplotF );
+    if (m_saveGnuplotX) delete ( m_saveGnuplotX );
+    if (m_saveGnuplotV) delete ( m_saveGnuplotV );
+    if (m_saveGnuplotF) delete ( m_saveGnuplotF );
 }
 ///////////////////////////// end~Monitor /////////////////////////////////
 
@@ -100,18 +101,19 @@ void Monitor<DataTypes>::init()
 
     if(!mmodel)
     {
-        serr<<"Monitor error : no MechanicalObject found"<<sendl;
+        msg_error("Monitor") << "error : no MechanicalObject found";
         return;
     }
 
-    X = &mmodel->read(core::ConstVecCoordId::position())->getValue();
-    V = &mmodel->read(core::ConstVecDerivId::velocity())->getValue();
-    F = &mmodel->read(core::ConstVecDerivId::force())->getValue();
+    m_X = &mmodel->read(core::ConstVecCoordId::position())->getValue();
+    m_V = &mmodel->read(core::ConstVecDerivId::velocity())->getValue();
+    m_F = &mmodel->read(core::ConstVecDerivId::force())->getValue();
 
 
-    initGnuplot ("./");
 
-    savedPos.resize(indices.getValue().size());
+    initGnuplot (d_fileName.getFullPath());
+
+    m_savedPos.resize(d_indices.getValue().size());
 }
 ///////////////////////////// end init () /////////////////////////////////
 
@@ -121,9 +123,9 @@ void Monitor<DataTypes>::init()
 template<class DataTypes>
 void Monitor<DataTypes>::reset()
 {
-    internalDt = 0.0;
-    for(unsigned int i=0 ; i<indices.getValue().size() ; ++i)
-        savedPos[i].clear();
+    m_internalDt = 0.0;
+    for(unsigned int i=0 ; i<d_indices.getValue().size() ; ++i)
+        m_savedPos[i].clear();
 }
 //////////////////////////// end reset () /////////////////////////////////
 
@@ -144,19 +146,19 @@ void Monitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(ev))
     {
-        if ( saveXToGnuplot.getValue() || saveVToGnuplot.getValue() || saveFToGnuplot.getValue() )
+        if ( d_saveXToGnuplot.getValue() || d_saveVToGnuplot.getValue() || d_saveFToGnuplot.getValue() )
             exportGnuplot ( (Real) this ->getTime() );
 
-        if (showTrajectories.getValue())
+        if (d_showTrajectories.getValue())
         {
-            internalDt += this -> getContext()->getDt();
+            m_internalDt += this->getContext()->getDt();
 
-            if (trajectoriesPrecision.getValue() <= internalDt)
+            if (d_trajectoriesPrecision.getValue() <= m_internalDt)
             {
-                internalDt = 0.0;
-                for (unsigned int i=0; i < indices.getValue().size(); ++i)
+                m_internalDt = 0.0;
+                for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
                 {
-                    savedPos[i].push_back( (*X)[indices.getValue()[i]] );
+                    m_savedPos[i].push_back( (*m_X)[d_indices.getValue()[i]] );
                 }
             }
         }
@@ -168,61 +170,61 @@ template<class DataTypes>
 void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     vparams->drawTool()->setLightingEnabled(false);
-    if (showPositions.getValue())
+    if (d_showPositions.getValue())
     {
         helper::vector<defaulttype::Vector3> points;
-        for (unsigned int i=0; i < indices.getValue().size(); ++i)
+        for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
-            Coord posvertex = (*X)[indices.getValue()[i]];
+            Coord posvertex = (*m_X)[d_indices.getValue()[i]];
             points.push_back(defaulttype::Vector3(posvertex[0],posvertex[1],posvertex[2]));
         }
-        vparams->drawTool()->drawPoints(points, (float)(showSizeFactor.getValue())*2.0f, positionsColor.getValue());
+        vparams->drawTool()->drawPoints(points, (float)(d_showSizeFactor.getValue())*2.0f, d_positionsColor.getValue());
 
     }
 
-    if (showVelocities.getValue())
+    if (d_showVelocities.getValue())
     {
-        for (unsigned int i=0; i < indices.getValue().size(); ++i)
+        for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
-            Coord posVertex = (*X)[indices.getValue()[i]];
+            Coord posVertex = (*m_X)[d_indices.getValue()[i]];
             defaulttype::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
-            Deriv velVertex = (*V)[indices.getValue()[i]];
-            defaulttype::Vector3 p2(showSizeFactor.getValue()*velVertex[0],showSizeFactor.getValue()*velVertex[1],showSizeFactor.getValue()*velVertex[2]);
+            Deriv velVertex = (*m_V)[d_indices.getValue()[i]];
+            defaulttype::Vector3 p2(d_showSizeFactor.getValue()*velVertex[0],d_showSizeFactor.getValue()*velVertex[1],d_showSizeFactor.getValue()*velVertex[2]);
 
-            if(p2.norm() > showMinThreshold.getValue())
-                vparams->drawTool()->drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), velocitiesColor.getValue());
+            if(p2.norm() > d_showMinThreshold.getValue())
+                vparams->drawTool()->drawArrow(p1, p1+p2, (float)(d_showSizeFactor.getValue()*p2.norm()/20.0), d_velocitiesColor.getValue());
         }
     }
 
-    if (showForces.getValue() && F->size()>0)
+    if (d_showForces.getValue() && m_F->size()>0)
     {
-        for (unsigned int i=0; i < indices.getValue().size(); ++i)
+        for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
-            Coord posVertex = (*X)[indices.getValue()[i]];
+            Coord posVertex = (*m_X)[d_indices.getValue()[i]];
             defaulttype::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
-            Deriv forceVertex = (*F)[indices.getValue()[i]];
-            defaulttype::Vector3 p2(showSizeFactor.getValue()*forceVertex[0],showSizeFactor.getValue()*forceVertex[1],showSizeFactor.getValue()*forceVertex[2]);
+            Deriv forceVertex = (*m_F)[d_indices.getValue()[i]];
+            defaulttype::Vector3 p2(d_showSizeFactor.getValue()*forceVertex[0],d_showSizeFactor.getValue()*forceVertex[1],d_showSizeFactor.getValue()*forceVertex[2]);
 
-            if(p2.norm() > showMinThreshold.getValue())
-                vparams->drawTool()->drawArrow(p1, p1+p2, (float)(showSizeFactor.getValue()*p2.norm()/20.0), forcesColor.getValue());
+            if(p2.norm() > d_showMinThreshold.getValue())
+                vparams->drawTool()->drawArrow(p1, p1+p2, (float)(d_showSizeFactor.getValue()*p2.norm()/20.0), d_forcesColor.getValue());
         }
     }
 
-    if (showTrajectories.getValue())
+    if (d_showTrajectories.getValue())
     {
-        internalDt += this -> getContext()->getDt();
-        for (unsigned int i=0; i < indices.getValue().size(); ++i)
+        m_internalDt += this->getContext()->getDt();
+        for (unsigned int i=0; i < d_indices.getValue().size(); ++i)
         {
             helper::vector<defaulttype::Vector3> points;
             Coord point;
-            for (unsigned int j=0 ; j<savedPos[i].size() ; ++j)
+            for (unsigned int j=0 ; j<m_savedPos[i].size() ; ++j)
             {
-                point = savedPos[i][j];
+                point = m_savedPos[i][j];
                 points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
                 if(j!=0)
                     points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
             }
-            vparams->drawTool()->drawLines(points, (float)(showSizeFactor.getValue()*0.2), trajectoriesColor.getValue());
+            vparams->drawTool()->drawLines(points, (float)(d_showSizeFactor.getValue()*0.2), d_trajectoriesColor.getValue());
         }
     }
 }
@@ -240,50 +242,50 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
 {
     if ( !this->getName().empty() )
     {
-        if ( saveXToGnuplot.getValue() )
+        if ( d_saveXToGnuplot.getValue() )
         {
-            if ( saveGnuplotX != NULL ) delete saveGnuplotX;
-            saveGnuplotX = new std::ofstream ( ( path + this->getName() +"_x.txt" ).c_str() );
-            ( *saveGnuplotX ) << "# Gnuplot File : positions of "
-                    << indices.getValue().size() << " particle(s) Monitored"
-                    <<  std::endl;
-            ( *saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
+            if ( m_saveGnuplotX != NULL ) delete m_saveGnuplotX;
+            m_saveGnuplotX = new std::ofstream ( ( path + "_x.txt" ).c_str() );
+            ( *m_saveGnuplotX ) << "# Gnuplot File : positions of "
+                                << d_indices.getValue().size() << " particle(s) Monitored"
+                                <<  std::endl;
+            ( *m_saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
-            for (unsigned int i = 0; i < indices.getValue().size(); i++)
-                ( *saveGnuplotX ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotX ) << std::endl;
+            for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+                ( *m_saveGnuplotX ) << d_indices.getValue()[i] << " ";
+            ( *m_saveGnuplotX ) << std::endl;
 
         }
 
-        if ( saveVToGnuplot.getValue() )
+        if ( d_saveVToGnuplot.getValue() )
         {
-            if ( saveGnuplotV != NULL ) delete saveGnuplotV;
+            if ( m_saveGnuplotV != NULL ) delete m_saveGnuplotV;
 
-            saveGnuplotV = new std::ofstream ( ( path + this->getName() +"_v.txt" ).c_str() );
-            ( *saveGnuplotV ) << "# Gnuplot File : velocities of "
-                    << indices.getValue().size() << " particle(s) Monitored"
-                    <<  std::endl;
-            ( *saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
+            m_saveGnuplotV = new std::ofstream ( ( path + "_v.txt" ).c_str() );
+            ( *m_saveGnuplotV ) << "# Gnuplot File : velocities of "
+                                << d_indices.getValue().size() << " particle(s) Monitored"
+                                <<  std::endl;
+            ( *m_saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
 
-            for (unsigned int i = 0; i < indices.getValue().size(); i++)
-                ( *saveGnuplotV ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotV ) << std::endl;
+            for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+                ( *m_saveGnuplotV ) << d_indices.getValue()[i] << " ";
+            ( *m_saveGnuplotV ) << std::endl;
         }
 
 
 
-        if ( saveFToGnuplot.getValue() )
+        if ( d_saveFToGnuplot.getValue() )
         {
-            if ( saveGnuplotF != NULL ) delete saveGnuplotF;
-            saveGnuplotF = new std::ofstream ( ( path + this->getName() +"_f.txt" ).c_str() );
-            ( *saveGnuplotF ) << "# Gnuplot File : forces of "
-                    << indices.getValue().size() << " particle(s) Monitored"
-                    <<  std::endl;
-            ( *saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
+            if ( m_saveGnuplotF != NULL ) delete m_saveGnuplotF;
+            m_saveGnuplotF = new std::ofstream ( ( path + "_f.txt" ).c_str() );
+            ( *m_saveGnuplotF ) << "# Gnuplot File : forces of "
+                                << d_indices.getValue().size() << " particle(s) Monitored"
+                                <<  std::endl;
+            ( *m_saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
 
-            for (unsigned int i = 0; i < indices.getValue().size(); i++)
-                ( *saveGnuplotF ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotF ) << std::endl;
+            for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+                ( *m_saveGnuplotF ) << d_indices.getValue()[i] << " ";
+            ( *m_saveGnuplotF ) << std::endl;
         }
 
     }
@@ -296,30 +298,30 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
 template<class DataTypes>
 void Monitor<DataTypes>::exportGnuplot ( Real time )
 {
-    if ( saveXToGnuplot.getValue() )
+    if ( d_saveXToGnuplot.getValue() )
     {
-        ( *saveGnuplotX ) << time <<"\t" ;
+        ( *m_saveGnuplotX ) << time <<"\t" ;
 
-        for (unsigned int i = 0; i < indices.getValue().size(); i++)
-            ( *saveGnuplotX ) << (*X)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotX ) << std::endl;
+        for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+            ( *m_saveGnuplotX ) << (*m_X)[d_indices.getValue()[i]] << "\t";
+        ( *m_saveGnuplotX ) << std::endl;
     }
-    if ( saveVToGnuplot.getValue() && V->size()>0 )
+    if ( d_saveVToGnuplot.getValue() && m_V->size()>0 )
     {
-        ( *saveGnuplotV ) << time <<"\t";
+        ( *m_saveGnuplotV ) << time <<"\t";
 
-        for (unsigned int i = 0; i < indices.getValue().size(); i++)
-            ( *saveGnuplotV ) << (*V)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotV ) << std::endl;
+        for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+            ( *m_saveGnuplotV ) << (*m_V)[d_indices.getValue()[i]] << "\t";
+        ( *m_saveGnuplotV ) << std::endl;
     }
 
-    if ( saveFToGnuplot.getValue() && F->size()>0)
+    if ( d_saveFToGnuplot.getValue() && m_F->size()>0)
     {
-        ( *saveGnuplotF ) << time <<"\t";
+        ( *m_saveGnuplotF ) << time <<"\t";
 
-        for (unsigned int i = 0; i < indices.getValue().size(); i++)
-            ( *saveGnuplotF ) << (*F)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotF ) << std::endl;
+        for (unsigned int i = 0; i < d_indices.getValue().size(); i++)
+            ( *m_saveGnuplotF ) << (*m_F)[d_indices.getValue()[i]] << "\t";
+        ( *m_saveGnuplotF ) << std::endl;
     }
 }
 ///////////////////////////////////////////////////////////////////////////

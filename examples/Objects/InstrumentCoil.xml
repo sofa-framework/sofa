@@ -1,5 +1,5 @@
 <Node name="InstrumentEdgeSet">
-    <EulerImplicit rayleighStiffness="0" printLog="false" />
+    <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
     <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false"/>
     
     <MechanicalObject name="MechanicalDOFs" template="Rigid" scale="1"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1"/>

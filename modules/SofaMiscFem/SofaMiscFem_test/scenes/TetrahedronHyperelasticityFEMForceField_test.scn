@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.02" showBoundingTree="0">		
+
+	<VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
+	
+	<Node name="MooneyRivlin-Model" activated="1">				
+		<EulerImplicitSolver rayleighMass="0.1" rayleighStiffness="0.1"/>
+        <!-- SparseLDL : depends on metis and csparse -->
+        <SparseLDLSolver saveMatrixToFile="0" />
+		
+		<MeshVTKLoader filename="cylinderPDMS12724Vol.vtk" name="loader" />		
+		<MechanicalObject src="@loader" name="Volume" />
+        
+        <TetrahedronSetTopologyContainer name="Container" src="@loader" />
+        <TetrahedronSetTopologyModifier name="Modifier" />
+        <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+							
+		<MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="965" />
+				
+		<BoxROI box="-0.05 -0.05 -0.002   0.15 0.05 0.0" drawBoxes="1"  name="fixedBox1"/>
+        <FixedConstraint indices="@fixedBox1.indices"/>
+		
+		<TetrahedronHyperelasticityFEMForceField name="FEM" materialName="MooneyRivlin" ParameterSet="151065.460 101709.668 1e07"/>			
+		
+	</Node>
+
+	<Node>	<!-- target obtained from experimental data with a silicon with known mechanical properties-->
+        <MechanicalObject position="0 -0.11625 0.128"/>
+        <Sphere radius='0.002' color="white"/>
+    </Node>
+</Node>

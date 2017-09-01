@@ -1,6 +1,6 @@
 <Node name="root" dt="0.01">
     <Node name="Dragon">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="-12.0" />

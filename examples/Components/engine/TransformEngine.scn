@@ -7,7 +7,7 @@
     <TreeCollisionGroupManager name="Group" />
     <!-- Using the Transform Engine on the independent MechanicalState -->
     <Node name="TransformedState" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="default12" rayleighStiffness="0.01" />
+        <EulerImplicitSolver name="default12" rayleighStiffness="0.01"  rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default13" iterations="25" threshold="1e-08" tolerance="1e-05"/>
         <SparseGridTopology name="default14" fileTopology="mesh/doubleBall.obj" n="6 6 6" />
         <TransformEngine name="transform" template="Vec3d" translation="10 0 0" rotation="0 0 90" scale="0.5 1 2" input_position="@[-1].position" />

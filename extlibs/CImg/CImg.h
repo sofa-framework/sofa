@@ -4196,7 +4196,11 @@ namespace cimg_library_suffixed {
        but it does not open an extra console windows
        on Windows-based systems.
     **/
-    inline int system(const char *const command, const char *const module_name=0) {
+    inline int system(const char *const
+#ifndef cimg_no_system_calls
+                      command
+#endif
+                      , const char *const module_name=0) {
       cimg::unused(module_name);
 #ifdef cimg_no_system_calls
       return -1;

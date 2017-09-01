@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -342,6 +342,27 @@
           <property name="currentIndex">
            <number>0</number>
           </property>
+          <widget class="QWidget" name="TabGraph">
+           <attribute name="title">
+            <string>Graph</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="_19">
+            <item>
+             <widget class="QPushButton" name="ExportGraphButton">
+              <property name="text">
+               <string>E&amp;xport Graph...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>image1</normaloff>image1</iconset>
+              </property>
+              <property name="shortcut">
+               <string>Alt+X</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
           <widget class="QWidget" name="tabView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -414,27 +435,6 @@
                </layout>
               </item>
              </layout>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="TabGraph">
-           <attribute name="title">
-            <string>Graph</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="_19">
-            <item>
-             <widget class="QPushButton" name="ExportGraphButton">
-              <property name="text">
-               <string>E&amp;xport Graph...</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>image1</normaloff>image1</iconset>
-              </property>
-              <property name="shortcut">
-               <string>Alt+X</string>
-              </property>
-             </widget>
             </item>
            </layout>
           </widget>
@@ -858,7 +858,7 @@
    <sender>fileOpenAction</sender>
    <signal>triggered()</signal>
    <receiver>GUI</receiver>
-   <slot>fileOpen()</slot>
+   <slot>popupOpenFileSelector()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

@@ -73,7 +73,6 @@ public:
         const char* p = arg->getAttribute(size.getName().c_str());
         if (p) {
             std::string nbStr = p;
-//            std::cerr << "VectorLinks parse: setting " << size.getName() << "="<<nbStr<<std::endl;
             size.read(nbStr);
             resize(size.getValue());
         }
@@ -86,7 +85,6 @@ public:
         if (it != str.end() && it->second)
         {
             std::string nbStr = *it->second;
-//            std::cerr  << "VectorLinks parseFields: setting "<< size.getName() << "=" <<nbStr<<std::endl;
             size.read(nbStr);
             resize(size.getValue());
         }

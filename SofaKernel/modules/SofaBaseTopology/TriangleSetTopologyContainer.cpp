@@ -66,7 +66,6 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 
 void TriangleSetTopologyContainer::init()
 {
-    //std::cout << "TriangleSetTopologyContainer::init()" << std::endl;
     EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 }

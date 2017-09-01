@@ -581,7 +581,6 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
-//        std::cout << "...pruned (all parents pruned)" ;
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
             for(unsigned int i = child.size(); i>0;)

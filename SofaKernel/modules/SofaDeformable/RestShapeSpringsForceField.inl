@@ -89,7 +89,7 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
     if (restMState.get() == NULL)
     {
         useRestMState = false;
-
+      
         if(!restMState.empty())
             msg_error() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
     }
@@ -113,7 +113,7 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
 {
     if (stiffness.getValue().empty())
     {
-        msg_warning() << "RestShapeSpringsForceField : No stiffness is defined, assuming equal stiffness on each node, k = 100.0 ";
+        msg_info() << "No stiffness is defined, assuming equal stiffness on each node, k = 100.0 " ;
 
         VecReal stiffs;
         stiffs.push_back(100.0);
@@ -207,15 +207,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
                 ext_index= m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            //Springs_dir[i] = p1[index] - p0[ext_index];
-            //Springs_dir[i].normalize();
             f1[index] -=  dx * k0 ;
-
-            //	if (dx.norm()>0.00000001)
-            //		std::cout<<"force on point "<<index<<std::endl;
-
-            //	Deriv dx = p[i] - p_0[i];
-            //	f[ indices[i] ] -=  dx * k[0] ;
         }
     }
     else
@@ -228,15 +220,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
                 ext_index= m_ext_indices[i];
 
             Deriv dx = p1[index] - p0[ext_index];
-            //Springs_dir[i] = p1[index] - p0[ext_index];
-            //Springs_dir[i].normalize();
             f1[index] -=  dx * k[i];
-
-            //	if (dx.norm()>0.00000001)
-            //		std::cout<<"force on point "<<index<<std::endl;
-
-            //	Deriv dx = p[i] - p_0[i];
-            //	f[ indices[i] ] -=  dx * k[i] ;
         }
     }
 }
@@ -314,7 +298,6 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
     vparams->drawTool()->drawLines(vertices,5,Vec4f(springColor.getValue()));
-
     vparams->drawTool()->restoreLastState();
 }
 
@@ -342,12 +325,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
@@ -360,12 +337,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
         }
@@ -400,12 +371,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k0);
             }
         }
@@ -422,12 +387,6 @@ void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalPara
 
             for(int i = 0; i < N; i++)
             {
-
-                //	for (unsigned int j = 0; j < N; j++)
-                //	{
-                //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
-                //	}
-
                 mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[index]);
             }
         }

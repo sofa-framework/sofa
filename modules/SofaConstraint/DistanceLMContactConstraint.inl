@@ -123,7 +123,6 @@ void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::C
 
         Deriv tgt1, tgt2;
         computeTangentVectors(tgt1,tgt2,normal);
-        //                    cerr<<"DistanceLMContactConstraint<DataTypes>::buildJacobian, tgt1 = "<<tgt1<<", tgt2 = "<<tgt2<<endl;
 
         MatrixDerivRowIterator c1_t1 = c1->writeLine(cIndex);
         c1_t1.addCol(idx1,tgt1);
@@ -150,9 +149,7 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
 {
     using namespace core;
     using namespace core::objectmodel;
-    //                cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, scalarConstraintsIndices.size() = "<<scalarConstraintsIndices.size()<<endl;
     const SeqEdges &edges =  pointPairs.getValue();
-
 
     if (scalarConstraintsIndices.empty()) return;
     unsigned scalarConstraintIndex = 0;
@@ -182,7 +179,6 @@ void DistanceLMContactConstraint<DataTypes>::writeConstraintEquations(unsigned i
             correction+= this->simulatedObject1->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v1);
             correction+= this->simulatedObject2->getConstraintJacobianTimesVecDeriv(scalarConstraintsIndices[scalarConstraintIndex],v2);
             constraintGroup->addConstraint( lineNumber, scalarConstraintsIndices[scalarConstraintIndex++], -correction);
-            //                            cerr<<"DistanceLMContactConstraint<DataTypes>::writeConstraintEquations, constraint inserted "<<endl;
             break;
         }
         case core::ConstraintParams::POS :

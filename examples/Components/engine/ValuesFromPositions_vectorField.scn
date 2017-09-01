@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <TreeCollisionGroupManager name="Group" />
     <Node name="Cube" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Vec3d" name="mecaObj" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
         <UniformMass template="Vec3d" name="default25" mass="0.25" />

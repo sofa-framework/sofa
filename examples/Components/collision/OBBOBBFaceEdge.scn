@@ -6,7 +6,7 @@
 	<DefaultContactManager name="Response"  response="default" />
 	<TreeCollisionGroupManager name="Group" />
 	<NewProximityIntersection name="newProximityIntersection0" />
-	<EulerImplicitSolver name="Implicit Euler Solver" />
+	<EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
 		<MechanicalObject template="Rigid" name="mObject37"  position="0 0 -10 0.270598 0.653281 0.270598 0.653282"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />

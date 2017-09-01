@@ -5,7 +5,7 @@
 
     <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
     <Node name="Cube grid" >
-<!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
+<!--        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 
 	<CompliantImplicitSolver/>
 	<LDLTSolver/>

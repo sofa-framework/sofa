@@ -8,7 +8,7 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
     
-<!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
+<!--     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver  /> -->
         <CompliantImplicitSolver  />        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
 
     <Node 	name="volumeconservation"   >

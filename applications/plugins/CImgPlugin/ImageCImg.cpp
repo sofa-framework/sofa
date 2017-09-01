@@ -74,10 +74,9 @@ bool ImageCImg::load(std::string filename)
         return false;
     }
 
-    unsigned int width, height, depth, channels;
+    unsigned int width, height, channels;
     width = cimgImage.width();
     height = cimgImage.height();
-    depth = cimgImage.depth();
     channels = cimgImage.spectrum();
 
     Image::DataType dataType;

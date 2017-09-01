@@ -46,6 +46,7 @@ namespace sofa {
 #include <string>
 #include <string.h>
 
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/helper.h>
 #include <vector>
 #include <map>
@@ -57,6 +58,19 @@ using sofa::helper::system::FileMonitor ;
 
 #include <memory>
 
+////////////////////////////// FORWARD DEFINITION //////////////////////////////////////////////////
+namespace sofa {
+    namespace helper {
+        namespace gl {
+            class GLSLShader ;
+        }
+    }
+}
+
+MSG_REGISTER_CLASS(sofa::helper::gl::GLSLShader, "GLSLShader")
+
+
+////////////////////////////////////// DEFINITION //////////////////////////////////////////////////
 namespace sofa
 {
 
@@ -147,7 +161,7 @@ public:
     std::string GetHeader() const;
 
     bool        IsSet(GLint type) const;
-    GLhandleARB GetShaderID(GLint type) const; //	{	std::map<GLint,GLhandleARB>::const_iterator it = m_hShaders.find(type); return (it.second ? *it.first : 0); }
+    GLhandleARB GetShaderID(GLint type) const;
     std::string GetVertexShaderFileName  () const { return GetShaderFileName(GL_VERTEX_SHADER_ARB); }
     GLhandleARB GetVertexShaderID        () const { return GetShaderID      (GL_VERTEX_SHADER_ARB); }
     std::string GetFragmentShaderFileName() const { return GetShaderFileName(GL_FRAGMENT_SHADER_ARB); }
@@ -209,12 +223,12 @@ public:
     void SetMatrix3x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix4x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
 #else
-    void SetMatrix2x3(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix2x3 not supported ."); }
-    void SetMatrix3x2(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix3x2 not supported ."); }
-    void SetMatrix2x4(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix2x4 not supported ."); }
-    void SetMatrix4x2(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix4x2 not supported ."); }
-    void SetMatrix3x4(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix3x4 not supported ."); }
-    void SetMatrix4x3(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { fprintf(stderr,"SetMatrix4x3 not supported ."); }
+    void SetMatrix2x3(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() << "SetMatrix2x3 not supported ."; }
+    void SetMatrix3x2(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() << "SetMatrix3x2 not supported ."; }
+    void SetMatrix2x4(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() <<"SetMatrix2x4 not supported ."; }
+    void SetMatrix4x2(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() <<"SetMatrix4x2 not supported ."; }
+    void SetMatrix3x4(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() <<"SetMatrix3x4 not supported ."; }
+    void SetMatrix4x3(GLint /*location*/,GLsizei /*count*/,GLboolean /*transpose*/, const GLfloat */*value*/) { msg_error() <<"SetMatrix4x3 not supported ."; }
 #endif
     /// @}
 
@@ -257,7 +271,7 @@ protected:
     std::string header;
 
     std::map<GLint, ShaderContents> m_hShaderContents;
-    
+
     std::map<GLint, GLhandleARB> m_hShaders;
 
     /// This handle stores our program information which encompasses our shader

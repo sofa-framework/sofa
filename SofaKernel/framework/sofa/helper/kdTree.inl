@@ -57,7 +57,7 @@ void kdTree<Coord>::build(const VecCoord& positions, const vector<unsigned int> 
 template<class Coord>
 void kdTree<Coord>::print(const unsigned int index)
 {
-    std::cout<<index<<"["<<(int)tree[index].splitdir<<"] "<<tree[index].left<<" "<<tree[index].right<<std::endl;
+    dmsg_info("KDTree") << index<<"["<<(int)tree[index].splitdir<<"] "<<tree[index].left<<" "<<tree[index].right ;
     if(tree[index].left!=index) print(tree[index].left);
     if(tree[index].right!=index) print(tree[index].right);
 }
@@ -172,7 +172,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
         cacheThresh_min.first=((it1->first)-(it0->first))*(Real)0.5; // half distance between first and second closest points
         cacheThresh_min.second=it0->second;
         previous_x=x;
-//        std::cout<<"not in cache"<<std::endl;
         return false;
     }
     else if(dx>=cacheThresh_min.first) // in the cache -> update N-1 distances
@@ -184,7 +183,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
             else
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
-//        std::cout<<"in cache:"<<std::endl;
         return true;
     }
     else // still the same closest point
@@ -196,7 +194,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
             else
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
-//        std::cout<<"same"<<std::endl;
         return true;
     }
 }

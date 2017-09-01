@@ -15,7 +15,7 @@
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 
-    <EulerImplicit vdamping="2.0" />
+    <EulerImplicit vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="30"  tolerance="1e-6" threshold="1e-6" />
 
     <Node name="TrackedHand" activated="true" >
