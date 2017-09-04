@@ -7,7 +7,7 @@
 	<SleepController immobileThreshold="0.2" minTimeSinceWakeUp="0.1" printLog="0" />
 	
     <Node name="Cube1" canChangeSleepingState="true">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass mass="0.25" />

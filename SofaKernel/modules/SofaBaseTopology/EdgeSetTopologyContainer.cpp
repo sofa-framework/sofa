@@ -78,7 +78,6 @@ void EdgeSetTopologyContainer::init()
             }
         }
     }
-    // std::cout << "coords: " << getPX(m_edge[1][0]) << " " << getPY(m_edge[1][0]) << " " << getPZ(m_edge[1][0]) << std::endl;
 
     PointSetTopologyContainer::init();
 }
@@ -561,7 +560,7 @@ void EdgeSetTopologyContainer::clear()
 {
     clearEdges();
     clearEdgesAroundVertex();
-	// Do not set to 0 the number of points as it prevents the  creation of topological items (edgeArray in tetrahedra for instance)
+    // Do not set to 0 the number of points as it prevents the  creation of topological items (edgeArray in tetrahedra for instance)
 //    PointSetTopologyContainer::clear();
 }
 

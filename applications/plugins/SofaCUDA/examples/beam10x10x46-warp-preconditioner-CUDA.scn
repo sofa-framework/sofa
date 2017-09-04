@@ -19,7 +19,7 @@
 	</Node>
 	<Node name="M1">
 		<!--<CGImplicit iterations="10" />-->
-		<EulerImplicit name="odesolver" />
+		<EulerImplicit name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<PCGLinearSolver name="linearsolver" iterations="100" preconditioners="preconditioner"/>
 		<RegularGrid
 			nx="10" ny="10" nz="46"

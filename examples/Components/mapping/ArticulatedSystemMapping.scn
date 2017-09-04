@@ -5,7 +5,7 @@
     <DefaultPipeline />
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
     <Node>
-        <EulerImplicit name="cg odesolver" printLog="false" />
+        <EulerImplicit name="cg odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" name="linear solver" threshold="1e-20" tolerance="1e-20" />
         <Node name="restarticulation">
             <MechanicalObject name="rest" template="Vec1d" position="0 0 0 0" />

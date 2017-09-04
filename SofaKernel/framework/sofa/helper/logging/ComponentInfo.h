@@ -74,6 +74,14 @@ inline const ComponentInfo::SPtr getComponentInfo(const std::string& s)
     return ComponentInfo::SPtr( new ComponentInfo(s) );
 }
 
+/// This function is used in the msg_* macro to handle emitting case based on string.
+inline const ComponentInfo::SPtr getComponentInfo(const ComponentInfo::SPtr& s)
+{
+    return s;
+}
+
+inline bool notMuted(const ComponentInfo::SPtr&){ return true; }
+
 /// This function is used in the msg_* macro to handle string based on string.
 inline bool notMuted(const std::string&){ return true; }
 

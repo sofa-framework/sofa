@@ -318,7 +318,6 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
 void BaseData::addLink(BaseLink* l)
 {
     m_vecLink.push_back(l);
-    //l->setOwner(this);
 }
 
 void BaseData::copyAspect(int destAspect, int srcAspect)
@@ -328,7 +327,6 @@ void BaseData::copyAspect(int destAspect, int srcAspect)
     DDGNode::copyAspect(destAspect, srcAspect);
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        //std::cout << "  " << iLink->first;
         (*iLink)->copyAspect(destAspect, srcAspect);
     }
 }

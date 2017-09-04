@@ -252,7 +252,6 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
                 }
                 parentForce[links[i][0]] -= df;
                 parentForce[links[i][1]] += df;
-         //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
             }
         }
     }
@@ -261,7 +260,6 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 
@@ -681,7 +679,6 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             }
             parentForce0[pair0[1]] -= df;
             parentForce1[pair1[1]] += df;
- //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
     }
 

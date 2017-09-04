@@ -139,7 +139,6 @@ struct BaseMatrixLinearOpMV_BlockSparse
     typedef typename M::Index Index;
     void operator()(const M* mat, V1& result, const V2& v)
     {
-//         std::cout << "BaseMatrixLinearOpMV_BlockSparse: " << mat->bRowSize() << "x" << mat->bColSize() << " " << NL << "x" << NC << " blocks, " << (add ? "add" : "write") << " to result vector, use " << (transpose ? "transposed " : "") << "matrix." << std::endl;
         const Index rowSize = mat->rowSize();
         const Index colSize = mat->colSize();
         BlockData buffer;
@@ -331,20 +330,6 @@ public:
         const BaseMatrix::MatrixCategory category = mat->getCategory();
         const BaseMatrix::ElementType elementType = mat->getElementType();
         const std::size_t elementSize = mat->getElementSize();
-//         std::cout << "BaseMatrixLinearOpMV: " << mat->bRowSize() << "x" << mat->bColSize() << " " << NL << "x" << NC << " blocks, ";
-//         switch (category)
-//         {
-// 	  case BaseMatrix::MATRIX_IDENTITY: std::cout << "identity"; break;
-// 	  case BaseMatrix::MATRIX_DIAGONAL: std::cout << "diagonal"; break;
-// 	  case BaseMatrix::MATRIX_BAND: std::cout << "band"; break;
-// 	  case BaseMatrix::MATRIX_SPARSE: std::cout << "sparse"; break;
-// 	  case BaseMatrix::MATRIX_FULL: std::cout << "full"; break;
-// 	  case BaseMatrix::MATRIX_UNKNOWN: std::cout << "unknown"; break;
-//         }
-//         if (elementType == BaseMatrix::ELEMENT_INT) std::cout << " int" << elementSize*8;
-//         else if (elementType == BaseMatrix::ELEMENT_FLOAT) std::cout << " float" << elementSize*8;
-//         std::cout << " matrix, ";
-//         std::cout << (add ? "add" : "write") << " to result vector, use " << (transpose ? "transposed " : "") << "matrix." << std::endl;
         if (category == BaseMatrix::MATRIX_IDENTITY)
         {
             opIdentity(mat, result, v);
@@ -353,14 +338,6 @@ public:
         {
             opFull(mat, result, v);
         }
-        //else if (category == BaseMatrix::MATRIX_DIAGONAL && NL == 1 && NC == 1)
-        //{
-        //    opDiagonal(mat, result, v);
-        //}
-        //else if (elementType == BaseMatrix::ELEMENT_INT && elementSize == sizeof(int))
-        //{
-        //    opDynamicReal<int, M, V1, V2>(mat, result, v, NL, NC, category);
-        //}
         else if (elementType == BaseMatrix::ELEMENT_FLOAT && elementSize == sizeof(float))
         {
             opDynamicReal<float, M, V1, V2>(mat, result, v, NL, NC, category);
@@ -381,21 +358,18 @@ class BaseMatrixLinearOpPMulTV : public BaseMatrixLinearOpMV<true, true> {};
 /// Multiply the matrix by vector v and put the result in vector result
 void BaseMatrix::opMulV(defaulttype::BaseVector* result, const defaulttype::BaseVector* v) const
 {
-    //std::cout << "BaseMatrix::opMulV(BaseVector)" << std::endl;
     BaseMatrixLinearOpMulV::opDynamic(this, *result, *v);
 }
 
 /// Multiply the matrix by float vector v and put the result in vector result
 void BaseMatrix::opMulV(float* result, const float* v) const
 {
-    //std::cout << "BaseMatrix::opMulV(float)" << std::endl;
     BaseMatrixLinearOpMulV::opDynamic(this, result, v);
 }
 
 /// Multiply the matrix by double vector v and put the result in vector result
 void BaseMatrix::opMulV(double* result, const double* v) const
 {
-    //std::cout << "BaseMatrix::opMulV(double)" << std::endl;
     BaseMatrixLinearOpMulV::opDynamic(this, result, v);
 }
 
@@ -478,8 +452,6 @@ struct BaseMatrixLinearOpAM_BlockSparse
 
     void operator()(const M1* m1, M2* m2, double & fact)
     {
-        //const Index rowSize = m1->rowSize();
-        //const Index colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
@@ -502,16 +474,12 @@ struct BaseMatrixLinearOpAM_BlockSparse
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             m2->add(i+bi,j+bj,bdata[bi][bj] * fact);
-                    //m2->add(i,j,bdata * fact);
-
                 }
                 else
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             m2->add(j+bj,i+bi,bdata[bi][bj] * fact);
-                    //m2->add(j,i,bdata * fact);
-
                 }
             }
         }
@@ -530,8 +498,6 @@ struct BaseMatrixLinearOpAMS_BlockSparse
 
     void operator()(const M1* m1, M1* m2, double & fact)
     {
-        //const Index rowSize = m1->rowSize();
-        //const Index colSize = m1->colSize();
         BlockData buffer;
 
         for (std::pair<RowBlockConstIterator, RowBlockConstIterator> rowRange = m1->bRowsRange();
@@ -548,26 +514,17 @@ struct BaseMatrixLinearOpAMS_BlockSparse
                 BlockConstAccessor block = colRange.first.bloc();
                 const BlockData& bdata = *(const BlockData*)block.elements(buffer.ptr());
                 const Index j = block.getCol() * NC;
-
-//                 if (!transpose) {
-// 		    m2->add(i,j,bdata);
-//                 } else {
-// 		    m2->add(j,i,bdata);
-//                 }
                 if (!transpose)
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             m2->add(i+bi,j+bj,bdata[bi][bj] * fact);
-                    //m2->add(i,j,bdata * fact);
-
                 }
                 else
                 {
                     for (int bi = 0; bi < NL; ++bi)
                         for (int bj = 0; bj < NC; ++bj)
                             m2->add(j+bj,i+bi,bdata[bi][bj] * fact);
-                    //m2->add(j,i,bdata * fact);
                 }
             }
         }
@@ -671,22 +628,13 @@ public:
     template <class Real, class M1, class M2 >
     static inline void opDynamicRealDefault(const M1 * m1, M2 * m2, double fact, Index NL, Index NC, BaseMatrix::MatrixCategory /*category*/)
     {
-        std::cout << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." << std::endl;
+        dmsg_info("LCPcalc") << "PERFORMANCE WARNING: multiplication by matric with block size " << NL << "x" << NC << " not optimized." ;
         opFull(m1, m2, fact);
     }
 
     template <class Real, int NL, int NC, class M1, class M2>
     static inline void opDynamicRealNLNC(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory /* category */)
     {
-//        switch(category)
-//        {
-// 	  case BaseMatrix::MATRIX_DIAGONAL:
-// 	  {
-// 	      BaseMatrixLinearOpAM_BlockDiagonal<Real, NL, NC, add, transpose, M, V1, V2> op;
-// 	      op(m1, m2, fact);
-// 	      break;
-// 	  }
-//	  default: // default to sparse
         {
             const Index NL1 = m2->getBlockRows();
             const Index NC2 = m2->getBlockCols();
@@ -700,28 +648,15 @@ public:
                 BaseMatrixLinearOpAM_BlockSparse<Real, NL, NC, transpose, M1 , M2 > op;
                 op(m1, m2, fact);
             }
-//	      break;
-//	  }
         }
     }
 
     template <class Real, class M1, class M2>
     static inline void opDynamicReal1(const M1 * m1, M2 * m2, double fact, BaseMatrix::MatrixCategory /* category */)
     {
-//        switch(category)
-//        {
-// 	  case BaseMatrix::MATRIX_DIAGONAL:
-// 	  {
-// 	      BaseMatrixLinearOpAM_BlockDiagonal<Real, NL, NC, add, transpose, M, V1, V2> op;
-// 	      op(m1, m2, fact);
-// 	      break;
-// 	  }
-//	  default: // default to sparse
         {
             BaseMatrixLinearOpAM1_BlockSparse<Real , transpose, M1, M2 > op;
             op(m1, m2, fact);
-//	      break;
-//	  }
         }
     }
 
@@ -747,7 +682,6 @@ public:
     {
         switch(NL)
         {
-            //case 1: opDynamicRealNL<Real, 1, M1, M2 >(m1, m2, fact, NC, category); break;
         case 2: opDynamicRealNL<Real, 2, M1, M2 >(m1, m2, fact, NC, category); break;
         case 3: opDynamicRealNL<Real, 3, M1, M2 >(m1, m2, fact, NC, category); break;
         case 4: opDynamicRealNL<Real, 4, M1, M2 >(m1, m2, fact, NC, category); break;
@@ -774,14 +708,6 @@ public:
         {
             opFull(m1, m2, fact);
         }
-        //else if (category == BaseMatrix::MATRIX_DIAGONAL && NL == 1 && NC == 1)
-        //{
-        //    opDiagonal(mat, result, v);
-        //}
-        //else if (elementType == BaseMatrix::ELEMENT_INT && elementSize == sizeof(int))
-        //{
-        //    opDynamicReal<int, M, V1, V2>(mat, result, v, NL, NC, category);
-        //}
         else if (elementType == BaseMatrix::ELEMENT_FLOAT && elementSize == sizeof(float))
         {
             opDynamicReal<float, M1, M2 >(m1, m2, fact, NL, NC, category);

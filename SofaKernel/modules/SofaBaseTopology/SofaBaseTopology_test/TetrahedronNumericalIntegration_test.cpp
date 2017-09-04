@@ -38,9 +38,6 @@
 
 namespace sofa {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 /**  Patch test in 2D and 3D.
@@ -139,7 +136,6 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
     {
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 };

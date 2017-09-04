@@ -25,6 +25,7 @@
 
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
@@ -83,7 +84,7 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
-    loadSceneWithArguments(filename, {}, &root);
+    loadSceneWithArguments(filename, helper::ArgumentParser::extra_args(), &root);
     return root;
 }
 

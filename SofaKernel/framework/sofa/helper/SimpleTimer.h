@@ -110,7 +110,6 @@ public:
     {
         if (timer_nstep >= T_NSTEPS) return;
         int i = timer_nstep;
-        //if (timer_niter == 0)
         {
             timers_name[i] = timer_lastname;
             timer_lastname = name;
@@ -133,21 +132,21 @@ public:
         timers_start = t;
         if (timer_niter > 0 && (timer_niter % T_NITERS) == 0)
         {
-            std::cout << "TIMER after " << timer_niter << " iterations :" << std::endl;
+            std::stringstream tmpmsg ;
+            tmpmsg << "TIMER after " << timer_niter << " iterations :" << msgendl;
             for (int i=0; i<T_NSTEPS; ++i)
             {
                 if (timers_total[i])
                 {
                     double tcur = 1000.0 * (double)timers_current[i] / (double) timer_freq;
                     double ttot = 1000.0 * (double)timers_total[i] / (double) (timer_niter * timer_freq);
-                    std::cout << "  " << i << ". " << timers_name[i] << "\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << std::endl;
+                    tmpmsg << "  " << i << ". " << timers_name[i] << "\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << msgendl;
                 }
             }
-            {
-                double tcur = 1000.0 * (double)timer_current / (double) timer_freq;
-                double ttot = 1000.0 * (double)timer_total / (double) (timer_niter * timer_freq);
-                std::cout << "** TOTAL *********\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << std::endl;
-            }
+            double tcur = 1000.0 * (double)timer_current / (double) timer_freq;
+            double ttot = 1000.0 * (double)timer_total / (double) (timer_niter * timer_freq);
+            tmpmsg << "** TOTAL *********\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " ;
+            msg_info("SimpleTimer") << tmpmsg.str() ;
         }
     }
 };

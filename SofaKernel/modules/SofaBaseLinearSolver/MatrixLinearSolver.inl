@@ -63,7 +63,7 @@ MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaul
 template<class Matrix, class Vector>
 MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
 {
-    std::cerr << "ERROR the solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return" << std::endl;
+    msg_error("MatrixLinearSolver") << "The solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return." ;
     return NULL;
 }
 
@@ -350,7 +350,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            std::cerr << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" << std::endl;
+            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" ;
             return false;
         }
     }

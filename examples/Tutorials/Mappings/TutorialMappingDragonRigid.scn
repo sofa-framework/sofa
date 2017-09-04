@@ -2,7 +2,7 @@
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialMappingDragonRigid -->
 <Node name="root" dt="0.01" gravity="0 0 -9.81">
     <VisualStyle displayFlags="showVisual showBehavior" />
-    <EulerImplicitSolver name="EulerImplicit" />
+    <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <MechanicalObject name="RigidDOF" template="Rigid" dz="1" rotation="90 0 -90" />
     <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />

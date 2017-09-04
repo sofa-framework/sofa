@@ -60,7 +60,6 @@ public:
 
             // ignore if format already supported
             if (sofa::helper::io::Image::FactoryImage::HasKey(format)) continue;
-            //std::cout << "ImageQt: supporting format "<<format<<std::endl;
             creators.push_back(new sofa::helper::Creator<sofa::helper::io::Image::FactoryImage, ImageQt>(format));
         }
     }

@@ -139,7 +139,6 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , matrixJ()
     , updateJ(false)
 {
-    //std::cout << "RigidMapping Creation\n";
     this->addAlias(&fileRigidMapping, "filename");
 }
 
