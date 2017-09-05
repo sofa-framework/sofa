@@ -45,6 +45,7 @@ namespace simulation
 
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
+    PythonEnvironment::gil lock(__func__);
     Py_InitModule(name.c_str(), methodDef);
 }
 
@@ -77,6 +78,11 @@ void PythonEnvironment::Init()
     {
         Py_Initialize();
     }
+    
+    PyEval_InitThreads();
+    
+    // the first gil lock is here
+    gil lock(__func__);
 
     // Append sofa modules to the embedded python environment.
     bindSofaPythonModule();
@@ -144,7 +150,12 @@ void PythonEnvironment::Init()
 void PythonEnvironment::Release()
 {
     // Finish the Python Interpreter
-    Py_Finalize();
+
+    // obviously can't use raii here
+    if( Py_IsInitialized() ) {
+        PyGILState_Ensure();    
+        Py_Finalize();
+    }
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
@@ -153,7 +164,12 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
     if (addedPath.find(path)==addedPath.end()) {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
-        PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
+
+        {
+            gil lock(__func__);
+            PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
+        }
+        
         SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
         addedPath.insert(path);
     }
@@ -214,6 +230,7 @@ void PythonEnvironment::addPythonModulePathsForPlugins(const std::string& plugin
 // basic script functions
 std::string PythonEnvironment::getError()
 {
+    gil lock(__func__);
     std::string error;
 
     PyObject *ptype, *pvalue /* error msg */, *ptraceback /*stack snapshot and many other informations (see python traceback structure)*/;
@@ -226,6 +243,7 @@ std::string PythonEnvironment::getError()
 
 bool PythonEnvironment::runString(const std::string& script)
 {
+    gil lock(__func__);
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
     PyObject* result = PyRun_String(script.data(), Py_file_input, pDict, pDict);
 
@@ -244,6 +262,7 @@ bool PythonEnvironment::runString(const std::string& script)
 
 std::string PythonEnvironment::getStackAsString()
 {
+    gil lock(__func__);
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("SofaPython"));
     PyObject* pFunc = PyDict_GetItemString(pDict, "getStackForSofa");
     if (PyCallable_Check(pFunc))
@@ -290,6 +309,7 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
 }
 
 bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments) {
+    const gil lock(__func__);
     const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
 
     // pro-tip: FileNameWithoutExtension == basename
@@ -357,6 +377,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
 void PythonEnvironment::SceneLoaderListerner::rightBeforeLoadingScene()
 {
+    gil lock(__func__);
     // unload python modules to force importing their eventual modifications
     PyRun_SimpleString("SofaPython.unloadModules()");
 }
@@ -371,9 +392,65 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
+    gil lock(__func__);    
     PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
+
+
+static const bool debug_gil = false;
+
+static PyGILState_STATE lock(const char* trace) {
+    if(debug_gil && trace) {
+        std::clog << ">> " << trace << " wants the gil" << std::endl;
+    }
+    
+    // this ensures that we start with no active thread before first locking the
+    // gil: this way the last gil unlock lets python threads to run (otherwise
+    // the main thread still holds the gil, preventing python threads to run
+    // until the main thread exits).
+
+    // the first gil aquisition should happen right after the python interpreter
+    // is initialized.
+    static const PyThreadState* init = PyEval_SaveThread(); (void) init;
+
+    return PyGILState_Ensure();
+}
+
+
+PythonEnvironment::gil::gil(const char* trace)
+    : state(lock(trace)),
+      trace(trace) { }
+
+
+PythonEnvironment::gil::~gil() {
+
+    PyGILState_Release(state);
+    
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " released the gil" << std::endl;
+    }
+    
+}
+
+
+
+PythonEnvironment::no_gil::no_gil(const char* trace)
+    : state(PyEval_SaveThread()),
+      trace(trace) {
+    if(debug_gil && trace) {
+        std::clog << ">> " << trace << " temporarily released the gil" << std::endl;
+    }
+}
+
+PythonEnvironment::no_gil::~no_gil() {
+
+    if(debug_gil && trace) {
+        std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
+    }
+    
+    PyEval_RestoreThread(state);
+}
 
 } // namespace simulation
 
