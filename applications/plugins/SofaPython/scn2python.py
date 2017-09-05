@@ -55,7 +55,7 @@ def attributesToStringPython(child,printName) :
 def rootAttributesToStringPython(root,tabs) :
     attribute_str = str()
     for item in root.items() :
-        if (not (item[0] == 'name') ):
+        if (not (item[0] == 'name') ) and (not (item[0] == 'showBoundingTree') ) :
             attribute_str += tabs+"rootNode.findData(\'" + item[0] + "\').value = \'" + item[1] + "\'\n"
     return attribute_str;
 
@@ -205,7 +205,13 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
         tabs = "    "
         pythonFile_str += "\n\ndef createScene(rootNode):\n"
         pythonFile_str += rootAttributesToStringPython(node,tabs)
-        pythonFile_str += tabs+"my"+classNamePythonFile+" = "+classNamePythonFile+"(rootNode,sys.argv)"
+        pythonFile_str += tabs+"try : \n"
+        pythonFile_str += tabs+"    sys.argv[0]\n"
+        pythonFile_str += tabs+"except :\n"
+        pythonFile_str += tabs+"    commandLineArguments = []\n"
+        pythonFile_str += tabs+"else :\n"
+        pythonFile_str += tabs+"    commandLineArguments = sys.argv\n"
+        pythonFile_str += tabs+"my"+classNamePythonFile+" = "+classNamePythonFile+"(rootNode,commandLineArguments)"
         pythonFile_str += "\n"+tabs+"return 0;"
 
     # write python file
