@@ -12,17 +12,47 @@
 **For users**
 
 **For developpers**
+- [all]
+    - Fix the default value rayleigh params, now set to zero (#339)
 - [SofaKernel]
     - Change the way all MechanicalVisitor apply projective constraints. This change is breaking the API and external solver's code need to be updated (#216)
+    - Improve messaging by implementing <<operator to report those line number (for python and xml error reporting) (#314)
+- [SofaPython]
+    - General SofaPython cleaning and improvement(#304)
+- [runSofa]
+    - New system for plugin auto-loading (#301)
 
 
 ### Improvements
 
 **Modules**
+- [SofaKernel]
+    - Add check of vector size in TetrahedronFEMForceField (#341)
 - [SofaGraphComponent]
     - Add SceneCheckerVisitor to detect missing RequiredPlugin (#306)
+    - Add a mechanism (SceneChecker) to report API & SceneChange to users (#329)
+- [SofaDeformable]
+    - Rest shape can now be given using SingleLink (#315)
+    - Add AngularSpringForceField (#334)
+- [SofaSimpleFem]
+    - Add a bounding box computed for HexahedronFEMForceField (#289)
+- [SofaExporter]
+    - Fix VTKExporter to create inheriting classes (#309)
+- [SofaGeneralEngine]
+    - Add test and minor cleaning for IndexValueMapper (#319)
 
 **Applications and Plugins**
+- [SofaPython]
+    - Add unicode to string convertion and a warning message in Binding_BaseContext::pythonToSofaDataString (#313)
+    - Add unicode to string convertion in Binding_BaseData::SetDataValuePython (#313)
+    - Add a test (#313)
+    - Add support for Sofa.msg_ with emitter other than a string (#335)
+- [CGALPlugin]
+    - Add new functionality for mesh generation from image: definition of features (#294)
+- [meshconv]
+    - Improve the CMake config of meshconv requiring miniflowVR to compile (#358)
+- [runSofa]
+    - Extend the live coding support, message API available for nodes, add an openInEditor (#337)
 
 **Scenes**
 
@@ -30,19 +60,41 @@
 ### Bug Fixes
 
 **Modules**
+- [SofaKernel]
+    - Fix CUDA compilation with pointer of data (#320) 
+- [SofaConstraint]
+    - Fix error due to MacOS >= 10.11 using a relative filename (#325)
+- [SofaGeneralEngine]
+    - Fix some XyzTransformMatrixEngine::update() function (#343)
+- [QtViewer] Fix the draw function on classical and retina screens (#311)
 
 **Applications and Plugins**
 - [MultiThreading]
     - FIX: examples installation (#299)
 
 **Scenes**
+- [all]
+    - Fix scenes (#310)
+    - Fix scenes with bad RegularGrid position relative to 270 (#324)
 
 
 ### Cleaning
 
 **Modules**
+- [SofaGeneralObjectInteraction]
+    - Remove stiffness multiplicator in SpringForceField (#290)
 
 **Applications and Plugins**
+- [Registration]
+    - Remove deprecated scene (#331)
+- [image]
+    - Fix warnings (#361)
+- [SofaPython]
+    - Fix warnings (#361)
+- [CGALPlugin]
+    - Fix warnings (#361)
+- [runSofa]
+    - Clean : remove non-ASCII chars in string (#327)
 
 **Scenes**
 

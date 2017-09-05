@@ -53,7 +53,7 @@ BaseCamera::BaseCamera()
     ,p_heightViewport(initData(&p_heightViewport,(unsigned int) 600 , "heightViewport", "heightViewport"))
     ,p_type(initData(&p_type,"projectionType", "Camera Type (0 = Perspective, 1 = Orthographic)"))
     ,p_activated(initData(&p_activated, true , "activated", "Camera activated ?"))
-	,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
+    ,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
     ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
     ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
     ,b_setDefaultParameters(false)
@@ -68,7 +68,7 @@ BaseCamera::BaseCamera()
 
     sofa::helper::OptionsGroup type(2, "Perspective", "Orthographic");
     type.setSelectedItem(sofa::core::visual::VisualParams::PERSPECTIVE_TYPE);
-    p_type.setValue(type); 
+    p_type.setValue(type);
 
     helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
@@ -192,10 +192,10 @@ void BaseCamera::rotate(const Quat& r)
 void BaseCamera::moveCamera(const Vec3 &p, const Quat &q)
 {
     translate(p);
-	if ( !p_fixedLookAtPoint.getValue() )
-	{
-		translateLookAt(p);
-	}
+    if ( !p_fixedLookAtPoint.getValue() )
+    {
+        translateLookAt(p);
+    }
     rotate(q);
 
     updateOutputData();
@@ -299,7 +299,7 @@ void BaseCamera::getModelViewMatrix(double mat[16])
     mat[13] = 0;
     mat[14] = 0;
     mat[15] = 1;
-    
+
 }
 
 void BaseCamera::getOpenGLModelViewMatrix(double mat[16])
@@ -359,7 +359,7 @@ void BaseCamera::getProjectionMatrix(double mat[16])
         float bottom = -halfHeight;
         float zfar = currentZFar;
         float znear = currentZNear;
-        
+
         mat[0] = 2 / (right-left);
         mat[1] = 0.0;
         mat[2] = 0.0;
@@ -417,7 +417,6 @@ BaseCamera::Quat BaseCamera::getOrientationFromLookAt(const BaseCamera::Vec3 &po
     Vec3 xAxis = yAxis.cross(zAxis) ;
     xAxis.normalize();
 
-    //std::cout << xAxis.norm2() << std::endl;
     if (xAxis.norm2() < 0.00001)
         xAxis = cameraToWorldTransform(Vec3(1.0, 0.0, 0.0));
     xAxis.normalize();
@@ -452,7 +451,6 @@ void BaseCamera::rotateCameraAroundPoint(Quat& rotation, const Vec3& point)
     double distance = (point - p_position.getValue()).norm();
 
     rotation.quatToAxis(tempAxis, tempAngle);
-    //std::cout << tempAxis << " " << tempAngle << std::endl;
     Quat tempQuat (orientation.inverse().rotate(-tempAxis ), tempAngle);
     orientation = orientation*tempQuat;
 
@@ -484,11 +482,11 @@ void BaseCamera::rotateWorldAroundPoint(Quat &rotation, const Vec3 &point, Quat 
     positionCam = camera_H_WorldAfter.inversed().getOrigin();
     orientationCam = camera_H_WorldAfter.inversed().getOrientation();
 
-	if ( !p_fixedLookAtPoint.getValue() )
-	{
-		p_lookAt.setValue(getLookAtFromOrientation(positionCam, p_distance.getValue(), orientationCam));
-		currentLookAt = p_lookAt.getValue();
-	}
+    if ( !p_fixedLookAtPoint.getValue() )
+    {
+        p_lookAt.setValue(getLookAtFromOrientation(positionCam, p_distance.getValue(), orientationCam));
+        currentLookAt = p_lookAt.getValue();
+    }
 
     p_orientation.setValue(orientationCam);
     p_position.endEdit();
@@ -753,7 +751,7 @@ void BaseCamera::updateOutputData()
     //sofa::helper::WriteAccessor< Data<Mat4> > wProjectionMatrix = p_projectionMatrix;
     helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
-    
+
     double modelViewMatrix[16];
     double projectionMatrix[16];
 

@@ -34,6 +34,8 @@ namespace helper
 
 typedef std::istringstream istrstream;
 
+ArgumentParser::extra_type ArgumentParser::extra;
+
 ArgumentBase::ArgumentBase(char s, string l, string h, bool m)
     : shortName(s)
     , longName(l)
@@ -86,9 +88,7 @@ ArgumentParser::~ArgumentParser()
 */
 void ArgumentParser::operator () ( int argc, char** argv )
 {
-    std::list<std::string> str;
-    for (int i=1; i<argc; ++i)
-        str.push_back(std::string(argv[i]));
+    std::list<std::string> str(argv + 1, argv + argc);
     (*this)(str);
 }
 
@@ -97,25 +97,31 @@ void ArgumentParser::operator () ( std::list<std::string> str )
     string shHelp("-");  shHelp.push_back( helpShortName );
     string lgHelp("--"); lgHelp.append( helpLongName );
     string name;
+
+    static const std::string extra_opt = "--argv";
+    
     while( !str.empty() )
     {
         name = str.front();
         str.pop_front();
-//		std::cout << "name = " << name << std::endl;
-//		std::cout << "lgHelp = " << lgHelp << std::endl;
-//		std::cout << "shHelp = " << shHelp << std::endl;
 
         // display help
         if( name == shHelp || name == lgHelp )
         {
             if( globalHelp.size()>0 ) std::cout<< globalHelp <<std::endl;
+            
             std::cout << "(short name, long name, description, default value)\n-h,\t--help: this help" << std::endl;
             std::cout << std::boolalpha;
             for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
                 (*a)->print();
             std::cout << std::noboolalpha;
+
+            std::cout << "--argv [...]\t" << "forward extra args to the python interpreter" << std::endl;
+            
             if( files )
                 std::cout << "others: file names" << std::endl;
+            
+            
             exit(EXIT_FAILURE);
         }
 
@@ -132,6 +138,12 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             str.pop_front();
         }
 
+        // extra args
+        else if( name == extra_opt ) {
+            extra = extra_type(str.begin(), str.end());
+            return;
+        }
+        
         // long name
         else if( name.length() > 1 && name[0]=='-' && name[1]=='-' )
         {

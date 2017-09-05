@@ -393,9 +393,6 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-    //#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-    //#else
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::PointsAdded;
@@ -1117,7 +1114,6 @@ void MechanicalObject<DataTypes>::init()
         if (m_topology != NULL && m_topology->getNbPoints() && m_topology->getContext() == this->getContext())
         {
             int nbp = m_topology->getNbPoints();
-            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
             // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
@@ -2764,9 +2760,6 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
-        //v = DataTypes::getDPos(v_rA[i]);
-        //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-        //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
         Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
         Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
@@ -3291,123 +3284,9 @@ void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */
     // return r;
 }
 
-//     template < class DataTypes >
-//       void MechanicalObject < DataTypes >::setX (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//
-//    this->xSh = *getVecCoord (v.index);
-//
-//    this->x = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setX operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setXfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//    this->xfreeSh = *getVecCoord (v.index);
-//
-//    this->xfree = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setXfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setVfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->vfreeSh = *getVecDeriv (v.index);
-//
-//    this->vfree = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setVfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setV (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->vSh = *getVecDeriv (v.index);
-//
-//    this->v = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setV operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setF (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->fSh = *getVecDeriv (v.index);
-//
-//    this->f = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setF operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setDx (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->dxSh = *getVecDeriv (v.index);
-//
-//
-//    this->dx = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setDx operation (" << v << ")\n";
-//  }
-//     }
-//
-//
 template < class DataTypes >
 void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-    //  if (v.type == sofa::core::V_COORD)
-    //  {
-    //      VecCoord & x = *getVecCoord (v.index);
-    //      Task < printDOFSh < VecCoord > >(this,*x);
-    //  }
-    //  else if (v.type == sofa::core::V_DERIV)
-    //  {
-    //      VecDeriv & x = *getVecDeriv (v.index);
-    //      Task < printDOFSh < VecDeriv > >(this,*x);
-    //  }
-    //  else
-    //      out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
-    //          v.type << std::endl;
 
 }
 #endif /* SOFA_SMP */

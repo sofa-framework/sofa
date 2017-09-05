@@ -1,7 +1,7 @@
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M1">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject />
         <UniformMass totalmass="10" />

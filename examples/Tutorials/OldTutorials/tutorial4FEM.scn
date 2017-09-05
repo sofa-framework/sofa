@@ -5,20 +5,20 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="20" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/torus2_scale3.obj" color="blue" dx="0" dy="20" dz="29" />
+            <OglModel name="Visual" filename="mesh/torus2_scale3.obj" color="blue"/>
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/torus2_scale3.obj" name="loader" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="0" dy="20" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />
@@ -33,13 +33,13 @@
         <RegularGrid nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
-            <OglModel name="Visual" filename="mesh/dragon.obj" color="red" dx="20" dy="20" dz="29" />
+            <OglModel name="Visual" filename="mesh/dragon.obj" color="red" />
             <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/dragon.obj" name="loader" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="20" dy="20" dz="29" />
+            <MechanicalObject src="@loader"/>
             <Triangle />
             <Line />
             <Point />
@@ -54,25 +54,25 @@
         <RegularGrid nx="6" ny="3" nz="5" xmin="-10" xmax="8" ymin="-3" ymax="2.5" zmin="-7" zmax="7" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" method="polar" />
         <Node name="Visu1">
-            <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" color="0.17 0.70 0.05" dx="-20" dy="20" dz="29" />
+            <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" color="0.17 0.70 0.05" />
             <BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
         <Node name="Visu2">
-            <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" color="0.04 0.19 0.52" dx="-20" dy="20" dz="29" />
+            <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" color="0.04 0.19 0.52" />
             <BarycentricMapping input="@.." output="@VisualEyes" />
         </Node>
         <Node name="Visu3">
-            <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" color="0.44 0.43 0.00" dx="-20" dy="20" dz="29" />
+            <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" color="0.44 0.43 0.00" />
             <BarycentricMapping input="@.." output="@VisualEyebrows" />
         </Node>
         <Node name="Visu4">
-            <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" color="0.47 0.25 0.03" dx="-20" dy="20" dz="29" />
+            <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" color="0.47 0.25 0.03" />
             <BarycentricMapping input="@.." output="@VisualLips" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/frog-push25.obj" name="loader" />
             <Mesh src="@loader" />
-            <MechanicalObject src="@loader" dx="-20" dy="20" dz="29" />
+            <MechanicalObject src="@loader" />
             <Triangle />
             <Line />
             <Point />

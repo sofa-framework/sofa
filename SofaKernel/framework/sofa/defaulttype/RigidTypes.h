@@ -183,7 +183,7 @@ public:
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
-    
+
 
     Vec3& getVCenter() { return vCenter; }
     Vec3& getVOrientation() { return vOrientation; }
@@ -405,7 +405,7 @@ public:
         const real theta = omega.norm();
 
         static const real epsilon = std::numeric_limits<real>::epsilon();
-        
+
         if( theta < epsilon ) {
             // fallback to gnomonic projection
             Quat exp(omega[0], omega[1], omega[2], 1);
@@ -420,9 +420,9 @@ public:
                            std::cos(theta));
             orientation = exp * orientation;
         }
-        
+
     }
-    
+
     RigidCoord<3,real> operator+(const Deriv& dg) const {
         RigidCoord c = *this;
         c += dg;
@@ -454,17 +454,13 @@ public:
     template<typename real2>
     void operator*=(real2 a)
     {
-        //std::cout << "*="<<std::endl;
         center *= a;
-        //orientation *= a;
     }
 
     template<typename real2>
     void operator/=(real2 a)
     {
-        //std::cout << "/="<<std::endl;
         center /= a;
-        //orientation /= a;
     }
 
     template<typename real2>
@@ -498,9 +494,6 @@ public:
       */
     real norm2() const
     {
-//        real r = (this->center).elems[0]*(this->center).elems[0];
-//        for (int i=1; i<3; i++)
-//            r += (this->center).elems[i]*(this->center).elems[i];
         return center*center
                 + orientation[0]*orientation[0]
                 + orientation[1]*orientation[1]
@@ -678,7 +671,7 @@ public:
         else
             return this->orientation[i-3];
     }
-    
+
     /// @name Tests operators
     /// @{
 
@@ -1209,10 +1202,10 @@ public:
             return this->vOrientation;
     }
 
-    
+
     /// @name Tests operators
     /// @{
-    
+
     bool operator==(const RigidDeriv<2,real>& b) const
     {
         return vCenter == b.vCenter && vOrientation == b.vOrientation;
@@ -1317,7 +1310,6 @@ public:
 
     void operator +=(const RigidCoord<2,real>& a)
     {
-        //         std::cout << "+="<<std::endl;
         center += a.getCenter();
         orientation += a.getOrientation();
     }
@@ -1325,7 +1317,6 @@ public:
     template<typename real2>
     void operator*=(real2 a)
     {
-        //         std::cout << "*="<<std::endl;
         center *= a;
         orientation *= (Real)a;
     }
@@ -1333,7 +1324,6 @@ public:
     template<typename real2>
     void operator/=(real2 a)
     {
-        //         std::cout << "/="<<std::endl;
         center /= a;
         orientation /= (Real)a;
     }

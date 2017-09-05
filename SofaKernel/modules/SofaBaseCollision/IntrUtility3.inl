@@ -1261,7 +1261,7 @@ void IntrUtil<Real>::SegmentThroughPlane (
     Real v1 = planeNormal * segment[1];
 
     // Now that there it has been reduced to a 1-dimensional problem via
-    // projection, it becomes easy to find the ratio along V that V 
+    // projection, it becomes easy to find the ratio along V that V
     // intersects with U.
     Real ratio = (u - v0)/(v1 - v0);
     P[0] = segment[0] + ratio*(segment[1] - segment[0]);
@@ -1845,7 +1845,7 @@ void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
         // cannot create a new segment, as clipping a polygon would
         if (positive > 0)
         {
-            if (negative > 0) 
+            if (negative > 0)
             {
                 int clip;
 
@@ -1965,7 +1965,7 @@ void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
             // This should not ever happen if called by the findintersect
             // routines after an intersection has been determined.
             quantity = 0;
-        }    
+        }
     }
 }
 //----------------------------------------------------------------------------
@@ -2055,8 +2055,10 @@ void MyBox<TReal>::showVertices()const{
     vs.push_back(Center + a0 - a1 + a2);
     vs.push_back(Center - a0 - a1 + a2);
 
+    std::stringstream tmpmsg;
     for(int i = 0 ; i < 8 ; ++i){
-        std::cout<<"    "<<vs[i]<<std::endl;
+        tmpmsg<<"    "<<vs[i]<<msgendl;
+    dmsg_info("MyBox<TReal>") << tmpmsg ;
     }
 }
 

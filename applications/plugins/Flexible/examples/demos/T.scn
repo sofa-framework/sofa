@@ -16,7 +16,7 @@
 
     <Node 	name="Flexible"   >
     	<VisualStyle  />
-    	<EulerImplicitSolver />
+    	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     	<CGLinearSolver iterations="20" tolerance="1e-15" threshold="1e-15"/>
 
 	  <MeshObjLoader name="mesh" filename="../data/mesh/T.obj" scale3d="10 10 10" triangulate="1"/>

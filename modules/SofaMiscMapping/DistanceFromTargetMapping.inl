@@ -64,8 +64,6 @@ void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const In
     indices.push_back(index);
     targetPositions.push_back(position);
     distances.push_back(distance);
-
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::createTarget index " << index << " at position " << position << ", distance = " << distances << endl;
 }
 
 template <class TIn, class TOut>
@@ -73,7 +71,6 @@ void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, const In
 {
     helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::WriteAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::updateTarget index " << index << " at position " << position << endl;
 
     // find the target with given index
     unsigned i=0; while(i<indices.size() && indices[i]!=index) i++;
@@ -157,7 +154,6 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
         computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
 
         Real gapNorm = gap.norm();
-//        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
         if( gapNorm>1.e-10 )
@@ -180,15 +176,9 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
                 jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
-
     }
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, in = " << in << endl;
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, target positions = " << positions << endl;
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, out = " << out << endl;
 
     jacobian.compress();
-//    serr << "apply, jacobian: " << sendl << jacobian << sendl;
-
 }
 
 
@@ -210,7 +200,6 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams 
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyJT does nothing " << endl;
 }
 
 
@@ -260,7 +249,6 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
             }
            // InDeriv df = b*dx;
             parentForce[indices[i]] += df;
-    //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
     }
 }
@@ -318,8 +306,6 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
                 }
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
-
-    //        msg_info()<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
             K.addBlock(idx,idx,b);
         }

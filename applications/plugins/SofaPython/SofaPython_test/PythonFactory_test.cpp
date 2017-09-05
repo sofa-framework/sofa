@@ -85,6 +85,7 @@ protected:
     {
         /// ADDING new component in the python Factory
         /// of course its binding must be defined!
+        simulation::PythonEnvironment::gil lock(__func__);
         SP_ADD_CLASS_IN_FACTORY( ExternalComponent, sofa::ExternalComponent )
     }
 

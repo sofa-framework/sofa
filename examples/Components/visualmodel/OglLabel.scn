@@ -6,7 +6,7 @@
 
 	<OglGrid size="16" plane="y"/>
 
-	<EulerImplicitSolver name="EulerImplicit" />
+	<EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver name="CG Solver" iterations="100" tolerance="1e-5" threshold="1e-5" />
 
 	<MechanicalObject name="Particles" template="Vec3d"

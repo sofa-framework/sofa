@@ -250,26 +250,12 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     // Reorder engine graph by inverting order and avoiding duplicate engines
     std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
-#ifndef NDEBUG
-//    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;
-#endif
-
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
-#ifndef NDEBUG
-//        std::string name = (*it_engines_rev)->getName();
-//        std::cout << "DEBUG: engine name: " << name << std::endl;
-//        std::cout << "DEBUG: engine: " << (*it_engines_rev) << std::endl;
-#endif
         bool find = false;
 
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
-#ifndef NDEBUG
-            // std::string nameStored = (*it_engines)->getName();
-            // std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
-            // std::cout << "DEBUG: engine name stored: " << (*it_engines) << std::endl;
-#endif
             if ((*it_engines_rev) == (*it_engines))
             {
                 find = true;
@@ -289,13 +275,11 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 {
     // A cout very lite version
     std::string name;
-
+    std::stringstream tmpmsg;
     name = my_Data.getName();
-    std::cout << name << std::endl;
-    std::cout << std::endl;
+    tmpmsg << name << msgendl << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
@@ -305,14 +289,14 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            std::cout << enginesNames[j];
+            tmpmsg << enginesNames[j];
 
             for (unsigned int k=0; k<this->m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
-                std::cout << "     ";
+                tmpmsg << "     ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
+        tmpmsg << msgendl;
         cpt_engine = cpt_engine_tmp;
 
 
@@ -320,13 +304,13 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         {
             sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
-                std::cout << dataNames[k] << "     " ;
-            std::cout << "            ";
+                tmpmsg << dataNames[k] << "     " ;
+            tmpmsg << "            ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
-        std::cout << std::endl;
+        tmpmsg << msgendl ;
+        msg_info() << tmpmsg.str() ;
     }
 }
 

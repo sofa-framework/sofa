@@ -5,7 +5,7 @@
   <DefaultAnimationLoop />
 
   <Node 	name="Flexible"   >
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"/>
 
     <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>

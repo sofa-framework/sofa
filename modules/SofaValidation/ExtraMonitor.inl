@@ -69,21 +69,21 @@ void ExtraMonitor<DataTypes>::init()
     Inherit::init();
     if (minX.getValue() != -1)
     {
-        initialMinPos.resize(this->indices.getValue().size());
-        for(unsigned i=0; i<this->indices.getValue().size(); i++)
-            initialMinPos[i] = (*this->X)[this->indices.getValue()[i]][minX.getValue()];
+        initialMinPos.resize(this->d_indices.getValue().size());
+        for(unsigned i=0; i<this->d_indices.getValue().size(); i++)
+            initialMinPos[i] = (*this->m_X)[this->d_indices.getValue()[i]][minX.getValue()];
     }
     if (maxX.getValue() != -1)
     {
-        initialMaxPos.resize(this->indices.getValue().size());
-        for(unsigned i=0; i<this->indices.getValue().size(); i++)
-            initialMaxPos[i] = (*this->X)[this->indices.getValue()[i]][maxX.getValue()];
+        initialMaxPos.resize(this->d_indices.getValue().size());
+        for(unsigned i=0; i<this->d_indices.getValue().size(); i++)
+            initialMaxPos[i] = (*this->m_X)[this->d_indices.getValue()[i]][maxX.getValue()];
     }
     if (disp.getValue() != -1)
     {
-        initialPos.resize(this->indices.getValue().size());
-        for(unsigned i=0; i<this->indices.getValue().size(); i++)
-            initialPos[i] = (*this->X)[this->indices.getValue()[i]][disp.getValue()];
+        initialPos.resize(this->d_indices.getValue().size());
+        for(unsigned i=0; i<this->d_indices.getValue().size(); i++)
+            initialPos[i] = (*this->m_X)[this->d_indices.getValue()[i]][disp.getValue()];
     }
 }
 ///////////////////////////// end init () /////////////////////////////////
@@ -94,90 +94,90 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
 {
     if ( !this->getName().empty() )
     {
-        if ( this->saveXToGnuplot.getValue() )
+        if ( this->d_saveXToGnuplot.getValue() )
         {
-            if ( this->saveGnuplotX != NULL ) delete this->saveGnuplotX;
-            this->saveGnuplotX = new std::ofstream ( ( path + this->getName() +"_x.txt" ).c_str() );
+            if ( this->m_saveGnuplotX != NULL ) delete this->m_saveGnuplotX;
+            this->m_saveGnuplotX = new std::ofstream ( ( path +"_x.txt" ).c_str() );
             if (minX.getValue() == -1 && maxX.getValue() == -1)
             {
                 if (disp.getValue() == -1)
                 {
-                    ( *this->saveGnuplotX ) << "# Gnuplot File : positions of ";
+                    ( *this->m_saveGnuplotX ) << "# Gnuplot File : positions of ";
                 }
                 else
                 {
-                    ( *this->saveGnuplotX ) << "# Gnuplot File : displacement of ";
+                    ( *this->m_saveGnuplotX ) << "# Gnuplot File : displacement of ";
                 }
-                ( *this->saveGnuplotX )<< this->indices.getValue().size() << " particle(s) Monitored"
-                        <<  std::endl;
-                ( *this->saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
+                ( *this->m_saveGnuplotX )<< this->d_indices.getValue().size() << " particle(s) Monitored"
+                                         <<  std::endl;
+                ( *this->m_saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
-                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                    ( *this->saveGnuplotX ) << this->indices.getValue()[i] << " ";
-                ( *this->saveGnuplotX ) << std::endl;
+                for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                    ( *this->m_saveGnuplotX ) << this->d_indices.getValue()[i] << " ";
+                ( *this->m_saveGnuplotX ) << std::endl;
             }
             else
             {
-                ( *this->saveGnuplotX ) << "# Gnuplot File : resultant of the positions of "
-                        << this->indices.getValue().size() << " particle(s) Monitored"
-                        << std::endl;
-                ( *this->saveGnuplotX ) << "# 1st Column : time";
+                ( *this->m_saveGnuplotX ) << "# Gnuplot File : resultant of the positions of "
+                                          << this->d_indices.getValue().size() << " particle(s) Monitored"
+                                          << std::endl;
+                ( *this->m_saveGnuplotX ) << "# 1st Column : time";
                 if (minX.getValue() != -1)
                 {
-                    ( *this->saveGnuplotX )<<", minimum displacement on "<<minX.getValue()<<" coordinate";
+                    ( *this->m_saveGnuplotX )<<", minimum displacement on "<<minX.getValue()<<" coordinate";
                 }
                 if (maxX.getValue() != -1)
                 {
-                    ( *this->saveGnuplotX )<<", maximum displacement on "<<maxX.getValue()<<" coordinate";
+                    ( *this->m_saveGnuplotX )<<", maximum displacement on "<<maxX.getValue()<<" coordinate";
                 }
-                ( *this->saveGnuplotX )<< std::endl;
+                ( *this->m_saveGnuplotX )<< std::endl;
             }
         }
 
-        if ( this->saveVToGnuplot.getValue() )
+        if ( this->d_saveVToGnuplot.getValue() )
         {
-            if ( this->saveGnuplotV != NULL ) delete this->saveGnuplotV;
+            if ( this->m_saveGnuplotV != NULL ) delete this->m_saveGnuplotV;
 
-            this->saveGnuplotV = new std::ofstream ( ( path + this->getName() +"_v.txt" ).c_str() );
-            ( *this->saveGnuplotV ) << "# Gnuplot File : velocities of "
-                    << this->indices.getValue().size() << " particle(s) Monitored"
-                    <<  std::endl;
-            ( *this->saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
+            this->m_saveGnuplotV = new std::ofstream ( ( path +"_v.txt" ).c_str() );
+            ( *this->m_saveGnuplotV ) << "# Gnuplot File : velocities of "
+                                      << this->d_indices.getValue().size() << " particle(s) Monitored"
+                                      <<  std::endl;
+            ( *this->m_saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
 
-            for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                ( *this->saveGnuplotV ) << this->indices.getValue()[i] << " ";
-            ( *this->saveGnuplotV ) << std::endl;
+            for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                ( *this->m_saveGnuplotV ) << this->d_indices.getValue()[i] << " ";
+            ( *this->m_saveGnuplotV ) << std::endl;
         }
 
-        if ( this->saveFToGnuplot.getValue() )
+        if ( this->d_saveFToGnuplot.getValue() )
         {
-            if ( this->saveGnuplotF != NULL ) delete this->saveGnuplotF;
-            this->saveGnuplotF = new std::ofstream ( ( path + this->getName() +"_f.txt" ).c_str() );
+            if ( this->m_saveGnuplotF != NULL ) delete this->m_saveGnuplotF;
+            this->m_saveGnuplotF = new std::ofstream ( ( path +"_f.txt" ).c_str() );
             if (!resultantF.getValue())
             {
-                ( *this->saveGnuplotF ) << "# Gnuplot File : forces of "
-                        << this->indices.getValue().size() << " particle(s) Monitored"
-                        <<  std::endl;
-                ( *this->saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
+                ( *this->m_saveGnuplotF ) << "# Gnuplot File : forces of "
+                                          << this->d_indices.getValue().size() << " particle(s) Monitored"
+                                          <<  std::endl;
+                ( *this->m_saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
 
-                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                    ( *this->saveGnuplotF ) << this->indices.getValue()[i] << " ";
-                ( *this->saveGnuplotF ) << std::endl;
+                for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                    ( *this->m_saveGnuplotF ) << this->d_indices.getValue()[i] << " ";
+                ( *this->m_saveGnuplotF ) << std::endl;
             }
             else
             {
-                ( *this->saveGnuplotF ) << "# Gnuplot File : resultant of the forces of "
-                        << this->indices.getValue().size() << " particle(s) Monitored"
-                        << std::endl;
-                ( *this->saveGnuplotF ) << "# 1st Column : time, other : resultant force "
-                        << std::endl;
+                ( *this->m_saveGnuplotF ) << "# Gnuplot File : resultant of the forces of "
+                                          << this->d_indices.getValue().size() << " particle(s) Monitored"
+                                          << std::endl;
+                ( *this->m_saveGnuplotF ) << "# 1st Column : time, other : resultant force "
+                                          << std::endl;
             }
         }
 
         if ( this->saveWcinToGnuplot.getValue() )
         {
             if ( this->saveGnuplotWcin != NULL ) delete this->saveGnuplotWcin;
-            this->saveGnuplotWcin = new std::ofstream ( ( path + this->getName() + "_wcin.txt" ).c_str() );
+            this->saveGnuplotWcin = new std::ofstream ( ( path + "_wcin.txt" ).c_str() );
             ( *this->saveGnuplotWcin ) << "# Gnuplot File : kinetic energy of the system "<<std::endl;
             ( *this->saveGnuplotWcin ) << "# 1st Column : time, 2nd : kinetic energy"<< std::endl;
         }// saveWcinToGnuplot
@@ -185,7 +185,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
         if ( this->saveWextToGnuplot.getValue() )
         {
             if ( this->saveGnuplotWext != NULL ) delete this->saveGnuplotWext;
-            this->saveGnuplotWext = new std::ofstream ( ( path + this->getName() + "_wext.txt" ).c_str() );
+            this->saveGnuplotWext = new std::ofstream ( ( path + "_wext.txt" ).c_str() );
             ( *this->saveGnuplotWext ) << "# Gnuplot File : external energy of the system "<<std::endl;
             ( *this->saveGnuplotWext ) << "# 1st Column : time, 2nd : external energy"<< std::endl;
         }// saveWextToGnuplot
@@ -198,19 +198,19 @@ void ExtraMonitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 {
     if (sofa::simulation::AnimateEndEvent::checkEventType(ev))
     {
-        if ( this->saveXToGnuplot.getValue() || this->saveVToGnuplot.getValue() || this->saveFToGnuplot.getValue() || saveWcinToGnuplot.getValue() || saveWextToGnuplot.getValue() )
+        if ( this->d_saveXToGnuplot.getValue() || this->d_saveVToGnuplot.getValue() || this->d_saveFToGnuplot.getValue() || saveWcinToGnuplot.getValue() || saveWextToGnuplot.getValue() )
             exportGnuplot ( (Real) this ->getTime() );
 
-        if (this->showTrajectories.getValue())
+        if (this->d_showTrajectories.getValue())
         {
-            this->internalDt += this -> getContext()->getDt();
+            this->m_internalDt += this->getContext()->getDt();
 
-            if (this->trajectoriesPrecision.getValue() <= this->internalDt)
+            if (this->d_trajectoriesPrecision.getValue() <= this->m_internalDt)
             {
-                this->internalDt = 0.0;
-                for (unsigned int i=0; i < this->indices.getValue().size(); ++i)
+                this->m_internalDt = 0.0;
+                for (unsigned int i=0; i < this->d_indices.getValue().size(); ++i)
                 {
-                    this->savedPos[i].push_back( (*this->X)[this->indices.getValue()[i]] );
+                    this->m_savedPos[i].push_back( (*this->m_X)[this->d_indices.getValue()[i]] );
                 }
             }
         }
@@ -222,23 +222,23 @@ void ExtraMonitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 template<class DataTypes>
 void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
 {
-    if ( this->saveXToGnuplot.getValue() )
+    if ( this->d_saveXToGnuplot.getValue() )
     {
-        ( *this->saveGnuplotX ) << time <<"\t" ;
+        ( *this->m_saveGnuplotX ) << time <<"\t" ;
 
         if ((minX.getValue() == -1) && (maxX.getValue() == -1))
         {
             if (disp.getValue() == -1)
             {
-                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                    ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]] << "\t";
+                for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                    ( *this->m_saveGnuplotX ) << (*this->m_X)[this->d_indices.getValue()[i]] << "\t";
             }
             else
             {
-                for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                    ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]][disp.getValue()] - initialPos[i]<< "\t";
+                for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                    ( *this->m_saveGnuplotX ) << (*this->m_X)[this->d_indices.getValue()[i]][disp.getValue()] - initialPos[i]<< "\t";
             }
-            ( *this->saveGnuplotX ) << std::endl;
+            ( *this->m_saveGnuplotX ) << std::endl;
         }
         else
         {
@@ -246,57 +246,57 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
             {
                 Real min = std::numeric_limits<Real>::max();
                 Real displ = 0.0;
-                for (unsigned i = 0; i < this->indices.getValue().size(); i++)
+                for (unsigned i = 0; i < this->d_indices.getValue().size(); i++)
                 {
-                    displ = (*this->X)[this->indices.getValue()[i]][minX.getValue()] - initialMinPos[i];
+                    displ = (*this->m_X)[this->d_indices.getValue()[i]][minX.getValue()] - initialMinPos[i];
                     displ = fabs(displ); // TODO to be read again
                     if (displ < min)
                         min = displ;
                 }
-                ( *this->saveGnuplotX ) << min << "\t";
+                ( *this->m_saveGnuplotX ) << min << "\t";
             }
             if (maxX.getValue() != -1)
             {
                 Real max = std::numeric_limits<Real>::min();
                 Real displ = 0.0;
-                for (unsigned i = 0; i < this->indices.getValue().size(); i++)
+                for (unsigned i = 0; i < this->d_indices.getValue().size(); i++)
                 {
-                    displ = (*this->X)[this->indices.getValue()[i]][maxX.getValue()] - initialMaxPos[i];
+                    displ = (*this->m_X)[this->d_indices.getValue()[i]][maxX.getValue()] - initialMaxPos[i];
                     displ = fabs(displ); // TODO to be read again
                     if (displ > max)
                         max = displ;
                 }
-                ( *this->saveGnuplotX ) << max;
+                ( *this->m_saveGnuplotX ) << max;
             }
-            ( *this->saveGnuplotX ) << std::endl;
+            ( *this->m_saveGnuplotX ) << std::endl;
         }
     }
-    if ( this->saveVToGnuplot.getValue() && this->V->size()>0 )
+    if ( this->d_saveVToGnuplot.getValue() && this->m_V->size()>0 )
     {
-        ( *this->saveGnuplotV ) << time <<"\t";
+        ( *this->m_saveGnuplotV ) << time <<"\t";
 
-        for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-            ( *this->saveGnuplotV ) << (*this->V)[this->indices.getValue()[i]] << "\t";
-        ( *this->saveGnuplotV ) << std::endl;
+        for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+            ( *this->m_saveGnuplotV ) << (*this->m_V)[this->d_indices.getValue()[i]] << "\t";
+        ( *this->m_saveGnuplotV ) << std::endl;
     }
 
-    if ( this->saveFToGnuplot.getValue() && this->F->size()>0)
+    if ( this->d_saveFToGnuplot.getValue() && this->m_F->size()>0)
     {
-        ( *this->saveGnuplotF ) << time <<"\t";
+        ( *this->m_saveGnuplotF ) << time <<"\t";
 
         if (!resultantF.getValue())
         {
-            for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                ( *this->saveGnuplotF ) << (*this->F)[this->indices.getValue()[i]] << "\t";
-            ( *this->saveGnuplotF ) << std::endl;
+            for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                ( *this->m_saveGnuplotF ) << (*this->m_F)[this->d_indices.getValue()[i]] << "\t";
+            ( *this->m_saveGnuplotF ) << std::endl;
         }
         else
         {
             Deriv resultant;
-            for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
-                resultant += (*this->F)[this->indices.getValue()[i]];
+            for (unsigned int i = 0; i < this->d_indices.getValue().size(); i++)
+                resultant += (*this->m_F)[this->d_indices.getValue()[i]];
 
-            (*this->saveGnuplotF ) << resultant << std::endl;
+            (*this->m_saveGnuplotF ) << resultant << std::endl;
         }
     }
 

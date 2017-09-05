@@ -6,7 +6,7 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="scene" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-12" threshold="1e-09" />
         <Node name="Rotation around Z axis not authorized" gravity="0 -9.81 0">
             <MechanicalObject template="Rigid" name="default0" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1" />

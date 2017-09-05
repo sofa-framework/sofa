@@ -91,6 +91,11 @@ if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} ${CGAL_ImageIO_LIBRARY} image)
 endif()
 
+if(SOFA_BUILD_TESTS)
+   find_package(SofaTest QUIET)
+   add_subdirectory(CGALPlugin_test)
+endif()
+
 ## Install rules for the library and the headers; CMake package configurations files
 sofa_create_package(CGALPlugin ${CGALPLUGIN_VERSION} CGALPlugin CGALPlugin)
 

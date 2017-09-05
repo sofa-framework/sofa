@@ -187,8 +187,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     Minv.resize(nb*bsize,nb*bsize);
     Minv.setAlignedSubMatrix((nb-1),(nb-1),bsize,bsize,alpha_inv[nb-1]);
 
-    //std::cout<<"Minv.setSubMatrix call for block number"<<(nb-1)<<std::endl;
-
     nBlockComputedMinv[nb-1] = 1;
 
     if(subpartSolve.getValue() )
@@ -201,8 +199,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         // TODO : ajouter un compteur "first_block" qui évite de descendre les déplacements jusqu'au block 0 dans partial_solve si ce block n'a pas été appelé
         computeMinvBlock(0, 0);
     }
-
-    //sout << "BTDLinearSolver: "<<ndiag<<"/"<<nb<<"diagonal blocs."<<sendl;
 }
 
 
@@ -217,8 +213,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 {
-    //serr<<"computeMinvBlock("<<i<<","<<j<<")"<<sendl;
-
     if (i < j)
     {
         // i < j correspond to the upper diagonal
@@ -241,7 +235,6 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     // we need to compute all the Minv[i0][i0] (with i0>=i) till i0=i
     while (i0 > i)
     {
-        //serr<<"i0 ="<<i0<<"nBlockComputedMinv[i0]="<<nBlockComputedMinv[i0]<<sendl;
         if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the the bloc [i0][i0-1]
         {
             // compute bloc (i0,i0-1)
@@ -350,21 +343,14 @@ void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
     const Index nb = b.size() / bsize;
     if (nb == 0) return;
 
-    //if (verbose) sout << "D["<<0<<"] = " << b.asub(0,bsize) << sendl;
     x.asub(0,bsize) = alpha_inv[0] * b.asub(0,bsize);
-    //if (verbose) sout << "Y["<<0<<"] = " << x.asub(0,bsize) << sendl;
     for (Index i=1; i<nb; ++i)
     {
-        //if (verbose) sout << "D["<<i<<"] = " << b.asub(i,bsize) << sendl;
         x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
-        //if (verbose) sout << "Y["<<i<<"] = " << x.asub(i,bsize) << sendl;
     }
-    //x.asub((nb-1),bsize) = Y.asub((nb-1),bsize);
-    //if (verbose) sout << "x["<<nb-1<<"] = " << x.asub((nb-1),bsize) << sendl;
     for (Index i=nb-2; i>=0; --i)
     {
         x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
-        //if (verbose) sout << "x["<<i<<"] = " << x.asub(i,bsize) << sendl;
     }
 
     // x is the solution of the system
@@ -479,7 +465,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     //debug
     if (indMaxBloc <  current_bloc)
     {
-        std::cout<<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
+        std::cout <<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
     }
 
     SubVector RHbloc;

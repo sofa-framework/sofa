@@ -7,7 +7,7 @@
 		<!-- <HexahedronSetTopologyContainer name="Container1" hexahedra="@[-1].hexahedra" position="@[-1].output_position" createQuadArray="1"/>
 		<HexahedronSetGeometryAlgorithms  drawQuads="1"/> -->
 		<CGLinearSolver iterations="3000" name="linear solver" tolerance="1.0e-12" threshold="1.0e-12" /> 
-		<EulerImplicitSolver name="default12" rayleighStiffness="0.01" />
+		<EulerImplicitSolver name="default12" rayleighStiffness="0.01"  rayleighMass="0.1" />
         <MechanicalObject name="dofs" rest_position="@Slab.output_position"/>
 		<MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
 		<BoxROI box="-0.01 -0.01 -0.01 0.01 0.01 0.01" drawBoxes="1" name="fixedPoint"  />

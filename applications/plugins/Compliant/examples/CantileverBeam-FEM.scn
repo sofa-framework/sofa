@@ -1,7 +1,7 @@
 <Node name="" gravity="0 0 0" dt="0.01">
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" />
 
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="10 10 10" min="0 0 0" max="1 1 1"  />
