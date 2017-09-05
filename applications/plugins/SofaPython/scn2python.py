@@ -45,7 +45,11 @@ def attributesToStringPython(child,printName) :
     attribute_str = str()
     for item in child.items() :
         if (not (item[0] == 'name') ) or printName :
-            attribute_str += ", " + item[0] + "=\'" + item[1] + "\'"
+            if not (item[1] == '@') :
+                attribute_str += ", " + item[0] + "=\'" + item[1] + "\'"
+            else :
+                link = raw_input("The link of '"+child.tag+"' for the attribute '"+item[0]+"' does not point to a component, which link would you like to set? Please name the link without @, i.e. for @loader write loader: \n")
+                attribute_str += ", " + item[0] + "=\'@" + link + "\'"
     return attribute_str;
 
 def rootAttributesToStringPython(root,tabs) :
@@ -81,7 +85,7 @@ def getNodeName(node,numberOfUnnamedNodes) :
     if nodeName is None :
         nodeName = 'unnamedNode_'+str(numberOfUnnamedNodes)
         node.set('name',nodeName)
-        print "WARNING: unnamed node in input scene, used name "+nodeName
+        print "\nWARNING: unnamed node in input scene, used name "+nodeName
         numberOfUnnamedNodes += 1
     return nodeName,numberOfUnnamedNodes
 
@@ -94,14 +98,17 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
         if child.tag == "Node" :
             childName, numberOfUnnamedNodes = getNodeName(child,numberOfUnnamedNodes)
             currentScenePath = scenePath+"/"+childName
-            myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
-            myChildren += tabs+stringToVariableName(childName)+" = "+parentVariableName+"."+createChild(childName)+"\n"
-            myChildren += tabs+"self."+stringToVariableName(childName)+" = "+stringToVariableName(childName)+"\n"
-            myChildren += childAttributesToStringPython(child,childName,tabs)
-            myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
+            currentChild  = "\n"+tabs+"# "+currentScenePath+"\n"
+            currentChild += tabs+stringToVariableName(childName)+" = "+parentVariableName+"."+createChild(childName)+"\n"
+            currentChild += tabs+"self."+stringToVariableName(childName)+" = "+stringToVariableName(childName)+"\n"
+            currentChild += childAttributesToStringPython(child,childName,tabs)
+            print currentChild[:-1]
+            myChildren += currentChild + printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
             if not child.tag == "include" :
-                myChildren += tabs+parentVariableName+"."+createObject(child)+"\n"
+                currentChild = tabs+parentVariableName+"."+createObject(child)+"\n"
+                print currentChild[:-1]
+                myChildren += currentChild
             else :
                 href = ""
                 for item in child.items() :
@@ -112,7 +119,7 @@ def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', node
                 root = tree.getroot()
                 fromExternalFile = printChildren(root,tabs,numberOfUnnamedNodes,scenePath=scenePath,nodeIsRootNode=1,parentName=parentVariableName)
                 myChildren += fromExternalFile
-                print "WARNING: Included external file, please check the links starting from \n"+fromExternalFile[:100]+"\n... until ...\n"+fromExternalFile[-100:]
+                # print "WARNING: Included external file, please check the links starting from \n"+fromExternalFile[:100]+"\n... until ...\n"+fromExternalFile[-100:]
     return myChildren;
 
 def getElement (node,name) :
@@ -184,6 +191,7 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
         pythonFile_str += tabs+"self.createGraph(node)\n"
         pythonFile_str += tabs+"return None;\n\n"
     pythonFile_str += "    def createGraph(self,rootNode):\n\n"
+    print "\n\nThe function createGraph contains \n\n"
     if nodeIsRootNode :
         pythonFile_str += tabs+"# rootNode\n"
         pythonFile_str += printChildren(node,tabs,numberOfUnnamedNodes,nodeIsRootNode=1)
