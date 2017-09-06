@@ -84,14 +84,14 @@ protected:
     virtual ~STLExporter();
 
 private:
-    BaseMeshTopology*    m_inputtopology;
-    BaseMechanicalState* m_inputmstate;
-    VisualModel*         m_inputvmodel;
+    BaseMeshTopology*    m_inputtopology {nullptr};
+    BaseMechanicalState* m_inputmstate   {nullptr};
+    VisualModel*         m_inputvmodel   {nullptr};
 };
 
 } /// _stlexporter_
 
-/// TODO(18.06): remove the old namespaces...
+//todo(18.06): remove the old namespaces...
 /// Import the object in the "old" namespace to allow smooth update of code base.
 namespace misc {
     using _stlexporter_::STLExporter ;

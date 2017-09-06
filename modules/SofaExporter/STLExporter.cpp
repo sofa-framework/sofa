@@ -134,7 +134,7 @@ bool STLExporter::writeSTL(bool autonumbering)
     if(m_componentstate != ComponentState::Valid)
         return false ;
 
-    std::string filename = getOrCreateTargetPath(d_exportEveryNbSteps.getValue() && autonumbering) ;
+    std::string filename = getOrCreateTargetPath(d_filename.getValue(), d_exportEveryNbSteps.getValue() && autonumbering) ;
     filename += ".stl";
 
     std::ofstream outfile(filename.c_str());
@@ -222,7 +222,8 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
     if(m_componentstate != ComponentState::Valid)
         return false ;
 
-    std::string filename = getOrCreateTargetPath(d_exportEveryNbSteps.getValue() && autonumbering) ;
+    std::string filename = getOrCreateTargetPath(d_filename.getValue(),
+                                                 d_exportEveryNbSteps.getValue() && autonumbering) ;
     filename += ".stl";
 
     std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary);

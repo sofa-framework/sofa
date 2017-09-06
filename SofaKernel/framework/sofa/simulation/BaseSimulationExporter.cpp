@@ -73,13 +73,13 @@ BaseSimulationExporter::BaseSimulationExporter() :
                             "export file when the simulation is finished (default=false)"))
   , d_isEnabled( initData(&d_isEnabled, true, "enable", "Enable or disable the component. (default=true)"))
 {
-    f_listening.setValue(true) ;
+    f_listening.setValue(false) ;
 }
 
 
-const std::string BaseSimulationExporter::getOrCreateTargetPath(bool autonumbering)
+const std::string BaseSimulationExporter::getOrCreateTargetPath(const std::string& filename, bool autonumbering)
 {
-    std::string path = FileSystem::cleanPath(d_filename.getFullPath()) ;
+    std::string path = FileSystem::cleanPath(filename) ;
     if( FileSystem::exists(path) && FileSystem::isDirectory(path) ){
         path += "/" + getName() ;
     }
@@ -136,6 +136,10 @@ void BaseSimulationExporter::reinit()
     {
         d_filename.setValue(getName());
     }
+
+    /// Activate the listening to the event in order to be able to export file at the nth-step
+    if(d_exportEveryNbSteps.getValue() != 0)
+        this->f_listening.setValue(true);
 }
 
 

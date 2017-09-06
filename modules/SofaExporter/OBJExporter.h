@@ -58,7 +58,7 @@ public:
     virtual bool write() override ;
     bool writeOBJ();
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *event) override ;
+    virtual void handleEvent(Event *event) override ;
 
 protected:
     virtual ~OBJExporter();
