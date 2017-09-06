@@ -38,8 +38,6 @@ namespace helper
 namespace io
 {
 
-//using namespace sofa::defaulttype;
-
 SOFA_DECL_CLASS(ImageBMP)
 
 Creator<Image::FactoryImage,ImageBMP> ImageBMPClass("bmp");
@@ -148,10 +146,6 @@ bool ImageBMP::load(std::string filename)
     int nc = ((nbBits+7)/8);
     /* calculate the size of the image in bytes */
     biSizeImage = width * height * nc;
-#ifndef NDEBUG
-    //std::cout << "Size of the image data: " << biSizeImage << std::endl;
-    //std::cout << "ImageBMP "<<filename<<" "<<width<<"x"<<height<<"x"<<nbBits<<" = "<<biSizeImage<<" bytes"<<std::endl;
-#endif
 
     Image::ChannelFormat channels;
     switch (nc)

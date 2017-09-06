@@ -272,14 +272,12 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::pop(AtomicInt array[], int maxSiz
     }
     // atomically reserve the element to read
     int readIdx = head.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
-    //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop from " << readIdx << std::endl;
 
     // Active wait:
     // loop as long as other threads have not put any valid value in the element.
     // It happens when the queue is temporarily empty.
     while((item = array[readIdx]) == -1)
     {
-        //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": pop wait loop" << std::endl;
     }
 
     // mark the element as available
@@ -292,13 +290,12 @@ inline SOFA_HELPER_API bool ManyThreadsPerEnd::push(AtomicInt array[], int maxSi
 {
     if(isFull(maxSize))
     {
-		std::this_thread::yield();
+        std::this_thread::yield();
         return false;
     }
 
     // atomically reserve the element to write
     int writeIdx = tail.exchange_and_add(1) & (maxCapacity-1); // maxCapacity is assumed to be a power of 2
-    //std::cout << "CQ"<<array<<"/"<<maxSize<<"/"<<maxCapacity<<": push " << (int)item << " to " << writeIdx << std::endl;
     // Active wait:
     // loop as long as the element has not been read by another thread (which is indicated by a -1 value).
     // It happens when the queue is temporarily full.

@@ -81,7 +81,6 @@ public:
     Data< VecReal > stiffness;
     Data< VecReal > angularStiffness;
     Data< helper::vector< CPos > > pivotPoints;
-    Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
     Data< bool > drawSpring;
@@ -90,9 +89,9 @@ public:
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
-    //VecDeriv Springs_dir;
 protected:
     RestShapeSpringsForceField();
+
 public:
     /// BaseObject initialization method.
     void bwdInit();
@@ -104,9 +103,12 @@ public:
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        SOFA_UNUSED(mparams);
+        SOFA_UNUSED(x);
+
+        msg_error() << "Get potentialEnergy not implemented";
         return 0.0;
     }
 
@@ -144,19 +146,13 @@ private :
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2dTypes>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6dTypes>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3dTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec2fTypes>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Vec1fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Vec6fTypes>;
 extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<sofa::defaulttype::Rigid3fTypes>;
-//extern template class SOFA_DEFORMABLE_API RestShapeSpringsForceField<Rigid2fTypes>;
 #endif
 
 #endif

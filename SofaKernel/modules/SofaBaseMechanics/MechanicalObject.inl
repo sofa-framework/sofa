@@ -393,9 +393,6 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-    //#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-    //#else
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::PointsAdded;
@@ -1117,7 +1114,6 @@ void MechanicalObject<DataTypes>::init()
         if (m_topology != NULL && m_topology->getNbPoints() && m_topology->getContext() == this->getContext())
         {
             int nbp = m_topology->getNbPoints();
-            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
             // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
@@ -2764,9 +2760,6 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
-        //v = DataTypes::getDPos(v_rA[i]);
-        //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-        //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
         Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
         Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 

@@ -93,13 +93,16 @@ public:
     /// Adding a point of the global referentiel to the mapping
     virtual int addPoint(const Coord& /*P*/, int /*elementId*/, Real& /*r*/)
     {
-        std::cout << "WARNING[BaseContactMapper] addPoint is called but not implemented" << std::endl; return -1;
+        dmsg_warning("BaseContactMapper") << " addPoint is called but not implemented" ;
+        return -1;
     }
+
     /// Adding a point of the local referentiel(barycentric coordinate) to the mapping
     //TODO use this functions for barycentric contact mapper
     virtual int addBaryPoint(const sofa::defaulttype::Vector3& /*baryP*/, int /*elementId*/, Real& /*r*/)
     {
-        std::cout << "WARNING[BaseContactMapper] addBaryPoint is called but not implemented" << std::endl; return -1;
+        dmsg_warning("BaseContactMapper") << " addBaryPoint is called but not implemented" ;
+        return -1;
     }
 
     /// Adding a point of the global referentiel to the mapping, also giving the local referentiel

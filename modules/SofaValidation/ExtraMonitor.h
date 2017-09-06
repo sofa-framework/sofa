@@ -52,9 +52,9 @@ protected:
 public:
     virtual void init();
 
-//	virtual void reset();
+    //	virtual void reset();
 
-//	virtual void reinit();
+    //	virtual void reinit();
 
     virtual void handleEvent( core::objectmodel::Event* ev );
 

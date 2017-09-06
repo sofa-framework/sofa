@@ -95,7 +95,6 @@ void LocalMinDistance::init()
 
 bool LocalMinDistance::testIntersection(Cube &cube1, Cube &cube2)
 {
-    //std::cout<<"testIntersection(Cube &cube1, Cube &cube2) is called"<<std::endl;
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();
     const Vector3& maxVect1 = cube1.maxVect();
@@ -1435,9 +1434,6 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     }
     else
     {
-
-        //std::cout<<"in test validity for segment,  trianglesAroundEdge.size() ="<<trianglesAroundEdge.size()<<std::endl;
-
         n1 = PQ;
         n1.normalize();
         //

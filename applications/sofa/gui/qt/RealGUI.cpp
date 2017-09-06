@@ -237,6 +237,14 @@ void RealGUI::InitApplication( RealGUI* _gui)
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
 
+#ifdef SOFA_GUI_NATIVE_MENU
+    // Use the OS'native menu instead of the Qt one
+    _gui->menubar->setNativeMenuBar(true);
+#else
+    // Use the qt menu instead of the native one in order to standardize the way the menu is showed on every OS
+    _gui->menubar->setNativeMenuBar(false);
+#endif
+
     // show the gui
     _gui->show(); // adding extra line in the console?
 }

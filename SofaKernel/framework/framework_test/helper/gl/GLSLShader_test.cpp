@@ -22,7 +22,7 @@ struct GLSLShader_test : public ::testing::Test
     {
         sofa::helper::system::DataRepository.removePath(FRAMEWORK_TEST_RESOURCES_DIR);
     }
-    
+
 };
 
 TEST(GLSLShader_test, GLSLShader_SetFiles)
@@ -102,7 +102,7 @@ TEST(GLSLShader_test, GLSLShader_AddHeader)
 {
     sofa::helper::gl::GLSLShader glshader;
 
-    std::string header = "#HEADER#";    
+    std::string header = "#HEADER#";
     std::string expectedHeader = "#HEADER#\n";
 
     glshader.AddHeader(header);
@@ -132,7 +132,6 @@ TEST(GLSLShader_test, GLSLShader_AddDefineMacro)
     std::string expectedHeader2 = "#define NUMBER_OF_THINGS 5\n#define NUMBER_OF_STUFF 42\n";
 
     glshader.AddDefineMacro(define1, value1);
-    std::cout << glshader.GetHeader() << std::endl;
     EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader1) == 0);
     glshader.AddDefineMacro(define2, value2);
     EXPECT_TRUE(glshader.GetHeader().compare(expectedHeader2) == 0);

@@ -63,7 +63,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if(data_ == NULL)
         return;
 
-    const std::string label_text = data_->getHelp();
+    const char* help_text = data_->getHelp();
+    const std::string label_text = help_text == NULL ? "" : help_text;
 
     if (label_text != "TODO")
     {
@@ -117,7 +118,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if (!valuetype.empty())
         datawidget_->setToolTip(valuetype.c_str());
 
-    //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
     numWidgets_ += datawidget_->sizeWidget();
     connect(datawidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
     connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidgetValue() ) );
