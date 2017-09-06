@@ -47,7 +47,6 @@
 #include <SofaMiscMapping/ExternalInterpolationMapping.h>
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaVolumetricData/ImplicitSurfaceMapping.h>
 #include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
@@ -134,11 +133,6 @@ typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTy
 typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > IdentityMapping6f_to_6d;
 
 
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ImplicitSurfaceMapping
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ImplicitSurfaceMapping3d_to_3f;
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ImplicitSurfaceMapping3f_to_3d;
 
 
 
