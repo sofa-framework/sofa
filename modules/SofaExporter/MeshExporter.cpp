@@ -35,6 +35,9 @@
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+
+using sofa::core::objectmodel::ComponentState ;
+
 namespace sofa
 {
 
@@ -79,6 +82,7 @@ void MeshExporter::init()
     if (!m_inputtopology)
     {
         msg_error() << "Error, no topology." << sendl;
+        m_componentstate = ComponentState::Invalid ;
         return;
     }
 
@@ -93,15 +97,22 @@ void MeshExporter::init()
             d_position.setReadOnly(true);
         }
     }
+
+    m_componentstate = ComponentState::Valid ;
 }
 
 bool MeshExporter::write()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
     return writeMesh() ;
 }
 
 bool MeshExporter::writeMesh()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     const unsigned int format = d_fileFormat.getValue().getSelectedId();
 
     const bool all = (format == 0);
@@ -184,6 +195,9 @@ std::string MeshExporter::getMeshFilename(const char* ext)
 
 bool MeshExporter::writeMeshVTKXML()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     std::string filename = getMeshFilename(".vtu");
 
     std::ofstream outfile(filename.c_str());
@@ -342,6 +356,9 @@ bool MeshExporter::writeMeshVTKXML()
 
 bool MeshExporter::writeMeshVTK()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     std::string filename = getMeshFilename(".vtk");
 
     std::ofstream outfile(filename.c_str());
@@ -458,6 +475,9 @@ bool MeshExporter::writeMeshVTK()
 /// http://geuz.org/gmsh/doc/texinfo/gmsh.html#File-formats
 bool MeshExporter::writeMeshGmsh()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     std::string filename = getMeshFilename(".gmsh");
 
     std::ofstream outfile(filename.c_str());
@@ -572,6 +592,9 @@ bool MeshExporter::writeMeshGmsh()
 
 bool MeshExporter::writeMeshNetgen()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     std::string filename = getMeshFilename(".mesh");
 
     std::ofstream outfile(filename.c_str());
@@ -661,6 +684,9 @@ bool MeshExporter::writeMeshNetgen()
 /// http://tetgen.berlios.de/fformats.html
 bool MeshExporter::writeMeshTetgen()
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return false;
+
     std::string filename = getMeshFilename(".node");
 
     std::ofstream outfile(filename.c_str());
