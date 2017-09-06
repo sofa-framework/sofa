@@ -92,7 +92,7 @@ protected:
     BaseSimulationExporter() ;
     virtual ~BaseSimulationExporter() { }
 
-    const std::string getOrCreateTargetPath() ;
+    const std::string getOrCreateTargetPath(bool autonumbering) ;
 
     unsigned int       m_stepCounter {0} ;
 };

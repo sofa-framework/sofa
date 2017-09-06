@@ -77,7 +77,7 @@ bool OBJExporter::write()
 
 bool OBJExporter::writeOBJ()
 {
-    std::string basename = getOrCreateTargetPath() ;
+    std::string basename = getOrCreateTargetPath(d_exportEveryNbSteps.getValue()) ;
     std::string objfilename = basename ;
     std::string mtlfilename = basename ;
 

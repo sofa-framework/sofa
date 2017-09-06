@@ -77,7 +77,7 @@ BaseSimulationExporter::BaseSimulationExporter() :
 }
 
 
-const std::string BaseSimulationExporter::getOrCreateTargetPath()
+const std::string BaseSimulationExporter::getOrCreateTargetPath(bool autonumbering)
 {
     std::string path = FileSystem::cleanPath(d_filename.getFullPath()) ;
     if( FileSystem::exists(path) && FileSystem::isDirectory(path) ){
@@ -91,13 +91,12 @@ const std::string BaseSimulationExporter::getOrCreateTargetPath()
     }
 
     /// At this point we have a valid path. We can now add a number indicating the frame save.
-    const auto maxStep = d_exportEveryNbSteps.getValue() ;
-    if (maxStep)
+    if (autonumbering)
     {
         std::ostringstream oss;
         oss.width(5);
         oss.fill('0');
-        oss << m_stepCounter / maxStep;
+        oss << m_stepCounter / d_exportEveryNbSteps.getValue();
         path += oss.str();
     }
     return path ;
@@ -119,6 +118,8 @@ void BaseSimulationExporter::handleEvent(Event *event){
             }
         }
     }
+
+    BaseObject::handleEvent(event) ;
 }
 
 
