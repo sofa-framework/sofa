@@ -73,7 +73,12 @@ MeshExporter::~MeshExporter()
 {
 }
 
-void MeshExporter::init()
+void MeshExporter::doInit()
+{
+    doReInit() ;
+}
+
+void MeshExporter::doReInit()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(m_inputtopology);

@@ -80,13 +80,20 @@ public:
     Data<bool>         d_exportAtEnd;
     Data<bool>         d_isEnabled;
 
-    virtual bool write() = 0 ;
+    /// Don't override this function anymore. But you can do you init in the doInit.
+    virtual void init() override final;
 
-    virtual void init() override ;
-    virtual void reinit() override ;
+    /// Don't override this function anymore. But you can do your reinit in the doReInit.
+    virtual void reinit() override final ;
+
     virtual void cleanup() override ;
     virtual void bwdInit() override ;
     virtual void handleEvent(Event *event) override ;
+
+    virtual void doInit() {}
+    virtual void doReInit() {}
+    virtual bool write() = 0 ;
+
 
 protected:
     BaseSimulationExporter() ;

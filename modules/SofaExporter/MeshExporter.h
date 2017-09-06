@@ -83,7 +83,8 @@ public:
     helper::vector<std::string> cellsDataField;
     helper::vector<std::string> cellsDataName;
 
-    virtual void init() override ;
+    virtual void doInit() override ;
+    virtual void doReInit() override ;
     virtual void handleEvent(Event *) override ;
 
     virtual bool write() override ;

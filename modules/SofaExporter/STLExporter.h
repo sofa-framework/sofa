@@ -71,7 +71,8 @@ public:
     Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle;
     Data< helper::vector< BaseMeshTopology::Quad > >     d_quad;
 
-    virtual void init() override ;
+    virtual void doInit() override ;
+    virtual void doReInit() override ;
     virtual void handleEvent(Event *) override ;
 
     virtual bool write() override ;

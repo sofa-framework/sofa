@@ -75,7 +75,12 @@ STLExporter::STLExporter()
 
 STLExporter::~STLExporter(){}
 
-void STLExporter::init()
+void STLExporter::doInit()
+{
+    doReInit() ;
+}
+
+void STLExporter::doReInit()
 {
     BaseContext* context = this->getContext();
 
@@ -112,11 +117,7 @@ void STLExporter::init()
         d_triangle.setParent(tri);
         d_quad.setParent(qua);
     }
-
-    // Activate the listening to the event in order to be able to export file at the nth-step
-    if(d_exportEveryNbSteps.getValue() != 0)
-        this->f_listening.setValue(true);
-
+    m_componentstate = ComponentState::Valid ;
 }
 
 bool STLExporter::write()

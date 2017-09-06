@@ -125,7 +125,7 @@ void BaseSimulationExporter::handleEvent(Event *event){
 
 void BaseSimulationExporter::init()
 {
-    reinit() ;
+    doInit() ;
 }
 
 
@@ -140,6 +140,8 @@ void BaseSimulationExporter::reinit()
     /// Activate the listening to the event in order to be able to export file at the nth-step
     if(d_exportEveryNbSteps.getValue() != 0)
         this->f_listening.setValue(true);
+
+    doReInit();
 }
 
 

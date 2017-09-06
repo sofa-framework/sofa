@@ -53,6 +53,7 @@ public:
 
     void TearDown()
     {
+        return ;
         for(auto& pathToRemove : dataPath)
         {
             if(FileSystem::exists(pathToRemove))
@@ -78,14 +79,16 @@ public:
                                                           scene1.str().c_str(),
                                                           scene1.str().size()) ;
 
-        ASSERT_NE(root.get(), nullptr) ;
+        ASSERT_NE(root.get(), nullptr) << scene1.str() ;
         root->init(ExecParams::defaultInstance()) ;
 
         sofa::simulation::getSimulation()->animate(root.get(), 0.5);
 
         for(auto& pathToCheck : pathes)
         {
-            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'";
+            EXPECT_TRUE( FileSystem::exists(pathToCheck) ) << "Problem with '" << pathToCheck  << "'"<< std::endl
+                                                           << "================= scene dump ==========================="
+                                                           << scene1.str() ;
         }
     }
 
