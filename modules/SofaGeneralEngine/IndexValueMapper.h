@@ -60,7 +60,7 @@ public:
     virtual void reinit() override;
     virtual void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
