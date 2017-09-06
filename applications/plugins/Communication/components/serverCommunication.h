@@ -74,6 +74,14 @@ namespace component
 namespace communication
 {
 
+template<typename DataType>
+class DataCreator : public sofa::helper::BaseCreator<BaseData>
+{
+public:
+    virtual BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(BaseData);}
+};
+
 //forward declaration
 class CommunicationSubscriber;
 

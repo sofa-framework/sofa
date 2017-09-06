@@ -3,9 +3,6 @@
 
 #include "serverCommunication.h"
 
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-using sofa::core::objectmodel::BaseObjectDescription;
-
 #include <zmq.hpp>
 
 namespace sofa
@@ -17,20 +14,20 @@ namespace component
 namespace communication
 {
 
-template< class DataTypes >
-class SOFA_COMMUNICATION_API ServerCommunicationZMQ : public ServerCommunication<DataTypes>
+class SOFA_COMMUNICATION_API ServerCommunicationZMQ : public ServerCommunication
 {
 public:
 
-    typedef ServerCommunication<DataTypes> Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(ServerCommunicationZMQ, DataTypes), Inherited);
+    typedef ServerCommunication Inherited;
+    SOFA_CLASS(ServerCommunicationZMQ, Inherited);
 
-    ServerCommunicationZMQ    ();
+    ServerCommunicationZMQ();
     virtual ~ServerCommunicationZMQ();
 
-    //////////////////////////////// Inherited from Base /////////////////////////////////
-    virtual std::string getTemplateName() const {return templateName(this);}
-    static std::string templateName(const ServerCommunicationZMQ<DataTypes>* = NULL);
+    //////////////////////////////// Factory OSC type /////////////////////////////////
+    typedef sofa::helper::Factory< std::string, BaseData> ZMQDataFactory;
+    ZMQDataFactory* getFactoryInstance();
+    virtual void initTypeFactory() override;
     /////////////////////////////////////////////////////////////////////////////////
 
     Data<helper::OptionsGroup>  d_pattern;
@@ -49,11 +46,8 @@ protected:
     void sendRequest();
     void receiveRequest();
 
-    // Factoring for templates
-    void convertDataToMessage(std::string& messageStr);
-    void convertStringStreamToData(std::stringstream *stream);
-    void checkDataSize(const unsigned int& nbDataFieldReceived);
-
+    std::string dataToString(CommunicationSubscriber* subscriber, std::string argument);
+    void stringToData(std::string dataString);
 };  //class ServerCommunicationZMQ
 
 }   /// namespace communication

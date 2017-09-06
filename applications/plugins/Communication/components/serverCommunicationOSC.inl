@@ -39,18 +39,18 @@ ServerCommunicationOSC::ServerCommunicationOSC()
 {
 }
 
-ServerCommunicationOSC::OSCDataFactory* ServerCommunicationOSC::getFactoryInstance(){
-    static OSCDataFactory* s_localfactory = nullptr ;
-    if(s_localfactory==nullptr)
-        s_localfactory = new ServerCommunicationOSC::OSCDataFactory() ;
-    return s_localfactory ;
-}
-
 ServerCommunicationOSC::~ServerCommunicationOSC()
 {
     m_socket->Break();
     free(m_socket);
     Inherited::closeCommunication();
+}
+
+ServerCommunicationOSC::OSCDataFactory* ServerCommunicationOSC::getFactoryInstance(){
+    static OSCDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+        s_localfactory = new ServerCommunicationOSC::OSCDataFactory() ;
+    return s_localfactory ;
 }
 
 void ServerCommunicationOSC::initTypeFactory()

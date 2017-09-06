@@ -2,6 +2,7 @@
 #define SOFA_CONTROLLER_ServerCommunicationZMQ_INL
 
 #include "serverCommunicationZMQ.h"
+#include <Communication/components/CommunicationSubscriber.h>
 
 namespace sofa
 {
@@ -12,87 +13,101 @@ namespace component
 namespace communication
 {
 
-template<class DataTypes>
-ServerCommunicationZMQ<DataTypes>::ServerCommunicationZMQ()
+ServerCommunicationZMQ::ServerCommunicationZMQ()
     : Inherited()
     , d_pattern(initData(&d_pattern, OptionsGroup(2,"publish/subscribe","request/reply"), "pattern",
-                                      "Pattern used for communication. \n"
-                                      "publish/subscribe: Messages sent are distributed in a fan out fashion to all connected peers. Never blocks.\n"
-                                      "request/reply: Message sent are waiting for reply. Allows only an alternating sequence of send\reply calls.\n"
-                                      "Default is publish/subscribe. WARNING: the pattern should be the same for both sender and receiver to be effective."))
-
+                         "Pattern used for communication. \n"
+                         "publish/subscribe: Messages sent are distributed in a fan out fashion to all connected peers. Never blocks.\n"
+                         "request/reply: Message sent are waiting for reply. Allows only an alternating sequence of send\reply calls.\n"
+                         "Default is publish/subscribe. WARNING: the pattern should be the same for both sender and receiver to be effective."))
 {
 }
 
-
-template<class DataTypes>
-ServerCommunicationZMQ<DataTypes>::~ServerCommunicationZMQ()
+ServerCommunicationZMQ::~ServerCommunicationZMQ()
 {
     m_socket->close();
     delete m_socket;
     Inherited::closeCommunication();
 }
 
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::sendData()
+ServerCommunicationZMQ::ZMQDataFactory* ServerCommunicationZMQ::getFactoryInstance(){
+    static ZMQDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+        s_localfactory = new ServerCommunicationZMQ::ZMQDataFactory() ;
+    return s_localfactory ;
+}
+
+void ServerCommunicationZMQ::initTypeFactory()
 {
-    std::string adress = "tcp://*:";
+    getFactoryInstance()->registerCreator("float", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("int", new DataCreator<int>());
+    getFactoryInstance()->registerCreator("string", new DataCreator<std::string>());
+}
+
+void ServerCommunicationZMQ::sendData()
+{
+    std::string address = "tcp://*:";
     std::string port = this->d_port.getValueString();
-    adress.insert(adress.length(), port);
+    address.insert(address.length(), port);
 
     if(this->d_pattern.getValue().getSelectedItem() == "publish/subscribe")
         this->m_socket = new zmq::socket_t(this->m_context, ZMQ_PUB);
     else
         this->m_socket = new zmq::socket_t(this->m_context, ZMQ_REP);
 
-    this->m_socket->bind(adress.c_str());
+    this->m_socket->bind(address.c_str());
     while (this->m_running)
     {
         if(this->d_pattern.getValue().getSelectedItem() == "request/reply")
             receiveRequest();
 
+        std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
         std::string messageStr;
-        convertDataToMessage(messageStr);
 
-        zmq::message_t message(messageStr.length());
+        for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+        {
+            CommunicationSubscriber* subscriber = it->second;
+            std::vector<std::string> argumentList = subscriber->getArgumentList();
+            messageStr += subscriber->getSubject() + " ";
 
-        memcpy(message.data(), messageStr.c_str(), messageStr.length());
+            for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                messageStr += dataToString(subscriber, *itArgument);
 
-        bool status = m_socket->send(message);
-        if(!status)
-            msg_warning(this) << "Problem with communication";
+            zmq::message_t message(messageStr.length());
+            std::cout << messageStr << std::endl;
+            memcpy(message.data(), messageStr.c_str(), messageStr.length());
+
+            bool status = m_socket->send(message);
+            if(!status)
+                msg_warning(this) << "Problem with communication";
+            messageStr.clear();
+            std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
+        }
     }
 }
 
-
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::receiveData()
+void ServerCommunicationZMQ::receiveData()
 {
     std::string IP ="localhost";
-    if(this->d_adress.isSet())
-        IP = this->d_adress.getValue();
+    if(d_address.isSet())
+        IP = d_address.getValue();
 
-    std::string adress = "tcp://"+IP+":";
-    std::string port = this->d_port.getValueString();
-    adress.insert(adress.length(), port);
+    std::string address = "tcp://"+IP+":";
+    std::string port = d_port.getValueString();
+    address.insert(address.length(), port);
 
-    if(this->d_pattern.getValue().getSelectedItem() == "publish/subscribe")
+    if(d_pattern.getValue().getSelectedItem() == "publish/subscribe")
     {
         m_socket = new zmq::socket_t(m_context, ZMQ_SUB);
-
-        // Should drop sent messages if exceed HWM.
-        // WARNING: does not work, uncomment if problem solved
-        //uint64_t HWM = d_HWM.getValue();
-        //m_socket->setsockopt(ZMQ_RCVHWM, &HWM, sizeof(HWM));
-
-        m_socket->connect(adress.c_str());
+        m_socket->connect(address.c_str());
         m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0); // Arg2: publisher name - Arg3: size of publisher name
     }
     else
     {
         m_socket = new zmq::socket_t(m_context, ZMQ_REQ);
-        m_socket->connect(adress.c_str());
+        m_socket->connect(address.c_str());
     }
+
 
     while (this->m_running)
     {
@@ -100,69 +115,131 @@ void ServerCommunicationZMQ<DataTypes>::receiveData()
             sendRequest();
 
         zmq::message_t message;
-        bool status = m_socket->recv(&message);
+        bool status = this->m_socket->recv(&message);
         if(status)
         {
-            char messageChar[message.size()];
-            memcpy(&messageChar, message.data(), message.size());
 
-            std::stringstream stream;
-            unsigned int nbDataFieldReceived = 0;
-            for(unsigned int i=0; i<message.size(); i++)
-            {
-                if(messageChar[i]==' ' || i==message.size()-1)
-                    nbDataFieldReceived++;
+            char* tmp = (char*)malloc(sizeof(char) * message.size());
+            memcpy(tmp, message.data(), message.size());
 
-                if(messageChar[i]==',')
-                    messageChar[i]='.';
-
-                stream << messageChar[i];
-            }
-
-            convertStringStreamToData(&stream);
-            checkDataSize(nbDataFieldReceived);
+            stringToData(std::string(tmp));
         }
         else
             msg_warning(this) << "Problem with communication";
+
     }
 }
 
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::convertDataToMessage(std::string& messageStr)
+std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscriber, std::string argument)
 {
-    for(unsigned int i=0; i<this->d_data_copy.size(); i++)
+    std::string messageStr = "empty";
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
+    MapData dataMap = source->getDataAliases();
+    MapData::const_iterator itData = dataMap.find(argument);
+
+    // handle no argument
+    if (itData != dataMap.end())
     {
-        ReadAccessor<Data<DataTypes>> data = this->d_data_copy[i];
-        messageStr += std::to_string(data) + " ";
+        BaseData* data = itData->second;
+        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+        messageStr.clear();
+
+        if (typeinfo->Container())
+        {
+            int rowWidth = typeinfo->size();
+            int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+            messageStr += "matrix int::" + std::to_string(rowWidth) + " int::" + std::to_string(nbRows) + " ";
+            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+            {
+                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                messageStr += "type::unknow " +(data->getValueString()) + " ";
+            }
+
+            if (typeinfo->Text())
+            {
+                messageStr += "type::string ";
+            }
+            else if (typeinfo->Scalar())
+            {
+                messageStr += "type::float ";
+            }
+            else if (typeinfo->Integer())
+            {
+                messageStr += "type::int ";
+            }
+        }
+        else
+        {
+            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+            {
+                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+                messageStr += "unknow::";
+            }
+            if (typeinfo->Text())
+            {
+                messageStr += "string::";
+            }
+            else if (typeinfo->Scalar())
+            {
+                messageStr += "float::";
+            }
+            else if (typeinfo->Integer())
+            {
+                messageStr += "int::";
+            }
+        }
+        messageStr += (data->getValueString()) + " ";
     }
+    return messageStr;
 }
 
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::convertStringStreamToData(std::stringstream* stream)
+void ServerCommunicationZMQ::stringToData(std::string dataString)
 {
-    for (unsigned int i= 0; i<this->d_data_copy.size(); i++)
+    std::regex rgx("\\s+");
+    std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
+    std::sregex_token_iterator end;
+    std::vector<std::string> listArguments;
+    std::string subject;
+    std::string type;
+    std::string matrixId;
+    int matrixWidth = 0, matrixHeight = 0;
+
+    for ( ; iter != end; ++iter)
+        listArguments.push_back(*iter);
+
+    if (listArguments.empty())
+        return;
+
+    subject = listArguments.at(0);
+
+    matrixId = listArguments.at(1);
+    if (matrixId.compare("matrix") == 0)
     {
-        WriteAccessor<Data<DataTypes>> data = this->d_data_copy[i];
-        (*stream) >> data;
+        if (listArguments.size() >= 5 )
+        {
+            matrixWidth = std::stoi(listArguments.at(2));
+            matrixHeight = std::stoi(listArguments.at(3));
+            type = listArguments.at(4);
+        }
+        else
+        {
+            msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix width height type value value value... ";
+            return;
+        }
     }
+
+    std::cout << subject << " " << matrixWidth << " " << matrixHeight << " " << type << std::endl;
+    if (!isSubscribedTo(subject, listArguments.size()-1) )// -1 because it contains the subject
+        return;
 }
 
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::checkDataSize(const unsigned int& nbDataFieldReceived)
-{
-    if(nbDataFieldReceived!= this->d_nbDataField.getValue())
-        msg_warning(this) << "Something wrong with the size of data received. Please check template.";
-}
-
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::sendRequest()
+void ServerCommunicationZMQ::sendRequest()
 {
     zmq::message_t request;
     m_socket->send(request);
 }
 
-template<class DataTypes>
-void ServerCommunicationZMQ<DataTypes>::receiveRequest()
+void ServerCommunicationZMQ::receiveRequest()
 {
     zmq::message_t request;
     m_socket->recv(&request);
