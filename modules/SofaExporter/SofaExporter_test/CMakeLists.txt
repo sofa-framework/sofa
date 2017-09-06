@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaExporter_test)
 
 set(SOURCE_FILES
-	OBJExporter_test.cpp
+        OBJExporter_test.cpp
+        STLExporter_test.cpp
     )
 
 #add_definitions("-DSOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes_test\"")
