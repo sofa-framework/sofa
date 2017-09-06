@@ -434,7 +434,7 @@ PythonEnvironment::gil::~gil() {
 }
 
 
-
+// not exactly sure what to do
 PythonEnvironment::no_gil::no_gil(const char* trace)
     : state(PyEval_SaveThread()),
       trace(trace) {
