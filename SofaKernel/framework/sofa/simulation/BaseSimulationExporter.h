@@ -100,7 +100,7 @@ protected:
     virtual ~BaseSimulationExporter() { }
 
     const std::string getOrCreateTargetPath(const std::string& filename, bool autonumbering) ;
-
+    void updateFromDataField() ;
     unsigned int       m_stepCounter {0} ;
 };
 

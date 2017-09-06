@@ -125,11 +125,18 @@ void BaseSimulationExporter::handleEvent(Event *event){
 
 void BaseSimulationExporter::init()
 {
+    updateFromDataField() ;
     doInit() ;
 }
 
 
 void BaseSimulationExporter::reinit()
+{
+    updateFromDataField() ;
+    doReInit();
+}
+
+void BaseSimulationExporter::updateFromDataField()
 {
     /// We need to set a default filename... So which one ?
     if(!d_filename.isSet() || d_filename.getValue().empty())
@@ -140,10 +147,7 @@ void BaseSimulationExporter::reinit()
     /// Activate the listening to the event in order to be able to export file at the nth-step
     if(d_exportEveryNbSteps.getValue() != 0)
         this->f_listening.setValue(true);
-
-    doReInit();
 }
-
 
 void BaseSimulationExporter::cleanup()
 {
