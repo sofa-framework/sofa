@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 from subprocess import check_output
 import argparse
 import sys
+import os
 
 def stringToVariableName(s):
     ### converting a string in a valid variable name
@@ -162,12 +163,42 @@ def parseInput() :
     args = parser.parse_args()
     return parser,args;
 
+def getFilename() :
+    filename = __file__
+    if filename[0] == "." :
+        filename = commands.getstatusoutput('pwd')[1]+filename[1:]
+    else :
+        filename = commands.getstatusoutput('pwd')[1]+"/"+filename
+    return filename
+
 def pythonScriptControllerFunctions() :
-    allScriptControllerFunctions = ['onKeyPressed(self, c)','onKeyReleased(self, c)','onLoaded(self, node)','onMouseButtonLeft(self, mouseX,mouseY,isPressed)','onMouseButtonRight(self, mouseX,mouseY,isPressed)','onMouseButtonMiddle(self, mouseX,mouseY,isPressed)','onMouseWheel(self, mouseX,mouseY,wheelDelta)','onGUIEvent(self, strControlID,valueName,strValue)','onBeginAnimationStep(self, deltaTime)','onEndAnimationStep(self, deltaTime)','onScriptEvent(self, senderNode, eventName,data)','initGraph(self, node)','bwdInitGraph(self, node)','storeResetState(self)','reset(self)','cleanup(self)']
+    noExample = '## Please feel free to add an example for a simple usage in '+getFilename()
+    scriptControllerFunctions = {
+        'onKeyPressed(self, c)' : '## usage e.g.\n#if c=="A" :\n#    print "You pressed control+a"',
+        'onKeyReleased(self, c)' : '## usage e.g.\n#if c=="A" :\n#    print "You released a"',
+        'onLoaded(self, node)' : noExample,
+        'onMouseButtonLeft(self, mouseX,mouseY,isPressed)' : '## usage e.g.\n#if isPressed : \n#    print "Control+Left mouse button pressed at position "+str(mouseX)+", "+str(mouseY)',
+        'onMouseButtonRight(self, mouseX,mouseY,isPressed)' : '## usage e.g.\n#if isPressed : \n#    print "Control+Right mouse button pressed at position "+str(mouseX)+", "+str(mouseY)',
+        'onMouseButtonMiddle(self, mouseX,mouseY,isPressed)' : '## usage e.g.\n#if isPressed : \n#    print "Control+Middle mouse button pressed at position "+str(mouseX)+", "+str(mouseY)',
+        'onMouseWheel(self, mouseX,mouseY,wheelDelta)' : '## usage e.g.\n#if isPressed : \n#    print "Control button pressed+mouse wheel turned at position "+str(mouseX)+", "+str(mouseY)+", wheel delta"+str(wheelDelta)',
+        'onGUIEvent(self, strControlID,valueName,strValue)' : noExample,
+        'onBeginAnimationStep(self, deltaTime)' : noExample,
+        'onEndAnimationStep(self, deltaTime)' : noExample,
+        'onScriptEvent(self, senderNode, eventName,data)' : noExample,
+        'initGraph(self, node)' : noExample,
+        'bwdInitGraph(self, node)' : noExample,
+        'storeResetState(self)' : noExample,
+        'reset(self)' : noExample,
+        'cleanup(self)' : noExample}
     result = '\n'
     tabs = "    "
-    for curFct in allScriptControllerFunctions :
-        result += '\n'+tabs+'def ' + curFct + ':\n'+tabs+'    return 0;\n'
+    for curFct in scriptControllerFunctions.keys() :
+        result += '\n'+tabs+'def ' + curFct + ':\n'
+        if len(scriptControllerFunctions[curFct]) :
+            exampleUsage = scriptControllerFunctions[curFct].split("\n")
+            for line in exampleUsage :
+                result += tabs+'    '+line+'\n'
+        result += tabs+'    return 0;\n'
     return result
 
 def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produceSceneAndPythonFile=1,nodeIsRootNode=1) :
@@ -219,7 +250,9 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
     f_py.write(pythonFile_str)
     f_py.close()
 
-def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPythonFile,outputFilename,nodeToPythonScript) :
+def transformXMLSceneToPythonScene(inputScene,produceSceneAndPythonFile,outputFilename,nodeToPythonScript) :
+    # get the correct input filename
+    pythonFilename = getFilename()
     # get the correct names for the output files
     pythonFilenameWithoutPath = chopStringAtChar(pythonFilename,'/')
     outputFilenameWithoutPath = chopStringAtChar(outputFilename,'/')
@@ -292,7 +325,6 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
 def main() :
     # parse the console input
     parser,args = parseInput()
-    pythonFilename = sys.argv[0]
     produceSceneAndPythonFile = args.onlyOutputPythonScript
     nodeToPythonScript = args.n
     if nodeToPythonScript and not produceSceneAndPythonFile :
@@ -307,7 +339,7 @@ def main() :
             if i < len(args.o) :
                 outputFilename = args.o[i]
         print 'Input Scene: '+inputScene+', replace node: '+str(nodeToPythonScript)+', output: '+outputFilename+', produce .scn and .py: '+str(produceSceneAndPythonFile)
-        transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPythonFile,outputFilename,nodeToPythonScript)
+        transformXMLSceneToPythonScene(inputScene,produceSceneAndPythonFile,outputFilename,nodeToPythonScript)
 
 if __name__ == "__main__":
     main()
