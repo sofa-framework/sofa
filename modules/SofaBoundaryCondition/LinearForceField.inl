@@ -161,6 +161,14 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 }// LinearForceField::addForce
 
 template<class DataTypes>
+void LinearForceField<DataTypes>::addKToMatrix(defaulttype::BaseMatrix* matrix, SReal kFact, unsigned int& offset)
+{
+    SOFA_UNUSED(matrix);
+    SOFA_UNUSED(kFact);
+    SOFA_UNUSED(offset);
+}
+
+template<class DataTypes>
 SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
     Real cT = (Real) this->getContext()->getTime();
