@@ -12,6 +12,7 @@ from subprocess import check_output
 import argparse
 import sys
 import os
+import commands
 
 def stringToVariableName(s):
     ### converting a string in a valid variable name
