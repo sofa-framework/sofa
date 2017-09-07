@@ -22,6 +22,7 @@
 
 #include <SofaVolumetricData/InterpolatedImplicitSurface.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <fstream>
 
 namespace sofa
 {
