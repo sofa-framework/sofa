@@ -73,9 +73,37 @@ const std::string SceneCheckMissingRequiredPlugin::getDesc()
 
 void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
 {
-    std::cout << "Do: " << getName() << std::endl ;
+    for (auto& object : node->object )
+    {
+        ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
+        if(!entry.creatorMap.empty())
+        {
+            ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
+            if(entry.creatorMap.end() != it && *it->second->getTarget()){
+                std::string pluginName = it->second->getTarget() ;
+                std::string path = PluginManager::getInstance().findPlugin(pluginName) ;
+                if( PluginManager::getInstance().pluginIsLoaded(path)
+                        && m_requiredPlugins.find(pluginName) == m_requiredPlugins.end() )
+                {
+                    msg_warning("SceneChecker")
+                            << "This scene is using component '" << object->getClassName() << "'. " << msgendl
+                            << "This component is part of the '" << pluginName << "' plugin but there is no <RequiredPlugin name='" << pluginName << "'> directive in your scene." << msgendl
+                            << "Your scene may not work on a sofa environment that does not have pre-loaded the plugin." << msgendl
+                            << "To fix your scene and remove this warning you need to add the RequiredPlugin directive at the beginning of your scene. ";
+                }
+            }
+        }
+    }
 }
 
+void SceneCheckMissingRequiredPlugin::doInit(Node* node)
+{
+    helper::vector< RequiredPlugin* > plugins ;
+    node->getTreeObjects< RequiredPlugin >(&plugins) ;
+
+    for(auto& plugin : plugins)
+        m_requiredPlugins[plugin->getName()] = true ;
+}
 
 const std::string SceneCheckAPIChange::getName()
 {
@@ -87,10 +115,68 @@ const std::string SceneCheckAPIChange::getDesc()
     return "Check for each component that the behavior have not changed since reference version of sofa.";
 }
 
+void SceneCheckAPIChange::doInit(Node* node)
+{
+    std::stringstream version;
+    version << SOFA_VERSION / 10000 << "." << SOFA_VERSION / 100 % 100;
+    m_currentApiLevel = version.str();
+
+    m_changesets.clear() ;
+    installChangeSets() ;
+
+    APIVersion* apiversion {nullptr} ;
+    /// 1. Find if there is an APIVersion component in the scene. If there is none, warn the user and set
+    /// the version to 17.06 (the last version before it was introduced). If there is one...use
+    /// this component to request the API version requested by the scene.
+    node->getTreeObject(apiversion) ;
+    if(!apiversion)
+    {
+        msg_info("SceneChecker") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
+    }
+    else
+    {
+        m_selectedApiLevel = apiversion->getApiLevel() ;
+    }
+}
+
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
-    std::cout << "Do: " << getName() << std::endl ;
+    for (auto& object : node->object )
+    {
+        if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
+        {
+            for(auto& hook : m_changesets[m_selectedApiLevel])
+            {
+                hook(object.get());
+            }
+        }
+
+    }
 }
+
+void SceneCheckAPIChange::installChangeSets()
+{
+    addHookInChangeSet("17.06", [](Base* o){
+        if(o->getClassName() == "RestShapeSpringsForceField" && o->findData("external_rest_shape")->isSet())
+            msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
+    }) ;
+
+    addHookInChangeSet("17.06", [](Base* o){
+        if(o->getClassName() == "BoxStiffSpringForceField" )
+            msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
+    }) ;
+
+    addHookInChangeSet("17.06", [](Base* o){
+        if(o->getClassName() == "TheComponentWeWantToRemove" )
+            msg_warning(o) << "TheComponentWewantToRemove is deprecated since sofa 17.06. It have been replaced by TheSuperComponent. #See PR318" ;
+    }) ;
+}
+
+void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)
+{
+    m_changesets[version].push_back(fct) ;
+}
+
 
 } // _scenechecks_
 
