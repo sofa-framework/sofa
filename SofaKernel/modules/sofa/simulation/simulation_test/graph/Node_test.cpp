@@ -27,10 +27,12 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/simulation/Node.h>
+#include "../Node_test.h"
 
 namespace sofa {
 
 using namespace modeling;
+using sofa::core::objectmodel::New ;
 
 struct Node_test : public Sofa_test<>
 {
@@ -65,6 +67,50 @@ TEST_F( Node_test, getPathName)
 
     EXPECT_EQ("", root->getPathName());
     EXPECT_EQ("/A/B", B->getPathName());
+}
+
+TEST_F( Node_test, gracefulHandlingOfDuplicatedNodeNames)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning);
+
+    A->createChild("B1");
+
+    {
+        EXPECT_MSG_EMIT(Warning);
+        A->createChild("B1");
+    }
+}
+
+TEST_F( Node_test, gracefulHandlingOfDuplicatedObjectNames)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning);
+
+    /// Let's try to create a second child with a similar name.
+    A->addObject( New<Dummy>("obj") ) ;
+
+    {
+        EXPECT_MSG_EMIT(Warning);
+        A->addObject( New<Dummy>("obj")  ) ;
+    }
+}
+
+TEST_F( Node_test, gracefulHandlingOfDuplicatedNames)
+{
+    EXPECT_MSG_NOEMIT(Error, Warning);
+
+    /// Let's try to create a second child with a similar name.
+    A->createChild("A1");
+    {
+        EXPECT_MSG_EMIT(Warning);
+        A->addObject( New<Dummy>("A1")  ) ;
+    }
+
+    /// Let's try the other way around...
+    B->addObject( New<Dummy>("B1")  ) ;
+    {
+        EXPECT_MSG_EMIT(Warning);
+        B->createChild( "B1" ) ;
+    }
 }
 
 }// namespace sofa

@@ -29,10 +29,20 @@
 
 #include <sofa/simulation/Visitor.h>
 
+/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
+namespace sofa {
+    namespace simulation {
+        class SceneCheck ;
+    }
+}
+
+
+/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
+
 typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
@@ -50,6 +60,9 @@ public:
 
     void installChangeSets() ;
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
+
+    void addCheck(SceneCheck* check) ;
+    void removeCheck(SceneCheck* check) ;
 private:
     std::map<std::string,bool> m_requiredPlugins ;
     bool m_isRequiredPluginValidationEnabled {true} ;
@@ -58,6 +71,8 @@ private:
     std::string m_selectedApiLevel {"17.06"} ;
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+
+    std::vector<SceneCheck*> m_checkset ;
 };
 
 } // namespace simulation

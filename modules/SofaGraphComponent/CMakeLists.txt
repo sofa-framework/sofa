@@ -16,6 +16,7 @@ set(HEADER_FILES
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
+    SceneChecks.h
     SceneCheckerVisitor.h
     APIVersion.h
     config.h
@@ -36,6 +37,7 @@ set(SOURCE_FILES
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp
+    SceneChecks.cpp
     SceneCheckerVisitor.cpp
     APIVersion.cpp
     initGraphComponent.cpp

@@ -23,6 +23,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/version.h>
 
+#include "SceneChecks.h"
 #include "SceneCheckerVisitor.h"
 #include "RequiredPlugin.h"
 
@@ -54,6 +55,19 @@ SceneCheckerVisitor::~SceneCheckerVisitor()
 {
 }
 
+#include <algorithm>
+void SceneCheckerVisitor::addCheck(SceneCheck* check)
+{
+    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
+        m_checkset.push_back(check) ;
+}
+
+void SceneCheckerVisitor::removeCheck(SceneCheck* check)
+{
+     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
+}
+
+
 void SceneCheckerVisitor::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)
 {
     m_changesets[version].push_back(fct) ;
@@ -82,9 +96,14 @@ void SceneCheckerVisitor::validate(Node* node)
     enableValidationAPIVersion(node) ;
     enableValidationRequiredPlugins(node) ;
 
-    msg_info("SceneChecker") << "Validating a scene: " << msgendl
-                             << "- APIVersion checking: " << m_isAPIVersionValidationEnabled << msgendl
-                             << "- RequiredPlugin checking: " << m_isRequiredPluginValidationEnabled ;
+    std::stringstream tmp;
+    for(SceneCheck* check : m_checkset)
+    {
+        tmp << "- " << check->getName() << msgendl ;
+    }
+
+    msg_info("SceneChecker") << "Validating '"<< node->getName() << "' with: " << msgendl
+                             << tmp.str() ;
 
     execute(node) ;
 }
@@ -125,6 +144,11 @@ Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
 {
     for (auto& object : node->object )
     {
+        for(SceneCheck* check : m_checkset)
+        {
+            check->doCheckOn(node) ;
+        }
+
         if(m_isRequiredPluginValidationEnabled)
         {
             ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());

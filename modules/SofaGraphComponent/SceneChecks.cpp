@@ -19,55 +19,81 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/version.h>
 
-#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
-#define SOFA_HELPER_TYPES_MATERIAL_H_
+#include "SceneChecks.h"
+#include "RequiredPlugin.h"
+#include <sofa/simulation/Visitor.h>
 
-#include <sofa/core/core.h>
-#include <sofa/defaulttype/RGBAColor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include "APIVersion.h"
+using sofa::component::APIVersion ;
 
 namespace sofa
 {
-
-namespace helper
+namespace simulation
+{
+namespace _scenechecks_
 {
 
-namespace types
+using sofa::core::objectmodel::Base ;
+using sofa::component::misc::RequiredPlugin ;
+using sofa::core::ObjectFactory ;
+using sofa::core::ExecParams ;
+using sofa::helper::system::PluginRepository ;
+using sofa::helper::system::PluginManager ;
+
+const std::string SceneCheckDuplicatedName::getName()
 {
+    return "SceneCheckDuplicatedName";
+}
 
-class SOFA_HELPER_API Material
+const std::string SceneCheckDuplicatedName::getDesc()
 {
-public:
-    std::string 	name;		        /* name of material */
-    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
-    defaulttype::RGBAColor  ambient ;	/* ambient component */
-    defaulttype::RGBAColor  specular;	/* specular component */
-    defaulttype::RGBAColor  emissive;	/* emmissive component */
-    float  shininess;	                /* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
+    return "Check there is not duplicated name in the scenegraph";
+}
 
-    void setColor(float r, float g, float b, float a) ;
+void SceneCheckDuplicatedName::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
 
-    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
-    Material() ;
-    Material(const Material& mat) ;
-};
 
-} // namespace types
+const std::string SceneCheckMissingRequiredPlugin::getName()
+{
+    return "SceneCheckMissingRequiredPlugin";
+}
 
-} // namespace helper
+const std::string SceneCheckMissingRequiredPlugin::getDesc()
+{
+    return "Check for each component provided by a plugin that the corresponding <RequiredPlugin> directive is present in the scene";
+}
+
+void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
+
+
+const std::string SceneCheckAPIChange::getName()
+{
+    return "SceneCheckAPIChange";
+}
+
+const std::string SceneCheckAPIChange::getDesc()
+{
+    return "Check for each component that the behavior have not changed since reference version of sofa.";
+}
+
+void SceneCheckAPIChange::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
+
+} // _scenechecks_
+
+} // namespace simulation
 
 } // namespace sofa
 
-#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */

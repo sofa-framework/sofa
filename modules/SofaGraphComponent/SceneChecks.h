@@ -19,55 +19,68 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_SIMULATION_SCENECHECKS_H
+#define SOFA_SIMULATION_SCENECHECKS_H
 
-#ifndef SOFA_HELPER_TYPES_MATERIAL_H_
-#define SOFA_HELPER_TYPES_MATERIAL_H_
+#include "config.h"
 
-#include <sofa/core/core.h>
-#include <sofa/defaulttype/RGBAColor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
+namespace sofa {
+    namespace simulation {
+        class Node ;
+    }
+}
 
+
+/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
-
-namespace helper
+namespace simulation
+{
+namespace _scenechecks_
 {
 
-namespace types
-{
-
-class SOFA_HELPER_API Material
+class SceneCheck
 {
 public:
-    std::string 	name;		        /* name of material */
-    defaulttype::RGBAColor  diffuse ;	/* diffuse component */
-    defaulttype::RGBAColor  ambient ;	/* ambient component */
-    defaulttype::RGBAColor  specular;	/* specular component */
-    defaulttype::RGBAColor  emissive;	/* emmissive component */
-    float  shininess;	                /* specular exponent */
-    bool   useDiffuse;
-    bool   useSpecular;
-    bool   useAmbient;
-    bool   useEmissive;
-    bool   useShininess;
-    bool   useTexture;
-    bool   useBumpMapping;
-    bool   activated;
-    std::string   textureFilename; // path to the texture linked to the material
-    std::string   bumpTextureFilename; // path to the bump texture linked to the material
-
-    void setColor(float r, float g, float b, float a) ;
-
-    friend SOFA_HELPER_API std::ostream& operator << (std::ostream& out, const Material& m ) ;
-    friend SOFA_HELPER_API std::istream& operator >> (std::istream& in, Material &m ) ;
-    Material() ;
-    Material(const Material& mat) ;
+    virtual const std::string getName() = 0 ;
+    virtual const std::string getDesc() = 0 ;
+    virtual void doCheckOn(Node* node) = 0 ;
 };
 
-} // namespace types
+class SceneCheckDuplicatedName : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
 
-} // namespace helper
+class SceneCheckMissingRequiredPlugin : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
 
-} // namespace sofa
+class SceneCheckAPIChange : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
 
-#endif /* SOFA_HELPER_TYPES_MATERIAL_H_ */
+} /// _scenechecks_
+
+using _scenechecks_::SceneCheck ;
+using _scenechecks_::SceneCheckDuplicatedName ;
+using _scenechecks_::SceneCheckMissingRequiredPlugin ;
+using _scenechecks_::SceneCheckAPIChange ;
+
+} /// namespace simulation
+
+} /// namespace sofa
+
+#endif /// SOFA_SIMULATION_SCENECHECKS_H
