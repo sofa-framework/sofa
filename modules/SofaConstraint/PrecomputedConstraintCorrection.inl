@@ -38,14 +38,14 @@
 
 #include <sofa/core/behavior/RotationFinder.h>
 
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
 #include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/simulation/Node.h>
 
-
-//#include <glib.h>
+#include <fstream>
 #include <sstream>
 #include <list>
 #include <iomanip>
