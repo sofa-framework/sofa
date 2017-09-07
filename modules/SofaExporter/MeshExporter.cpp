@@ -126,7 +126,7 @@ bool MeshExporter::writeMesh()
     const bool netgen = all || (format == 3);
     const bool tetgen = all || (format == 4);
     const bool gmsh   = all || (format == 5);
-    msg_info() << "Exporting a mesh in '" << getMeshFilename("") << "'"
+    msg_info() << "Exporting a mesh in '" << getMeshFilename("") << "'" << msgendl
                << "-" << d_position.getValue().size() << " points" << msgendl
                << "-" << m_inputtopology->getNbEdges() << " edges" << msgendl
                << "-" << m_inputtopology->getNbTriangles() << " triangles" << msgendl
@@ -194,8 +194,7 @@ std::string MeshExporter::getMeshFilename(const char* ext)
             }
         }
     }
-    oss << ext;
-    return getOrCreateTargetPath(oss.str(), false) ;
+    return getOrCreateTargetPath(oss.str(), d_exportEveryNbSteps.getValue()) + ext;
 }
 
 bool MeshExporter::writeMeshVTKXML()
