@@ -19,20 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
-#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
+#ifndef SOFA_SIMULATION_SCENECHECKS_H
+#define SOFA_SIMULATION_SCENECHECKS_H
 
 #include "config.h"
-
-#include <functional>
-#include <map>
-
-#include <sofa/simulation/Visitor.h>
 
 /////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
     namespace simulation {
-        class SceneCheck ;
+        class Node ;
     }
 }
 
@@ -42,41 +37,50 @@ namespace sofa
 {
 namespace simulation
 {
+namespace _scenechecks_
+{
 
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-
-class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
+class SceneCheck
 {
 public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    virtual ~SceneCheckerVisitor() ;
-
-    void validate(Node* node) ;
-
-    void enableValidationAPIVersion(Node *node) ;
-    void enableValidationRequiredPlugins(Node* node) ;
-
-    virtual Result processNodeTopDown(Node* node) override ;
-
-    void installChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-
-    void addCheck(SceneCheck* check) ;
-    void removeCheck(SceneCheck* check) ;
-private:
-    std::map<std::string,bool> m_requiredPlugins ;
-    bool m_isRequiredPluginValidationEnabled {true} ;
-    bool m_isAPIVersionValidationEnabled {true} ;
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
-
-    std::vector<SceneCheck*> m_checkset ;
+    virtual const std::string getName() = 0 ;
+    virtual const std::string getDesc() = 0 ;
+    virtual void doCheckOn(Node* node) = 0 ;
 };
 
-} // namespace simulation
+class SceneCheckDuplicatedName : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
 
-} // namespace sofa
+class SceneCheckMissingRequiredPlugin : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
 
-#endif
+class SceneCheckAPIChange : public SceneCheck
+{
+public:
+    virtual const std::string getName() override ;
+    virtual const std::string getDesc() override ;
+    virtual void doCheckOn(Node* node) override ;
+};
+
+} /// _scenechecks_
+
+using _scenechecks_::SceneCheck ;
+using _scenechecks_::SceneCheckDuplicatedName ;
+using _scenechecks_::SceneCheckMissingRequiredPlugin ;
+using _scenechecks_::SceneCheckAPIChange ;
+
+} /// namespace simulation
+
+} /// namespace sofa
+
+#endif /// SOFA_SIMULATION_SCENECHECKS_H
