@@ -45,22 +45,26 @@ using sofa::core::ExecParams ;
 using sofa::helper::system::PluginRepository ;
 using sofa::helper::system::PluginManager ;
 
+
 SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
 
 }
 
+
 SceneCheckerVisitor::~SceneCheckerVisitor()
 {
 }
 
-void SceneCheckerVisitor::addCheck(SceneCheck* check)
+
+void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
 {
     if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
         m_checkset.push_back(check) ;
 }
 
-void SceneCheckerVisitor::removeCheck(SceneCheck* check)
+
+void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
 {
     m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
 }
@@ -68,7 +72,7 @@ void SceneCheckerVisitor::removeCheck(SceneCheck* check)
 void SceneCheckerVisitor::validate(Node* node)
 {
     std::stringstream tmp;
-    for(SceneCheck* check : m_checkset)
+    for(SceneCheck::SPtr& check : m_checkset)
     {
         tmp << "- " << check->getName() << msgendl ;
     }
@@ -79,9 +83,10 @@ void SceneCheckerVisitor::validate(Node* node)
     execute(node) ;
 }
 
+
 Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
 {
-    for(SceneCheck* check : m_checkset)
+    for(SceneCheck::SPtr& check : m_checkset)
     {
         check->doCheckOn(node) ;
     }
