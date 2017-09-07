@@ -19,64 +19,81 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKERVISTOR_H
-#define SOFA_SIMULATION_SCENECHECKERVISTOR_H
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/version.h>
 
-#include "config.h"
-
-#include <functional>
-#include <map>
-
+#include "SceneChecks.h"
+#include "RequiredPlugin.h"
 #include <sofa/simulation/Visitor.h>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
-namespace sofa {
-    namespace simulation {
-        class SceneCheck ;
-    }
-}
+#include "APIVersion.h"
+using sofa::component::APIVersion ;
 
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-
-class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
+namespace _scenechecks_
 {
-public:
-    SceneCheckerVisitor(const sofa::core::ExecParams* params) ;
-    virtual ~SceneCheckerVisitor() ;
 
-    void validate(Node* node) ;
+using sofa::core::objectmodel::Base ;
+using sofa::component::misc::RequiredPlugin ;
+using sofa::core::ObjectFactory ;
+using sofa::core::ExecParams ;
+using sofa::helper::system::PluginRepository ;
+using sofa::helper::system::PluginManager ;
 
-    void enableValidationAPIVersion(Node *node) ;
-    void enableValidationRequiredPlugins(Node* node) ;
+const std::string SceneCheckDuplicatedName::getName()
+{
+    return "SceneCheckDuplicatedName";
+}
 
-    virtual Result processNodeTopDown(Node* node) override ;
+const std::string SceneCheckDuplicatedName::getDesc()
+{
+    return "Check there is not duplicated name in the scenegraph";
+}
 
-    void installChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
+void SceneCheckDuplicatedName::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
 
-    void addCheck(SceneCheck* check) ;
-    void removeCheck(SceneCheck* check) ;
-private:
-    std::map<std::string,bool> m_requiredPlugins ;
-    bool m_isRequiredPluginValidationEnabled {true} ;
-    bool m_isAPIVersionValidationEnabled {true} ;
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
 
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+const std::string SceneCheckMissingRequiredPlugin::getName()
+{
+    return "SceneCheckMissingRequiredPlugin";
+}
 
-    std::vector<SceneCheck*> m_checkset ;
-};
+const std::string SceneCheckMissingRequiredPlugin::getDesc()
+{
+    return "Check for each component provided by a plugin that the corresponding <RequiredPlugin> directive is present in the scene";
+}
+
+void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
+
+
+const std::string SceneCheckAPIChange::getName()
+{
+    return "SceneCheckAPIChange";
+}
+
+const std::string SceneCheckAPIChange::getDesc()
+{
+    return "Check for each component that the behavior have not changed since reference version of sofa.";
+}
+
+void SceneCheckAPIChange::doCheckOn(Node* node)
+{
+    std::cout << "Do: " << getName() << std::endl ;
+}
+
+} // _scenechecks_
 
 } // namespace simulation
 
 } // namespace sofa
 
-#endif
