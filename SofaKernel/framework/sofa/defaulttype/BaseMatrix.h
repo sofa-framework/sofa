@@ -25,6 +25,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/defaulttype.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <utility> // for std::pair
 #include <cstddef> // for NULL and std::size_t
 #include <iostream>
@@ -37,6 +38,7 @@ namespace sofa
 
 namespace defaulttype
 {
+
 
 /// Generic matrix API, allowing to fill and use a matrix independently of the linear algebra library in use.
 ///
@@ -1252,5 +1254,10 @@ public:
 } // nampespace defaulttype
 
 } // nampespace sofa
+
+/// This line register the CompressedRowSparseMatrix to the messaging system
+/// this allow to write msg_info() instead of msg_info("CompressedRowSparseMatrix")
+/// which is nicer
+MSG_REGISTER_CLASS(sofa::defaulttype::BaseMatrix, "BaseMatrix")
 
 #endif

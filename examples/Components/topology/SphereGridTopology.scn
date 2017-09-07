@@ -2,7 +2,7 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
     <Node name="SphereFEMTetra">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="-10" />
         <UniformMass totalmass="100" />

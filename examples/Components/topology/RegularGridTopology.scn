@@ -6,7 +6,7 @@
     <CollisionResponse response="default" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalmass="100.0" />

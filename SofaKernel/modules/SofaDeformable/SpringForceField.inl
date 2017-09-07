@@ -192,7 +192,6 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
         Real d = u.norm();
         Real elongation = (Real)(d - springs[i].initpos);
         ener += elongation * elongation * springs[i].ks /2;
-        //std::cout << "spring energy = " << ener << std::endl;
     }
 
     return ener;

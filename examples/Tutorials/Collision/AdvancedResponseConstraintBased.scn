@@ -12,7 +12,7 @@
     <LCPConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
-        <EulerImplicit name="EulerImplicit" />
+        <EulerImplicit name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2" />
         <UniformMass name="UniformMass" totalmass="10.0" />

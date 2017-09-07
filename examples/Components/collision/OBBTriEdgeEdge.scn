@@ -5,7 +5,7 @@
   <BruteForceDetection name="Detection" />
   <DefaultContactManager name="Response"  response="default" />
   <TreeCollisionGroupManager name="Group" />
-  <EulerImplicitSolver name="Implicit Euler Solver" />
+  <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
   <NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
   <Node 	 name="RigMec"  gravity="0 0 0"  >

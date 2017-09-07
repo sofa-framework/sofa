@@ -50,16 +50,9 @@ void LineInfo::buildFilter(unsigned int edge_index)
     if ((int)edge_index==-1)
         debug=true;
 
-
-    //std::cout<<"buildFilter for edge"<<edge_index<<" :";
-
-
     BaseMeshTopology* bmt = this->base_mesh_topology;
-    //std::cout<<"bmt:"<<bmt<<std::endl;
 
     const Edge &e =  bmt->getEdge(edge_index);
-
-//	vector< Vector3 >& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
     const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[e[0]];
     const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[e[1]];
@@ -69,10 +62,6 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     m_lineVector = pt2 - pt1;
     m_lineVector.normalize();
-
-    //BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
-
-
 
     const sofa::helper::vector<unsigned int>& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
 

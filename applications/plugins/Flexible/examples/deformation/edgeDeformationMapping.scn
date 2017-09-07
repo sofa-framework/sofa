@@ -9,7 +9,7 @@
 
 <!--    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/> -->
 <!--    <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="true" maxIterations="20" precision="1e-3" />-->
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+    <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
    <Node 	name="GreenStrain" >
 

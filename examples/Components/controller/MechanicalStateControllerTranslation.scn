@@ -6,7 +6,7 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="InstrumentEdgeSet">
-        <EulerImplicit rayleighStiffness="0" printLog="false" />
+        <EulerImplicit rayleighStiffness="0" printLog="false"  rayleighMass="0.1" />
         <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" />
         <UniformMass totalmass="1" />

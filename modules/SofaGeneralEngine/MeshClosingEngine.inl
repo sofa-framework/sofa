@@ -106,7 +106,6 @@ void MeshClosingEngine<DataTypes>::update()
         }
     }
     sout<<"Found "<< loops.size()<<" loops"<<sendl;
-//    for(size_t i=0;i<loops.size();i++) for(size_t j=0;j<loops[i].size();j++) std::cout<<"loop "<<i<<","<<j<<":"<<loops[i][j]<<std::endl;
 
     // insert points at loop centroids and triangles connecting loop edges and centroids
     for(size_t i=0; i<loops.size(); i++)

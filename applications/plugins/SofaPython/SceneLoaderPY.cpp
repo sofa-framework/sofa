@@ -25,6 +25,7 @@
 
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
@@ -83,7 +84,7 @@ void SceneLoaderPY::getExtensionList(ExtensionList* list)
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
-    loadSceneWithArguments(filename, {}, &root);
+    loadSceneWithArguments(filename, helper::ArgumentParser::extra_args(), &root);
     return root;
 }
 
@@ -92,6 +93,7 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
+    PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." );
@@ -151,6 +153,7 @@ void SceneLoaderPY::loadSceneWithArguments(const char *filename,
 
 bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
+    PythonEnvironment::gil lock(__func__);    
     if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
     {
         SP_MESSAGE_ERROR( "header script run error." )

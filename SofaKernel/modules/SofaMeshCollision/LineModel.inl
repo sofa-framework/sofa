@@ -99,7 +99,7 @@ void TLineModel<DataTypes>::init()
         serr <<"LineModel requires a MeshTopology" << sendl;
         return;
     }
-	this->topology = bmt;
+    this->topology = bmt;
     resize( bmt->getNbEdges() );
 
     for(int i = 0; i < bmt->getNbEdges(); i++)
@@ -446,10 +446,10 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
     if (this->getContext() != model2->getContext()) return true;
     sofa::core::topology::BaseMeshTopology* topology = this->getMeshTopology();
     /*
-    	TODO : separate 2 case: the model is only composed of lines or is composed of triangles
-    	bool NoTriangles = true;
-    	if( this->getContext()->get<TriangleModel>  != NULL)
-    		NoTriangles = false;
+        TODO : separate 2 case: the model is only composed of lines or is composed of triangles
+        bool NoTriangles = true;
+        if( this->getContext()->get<TriangleModel>  != NULL)
+            NoTriangles = false;
     */
     int p11 = elems[index].p[0];
     int p12 = elems[index].p[1];
@@ -542,13 +542,6 @@ bool TLineModel<DataTypes>::canCollideWithElement(int index, CollisionModel* mod
                 return false;
         }
         return true;
-
-        //sout << "line-point self test "<<index<<" - "<<index2<<sendl;
-        //std::cout << "line-point self test "<<index<<" - "<<index2<<"   - elems[index].p[0]-1"<<elems[index].p[0]-1<<"   elems[index]..p[1]+1 "<<elems[index].p[1]+1<<std::endl;
-
-
-        // case1: only lines (aligned lines !!)
-        //return index2 < p11-1 || index2 > p12+1;
 
         // only removes collision with the two vertices of the segment
         // TODO: neighborhood search !

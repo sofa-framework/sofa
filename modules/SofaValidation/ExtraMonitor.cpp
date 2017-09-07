@@ -20,39 +20,34 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MISC_EXTRAMONITOR_CPP
-#include <SofaValidation/ExtraMonitor.inl>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <SofaValidation/ExtraMonitor.inl>
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
-
 SOFA_DECL_CLASS(ExtraMonitor)
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int ExtraMonitorClass = core::RegisterObject("Monitoring of particles")
-#ifndef SOFA_FLOAT
-        .add< ExtraMonitor<Vec3dTypes> >(true)
-        .add< ExtraMonitor<Vec6dTypes> >()
-        .add< ExtraMonitor<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ExtraMonitor<Vec3fTypes> >()
-        .add< ExtraMonitor<Vec6fTypes> >()
-        .add< ExtraMonitor<Rigid3fTypes> >()
-#endif
+        #ifndef SOFA_FLOAT
+        .add<ExtraMonitor<Vec3dTypes> >(true)
+        .add<ExtraMonitor<Vec6dTypes> >()
+        .add<ExtraMonitor<Rigid3dTypes> >()
+        #endif
+        #ifndef SOFA_DOUBLE
+        .add<ExtraMonitor<Vec3fTypes> >()
+        .add<ExtraMonitor<Vec6fTypes> >()
+        .add<ExtraMonitor<Rigid3fTypes> >()
+        #endif
         ;
-
-
 
 #ifndef SOFA_FLOAT
 template class ExtraMonitor<Vec3dTypes>;
@@ -65,9 +60,8 @@ template class ExtraMonitor<Vec6fTypes>;
 template class ExtraMonitor<Rigid3fTypes>;
 #endif
 
+}  // namespace misc
 
-} // namespace misc
+}  // namespace component
 
-} // namespace component
-
-} // namespace sofa
+}  // namespace sofa

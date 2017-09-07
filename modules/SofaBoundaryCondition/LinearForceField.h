@@ -115,6 +115,8 @@ public:
         mparams->setKFactorUsed(true);
     };
 
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
+
     virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 
 private :

@@ -23,7 +23,7 @@
 	</Node>
 	<Node name="SquareCloth1">
 		<!--<CGImplicit rayleighMass="0.05"  iterations="10" threshold="0.000001"/>-->
-		<EulerImplicit rayleighMass="0.05"/>
+		<EulerImplicit rayleighMass="0.05" rayleighStiffness="0.1" />
 		<CGLinearSolver iterations="10" threshold="0.000001"/>
 		<MechanicalObject template="CudaVec3f" />
 		<UniformMass totalmass="100" />

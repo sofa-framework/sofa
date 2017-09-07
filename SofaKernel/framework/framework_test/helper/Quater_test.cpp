@@ -22,7 +22,7 @@
 #include <sofa/helper/Quater.h>
 #include <gtest/gtest.h>
 #include <stdlib.h>
-#include <time.h>      
+#include <time.h>
 
 using sofa::helper::Quater;
 
@@ -31,7 +31,7 @@ double errorThreshold = 1e-6;
 TEST(QuaterTest, EulerAngles)
 {
     // Try to tranform a quat (q0) to euler angles and then back to quat (q1)
-    // compare the result of the rotations define by q0 and q1 on a vector 
+    // compare the result of the rotations define by q0 and q1 on a vector
     srand (time(NULL));
     for (int i = 0; i < 100; ++i)
     {   // Generate a test vector p
@@ -52,13 +52,11 @@ TEST(QuaterTest, EulerAngles)
         }
 
         //Rotate p with q0
-        sofa::defaulttype::Vec<3,double>  p0 = q0.Quater<double>::rotate(p);       
+        sofa::defaulttype::Vec<3,double>  p0 = q0.Quater<double>::rotate(p);
 
         //Transform q0 into euler angles and back to a quaternion (q1)
-        Quater<double> q1 = Quater<double>::createQuaterFromEuler(q0.Quater<double>::toEulerVector());     
+        Quater<double> q1 = Quater<double>::createQuaterFromEuler(q0.Quater<double>::toEulerVector());
         //if(q1[3]<0)q1*=(-1);
-
-        //std::cout << "Q0 " << q0 << std::endl << "Q1 " << q1 << std::endl;
 
         //Rotate p with q1
         sofa::defaulttype::Vec<3,double> p1 = q1.Quater<double>::rotate(p);
@@ -139,7 +137,7 @@ TEST(QuaterTest, QuaterdNormalize)
     quat.set(1.0, 0.0, 1.0, 0.0);
 
     quat.normalize();
-    
+
     EXPECT_NEAR(0.707106781186548, quat[0], errorThreshold);
     EXPECT_NEAR(0.0  ,  quat[1], errorThreshold);
     EXPECT_NEAR(0.707106781186548, quat[2], errorThreshold);
@@ -199,7 +197,7 @@ TEST(QuaterTest, QuaterdToMatrix)
     quat.set(0.306186217847897, 0.435595740399158, 0.306186217847897, 0.789149130992431);
     sofa::defaulttype::Mat3x3d mat;
     quat.toMatrix(mat);
-    
+
     //matlab results
     EXPECT_NEAR(0.433012701892219,  mat[0][0], errorThreshold);
     EXPECT_NEAR(-0.216506350946110,  mat[0][1], errorThreshold);
@@ -388,7 +386,6 @@ TEST(QuaterTest, QuaterdToEulerVector)
     sofa::defaulttype::Vec3d p;
 
     p = quat.toEulerVector();
-    std::cout << p << std::endl;
 
     EXPECT_NEAR(1.047197551196598, p[0], errorThreshold);
     EXPECT_NEAR(0.523598775598299, p[1], errorThreshold);

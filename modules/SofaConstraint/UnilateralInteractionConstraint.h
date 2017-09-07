@@ -45,7 +45,6 @@ public:
     virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
     {
         SOFA_UNUSED(dfree);
-//		std::cout<< "UnilateralConstraintResolution (without friction): verify resolution ! "<<std::endl;
         force[line] -= d[line] / w[line][line];
         if(force[line] < 0)
             force[line] = 0.0;

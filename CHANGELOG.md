@@ -12,22 +12,28 @@
 **For users**
 
 **For developpers**
+- [all]
+    - Fix the default value rayleigh params, now set to zero (#339)
 - [SofaKernel]
     - Change the way all MechanicalVisitor apply projective constraints. This change is breaking the API and external solver's code need to be updated (#216)
     - Improve messaging by implementing <<operator to report those line number (for python and xml error reporting) (#314)
 - [SofaPython]
     - General SofaPython cleaning and improvement(#304)
 - [runSofa]
-    - new system for plugin auto-loading (#301)
+    - New system for plugin auto-loading (#301)
 
 
 ### Improvements
 
 **Modules**
+- [SofaKernel]
+    - Add check of vector size in TetrahedronFEMForceField (#341)
 - [SofaGraphComponent]
     - Add SceneCheckerVisitor to detect missing RequiredPlugin (#306)
+    - Add a mechanism (SceneChecker) to report API & SceneChange to users (#329)
 - [SofaDeformable]
     - Rest shape can now be given using SingleLink (#315)
+    - Add AngularSpringForceField (#334)
 - [SofaSimpleFem]
     - Add a bounding box computed for HexahedronFEMForceField (#289)
 - [SofaExporter]
@@ -40,8 +46,13 @@
     - Add unicode to string convertion and a warning message in Binding_BaseContext::pythonToSofaDataString (#313)
     - Add unicode to string convertion in Binding_BaseData::SetDataValuePython (#313)
     - Add a test (#313)
+    - Add support for Sofa.msg_ with emitter other than a string (#335)
 - [CGALPlugin]
     - Add new functionality for mesh generation from image: definition of features (#294)
+- [meshconv]
+    - Improve the CMake config of meshconv requiring miniflowVR to compile (#358)
+- [runSofa]
+    - Extend the live coding support, message API available for nodes, add an openInEditor (#337)
 
 **Scenes**
 
@@ -76,6 +87,12 @@
 **Applications and Plugins**
 - [Registration]
     - Remove deprecated scene (#331)
+- [image]
+    - Fix warnings (#361)
+- [SofaPython]
+    - Fix warnings (#361)
+- [CGALPlugin]
+    - Fix warnings (#361)
 - [runSofa]
     - Clean : remove non-ASCII chars in string (#327)
 

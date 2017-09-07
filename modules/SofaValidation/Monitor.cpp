@@ -28,32 +28,27 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace misc
 {
-
 SOFA_DECL_CLASS(Monitor)
 
 using namespace sofa::defaulttype;
 
 // Register in the Factory
 int MonitorClass = core::RegisterObject("Monitoring of particles")
-#ifndef SOFA_FLOAT
+        #ifndef SOFA_FLOAT
         .add< Monitor<Vec3dTypes> >(true)
         .add< Monitor<Vec6dTypes> >()
         .add< Monitor<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
+        #endif
+        #ifndef SOFA_DOUBLE
         .add< Monitor<Vec3fTypes> >()
         .add< Monitor<Vec6fTypes> >()
         .add< Monitor<Rigid3fTypes> >()
-#endif
+        #endif
         ;
-
-
 
 #ifndef SOFA_FLOAT
 template class SOFA_VALIDATION_API Monitor<Vec3dTypes>;
@@ -66,9 +61,6 @@ template class SOFA_VALIDATION_API Monitor<Vec6fTypes>;
 template class SOFA_VALIDATION_API Monitor<Rigid3fTypes>;
 #endif
 
-
 } // namespace misc
-
 } // namespace component
-
 } // namespace sofa
