@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
+
 #include "SofaModeler.h"
 
 #include <sofa/helper/system/FileRepository.h>
