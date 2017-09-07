@@ -19,9 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <algorithm>
+#include <sofa/version.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/version.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #include "SceneChecks.h"
 #include "SceneCheckerVisitor.h"
@@ -55,7 +58,6 @@ SceneCheckerVisitor::~SceneCheckerVisitor()
 {
 }
 
-#include <algorithm>
 void SceneCheckerVisitor::addCheck(SceneCheck* check)
 {
     if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
