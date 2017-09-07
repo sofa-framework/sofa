@@ -23,7 +23,7 @@
 #define SOFA_SIMULATION_SCENECHECKS_H
 
 #include "config.h"
-
+#include <map>
 /////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
     namespace simulation {
@@ -45,6 +45,7 @@ class SceneCheck
 public:
     virtual const std::string getName() = 0 ;
     virtual const std::string getDesc() = 0 ;
+    virtual void doInit(Node* node) {}
     virtual void doCheckOn(Node* node) = 0 ;
 };
 
@@ -61,15 +62,29 @@ class SceneCheckMissingRequiredPlugin : public SceneCheck
 public:
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
+    virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
+
+private:
+    std::map<std::string,bool> m_requiredPlugins ;
 };
 
+typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
 class SceneCheckAPIChange : public SceneCheck
 {
 public:
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
+    virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
+
+    void installChangeSets() ;
+    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
+private:
+    std::string m_currentApiLevel;
+    std::string m_selectedApiLevel {"17.06"} ;
+
+    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
 };
 
 } /// _scenechecks_
