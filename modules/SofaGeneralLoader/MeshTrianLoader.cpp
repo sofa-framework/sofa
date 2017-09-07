@@ -23,12 +23,8 @@
 #include <SofaGeneralLoader/MeshTrianLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 
-//#include <sofa/helper/system/FileRepository.h>
-//#include <stdlib.h>
 #include <iostream>
-//#include <string>
-
-//#include <cstdio>
+#include <fstream>
 
 namespace sofa
 {
@@ -189,7 +185,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              {
         sout << " ((v1<v2) | (ngh0== -1)) " << sendl;
         e=new E(trian,vertexTable[v1],vertexTable[v2],
-        	t,0);
+            t,0);
         t->setEdge(0,e);
         // if we have a boundary edge store it in the vertex
         if (ngh0== -1)
@@ -203,7 +199,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              {
         sout << " ((v2<v0)| (ngh1== -1)) " << sendl;
         e=new E(trian,vertexTable[v2],vertexTable[v0],
-        	t,0);
+            t,0);
         t->setEdge(1,e);
         // if we have a boundary edge store it in the vertex
         if (ngh1== -1)

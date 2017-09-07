@@ -23,6 +23,7 @@
 #include <SofaGeneralLoader/MeshGmshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
+#include <fstream>
 
 namespace sofa
 {
@@ -236,7 +237,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             case 3: // Quad
                 nnodes = 4;
                 break;
-            case 4: // Tetra                
+            case 4: // Tetra
                 nnodes = 4;
                 break;
             case 5: // Hexa
@@ -250,7 +251,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
                 break;
             case 11: // Quadratic Tetrahedron
                 nnodes = 10;
-                break; 
+                break;
             default:
                 serr << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << sendl;
                 nnodes = 0;
