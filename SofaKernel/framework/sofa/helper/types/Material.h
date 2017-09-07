@@ -26,7 +26,6 @@
 #include <sofa/core/core.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
