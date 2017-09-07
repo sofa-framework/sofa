@@ -40,7 +40,7 @@ namespace simulation
 namespace _scenechecks_
 {
 
-class SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheck
 {
 public:
     typedef std::shared_ptr<SceneCheck> SPtr ;
@@ -50,7 +50,7 @@ public:
     virtual void doCheckOn(Node* node) = 0 ;
 };
 
-class SceneCheckDuplicatedName : public SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheckDuplicatedName : public SceneCheck
 {
 public:
     typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr ;
@@ -60,7 +60,7 @@ public:
     virtual void doCheckOn(Node* node) override ;
 };
 
-class SceneCheckMissingRequiredPlugin : public SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
 {
 public:
     typedef std::shared_ptr<SceneCheckMissingRequiredPlugin > SPtr ;
@@ -75,7 +75,7 @@ private:
 };
 
 typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-class SceneCheckAPIChange : public SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
 {
 public:
     typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
