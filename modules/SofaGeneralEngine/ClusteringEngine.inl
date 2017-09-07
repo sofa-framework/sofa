@@ -29,6 +29,7 @@
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
