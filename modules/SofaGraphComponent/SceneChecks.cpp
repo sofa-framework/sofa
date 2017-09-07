@@ -132,6 +132,7 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
         m_requiredPlugins[plugin->getName()] = true ;
 }
 
+
 const std::string SceneCheckAPIChange::getName()
 {
     return "SceneCheckAPIChange";
@@ -147,9 +148,6 @@ void SceneCheckAPIChange::doInit(Node* node)
     std::stringstream version;
     version << SOFA_VERSION / 10000 << "." << SOFA_VERSION / 100 % 100;
     m_currentApiLevel = version.str();
-
-    m_changesets.clear() ;
-    installChangeSets() ;
 
     APIVersion* apiversion {nullptr} ;
     /// 1. Find if there is an APIVersion component in the scene. If there is none, warn the user and set
@@ -181,7 +179,7 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
     }
 }
 
-void SceneCheckAPIChange::installChangeSets()
+void SceneCheckAPIChange::installDefaultChangeSets()
 {
     addHookInChangeSet("17.06", [](Base* o){
         if(o->getClassName() == "RestShapeSpringsForceField" && o->findData("external_rest_shape")->isSet())

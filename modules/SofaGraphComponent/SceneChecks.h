@@ -85,7 +85,7 @@ public:
     virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
 
-    void installChangeSets() ;
+    void installDefaultChangeSets() ;
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
 private:
     std::string m_currentApiLevel;
@@ -100,6 +100,14 @@ using _scenechecks_::SceneCheck ;
 using _scenechecks_::SceneCheckDuplicatedName ;
 using _scenechecks_::SceneCheckMissingRequiredPlugin ;
 using _scenechecks_::SceneCheckAPIChange ;
+
+namespace scenecheckers
+{
+    using _scenechecks_::SceneCheck ;
+    using _scenechecks_::SceneCheckDuplicatedName ;
+    using _scenechecks_::SceneCheckMissingRequiredPlugin ;
+    using _scenechecks_::SceneCheckAPIChange ;
+} /// checkers
 
 } /// namespace simulation
 
