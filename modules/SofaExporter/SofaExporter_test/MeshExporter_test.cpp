@@ -141,7 +141,7 @@ std::vector<std::vector<string>> params={
     {"gmsh", "gmsh"}
 };
 
-#define NUM_PARAMS (uint)2
+#define NUM_PARAMS (unsigned int)2
 
 /// run the tests
 TEST_P( MeshExporter_test, checkBasicBehavior) {
