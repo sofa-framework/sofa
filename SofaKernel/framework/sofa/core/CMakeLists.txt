@@ -192,6 +192,7 @@ set(SOURCE_FILES
     collision/Intersection.cpp
     collision/Pipeline.cpp
     init.cpp
+    loader/BaseLoader.cpp
     loader/MeshLoader.cpp
     loader/SceneLoader.cpp
     loader/VoxelLoader.cpp
