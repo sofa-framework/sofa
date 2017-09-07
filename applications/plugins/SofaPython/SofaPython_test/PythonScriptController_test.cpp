@@ -1,5 +1,6 @@
 #include <regex>
 #include <vector>
+#include <fstream>
 
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test;
