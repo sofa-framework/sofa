@@ -904,6 +904,9 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         /// We want to warn user that there is component that are implemented in specific plugin
         /// and that there is no RequiredPlugin in their scene.
         SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
+        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
         checker.validate(root.get()) ;
 
         mSimulation = root;

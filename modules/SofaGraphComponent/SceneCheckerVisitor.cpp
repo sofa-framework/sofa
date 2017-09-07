@@ -75,9 +75,11 @@ void SceneCheckerVisitor::validate(Node* node)
     for(SceneCheck::SPtr& check : m_checkset)
     {
         tmp << "- " << check->getName() << msgendl ;
+        check->doInit(node) ;
     }
 
-    msg_info("SceneChecker") << "Validating '"<< node->getName() << "' with: " << msgendl
+    msg_info("SceneChecker") << "Validating node '"<< node->getPathName() << "'. " << msgendl
+                             << "Activate checkers: " << msgendl
                              << tmp.str() ;
 
     execute(node) ;
