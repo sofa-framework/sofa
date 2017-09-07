@@ -63,18 +63,6 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 /// Add a child node
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
-    if( getChild(node->getName()) != nullptr ){
-        //todo(18.06)...replace that with an error.
-        msg_warning() << "You are adding a child with name '"<< node->getName()<< "' but there is already one with a similar name."
-                         "This will result in undefined behavior so you need to correct your scene." ;
-    }
-
-    if( getObject(node->getName()) != nullptr ){
-        //todo(18.06)...replace that with an error.
-        msg_warning() << "You are adding a child with name '"<< node->getName()<< "' but there is already an object with a similar name."
-                         "This is not allowed and you need to correct your scene." ;
-    }
-
     child.add(node);
     node->l_parents.add(this);
     node->l_parents.updateLinks(); // to fix load-time unresolved links

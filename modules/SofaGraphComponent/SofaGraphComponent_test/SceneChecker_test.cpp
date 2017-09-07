@@ -4,6 +4,9 @@ using sofa::Sofa_test;
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::SceneCheckerVisitor ;
 
+#include <SofaGraphComponent/SceneChecks.h>
+using sofa::simulation::SceneCheckAPIChange ;
+
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
@@ -94,21 +97,29 @@ struct SceneChecker_test : public Sofa_test<>
         root->init(ExecParams::defaultInstance()) ;
 
         SceneCheckerVisitor checker(ExecParams::defaultInstance());
+
         if(shouldWarn){
             /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
             EXPECT_MSG_EMIT(Warning) ;
-            checker.addHookInChangeSet("17.06", [](Base* o){
+            SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr() ;
+
+            apichange->addHookInChangeSet("17.06", [](Base* o){
                 if(o->getClassName() == "ComponentDeprecated")
                     msg_warning(o) << "ComponentDeprecated have changed since 17.06." ;
             }) ;
+            checker.addCheck(apichange) ;
             checker.validate(root.get()) ;
         }
         else {
+            SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr() ;
+
             /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
-            checker.addHookInChangeSet("17.06", [](Base* o){
+            apichange->addHookInChangeSet("17.06", [](Base* o){
                 if(o->getClassName() == "ComponentDeprecated")
                     msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06." ;
             }) ;
+
+            checker.addCheck(apichange) ;
             checker.validate(root.get()) ;
         }
     }

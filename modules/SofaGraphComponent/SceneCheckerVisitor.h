@@ -28,21 +28,13 @@
 #include <map>
 
 #include <sofa/simulation/Visitor.h>
-
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
-namespace sofa {
-    namespace simulation {
-        class SceneCheck ;
-    }
-}
-
+#include "SceneChecks.h"
 
 /////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
@@ -53,10 +45,11 @@ public:
     void validate(Node* node) ;
     virtual Result processNodeTopDown(Node* node) override ;
 
-    void addCheck(SceneCheck* check) ;
-    void removeCheck(SceneCheck* check) ;
+    void addCheck(SceneCheck::SPtr check) ;
+    void removeCheck(SceneCheck::SPtr check) ;
+
 private:
-    std::vector<SceneCheck*> m_checkset ;
+    std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
 } // namespace simulation

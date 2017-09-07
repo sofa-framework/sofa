@@ -520,18 +520,6 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 void Node::doAddObject(BaseObject::SPtr sobj)
 {
-    if( getObject(sobj->getName()) != nullptr ){
-        //todo(18.06)...replace that with an error.
-        msg_warning() << "You are adding an object with name '"<< sobj->getName()<< "' but there is already one with a similar name."
-                         "This is not allowed and you need to correct your scene." ;
-    }
-
-    if( getChild(sobj->getName()) != nullptr ){
-        //todo(18.06)...replace that with an error.
-        msg_warning() << "You are adding an object with name '"<< sobj->getName()<< "' but there is already a node with a similar name."
-                         "This is not allowed and you need to correct your scene." ;
-    }
-
     this->setObjectContext(sobj);
     object.add(sobj);
     BaseObject* obj = sobj.get();

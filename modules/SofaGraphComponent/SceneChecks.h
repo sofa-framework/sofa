@@ -43,15 +43,18 @@ namespace _scenechecks_
 class SceneCheck
 {
 public:
+    typedef std::shared_ptr<SceneCheck> SPtr ;
     virtual const std::string getName() = 0 ;
     virtual const std::string getDesc() = 0 ;
-    virtual void doInit(Node* node) {}
+    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
     virtual void doCheckOn(Node* node) = 0 ;
 };
 
 class SceneCheckDuplicatedName : public SceneCheck
 {
 public:
+    typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr ;
+    static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
     virtual void doCheckOn(Node* node) override ;
@@ -60,6 +63,8 @@ public:
 class SceneCheckMissingRequiredPlugin : public SceneCheck
 {
 public:
+    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin > SPtr ;
+    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
     virtual void doInit(Node* node) override ;
@@ -73,6 +78,8 @@ typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunctio
 class SceneCheckAPIChange : public SceneCheck
 {
 public:
+    typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
+    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
     virtual void doInit(Node* node) override ;

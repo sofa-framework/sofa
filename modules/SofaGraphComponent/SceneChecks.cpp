@@ -57,9 +57,36 @@ const std::string SceneCheckDuplicatedName::getDesc()
 
 void SceneCheckDuplicatedName::doCheckOn(Node* node)
 {
-    std::cout << "Do: " << getName() << std::endl ;
-}
+    std::map<std::string, int> duplicated ;
+    for (auto& object : node->object )
+    {
+        if( duplicated.find(object->getName()) == duplicated.end() )
+            duplicated[object->getName()] = 0 ;
+        duplicated[object->getName()]++ ;
+    }
 
+    for (auto& child : node->child )
+    {
+        if( duplicated.find(child->getName()) == duplicated.end() )
+            duplicated[child->getName()] = 0 ;
+        duplicated[child->getName()]++ ;
+    }
+
+    std::stringstream tmp ;
+    for(auto& p : duplicated)
+    {
+        if(p.second!=1)
+        {
+            tmp << "- duplicated '" << p.first << "'" << msgendl ;
+        }
+    }
+    if(!tmp.str().empty())
+    {
+       msg_warning("SceneCheckDuplicatedName") << "In '"<<  node->getPathName() <<"'" << msgendl
+                                               << tmp.str() ;
+    }
+
+}
 
 const std::string SceneCheckMissingRequiredPlugin::getName()
 {
