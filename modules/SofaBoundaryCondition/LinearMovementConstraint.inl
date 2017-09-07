@@ -66,6 +66,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
+    , relativeMovements( initData(&relativeMovements, (bool)true, "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
 {
     // default to indice 0
@@ -280,10 +281,21 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    if (relativeMovements.getValue())
     {
-        x[*it].getCenter() = x0[*it].getCenter() + getVCenter(m) ;
-        x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it].getCenter() = x0[*it].getCenter() + getVCenter(m) ;
+            x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
+        }
+    }
+    else
+    {
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it].getCenter() =  getVCenter(m) ;
+            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+        }
     }
 }
 
@@ -399,12 +411,26 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         glColor4f(1, 0.5, 0.5, 1);
         glBegin(GL_LINES);
         const SetIndexArray & indices = m_indices.getValue();
-        for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+        if (relativeMovements.getValue()) 
         {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
             {
-                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                {
+                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
+                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                }
+            }
+        } 
+        else 
+        {
+            for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+            {
+                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                {
+                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i]));
+                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                }
             }
         }
         glEnd();
