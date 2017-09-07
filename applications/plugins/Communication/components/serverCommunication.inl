@@ -159,6 +159,29 @@ std::map<std::string, CommunicationSubscriber*> ServerCommunication::getSubscrib
     return m_subscriberMap;
 }
 
+BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName)
+{
+    MapData dataMap = source->getDataAliases();
+    MapData::const_iterator itData = dataMap.find(argumentName);
+    BaseData* data;
+
+    if (itData == dataMap.end())
+    {
+        data = getFactoryInstance()->createObject(keyTypeMessage, sofa::helper::NoArgument());
+        if (data == nullptr)
+            msg_warning() << keyTypeMessage << " is not a known type";
+        else
+        {
+            data->setName(argumentName);
+            data->setHelp("Auto generated help from communication");
+            source->addData(data, argumentName);
+            msg_info(source->getName()) << "data field named : " << argumentName << " has been created";
+        }
+    } else
+        data = itData->second;
+    return data;
+}
+
 
 } /// communication
 

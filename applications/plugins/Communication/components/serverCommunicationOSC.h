@@ -52,8 +52,8 @@ public:
     virtual ~ServerCommunicationOSC();
 
     //////////////////////////////// Factory OSC type /////////////////////////////////
-    typedef sofa::helper::Factory< std::string, BaseData> OSCDataFactory;
-    OSCDataFactory* getFactoryInstance();
+    typedef CommunicationDataFactory OSCDataFactory;
+    OSCDataFactory* getFactoryInstance() override;
     virtual void initTypeFactory() override;
     /////////////////////////////////////////////////////////////////////////////////
 

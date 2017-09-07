@@ -59,6 +59,10 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("d", new DataCreator<double>());
     getFactoryInstance()->registerCreator("i", new DataCreator<int>());
     getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
+    getFactoryInstance()->registerCreator("matrixf", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("matrixd", new DataCreator<double>());
+    getFactoryInstance()->registerCreator("matrixi", new DataCreator<int>());
+    getFactoryInstance()->registerCreator("matrixs", new DataCreator<std::string>());
     // TODO have a look at blobs
     // TODO have a look at time tag
 }
@@ -129,7 +133,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
                         msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
                         p <<  (data->getValueString().c_str());
                     }
-
+                    // DAT if case !! :/
                     for (int i=0; i < nbRows; i++)
                     {
                         for (int j=0; j<rowWidth; j++)
@@ -181,43 +185,51 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-    const char* address = m.AddressPattern();
-    if (!isSubscribedTo(m.AddressPattern(), m.ArgumentCount()))
-        return;
 
+    const char* address = m.AddressPattern();
+    osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
+
+    BaseData* data;
     CommunicationSubscriber * subscriber = getSubscriberFor(address);
+    if (!subscriber)
+        return;
     SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
 
-    int i = 0;
-    for ( osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin()++; it != m.ArgumentsEnd(); it++)
+    std::string firstArg = convertArgumentToStringValue(it);
+    if (firstArg.compare("matrix") == 0)
     {
-        std::string keyTypeMessage = std::string(1, it->TypeTag());
-        std::string argumentName = subscriber->getArgumentName(i);
-        MapData dataMap = source->getDataAliases();
-
-        MapData::const_iterator itData = dataMap.find(argumentName);
-        if (itData == dataMap.end())
+        int row = 0, column = 0;
+        if (m.ArgumentCount() >= 3)
         {
-            BaseData* data = getFactoryInstance()->createObject(keyTypeMessage, sofa::helper::NoArgument());
-            if (data == nullptr)
-                msg_warning() << keyTypeMessage << " is not a known type";
-            else
+            try
             {
-                data->setName(argumentName);
-                data->setHelp("Auto generated help from OSC communication");
-                source->addData(data, argumentName);
-                data->read(convertArgumentToStringValue(it));
-                msg_info(source->getName()) << "data field named : " << argumentName << " has been created";
+                row = (++it)->AsInt32();
+                column = (++it)->AsInt32();
+            } catch (osc::WrongArgumentTypeException e)
+            {
+                msg_error() << "row or column is not an int";
+                return;
             }
-        } else
-        {
-            BaseData* data = itData->second;
-            data->read(convertArgumentToStringValue(it));
         }
-        i++;
+        data = fetchData(source, std::string(1, (++it)->TypeTag()), subscriber->getArgumentName(0));
+        std::stringstream stream;
+        for ( it ; it != m.ArgumentsEnd(); it++)
+            stream << convertArgumentToStringValue(it) << " ";
+        data->read(stream.str());
+    }
+    else
+    {
+        if (!isSubscribedTo(m.AddressPattern(), m.ArgumentCount()))
+            return;
+        int i = 0;
+        for ( it ; it != m.ArgumentsEnd(); it++)
+        {
+            data = fetchData(source, std::string(1, it->TypeTag()), subscriber->getArgumentName(i));
+            data->read(convertArgumentToStringValue(it));
+            i++;
+        }
     }
 }
-
 std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
 {
     std::string stringData;

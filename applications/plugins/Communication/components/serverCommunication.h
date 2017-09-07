@@ -102,6 +102,8 @@ public:
     CommunicationSubscriber* getSubscriberFor(std::string);
 
     //////////////////////////////// Factory type /////////////////////////////////
+    typedef sofa::helper::Factory< std::string, BaseData> CommunicationDataFactory;
+    virtual CommunicationDataFactory* getFactoryInstance() =0;
     virtual void initTypeFactory() =0;
     /////////////////////////////////////////////////////////////////////////////////
 
@@ -121,6 +123,8 @@ protected:
     pthread_mutex_t                                 mutex;
     pthread_t                                       m_thread;
     bool                                            m_running = true;
+
+    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
 
     virtual void openCommunication();
     virtual void closeCommunication();
