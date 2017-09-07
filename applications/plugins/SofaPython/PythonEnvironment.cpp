@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
 #include "PythonScriptController.h"
