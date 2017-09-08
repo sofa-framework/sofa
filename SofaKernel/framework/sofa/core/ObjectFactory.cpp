@@ -157,15 +157,15 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
         // The object has been created, but not with the template given by the user
         if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
         {
-            std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
-            object->serr << w << object->sendl;
+            std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
+            msg_warning(object.get()) << w;
         }
         else if (creators.size() > 1)
         {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
-            std::string w = "Template <" + templatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string("> in the list:");
+            std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
             for(unsigned int i = 0; i < creators.size(); ++i)
                 w += std::string("\n\t* ") + creators[i].first;
-            object->serr << w << object->sendl;
+            msg_warning(object.get()) << w;
         }
         //TODO(dmarchal): Improve the error message & update the URL.
         //TODO(dmarchal): This code may be used to inform users that the Component has
