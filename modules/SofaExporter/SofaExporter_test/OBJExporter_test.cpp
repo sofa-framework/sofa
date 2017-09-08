@@ -46,6 +46,11 @@ using sofa::helper::system::FileSystem ;
 
 #include <SofaTest/Sofa_test.h>
 
+#include <boost/filesystem.hpp>
+namespace{
+std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+
+
 class OBJExporter_test : public sofa::Sofa_test<>{
 public:
     /// remove the file created...
@@ -129,15 +134,15 @@ TEST_F( OBJExporter_test, checkBasicBehaviorNoFileName) {
 }
 
 TEST_F( OBJExporter_test, checkBasicBehaviorInSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/outfile", {"/tmp/outfile.obj","/tmp/outfile.mtl"}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/outfile", {tempdir+"/outfile.obj",tempdir+"/outfile.mtl"}) ) ;
 }
 
 TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/invalid/outfile", {"/tmp/invalid"}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid/outfile", {tempdir+"/invalid"}) ) ;
 }
 
 TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/invalid1/invalid2/invalid3/outfile", {"/tmp/invalid1"})) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1"})) ;
 }
 
 TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
@@ -145,12 +150,13 @@ TEST_F( OBJExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
 }
 
 TEST_F( OBJExporter_test, checkBasicBehaviorInValidDir) {
-   this->checkBasicBehavior("/tmp", {"/tmp/exporter1.obj", "/tmp/exporter1.mtl"})  ;
+   this->checkBasicBehavior(tempdir, {tempdir+"/exporter1.obj", tempdir+"/exporter1.mtl"})  ;
 }
 
 TEST_F( OBJExporter_test, checkSimulationWriteEachNbStep) {
-   this->checkSimulationWriteEachNbStep("/tmp", {"/tmp/exporterA00001.obj", "/tmp/exporterA00001.mtl",
-                                                 "/tmp/exporterA00002.obj", "/tmp/exporterA00002.mtl",
-                                                 "/tmp/exporterA00003.obj", "/tmp/exporterA00003.mtl",
-                                                 "/tmp/exporterA00004.obj", "/tmp/exporterA00004.mtl"}, 20)  ;
+   this->checkSimulationWriteEachNbStep(tempdir, {tempdir+"/exporterA00001.obj", tempdir+"/exporterA00001.mtl",
+                                                 tempdir+"/exporterA00002.obj", tempdir+"/exporterA00002.mtl",
+                                                 tempdir+"/exporterA00003.obj", tempdir+"/exporterA00003.mtl",
+                                                 tempdir+"/exporterA00004.obj", tempdir+"/exporterA00004.mtl"}, 20)  ;
+}
 }

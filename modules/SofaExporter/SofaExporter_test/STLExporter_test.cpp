@@ -46,6 +46,11 @@ using sofa::helper::system::FileSystem ;
 
 #include <SofaTest/Sofa_test.h>
 
+#include <boost/filesystem.hpp>
+namespace {
+std::string tempdir = boost::filesystem::temp_directory_path().string() ;
+
+
 class STLExporter_test : public sofa::Sofa_test<>{
 public:
     /// remove the file created...
@@ -136,15 +141,15 @@ TEST_F( STLExporter_test, checkBasicBehaviorNoFileName) {
 }
 
 TEST_F( STLExporter_test, checkBasicBehaviorInSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/outfile", {"/tmp/outfile.stl"}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/outfile", {tempdir+"/outfile.stl"}) ) ;
 }
 
 TEST_F( STLExporter_test, checkBasicBehaviorInInvalidSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/invalid/outfile", {"/tmp/invalid"}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid/outfile", {tempdir+"/invalid"}) ) ;
 }
 
 TEST_F( STLExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
-    ASSERT_NO_THROW( this->checkBasicBehavior("/tmp/invalid1/invalid2/invalid3/outfile", {"/tmp/invalid1/invalid2/invalid3"})) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1/invalid2/invalid3"})) ;
 }
 
 TEST_F( STLExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
@@ -152,12 +157,13 @@ TEST_F( STLExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
 }
 
 TEST_F( STLExporter_test, checkBasicBehaviorInValidDir) {
-   this->checkBasicBehavior("/tmp", {"/tmp/exporter1.stl"})  ;
+   this->checkBasicBehavior(tempdir, {tempdir+"/exporter1.stl"})  ;
 }
 
 TEST_F( STLExporter_test, checkSimulationWriteEachNbStep) {
-   this->checkSimulationWriteEachNbStep("/tmp", {"/tmp/exporterA00001.stl",
-                                                 "/tmp/exporterA00002.stl",
-                                                 "/tmp/exporterA00003.stl",
-                                                 "/tmp/exporterA00004.stl"}, 20)  ;
+   this->checkSimulationWriteEachNbStep(tempdir, {tempdir+"/exporterA00001.stl",
+                                                 tempdir+"/exporterA00002.stl",
+                                                 tempdir+"/exporterA00003.stl",
+                                                 tempdir+"/exporterA00004.stl"}, 20)  ;
+}
 }

@@ -48,6 +48,9 @@ using sofa::helper::system::FileSystem ;
 using std::vector;
 using testing::Types;
 
+#include <boost/filesystem.hpp>
+namespace {
+std::string tempdir = boost::filesystem::temp_directory_path().string() ;
 
 class MeshExporter_test : public sofa::Sofa_test<>,
                           public ::testing::WithParamInterface<vector<string>>
@@ -159,19 +162,19 @@ TEST_P( MeshExporter_test, checkBasicBehaviorNoFileName) {
 TEST_P( MeshExporter_test, checkBasicBehaviorInSubDirName) {
     std::vector<string> params = GetParam() ;
     ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, "/tmp/outfile", {"/tmp/outfile."+params[0]}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/outfile", {tempdir+"/outfile."+params[0]}) ) ;
 }
 
 TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidSubDirName) {
     std::vector<string> params = GetParam() ;
     ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, "/tmp/invalid/outfile", {"/tmp/invalid"}) ) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/invalid/outfile", {tempdir+"/invalid"}) ) ;
 }
 
 TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidLongSubDirName) {
     std::vector<string> params = GetParam() ;
     ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW( this->checkBasicBehavior(params, "/tmp/invalid1/invalid2/invalid3/outfile", {"/tmp/invalid1/invalid2/invalid3"})) ;
+    ASSERT_NO_THROW( this->checkBasicBehavior(params, tempdir+"/invalid1/invalid2/invalid3/outfile", {tempdir+"/invalid1/invalid2/invalid3"})) ;
 }
 
 TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
@@ -183,16 +186,16 @@ TEST_P( MeshExporter_test, checkBasicBehaviorInInvalidRelativeDirName) {
 TEST_P( MeshExporter_test, checkBasicBehaviorInValidDir) {
     std::vector<string> params = GetParam() ;
     ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW(this->checkBasicBehavior(params, "/tmp", {"/tmp/exporter1."+params[0]}))  ;
+    ASSERT_NO_THROW(this->checkBasicBehavior(params, tempdir, {tempdir+"/exporter1."+params[0]}))  ;
 }
 
 TEST_P( MeshExporter_test, checkSimulationWriteEachNbStep) {
     std::vector<string> params = GetParam() ;
     ASSERT_EQ(params.size(), NUM_PARAMS );
-    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, "/tmp", {"/tmp/exporterA00001."+params[0],
-                                                        "/tmp/exporterA00002."+params[0],
-                                                        "/tmp/exporterA00003."+params[0],
-                                                        "/tmp/exporterA00004."+params[0]}, 20)) ;
+    ASSERT_NO_THROW(this->checkSimulationWriteEachNbStep(params, tempdir, {tempdir+"/exporterA00001."+params[0],
+                                                        tempdir+"/exporterA00002."+params[0],
+                                                        tempdir+"/exporterA00003."+params[0],
+                                                        tempdir+"/exporterA00004."+params[0]}, 20)) ;
 }
 
 INSTANTIATE_TEST_CASE_P(checkAllBehavior,
@@ -200,3 +203,4 @@ INSTANTIATE_TEST_CASE_P(checkAllBehavior,
                         ::testing::ValuesIn(params));
 
 
+}
