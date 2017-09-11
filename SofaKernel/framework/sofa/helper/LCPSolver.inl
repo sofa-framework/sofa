@@ -23,7 +23,6 @@
 #define SOFA_HELPER_LCPSOLVER_INL
 
 #include <sofa/helper/LCPSolver.h>
-#include <sofa/helper/logging/Messaging.h>
 
 #ifdef PS3
 #include <stdio.h>
@@ -126,7 +125,7 @@ bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
         // si le pivot est nul, le LCP echoue
         if (fabs(pivot) < EPSP)
         {
-            msg_advice() << "  + No solution to LCP +";
+            printf("  + No solution to LCP + \n");
             boucles = MAX_BOU;
             return false;
         }
@@ -207,6 +206,22 @@ template <int dim> void LCPSolver<dim>::printInfo(double *q, Matrix &M)
     }
     printf("      ]\n\n");
 
+    // afficahge base courante
+    /*	printf("B = [");
+        for(ii=0;ii<dim;ii++) {
+            printf("\t%d",base[ii]);
+        }
+        printf("\t]\n\n");
+
+        // affichage matrice courante
+        printf("mat = [");
+        for(ii=0;ii<dim;ii++) {
+            for(jj=0;jj<2*dim+1;jj++) {
+                printf("\t%.4f",mat[ii][jj]);
+            }
+            printf("\n");
+        }
+        printf("      ]\n\n"); */
 }
 
 //template<> class LCPSolver<3>;
