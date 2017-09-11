@@ -202,6 +202,9 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     }
 
     BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
+    std::vector<BaseObject*> tmp;
+    context->get<BaseObject, std::vector<BaseObject*>>(&tmp, BaseContext::Local);
+
     if (obj==0)
     {
         std::stringstream msg;
@@ -367,7 +370,13 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     }
 
     sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
-    context->get<BaseObject>(&list,search_direction_enum);
+    context->get<BaseObject>(&list, search_direction_enum);
+
+    sofa::helper::vector< BaseObject* > list2;
+    context->get<BaseObject>(&list2, search_direction_enum);
+
+    std::cout << context->getName() << " have NUMBER OF ELEMENTSA:  " << list.size() << std::endl;
+    std::cout << context->getName() << " have NUMBER OF ELEMENTSB:  " << list2.size() << std::endl;
 
     PyObject *pyList = PyList_New(0);
     for (size_t i=0; i<list.size(); i++)

@@ -582,7 +582,24 @@ static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * ar
     return pyList;
 }
 
+static PyObject * Sofa_getAliasesFor(PyObject * /*self*/, PyObject * args)
+{
+    char* componentname;
+    if (!PyArg_ParseTuple(args, "s", &componentname)) {
+        return NULL;
+    }
 
+    const ObjectFactory::ClassEntry& entry = ObjectFactory::getInstance()->getEntry(componentname) ;
+
+    PyObject *pyList = PyList_New(entry.aliases.size());
+    unsigned int i=0;
+    for (auto& alias : entry.aliases){
+        PyList_SetItem(pyList, (Py_ssize_t)i, Py_BuildValue("s", alias.c_str()));
+        i++;
+    }
+
+    return pyList;
+}
 
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -611,4 +628,5 @@ SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
 SP_MODULE_METHOD(Sofa,getAvailableComponents)
+SP_MODULE_METHOD(Sofa,getAliasesFor)
 SP_MODULE_METHODS_END
