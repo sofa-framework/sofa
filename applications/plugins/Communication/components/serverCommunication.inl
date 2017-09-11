@@ -56,44 +56,6 @@ void ServerCommunication::init()
 
 void ServerCommunication::handleEvent(Event * event)
 {
-    //    if (sofa::simulation::AnimateBeginEvent::checkEventType(event) && d_job.getValueString().compare("sender") == 0)
-    //    {
-    //        pthread_mutex_lock(&mutex);
-    //        for( size_t i=0 ; i < this->d_data.size(); ++i )
-    //        {
-    //            this->d_data_copy[i] = this->d_data[i];
-    //        }
-    //        pthread_mutex_unlock(&mutex);
-
-    //#if BENCHMARK
-    //        // Uncorrect results if frequency == 1hz, due to tv_usec precision
-    //        gettimeofday(&t1, NULL);
-    //        if(d_refreshRate.getValue() <= 1.0)
-    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-    //        else
-    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-    //        gettimeofday(&t2, NULL);
-    //#endif
-    //    }
-    //    else if (sofa::simulation::AnimateEndEvent::checkEventType(event) && d_job.getValueString().compare("receiver") == 0)
-    //    {
-    //        pthread_mutex_lock(&mutex);
-    //        for( size_t i=0 ; i < this->d_data_copy.size(); ++i )
-    //        {
-    //            this->d_data[i] = this->d_data_copy[i];
-    //        }
-    //        pthread_mutex_unlock(&mutex);
-
-    //#if BENCHMARK
-    //        // Uncorrect results if frequency == 1hz, due to tv_usec precision
-    //        gettimeofday(&t1, NULL);
-    //        if(d_refreshRate.getValue() <= 1.0)
-    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_sec - t2.tv_sec)) << " s or " << fabs(1.0 / ((t1.tv_sec - t2.tv_sec))) << " hz"<< std::endl;
-    //        else
-    //            std::cout << "Animation Loop frequency : " << fabs((t1.tv_usec - t2.tv_usec) / 1000.0) << " ms or " << fabs(1000000.0 / ((t1.tv_usec - t2.tv_usec))) << " hz"<< std::endl;
-    //        gettimeofday(&t2, NULL);
-    //#endif
-    //    }
 }
 
 void ServerCommunication::openCommunication()
@@ -175,7 +137,7 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber,  Ba
             data->setName(argumentName);
             data->setHelp("Auto generated help from communication");
             source->addData(data, argumentName);
-            msg_info(source->getName()) << "data field named : " << argumentName << " has been created";
+            msg_info(source->getName()) << " data field named : " << argumentName << " has been created";
         }
     } else
         data = itData->second;

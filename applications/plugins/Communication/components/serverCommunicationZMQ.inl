@@ -40,8 +40,12 @@ ServerCommunicationZMQ::ZMQDataFactory* ServerCommunicationZMQ::getFactoryInstan
 void ServerCommunicationZMQ::initTypeFactory()
 {
     getFactoryInstance()->registerCreator("float", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("double", new DataCreator<double>());
     getFactoryInstance()->registerCreator("int", new DataCreator<int>());
     getFactoryInstance()->registerCreator("string", new DataCreator<std::string>());
+    //TODO Correct value for matrix
+    getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<helper::vector<float>>());
+    getFactoryInstance()->registerCreator("matrixint", new DataCreator<helper::vector<int>>());
 }
 
 void ServerCommunicationZMQ::sendData()
@@ -74,7 +78,6 @@ void ServerCommunicationZMQ::sendData()
                 messageStr += dataToString(subscriber, *itArgument);
 
             zmq::message_t message(messageStr.length());
-            std::cout << messageStr << std::endl;
             memcpy(message.data(), messageStr.c_str(), messageStr.length());
 
             bool status = m_socket->send(message);
@@ -157,15 +160,15 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
 
             if (typeinfo->Text())
             {
-                messageStr += "type::string ";
+                messageStr += "type:string ";
             }
             else if (typeinfo->Scalar())
             {
-                messageStr += "type::float ";
+                messageStr += "type:float ";
             }
             else if (typeinfo->Integer())
             {
-                messageStr += "type::int ";
+                messageStr += "type:int ";
             }
         }
         else
@@ -173,19 +176,19 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
             if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
             {
                 msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                messageStr += "unknow::";
+                messageStr += "unknow:";
             }
             if (typeinfo->Text())
             {
-                messageStr += "string::";
+                messageStr += "string:";
             }
             else if (typeinfo->Scalar())
             {
-                messageStr += "float::";
+                messageStr += "float:";
             }
             else if (typeinfo->Integer())
             {
-                messageStr += "int::";
+                messageStr += "int:";
             }
         }
         messageStr += (data->getValueString()) + " ";
@@ -193,44 +196,96 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
     return messageStr;
 }
 
-void ServerCommunicationZMQ::stringToData(std::string dataString)
+std::vector<std::string> stringToArgumentList(std::string dataString)
 {
     std::regex rgx("\\s+");
     std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
     std::sregex_token_iterator end;
     std::vector<std::string> listArguments;
-    std::string subject;
-    std::string type;
-    std::string matrixId;
-    int matrixWidth = 0, matrixHeight = 0;
 
     for ( ; iter != end; ++iter)
         listArguments.push_back(*iter);
+    return listArguments;
+}
 
-    if (listArguments.empty())
+
+std::string getArgumentValue(std::string value)
+{
+    std::string stringData = value;
+    size_t pos = stringData.find(":"); // That's how ZMQ messages could be. Type:value
+    stringData.erase(0, pos+1);
+    return stringData;
+}
+
+std::string getArgumentType(std::string value)
+{
+    std::string stringType = value;
+    size_t pos = stringType.find(":"); // That's how ZMQ messages could be. Type:value
+    stringType.erase(pos, stringType.size()-1);
+    return stringType;
+}
+
+void ServerCommunicationZMQ::stringToData(std::string dataString)
+{
+    BaseData* data;
+    std::string subject;
+    CommunicationSubscriber * subscriber;
+    std::vector<std::string> argumentList = stringToArgumentList(dataString);
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source;
+
+    if (argumentList.empty())
         return;
 
-    subject = listArguments.at(0);
+    std::vector<std::string>::iterator it = argumentList.begin();
+    subject = *it;
+    subscriber = getSubscriberFor(subject);
+    if (!subscriber)
+        return;
+    source = subscriber->getSource();
 
-    matrixId = listArguments.at(1);
-    if (matrixId.compare("matrix") == 0)
+    std::string firstArg = getArgumentValue(*(++it));
+
+    if (firstArg.compare("matrix") == 0)
     {
-        if (listArguments.size() >= 5 )
+        int row = 0, col = 0;
+        if (argumentList.size() >= 3+1) // +1 due to subject count in
         {
-            matrixWidth = std::stoi(listArguments.at(2));
-            matrixHeight = std::stoi(listArguments.at(3));
-            type = listArguments.at(4);
+            try
+            {
+                row = std::stoi(getArgumentValue(*(++it)));
+                col = std::stoi(getArgumentValue(*(++it)));
+                if (row < 0 || col < 0)
+                    return;
+            } catch(std::invalid_argument& e){
+                msg_warning() << "no available conversion for: " << getArgumentValue(*(++it));
+                return;
+            } catch(std::out_of_range& e){
+                msg_warning() << "out of range : " << getArgumentValue(*(++it));
+                return;
+            }
         }
-        else
-        {
-            msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix width height type value value value... ";
+        data = fetchData(source, "matrix" + getArgumentType(*(++it)), subscriber->getArgumentName(0));
+        if (!data)
             return;
+        std::stringstream stream;
+        for ( it ; it != argumentList.end(); it++)
+            stream << getArgumentValue(*it) << " ";
+        data->read(stream.str());
+    }
+    else
+    {
+        if (!isSubscribedTo(subject, argumentList.size()))
+            return;
+        int i = 0;
+        for ( it ; it != argumentList.end(); it++)
+        {
+            data = fetchData(source, getArgumentType(*it), subscriber->getArgumentName(i));
+            if (!data)
+                continue;
+            data->read(getArgumentValue(*it));
+            i++;
         }
     }
-
-    std::cout << subject << " " << matrixWidth << " " << matrixHeight << " " << type << std::endl;
-    if (!isSubscribedTo(subject, listArguments.size()-1) )// -1 because it contains the subject
-        return;
 }
 
 void ServerCommunicationZMQ::sendRequest()
@@ -252,4 +307,3 @@ void ServerCommunicationZMQ::receiveRequest()
 
 
 #endif // SOFA_CONTROLLER_ServerCommunicationZMQ_INL
-

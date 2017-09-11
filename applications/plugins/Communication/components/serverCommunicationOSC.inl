@@ -59,12 +59,11 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("d", new DataCreator<double>());
     getFactoryInstance()->registerCreator("i", new DataCreator<int>());
     getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
-    getFactoryInstance()->registerCreator("matrixf", new DataCreator<float>());
-    getFactoryInstance()->registerCreator("matrixd", new DataCreator<double>());
-    getFactoryInstance()->registerCreator("matrixi", new DataCreator<int>());
-    getFactoryInstance()->registerCreator("matrixs", new DataCreator<std::string>());
-    // TODO have a look at blobs
-    // TODO have a look at time tag
+
+    getFactoryInstance()->registerCreator("matrixf", new DataCreator<helper::vector<float>>());
+    getFactoryInstance()->registerCreator("matrixd", new DataCreator<helper::vector<double>>());
+    getFactoryInstance()->registerCreator("matrixi", new DataCreator<helper::vector<int>>());
+
 }
 
 void ServerCommunicationOSC::sendData()
@@ -198,20 +197,27 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
     std::string firstArg = convertArgumentToStringValue(it);
     if (firstArg.compare("matrix") == 0)
     {
-        int row = 0, column = 0;
+        int row = 0, col = 0;
         if (m.ArgumentCount() >= 3)
         {
             try
             {
                 row = (++it)->AsInt32();
-                column = (++it)->AsInt32();
+                col = (++it)->AsInt32();
+                if (row < 0 || col < 0)
+                    return;
             } catch (osc::WrongArgumentTypeException e)
             {
                 msg_error() << "row or column is not an int";
                 return;
             }
-        }
-        data = fetchData(source, std::string(1, (++it)->TypeTag()), subscriber->getArgumentName(0));
+        } else
+            msg_warning() << address << " is matrix, but message size is not correct. Should be : /subject matrix width height value value value... ";
+
+        data = fetchData(source, "matrix" + std::string(1, (++it)->TypeTag()), subscriber->getArgumentName(0));
+        if (!data)
+            return;
+
         std::stringstream stream;
         for ( it ; it != m.ArgumentsEnd(); it++)
             stream << convertArgumentToStringValue(it) << " ";
@@ -225,11 +231,14 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
         for ( it ; it != m.ArgumentsEnd(); it++)
         {
             data = fetchData(source, std::string(1, it->TypeTag()), subscriber->getArgumentName(i));
+            if (!data)
+                continue;
             data->read(convertArgumentToStringValue(it));
             i++;
         }
     }
 }
+
 std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
 {
     std::string stringData;

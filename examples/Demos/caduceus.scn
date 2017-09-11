@@ -51,6 +51,13 @@
         </Node>
     </Node>
 
+
+    <RequiredPlugin name="Communication" pluginName="Communication" />
+    <!--    <ServerCommunicationZMQ name="zmq1" job="receiver" port="6010"  refreshRate="2"/>-->
+    <!--    <CommunicationSubscriber name="sub1" communication="@zmq1" subject="/test3" source="@light1" arguments="x y z"/>-->
+    <ServerCommunicationOSC name="osc1" job="receiver" port="6010"  refreshRate="2"/>
+    <CommunicationSubscriber name="sub1" communication="@osc1" subject="/test3" source="@osc1" arguments="myMat"/>
+
     <Node name="Base" >
         <Node name="Stick">
                  <MeshObjLoader name="loader" filename="mesh/collision_batons.obj" />
