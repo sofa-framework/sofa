@@ -30,8 +30,19 @@ using sofa::core::ExecParams;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::BaseObject;
 
+
+
+#include <sofa/helper/vectorData.h>
+using sofa::helper::vectorData;
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
+
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
 
 namespace sofa
 {
@@ -47,16 +58,11 @@ class MyComponent : public BaseObject
 {
 public:
     MyComponent() :
-      d_positionsOut(initData(&d_positionsOut, {}, "positionsOut", ""))
-    , d_positionsIn(initData(&d_positionsIn, {}, "positionIn", ""))
+      //   , vf_inputs( this, "input", "Input vector", helper::DataEngineInput )
+      d_positionsOut(this, "positionOut", "")
+    , d_positionsIn(this, "positionIn", "")
     {
         f_listening = true ;
-    }
-
-    virtual void init() override
-    {
-        d_positionsOut.resize(100) ;
-        d_positionsIn.resize(100) ;
     }
 
     virtual void init() override
@@ -70,9 +76,8 @@ public:
         std::cout << "YOLO " << std::endl ;
     }
 
-
-    VectorData<Vector3>  d_positionsOut ;
-    VectorData<Vector3> d_positionsIn ;
+    vectorData<Vector3>  d_positionsOut ;
+    vectorData<Vector3> d_positionsIn ;
 } ;
 
 int mclass = sofa::core::RegisterObject("").add<MyComponent>();
@@ -81,18 +86,20 @@ int mclass = sofa::core::RegisterObject("").add<MyComponent>();
 class Communication_test : public Sofa_test<>
 {
 public:
-    void checkPerformances()
+    void checkPerformances(int numstep)
     {
         std::stringstream scene1 ;
         scene1 <<
                   "<?xml version='1.0'?>"
                   "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
                   "<RequiredPlugin name='Communication'/>                              \n"
-                  "<MyComponent name='aName'/> "
-                  "<ServerCommunicationOSC name='oscSend' job='sender' port='6000'  refreshRate='1000'/> \n"
+                  "<DefaultAnimationLoop />                                            \n"
+                  "<MyComponent name='aName'/>                                         \n"
+                  "<ServerCommunicationOSC name='oscSend' job='sender' port='6000'  refreshRate='1000'/>                                          \n"
                   "<CommunicationSubscriber name='subSend' communication='@oscSend' subject='/sender' source='@light1' arguments='positionsOut'/> \n"
-                  "<ServerCommunicationOSC name='oscRec' job='receiver' port='6010'  refreshRate='2'/>  \n"
-                  "<CommunicationSubscriber name='subRec' communication='@oscRec' subject='/receive' source='@light1' arguments='positionsIn'/>" ;
+                  "<ServerCommunicationOSC name='oscRec' job='receiver' port='6010'  refreshRate='2'/>                                            \n"
+                  "<CommunicationSubscriber name='subRec' communication='@oscRec' subject='/receive' source='@light1' arguments='positionsIn'/>   \n"
+                  "</Node>" ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene1.str().c_str(),
@@ -107,8 +114,8 @@ public:
     }
 };
 
-TEST_F(DistanceGrid_test, checkPerformancs) {
-    ASSERT_NO_THROW(this->checkPerformances()) ;
+TEST_F(Communication_test, checkPerformancs) {
+    ASSERT_NO_THROW(this->checkPerformances(1000)) ;
 }
 
 
