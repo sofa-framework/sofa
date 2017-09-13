@@ -66,7 +66,7 @@ LinearMovementConstraint<DataTypes>::LinearMovementConstraint()
     , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
     , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
     , m_keyMovements(  initData(&m_keyMovements,"movements","movements corresponding to the key times") )
-    , relativeMovements( initData(&relativeMovements, (bool)true, "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
+    , d_relativeMovements( initData(&d_relativeMovements, (bool)true, "relativeMovements", "If true, movements are relative to first position, absolute otherwise") )
     , showMovement( initData(&showMovement, (bool)false, "showMovement", "Visualization of the movement to be applied to constrained dofs."))
 {
     // default to indice 0
@@ -249,24 +249,15 @@ template <class MyCoord>
 void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
-//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
-//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
-//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
-    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, current x = "<<x<<endl;
 
     Real dt = (cT - prevT) / (nextT - prevT);
-//                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, dt = "<<dt<<endl;
     Deriv m = prevM + (nextM-prevM)*dt;
-
-    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, movement m = "<<m<<endl;
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         x[*it] = x0[*it] + m ;
     }
-
-    //cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition, new x = "<<x<<endl<<endl<<endl;
 }
 
 template <class DataTypes>
@@ -281,7 +272,7 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
-    if (relativeMovements.getValue())
+    if (d_relativeMovements.getValue())
     {
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
@@ -368,7 +359,6 @@ void LinearMovementConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
 
@@ -386,7 +376,6 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = m_indices.getValue();
@@ -411,7 +400,7 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         glColor4f(1, 0.5, 0.5, 1);
         glBegin(GL_LINES);
         const SetIndexArray & indices = m_indices.getValue();
-        if (relativeMovements.getValue()) 
+        if (d_relativeMovements.getValue()) 
         {
             for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
             {

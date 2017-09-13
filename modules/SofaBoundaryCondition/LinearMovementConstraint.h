@@ -86,8 +86,8 @@ public :
     /// the motions corresponding to the key frames
     Data<VecDeriv > m_keyMovements;
 
-    //indicates whether movements are relative to the dof or absolute 
-    Data< bool > relativeMovements;
+    /// indicates whether movements are relative to the dof or absolute
+    Data< bool > d_relativeMovements;
 
     /// attributes to precise display
     /// if showMovement is true we display the expected movement
