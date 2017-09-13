@@ -38,8 +38,7 @@ static inline OBJExporter* get_OBJExporter(PyObject* obj) {
 static PyObject * OBJExporter_writeOBJ(PyObject *self, PyObject * /*args*/)
 {
     OBJExporter* obj = get_OBJExporter( self );
-	obj->writeOBJ();
-    Py_RETURN_NONE;
+    return PyBool_FromLong( obj->writeOBJ() ) ;
 }
 
 
