@@ -192,6 +192,9 @@ public:
     virtual void enableBlending() = 0;
     virtual void disableBlending() = 0;
 
+    virtual void enableLighting() = 0;
+    virtual void disableLighting() = 0;
+
     /// @name States (save/restore)
     virtual void saveLastState() = 0;
     virtual void restoreLastState() = 0;
