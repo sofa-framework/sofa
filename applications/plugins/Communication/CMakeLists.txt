@@ -1,6 +1,10 @@
 Cmake_minimum_required(VERSION 3.1)
 project(Communication)
 
+
+add_subdirectory(Communication_test)
+
+
 set(HEADER_FILES
     config.h
     components/CommunicationSubscriber.h
