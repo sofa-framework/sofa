@@ -135,7 +135,7 @@ void ServerCommunicationZMQ::receiveData()
 
 std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscriber, std::string argument)
 {
-    std::string messageStr = "empty";
+    std::stringstream messageStr;
     SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
     MapData dataMap = source->getDataAliases();
     MapData::const_iterator itData = dataMap.find(argument);
@@ -145,55 +145,55 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
     {
         BaseData* data = itData->second;
         const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+        const void* valueVoidPtr = data->getValueVoidPtr();
         messageStr.clear();
 
         if (typeinfo->Container())
         {
-            int rowWidth = typeinfo->size();
-            int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-            messageStr += "matrix int::" + std::to_string(rowWidth) + " int::" + std::to_string(nbRows) + " ";
+            int nbRows = typeinfo->size();
+            int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+            messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
+
             if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
             {
                 msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                messageStr += "type::unknow " +(data->getValueString()) + " ";
+                messageStr << (data->getValueString()) << " ";
             }
-
-            if (typeinfo->Text())
-            {
-                messageStr += "type:string ";
-            }
+            else if (typeinfo->Text())
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str();
             else if (typeinfo->Scalar())
-            {
-                messageStr += "type:float ";
-            }
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
             else if (typeinfo->Integer())
-            {
-                messageStr += "type:int ";
-            }
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j);
         }
         else
         {
             if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
             {
                 msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                messageStr += "unknow:";
+                messageStr << "unknow:" << (data->getValueString()) << " ";
             }
             if (typeinfo->Text())
             {
-                messageStr += "string:";
+                messageStr << "string:" << (data->getValueString()) << " ";
             }
             else if (typeinfo->Scalar())
             {
-                messageStr += "float:";
+                messageStr << "float:" << (data->getValueString()) << " ";
             }
             else if (typeinfo->Integer())
             {
-                messageStr += "int:";
+                messageStr << "int:" << (data->getValueString()) << " ";
             }
         }
-        messageStr += (data->getValueString()) + " ";
     }
-    return messageStr;
+    return messageStr.str();
 }
 
 std::vector<std::string> stringToArgumentList(std::string dataString)

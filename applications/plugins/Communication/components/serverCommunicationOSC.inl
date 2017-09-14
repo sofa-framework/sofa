@@ -22,8 +22,6 @@
 #include "serverCommunicationOSC.h"
 #include <Communication/components/CommunicationSubscriber.h>
 
-using sofa::core::RegisterObject ;
-
 namespace sofa
 {
 
@@ -60,9 +58,8 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("i", new DataCreator<int>());
     getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
 
-    getFactoryInstance()->registerCreator("matrixf", new DataCreator<helper::vector<float>>());
-    getFactoryInstance()->registerCreator("matrixd", new DataCreator<helper::vector<double>>());
-    getFactoryInstance()->registerCreator("matrixi", new DataCreator<helper::vector<int>>());
+    getFactoryInstance()->registerCreator("matrixf", new DataCreator<vector<float>>());
+
 
 }
 
@@ -111,71 +108,66 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
                 messageName = subscriber->getSubject();
                 p << osc::BeginMessage(messageName.c_str());
                 p << osc::EndMessage;
-            } else
+            }
+            else
             {
                 BaseData* data = itData->second;
-                const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-                const void* valueVoidPtr = data->getValueVoidPtr();
-
-                messageName = subscriber->getSubject();
-
-                p << osc::BeginMessage(messageName.c_str());
-
-                if (typeinfo->Container())
+                if (!data)
                 {
-                    int rowWidth = typeinfo->size();
-                    int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-                    p << rowWidth << nbRows;
-                    /// this is a vector; return a python list of the corresponding type (ints, scalars or strings)
-                    if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+                    std::cout << "d" << std::endl;
+                    messageName = subscriber->getSubject();
+                    p << osc::BeginMessage(messageName.c_str());
+                    p << osc::EndMessage;
+
+                } else
+                {
+                    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+                    const void* valueVoidPtr = data->getValueVoidPtr();
+
+                    messageName = subscriber->getSubject();
+
+                    p << osc::BeginMessage(messageName.c_str());
+
+                    if (typeinfo->Container())
                     {
-                        msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                        p <<  (data->getValueString().c_str());
-                    }
-                    // DAT if case !! :/
-                    for (int i=0; i < nbRows; i++)
-                    {
-                        for (int j=0; j<rowWidth; j++)
+                        int nbRows = typeinfo->size();
+                        int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+                        p  << nbRows << nbCols;
+
+                        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
                         {
-                            if (typeinfo->Text())
-                            {
-                                p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
-                            }
-                            else if (typeinfo->Scalar())
-                            {
-                                p << (typeinfo->getScalarValue(valueVoidPtr,0));
-                            }
-                            else if (typeinfo->Integer())
-                            {
-                                p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
-                            }
-                            else {
-                                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                                p <<  (data->getValueString().c_str());
-                            }
+                            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                            p <<  (data->getValueString().c_str());
+                        }
+                        else if (typeinfo->Text())
+                            for (int i=0; i < nbRows; i++)
+                                for (int j=0; j<nbCols; j++)
+                                    p << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str();
+                        else if (typeinfo->Scalar())
+                            for (int i=0; i < nbRows; i++)
+                                for (int j=0; j<nbCols; j++)
+                                    p << typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
+                        else if (typeinfo->Integer())
+                            for (int i=0; i < nbRows; i++)
+                                for (int j=0; j<nbCols; j++)
+                                    p << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j);
+                    }
+                    else
+                    {
+                        if (typeinfo->Text())
+                            p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
+                        else if (typeinfo->Scalar())
+                            p << (typeinfo->getScalarValue(valueVoidPtr,0));
+                        else if (typeinfo->Integer())
+                            p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
+                        else
+                        {
+                            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                            p <<  (data->getValueString().c_str());
                         }
                     }
+                    p << osc::EndMessage;
                 }
-                else
-                {
-                    if (typeinfo->Text())
-                    {
-                        p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
-                    }
-                    else if (typeinfo->Scalar())
-                    {
-                        p << (typeinfo->getScalarValue(valueVoidPtr,0));
-                    }
-                    else if (typeinfo->Integer())
-                    {
-                        p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
-                    }
-                    else {
-                        msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                        p <<  (data->getValueString().c_str());
-                    }
-                }
-                p << osc::EndMessage;
             }
         }
     }
