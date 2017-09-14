@@ -67,6 +67,7 @@ public:
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index, float size, const Vec4f& colour);
 
     virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour);
+    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& colour);
 
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal);
