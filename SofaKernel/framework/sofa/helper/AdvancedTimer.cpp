@@ -953,7 +953,7 @@ AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string& type)
 	}
 }
 
-void AdvancedTimer::setOutputType(IdTimer id, std::string& type)
+void AdvancedTimer::setOutputType(IdTimer id, std::string type)
 {
     // Seek for the timer
     TimerData& data = timers[id];
