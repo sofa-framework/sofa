@@ -1249,6 +1249,16 @@ void DrawToolGL::disableLighting()
     glDisable(GL_LIGHTING);
 }
 
+void DrawToolGL::enableDepthTest()
+{
+    glEnable(GL_DEPTH_TEST);
+}
+
+void DrawToolGL::disableDepthTest()
+{
+    glDisable(GL_DEPTH_TEST);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
 {

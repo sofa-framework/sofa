@@ -172,6 +172,9 @@ public:
     virtual void enableLighting();
     virtual void disableLighting();
 
+    virtual void enableDepthTest();
+    virtual void disableDepthTest();
+
     virtual void saveLastState();
     virtual void restoreLastState();
 
