@@ -50,13 +50,13 @@ void AddResourceRepository::parse(sofa::core::objectmodel::BaseObjectDescription
     //second, check if the path exists
     if (!sofa::helper::system::FileSystem::exists(tmpAddedPath))
     {
-        msg_error(this) << tmpAddedPath + "does not exist !";
+        msg_error(this) << tmpAddedPath + " does not exist !";
         return;
     }
     //third, check if it is really a directory
     if (!sofa::helper::system::FileSystem::isDirectory(tmpAddedPath))
     {
-        msg_error(this) << tmpAddedPath + "is not a valid directory !";
+        msg_error(this) << tmpAddedPath + " is not a valid directory !";
         return;
     }
 
