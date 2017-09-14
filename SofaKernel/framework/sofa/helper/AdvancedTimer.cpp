@@ -935,9 +935,9 @@ void TimerData::print()
     out << std::endl;
 }
 
-AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string& type)
+AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
 {
-	std::for_each(type.begin(), type.end(),  [](char & c) {
+	std::for_each(type.begin(), type.end(),  [](char& c) {
 		c = std::tolower(static_cast<unsigned char>(c)); } );
 
 	if(type.compare("json") == 0)
@@ -953,7 +953,7 @@ AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string& type)
 	}
 }
 
-void AdvancedTimer::setOutputType(IdTimer id, std::string type)
+void AdvancedTimer::setOutputType(IdTimer id, const std::string& type)
 {
     // Seek for the timer
     TimerData& data = timers[id];

@@ -30,14 +30,15 @@ protected:
         }
     }
 
-	void checkTimerSetOutputType(std::string& timer_name, std::string& output_type)
+	void checkTimerSetOutputType(const std::string& timer_name, const std::string& output_type)
 	{
 		std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_AutoGen.py");
 
 		std::ofstream f(pythonControllerPath);
-		std::string pytmp = "import Sofa\n"
-							"def createScene(rootNode):\n"
-							"\tSofa.timerSetOutputType(\"" << timer_name << "\", \"" << output_type << "\")\n";
+		std::string pytmp = std::string("import Sofa\n def createScene(rootNode):\n "
+										"\tSofa.timerSetOutputType(\"")
+										+ timer_name + std::string("\", \"")
+										+ output_type + std::string("\")\n");
 
 		f << pytmp ;
 		f.close();
@@ -52,7 +53,7 @@ protected:
 			ASSERT_NE(root, nullptr);
 
 			ASSERT_TRUE(sofa::helper::AdvancedTimer::getOutputType(timer_name) == sofa::helper::AdvancedTimer::convertOutputType(output_type));
-			simulation::getSimulation()->unload(root);
+			sofa::simulation::getSimulation()->unload(root);
 		}
 	}
 };

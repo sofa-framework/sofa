@@ -274,14 +274,14 @@ public:
 	 * @param type std::string, output type name (example : "json")
 	 * @return outputType, output type enum
 	 */
-	static AdvancedTimer::outputType convertOutputType(std::string& type);
+	static AdvancedTimer::outputType convertOutputType(std::string type);
 
     /**
      * @brief setOutputType Set the outputType for the given AdvancedTimer.
      * @param id IdTimer, id of the timer
 	 * @param type std::string, output type name (example : "json")
      **/
-	static void setOutputType(IdTimer id, std::string type);
+	static void setOutputType(IdTimer id, const std::string& type);
 
 	/**
 	 * @brief getOutputType Get the outputType for the given AdvancedTimer.
