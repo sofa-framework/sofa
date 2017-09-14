@@ -790,13 +790,13 @@ static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
 
 
 /**
- * Method : Sofa_timerSetOutPutType
+ * Method : Sofa_timerSetOutputType
  * Desc   : Wrapper for python usage. Used to change output type of the given timer
  * Param  : PyObject*, self - Object of the python script
  * Param  : PyObject*, args - given arguments to apply to the method
  * Return : NULL
  */
-static PyObject * Sofa_timerSetOutPutType(PyObject* /*self*/, PyObject *args)
+static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
 {
     char* id = NULL;
     char* newOutputType = NULL;
@@ -848,6 +848,6 @@ SP_MODULE_METHOD_DOC(Sofa, timerSetInterval, "Method : Sofa_setInterval \nDesc  
 SP_MODULE_METHOD_DOC(Sofa, timerBegin, "Method : Sofa_begin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerStepBegin, "Method : Sofa_timerStepBegin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerStepEnd, "Method : Sofa_timerStepEnd \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
-SP_MODULE_METHOD_DOC(Sofa, timerSetOutPutType, "Method : Sofa_timerSetOutPutType \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerSetOutputType, "Method : Sofa_timerSetOutputType \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerEnd, "Method : Sofa_timerEnd \nDesc   : Wrapper for python usage. Used to change output type of the given timer \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return None")
 SP_MODULE_METHODS_END

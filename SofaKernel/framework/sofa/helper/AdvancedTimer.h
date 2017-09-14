@@ -269,13 +269,19 @@ public:
     static int  getInterval(IdTimer id);
     static void setInterval(IdTimer id, int val);
 
+	/**
+	 * @brief convertOutputType convert a string to the output type
+	 * @param type std::string, output type name (example : "json")
+	 * @return outputType, output type enum
+	 */
+	static AdvancedTimer::outputType convertOutputType(std::string& type);
 
     /**
      * @brief setOutputType Set the outputType for the given AdvancedTimer.
      * @param id IdTimer, id of the timer
-     * @param type std::string, output type name (exemple : "json")
+	 * @param type std::string, output type name (example : "json")
      **/
-    static void setOutputType(IdTimer id, std::string type);
+	static void setOutputType(IdTimer id, std::string& type);
 
 	/**
 	 * @brief getOutputType Get the outputType for the given AdvancedTimer.

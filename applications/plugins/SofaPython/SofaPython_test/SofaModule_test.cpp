@@ -30,23 +30,14 @@ protected:
         }
     }
 
-	void checkTimerSetOutputType()
+	void checkTimerSetOutputType(std::string& timer_name, std::string& output_type)
 	{
 		std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_AutoGen.py");
 
 		std::ofstream f(pythonControllerPath);
-		std::string pytmp = R"(
-import Sofa
-
-def createScene(rootNode):
-	Sofa.timerSetOutPutType("validID", "JSON")
-	Sofa.timerSetOutPutType("", "JSON")
-	Sofa.timerSetOutPutType("invalid", "JSON")
-	Sofa.timerSetOutPutType("validID", "LJSON")
-	Sofa.timerSetOutPutType("validID", "STDOUT")
-	Sofa.timerSetOutPutType("validID", "")
-	Sofa.timerSetOutPutType("validID", "invalidType")
-)";
+		std::string pytmp = "import Sofa\n"
+							"def createScene(rootNode):\n"
+							"\tSofa.timerSetOutputType(\"" << timer_name << "\", \"" << output_type << "\")\n";
 
 		f << pytmp ;
 		f.close();
@@ -56,7 +47,12 @@ def createScene(rootNode):
 			sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
 			// load scene
-			sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
+			Node::SPtr root = sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
+
+			ASSERT_NE(root, nullptr);
+
+			ASSERT_TRUE(sofa::helper::AdvancedTimer::getOutputType(timer_name) == sofa::helper::AdvancedTimer::convertOutputType(output_type));
+			simulation::getSimulation()->unload(root);
 		}
 	}
 };
@@ -68,5 +64,11 @@ TEST_F(SofaModule_test,  testMsgInfo)
 
 TEST_F(SofaModule_test, timerSetOutPutType)
 {
-	this->checkTimerSetOutputType();
+	this->checkTimerSetOutputType("validID", "JSON");
+	this->checkTimerSetOutputType("", "JSON");
+	this->checkTimerSetOutputType("invalid", "JSON");
+	this->checkTimerSetOutputType("validID", "LJSON");
+	this->checkTimerSetOutputType("validID", "STDOUT");
+	this->checkTimerSetOutputType("validID", "");
+	this->checkTimerSetOutputType("validID", "invalidType");
 }
