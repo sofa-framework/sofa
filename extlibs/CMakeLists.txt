@@ -4,7 +4,6 @@ set(EXTLIBS_TARGETS
     csparse
     newmat
     tinyxml
-    json
 )
 
 ## Necessary ones
