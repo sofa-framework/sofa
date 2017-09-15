@@ -21,7 +21,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
 
-#include <SofaMiscForceField/LennardJonesForceField.inl>
+#include "LennardJonesForceField.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 

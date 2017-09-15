@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_MATRIXMASS_CPP
-#include <SofaMiscForceField/MatrixMass.inl>
+#include "MatrixMass.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec3Types.h>

@@ -2,6 +2,10 @@
 
 @PACKAGE_INIT@
 
-#find_package(SofaMisc REQUIRED)
+#find_package(SofaGeneral REQUIRED)
 
 check_required_components(SofaMiscForceField)
+
+if(NOT TARGET SofaMiscForceField)
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscForceFieldTargets.cmake")
+endif()

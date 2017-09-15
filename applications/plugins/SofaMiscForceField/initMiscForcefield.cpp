@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
+#include "initMiscForcefield.h"
 
 
 namespace sofa

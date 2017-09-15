@@ -31,7 +31,7 @@
 //
 //
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP
-#include <SofaMiscForceField/LineBendingSprings.inl>
+#include "LineBendingSprings.inl"
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>

@@ -205,6 +205,13 @@ if(SOFA_ENABLE_QWT)
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 endif()
 
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
+    #message("SofaMiscForceField found")
+    add_definitions("-DSOFA_HAVE_SOFAMISCFORCEFIELD")
+else()
+    #message("SofaMiscForceField not found")
+endif()
 
 sofa_install_targets(SofaGui SofaGuiQt "")
 

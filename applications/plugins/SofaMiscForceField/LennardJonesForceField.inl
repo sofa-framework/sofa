@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 
-#include <SofaMiscForceField/LennardJonesForceField.h>
+#include "LennardJonesForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/system/config.h>

@@ -23,7 +23,6 @@
 #include <SofaComponentMisc/initComponentMisc.h>
 #include <SofaMiscTopology/initMiscTopology.h>
 #include <SofaMiscMapping/initMiscMapping.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
 #include <SofaMiscFem/initMiscFEM.h>
 #include <SofaMiscEngine/initMiscEngine.h>
 #include <SofaMiscCollision/initMiscCollision.h>
@@ -47,7 +46,6 @@ void initComponentMisc()
 
     initMiscTopology();
     initMiscMapping();
-    initMiscForcefield();
     initMiscFEM();
     initMiscEngine();
     initMiscCollision();

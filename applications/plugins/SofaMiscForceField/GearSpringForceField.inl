@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_GEARSPRINGFORCEFIELD_INL
 
-#include <SofaMiscForceField/GearSpringForceField.h>
+#include "GearSpringForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>

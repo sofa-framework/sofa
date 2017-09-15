@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP
-#include <SofaMiscForceField/WashingMachineForceField.inl>
+#include "WashingMachineForceField.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
