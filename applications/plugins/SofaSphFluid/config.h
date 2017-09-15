@@ -22,6 +22,13 @@
 #ifndef SOFASPHFLUID_CONFIG_H
 #define SOFASPHFLUID_CONFIG_H
 
-#include <SofaAdvanced/config.h>
+#include <SofaBase/config.h>
+
+#ifdef SOFA_BUILD_SPH_FLUID
+#  define SOFA_TARGET SofaSphFluid
+#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif
