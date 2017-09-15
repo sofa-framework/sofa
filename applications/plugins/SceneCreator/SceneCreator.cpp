@@ -49,9 +49,10 @@
 //Including components for collision detection
 #include <SofaBaseCollision/DefaultPipeline.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
-#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaBaseCollision/MinProximityIntersection.h>
+
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 
 //Including Collision Models
 #include <SofaMeshCollision/TriangleModel.h>
