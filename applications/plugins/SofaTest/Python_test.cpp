@@ -1,4 +1,5 @@
 #include <SofaPython/PythonScriptEvent.h>
+#include <fstream>
 
 #include "Python_test.h"
 
@@ -176,6 +177,8 @@ static PyMethodDef except_hook_def = {
 
 static void install_sys_excepthook(char* flags) {
     if(!default_excepthook){
+        sofa::simulation::PythonEnvironment::gil lock(__func__);
+        
         default_excepthook = PySys_GetObject((char*)"excepthook") || fail("cannot get default excepthook");
 
         PyObject* self = PyCapsule_New(flags, NULL, NULL) || fail("cant wrap flags pointer");

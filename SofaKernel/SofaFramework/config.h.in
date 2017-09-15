@@ -22,6 +22,9 @@
 #ifndef SOFA_CONFIG_H
 #define SOFA_CONFIG_H
 
+// fixes CGAL plugin build errors (default value: 5)
+#define BOOST_PARAMETER_MAX_ARITY 12
+
 #cmakedefine SOFA_HAVE_ZLIB
 
 #cmakedefine SOFA_HAVE_PNG

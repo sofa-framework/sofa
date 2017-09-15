@@ -81,7 +81,6 @@ public:
     vector<string> m_files ;
 
     virtual void fileHasChanged(const std::string& filename){
-        //std::cout << "FileHasChanged: " << filename << std::endl ;
         m_files.push_back(filename) ;
     }
 };

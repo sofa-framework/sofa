@@ -128,13 +128,6 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 
 //    int val = 0;
 
-//#ifdef __APPLE__
-//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
-//        const GLint swapInterval = 0;
-//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
-//        //std::cout << this->format().swapInterval() << std::endl;
-//#endif
-
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
     std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync

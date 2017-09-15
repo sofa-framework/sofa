@@ -12,7 +12,7 @@
     <MeshSplittingEngine name="split" src="@loader" nbInputs="1" tetrahedronIndices1="@roi.tetrahedronIndices" printLog="true"/>
 
         <Node name="rigid">
-            <EulerImplicit />
+            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             
             <MechanicalObject name="rigidframe" template="Rigid" position="1 0 1 0 0 0 1" />

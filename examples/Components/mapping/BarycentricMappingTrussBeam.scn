@@ -6,7 +6,7 @@
     <CollisionResponse response="default" />
     <!-- A deformable square mesh -->
     <Node name="Truss" activated="true" gravity="0 0 0">
-        <EulerImplicitSolver />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
         <!--<LULinearSolver/>-->
         <!--<RegularGrid name="grid" min="0 0 0" max="0.1 0.01 0.01" nx="10" ny="2" nz="2" />-->

@@ -25,6 +25,7 @@
 #include <map>
 #include <iostream>
 #include <typeinfo>
+#include <type_traits>
 
 #include <sofa/helper/helper.h>
 
@@ -79,7 +80,13 @@ public:
         return true;
     }
 
+    template< class U = Argument, typename std::enable_if<std::is_same<U, NoArgument>::value, int>::type = 0>
+    ObjectPtr createObject(Key key, Argument arg = NoArgument()){
+        createObject(key, arg);
+    }
+
     ObjectPtr createObject(Key key, Argument arg);
+
     ObjectPtr createAnyObject(Argument arg);
 
     template< typename OutIterator >

@@ -200,7 +200,7 @@ bool MeshVTKLoader::setInputsMesh()
 
     helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
 
-    int errorcount = 0;    
+    int errorcount = 0;
     if (reader->inputPolygons)
     {
         const int* inFP = (const int*) reader->inputPolygons->getData();
@@ -300,7 +300,6 @@ bool MeshVTKLoader::setInputsMesh()
                 numSubPolyLines.push_back(nv);
                 for (int v = 0; v < nv-1; ++v) {
                     addEdge(&my_edges, inFP[i+v+0], inFP[i+v+1]);
-                    //std::cout << " c = " << c << " i = " << i <<  " v = " << v << "  edge: " << inFP[i+v+0] << " " << inFP[i+v+1] << std::endl;
                 }
                 break;
             case 5: // TRIANGLE

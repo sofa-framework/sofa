@@ -1,0 +1,5 @@
+<?xml version='1.0' ?>
+<Node name='root'>
+   <RequiredPlugin name='Communication' />
+   <Node/>
+</Node>

@@ -31,10 +31,12 @@
 #include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.inl>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/core/loader/VoxelLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/glText.inl>
 #include <algorithm>
 #include <functional>
 #include <queue>
+#include <fstream>
 namespace sofa
 {
 

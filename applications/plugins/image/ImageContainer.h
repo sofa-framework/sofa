@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>

@@ -15,7 +15,7 @@
 
   <Node 	name="rigid" >
 	
-    	<EulerImplicitSolver />
+    	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25"/>
 
   	<MechanicalObject template="Rigid" position="@../imagemass.position" showObject="0" showObjectScale="1"/>

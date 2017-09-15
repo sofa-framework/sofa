@@ -12,7 +12,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include "labelpointsbysectionimagetoolboxaction.h"
-
+#include <sofa/helper/system/FileRepository.h>
 
 #include <string>
 #include <cstring>

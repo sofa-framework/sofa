@@ -257,6 +257,7 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     }
 
     bool emitWarningMessage = true;
+
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);

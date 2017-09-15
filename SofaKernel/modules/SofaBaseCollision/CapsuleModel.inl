@@ -132,7 +132,6 @@ void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
     }
 
     if (!isMoving() && !cubeModel->empty() && !updated){
-        std::cout<<"immobile..."<<std::endl;
         return; // No need to recompute BBox if immobile
     }
 
@@ -166,7 +165,7 @@ void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
 
         }
         cubeModel->computeBoundingTree(maxDepth);
-    }    
+    }
 }
 
 

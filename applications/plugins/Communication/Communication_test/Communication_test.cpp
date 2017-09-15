@@ -73,7 +73,6 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event *event) override
     {
-        std::cout << "YOLO " << std::endl ;
     }
 
     vectorData<Vector3>  d_positionsOut ;
@@ -90,27 +89,20 @@ public:
     {
         std::stringstream scene1 ;
         scene1 <<
-                  "<?xml version='1.0'?>"
-                  "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >       \n"
-                  "<RequiredPlugin name='Communication'/>                              \n"
-                  "<DefaultAnimationLoop />                                            \n"
-                  "<MyComponent name='aName'/>                                         \n"
-                  "<ServerCommunicationOSC name='oscSend' job='sender' port='6000'  refreshRate='1000'/>                                          \n"
-                  "<CommunicationSubscriber name='subSend' communication='@oscSend' subject='/sender' source='@light1' arguments='positionsOut'/> \n"
-                  "<ServerCommunicationOSC name='oscRec' job='receiver' port='6010'  refreshRate='2'/>                                            \n"
-                  "<CommunicationSubscriber name='subRec' communication='@oscRec' subject='/receive' source='@light1' arguments='positionsIn'/>   \n"
-                  "</Node>" ;
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "</Node>                                                                      \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene1.str().c_str(),
-                                                          scene1.str().size()) ;
+
+        std::cout << scene1.str() << std::endl;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
 
         root->init(ExecParams::defaultInstance()) ;
 
         for(unsigned int i=0;i<numstep;i++)
-        {
             sofa::simulation::getSimulation()->animate(root.get(), 0.001);
-        }
     }
 };
 

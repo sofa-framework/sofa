@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
@@ -31,10 +32,8 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileRepository.h>
 
-
-using std::cerr;
-using std::endl;
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
@@ -345,7 +344,7 @@ void GUIManager::SetDimension(int  width , int  height )
 void GUIManager::SetFullScreen()
 {
     if (currentGUI) currentGUI->setFullScreen();
-    else cerr<<"GUIManager::SetFullScreen(), no currentGUI" << endl;
+    else{ msg_error("GUIManager") <<"no currentGUI" ; }
 }
 
 void GUIManager::SaveScreenshot(const char* filename)

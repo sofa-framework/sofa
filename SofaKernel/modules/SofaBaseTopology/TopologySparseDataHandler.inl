@@ -180,7 +180,7 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::
 template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::renumber( const sofa::helper::vector<unsigned int>& )
 {
-    std::cerr << "WARNING: renumber event on topology SparseData is not yet handled" << std::endl;
+    msg_warning("TopologySparseDataHandler") << "renumber event on topology SparseData is not yet handled" ;
 }
 
 
@@ -188,7 +188,7 @@ template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::addOnMovedPosition(const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<TopologyElementType> &)
 {
-    std::cerr << "WARNING: addOnMovedPosition event on topology SparseData is not yet handled" << std::endl;
+    msg_warning("TopologySparseDataHandler") << "addOnMovedPosition event on topology SparseData is not yet handled" ;
 }
 
 
@@ -196,9 +196,8 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::addOnMovedPosition(c
 template <typename TopologyElementType, typename VecT>
 void TopologySparseDataHandler <TopologyElementType, VecT>::removeOnMovedPosition(const sofa::helper::vector<unsigned int> &)
 {
-    std::cerr << "WARNING: removeOnMovedPosition event on topology SparseData is not yet handled" << std::endl;
+    msg_warning("TopologySparseDataHandler") << "removeOnMovedPosition event on topology SparseData is not yet handled" ;
 }
-
 
 
 

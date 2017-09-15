@@ -1,6 +1,6 @@
 <Node name="root" gravity="0 0 -9.81" dt="0.01">
     <VisualStyle displayFlags="showBehavior" />
-    <EulerImplicitSolver name="Implicit Euler Solver" />
+    <EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="FirstObject" gravity="0 -9.81 0">
         <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0 1 0 0" />
