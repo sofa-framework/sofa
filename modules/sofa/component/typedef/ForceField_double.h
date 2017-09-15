@@ -210,13 +210,6 @@ typedef sofa::component::interactionforcefield::MeshSpringForceField<sofa::defau
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for ParticlesRepulsionForceField
-typedef sofa::component::forcefield::ParticlesRepulsionForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ParticlesRepulsionForceField2d;
-typedef sofa::component::forcefield::ParticlesRepulsionForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ParticlesRepulsionForceField3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for PenalityContactForceField
 typedef sofa::component::interactionforcefield::PenalityContactForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PenalityContactForceField3d;
 
@@ -267,12 +260,6 @@ typedef sofa::component::interactionforcefield::RepulsiveSpringForceField<sofa::
 typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttype::StdRigidTypes<3, double> > RestShapeSpringsForceFieldRigid3d;
 typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > RestShapeSpringsForceField1d;
 typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RestShapeSpringsForceField3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SPHFluidForceField
-typedef sofa::component::forcefield::SPHFluidForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SPHFluidForceField3d;
 
 
 
@@ -433,8 +420,6 @@ typedef LinearForceField6d LinearForceField6;
 typedef MeshSpringForceField1d MeshSpringForceField1;
 typedef MeshSpringForceField2d MeshSpringForceField2;
 typedef MeshSpringForceField3d MeshSpringForceField3;
-typedef ParticlesRepulsionForceField2d ParticlesRepulsionForceField2;
-typedef ParticlesRepulsionForceField3d ParticlesRepulsionForceField3;
 typedef PenalityContactForceField3d PenalityContactForceField3;
 typedef PlaneForceFieldRigid3d PlaneForceFieldRigid3;
 typedef PlaneForceField1d PlaneForceField1;
@@ -454,7 +439,6 @@ typedef RepulsiveSpringForceField3d RepulsiveSpringForceField3;
 typedef RestShapeSpringsForceFieldRigid3d RestShapeSpringsForceFieldRigid3;
 typedef RestShapeSpringsForceField1d RestShapeSpringsForceField1;
 typedef RestShapeSpringsForceField3d RestShapeSpringsForceField3;
-typedef SPHFluidForceField3d SPHFluidForceField3;
 typedef SphereForceField1d SphereForceField1;
 typedef SphereForceField2d SphereForceField2;
 typedef SphereForceField3d SphereForceField3;

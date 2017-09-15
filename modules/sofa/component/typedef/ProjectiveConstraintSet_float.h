@@ -156,22 +156,6 @@ typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstrain
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSink
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSink2f;
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSink3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSource
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSource2f;
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSource3f;
-
-
-
-
-
 #ifdef SOFA_FLOAT
 typedef AttachConstraintRigid2f AttachConstraintRigid2;
 typedef AttachConstraintRigid3f AttachConstraintRigid3;

@@ -105,13 +105,6 @@ typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::d
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for SpatialGridContainer
-typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SpatialGridContainer3d;
-
-
-
-
 
 #ifndef SOFA_FLOAT
 typedef DevAngleCollisionMonitorRigid3d DevAngleCollisionMonitorRigid3;
@@ -132,7 +125,6 @@ typedef MappedObject6d MappedObject6;
 typedef MonitorRigid3d MonitorRigid3;
 typedef Monitor3d Monitor3;
 typedef Monitor6d Monitor6;
-typedef SpatialGridContainer3d SpatialGridContainer3;
 #endif
 
 #endif
