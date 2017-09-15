@@ -1,0 +1,7 @@
+# CMake package configuration file for the SofaMiscForceField library
+
+@PACKAGE_INIT@
+
+#find_package(SofaMisc REQUIRED)
+
+check_required_components(SofaMiscForceField)
