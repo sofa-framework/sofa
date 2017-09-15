@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/io/MeshSTL.h>
 
 #include <gtest/gtest.h>

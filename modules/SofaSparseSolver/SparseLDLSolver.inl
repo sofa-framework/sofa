@@ -33,6 +33,7 @@
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.inl>
+#include <fstream>
 
 namespace sofa {
 
