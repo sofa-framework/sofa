@@ -37,7 +37,6 @@
 
 
 #include <SofaVolumetricData/ImplicitSurfaceMapping.h>
-#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 
 
 

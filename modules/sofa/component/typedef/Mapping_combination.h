@@ -52,7 +52,6 @@
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaRigid/RigidRigidMapping.h>
-#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>

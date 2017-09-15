@@ -54,7 +54,6 @@
 #include <SofaMiscForceField/LineBendingSprings.h>
 #include <SofaBoundaryCondition/LinearForceField.h>
 #include <SofaDeformable/MeshSpringForceField.h>
-#include <SofaSphFluid/ParticlesRepulsionForceField.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <SofaGeneralDeformable/QuadBendingSprings.h>
@@ -62,7 +61,6 @@
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>
 #include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
 #include <SofaDeformable/RestShapeSpringsForceField.h>
-#include <SofaSphFluid/SPHFluidForceField.h>
 #include <SofaBoundaryCondition/SphereForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>

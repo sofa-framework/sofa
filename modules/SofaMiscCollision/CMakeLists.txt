@@ -7,7 +7,6 @@ set(HEADER_FILES
     DefaultCollisionGroupManager.h
     RuleBasedContactManager.h
     SolverMerger.h
-    SpatialGridPointModel.h
     TetrahedronDiscreteIntersection.h
     TetrahedronModel.h
     TriangleModelInRegularGrid.h
@@ -20,7 +19,6 @@ set(SOURCE_FILES
     DefaultCollisionGroupManager.cpp
     RuleBasedContactManager.cpp
     SolverMerger.cpp
-    SpatialGridPointModel.cpp
     TetrahedronBarycentricPenalityContact.cpp
     TetrahedronDiscreteIntersection.cpp
     TetrahedronFrictionContact.cpp
@@ -29,6 +27,11 @@ set(SOURCE_FILES
     TriangleModelInRegularGrid.cpp
     initMiscCollision.cpp
 )
+
+if(SOFA_SOFASPHFLUID)
+    list(APPEND HEADER_FILES  SpatialGridPointModel.h)
+    list(APPEND SOURCE_FILES SpatialGridPointModel.cpp)
+endif()
 
 if(SOFA_HAVE_SMP)
     list(APPEND HEADER_FILES ParallelCollisionPipeline.h)
@@ -50,7 +53,7 @@ if(NOT SOFA_NO_OPENGL)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaGeneralMeshCollision SofaGeneralDeformable SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaGeneralExplicitOdeSolver SofaImplicitOdeSolver)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaEigen2Solver)
 if(NOT SOFA_NO_OPENGL)
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)

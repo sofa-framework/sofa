@@ -43,7 +43,6 @@
 #include <SofaValidation/ExtraMonitor.h>
 #include <SofaBaseMechanics/MappedObject.h>
 #include <SofaValidation/Monitor.h>
-#include <SofaSphFluid/SpatialGridContainer.h>
 
 
 

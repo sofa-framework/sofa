@@ -48,8 +48,6 @@
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
-#include <SofaSphFluid/ParticleSink.h>
-#include <SofaSphFluid/ParticleSource.h>
 
 
 
