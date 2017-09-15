@@ -34,6 +34,7 @@
 #include <cstdlib>
 #include <stack>
 #include <algorithm>
+#include <cctype>
 
 #define DEFAULT_INTERVAL 100
 
