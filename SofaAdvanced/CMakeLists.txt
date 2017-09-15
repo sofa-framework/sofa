@@ -21,7 +21,6 @@ set(SOFAADVANCED_TARGETS
     SofaComponentAdvanced
     SofaEulerianFluid
     SofaNonUniformFem
-    SofaSphFluid
     SofaVolumetricData
 )
 
