@@ -13,6 +13,8 @@ using sofa::Data ;
 using sofa::simulation::SceneLoaderPY ;
 using sofa::core::objectmodel::BaseObject ;
 
+#include <fstream>
+
 ///////////////////////////////////// TESTS ////////////////////////////////////////////////////////
 struct SofaModule_test : public sofa::Sofa_test<>,
                          public ::testing::WithParamInterface<std::vector<std::string>>
