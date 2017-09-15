@@ -31,6 +31,7 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <fstream>
 
 namespace sofa
 {

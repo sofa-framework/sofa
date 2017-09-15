@@ -30,6 +30,7 @@
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
 #include <sstream>
+#include <fstream>
 
 #include "PythonMainScriptController.h"
 #include "PythonEnvironment.h"
