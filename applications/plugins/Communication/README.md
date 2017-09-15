@@ -50,6 +50,8 @@ Subscriber DataFields explanation :
 * source -> a BaseObject link. This object will be use to read/write data in it
 * arguments -> a string. A list of variables name. Existing or not inside the source
 
+A serverCommunication should contains at least one subscriber.
+
 ### How to use ServerCommunication OSC
 
 #### Receive
@@ -81,5 +83,51 @@ A set of examples are availables in example´s plugin directory : [Examples](exa
 
 ## How to implement a new network protocol
 
-Simply extend ServerCommunication 
-TODO Factory explanation + implementation
+Implementing a new protocol is quite easy. Simply extend from ServerCommunication. Then you will have to implement some virtual methods such as :
+* getFactoryInstance
+* initTypeFactory
+* sendData
+* receiveData
+
+### Factory in a nutshell
+
+If you try to fetch a non existing data the ServerCommunication will create it by asking a factory. 
+Allowing the user to create sofa data from received data using factory is an elegant way to add flexibility and reusability. 
+Two virtual function are related to the factory let's see how it has been implemented for OSC.
+
+Header file : 
+```
+    //////////////////////////////// Factory OSC type /////////////////////////////////
+    typedef CommunicationDataFactory OSCDataFactory;
+    OSCDataFactory* getFactoryInstance() override;
+    virtual void initTypeFactory() override;
+    /////////////////////////////////////////////////////////////////////////////////
+```
+
+Cpp file : 
+```
+ServerCommunicationOSC::OSCDataFactory* ServerCommunicationOSC::getFactoryInstance(){
+    static OSCDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+        s_localfactory = new ServerCommunicationOSC::OSCDataFactory() ;
+    return s_localfactory ;
+}
+
+void ServerCommunicationOSC::initTypeFactory()
+{
+    getFactoryInstance()->registerCreator("f", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("d", new DataCreator<double>());
+    getFactoryInstance()->registerCreator("i", new DataCreator<int>());
+    getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
+
+    getFactoryInstance()->registerCreator("matrixf", new DataCreator<vector<float>>());
+    getFactoryInstance()->registerCreator("matrixi", new DataCreator<vector<int>>());
+    getFactoryInstance()->registerCreator("matrixd", new DataCreator<vector<double>>());
+}
+```
+
+The getFactoryInstance function si responsible to return a DataFactory instance. In this case, a singleton. The initTypeFactory is the place where we will do the binding between receveived data type and sofa's type.
+For example, using OSC, if we received a float his tag type will be "f". The equivalent in sofa is the primitive type float.
+Then we bind "f" to float. In case of non existing data with type "f" the serverCommunication will create a sofa float data.
+
+TODO send/receive explanations
