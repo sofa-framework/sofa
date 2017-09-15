@@ -303,8 +303,6 @@ math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
 ## Put the name of the library SOFA MISC to search and put it associate CMakeName
 list(APPEND SOFA_LIB_MISC_NAME
     SofaMisc                  SOFA_LIB_MISC
-    SofaMiscCollision         SOFA_LIB_MISC_COLLISION
-    #SofaMiscCollisionDev      SOFA_LIB_MISC_COLLISION_DEV
     SofaMiscFem               SOFA_LIB_MISC_FEM
     #SofaMiscDev               SOFA_LIB_MISC_DEV
     #SofaMiscFemDev            SOFA_LIB_MISC_FEM_DEV

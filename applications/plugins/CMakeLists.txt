@@ -3,7 +3,11 @@ cmake_minimum_required(VERSION 3.1)
 # Common extlibs dependency(ies)
 add_subdirectory(../../extlibs/CImg extlibs/CImg)
 
+
 find_package(SofaFramework)
+
+sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
+sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)   # Depend on SofaSphFluid
 
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
