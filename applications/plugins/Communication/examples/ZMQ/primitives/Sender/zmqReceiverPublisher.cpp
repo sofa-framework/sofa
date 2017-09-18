@@ -14,7 +14,9 @@ int main ()
     {
         zmq::message_t reply;
         socket.recv (&reply);
-        std::cout << "Received : " << (char*)reply.data() << std::endl;
+        char* tmp = (char*)malloc(sizeof(char) * reply.size());
+        memcpy(tmp, reply.data(), reply.size());
+        std::cout << "Received  " << tmp << std::endl;
     }
     return 0;
 }
