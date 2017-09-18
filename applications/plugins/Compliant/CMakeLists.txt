@@ -219,8 +219,7 @@ set(SOURCE_FILES
     utils/sub_kkt.cpp
 )
 
-
-
+find_package(SofaMiscCollision REQUIRED)
 
 find_package(SofaPython QUIET)
 if( SofaPython_FOUND )
@@ -270,7 +269,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Compliant/config.h" DESTINATION "incl
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaSimulationGraph SofaMiscCollision)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
