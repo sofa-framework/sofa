@@ -217,15 +217,15 @@ if(SofaSphFluid_FOUND)
         sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
         sofa/gpu/cuda/CudaSpatialGridContainer.cpp
         )
-    list(APPEND CUDA_FILES
+    list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaParticleSource.cu
         sofa/gpu/cuda/CudaSPHFluidForceField.cu
         sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
         sofa/gpu/cuda/CudaSpatialGridContainer.cu
         )
-    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. Activing: <SpatialGridPointModel>")
+    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
 else()
-    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. De-activing: <SpatialGridPointModel>")
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
 endif()
 
 
