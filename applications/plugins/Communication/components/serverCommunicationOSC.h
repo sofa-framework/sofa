@@ -66,6 +66,7 @@ public:
 protected:
 
     UdpListeningReceiveSocket* m_socket;
+
     osc::OutboundPacketStream createOSCMessage();
     std::string convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator);
 

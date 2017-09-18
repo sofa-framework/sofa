@@ -25,7 +25,7 @@ public:
     virtual ~ServerCommunicationZMQ();
 
     //////////////////////////////// Factory OSC type /////////////////////////////////
-    typedef sofa::helper::Factory< std::string, BaseData> ZMQDataFactory;
+    typedef CommunicationDataFactory ZMQDataFactory;
     ZMQDataFactory* getFactoryInstance();
     virtual void initTypeFactory() override;
     /////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,8 @@ protected:
 
     std::string dataToString(CommunicationSubscriber* subscriber, std::string argument);
     void stringToData(std::string dataString);
-};  //class ServerCommunicationZMQ
+
+};
 
 }   /// namespace communication
 }   /// namespace component
