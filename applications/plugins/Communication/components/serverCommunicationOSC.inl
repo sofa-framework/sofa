@@ -114,7 +114,6 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
                 BaseData* data = itData->second;
                 if (!data)
                 {
-                    std::cout << "d" << std::endl;
                     messageName = subscriber->getSubject();
                     p << osc::BeginMessage(messageName.c_str());
                     p << osc::EndMessage;

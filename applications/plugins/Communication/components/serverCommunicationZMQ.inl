@@ -143,53 +143,58 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
     // handle no argument
     if (itData != dataMap.end())
     {
-        BaseData* data = itData->second;
-        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-        const void* valueVoidPtr = data->getValueVoidPtr();
         messageStr.clear();
+        BaseData* data = itData->second;
 
-        if (typeinfo->Container())
+        if (data)
         {
-            int nbRows = typeinfo->size();
-            int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-            messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
+            const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+            const void* valueVoidPtr = data->getValueVoidPtr();
 
-            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+
+            if (typeinfo->Container())
             {
-                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                messageStr << (data->getValueString()) << " ";
+                int nbRows = typeinfo->size();
+                int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+                messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
+
+                if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+                {
+                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                    messageStr << "string:" << (data->getValueString()) << " ";
+                }
+                else if (typeinfo->Text())
+                    for (int i=0; i < nbRows; i++)
+                        for (int j=0; j<nbCols; j++)
+                            messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
+                else if (typeinfo->Scalar())
+                    for (int i=0; i < nbRows; i++)
+                        for (int j=0; j<nbCols; j++)
+                            messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j) << " ";
+                else if (typeinfo->Integer())
+                    for (int i=0; i < nbRows; i++)
+                        for (int j=0; j<nbCols; j++)
+                            messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j) << " ";
             }
-            else if (typeinfo->Text())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str();
-            else if (typeinfo->Scalar())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
-            else if (typeinfo->Integer())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j);
-        }
-        else
-        {
-            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+            else
             {
-                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                messageStr << "unknow:" << (data->getValueString()) << " ";
-            }
-            if (typeinfo->Text())
-            {
-                messageStr << "string:" << (data->getValueString()) << " ";
-            }
-            else if (typeinfo->Scalar())
-            {
-                messageStr << "float:" << (data->getValueString()) << " ";
-            }
-            else if (typeinfo->Integer())
-            {
-                messageStr << "int:" << (data->getValueString()) << " ";
+                if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+                {
+                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+                    messageStr << "string:" << (data->getValueString()) << " ";
+                }
+                if (typeinfo->Text())
+                {
+                    messageStr << "string:" << (data->getValueString()) << " ";
+                }
+                else if (typeinfo->Scalar())
+                {
+                    messageStr << "float:" << (data->getValueString()) << " ";
+                }
+                else if (typeinfo->Integer())
+                {
+                    messageStr << "int:" << (data->getValueString()) << " ";
+                }
             }
         }
     }
