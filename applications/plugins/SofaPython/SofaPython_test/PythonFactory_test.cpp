@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <SofaTest/Sofa_test.h>
 
 #include <SofaPython/PythonFactory.h>

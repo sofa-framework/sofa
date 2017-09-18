@@ -31,6 +31,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/glut.h>
 #include <algorithm>
+#include <fstream>
 
 namespace SofaOptiTrackNatNet
 {

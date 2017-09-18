@@ -27,7 +27,6 @@
 #endif
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/SVector.h>
 
 namespace sofa

@@ -179,7 +179,7 @@ public:
     /// filtering the given input matrix by using the mask as a diagonal projection matrix
     /// output = mask.asDiagonal() * input
     template<class Real>
-    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {output=input;}
+    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
 
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const {return m_size;}

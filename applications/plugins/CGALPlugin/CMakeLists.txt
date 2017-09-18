@@ -28,14 +28,15 @@ set(README_FILES CGALPlugin.txt)
 
 
 find_package(SofaFramework REQUIRED)
-find_package(CGAL REQUIRED)
 find_package(image QUIET)
 if(image_FOUND)
     list(APPEND HEADER_FILES MeshGenerationFromImage.h)
     list(APPEND HEADER_FILES MeshGenerationFromImage.inl)
     list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
+    find_package(CGAL REQUIRED COMPONENTS ImageIO)
 else()
     message(STATUS "CGALPlugin: could not find image, won't build MeshGenerationFromImage")
+    find_package(CGAL REQUIRED)
 endif()
 ## CGAL dependencies
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")

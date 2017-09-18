@@ -303,6 +303,8 @@ if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
 endif()
 
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
