@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(SofaMiscSolver_test)
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
 
-set(SOURCE_FILES
-    NewmarkImplicitSolverDynamic_test.cpp)
+    project(SofaMiscSolver_test)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+    set(SOURCE_FILES
+        NewmarkImplicitSolverDynamic_test.cpp)
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+    add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+
+    add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+endif()

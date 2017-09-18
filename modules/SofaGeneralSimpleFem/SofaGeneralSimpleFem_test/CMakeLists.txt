@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(SofaGeneralSimpleFem_test)
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
 
-set(SOURCE_FILES
-    AffinePatch_test.cpp
-    LinearElasticity_test.cpp
-)
+    project(SofaGeneralSimpleFem_test)
 
-add_definitions("-DSOFAGENERALSIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+    set(SOURCE_FILES
+        AffinePatch_test.cpp
+        LinearElasticity_test.cpp
+    )
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+    add_definitions("-DSOFAGENERALSIMPLEFEM_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+    add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+    target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+
+    add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+
+endif()

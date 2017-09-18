@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaBoundaryCondition_test)
 
 set(SOURCE_FILES
-    AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
     PartialFixedConstraint.cpp
     PlaneForceField_test.cpp
@@ -17,6 +16,13 @@ set(SOURCE_FILES
     TrianglePressureForceField_test.cpp
     ConstantForceField_test.cpp
     )
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
+    list(APPEND SOURCE_FILES
+        AffineMovementConstraint_test.cpp
+        )
+endif()
+
 
 add_definitions("-DSOFABOUNDARYCONDITION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -61,7 +61,13 @@ if(Compliant_FOUND)
     target_link_libraries(${PROJECT_NAME} Compliant)
 endif()
 
-target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGraphComponent SofaUserInteraction SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField SofaCore)
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
+    add_definitions("-DSOFA_HAVE_SOFAMISCFORCEFIELD")
+    target_link_libraries(${PROJECT_NAME} SofaMiscForceField)
+endif()
+
+target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGraphComponent SofaUserInteraction SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaCore)
 
 ## Install rules for the library; CMake package configurations files
 sofa_create_package(${PROJECT_NAME} 0.1 ${PROJECT_NAME} ${PROJECT_NAME})
