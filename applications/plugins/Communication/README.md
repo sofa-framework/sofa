@@ -82,7 +82,7 @@ A serverCommunication should contains at least one subscriber.
 ```
 ### Examples
 
-A set of examples are availables in example´s plugin directory : [Examples](examples)
+A set of examples are availables in example plugin directory : [Examples](examples)
 
 ## How to implement a new network protocol
 
