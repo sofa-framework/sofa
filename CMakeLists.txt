@@ -278,7 +278,7 @@ add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 # SofaGui depends on SofaMiscForceField, so we add SofaMiscForceField before SofaGui.
-sofa_add_plugin( applications/plugins/SofaMiscForceField SofaMiscForceField )
+sofa_add_plugin( applications/plugins/SofaMiscForceField SofaMiscForceField ON) # ON by default
 add_subdirectory(SofaGui)
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
