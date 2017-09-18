@@ -420,7 +420,8 @@ static PyObject* parse_emitter_message_then(PyObject* args, const Action& action
             return NULL;
         }
     }
-    return NULL;
+
+	Py_RETURN_NONE;
 }
 
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
