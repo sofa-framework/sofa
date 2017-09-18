@@ -19,29 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaEulerianFluid/initEulerianFluid.h>
+#ifndef SOFAEULERIANFLUID_CONFIG_H
+#define SOFAEULERIANFLUID_CONFIG_H
+
+#ifdef SOFA_BUILD_EULERIAN_FLUID
+#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-void initEulerianFluid()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-SOFA_LINK_CLASS(Fluid2D)
-SOFA_LINK_CLASS(Fluid3D)
-
-} // namespace component
-
-} // namespace sofa
+#endif

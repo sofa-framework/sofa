@@ -19,9 +19,66 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAEULERIANFLUID_CONFIG_H
-#define SOFAEULERIANFLUID_CONFIG_H
+#include <sofa/helper/system/config.h>
+#include <SofaEulerianFluid/initEulerianFluid.h>
 
-#include <SofaAdvanced/config.h>
 
-#endif
+namespace sofa
+{
+
+namespace component
+{
+
+/// Convenient functions to help user to know what contains the plugin
+extern "C" {
+    SOFA_EULERIAN_FLUID_API void initExternalModule();
+    SOFA_EULERIAN_FLUID_API const char* getModuleName();
+    SOFA_EULERIAN_FLUID_API const char* getModuleVersion();
+    SOFA_EULERIAN_FLUID_API const char* getModuleLicense();
+    SOFA_EULERIAN_FLUID_API const char* getModuleDescription();
+    SOFA_EULERIAN_FLUID_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaEulerianFluid";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "This plugin expose component implementing fluid simulation in 2D and 3D.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "Fluid2D Fluid3D";
+}
+
+
+SOFA_LINK_CLASS(Fluid2D)
+SOFA_LINK_CLASS(Fluid3D)
+
+} /// namespace component
+
+} /// namespace sofa

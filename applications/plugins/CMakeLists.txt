@@ -6,6 +6,7 @@ add_subdirectory(../../extlibs/CImg extlibs/CImg)
 
 find_package(SofaFramework)
 
+sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)   # Depend on SofaSphFluid
 
