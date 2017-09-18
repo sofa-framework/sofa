@@ -37,7 +37,7 @@ protected:
 		std::string pythonControllerPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR)+std::string("/test_AutoGen.py");
 
 		std::ofstream f(pythonControllerPath);
-		std::string pytmp = std::string("import Sofa\n def createScene(rootNode):\n "
+		std::string pytmp = std::string("import Sofa\n\ndef createScene(rootNode):\n"
 										"\tSofa.timerSetOutputType(\"")
 										+ timer_name + std::string("\", \"")
 										+ output_type + std::string("\")\n");
