@@ -84,6 +84,8 @@
 
 #include <SofaBaseLinearSolver/FullVector.h>
 
+#include <sofa/helper/system/FileRepository.h>
+
 namespace sofa
 {
 namespace modeling {

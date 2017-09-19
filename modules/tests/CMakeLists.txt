@@ -37,5 +37,6 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test tests/SofaMiscSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test tests/SofaMiscTopology)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaVolumetricData/SofaVolumetricData_test tests/SofaVolumetricData)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaExporter/SofaExporter_test tests/SofaExporter)
 
 

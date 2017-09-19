@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/helper/system/FileRepository.h>
 #include <SofaTest/Sofa_test.h>
 
 #include <SofaLoader/MeshObjLoader.h>

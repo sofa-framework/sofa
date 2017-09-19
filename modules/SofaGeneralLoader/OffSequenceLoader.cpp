@@ -26,7 +26,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
-
+#include <fstream>
 
 namespace sofa
 {

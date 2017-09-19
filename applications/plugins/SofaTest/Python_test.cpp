@@ -1,4 +1,5 @@
 #include <SofaPython/PythonScriptEvent.h>
+#include <fstream>
 
 #include "Python_test.h"
 

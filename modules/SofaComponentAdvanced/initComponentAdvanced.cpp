@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaEulerianFluid/initEulerianFluid.h>
 #include <SofaSphFluid/initSPHFluid.h>
 #include <SofaVolumetricData/initVolumetricData.h>
 #include <SofaNonUniformFem/initNonUniformFEM.h>
@@ -41,7 +40,6 @@ void initComponentAdvanced()
         first = false;
     }
 
-    initEulerianFluid();
     initSPHFluid();
     initVolumetricData();
     initNonUniformFEM();

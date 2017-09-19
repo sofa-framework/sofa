@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
@@ -31,7 +32,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
-
+#include <sofa/helper/system/FileRepository.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
