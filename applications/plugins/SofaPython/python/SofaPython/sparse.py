@@ -12,11 +12,9 @@ dll = CDLL(dll_path)
 
 
 
-# note: we don't alias eigen matrices directly as the memory layout could change
-# between versions (it did once in the past IIRC), so we use a low-level
-# exchange data structure instead
 def matrix(dtype):
-
+    '''matrix type constructor from scalar type (c_double or c_float)'''
+    
     from_eigen_table = {
         c_double: dll.eigen_to_scipy_double,
         c_float: dll.eigen_to_scipy_float,        
@@ -28,9 +26,12 @@ def matrix(dtype):
         c_float: dll.eigen_from_scipy_float,        
     }
     
-    
+
+    # note: we don't alias eigen matrices directly as the memory layout could change
+    # between versions (it did once in the past IIRC), so we use a low-level
+    # exchange data structure instead
     class Matrix(Structure):
-        '''all the data needed to alias a sparse matrix in eigen/scipy'''
+        '''all the data needed to alias a sparse matrix in eigen/scipy (see ctypes.cpp)'''
 
         _fields_ = (('rows', c_size_t),
                     ('cols', c_size_t),
@@ -43,6 +44,7 @@ def matrix(dtype):
 
         @staticmethod
         def from_scipy(s):
+            '''build a sparse matrix alias from a scipy matrix'''            
             data = Matrix()
             values, inner_indices, outer_index = s.data, s.indices, s.indptr
 
@@ -62,6 +64,7 @@ def matrix(dtype):
 
         @staticmethod
         def from_eigen(ptr):
+            '''build a sparse matrix alias from a pointer to an eigen matrix'''
             data = Matrix()
             from_eigen_table[dtype](byref(data), ptr)
             return data
@@ -69,12 +72,16 @@ def matrix(dtype):
 
 
         def to_eigen(self, ptr):
+            '''assign current aliased matrix to the given eigen matrix'''
             return to_eigen_table[dtype](ptr, byref(self))
         
 
-        def to_scipy(self):
-            '''warning: if the scipy view reallocates, it will no longer alias the sparse
-            matrix.
+        def to_scipy(self, writable = False):
+            '''construct a scipy view of the current aliased matrix
+
+            warning: if writable is True and the scipy view reallocates, it will
+            no longer alias the sparse matrix. use the provided context instead
+            of using this function directly
             '''
 
             data = self
@@ -88,6 +95,8 @@ def matrix(dtype):
                 return sp.sparse.csr_matrix( shape )
 
             values = np.ctypeslib.as_array( as_buffer(data.values, data.size) )
+            if not writable: values.flags['WRITEABLE'] = writable
+            
             inner_indices = np.ctypeslib.as_array( as_buffer(data.indices, data.size) )
 
             return sp.sparse.csr_matrix( (values, inner_indices, outer_index), shape)
@@ -96,7 +105,16 @@ def matrix(dtype):
         @staticmethod
         @contextmanager
         def view(ptr):
-            view = Matrix.from_eigen(ptr).to_scipy()
+            '''a context that provides a scipy view of an eigen matrix, assigning data back
+            when modified on context exit. 
+
+            warning: in python2, context handles leak outside context scope, so
+            make sure you don't mutate the handle outside the context scope
+            (modification may not be mirrored on the eigen side)
+
+            '''
+            
+            view = Matrix.from_eigen(ptr).to_scipy(writable = True)
             data = view.data.ctypes.data
 
             try:
@@ -107,6 +125,7 @@ def matrix(dtype):
                     # data pointer changed: rebuild view and assign back to eigen
                     Matrix.from_scipy(view).to_eigen(ptr)
 
+            
 
     return Matrix
 
