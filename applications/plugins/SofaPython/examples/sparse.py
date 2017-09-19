@@ -37,7 +37,7 @@ def createScene(node):
             assert not (mm == ref).all()
 
     # modification commit happens here
-    with sparse.data_view(mass, 'massMatrix') as mm:
-        assert (mm == ref).all()
+    with sparse.data_view(mass, 'massMatrix') as m:
+        assert (m == ref).all()
 
         
