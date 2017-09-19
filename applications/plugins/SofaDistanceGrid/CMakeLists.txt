@@ -45,14 +45,18 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaMiscCollision)
 
-if(SOFA_HAVE_MINIFLOWVR)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFADISTANCEGRID")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+find_package(MiniFlowVR QUIET)
+if(MiniFlowVR_FOUND)
+    add_definitions("-DSOFA_HAVE_MINIFLOWVR")
     target_link_libraries(${PROJECT_NAME} PUBLIC miniFlowVR)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFADISTANCEGRID -DSOFA_HAVE_MINIFLOWVR")
+    message(STATUS "SofaDistanceGrid: MiniFlowVR enabled.")
 else()
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFADISTANCEGRID")
+    message(STATUS "SofaDistanceGrid: MiniFlowVR disabled. therefore some features will not be compiled.")
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
