@@ -78,9 +78,6 @@ struct SceneChecker_test : public Sofa_test<>
 
     void checkDuplicatedNames()
     {
-        EXPECT_MSG_EMIT(Error) ;
-        EXPECT_MSG_NOEMIT(Warning);
-
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
@@ -115,12 +112,14 @@ struct SceneChecker_test : public Sofa_test<>
         std::vector<std::string> nodenames = {"nodeCheck", "objectCheck", "mixCheck"} ;
         for( auto& nodename : nodenames )
         {
+            EXPECT_MSG_NOEMIT(Error) ;
             EXPECT_MSG_EMIT(Warning);
             ASSERT_NE(root->getChild(nodename), nullptr) ;
             checker.validate(root->getChild(nodename)) ;
         }
 
         {
+            EXPECT_MSG_NOEMIT(Error);
             EXPECT_MSG_NOEMIT(Warning);
             ASSERT_NE(root->getChild("nothingCheck"), nullptr) ;
             checker.validate(root->getChild("nothingCheck")) ;
