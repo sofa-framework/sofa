@@ -38,10 +38,8 @@
 
 #include <SofaGeneralObjectInteraction/BoxStiffSpringForceField.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
-#include <SofaMiscForceField/GearSpringForceField.h>
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
-#include <SofaMiscForceField/LineBendingSprings.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <SofaGeneralDeformable/QuadBendingSprings.h>
@@ -70,12 +68,6 @@ typedef sofa::component::interactionforcefield::FrameSpringForceField<sofa::defa
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for GearSpringForceField
-typedef sofa::component::interactionforcefield::GearSpringForceField<sofa::defaulttype::StdRigidTypes<3, double> > GearSpringForceFieldRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for InteractionEllipsoidForceField
 typedef sofa::component::interactionforcefield::InteractionEllipsoidForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdRigidTypes<3, double> > InteractionEllipsoidForceField3d_Rigid3d;
 
@@ -84,13 +76,6 @@ typedef sofa::component::interactionforcefield::InteractionEllipsoidForceField<s
 //---------------------------------------------------------------------------------------------
 //Typedef for JointSpringForceField
 typedef sofa::component::interactionforcefield::JointSpringForceField<sofa::defaulttype::StdRigidTypes<3, double> > JointSpringForceFieldRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LineBendingSprings
-typedef sofa::component::interactionforcefield::LineBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > LineBendingSprings2d;
-typedef sofa::component::interactionforcefield::LineBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > LineBendingSprings3d;
 
 
 
@@ -171,11 +156,8 @@ typedef BoxStiffSpringForceField2d BoxStiffSpringForceField2;
 typedef BoxStiffSpringForceField3d BoxStiffSpringForceField3;
 typedef BoxStiffSpringForceField6d BoxStiffSpringForceField6;
 typedef FrameSpringForceFieldRigid3d FrameSpringForceFieldRigid3;
-typedef GearSpringForceFieldRigid3d GearSpringForceFieldRigid3;
 typedef InteractionEllipsoidForceField3d_Rigid3d InteractionEllipsoidForceField3_Rigid3;
 typedef JointSpringForceFieldRigid3d JointSpringForceFieldRigid3;
-typedef LineBendingSprings2d LineBendingSprings2;
-typedef LineBendingSprings3d LineBendingSprings3;
 typedef MeshSpringForceField1d MeshSpringForceField1;
 typedef MeshSpringForceField2d MeshSpringForceField2;
 typedef MeshSpringForceField3d MeshSpringForceField3;

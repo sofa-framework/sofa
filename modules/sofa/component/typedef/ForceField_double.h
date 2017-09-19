@@ -45,13 +45,10 @@
 #include <SofaBoundaryCondition/EllipsoidForceField.h>
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <SofaGeneralDeformable/FrameSpringForceField.h>
-#include <SofaMiscForceField/GearSpringForceField.h>
 #include <SofaGeneralSimpleFem/HexahedralFEMForceField.h>
 #include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <SofaGeneralObjectInteraction/InteractionEllipsoidForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
-#include <SofaMiscForceField/LennardJonesForceField.h>
-#include <SofaMiscForceField/LineBendingSprings.h>
 #include <SofaBoundaryCondition/LinearForceField.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaSphFluid/ParticlesRepulsionForceField.h>
@@ -80,7 +77,6 @@
 #include <SofaGeneralDeformable/TriangularTensorMassForceField.h>
 #include <SofaBoundaryCondition/VaccumSphereForceField.h>
 #include <SofaGeneralDeformable/VectorSpringForceField.h>
-#include <SofaMiscForceField/WashingMachineForceField.h>
 
 
 
@@ -151,12 +147,6 @@ typedef sofa::component::interactionforcefield::FrameSpringForceField<sofa::defa
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for GearSpringForceField
-typedef sofa::component::interactionforcefield::GearSpringForceField<sofa::defaulttype::StdRigidTypes<3, double> > GearSpringForceFieldRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for HexahedralFEMForceField
 typedef sofa::component::forcefield::HexahedralFEMForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedralFEMForceField3d;
 
@@ -177,19 +167,6 @@ typedef sofa::component::interactionforcefield::InteractionEllipsoidForceField<s
 //---------------------------------------------------------------------------------------------
 //Typedef for JointSpringForceField
 typedef sofa::component::interactionforcefield::JointSpringForceField<sofa::defaulttype::StdRigidTypes<3, double> > JointSpringForceFieldRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LennardJonesForceField
-typedef sofa::component::forcefield::LennardJonesForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > LennardJonesForceField3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LineBendingSprings
-typedef sofa::component::interactionforcefield::LineBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > LineBendingSprings2d;
-typedef sofa::component::interactionforcefield::LineBendingSprings<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > LineBendingSprings3d;
 
 
 
@@ -391,12 +368,6 @@ typedef sofa::component::interactionforcefield::VectorSpringForceField<sofa::def
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for WashingMachineForceField
-typedef sofa::component::forcefield::WashingMachineForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > WashingMachineForceField3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
@@ -419,14 +390,10 @@ typedef EllipsoidForceField2d EllipsoidForceField2;
 typedef EllipsoidForceField3d EllipsoidForceField3;
 typedef FastTetrahedralCorotationalForceField3d FastTetrahedralCorotationalForceField3;
 typedef FrameSpringForceFieldRigid3d FrameSpringForceFieldRigid3;
-typedef GearSpringForceFieldRigid3d GearSpringForceFieldRigid3;
 typedef HexahedralFEMForceField3d HexahedralFEMForceField3;
 typedef HexahedronFEMForceField3d HexahedronFEMForceField3;
 typedef InteractionEllipsoidForceField3d_Rigid3d InteractionEllipsoidForceField3_Rigid3;
 typedef JointSpringForceFieldRigid3d JointSpringForceFieldRigid3;
-typedef LennardJonesForceField3d LennardJonesForceField3;
-typedef LineBendingSprings2d LineBendingSprings2;
-typedef LineBendingSprings3d LineBendingSprings3;
 typedef LinearForceFieldRigid3d LinearForceFieldRigid3;
 typedef LinearForceField1d LinearForceField1;
 typedef LinearForceField2d LinearForceField2;
@@ -485,7 +452,6 @@ typedef VaccumSphereForceField1d VaccumSphereForceField1;
 typedef VaccumSphereForceField2d VaccumSphereForceField2;
 typedef VaccumSphereForceField3d VaccumSphereForceField3;
 typedef VectorSpringForceField3d VectorSpringForceField3;
-typedef WashingMachineForceField3d WashingMachineForceField3;
 #endif
 
 #endif

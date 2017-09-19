@@ -40,8 +40,6 @@
 #include <SofaGeneralSimpleFem/HexahedralFEMForceFieldAndMass.h>
 #include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <SofaGeneralSimpleFem/HexahedronFEMForceFieldAndMass.h>
-#include <SofaMiscForceField/MatrixMass.h>
-#include <SofaMiscForceField/MeshMatrixMass.h>
 #include <SofaNonUniformFem/NonUniformHexahedralFEMForceFieldAndMass.h>
 #include <SofaNonUniformFem/NonUniformHexahedronFEMForceFieldAndMass.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -73,22 +71,6 @@ typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<sof
 //---------------------------------------------------------------------------------------------
 //Typedef for HexahedronFEMForceFieldAndMass
 typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > HexahedronFEMForceFieldAndMass3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MatrixMass
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, sofa::defaulttype::Mat<1, 1, float> > MatrixMass1f;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, sofa::defaulttype::Mat<2, 2, float> > MatrixMass2f;
-typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::Mat<3, 3, float> > MatrixMass3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MeshMatrixMass
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float>, float> MeshMatrixMass1f;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float>, float> MeshMatrixMass2f;
-typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, float> MeshMatrixMass3f;
 
 
 
