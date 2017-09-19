@@ -6,6 +6,8 @@ import numpy as np
 # For now only EXPECT_* can be implemented (not EXPECT_* style)
 #
 
+def FAIL(message=""):
+    print("Message:"+message)
 
 def EXPECT_TRUE(value, message=""):
     if not value:
