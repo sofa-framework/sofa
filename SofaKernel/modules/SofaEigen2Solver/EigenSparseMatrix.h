@@ -656,17 +656,7 @@ namespace defaulttype {
 
 template<class TIn, class TOut>
 struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
-    : DefaultDataTypeInfo<component::linearsolver::EigenSparseMatrix<TIn, TOut> > {
-
-    using typename DataTypeInfo::DefaultDataTypeInfo::DataType;
-    
-    static const void* getValuePtr(const DataType& type) {
-        return &type.compressedMatrix;
-    }
-
-    static void* getValuePtr(DataType& type) {
-        return &type.compressedMatrix;
-    }
+    : DataTypeInfo< typename component::linearsolver::EigenSparseMatrix<TIn, TOut>::Inherit > {
     
 };
 

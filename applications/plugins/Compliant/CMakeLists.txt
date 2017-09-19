@@ -251,6 +251,8 @@ if( SofaPython_FOUND )
         mapping/PythonMultiMapping.cpp
         python/_Compliant.cpp
         python/Binding_AssembledSystem.cpp
+
+        # note: need to fix assembled solver in python before removing
         python/python.cpp
         )
 

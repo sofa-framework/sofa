@@ -483,6 +483,10 @@ struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> >
     : DefaultDataTypeInfo<component::linearsolver::EigenBaseSparseMatrix<Real> > {
 
     using typename DataTypeInfo::DefaultDataTypeInfo::DataType;
+
+    static const char* name() {
+        return DataType::Name();
+    }
     
     static const void* getValuePtr(const DataType& type) {
         return &type.compressedMatrix;
