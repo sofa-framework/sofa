@@ -59,8 +59,6 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
 
     getFactoryInstance()->registerCreator("matrixf", new DataCreator<vector<float>>());
-
-
 }
 
 void ServerCommunicationOSC::sendData()

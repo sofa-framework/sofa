@@ -161,7 +161,7 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
                 if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
                 {
                     msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                    messageStr << "string:" << (data->getValueString()) << " ";
+                    messageStr << "string:'" << (data->getValueString()) << "' ";
                 }
                 else if (typeinfo->Text())
                     for (int i=0; i < nbRows; i++)
@@ -181,11 +181,11 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
                 if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
                 {
                     msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                    messageStr << "string:" << (data->getValueString()) << " ";
+                    messageStr << "string:'" << (data->getValueString()) << "' ";
                 }
                 if (typeinfo->Text())
                 {
-                    messageStr << "string:" << (data->getValueString()) << " ";
+                    messageStr << "string:'" << (data->getValueString()) << "' ";
                 }
                 else if (typeinfo->Scalar())
                 {
@@ -209,7 +209,25 @@ std::vector<std::string> stringToArgumentList(std::string dataString)
     std::vector<std::string> listArguments;
 
     for ( ; iter != end; ++iter)
-        listArguments.push_back(*iter);
+    {
+        std::string tmp = *iter;
+        if (tmp.find("string:'") != std::string::npos)
+        {
+            bool stringIsNotFinished = true;
+            while (++iter != end && stringIsNotFinished)
+            {
+                std::string anotherTmp = *iter;
+                tmp += " " + anotherTmp;
+                if (anotherTmp.find("'") != std::string::npos)
+                {
+                    stringIsNotFinished = false;
+                    break;
+                }
+            }
+        }
+        listArguments.push_back(tmp);
+
+    }
     return listArguments;
 }
 
